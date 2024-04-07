@@ -28,7 +28,9 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
+using Google.Solutions.Mvvm.ComponentModel;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -87,22 +89,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             this.MachineType = this.instanceDetails.MachineType != null
                 ? MachineTypeLocator.Parse(this.instanceDetails.MachineType).Name
                 : null;
-            this.Licenses = this.instanceDetails.Disks != null
-                ? string.Join(", ", this.instanceDetails.Disks
-                    .EnsureNotNull()
-                    .Where(d => d.Licenses != null && d.Licenses.Any())
-                    .SelectMany(d => d.Licenses)
-                    .Select(l => LicenseLocator.Parse(l).Name))
-                : null;
+            this.Licenses = this.instanceDetails.Disks
+                .EnsureNotNull()
+                .Where(d => d.Licenses != null && d.Licenses.Any())
+                .SelectMany(d => d.Licenses)
+                .Select(l => LicenseLocator.Parse(l).Name)
+                .ToList();
 
             //
             // Security.
             //
             var serviceAccount = this.instanceDetails.ServiceAccounts?.FirstOrDefault();
             this.ServiceAccount = serviceAccount?.Email;
-            this.ServiceAccountScopes = serviceAccount?.Scopes != null
-                ? string.Join(", ", serviceAccount.Scopes)
-                : null;
+            this.ServiceAccountScopes = serviceAccount?.Scopes;
             this.VtpmEnabled = this.instanceDetails.ShieldedInstanceConfig?.EnableVtpm == true
                 ? FeatureFlag.Enabled
                 : FeatureFlag.Disabled;
@@ -116,9 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             //
             // Network.
             //
-            this.Tags = this.instanceDetails.Tags != null && this.instanceDetails.Tags.Items != null
-                ? string.Join(", ", this.instanceDetails.Tags.Items)
-                : null;
+            this.Tags = this.instanceDetails.Tags?.Items;
             this.InternalIp = this.instanceDetails.PrimaryInternalAddress()?.ToString();
             this.ExternalIp = this.instanceDetails.PublicAddress()?.ToString();
             this.InternalZonalDnsName = new InternalDnsName.ZonalName(instance).Name;
@@ -197,7 +194,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [DisplayName("Licenses")]
         [Description("The licenses applied to the VM, see " +
                      "https://cloud.google.com/sdk/gcloud/reference/compute/images/import#--os")]
-        public string Licenses { get; }
+        [TypeConverter(typeof(ExpandableCollectionConverter))]
+        public ICollection<string> Licenses { get; }
 
         //---------------------------------------------------------------------
         // Security.
@@ -211,9 +209,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
 
         [Browsable(true)]
         [Category(Categories.Security)]
-        [DisplayName("Service account scope")]
+        [DisplayName("Service account scopes")]
         [Description("OAuth scopes for which this VM can obtain credentials")]
-        public string ServiceAccountScopes { get; }
+        [TypeConverter(typeof(ExpandableCollectionConverter))]
+        public ICollection<string> ServiceAccountScopes { get; }
 
         [Browsable(true)]
         [Category(Categories.Security)]
@@ -242,7 +241,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [DisplayName("Network tags")]
         [Description("Network tags, see " +
                      "https://cloud.google.com/vpc/docs/add-remove-network-tags")]
-        public string Tags { get; }
+        [TypeConverter(typeof(ExpandableCollectionConverter))]
+        public ICollection<string> Tags { get; }
 
         [Browsable(true)]
         [Category(Categories.Network)]

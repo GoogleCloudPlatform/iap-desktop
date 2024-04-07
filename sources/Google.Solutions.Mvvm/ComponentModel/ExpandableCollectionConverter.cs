@@ -53,10 +53,10 @@ namespace Google.Solutions.Mvvm.ComponentModel
             }
             else if (value is ICollection collection)
             {
-                var properties = new List<ItemDescriptor<IDictionary>>();
+                var properties = new List<ItemDescriptor<ICollection>>();
                 foreach (var item in collection)
                 {
-                    properties.Add(new ItemDescriptor<IDictionary>(item));
+                    properties.Add(new ItemDescriptor<ICollection>(item));
                 }
 
                 return new PropertyDescriptorCollection(properties.ToArray());
@@ -73,9 +73,13 @@ namespace Google.Solutions.Mvvm.ComponentModel
             object value,
             Type destinationType)
         {
-            if (destinationType == typeof(string) && value is ICollection collection)
+            if (destinationType == typeof(string) && value is ICollection<string> collection)
             {
-                return $"{collection.Count} items";
+                return string.Join(", ", collection);
+            }
+            else if (destinationType == typeof(string) && value is IDictionary dictionary)
+            {
+                return $"{dictionary.Count} item{(dictionary.Count > 1 ? "s" : "")}";
             }
             else
             {
