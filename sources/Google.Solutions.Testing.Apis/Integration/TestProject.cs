@@ -124,54 +124,6 @@ namespace Google.Solutions.Testing.Apis.Integration
                 : credential;
         }
 
-        public static IAuthorization SecureConnectAuthorization
-        {
-            get
-            {
-                //
-                // This account must have:
-                // - Cloud Identity Premium
-                // - an associated device certificate on the local machine
-                //
-                var credentialsPath = Environment.GetEnvironmentVariable("SECURECONNECT_CREDENTIALS");
-                if (string.IsNullOrEmpty(credentialsPath))
-                {
-                    throw new ApplicationException(
-                        "SECURECONNECT_CREDENTIALS not set, needs to point to credentials " +
-                        "JSON of a SecureConnect-enabled user");
-                }
-
-                var certificatePath = Environment.GetEnvironmentVariable("SECURECONNECT_CERTIFICATE");
-                if (string.IsNullOrEmpty(certificatePath))
-                {
-                    throw new ApplicationException(
-                        "SECURECONNECT_CERTIFICATE not set, needs to point to a PFX " +
-                        "containing a SecureConnect device certificate");
-                }
-
-                var collection = new X509Certificate2Collection();
-                collection.Import(
-                    certificatePath,
-                    string.Empty, // No passphrase
-                    X509KeyStorageFlags.DefaultKeySet);
-
-                var certificate = collection
-                    .OfType<X509Certificate2>()
-                    .First();
-
-                var credential = GoogleCredential.FromFile(credentialsPath);
-
-                return new TemporaryAuthorization(
-                    new Enrollment(certificate),
-                    new TemporaryGaiaSession(
-                        ((UserCredential)credential.UnderlyingCredential).UserId,
-                        credential.IsCreateScopedRequired
-                            ? credential.CreateScoped(CloudPlatformScope)
-                            : credential));
-
-            }
-        }
-
         public static IAuthorization InvalidAuthorization
         {
             get => new TemporaryAuthorization(

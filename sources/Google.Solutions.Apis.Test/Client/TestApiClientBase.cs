@@ -30,6 +30,7 @@ using Moq;
 using NUnit.Framework;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.Apis.Test.Client
 {
@@ -81,10 +82,13 @@ namespace Google.Solutions.Apis.Test.Client
 
         private const string SampleEndpoint = "https://sample.googleapis.com/";
 
-        private Mock<IAuthorization> CreateAuthorization(DeviceEnrollmentState state)
+        private Mock<IAuthorization> CreateAuthorization(
+            DeviceEnrollmentState state,
+            X509Certificate2? certificate)
         {
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(state);
+            enrollment.SetupGet(e => e.Certificate).Returns(certificate);
 
             var session = new Mock<IOidcSession>();
             session.SetupGet(s => s.ApiCredential).Returns(new Mock<ICredential>().Object);
@@ -106,7 +110,7 @@ namespace Google.Solutions.Apis.Test.Client
                 DeviceEnrollmentState.NotEnrolled,
                 DeviceEnrollmentState.Disabled)] DeviceEnrollmentState state)
         {
-            var authorization = CreateAuthorization(state);
+            var authorization = CreateAuthorization(state, null);
 
             var endpoint = new ServiceEndpoint<SampleClient>(
                 ServiceRoute.Public,
@@ -128,9 +132,13 @@ namespace Google.Solutions.Apis.Test.Client
                 ServiceRoute.Public,
                 SampleEndpoint);
 
+            var authorization = CreateAuthorization(
+                DeviceEnrollmentState.Enrolled, 
+                new X509Certificate2());
+
             var client = new SampleClient(
                 endpoint,
-                TestProject.SecureConnectAuthorization,
+                authorization.Object,
                 TestProject.UserAgent);
 
             Assert.AreEqual("https://sample.mtls.googleapis.com/", client.Initializer.BaseUri);
@@ -140,7 +148,7 @@ namespace Google.Solutions.Apis.Test.Client
         [Test]
         public void WhenPscOverrideFound_ThenCreateServiceInitializerUsesPsc()
         {
-            var authorization = CreateAuthorization(DeviceEnrollmentState.Disabled);
+            var authorization = CreateAuthorization(DeviceEnrollmentState.Disabled, null);
 
             var endpoint = new ServiceEndpoint<SampleClient>(
                 new ServiceRoute("crm.googleapis.com"),

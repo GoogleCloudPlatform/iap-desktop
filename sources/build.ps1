@@ -177,26 +177,6 @@ if (Test-Path "${env:KOKORO_GFILE_DIR}\iapdesktop-kokoro.json")
 	Write-Host "Google Cloud credentials: ${Env:GOOGLE_APPLICATION_CREDENTIALS}" -ForegroundColor Yellow
 }
 
-if (Test-Path "${env:KOKORO_GFILE_DIR}\dca-user.adc.json")
-{
-	if (!$Env:SECURECONNECT_CREDENTIALS)
-	{
-		$Env:SECURECONNECT_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\dca-user.adc.json"
-	}
-
-	Write-Host "SecureConnect credentials: ${Env:SECURECONNECT_CREDENTIALS}" -ForegroundColor Yellow
-}
-
-if (Test-Path "${env:KOKORO_GFILE_DIR}\dca-user.dca.pfx")
-{
-	if (!$Env:SECURECONNECT_CERTIFICATE)
-	{
-		$Env:SECURECONNECT_CERTIFICATE = "${env:KOKORO_GFILE_DIR}\dca-user.dca.pfx"
-	}
-
-	Write-Host "SecureConnect certificate: ${Env:SECURECONNECT_CERTIFICATE}" -ForegroundColor Yellow
-}
-
 if (Test-Path "${env:KOKORO_GFILE_DIR}\test-configuration.json")
 {
 	if (!$Env:IAPDESKTOP_CONFIGURATION)
