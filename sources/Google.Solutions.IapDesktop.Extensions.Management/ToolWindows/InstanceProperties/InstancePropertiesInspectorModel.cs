@@ -96,6 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
                 .Select(l => LicenseLocator.Parse(l).Name)
                 .ToList();
             this.CpuPlatform = this.instanceDetails.CpuPlatform;
+            this.Labels = this.instanceDetails.Labels;
 
             //
             // Security.
@@ -126,6 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             //
             this.IsSoleTenant = this.instanceDetails.Scheduling?.NodeAffinities != null &&
                this.instanceDetails.Scheduling.NodeAffinities.Any();
+            this.IsPreemptible = this.instanceDetails.Scheduling.Preemptible == true;
 
             //
             // OS Inventory data.
@@ -222,6 +224,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [TypeConverter(typeof(ExpandableCollectionConverter))]
         public ICollection<string> Licenses { get; }
 
+        [Browsable(true)]
+        [Category(Categories.Instance)]
+        [DisplayName("Labels")]
+        [Description("Labels, see " +
+                     "https://cloud.google.com/compute/docs/labeling-resources")]
+        [TypeConverter(typeof(ExpandableCollectionConverter))]
+        public IDictionary<string, string> Labels { get; }
+
         //---------------------------------------------------------------------
         // Security.
         //---------------------------------------------------------------------
@@ -300,6 +310,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Description("Indicates whether this VM is scheduled to run on a sole-tenant node, see " +
                      "https://cloud.google.com/compute/docs/nodes/sole-tenant-nodes")]
         public bool IsSoleTenant { get; }
+
+        [Browsable(true)]
+        [Category(Categories.Scheduling)]
+        [DisplayName("Preemptible VM")]
+        [Description("Indicates whether this VM is preemptible, see " +
+                     "https://cloud.google.com/compute/docs/instances/preemptible")]
+        public bool IsPreemptible { get; }
 
         //---------------------------------------------------------------------
         // OS Inventory data.
