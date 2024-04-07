@@ -44,13 +44,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
     {
         private static class Categories
         {
-            public const string Instance = "Instance details";
+            public const string Instance = "Basic information";
             public const string Security = "Security";
-            public const string Network = "Instance network";
+            public const string Network = "Networking";
             public const string Scheduling = "Scheduling";
             public const string Os = "Operating system";
             public const string GuestAgentConfiguration = "Guest agent configuration";
-            public const string InstanceConfiguration = "Instance configuration";
+            public const string InstanceConfiguration = "Configuration";
             public const string SshConfiguration = "SSH configuration";
         }
 
@@ -95,6 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
                 .SelectMany(d => d.Licenses)
                 .Select(l => LicenseLocator.Parse(l).Name)
                 .ToList();
+            this.CpuPlatform = this.instanceDetails.CpuPlatform;
 
             //
             // Security.
@@ -150,6 +151,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             //
             this.SerialPortAccess = GetMetadataFeatureFlag("serial-port-enable", true);
             this.GuestAttributes = GetMetadataFeatureFlag("enable-guest-attributes", true);
+
+            //
+            // Metadata, where instance metadata overrides project metadata.
+            //
+            var metadata = this.projectDetails
+                .CommonInstanceMetadata?
+                .Items?
+                .EnsureNotNull()
+                .ToDictionary(i => i.Key, i => i.Value);
+            this.instanceDetails
+                .Metadata?
+                .Items?
+                .EnsureNotNull()
+                .ToList()
+                .ForEach(i => metadata[i.Key] = i.Value);
+
+            this.Metadata = metadata;
         }
 
         //---------------------------------------------------------------------
@@ -188,6 +206,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Description("The type and size of VM, see " +
                      "https://cloud.google.com/compute/docs/machine-types")]
         public string MachineType { get; }
+
+        [Browsable(true)]
+        [Category(Categories.Instance)]
+        [DisplayName("CPU platform")]
+        [Description("CPU platform, see " +
+                     "https://cloud.google.com/compute/docs/cpu-platforms")]
+        public string CpuPlatform { get; }
 
         [Browsable(true)]
         [Category(Categories.Instance)]
@@ -377,6 +402,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Description("Indicates whether guest attributes are enabled, " +
                      "see https://cloud.google.com/compute/docs/storing-retrieving-metadata#enable_attributes")]
         public FeatureFlag GuestAttributes { get; }
+
+        [Browsable(true)]
+        [Category(Categories.InstanceConfiguration)]
+        [DisplayName("Metadata")]
+        [TypeConverter(typeof(ExpandableCollectionConverter))]
+        [Description("Merge result of project and instance metadata, " +
+                     "see https://cloud.google.com/compute/docs/metadata/overview")]
+        public IDictionary<string, string> Metadata { get; }
 
         //---------------------------------------------------------------------
         // Loading.
