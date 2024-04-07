@@ -26,10 +26,10 @@ using System.Collections.Generic;
 namespace Google.Solutions.Mvvm.Test.ComponentModel
 {
     [TestFixture]
-    public class TestExpandableDictionaryConverter
+    public class TestExpandableCollectionConverter
     {
         [Test]
-        public void GetProperties()
+        public void Dictionary()
         {
             var dictionary = new Dictionary<string, object>()
             {
@@ -37,7 +37,7 @@ namespace Google.Solutions.Mvvm.Test.ComponentModel
                 { "key-b", 1 }
             };
 
-            var converter = new ExpandableDictionaryConverter();
+            var converter = new ExpandableCollectionConverter();
             var properties = converter.GetProperties(dictionary);
 
             Assert.AreEqual(2, properties.Count);
@@ -53,6 +53,29 @@ namespace Google.Solutions.Mvvm.Test.ComponentModel
             Assert.IsTrue(properties[1].IsBrowsable);
             Assert.IsTrue(properties[1].IsReadOnly);
             Assert.AreEqual(1, properties[1].GetValue(dictionary));
+        }
+
+        [Test]
+        public void Array()
+        {
+            var array = new[] { "value-a", "value-b" };
+
+            var converter = new ExpandableCollectionConverter();
+            var properties = converter.GetProperties(array);
+
+            Assert.AreEqual(2, properties.Count);
+
+            Assert.AreEqual(" ", properties[0].Name);
+            Assert.AreEqual(typeof(string), properties[0].PropertyType);
+            Assert.IsTrue(properties[0].IsBrowsable);
+            Assert.IsTrue(properties[0].IsReadOnly);
+            Assert.AreEqual("value-a", properties[0].GetValue(array));
+
+            Assert.AreEqual(" ", properties[1].Name);
+            Assert.AreEqual(typeof(string), properties[1].PropertyType);
+            Assert.IsTrue(properties[1].IsBrowsable);
+            Assert.IsTrue(properties[1].IsReadOnly);
+            Assert.AreEqual("value-b", properties[1].GetValue(array));
         }
     }
 }

@@ -25,15 +25,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
 
 namespace Google.Solutions.Mvvm.ComponentModel
 {
     /// <summary>
-    /// Allows dictionaries to be expanded, similar to 
-    /// ExpandableObjectConverter.
+    /// Allows collecion-typed properties to be expanded for viewing. 
+    /// Similar to ExpandableObjectConverter, but read-only.
     /// </summary>
-    public class ExpandableDictionaryConverter : TypeConverter
+    public class ExpandableCollectionConverter : TypeConverter
     {
         public override PropertyDescriptorCollection GetProperties(
             ITypeDescriptorContext? context,
@@ -42,17 +41,22 @@ namespace Google.Solutions.Mvvm.ComponentModel
         {
             if (value is IDictionary dictionary)
             {
-                var readOnly = context == null ||
-                    context.PropertyDescriptor
-                        .Attributes
-                        .OfType<ReadOnlyAttribute>()
-                        .Where(a => a.IsReadOnly)
-                        .Any();
-
-                var properties = new List<ItemDescriptor>();
+                var properties = new List<ItemDescriptor<IDictionary>>();
                 foreach (DictionaryEntry item in dictionary)
                 {
-                    properties.Add(new ItemDescriptor(dictionary, item.Key, readOnly));
+                    properties.Add(new ItemDescriptor<IDictionary>(
+                        item.Key.ToString(), 
+                        item.Value));
+                }
+
+                return new PropertyDescriptorCollection(properties.ToArray());
+            }
+            else if (value is ICollection collection)
+            {
+                var properties = new List<ItemDescriptor<IDictionary>>();
+                foreach (var item in collection)
+                {
+                    properties.Add(new ItemDescriptor<IDictionary>(item));
                 }
 
                 return new PropertyDescriptorCollection(properties.ToArray());
@@ -69,9 +73,9 @@ namespace Google.Solutions.Mvvm.ComponentModel
             object value,
             Type destinationType)
         {
-            if (destinationType == typeof(string) && value is IDictionary dictionary)
+            if (destinationType == typeof(string) && value is ICollection collection)
             {
-                return $"{dictionary.Count} items";
+                return $"{collection.Count} items";
             }
             else
             {
@@ -84,43 +88,43 @@ namespace Google.Solutions.Mvvm.ComponentModel
             return true;
         }
 
-        private class ItemDescriptor : PropertyDescriptor
+        private class ItemDescriptor<TCollection> : PropertyDescriptor
         {
-            private readonly bool readOnly;
-            private readonly IDictionary dictionary;
-            private readonly object key;
+            private const string EmptyName = " ";
+            private readonly object value;
 
-            internal ItemDescriptor(IDictionary dictionary, object key, bool readOnly)
-                : base(key?.ToString(), null)
+            internal ItemDescriptor(string name, object value)
+                : base(name, null)
             {
-                this.dictionary = dictionary.ExpectNotNull(nameof(dictionary));
-                this.key = key.ExpectNotNull(nameof(key));
-                this.readOnly = readOnly;
+                this.value = value.ExpectNotNull(nameof(value));
             }
+
+            internal ItemDescriptor(object value)
+                : this(EmptyName, value)
+            { }
 
             public override Type PropertyType
             {
-                get => this.dictionary[this.key].GetType();
+                get => this.value.GetType();
             }
 
             public override void SetValue(object component, object value)
             {
-                this.dictionary[this.key] = value;
             }
 
             public override object GetValue(object component)
             {
-                return this.dictionary[this.key];
+                return this.value;
             }
 
             public override bool IsReadOnly
             {
-                get => this.readOnly;
+                get => true;
             }
 
             public override Type ComponentType
             {
-                get => typeof(IDictionary);
+                get => typeof(TCollection);
             }
 
             public override bool CanResetValue(object component)
