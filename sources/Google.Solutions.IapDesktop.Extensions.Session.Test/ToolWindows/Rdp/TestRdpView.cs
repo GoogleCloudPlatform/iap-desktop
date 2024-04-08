@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Theme;
@@ -39,6 +40,7 @@ using NUnit.Framework;
 using System;
 using System.Drawing;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -49,6 +51,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
     [RequiresRdp]
     public class TestRdpView : WindowTestFixtureBase
     {
+        private static async Task<RdpCredential> GenerateRdpCredentialAsync(
+            InstanceLocator instance)
+        {
+            var username = "test" + Guid.NewGuid().ToString().Substring(0, 4);
+            var credentialAdapter = new WindowsCredentialGenerator(
+                new ComputeEngineClient(
+                    ComputeEngineClient.CreateEndpoint(),
+                    TestProject.AdminAuthorization,
+                    TestProject.UserAgent));
+
+            var credential = await credentialAdapter
+                .CreateWindowsCredentialsAsync(
+                    instance,
+                    username,
+                    UserFlags.AddToAdministrators,
+                    TimeSpan.FromSeconds(60),
+                    CancellationToken.None)
+                .ConfigureAwait(true);
+
+            return new RdpCredential(
+                credential.UserName,
+                credential.Domain,
+                credential.SecurePassword);
+        }
+
         //
         // Use a larger machine type as all this RDP'ing consumes a fair
         // amount of memory.
@@ -163,16 +190,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         {
             var serviceProvider = CreateServiceProvider(await auth);
             var instance = await testInstance;
-            var windowsCredentials = await GenerateWindowsCredentialsAsync(instance).ConfigureAwait(true);
+            var rdpCredential = await 
+                GenerateRdpCredentialAsync(instance)
+                .ConfigureAwait(true);
 
             using (var tunnel = IapTransport.ForRdp(
                 instance,
                 await auth))
             {
-                var rdpCredential = new RdpCredential(
-                    windowsCredentials.UserName,
-                    windowsCredentials.Domain,
-                    windowsCredentials.SecurePassword);
                 var rdpParameters = new RdpParameters();
 
                 var broker = new SessionFactory(
