@@ -157,14 +157,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             //
             // Metadata, where instance metadata overrides project metadata.
             //
-            var metadata = this.projectDetails
-                .CommonInstanceMetadata?
-                .Items?
+            var metadata = (this.projectDetails.CommonInstanceMetadata?.Items)
                 .EnsureNotNull()
                 .ToDictionary(i => i.Key, i => i.Value);
-            this.instanceDetails
-                .Metadata?
-                .Items?
+            (this.instanceDetails.Metadata?.Items)
                 .EnsureNotNull()
                 .ToList()
                 .ForEach(i => metadata[i.Key] = i.Value);
