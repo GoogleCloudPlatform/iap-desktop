@@ -63,7 +63,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
     public class InitializeSessionExtension
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly IWin32Window window;
 
         /// <summary>
         /// Load the default app protocols embedded into the assembly.
@@ -209,8 +208,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                     new InstanceLocator("project", "zone", "name"),
                     new NameValueCollection())) == CommandState.Enabled,
                 "URL command installed");
-
-            this.window = mainForm;
 
             //
             // Connect.

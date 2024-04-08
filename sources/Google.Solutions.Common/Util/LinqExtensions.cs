@@ -62,7 +62,7 @@ namespace Google.Solutions.Common.Util
                 }
             }
 
-            if (chunk.Any())
+            if (chunk.Count != 0)
             {
                 yield return chunk;
             }

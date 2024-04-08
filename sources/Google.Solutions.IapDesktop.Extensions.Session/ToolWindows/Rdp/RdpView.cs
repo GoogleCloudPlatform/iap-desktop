@@ -40,6 +40,7 @@ using Google.Solutions.Settings.Collection;
 using System;
 using System.Data;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -136,7 +137,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 return false;
             }
         }
-        private async Task ShowErrorAndClose(string caption, Exception e)
+
+        private async Task ShowErrorAndCloseAsync(string caption, Exception e)
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e.Message))
             {
@@ -395,11 +397,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             //
             this.IsClosing = true;
 
-            this.eventService
+            _ = this.eventService
                 .PublishAsync(new SessionEndedEvent(this.Instance))
                 .ContinueWith(_ => { });
         }
 
+        [SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "")]
         private async void reconnectButton_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
@@ -415,7 +418,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 }
                 catch (Exception ex)
                 {
-                    await ShowErrorAndClose("Failed to reconnect", ex)
+                    await ShowErrorAndCloseAsync("Failed to reconnect", ex)
                         .ConfigureAwait(true);
                 }
             }
@@ -451,9 +454,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             }
         }
 
+        [SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "")]
         private async void rdpClient_ConnectionFailed(object _, ExceptionEventArgs e)
         {
-            await ShowErrorAndClose(
+            await ShowErrorAndCloseAsync(
                     "Connect Remote Desktop session failed",
                     e.Exception)
                 .ConfigureAwait(true);
@@ -463,7 +467,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             if (this.rdpClient.State == RdpClient.ConnectionState.Connected)
             {
-                this.eventService
+                _ = this.eventService
                     .PublishAsync(new SessionStartedEvent(this.Instance))
                     .ContinueWith(_ => { });
             }

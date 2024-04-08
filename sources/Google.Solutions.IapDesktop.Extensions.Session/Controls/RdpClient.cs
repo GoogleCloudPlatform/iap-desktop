@@ -261,17 +261,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
             var completionSource = new TaskCompletionSource<ConnectionState>();
 
-            EventHandler callback = null;
-            callback = (object sender, EventArgs args) =>
+            void onStateChanged(object sender, EventArgs args)
             {
                 if (this.State == state)
                 {
-                    this.StateChanged -= callback;
+                    this.StateChanged -= onStateChanged;
                     completionSource.SetResult(this.State);
                 }
-            };
+            }
 
-            this.StateChanged += callback;
+            this.StateChanged += onStateChanged;
 
             await completionSource
                 .Task
