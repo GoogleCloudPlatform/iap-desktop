@@ -118,58 +118,52 @@ namespace Google.Solutions.Testing.Apis.Integration
             // - Project IAM Admin
             // - Service Account Token Creator
             //
+            // SERVICE_ACCOUNT=...
+            // PROJECT_ID=...
+            //
+            // gcloud projects add-iam-policy-binding $PROJECT_ID \
+            //     --member serviceAccount:$SERVICE_ACCOUNT \
+            //     --role roles/compute.admin \
+            //     --condition None
+            // gcloud projects add-iam-policy-binding $PROJECT_ID \
+            //     --member serviceAccount:$SERVICE_ACCOUNT \
+            //     --role  roles/iam.serviceAccountAdmin \
+            //     --condition None
+            // gcloud projects add-iam-policy-binding $PROJECT_ID \
+            //     --member serviceAccount:$SERVICE_ACCOUNT \
+            //     --role  roles/iam.serviceAccountTokenCreator \
+            //     --condition None
+            // gcloud projects add-iam-policy-binding $PROJECT_ID \
+            //     --member serviceAccount:$SERVICE_ACCOUNT \
+            //     --role  roles/iam.serviceAccountUser \
+            //     --condition None
+            // gcloud projects add-iam-policy-binding $PROJECT_ID \
+            //     --member serviceAccount:$SERVICE_ACCOUNT \
+            //     --role  roles/iap.tunnelResourceAccessor \
+            //     --condition None
+            // gcloud projects add-iam-policy-binding $PROJECT_ID \
+            //     --member serviceAccount:$SERVICE_ACCOUNT \
+            //     --role  roles/logging.privateLogViewer \
+            //     --condition None
+            // gcloud projects add-iam-policy-binding $PROJECT_ID \
+            //     --member serviceAccount:$SERVICE_ACCOUNT \
+            //     --role  roles/logging.viewer \
+            //     --condition None
+            // gcloud projects add-iam-policy-binding $PROJECT_ID \
+            //     --member serviceAccount:$SERVICE_ACCOUNT \
+            //     --role  roles/resourcemanager.projectIamAdmin \
+            //     --condition None
+            //
             var credential = GoogleCredential.GetApplicationDefault();
+            if (!string.IsNullOrEmpty(Configuration.ImpersonateServiceAccount))
+            {
+                credential = credential.Impersonate(new ImpersonatedCredential.Initializer(
+                    Configuration.ImpersonateServiceAccount));
+            }
+
             adminCredential = credential.IsCreateScopedRequired
                 ? credential.CreateScoped(CloudPlatformScope)
                 : credential;
-        }
-
-        public static IAuthorization SecureConnectAuthorization
-        {
-            get
-            {
-                //
-                // This account must have:
-                // - Cloud Identity Premium
-                // - an associated device certificate on the local machine
-                //
-                var credentialsPath = Environment.GetEnvironmentVariable("SECURECONNECT_CREDENTIALS");
-                if (string.IsNullOrEmpty(credentialsPath))
-                {
-                    throw new ApplicationException(
-                        "SECURECONNECT_CREDENTIALS not set, needs to point to credentials " +
-                        "JSON of a SecureConnect-enabled user");
-                }
-
-                var certificatePath = Environment.GetEnvironmentVariable("SECURECONNECT_CERTIFICATE");
-                if (string.IsNullOrEmpty(certificatePath))
-                {
-                    throw new ApplicationException(
-                        "SECURECONNECT_CERTIFICATE not set, needs to point to a PFX " +
-                        "containing a SecureConnect device certificate");
-                }
-
-                var collection = new X509Certificate2Collection();
-                collection.Import(
-                    certificatePath,
-                    string.Empty, // No passphrase
-                    X509KeyStorageFlags.DefaultKeySet);
-
-                var certificate = collection
-                    .OfType<X509Certificate2>()
-                    .First();
-
-                var credential = GoogleCredential.FromFile(credentialsPath);
-
-                return new TemporaryAuthorization(
-                    new Enrollment(certificate),
-                    new TemporaryGaiaSession(
-                        ((UserCredential)credential.UnderlyingCredential).UserId,
-                        credential.IsCreateScopedRequired
-                            ? credential.CreateScoped(CloudPlatformScope)
-                            : credential));
-
-            }
         }
 
         public static IAuthorization InvalidAuthorization
@@ -257,6 +251,12 @@ namespace Google.Solutions.Testing.Apis.Integration
             /// </summary>
             [JsonProperty("zone")]
             public string Zone { get; internal set; }
+
+            /// <summary>
+            /// Service account to impersonate before running tests.
+            /// </summary>
+            [JsonProperty("impersonateServiceAccount")]
+            public string ImpersonateServiceAccount { get; internal set; }
 
             /// <summary>
             /// API key (for OS Login/workforce identity).
