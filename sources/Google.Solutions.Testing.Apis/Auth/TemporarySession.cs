@@ -53,8 +53,8 @@ namespace Google.Solutions.Testing.Apis.Auth
 
         public string Username { get; }
 
-        public event EventHandler Reauthorized;
-        public event EventHandler Terminated;
+        public event EventHandler? Reauthorized;
+        public event EventHandler? Terminated;
 
         public Task RevokeGrantAsync(CancellationToken cancellationToken)
         {
@@ -89,7 +89,7 @@ namespace Google.Solutions.Testing.Apis.Auth
 
         public IJsonWebToken IdToken => throw new NotImplementedException();
 
-        public string HostedDomain => null;
+        public string? HostedDomain => null;
 
         public string Email => this.Username;
     }

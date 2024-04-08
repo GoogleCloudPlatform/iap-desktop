@@ -36,9 +36,9 @@ namespace Google.Solutions.Testing.Apis.Integration
         public string ProjectId { get; set; } = TestProject.ProjectId;
         public string Zone { get; set; } = TestProject.Zone;
         public string MachineType { get; set; } = "n1-standard-1";
-        public string ImageFamily { get; set; }
+        public abstract string ImageFamily { get; set; }
         public bool PublicIp { get; set; } = true;
-        public string InitializeScript { get; set; }
+        public string? InitializeScript { get; set; }
         public InstanceServiceAccount ServiceAccount { get; set; } = InstanceServiceAccount.None;
 
         public bool EnableOsInventory { get; set; } = false;
@@ -127,10 +127,11 @@ namespace Google.Solutions.Testing.Apis.Integration
 
         protected override string InstanceNamePrefix => "w";
 
+        public override string ImageFamily { get; set; } = WindowsServerCore2019;
+
         public WindowsInstanceAttribute()
         {
             this.MachineType = DefaultMachineType;
-            this.ImageFamily = WindowsServerCore2019;
         }
 
         protected override IEnumerable<Metadata.ItemsData> Metadata
@@ -180,11 +181,11 @@ namespace Google.Solutions.Testing.Apis.Integration
         public const string Debian = "projects/debian-cloud/global/images/family/debian-11";
 
         protected override string InstanceNamePrefix => "u";
+        public override string ImageFamily { get; set; } = Debian;
 
         public LinuxInstanceAttribute()
         {
             this.MachineType = DefaultMachineType;
-            this.ImageFamily = Debian;
         }
 
         protected override IEnumerable<Metadata.ItemsData> Metadata

@@ -44,6 +44,6 @@ namespace Google.Solutions.Apis.Auth.Gaia
         /// Primary domain of the user's Cloud Identity/Workspace
         /// account. Null if it's a consumer user account.
         /// </summary>
-        string HostedDomain { get; }
+        string? HostedDomain { get; }
     }
 }

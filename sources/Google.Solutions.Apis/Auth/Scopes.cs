@@ -24,7 +24,7 @@ namespace Google.Solutions.Apis.Auth
     /// <summary>
     /// Google OAuth scopes.
     /// </summary>
-    internal static class Scopes
+    public static class Scopes
     {
         public const string Email = "https://www.googleapis.com/auth/userinfo.email";
         public const string Cloud = "https://www.googleapis.com/auth/cloud-platform";

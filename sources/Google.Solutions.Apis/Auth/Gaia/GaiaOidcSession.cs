@@ -54,7 +54,7 @@ namespace Google.Solutions.Apis.Auth.Gaia
         public IJsonWebToken IdToken { get; }
         public override string Username => this.IdToken.Payload.Email;
         public string Email => this.IdToken.Payload.Email;
-        public string HostedDomain => this.IdToken.Payload.HostedDomain;
+        public string? HostedDomain => this.IdToken.Payload.HostedDomain;
 
         public override OidcOfflineCredential OfflineCredential
         {

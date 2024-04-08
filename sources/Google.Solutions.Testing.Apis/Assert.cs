@@ -26,6 +26,7 @@ using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -34,7 +35,7 @@ namespace Google.Solutions.Testing.Apis
 {
     public static class ExceptionAssert
     {
-        public static TActual ThrowsAggregateException<TActual>(TestDelegate code)
+        public static TActual? ThrowsAggregateException<TActual>(TestDelegate code)
             where TActual : Exception
         {
             return Assert.Throws<TActual>(() =>
@@ -50,7 +51,7 @@ namespace Google.Solutions.Testing.Apis
             });
         }
 
-        public static TActual ThrowsAggregateException<TActual>(
+        public static TActual? ThrowsAggregateException<TActual>(
                 IHelpTopic expectedHelpTopic,
                 TestDelegate code)
             where TActual : Exception
@@ -65,7 +66,7 @@ namespace Google.Solutions.Testing.Apis
                 {
                     Assert.AreEqual(
                         expectedHelpTopic.Address,
-                        (e.Unwrap() as IExceptionWithHelpTopic).Help?.Address,
+                        (e.Unwrap() as IExceptionWithHelpTopic)?.Help?.Address,
                         "Expected different help topic");
 
                     throw e.Unwrap();
@@ -73,7 +74,7 @@ namespace Google.Solutions.Testing.Apis
             });
         }
 
-        public static TActual ThrowsAggregateException<TActual>(
+        public static TActual? ThrowsAggregateException<TActual>(
                 string expectedStringInMessage,
                 TestDelegate code)
             where TActual : Exception
@@ -186,6 +187,7 @@ namespace Google.Solutions.Testing.Apis
 
     public static class EventAssert
     {
+        [SuppressMessage("Usage", "VSTHRD103:Call async methods when in an async method", Justification = "")]
         public static async Task<TArgs> AssertRaisesEventAsync<TArgs>(
             Action<Action<TArgs>> registerEvent,
             TimeSpan timeout)

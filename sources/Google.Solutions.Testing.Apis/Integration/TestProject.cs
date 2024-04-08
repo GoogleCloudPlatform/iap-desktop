@@ -240,29 +240,40 @@ namespace Google.Solutions.Testing.Apis.Integration
 
         public class ConfigurationSection
         {
+            public ConfigurationSection(
+                [JsonProperty("projectId")] string projectId,
+                [JsonProperty("zone")] string zone,
+                [JsonProperty("apiKey")] string apiKey,
+                [JsonProperty("workforcePoolId")] string workforcePoolId,
+                [JsonProperty("workforceProviderId")] string workforceProviderId,
+                [JsonProperty("identityPlatformApiKey")] string identityPlatformApiKey)
+            {
+                this.ProjectId = projectId;
+                this.Zone = zone;
+                this.ApiKey = apiKey;
+                this.WorkforcePoolId = workforcePoolId;
+                this.WorkforceProviderId = workforceProviderId;
+                this.IdentityPlatformApiKey = identityPlatformApiKey;
+            }
+
+
             /// <summary>
             /// Project to run tests in.
             /// </summary>
             [JsonProperty("projectId")]
-            public string ProjectId { get; internal set; }
+            public string ProjectId { get; }
 
             /// <summary>
             /// Zone to run tests in.
             /// </summary>
             [JsonProperty("zone")]
-            public string Zone { get; internal set; }
-
-            /// <summary>
-            /// Service account to impersonate before running tests.
-            /// </summary>
-            [JsonProperty("impersonateServiceAccount")]
-            public string ImpersonateServiceAccount { get; internal set; }
+            public string Zone { get; }
 
             /// <summary>
             /// API key (for OS Login/workforce identity).
             /// </summary>
             [JsonProperty("apiKey")]
-            public string ApiKey { get; internal set; }
+            public string ApiKey { get; }
 
             /// <summary>
             /// Workforce pool for test principals.
@@ -275,7 +286,7 @@ namespace Google.Solutions.Testing.Apis.Integration
             ///     
             /// </summary>
             [JsonProperty("workforcePoolId")]
-            public string WorkforcePoolId { get; internal set; }
+            public string WorkforcePoolId { get; }
 
             /// <summary>
             /// Workforce pool provider for test principals.
@@ -293,13 +304,19 @@ namespace Google.Solutions.Testing.Apis.Integration
             /// 
             /// </summary>
             [JsonProperty("workforceProviderId")]
-            public string WorkforceProviderId { get; internal set; }
+            public string WorkforceProviderId { get; }
 
             /// <summary>
             /// API key for Identity Platform (in same project).
             /// </summary>
             [JsonProperty("identityPlatformApiKey")]
-            public string IdentityPlatformApiKey { get; internal set; }
+            public string IdentityPlatformApiKey { get; }
+
+            /// <summary>
+            /// Service account to impersonate before running tests. Optional.
+            /// </summary>
+            [JsonProperty("impersonateServiceAccount")]
+            public string? ImpersonateServiceAccount { get; internal set; }
         }
     }
 }

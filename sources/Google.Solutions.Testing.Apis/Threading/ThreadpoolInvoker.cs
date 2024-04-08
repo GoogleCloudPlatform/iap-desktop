@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Threading;
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -58,29 +59,29 @@ namespace Google.Solutions.Testing.Apis.Threading
                 this.idle.Reset();
             }
 
-            return new Result()
+            var task = Task.Run(() =>
             {
-                Task = Task.Run(() =>
+                try
                 {
-                    try
+                    return method.DynamicInvoke(args);
+                }
+                finally
+                {
+                    lock (this.outstandingLock)
                     {
-                        return method.DynamicInvoke(args);
-                    }
-                    finally
-                    {
-                        lock (this.outstandingLock)
+                        this.outstanding--;
+                        if (this.outstanding == 0)
                         {
-                            this.outstanding--;
-                            if (this.outstanding == 0)
-                            {
-                                this.idle.Set();
-                            }
+                            this.idle.Set();
                         }
                     }
-                })
-            };
+                }
+            });
+
+            return new Result(task);
         }
 
+        [SuppressMessage("Usage", "VSTHRD104:Offer async methods", Justification = "")]
         public object EndInvoke(IAsyncResult result)
         {
             return ((Result)result).Task.Result;
@@ -97,15 +98,32 @@ namespace Google.Solutions.Testing.Apis.Threading
 
         private class Result : IAsyncResult
         {
-            public bool IsCompleted => true;
+            public Result(Task<object> task)
+            {
+                this.Task = task;
+            }
 
-            public WaitHandle AsyncWaitHandle => null;
+            public bool IsCompleted
+            {
+                get => true;
+            }
 
-            public object AsyncState => null;
+            public WaitHandle AsyncWaitHandle
+            {
+                get => throw new InvalidOperationException();
+            }
 
-            public bool CompletedSynchronously => true;
+            public object? AsyncState
+            {
+                get => null;
+            }
 
-            internal Task<object> Task { get; set; }
+            public bool CompletedSynchronously
+            {
+                get => true;
+            }
+
+            internal Task<object> Task { get; }
         }
     }
 }

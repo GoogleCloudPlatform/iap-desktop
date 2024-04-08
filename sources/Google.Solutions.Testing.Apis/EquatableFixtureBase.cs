@@ -31,14 +31,14 @@ namespace Google.Solutions.Testing.Apis
     {
         protected abstract T CreateInstance();
 
-        private static bool EqualityOperator(T lhs, T rhs)
+        private static bool EqualityOperator(T? lhs, T? rhs)
         {
             return (bool)typeof(T)
                 .GetMethod("op_Equality", BindingFlags.Static | BindingFlags.Public)
                 .Invoke(null, new[] { lhs, rhs });
         }
 
-        private static bool InequalityOperator(T lhs, T rhs)
+        private static bool InequalityOperator(T? lhs, T? rhs)
         {
             return (bool)typeof(T)
                 .GetMethod("op_Inequality", BindingFlags.Static | BindingFlags.Public)
@@ -54,8 +54,8 @@ namespace Google.Solutions.Testing.Apis
         {
             var obj = CreateInstance();
 
-            Assert.IsFalse(obj.Equals((object)null));
-            Assert.IsFalse(((IEquatable<TEquatable>)obj).Equals((TEquatable)null));
+            Assert.IsFalse(obj.Equals((object?)null));
+            Assert.IsFalse(((IEquatable<TEquatable>)obj!).Equals((TEquatable)null!));
 
             Assert.IsFalse(EqualityOperator(obj, null));
             Assert.IsTrue(InequalityOperator(obj, null));
