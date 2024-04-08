@@ -114,6 +114,14 @@ namespace Google.Solutions.Apis.Compute
             {
                 try
                 {
+                    var request = this.service.Instances.AggregatedList(projectId);
+
+                    //
+                    // Ignore zones or regions that are currently unavailable,
+                    // cf. go/drd-cp.
+                    //
+                    request.ReturnPartialSuccess = true;
+
                     var instancesByZone = await new PageStreamer<
                         InstancesScopedList,
                         InstancesResource.AggregatedListRequest,
@@ -123,7 +131,7 @@ namespace Google.Solutions.Apis.Compute
                             response => response.NextPageToken,
                             response => response.Items.Values.Where(v => v != null))
                         .FetchAllAsync(
-                            this.service.Instances.AggregatedList(projectId),
+                            request,
                             cancellationToken)
                         .ConfigureAwait(false);
 
