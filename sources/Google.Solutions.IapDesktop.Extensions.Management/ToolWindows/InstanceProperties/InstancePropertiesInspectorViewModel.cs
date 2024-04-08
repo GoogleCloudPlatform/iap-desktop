@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         : ModelCachingViewModelBase<IProjectModelNode, InstancePropertiesInspectorModel>,
           IPropertiesInspectorViewModel
     {
-        private const string OsInventoryNotAvailableWarning = "OS inventory data not available";
+        private const string OsInventoryNotAvailableWarning = "OS inventory is disabled";
         private const int ModelCacheCapacity = 5;
         internal const string DefaultWindowTitle = "VM instance";
 
