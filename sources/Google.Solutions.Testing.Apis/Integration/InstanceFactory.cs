@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common;
@@ -42,7 +43,7 @@ namespace Google.Solutions.Testing.Apis.Integration
         internal const string GuestAttributeNamespace = "boot";
         internal const string GuestAttributeToAwaitKey = "guest-attribute-to-await";
 
-        private static async Task AwaitInstanceCreatedAndReady(
+        private static async Task AwaitInstanceCreatedAndReadyAsync(
             InstancesResource resource,
             InstanceLocator locator)
         {
@@ -94,7 +95,7 @@ namespace Google.Solutions.Testing.Apis.Integration
             throw new TimeoutException($"Timeout waiting for {locator} to become ready");
         }
 
-        private static async Task<string> GetComputeEngineDefaultServiceAccount()
+        private static async Task<string> GetComputeEngineDefaultServiceAccountAsync()
         {
             var iamService = TestProject.CreateIamService();
             var allServiceAccounts = await iamService
@@ -138,16 +139,16 @@ namespace Google.Solutions.Testing.Apis.Integration
                 CommonTraceSource.Log.TraceVerbose(
                     "Trying to create new instance {0}...", name);
 
-                IList<ServiceAccount> serviceAccounts = null;
+                IList<ServiceAccount>? serviceAccounts = null;
                 if (serviceAccount == InstanceServiceAccount.ComputeDefault)
                 {
                     serviceAccounts = new List<ServiceAccount>()
                     {
                         new ServiceAccount()
                         {
-                            Email = await GetComputeEngineDefaultServiceAccount()
+                            Email = await GetComputeEngineDefaultServiceAccountAsync()
                                 .ConfigureAwait(true),
-                            Scopes = new [] { "https://www.googleapis.com/auth/cloud-platform" }
+                            Scopes = new [] { Scopes.Cloud }
                         }
                     };
                 }
@@ -191,7 +192,7 @@ namespace Google.Solutions.Testing.Apis.Integration
                     .ExecuteAsync()
                     .ConfigureAwait(true);
 
-                await AwaitInstanceCreatedAndReady(
+                await AwaitInstanceCreatedAndReadyAsync(
                         computeEngine.Instances,
                         locator)
                     .ConfigureAwait(true);
@@ -216,7 +217,7 @@ namespace Google.Solutions.Testing.Apis.Integration
                     CommonTraceSource.Log.TraceVerbose(
                         "Instance {0} exists and is running...", locator.Name);
 
-                    await AwaitInstanceCreatedAndReady(
+                    await AwaitInstanceCreatedAndReadyAsync(
                             computeEngine.Instances,
                             locator)
                         .ConfigureAwait(true);
@@ -241,7 +242,7 @@ namespace Google.Solutions.Testing.Apis.Integration
                         .ExecuteAsync()
                         .ConfigureAwait(true);
 
-                    await AwaitInstanceCreatedAndReady(
+                    await AwaitInstanceCreatedAndReadyAsync(
                             computeEngine.Instances,
                             locator)
                         .ConfigureAwait(true);

@@ -82,7 +82,7 @@ namespace Google.Solutions.Apis.Test.Client
 
         private const string SampleEndpoint = "https://sample.googleapis.com/";
 
-        private Mock<IAuthorization> CreateAuthorization(
+        private static Mock<IAuthorization> CreateAuthorization(
             DeviceEnrollmentState state,
             X509Certificate2? certificate)
         {

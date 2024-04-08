@@ -44,7 +44,7 @@ namespace Google.Solutions.Testing.Apis.Auth
 
         public async Task GrantRolesAsync(string[] roles)
         {
-            GoogleApiException lastException = null;
+            GoogleApiException? lastException = null;
 
             var backoff = new ExponentialBackOff();
 
@@ -94,7 +94,15 @@ namespace Google.Solutions.Testing.Apis.Auth
                 }
             }
 
-            throw lastException;
+            if (lastException != null)
+            {
+                throw lastException;
+            }
+            else
+            {
+                throw new TaskCanceledException(
+                    $"Giving up after {backoff.MaxNumOfRetries} failed retries");
+            }
         }
     }
 }

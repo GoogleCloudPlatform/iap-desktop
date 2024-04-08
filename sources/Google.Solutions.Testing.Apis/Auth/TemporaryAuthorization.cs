@@ -45,6 +45,6 @@ namespace Google.Solutions.Testing.Apis.Auth
 
         public IDeviceEnrollment DeviceEnrollment { get; }
 
-        public event EventHandler Reauthorized;
+        public event EventHandler? Reauthorized;
     }
 }
