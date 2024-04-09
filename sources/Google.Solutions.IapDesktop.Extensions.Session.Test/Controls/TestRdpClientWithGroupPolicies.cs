@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestRdpClientWithGroupPolicies
     {
-        private async Task<RdpCredential> GenerateRdpCredentialAsync(
+        private static async Task<RdpCredential> GenerateRdpCredentialAsync(
             InstanceLocator instance)
         {
             var username = "test" + Guid.NewGuid().ToString().Substring(0, 4);
@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
                 credential.SecurePassword);
         }
 
-        private async Task ConnectionSucceeds(
+        private static async Task ConnectionSucceeds(
             ResourceTask<InstanceLocator> instanceTask,
             ResourceTask<IAuthorization> authTask)
         {

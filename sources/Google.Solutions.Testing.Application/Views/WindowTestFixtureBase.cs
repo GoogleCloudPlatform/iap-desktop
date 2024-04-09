@@ -47,20 +47,40 @@ namespace Google.Solutions.Testing.Application.Views
     {
         protected const string TestKeyPath = @"Software\Google\__Test";
 
-        private MockExceptionDialog exceptionDialog;
+        private MockExceptionDialog? exceptionDialog;
+        private ServiceRegistry? serviceRegistry;
+        private IServiceProvider? serviceProvider;
+        private IMainWindow? mainWindow;
+        private IEventQueue? eventService;
 
-        protected ServiceRegistry ServiceRegistry { get; private set; }
-        protected IServiceProvider ServiceProvider { get; private set; }
-        protected IMainWindow MainWindow { get; private set; }
-        protected IEventQueue EventService { get; private set; }
+        protected ServiceRegistry ServiceRegistry
+        {
+            get => this.serviceRegistry ?? throw new InvalidOperationException();
+        }
 
-        protected Exception ExceptionShown => this.exceptionDialog.ExceptionShown;
+        protected IServiceProvider ServiceProvider
+        {
+            get => this.serviceProvider ?? throw new InvalidOperationException();
+        }
+
+        protected IMainWindow MainWindow
+        {
+            get => this.mainWindow ?? throw new InvalidOperationException();
+        }
+
+        protected IEventQueue EventService
+        {
+            get => this.eventService ?? throw new InvalidOperationException();
+        }
+
+
+        protected Exception? ExceptionShown => this.exceptionDialog?.ExceptionShown;
 
         private class MockExceptionDialog : IExceptionDialog
         {
-            public Exception ExceptionShown { get; private set; }
+            public Exception? ExceptionShown { get; private set; }
 
-            public void Show(IWin32Window parent, string caption, Exception e)
+            public void Show(IWin32Window? parent, string caption, Exception e)
             {
                 this.ExceptionShown = e;
             }
@@ -73,7 +93,7 @@ namespace Google.Solutions.Testing.Application.Views
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
             var mainForm = new TestMainForm();
-            this.EventService = new EventQueue(mainForm);
+            this.eventService = new EventQueue(mainForm);
 
             var registry = new ServiceRegistry();
             registry.AddSingleton<IProjectRepository>(new ProjectRepository(
@@ -94,9 +114,9 @@ namespace Google.Solutions.Testing.Application.Views
             this.exceptionDialog = new MockExceptionDialog();
             registry.AddSingleton<IExceptionDialog>(this.exceptionDialog);
 
-            this.MainWindow = mainForm;
-            this.ServiceRegistry = registry;
-            this.ServiceProvider = registry;
+            this.mainWindow = mainForm;
+            this.serviceRegistry = registry;
+            this.serviceProvider = registry;
 
             mainForm.Show();
 
@@ -122,7 +142,7 @@ namespace Google.Solutions.Testing.Application.Views
             //
             // Set up event handler.
             //
-            TEvent deliveredEvent = null;
+            TEvent? deliveredEvent = null;
             this.EventService.Subscribe<TEvent>(e =>
             {
                 deliveredEvent = e;
@@ -191,25 +211,6 @@ namespace Google.Solutions.Testing.Application.Views
             {
                 PumpWindowMessages();
             }
-        }
-
-        protected async Task<NetworkCredential> GenerateWindowsCredentialsAsync(InstanceLocator locator)
-        {
-            var username = "test" + Guid.NewGuid().ToString().Substring(0, 4);
-            var credentialAdapter = new WindowsCredentialGenerator(
-                new ComputeEngineClient(
-                    ComputeEngineClient.CreateEndpoint(),
-                    TestProject.AdminAuthorization,
-                    TestProject.UserAgent));
-
-            return await credentialAdapter
-                .CreateWindowsCredentialsAsync(
-                    locator,
-                    username,
-                    UserFlags.AddToAdministrators,
-                    TimeSpan.FromSeconds(60),
-                    CancellationToken.None)
-                .ConfigureAwait(true);
         }
     }
 }

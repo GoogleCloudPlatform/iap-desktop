@@ -42,14 +42,25 @@ namespace Google.Solutions.Testing.Application.Views
         // IMainForm.
         //---------------------------------------------------------------------
 
-        public IWin32Window Window => this;
-        public DockPanel MainPanel => this.dockPanel;
-        public ICommandContainer<IMainWindow> ViewMenu => null;
+        public IWin32Window Window
+        {
+            get => this;
+        }
+
+        public DockPanel MainPanel
+        {
+            get => this.dockPanel;
+        }
+
+        public ICommandContainer<IMainWindow> ViewMenu
+        {
+            get => throw new NotImplementedException();
+        }
 
         public ICommandContainer<TContext> AddMenu<TContext>(
             string caption,
             int? index,
-            Func<TContext> queryCurrentContextFunc)
+            Func<TContext?> queryCurrentContextFunc)
             where TContext : class
         {
             return new CommandContainer<TContext>(
@@ -75,9 +86,10 @@ namespace Google.Solutions.Testing.Application.Views
             JobDescription jobDescription,
             Func<CancellationToken, Task<T>> jobFunc)
         {
-            // Run on UI thread to avoid multthreading issues in tests.
-            var result = jobFunc(CancellationToken.None).Result;
-            return Task.FromResult(result);
+            //
+            // Run on UI thread to avoid multithreading issues in tests.
+            //
+            return jobFunc(CancellationToken.None);
         }
 
         public Task RunAsync(
