@@ -58,9 +58,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
                 client.Object,
                 CreateInstall().Object,
                 new Dictionary<string, string>(),
-                SynchronousQueueUserWorkItem);
+                SynchronousQueueUserWorkItem)
+            {
+                Enabled = true
+            };
 
-            listener.Enabled = true;
             listener.Enabled = false;
             listener.Enabled = false;
 
@@ -83,9 +85,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
                 client.Object,
                 CreateInstall().Object,
                 new Dictionary<string, string>(),
-                SynchronousQueueUserWorkItem);
+                SynchronousQueueUserWorkItem)
+            {
+                Enabled = false
+            };
 
-            listener.Enabled = false;
             listener.Enabled = true;
             listener.Enabled = true;
 

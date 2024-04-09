@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
     public class RdpLogonException : RdpException
     {
-        private static readonly IDictionary<int, string> knownErrors = new Dictionary<int, string>
+        private static readonly Dictionary<int, string> knownErrors = new Dictionary<int, string>
         {
             //
             // Documented error descrriptions from 
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
     public class RdpFatalException : RdpException
     {
-        private static readonly IDictionary<int, string> knownErrors = new Dictionary<int, string>
+        private static readonly Dictionary<int, string> knownErrors = new Dictionary<int, string>
         {
             //
             // Documented error descrriptions from 
@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
     public class RdpDisconnectedException : RdpException
     {
-        private static readonly IDictionary<int, string> knownErrors = new Dictionary<int, string>
+        private static readonly Dictionary<int, string> knownErrors = new Dictionary<int, string>
         {
             //
             // Documented error descrriptions from 

@@ -742,20 +742,17 @@ namespace Google.Solutions.IapDesktop
                 throw new TimeoutException("The main form is not ready");
             }
 
-            if (this.initializedMainForm != null)
+            //
+            // This method is called on the named pipe server thread - switch to 
+            // main thread before doing any GUI stuff.
+            //
+            this.initializedMainForm?.Invoke(((Action)(() =>
             {
-                //
-                // This method is called on the named pipe server thread - switch to 
-                // main thread before doing any GUI stuff.
-                //
-                this.initializedMainForm.Invoke(((Action)(() =>
+                if (options.StartupUrl != null)
                 {
-                    if (options.StartupUrl != null)
-                    {
-                        this.initializedMainForm.ConnectToUrl(options.StartupUrl);
-                    }
-                })));
-            }
+                    this.initializedMainForm.ConnectToUrl(options.StartupUrl);
+                }
+            })));
 
             return 1;
         }

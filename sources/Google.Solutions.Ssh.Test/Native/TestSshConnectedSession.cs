@@ -151,7 +151,7 @@ namespace Google.Solutions.Ssh.Test.Native
         // Connect - host key algorithms.
         //---------------------------------------------------------------------
 
-        private void ConnectWithHostKey(
+        private static void ConnectWithHostKey(
             IPEndPoint endpoint,
             LIBSSH2_HOSTKEY_TYPE hostKeyType)
         {

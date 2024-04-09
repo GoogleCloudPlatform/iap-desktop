@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -48,8 +49,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
             }
         }
 
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Bining")]
         public string AuthorText => "Johannes Passing";
 
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Bining")]
         public string AuthorLink => "https://github.com/jpassing";
 
         public string Information { get; }

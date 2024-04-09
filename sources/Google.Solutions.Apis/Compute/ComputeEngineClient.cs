@@ -187,7 +187,7 @@ namespace Google.Solutions.Apis.Compute
                             cancellationToken)
                         .ConfigureAwait(false);
 
-                    ApiTraceSource.Log.TraceVerbose("Found {0} instances", result.Count());
+                    ApiTraceSource.Log.TraceVerbose("Found {0} instances", result.Count);
 
                     return result;
                 }
@@ -437,49 +437,30 @@ namespace Google.Solutions.Apis.Compute
             {
                 try
                 {
-                    ClientServiceRequest<Operation> request;
-
-                    switch (command)
+                    ClientServiceRequest<Operation> request = command switch
                     {
-                        case InstanceControlCommand.Start:
-                            request = this.service.Instances.Start(
-                                instance.ProjectId,
-                                instance.Zone,
-                                instance.Name);
-                            break;
-
-                        case InstanceControlCommand.Stop:
-                            request = this.service.Instances.Stop(
-                                instance.ProjectId,
-                                instance.Zone,
-                                instance.Name);
-                            break;
-
-                        case InstanceControlCommand.Suspend:
-                            request = this.service.Instances.Suspend(
-                                instance.ProjectId,
-                                instance.Zone,
-                                instance.Name);
-                            break;
-
-                        case InstanceControlCommand.Resume:
-                            request = this.service.Instances.Resume(
-                                instance.ProjectId,
-                                instance.Zone,
-                                instance.Name);
-                            break;
-
-                        case InstanceControlCommand.Reset:
-                            request = this.service.Instances.Reset(
-                                instance.ProjectId,
-                                instance.Zone,
-                                instance.Name);
-                            break;
-
-                        default:
-                            throw new ArgumentException(nameof(command));
-                    }
-
+                        InstanceControlCommand.Start => this.service.Instances.Start(
+                            instance.ProjectId,
+                            instance.Zone,
+                            instance.Name),
+                        InstanceControlCommand.Stop => this.service.Instances.Stop(
+                            instance.ProjectId,
+                            instance.Zone,
+                            instance.Name),
+                        InstanceControlCommand.Suspend => this.service.Instances.Suspend(
+                            instance.ProjectId,
+                            instance.Zone,
+                            instance.Name),
+                        InstanceControlCommand.Resume => this.service.Instances.Resume(
+                            instance.ProjectId,
+                            instance.Zone,
+                            instance.Name),
+                        InstanceControlCommand.Reset => this.service.Instances.Reset(
+                            instance.ProjectId,
+                            instance.Zone,
+                            instance.Name),
+                        _ => throw new ArgumentException("The command is not supported"),
+                    };
                     await request
                         .ExecuteAndAwaitOperationAsync(
                             instance.ProjectId,

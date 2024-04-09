@@ -218,6 +218,7 @@ dotnet_style_prefer_conditional_expression_over_assignment = true:silent
 dotnet_style_prefer_conditional_expression_over_return = true:silent
 dotnet_style_explicit_tuple_names = true:suggestion
 dotnet_style_prefer_inferred_tuple_names = true:suggestion
+dotnet_style_prefer_compound_assignment = false
 
 # 	Null check can be simplified (if null check)
 dotnet_diagnostic.IDE0270.severity = none
