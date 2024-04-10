@@ -77,7 +77,7 @@ $(MAKEDIR)\obj\$(TERMINAL_PACKAGE_ID).$(TERMINAL_VERSION).nupkg: \
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>Google.Solutions.ThirdParty.Terminal</id>
+    <id>$(TERMINAL_PACKAGE_ID)</id>
     <version>$(TERMINAL_VERSION)</version>
     <authors>https://github.com/microsoft/terminal</authors>
     <owners>https://github.com/microsoft/terminal</owners>
@@ -89,7 +89,7 @@ $(MAKEDIR)\obj\$(TERMINAL_PACKAGE_ID).$(TERMINAL_VERSION).nupkg: \
 	<!-- pretend the library is platform-neutral -->
     <file src="$(MAKEDIR)\obj\x86\terminal-$(TERMINAL_TAG)\Microsoft.Terminal.Control.dll" target="runtimes\win10-x86\native" />
     <file src="$(MAKEDIR)\obj\x64\terminal-$(TERMINAL_TAG)\Microsoft.Terminal.Control.dll" target="runtimes\win10-x64\native" />
-    <file src="terminal.targets" target="build" />
+    <file src="$(TERMINAL_PACKAGE_ID).targets" target="build" />
   </files>
 </package>
 <<NOKEEP
