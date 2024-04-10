@@ -23,16 +23,18 @@ CONFIGURATION = Release
 # The tag should be increased whenever one of the dependencies is changed
 TAG = 1
 
-TERMINAL_TAG = v1.16.2641.0
+TERMINAL_TAG = v1.20.10822.0
 TERMINAL_URL = https://github.com/microsoft/terminal.git
 TERMINAL_VERSION = 1.16.2641.$(TAG)
+TERMINAL_PACKAGE_ID = Google.Solutions.ThirdParty.Terminal
 
 NUGET = $(MAKEDIR)\obj\dep\nuget\nuget.exe
-TERMINAL_VCXPROJ=$(MAKEDIR)\obj\src\cascadia\PublicTerminalCore\PublicTerminalCore.vcxproj
+TERMINAL_VCXPROJ=$(MAKEDIR)\obj\src\cascadia\TerminalControl\dll\TerminalControl.vcxproj
+HOSTPROXY_VCXPROJ=$(MAKEDIR)\obj\src\host\proxy\Host.Proxy.vcxproj
 
 default: package
 
-$(TERMINAL_VCXPROJ):
+$(MAKEDIR)\obj:
 	@echo "========================================================"
 	@echo "=== Checking out terminal                            ==="
 	@echo "========================================================"
@@ -44,18 +46,12 @@ $(TERMINAL_VCXPROJ):
 	git checkout tags/$(TERMINAL_TAG)
 	git submodule update --init --recursive
 
-	git config user.email "iap-desktop+build@google.com"
-	git config user.name "IAP Desktop Build"
-	
-	git am --reject --whitespace=fix $(MAKEDIR)\patches\0001-Change-target-to-terminal.dll.patch
-
-	$(NUGET) restore $(MAKEDIR)\obj\OpenConsole.sln
-	$(NUGET) restore $(MAKEDIR)\obj\dep\nuget\packages.config
+#$(NUGET) restore $(MAKEDIR)\obj\OpenConsole.sln
+#$(NUGET) restore $(MAKEDIR)\obj\dep\nuget\packages.config
 
 	cd $(MAKEDIR)
 
-$(MAKEDIR)\obj\bin\Win32\$(CONFIGURATION)\terminal.dll: \
-		$(TERMINAL_VCXPROJ)
+$(MAKEDIR)\obj\bin\Win32\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.dll: $(MAKEDIR)\obj
 	@echo "========================================================"
 	@echo "=== Building terminal (x86)                          ==="
 	@echo "========================================================"
@@ -63,13 +59,18 @@ $(MAKEDIR)\obj\bin\Win32\$(CONFIGURATION)\terminal.dll: \
 	
 	msbuild \
 		/t:Build \
+		-restore \
 		"/p:Configuration=$(CONFIGURATION);SolutionDir=$(MAKEDIR)\obj\,Platform=Win32" \
-		$**
+		$(HOSTPROXY_VCXPROJ)
+	msbuild \
+		/t:Build \
+		-restore \
+		"/p:Configuration=$(CONFIGURATION);SolutionDir=$(MAKEDIR)\obj\,Platform=Win32" \
+		$(TERMINAL_VCXPROJ)
 
 	cd $(MAKEDIR)
 
-$(MAKEDIR)\obj\bin\x64\$(CONFIGURATION)\terminal.dll: \
-		$(TERMINAL_VCXPROJ)
+$(MAKEDIR)\obj\bin\x64\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.dll: $(MAKEDIR)\obj
 	@echo "========================================================"
 	@echo "=== Building terminal (x64)                          ==="
 	@echo "========================================================"
@@ -77,14 +78,20 @@ $(MAKEDIR)\obj\bin\x64\$(CONFIGURATION)\terminal.dll: \
 	
 	msbuild \
 		/t:Build \
+		-restore \
 		"/p:Configuration=$(CONFIGURATION);SolutionDir=$(MAKEDIR)\obj\,Platform=x64" \
-		$**
+		$(HOSTPROXY_VCXPROJ)
+	msbuild \
+		/t:Build \
+		-restore \
+		"/p:Configuration=$(CONFIGURATION);SolutionDir=$(MAKEDIR)\obj\,Platform=x64" \
+		$(TERMINAL_VCXPROJ)
 
 	cd $(MAKEDIR)
 
-$(MAKEDIR)\obj\terminal.$(TERMINAL_VERSION).nupkg: \
-		$(MAKEDIR)\obj\bin\Win32\$(CONFIGURATION)\terminal.dll \
-		$(MAKEDIR)\obj\bin\x64\$(CONFIGURATION)\terminal.dll
+$(MAKEDIR)\obj\$(TERMINAL_PACKAGE_ID).$(TERMINAL_VERSION).nupkg: \
+		$(MAKEDIR)\obj\bin\Win32\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.dll \
+		$(MAKEDIR)\obj\bin\x64\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.dll
 	@echo "========================================================"
 	@echo "=== Building terminal nuget package                   ==="
 	@echo "========================================================"
@@ -92,7 +99,7 @@ $(MAKEDIR)\obj\terminal.$(TERMINAL_VERSION).nupkg: \
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>terminal</id>
+    <id>Google.Solutions.ThirdParty.Terminal</id>
     <version>$(TERMINAL_VERSION)</version>
     <authors>https://github.com/microsoft/terminal</authors>
     <owners>https://github.com/microsoft/terminal</owners>
@@ -102,10 +109,10 @@ $(MAKEDIR)\obj\terminal.$(TERMINAL_VERSION).nupkg: \
   </metadata>
   <files>
 	<!-- pretend the library is platform-neutral -->
-    <file src="$(MAKEDIR)\obj\bin\Win32\$(CONFIGURATION)\terminal.dll" target="runtimes\win10-x86\native" />
-    <file src="$(MAKEDIR)\obj\bin\Win32\$(CONFIGURATION)\terminal.pdb" target="runtimes\win10-x86\native" />
-    <file src="$(MAKEDIR)\obj\bin\x64\$(CONFIGURATION)\terminal.dll" target="runtimes\win10-x86\native" />
-    <file src="$(MAKEDIR)\obj\bin\x64\$(CONFIGURATION)\terminal.pdb" target="runtimes\win10-x86\native" />
+    <file src="$(MAKEDIR)\obj\bin\Win32\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.dll" target="runtimes\win10-x86\native" />
+    <file src="$(MAKEDIR)\obj\bin\Win32\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.pdb" target="runtimes\win10-x86\native" />
+    <file src="$(MAKEDIR)\obj\bin\x64\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.dll" target="runtimes\win10-x86\native" />
+    <file src="$(MAKEDIR)\obj\bin\x64\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.pdb" target="runtimes\win10-x86\native" />
     <file src="terminal.targets" target="build" />
   </files>
 </package>
@@ -115,31 +122,13 @@ $(MAKEDIR)\obj\terminal.$(TERMINAL_VERSION).nupkg: \
 # Main targets
 #------------------------------------------------------------------------------
 
-package: $(MAKEDIR)\obj\terminal.$(TERMINAL_VERSION).nupkg
-    copy /Y $(MAKEDIR)\obj\terminal.$(TERMINAL_VERSION).nupkg $(MAKEDIR)\obj\terminal.nupkg
+package: $(MAKEDIR)\obj\$(TERMINAL_PACKAGE_ID).$(TERMINAL_VERSION).nupkg
+    copy /Y $(MAKEDIR)\obj\$(TERMINAL_PACKAGE_ID).$(TERMINAL_VERSION).nupkg $(MAKEDIR)\obj\$(TERMINAL_PACKAGE_ID).nupkg
 
 clean:
     msbuild /t:Clean "$(TERMINAL_VCXPROJ)"
     -rd /S /Q $(MAKEDIR)\obj\bin
-    -del $(MAKEDIR)\obj\terminal.nupkg
+    -del $(MAKEDIR)\obj\$(TERMINAL_PACKAGE_ID).nupkg
     
-force-clean:
+distclean:
     -rd /S /Q $(MAKEDIR)\obj
-
-#debug: clean package
-#    copy /Y $(MAKEDIR)\obj\bin\$(CONFIGURATION)\terminal.dll $(MAKEDIR)\..\..\..\sources\Google.Solutions.IapDesktop.Extensions.Shell\bin\x86\$(CONFIGURATION)
-#    copy /Y $(MAKEDIR)\obj\bin\$(CONFIGURATION)\terminal.dll $(MAKEDIR)\..\..\..\sources\Google.Solutions.IapDesktop.Extensions.Shell.Test\bin\x86\$(CONFIGURATION)
-#    copy /Y $(MAKEDIR)\obj\bin\$(CONFIGURATION)\terminal.dll $(MAKEDIR)\..\..\..\sources\Google.Solutions.IapDesktop\bin\x86\$(CONFIGURATION)
-#                                                                                  
-#    copy /Y $(MAKEDIR)\obj\bin\$(CONFIGURATION)\terminal.pdb $(MAKEDIR)\..\..\..\sources\Google.Solutions.IapDesktop.Extensions.Shell\bin\x86\$(CONFIGURATION)
-#    copy /Y $(MAKEDIR)\obj\bin\$(CONFIGURATION)\terminal.pdb $(MAKEDIR)\..\..\..\sources\Google.Solutions.IapDesktop.Extensions.Shell.Test\bin\x86\$(CONFIGURATION)
-#    copy /Y $(MAKEDIR)\obj\bin\$(CONFIGURATION)\terminal.pdb $(MAKEDIR)\..\..\..\sources\Google.Solutions.IapDesktop\bin\x86\$(CONFIGURATION)
-#                                                                                  
-#    copy /Y $(MAKEDIR)\obj\bin\$(CONFIGURATION)\terminal.dll $(MAKEDIR)\..\..\..\sources\Google.Solutions.IapDesktop.Extensions.Shell\bin\x64\$(CONFIGURATION)
-#    copy /Y $(MAKEDIR)\obj\bin\$(CONFIGURATION)\terminal.dll $(MAKEDIR)\..\..\..\sources\Google.Solutions.IapDesktop.Extensions.Shell.Test\bin\x64\$(CONFIGURATION)
-#    copy /Y $(MAKEDIR)\obj\bin\$(CONFIGURATION)\terminal.dll $(MAKEDIR)\..\..\..\sources\Google.Solutions.IapDesktop\bin\x64\$(CONFIGURATION)
-#                                                                                  
-#    copy /Y $(MAKEDIR)\obj\bin\$(CONFIGURATION)\terminal.pdb $(MAKEDIR)\..\..\..\sources\Google.Solutions.IapDesktop.Extensions.Shell\bin\x64\$(CONFIGURATION)
-#    copy /Y $(MAKEDIR)\obj\bin\$(CONFIGURATION)\terminal.pdb $(MAKEDIR)\..\..\..\sources\Google.Solutions.IapDesktop.Extensions.Shell.Test\bin\x64\$(CONFIGURATION)
-#    copy /Y $(MAKEDIR)\obj\bin\$(CONFIGURATION)\terminal.pdb $(MAKEDIR)\..\..\..\sources\Google.Solutions.IapDesktop\bin\x64\$(CONFIGURATION)
-#
