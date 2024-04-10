@@ -44,6 +44,8 @@ $(MAKEDIR)\obj\x86:
 	@echo "=== Downloading terminal (x86)                       ==="
 	@echo "========================================================"
 
+	if not exist $(MAKEDIR)\obj \
+		md $(MAKEDIR)\obj
 	if not exist $(MAKEDIR)\obj\x86 \
 		md $(MAKEDIR)\obj\x86
 	cd $(MAKEDIR)\obj
@@ -58,6 +60,8 @@ $(MAKEDIR)\obj\x64:
 	@echo "=== Downloading terminal (x64)                       ==="
 	@echo "========================================================"
 
+	if not exist $(MAKEDIR)\obj \
+		md $(MAKEDIR)\obj
 	if not exist $(MAKEDIR)\obj\x64 \
 		md $(MAKEDIR)\obj\x64
 	cd $(MAKEDIR)\obj
