@@ -23,8 +23,8 @@ CONFIGURATION = Release
 # The tag should be increased whenever one of the dependencies is changed
 TAG = 1
 
-TERMINAL_VERSION = 1.20.10822.0
-TERMINAL_TAG = v$(TERMINAL_VERSION)
+TERMINAL_VERSION = 1.20.10822
+TERMINAL_TAG = v1.20.10822.0
 TERMINAL_URL = https://github.com/microsoft/terminal.git
 TERMINAL_PACKAGE_ID = Google.Solutions.ThirdParty.Terminal
 
