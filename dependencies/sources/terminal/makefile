@@ -23,78 +23,53 @@ CONFIGURATION = Release
 # The tag should be increased whenever one of the dependencies is changed
 TAG = 1
 
-TERMINAL_VERSION = 1.20.10822
-TERMINAL_TAG = v1.20.10822.0
-TERMINAL_URL = https://github.com/microsoft/terminal.git
+#
+# Use the pre-built and signed Microsoft binaries.
+#
+TERMINAL_VERSION = 1.19.10821
+TERMINAL_TAG = 1.19.10821.0
+TERMINAL_PACKAGE_X86=https://github.com/microsoft/terminal/releases/download/v$(TERMINAL_TAG)/Microsoft.WindowsTerminal_$(TERMINAL_TAG)_x86.zip
+TERMINAL_PACKAGE_X64=https://github.com/microsoft/terminal/releases/download/v$(TERMINAL_TAG)/Microsoft.WindowsTerminal_$(TERMINAL_TAG)_x64.zip
+
 TERMINAL_PACKAGE_ID = Google.Solutions.ThirdParty.Terminal
 
-# NB. Use a current nuget version, not $(MAKEDIR)\obj\dep\nuget\nuget.exe
-NUGET = nuget
-TERMINAL_VCXPROJ=$(MAKEDIR)\obj\src\cascadia\TerminalControl\dll\TerminalControl.vcxproj
-HOSTPROXY_VCXPROJ=$(MAKEDIR)\obj\src\host\proxy\Host.Proxy.vcxproj
+POWERSHELL = powershell -NoProfile -ExecutionPolicy Unrestricted
+SCRIPTSDIR=$(MAKEDIR)\..\..\..\sources\scripts
+NUGET=nuget 
 
 default: package
 
-$(MAKEDIR)\obj:
+$(MAKEDIR)\obj\x86:
 	@echo "========================================================"
-	@echo "=== Checking out terminal                            ==="
+	@echo "=== Downloading terminal (x86)                       ==="
 	@echo "========================================================"
 
-	git clone $(TERMINAL_URL) $(MAKEDIR)\obj
-
-	cd $(MAKEDIR)\obj
-
-	git checkout tags/$(TERMINAL_TAG)
-	git submodule update --init --recursive
-
-	cd $(MAKEDIR)\obj\dep\nuget
-	$(NUGET) install packages.config
-
-	cd $(MAKEDIR)
-
-$(MAKEDIR)\obj\bin\Win32\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.dll: $(MAKEDIR)\obj
-	@echo "========================================================"
-	@echo "=== Building terminal (x86)                          ==="
-	@echo "========================================================"
+	if not exist $(MAKEDIR)\obj\x86 \
+		md $(MAKEDIR)\obj\x86
 	cd $(MAKEDIR)\obj
 	
-#TODO: set TIL_FEATURE_RECEIVEINCOMINGHANDOFF_ENABLED
-
-	msbuild \
-		/t:Build \
-		-restore \
-		"/p:Configuration=$(CONFIGURATION);SolutionDir=$(MAKEDIR)\obj\,Platform=Win32" \
-		$(HOSTPROXY_VCXPROJ)
-	msbuild \
-		/t:Build \
-		-restore \
-		"/p:Configuration=$(CONFIGURATION);SolutionDir=$(MAKEDIR)\obj\,Platform=Win32" \
-		$(TERMINAL_VCXPROJ)
-
+	curl -L --output x86.zip "$(TERMINAL_PACKAGE_X86)" 
+	$(POWERSHELL) $(SCRIPTSDIR)\expand-zip.ps1 -ZipFile x86.zip $(MAKEDIR)\obj\x86
+	
 	cd $(MAKEDIR)
 
-$(MAKEDIR)\obj\bin\x64\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.dll: $(MAKEDIR)\obj
+$(MAKEDIR)\obj\x64:
 	@echo "========================================================"
-	@echo "=== Building terminal (x64)                          ==="
+	@echo "=== Downloading terminal (x64)                       ==="
 	@echo "========================================================"
+
+	if not exist $(MAKEDIR)\obj\x64 \
+		md $(MAKEDIR)\obj\x64
 	cd $(MAKEDIR)\obj
 	
-	msbuild \
-		/t:Build \
-		-restore \
-		"/p:Configuration=$(CONFIGURATION);SolutionDir=$(MAKEDIR)\obj\,Platform=x64" \
-		$(HOSTPROXY_VCXPROJ)
-	msbuild \
-		/t:Build \
-		-restore \
-		"/p:Configuration=$(CONFIGURATION);SolutionDir=$(MAKEDIR)\obj\,Platform=x64" \
-		$(TERMINAL_VCXPROJ)
-
+	curl -L --output x64.zip "$(TERMINAL_PACKAGE_X64)" 
+	$(POWERSHELL) $(SCRIPTSDIR)\expand-zip.ps1 -ZipFile x64.zip $(MAKEDIR)\obj\x64
+	
 	cd $(MAKEDIR)
 
 $(MAKEDIR)\obj\$(TERMINAL_PACKAGE_ID).$(TERMINAL_VERSION).nupkg: \
-		$(MAKEDIR)\obj\bin\Win32\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.dll \
-		$(MAKEDIR)\obj\bin\x64\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.dll
+		$(MAKEDIR)\obj\x86 \
+		$(MAKEDIR)\obj\x64
 	@echo "========================================================"
 	@echo "=== Building terminal nuget package                   ==="
 	@echo "========================================================"
@@ -112,10 +87,8 @@ $(MAKEDIR)\obj\$(TERMINAL_PACKAGE_ID).$(TERMINAL_VERSION).nupkg: \
   </metadata>
   <files>
 	<!-- pretend the library is platform-neutral -->
-    <file src="$(MAKEDIR)\obj\bin\Win32\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.dll" target="runtimes\win10-x86\native" />
-    <file src="$(MAKEDIR)\obj\bin\Win32\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.pdb" target="runtimes\win10-x86\native" />
-    <file src="$(MAKEDIR)\obj\bin\x64\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.dll" target="runtimes\win10-x64\native" />
-    <file src="$(MAKEDIR)\obj\bin\x64\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.pdb" target="runtimes\win10-x64\native" />
+    <file src="$(MAKEDIR)\obj\x86\terminal-$(TERMINAL_TAG)\Microsoft.Terminal.Control.dll" target="runtimes\win10-x86\native" />
+    <file src="$(MAKEDIR)\obj\x64\terminal-$(TERMINAL_TAG)\Microsoft.Terminal.Control.dll" target="runtimes\win10-x64\native" />
     <file src="terminal.targets" target="build" />
   </files>
 </package>
@@ -128,10 +101,5 @@ $(MAKEDIR)\obj\$(TERMINAL_PACKAGE_ID).$(TERMINAL_VERSION).nupkg: \
 package: $(MAKEDIR)\obj\$(TERMINAL_PACKAGE_ID).$(TERMINAL_VERSION).nupkg
     copy /Y $(MAKEDIR)\obj\$(TERMINAL_PACKAGE_ID).$(TERMINAL_VERSION).nupkg $(MAKEDIR)\obj\$(TERMINAL_PACKAGE_ID).nupkg
 
-clean:
-    msbuild /t:Clean "$(TERMINAL_VCXPROJ)"
-    -rd /S /Q $(MAKEDIR)\obj\bin
-    -del $(MAKEDIR)\obj\$(TERMINAL_PACKAGE_ID).nupkg
-    
-distclean:
+clean distclean:
     -rd /S /Q $(MAKEDIR)\obj
