@@ -23,12 +23,13 @@ CONFIGURATION = Release
 # The tag should be increased whenever one of the dependencies is changed
 TAG = 1
 
-TERMINAL_TAG = v1.20.10822.0
+TERMINAL_VERSION = 1.20.10822.0
+TERMINAL_TAG = v$(TERMINAL_VERSION)
 TERMINAL_URL = https://github.com/microsoft/terminal.git
-TERMINAL_VERSION = 1.16.2641.$(TAG)
 TERMINAL_PACKAGE_ID = Google.Solutions.ThirdParty.Terminal
 
-NUGET = $(MAKEDIR)\obj\dep\nuget\nuget.exe
+# NB. Use a current nuget version, not $(MAKEDIR)\obj\dep\nuget\nuget.exe
+NUGET = nuget
 TERMINAL_VCXPROJ=$(MAKEDIR)\obj\src\cascadia\TerminalControl\dll\TerminalControl.vcxproj
 HOSTPROXY_VCXPROJ=$(MAKEDIR)\obj\src\host\proxy\Host.Proxy.vcxproj
 
@@ -46,8 +47,8 @@ $(MAKEDIR)\obj:
 	git checkout tags/$(TERMINAL_TAG)
 	git submodule update --init --recursive
 
-#$(NUGET) restore $(MAKEDIR)\obj\OpenConsole.sln
-#$(NUGET) restore $(MAKEDIR)\obj\dep\nuget\packages.config
+	cd $(MAKEDIR)\obj\dep\nuget
+	$(NUGET) install packages.config
 
 	cd $(MAKEDIR)
 
@@ -57,6 +58,8 @@ $(MAKEDIR)\obj\bin\Win32\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.T
 	@echo "========================================================"
 	cd $(MAKEDIR)\obj
 	
+#TODO: set TIL_FEATURE_RECEIVEINCOMINGHANDOFF_ENABLED
+
 	msbuild \
 		/t:Build \
 		-restore \
@@ -111,8 +114,8 @@ $(MAKEDIR)\obj\$(TERMINAL_PACKAGE_ID).$(TERMINAL_VERSION).nupkg: \
 	<!-- pretend the library is platform-neutral -->
     <file src="$(MAKEDIR)\obj\bin\Win32\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.dll" target="runtimes\win10-x86\native" />
     <file src="$(MAKEDIR)\obj\bin\Win32\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.pdb" target="runtimes\win10-x86\native" />
-    <file src="$(MAKEDIR)\obj\bin\x64\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.dll" target="runtimes\win10-x86\native" />
-    <file src="$(MAKEDIR)\obj\bin\x64\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.pdb" target="runtimes\win10-x86\native" />
+    <file src="$(MAKEDIR)\obj\bin\x64\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.dll" target="runtimes\win10-x64\native" />
+    <file src="$(MAKEDIR)\obj\bin\x64\$(CONFIGURATION)\Microsoft.Terminal.Control\Microsoft.Terminal.Control.pdb" target="runtimes\win10-x64\native" />
     <file src="terminal.targets" target="build" />
   </files>
 </package>
