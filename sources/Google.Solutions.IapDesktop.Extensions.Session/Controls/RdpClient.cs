@@ -28,8 +28,6 @@ using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Input;
 using MSTSCLib;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -61,6 +59,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         private readonly DeferredCallback deferResize;
         private Form parentForm = null;
+
+        private int keysSent = 0;
 
         public RdpClient()
         {
@@ -866,6 +866,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             // Give the control a chance to catch up with events. This is
             // nasty, but necessary.
             //
+            // Note that the control is more sensitive on x86 than on x64.
+            //
             Thread.Sleep(5);
 
             unsafe
@@ -878,8 +880,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             }
         }
 
-
-        int keysSent = 0;
 
         /// <summary>
         /// Send a sequence of virtual keys. Keys may use modifiers.
