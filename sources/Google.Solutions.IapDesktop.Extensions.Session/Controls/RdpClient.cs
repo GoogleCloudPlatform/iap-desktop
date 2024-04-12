@@ -921,16 +921,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             }
         }
 
+
+        int keysSent = 0;
+
         /// <summary>
         /// Send a sequence of virtual keys. Keys may use modifiers.
         /// </summary>
         private void SendVirtualKey(Keys virtualKey)
         {
+            var keyboard = KeyboardLayout.Current;
+
+            //
+            // The RDP control sometimes swallows the first key combination
+            // that is sent. So start by a harmless ESC.
+            //
+            if (this.keysSent++ == 0)
+            {
+                var escScanCode = keyboard.ToScanCodes(Keys.Escape).First();
+                SendScanCodes(
+                     new short[] { 0 },
+                     new int[] { (int)escScanCode });
+            }
+
             //
             // Convert virtual key code (which might contain modifiers)
             // into a sequence of scan codes.
             //
-            var scanCodes = KeyboardLayout.Current
+            var scanCodes = keyboard
                 .ToScanCodes(virtualKey)
                 .ToArray();
 
@@ -1004,8 +1021,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             }
         }
 
-        int escapesSent = 0;
-
         /// <summary>
         /// Simulate a key chord toopen task manager.
         /// </summary>
@@ -1015,14 +1030,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                //
-                // The RDP control sometimes swallows the first key combination
-                // that is sent. So start by a harmless ESC.
-                //
-                if (escapesSent++ == 0)
-                {
-                    SendVirtualKey(Keys.Escape); // TODO: send once only
-                }
                 SendVirtualKey(Keys.Control | Keys.Alt | Keys.Delete);
                 //SendVirtualKey(Keys.Control | Keys.Shift | Keys.Escape);
             }
