@@ -44,27 +44,14 @@ namespace Google.Solutions.Mvvm
         /// </summary>
         public static bool SetHighDpiMode(HighDpiMode highDpiMode)
         {
-            NativeMethods.DPI_AWARENESS_CONTEXT mode;
-
-            switch (highDpiMode)
+            var mode = highDpiMode switch
             {
-                case HighDpiMode.DpiUnaware:
-                    mode = NativeMethods.DPI_AWARENESS_CONTEXT.UNAWARE;
-                    break;
-                case HighDpiMode.SystemAware: 
-                    mode = NativeMethods.DPI_AWARENESS_CONTEXT.SYSTEM_AWARE;
-                    break;
-                case HighDpiMode.PerMonitor:  
-                    mode = NativeMethods.DPI_AWARENESS_CONTEXT.PER_MONITOR_AWARE;
-                    break;
-                case HighDpiMode.PerMonitorV2: 
-                    mode = NativeMethods.DPI_AWARENESS_CONTEXT.PER_MONITOR_AWARE_V2;
-                    break;
-                case HighDpiMode.DpiUnawareGdiScaled:
-                    mode = NativeMethods.DPI_AWARENESS_CONTEXT.UNAWARE_GDISCALED;
-                    break;
-                default:
-                    throw new ArgumentException(nameof(highDpiMode));
+                HighDpiMode.DpiUnaware => NativeMethods.DPI_AWARENESS_CONTEXT.UNAWARE,
+                HighDpiMode.SystemAware => NativeMethods.DPI_AWARENESS_CONTEXT.SYSTEM_AWARE,
+                HighDpiMode.PerMonitor => NativeMethods.DPI_AWARENESS_CONTEXT.PER_MONITOR_AWARE,
+                HighDpiMode.PerMonitorV2 => NativeMethods.DPI_AWARENESS_CONTEXT.PER_MONITOR_AWARE_V2,
+                HighDpiMode.DpiUnawareGdiScaled => NativeMethods.DPI_AWARENESS_CONTEXT.UNAWARE_GDISCALED,
+                _ => throw new ArgumentException(nameof(highDpiMode)),
             };
 
             //

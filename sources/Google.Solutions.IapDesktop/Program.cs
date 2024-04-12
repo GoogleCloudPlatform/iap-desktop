@@ -357,35 +357,6 @@ namespace Google.Solutions.IapDesktop
                     "Installing SetUsernameAsHostHeaderForWssRequests patch failed: {0}", e);
             }
 
-            if (this.commandLineOptions.IsHighDpiEnabled)
-            {
-                //
-                // Enable High-DPI mode. This takes the DPI level of the primary
-                // monitor and causes windows/controls to be scaled appropriately.
-                //
-                // NB. When moving a window to a different screen, Windows delivers
-                // a WM_DPICHANGE message. For now, we don't react to these messages
-                // and maintain the DPI level of the primary monitor, even when moved
-                // to a different monitor. This is for 2 reasons:
-                //
-                //  * DockPanelSuite supports High-DPI, but has limited support
-                //    for reacting to DPI-change events.
-                //  * It reduces overall complexity.
-                //
-                // NB. Setting the High DPI mode programmatically (instead of using the
-                // app manifest or app.config) does *not* cause Winforms to deliver
-                // DPI change events. This implicitly means that DockPanelSuite won't
-                // even try to re-scale.
-                //
-                if (!ApplicationExtensions.SetHighDpiMode(HighDpiMode.SystemAware))
-                {
-                    ApplicationTraceSource.Log.TraceWarning("Enabling High-DPI mode failed");
-                }
-            }
-
-            System.Windows.Forms.Application.EnableVisualStyles();
-            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-
             //
             // Set up layers. Services in a layer can lookup services in a lower layer,
             // but not in a higher layer.
@@ -432,6 +403,39 @@ namespace Google.Solutions.IapDesktop
                     new KeyStore(CngProvider.MicrosoftSoftwareKeyStorageProvider));
 
                 //
+                // Initialize UI, DPI mode.
+                //
+
+                var themeSettingsRepository = new ThemeSettingsRepository(
+                    profile.SettingsKey.CreateSubKey("Theme"));
+
+                var dpiMode = (themeSettingsRepository.GetSettings().ScalingMode.Value) switch
+                {
+                    ScalingMode.Gdi => HighDpiMode.DpiUnawareGdiScaled,
+                    ScalingMode.SystemDpiAware => HighDpiMode.SystemAware,
+                    _ => HighDpiMode.DpiUnawareGdiScaled,
+                };
+
+                if (dpiMode != HighDpiMode.DpiUnaware)
+                {
+                    //
+                    // Set DPI mode. 
+                    //
+                    // NB. Setting the DPI mode programmatically (instead of using the
+                    // app manifest or app.config) does causes WinForms to *not* deliver
+                    // DPI change (WM_DPICHANGE) events, but that's ok.
+                    //
+                    if (!ApplicationExtensions.SetHighDpiMode(dpiMode))
+                    {
+                        ApplicationTraceSource.Log.TraceWarning(
+                            "Setting DPI mode to {0} failed", dpiMode);
+                    }
+                }
+
+                System.Windows.Forms.Application.EnableVisualStyles();
+                System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+
+                //
                 // Load settings.
                 //
                 var appSettingsRepository = new ApplicationSettingsRepository(profile);
@@ -444,21 +448,6 @@ namespace Google.Solutions.IapDesktop
                     // Enterprise-managed.
                     //
                     Install.UserAgent.Extensions = "Enterprise";
-                }
-
-                var themeSettingsRepository = new ThemeSettingsRepository(
-                    profile.SettingsKey.CreateSubKey("Theme"));
-
-                if (!this.commandLineOptions.IsHighDpiEnabled && 
-                    OSCapabilities.IsGdiScalingSupported)
-                {
-                    //
-                    // Enable GDI scaling unless it has been disabled by the user.
-                    //
-                    GdiScaling.IsEnabled = themeSettingsRepository
-                        .GetSettings()
-                        .IsGdiScalingEnabled
-                        .Value;
                 }
 
                 var authSettingsRepository = new AuthSettingsRepository(

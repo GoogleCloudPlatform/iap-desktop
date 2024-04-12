@@ -49,11 +49,6 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// </summary>
         public bool IsPostInstall { get; set; } = false;
 
-        /// <summary>
-        /// Enable (experimental) high-DPI mode..
-        /// </summary>
-        public bool IsHighDpiEnabled { get; set; } = false;
-
         public CommandLineOptions()
         {
         }
@@ -71,10 +66,6 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 else if (args[i] == "/postinstall")
                 {
                     options.IsPostInstall = true;
-                }
-                else if (args[i] == "/highdpi")
-                {
-                    options.IsHighDpiEnabled = true;
                 }
                 else if (args[i] == "/url" && i + 1 < args.Length)
                 {

@@ -165,19 +165,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         //---------------------------------------------------------------------
-        // /highdpi.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenHighDpiSpecified_ThenParseReturnsValidOptions()
-        {
-            var options = CommandLineOptions.Parse(
-                new[] { "/profile", "profile-1", "/highdpi", "/debug" });
-
-            Assert.IsTrue(options.IsHighDpiEnabled);
-        }
-
-        //---------------------------------------------------------------------
         // ToString
         //---------------------------------------------------------------------
 
