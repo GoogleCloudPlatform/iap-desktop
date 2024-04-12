@@ -1,19 +1,41 @@
-﻿using MSTSCLib;
+﻿//
+// Copyright 2024 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using MSTSCLib;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+
+#pragma warning disable CS9197 // Reference kind modifier of parameter doesn't match
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
-
+    /// <summary>
+    /// MsRdpClientNonScriptable5 that uses a modified/fixed signature.
+    /// for SendKeys.
+    /// </summary>
     [ComImport]
     [InterfaceType(1)]
     [Guid("4F6996D5-D7B1-412C-B0FF-063718566907")]
-    public interface IMsRdpClientNonScriptable5_Modified : IMsRdpClientNonScriptable4
+    internal interface IMsRdpClientNonScriptable5_SendKeys : IMsRdpClientNonScriptable4
     {
         [DispId(1)]
         new string ClearTextPassword
@@ -78,11 +100,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         new void NotifyRedirectDeviceChange([In][ComAliasName("MSTSCLib.UINT_PTR")] uint wParam, [In][ComAliasName("MSTSCLib.LONG_PTR")] int lParam);
 
-        //[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        //new void SendKeys(
-        //    [In] int numKeys, 
-        //    [In] ref bool pbArrayKeyUp, 
-        //    [In] ref int plKeyData);
+        /// <summary>
+        /// SendKeys using modified signature. The tlbimp-generated signature is:
+        /// 
+        ///    new void SendKeys(
+        ///        [In] int numKeys, 
+        ///        [In] ref bool pbArrayKeyUp, 
+        ///        [In] ref int plKeyData);
+        /// 
+        /// This signature doesn't allow passing arrays.
+        /// </summary>
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         void SendKeys(
             [In] int numKeys,
