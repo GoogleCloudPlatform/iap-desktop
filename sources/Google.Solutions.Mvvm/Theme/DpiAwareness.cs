@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,46 +20,53 @@
 //
 
 using System;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
-#if NETFRAMEWORK
-
-namespace Google.Solutions.Mvvm
+namespace Google.Solutions.Mvvm.Theme
 {
-    public enum HighDpiMode
+    public enum DpiAwarenessMode
     {
         DpiUnaware = 0,
         SystemAware = 1,
         PerMonitor = 2,
         PerMonitorV2 = 3,
-        DpiUnawareGdiScaled	= 4,
+        DpiUnawareGdiScaled = 4,
     }
 
-    public static class ApplicationExtensions
+    public static class DpiAwareness
     {
+        private static DpiAwarenessMode currentMode = DpiAwarenessMode.DpiUnaware;
+
         /// <summary>
-        /// Sets the high DPI mode of the process. This extension method
-        /// emulates the behavior of the .NET 3.0+ method.
+        /// Gets or sets the high DPI mode of the process. 
         /// </summary>
-        public static bool SetHighDpiMode(HighDpiMode highDpiMode)
+        public static DpiAwarenessMode Mode
         {
-            var mode = highDpiMode switch
+            get => currentMode;
+            set
             {
-                HighDpiMode.DpiUnaware => NativeMethods.DPI_AWARENESS_CONTEXT.UNAWARE,
-                HighDpiMode.SystemAware => NativeMethods.DPI_AWARENESS_CONTEXT.SYSTEM_AWARE,
-                HighDpiMode.PerMonitor => NativeMethods.DPI_AWARENESS_CONTEXT.PER_MONITOR_AWARE,
-                HighDpiMode.PerMonitorV2 => NativeMethods.DPI_AWARENESS_CONTEXT.PER_MONITOR_AWARE_V2,
-                HighDpiMode.DpiUnawareGdiScaled => NativeMethods.DPI_AWARENESS_CONTEXT.UNAWARE_GDISCALED,
-                _ => throw new ArgumentException(nameof(highDpiMode)),
-            };
+                var contextValue = value switch
+                {
+                    DpiAwarenessMode.DpiUnaware => NativeMethods.DPI_AWARENESS_CONTEXT.UNAWARE,
+                    DpiAwarenessMode.SystemAware => NativeMethods.DPI_AWARENESS_CONTEXT.SYSTEM_AWARE,
+                    DpiAwarenessMode.PerMonitor => NativeMethods.DPI_AWARENESS_CONTEXT.PER_MONITOR_AWARE,
+                    DpiAwarenessMode.PerMonitorV2 => NativeMethods.DPI_AWARENESS_CONTEXT.PER_MONITOR_AWARE_V2,
+                    DpiAwarenessMode.DpiUnawareGdiScaled => NativeMethods.DPI_AWARENESS_CONTEXT.UNAWARE_GDISCALED,
+                    _ => throw new ArgumentException(nameof(value)),
+                };
 
-            //
-            // NB. When enabling High DPI mode programmatically, WinForms won't
-            // fire DpiChanged events.
-            //
+                //
+                // NB. When enabling High DPI mode programmatically, WinForms won't
+                // fire DpiChanged events.
+                //
 
-            return NativeMethods.SetProcessDpiAwarenessContext(mode);
+                if (!NativeMethods.SetProcessDpiAwarenessContext(contextValue))
+                {
+                    throw new Win32Exception();
+                }
+                currentMode = value;
+            }
         }
 
         //---------------------------------------------------------------------
@@ -84,5 +91,3 @@ namespace Google.Solutions.Mvvm
         }
     }
 }
-
-#endif

@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,37 +19,22 @@
 // under the License.
 //
 
+
 using Google.Solutions.Mvvm.Theme;
-using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
-using System.Threading;
-using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Test.Theme
 {
     [TestFixture]
-    [RequiresInteraction]
-    [Apartment(ApartmentState.STA)]
-    public class TestDpiAwarenessRuleset
+    public class TestDpiAwarenessMode
     {
-        //TODO: remove
         [Test]
-        public void TestUi()
+        public void Mode()
         {
-            using (var form = new SampleDialog())
-            {
-                DpiAwareness.Mode = DpiAwarenessMode.SystemAware;
-                Application.EnableVisualStyles();
-                //Application.SetCompatibleTextRenderingDefault(false);
+            Assert.AreEqual(DpiAwarenessMode.DpiUnaware, DpiAwareness.Mode);
 
-                new ControlTheme()
-                    .AddRuleSet(new WindowsRuleSet(false))
-                    .AddRuleSet(new CommonControlRuleSet())
-                    .AddRuleSet(new DpiAwarenessRuleset())
-                    .ApplyTo(form);
-
-                Application.Run(form);
-            }
+            DpiAwareness.Mode = DpiAwarenessMode.DpiUnaware;
+            Assert.AreEqual(DpiAwarenessMode.DpiUnaware, DpiAwareness.Mode);
         }
     }
 }

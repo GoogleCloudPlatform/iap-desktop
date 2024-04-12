@@ -57,7 +57,6 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Windows;
-using Google.Solutions.Mvvm;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Diagnostics;
@@ -411,12 +410,12 @@ namespace Google.Solutions.IapDesktop
 
                 var dpiMode = (themeSettingsRepository.GetSettings().ScalingMode.Value) switch
                 {
-                    ScalingMode.Gdi => HighDpiMode.DpiUnawareGdiScaled,
-                    ScalingMode.SystemDpiAware => HighDpiMode.SystemAware,
-                    _ => HighDpiMode.DpiUnawareGdiScaled,
+                    ScalingMode.Gdi => DpiAwarenessMode.DpiUnawareGdiScaled,
+                    ScalingMode.SystemDpiAware => DpiAwarenessMode.SystemAware,
+                    _ => DpiAwarenessMode.DpiUnawareGdiScaled,
                 };
 
-                if (dpiMode != HighDpiMode.DpiUnaware)
+                if (dpiMode != DpiAwarenessMode.DpiUnaware)
                 {
                     //
                     // Set DPI mode. 
@@ -425,10 +424,14 @@ namespace Google.Solutions.IapDesktop
                     // app manifest or app.config) does causes WinForms to *not* deliver
                     // DPI change (WM_DPICHANGE) events, but that's ok.
                     //
-                    if (!ApplicationExtensions.SetHighDpiMode(dpiMode))
+                    try
+                    {
+                        DpiAwareness.Mode = dpiMode;
+                    }
+                    catch (Exception e)
                     {
                         ApplicationTraceSource.Log.TraceWarning(
-                            "Setting DPI mode to {0} failed", dpiMode);
+                            "Setting DPI mode to {0} failed: {1}", dpiMode, e.Message);
                     }
                 }
 

@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// <summary>
         /// System DPI aware scaling.
         /// </summary>
-        [Display(Name = "API-aware")]
+        [Display(Name = "DPI-aware")]
         SystemDpiAware = 2,
 
         _Default = Gdi

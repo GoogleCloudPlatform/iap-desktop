@@ -339,7 +339,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     : this.theme.Palette.TextBox.Background;
             }
 
-            if (!GdiScaling.IsEnabled)
+            if (DpiAwareness.Mode != DpiAwarenessMode.DpiUnawareGdiScaled)
             {
                 //
                 // When GDI scaling is active, SetControlBorder 
