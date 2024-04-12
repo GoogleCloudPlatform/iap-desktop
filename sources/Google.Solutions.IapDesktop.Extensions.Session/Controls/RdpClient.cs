@@ -835,22 +835,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         // Synthetic input.
         //---------------------------------------------------------------------
 
-        private static unsafe void SendScanCodesUnsafe(
-            IMsRdpClientNonScriptable5 nonScriptable,
-            int keyDataLength,
-            bool* keyUpPtr,
-            int* keyDataPtr)
-        {
-            //
-            // NB. This wrapper method is essential and must be static, otherwise
-            // marshalling doesn't work correctly on 32-bit.
-            //
-            // NB. According to MSDN, scan codes need to be sent
-            // in "WM_KEYDOWN lParam format", but that seems incorrect.
-            //
+        //private static unsafe void SendScanCodesUnsafe(
+        //    IMsRdpClientNonScriptable5_Modified nonScriptable,
+        //    int keyDataLength,
+        //    bool* keyUpPtr,
+        //    int* keyDataPtr)
+        //{
+        //    //
+        //    // NB. This wrapper method is essential and must be static, otherwise
+        //    // marshalling doesn't work correctly on 32-bit.
+        //    //
+        //    // NB. According to MSDN, scan codes need to be sent
+        //    // in "WM_KEYDOWN lParam format", but that seems incorrect.
+        //    //
 
-            nonScriptable.SendKeys(keyDataLength, ref *keyUpPtr, ref *keyDataPtr);
-        }
+        //    nonScriptable.SendKeys(keyDataLength, ref *keyUpPtr, ref *keyDataPtr);
+        //}
 
         private void SendScanCodes(
             short[] keyUp,
@@ -870,14 +870,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             //
             Thread.Sleep(5);
 
-            unsafe
-            {
-                fixed (short* keyUpPtr = keyUp)
-                fixed (int* keyDataPtr = keyData)
-                {
-                    SendScanCodesUnsafe(this.clientNonScriptable, keyData.Length, (bool*)keyUpPtr, keyDataPtr);
-                }
-            }
+            var obj = (IMsRdpClientNonScriptable5_Modified)this.client.GetOcx();
+            obj.SendKeys(keyData.Length, keyUp, keyData);
+            //unsafe
+            //{
+            //    fixed (short* keyUpPtr = keyUp)
+            //    fixed (int* keyDataPtr = keyData)
+            //    {
+            //        SendScanCodesUnsafe(
+            //            (IMsRdpClientNonScriptable5_Modified)this.client.GetOcx(), 
+            //            keyData.Length, 
+            //            (bool*)keyUpPtr, 
+            //            keyDataPtr);
+            //    }
+            //}
         }
 
 
