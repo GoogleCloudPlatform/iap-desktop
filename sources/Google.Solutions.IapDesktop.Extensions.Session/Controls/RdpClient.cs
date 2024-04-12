@@ -36,6 +36,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -834,30 +835,88 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         // Synthetic input.
         //---------------------------------------------------------------------
 
-        private unsafe void SendScanCodesUnsafe(
+        internal unsafe void OldSendKeys(
+            params Keys[] keyCodes)
+        {
+            if (keyCodes.Length > 10)
+            {
+                throw new ArgumentOutOfRangeException(nameof(keyCodes));
+            }
+
+            var keyUp = new short[keyCodes.Length * 2];
+            var keyData = new int[keyCodes.Length * 2];
+
+            for (var i = 0; i < keyCodes.Length; i++)
+            {
+                var virtualKeyCode = (int)UnsafeNativeMethods.MapVirtualKey((uint)keyCodes[i], 0);
+
+                // Generate DOWN key presses.
+                keyUp[i] = 0;
+                keyData[i] = virtualKeyCode;
+
+                // Generate UP key presses (in reverse order).
+                keyUp[keyUp.Length - 1 - i] = 1;
+                keyData[keyData.Length - 1 - i] = virtualKeyCode;
+            }
+
+            SendScanCodes(keyUp, keyData);
+
+        }
+
+        //---------------------------------------------------------------------
+        // P/Invoke definitions.
+        //---------------------------------------------------------------------
+
+        private static class UnsafeNativeMethods
+        {
+            public const uint E_UNEXPECTED = 0x8000ffff;
+
+            [DllImport("user32.dll")]
+            internal static extern uint MapVirtualKey(uint uCode, uint uMapType);
+        }
+
+
+        private static unsafe void SendScanCodesUnsafe(
+            IMsRdpClientNonScriptable5 nonScriptable,
             int keyDataLength,
             bool* keyUpPtr,
             int* keyDataPtr)
         {
             //
+            // NB. This wrapper method is essential and must be static, otherwise
+            // marshalling doesn't work correctly on 32-bit.
+            //
             // NB. According to MSDN, scan codes need to be sent
             // in "WM_KEYDOWN lParam format", but that seems incorrect.
             //
 
-            this.client.Focus();
-            this.clientNonScriptable.SendKeys(keyDataLength, ref *keyUpPtr, ref *keyDataPtr);
+            // TODO: move focus
+            // this.client.Focus();
+            nonScriptable.SendKeys(keyDataLength, ref *keyUpPtr, ref *keyDataPtr);
         }
 
         private void SendScanCodes(
             short[] keyUp,
             int[] keyData)
         {
+            //
+            // NB. It's crucial to set the focus here again, otherwise
+            // key chords don't work.
+            //
+            this.client.Focus();
+
+            //
+            // Give the control a chance to catch up with events. This is
+            // nasty, but necessary.
+            //
+            Thread.Sleep(5);
+
             unsafe
             {
                 fixed (short* keyUpPtr = keyUp)
                 fixed (int* keyDataPtr = keyData)
                 {
-                    SendScanCodesUnsafe(keyData.Length, (bool*)keyUpPtr, keyDataPtr);
+                    SendScanCodesUnsafe(this.clientNonScriptable, keyData.Length, (bool*)keyUpPtr, keyDataPtr);
                 }
             }
         }
@@ -936,10 +995,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 // The RDP control sometimes swallows the first key combination
                 // that is sent. So start by a harmless ESC.
                 //
-                SendVirtualKey(Keys.Escape);
-                SendVirtualKey(Keys.Control | Keys.Alt | Keys.Delete );
+                OldSendKeys(
+                    Keys.ControlKey,
+                    Keys.Menu,
+                    Keys.Delete);
+                //SendVirtualKey(Keys.Escape);
+                //SendVirtualKey(Keys.Control | Keys.Alt | Keys.Delete );
             }
         }
+
+        int escapesSent = 0;
 
         /// <summary>
         /// Simulate a key chord toopen task manager.
@@ -954,8 +1019,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 // The RDP control sometimes swallows the first key combination
                 // that is sent. So start by a harmless ESC.
                 //
-                SendVirtualKey(Keys.Escape);
-                SendVirtualKey(Keys.Control | Keys.Shift | Keys.Escape);
+                if (escapesSent++ == 0)
+                {
+                    SendVirtualKey(Keys.Escape); // TODO: send once only
+                }
+                SendVirtualKey(Keys.Control | Keys.Alt | Keys.Delete);
+                //SendVirtualKey(Keys.Control | Keys.Shift | Keys.Escape);
             }
         }
 
