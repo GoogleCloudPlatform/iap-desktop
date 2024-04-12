@@ -565,7 +565,7 @@ namespace Google.Solutions.IapDesktop
                         { DefaultParameters.UserAgentArchitecture, Install.ProcessArchitecture.ToString() },
                         { DefaultParameters.UserAgentPlatformVersion, Environment.OSVersion.Version.ToString() },
                         { "osdrk", SystemTheme.ShouldAppsUseDarkMode ? "1" : "0" },
-                        { "osdpi", DeviceCapabilities.Get().SystemDpi.ToString() },
+                        { "osdpi", DeviceCapabilities.GetScreenCapabilities().SystemDpi.ToString() },
                         { "apent", appSettingsRepository.IsPolicyPresent ? "1" : "0" },
                     })
                 {

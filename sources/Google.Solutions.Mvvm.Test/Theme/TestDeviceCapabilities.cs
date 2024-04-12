@@ -30,7 +30,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         [Test]
         public void GetScreenCapabilities()
         {
-            var caps = DeviceCapabilities.Get();
+            var caps = DeviceCapabilities.GetScreenCapabilities();
             Assert.AreNotEqual(0, caps.SystemDpi);
         }
     }

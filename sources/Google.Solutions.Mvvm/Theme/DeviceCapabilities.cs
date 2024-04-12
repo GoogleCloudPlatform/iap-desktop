@@ -22,7 +22,6 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Theme
@@ -84,7 +83,7 @@ namespace Google.Solutions.Mvvm.Theme
             this.SystemDpi = systemDpi;
         }
 
-        public static DeviceCapabilities Get()
+        public static DeviceCapabilities GetScreenCapabilities()
         {
             var hdc = NativeMethods.GetDC(IntPtr.Zero);
             try

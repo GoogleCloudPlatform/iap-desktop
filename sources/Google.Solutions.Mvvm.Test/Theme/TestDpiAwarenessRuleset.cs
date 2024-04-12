@@ -28,7 +28,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.Mvvm.Test.Theme
 {
     [TestFixture]
-    [InteractiveTest]
+    [RequiresInteraction]
     [Apartment(ApartmentState.STA)]
     public class TestDpiAwarenessRuleset
     {
