@@ -32,7 +32,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
     [Apartment(ApartmentState.STA)]
     public class TestDpiAwarenessRuleset
     {
-
+        //TODO: remove
         [Test]
         public void TestUi()
         {

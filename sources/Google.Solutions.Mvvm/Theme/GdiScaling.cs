@@ -26,7 +26,7 @@ namespace Google.Solutions.Mvvm.Theme
     /// <summary>
     /// Helper class to toggle between "Unaware" and "GDI scaled" DPI mode.
     /// </summary>
-    public static class GdiScaling
+    public static class GdiScaling // TODO: use SetHighDpiMode instead.
     {
         private static bool active;
 
