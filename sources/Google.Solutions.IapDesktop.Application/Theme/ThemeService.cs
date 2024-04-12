@@ -91,7 +91,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 ? VSTheme.GetDarkTheme()
                 : VSTheme.GetLightTheme();
 
-            // TODO: Use either GdiScalingRuleset or DpiAwareness
             var systemDialogTheme = new ControlTheme()
                 .AddRuleSet(windowsTheme)
                 .AddRuleSet(new WindowsSystemDialogRuleset())

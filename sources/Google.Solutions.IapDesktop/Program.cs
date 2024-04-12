@@ -449,7 +449,8 @@ namespace Google.Solutions.IapDesktop
                 var themeSettingsRepository = new ThemeSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Theme"));
 
-                if (OSCapabilities.IsGdiScalingSupported)
+                if (!this.commandLineOptions.IsHighDpiEnabled && 
+                    OSCapabilities.IsGdiScalingSupported)
                 {
                     //
                     // Enable GDI scaling unless it has been disabled by the user.
