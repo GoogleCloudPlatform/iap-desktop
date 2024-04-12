@@ -96,10 +96,16 @@ namespace Google.Solutions.Mvvm.Theme
                 Debug.Assert(form.CurrentAutoScaleDimensions.Width >= 96);
                 Debug.Assert(form.CurrentAutoScaleDimensions.Width == form.CurrentAutoScaleDimensions.Height);
             }
+            else if (c is PropertyGrid)
+            {
+                //
+                // PropertyGrid uses Mode = None, and that's ok.
+                //
+            }
             else if (c is ContainerControl container)
             {
                 //
-                // Controls must use Mode = Inherit.
+                // Containers must use Mode = Inherit.
                 //
                 Debug.Assert(container.AutoScaleMode == AutoScaleMode.Inherit);
             }

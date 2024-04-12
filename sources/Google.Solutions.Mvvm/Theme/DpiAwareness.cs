@@ -21,6 +21,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace Google.Solutions.Mvvm.Theme
@@ -37,6 +38,8 @@ namespace Google.Solutions.Mvvm.Theme
     public static class DpiAwareness
     {
         private static DpiAwarenessMode currentMode = DpiAwarenessMode.DpiUnaware;
+
+        public static SizeF DefaultDpi = new SizeF(96, 96);
 
         /// <summary>
         /// Gets or sets the high DPI mode of the process. 
