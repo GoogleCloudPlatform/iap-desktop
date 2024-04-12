@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 {
     [ComVisible(false)]
     [SkipCodeCoverage("GUI plumbing")]
-    public partial class ToolWindowViewBase : DockContent
+    public partial class ToolWindowViewBase : DockContent, INestedForm
     {
         private readonly DockPanel panel;
 

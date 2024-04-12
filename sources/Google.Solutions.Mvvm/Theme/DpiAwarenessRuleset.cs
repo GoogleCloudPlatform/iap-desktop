@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,11 +20,9 @@
 //
 
 using Google.Solutions.Common.Util;
-using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Theme
@@ -36,28 +34,12 @@ namespace Google.Solutions.Mvvm.Theme
     {
         private readonly DeviceCapabilities deviceCaps;
 
-        private readonly Font UiFont;
-        private readonly Font UiFontUnscaled;
-
         public DpiAwarenessRuleset()
         {
             //
             // Get system DPI and use this for scaling operations.
             //
             this.deviceCaps = DeviceCapabilities.Get();
-
-            //
-            // Use Segoe UI instead of the legacy Microsoft Sans Serif.
-            //
-            // NB. We must set the initial size based on the current DPI settings.
-            // 
-            var fontFamily = new FontFamily("Segoe UI");
-            this.UiFont = new Font(
-                fontFamily,
-                (9f * this.deviceCaps.SystemDpi) / DeviceCapabilities.DefaultDpi);
-            this.UiFontUnscaled = new Font(
-                fontFamily,
-                9f);
         }
 
         //---------------------------------------------------------------------
@@ -98,10 +80,7 @@ namespace Google.Solutions.Mvvm.Theme
 
         private void PrepareControlForFontSizing(Control c)
         {
-
-            // Cf https://stackoverflow.com/questions/22735174/how-to-write-winforms-code-that-auto-scales-to-system-font-and-dpi-settings
-
-            if (c is Form form && form.Parent == null)
+            if (c is Form form && !(form is INestedForm))
             {
                 //
                 // Forms must use:
@@ -109,8 +88,8 @@ namespace Google.Solutions.Mvvm.Theme
                 //   AutoScaleMode = DPI
                 //   CurrentAutoScaleDimensions = 96x96
                 //
-                // ToolWindows are special and must follow the conventions for
-                // ContainerControls.
+                // INestedForm (ToolWindows) are special and must follow
+                // the conventions for ContainerControls.
                 //
 
                 Debug.Assert(form.AutoScaleMode == AutoScaleMode.Dpi);
@@ -123,19 +102,6 @@ namespace Google.Solutions.Mvvm.Theme
                 // Controls must use Mode = Inherit.
                 //
                 Debug.Assert(container.AutoScaleMode == AutoScaleMode.Inherit);
-            }
-            else if (c.Font == Control.DefaultFont)
-            {
-                //
-                // Non-container controls have their font size scaled by the 
-                // system. But for that to work, we have to reassign the unscaled
-                // font.
-                //
-                //c.Font = this.UiFontUnscaled;
-            }
-            else
-            {
-                //c.Font = new Font(this.UiFont.FontFamily, c.Font.Size);
             }
         }
 
@@ -251,6 +217,5 @@ namespace Google.Solutions.Mvvm.Theme
                 controlTheme.AddRule<Form>(ForceRescaleForm, ControlTheme.Options.ApplyWhenHandleCreated);
             }
         }
-
     }
 }
