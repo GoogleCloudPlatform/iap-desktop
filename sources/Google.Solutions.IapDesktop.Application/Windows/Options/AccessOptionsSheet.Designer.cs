@@ -225,8 +225,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // 
             // AccessOptionsSheet
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.Controls.Add(this.connectionBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.dcaBox);

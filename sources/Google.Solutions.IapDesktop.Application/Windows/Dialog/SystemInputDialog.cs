@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             this.StartPosition = FormStartPosition.CenterParent;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = SizeGripStyle.Hide;
-            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleMode = AutoScaleMode.Inherit;
 
             SuspendLayout();
 

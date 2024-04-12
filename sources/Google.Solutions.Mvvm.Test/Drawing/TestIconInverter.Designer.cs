@@ -214,8 +214,8 @@ namespace Google.Solutions.Mvvm.Test.Drawing
             // 
             // TestIconInverter
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.ClientSize = new System.Drawing.Size(185, 336);
             this.Controls.Add(this.colorFactorValue);
             this.Controls.Add(this.grayFactorValue);

@@ -83,7 +83,7 @@ namespace Google.Solutions.Mvvm.Theme
             this.SystemDpi = systemDpi;
         }
 
-        public static DeviceCapabilities GetScreenCapabilities()
+        public static DeviceCapabilities Get()
         {
             var hdc = NativeMethods.GetDC(IntPtr.Zero);
             try

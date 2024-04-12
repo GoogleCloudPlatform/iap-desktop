@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -37,14 +38,13 @@ namespace Google.Solutions.Mvvm.Theme
 
         private readonly Font UiFont;
         private readonly Font UiFontUnscaled;
-        private readonly SizeF UiFontDimensions;
 
         public DpiAwarenessRuleset()
         {
             //
             // Get system DPI and use this for scaling operations.
             //
-            this.deviceCaps = DeviceCapabilities.GetScreenCapabilities();
+            this.deviceCaps = DeviceCapabilities.Get();
 
             //
             // Use Segoe UI instead of the legacy Microsoft Sans Serif.
@@ -58,11 +58,6 @@ namespace Google.Solutions.Mvvm.Theme
             this.UiFontUnscaled = new Font(
                 fontFamily,
                 9f);
-
-            //
-            // NB. Dimension must match the font family.
-            //
-            this.UiFontDimensions = new SizeF(7f, 15f);
         }
 
         //---------------------------------------------------------------------
@@ -106,17 +101,28 @@ namespace Google.Solutions.Mvvm.Theme
 
             // Cf https://stackoverflow.com/questions/22735174/how-to-write-winforms-code-that-auto-scales-to-system-font-and-dpi-settings
 
-            if (c is ContainerControl container)
+            if (c is Form form && form.Parent == null)
             {
                 //
-                // Let the system use font-based autoscaling.
+                // Forms must use:
                 //
-                // (This will handle both DPI changes and changes to the system font size
-                // setting; DPI will only handle DPI changes, not changes to the system
-                // font size setting.)
+                //   AutoScaleMode = DPI
+                //   CurrentAutoScaleDimensions = 96x96
                 //
-                container.AutoScaleMode = AutoScaleMode.Font;
-                container.AutoScaleDimensions = this.UiFontDimensions;
+                // ToolWindows are special and must follow the conventions for
+                // ContainerControls.
+                //
+
+                Debug.Assert(form.AutoScaleMode == AutoScaleMode.Dpi);
+                Debug.Assert(form.CurrentAutoScaleDimensions.Width >= 96);
+                Debug.Assert(form.CurrentAutoScaleDimensions.Width == form.CurrentAutoScaleDimensions.Height);
+            }
+            else if (c is ContainerControl container)
+            {
+                //
+                // Controls must use Mode = Inherit.
+                //
+                Debug.Assert(container.AutoScaleMode == AutoScaleMode.Inherit);
             }
             else if (c.Font == Control.DefaultFont)
             {
@@ -125,11 +131,11 @@ namespace Google.Solutions.Mvvm.Theme
                 // system. But for that to work, we have to reassign the unscaled
                 // font.
                 //
-                c.Font = this.UiFontUnscaled;
+                //c.Font = this.UiFontUnscaled;
             }
             else
             {
-                c.Font = new Font(this.UiFont.FontFamily, c.Font.Size);
+                //c.Font = new Font(this.UiFont.FontFamily, c.Font.Size);
             }
         }
 
@@ -209,7 +215,8 @@ namespace Google.Solutions.Mvvm.Theme
                 // Avoid doing the same for child window as that
                 // would cause duplicate scaling.
                 //
-                c.Font = this.UiFont;
+                //c.Font = this.UiFont;
+                c.PerformAutoScale();
             }
         }
 

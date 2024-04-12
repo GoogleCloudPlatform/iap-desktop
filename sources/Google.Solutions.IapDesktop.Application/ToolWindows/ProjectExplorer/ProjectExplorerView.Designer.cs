@@ -195,8 +195,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             // 
             // ProjectExplorerView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.searchTextBox);
             this.Controls.Add(this.progressBar);

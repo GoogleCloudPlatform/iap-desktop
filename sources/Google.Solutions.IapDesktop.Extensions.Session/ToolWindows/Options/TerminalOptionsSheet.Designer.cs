@@ -250,8 +250,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             // 
             // TerminalOptionsSheet
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.Controls.Add(this.themeBox);
             this.Controls.Add(this.scollingBox);
             this.Controls.Add(this.textSelectionBox);

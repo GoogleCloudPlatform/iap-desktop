@@ -40,6 +40,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
             {
                 ApplicationExtensions.SetHighDpiMode(HighDpiMode.SystemAware);
                 Application.EnableVisualStyles();
+                //Application.SetCompatibleTextRenderingDefault(false);
 
                 new ControlTheme()
                     .AddRuleSet(new WindowsRuleSet(false))
