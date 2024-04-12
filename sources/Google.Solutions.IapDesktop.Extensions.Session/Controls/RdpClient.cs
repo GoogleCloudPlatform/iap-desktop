@@ -906,10 +906,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             //
             var scanCodes = keyboard
                 .ToScanCodes(virtualKey)
+                .Select(c => (int)c)
                 .ToArray();
 
             //
-            // If the key translates to multiple scan codes, we have to send
+            // If the key has modifers other than Shift, we have to send
             // separate DOWN and UP keystrokes for each scan code.
             //
             // Curiously, we must not do this for "normal" characters 
@@ -920,7 +921,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             short[] keyUp;
             int[] keyData;
 
-            if (scanCodes.Length > 1)
+            if ((virtualKey & (Keys.Control | Keys.Alt)) != 0 &&
+                scanCodes.Length > 1)
             {
                 //
                 // Convert scan codes into simulated DOWN- and UP- key 
@@ -935,13 +937,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     // Generate DOWN key presses.
                     //
                     keyUp[i] = 0;
-                    keyData[i] = (int)scanCodes[i];
+                    keyData[i] = scanCodes[i];
 
                     //
                     // Generate UP key presses (in reverse order).
                     //
                     keyUp[keyUp.Length - 1 - i] = 1;
-                    keyData[keyData.Length - 1 - i] = (int)scanCodes[i];
+                    keyData[keyData.Length - 1 - i] = scanCodes[i];
                 }
             }
             else
@@ -949,8 +951,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 //
                 // Generate DOWN key press only.
                 //
-                keyUp = new short[] { 0 };
-                keyData = new int[] { (int)scanCodes[0] };
+                keyUp = new short[scanCodes.Length]; // DOWN.
+                keyData = scanCodes;
             }
 
             SendScanCodes(keyUp, keyData);
