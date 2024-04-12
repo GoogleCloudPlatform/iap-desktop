@@ -39,7 +39,10 @@ namespace Google.Solutions.Mvvm.Theme
     {
         private static DpiAwarenessMode currentMode = DpiAwarenessMode.DpiUnaware;
 
-        public static SizeF DefaultDpi = new SizeF(96, 96);
+        /// <summary>
+        /// Windows uses 96 DPI by default.
+        /// </summary>
+        public static readonly SizeF DefaultDpi = new SizeF(96, 96);
 
         /// <summary>
         /// Gets or sets the high DPI mode of the process. 
