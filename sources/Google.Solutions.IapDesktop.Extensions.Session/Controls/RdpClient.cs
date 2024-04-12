@@ -28,14 +28,13 @@ using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Input;
 using MSTSCLib;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -60,6 +59,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         private readonly DeferredCallback deferResize;
         private Form parentForm = null;
+
+        private int keysSent = 0;
 
         public RdpClient()
         {
@@ -834,49 +835,82 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         // Synthetic input.
         //---------------------------------------------------------------------
 
-        private unsafe void SendScanCodesUnsafe(
+        private static unsafe void SendScanCodesUnsafe(
+            IMsRdpClientNonScriptable5 nonScriptable,
             int keyDataLength,
             bool* keyUpPtr,
             int* keyDataPtr)
         {
             //
+            // NB. This wrapper method is essential and must be static, otherwise
+            // marshalling doesn't work correctly on 32-bit.
+            //
             // NB. According to MSDN, scan codes need to be sent
             // in "WM_KEYDOWN lParam format", but that seems incorrect.
             //
 
-            this.client.Focus();
-            this.clientNonScriptable.SendKeys(keyDataLength, ref *keyUpPtr, ref *keyDataPtr);
+            nonScriptable.SendKeys(keyDataLength, ref *keyUpPtr, ref *keyDataPtr);
         }
 
         private void SendScanCodes(
             short[] keyUp,
             int[] keyData)
         {
+            //
+            // NB. It's crucial to set the focus here again, otherwise
+            // key chords don't work.
+            //
+            this.client.Focus();
+
+            //
+            // Give the control a chance to catch up with events. This is
+            // nasty, but necessary.
+            //
+            // Note that the control is more sensitive on x86 than on x64.
+            //
+            Thread.Sleep(5);
+
             unsafe
             {
                 fixed (short* keyUpPtr = keyUp)
                 fixed (int* keyDataPtr = keyData)
                 {
-                    SendScanCodesUnsafe(keyData.Length, (bool*)keyUpPtr, keyDataPtr);
+                    SendScanCodesUnsafe(this.clientNonScriptable, keyData.Length, (bool*)keyUpPtr, keyDataPtr);
                 }
             }
         }
+
 
         /// <summary>
         /// Send a sequence of virtual keys. Keys may use modifiers.
         /// </summary>
         private void SendVirtualKey(Keys virtualKey)
         {
+            var keyboard = KeyboardLayout.Current;
+
+            //
+            // The RDP control sometimes swallows the first key combination
+            // that is sent. So start by a harmless ESC.
+            //
+            if (this.keysSent++ == 0)
+            {
+                var escScanCode = keyboard.ToScanCodes(Keys.Escape).First();
+                SendScanCodes(
+                     new short[] { 0 },
+                     new int[] { (int)escScanCode });
+            }
+
             //
             // Convert virtual key code (which might contain modifiers)
             // into a sequence of scan codes.
             //
-            var scanCodes = KeyboardLayout.Current
+            var scanCodes = keyboard
                 .ToScanCodes(virtualKey)
+                .Select(c => (int)c)
                 .ToArray();
 
             //
-            // If the key translates to multiple scan codes, we have to send
+            // If the key has modifers other than Shift, we have to send
             // separate DOWN and UP keystrokes for each scan code.
             //
             // Curiously, we must not do this for "normal" characters 
@@ -887,7 +921,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             short[] keyUp;
             int[] keyData;
 
-            if (scanCodes.Length > 1)
+            if ((virtualKey & (Keys.Control | Keys.Alt)) != 0 &&
+                scanCodes.Length > 1)
             {
                 //
                 // Convert scan codes into simulated DOWN- and UP- key 
@@ -902,13 +937,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     // Generate DOWN key presses.
                     //
                     keyUp[i] = 0;
-                    keyData[i] = (int)scanCodes[i];
+                    keyData[i] = scanCodes[i];
 
                     //
                     // Generate UP key presses (in reverse order).
                     //
                     keyUp[keyUp.Length - 1 - i] = 1;
-                    keyData[keyData.Length - 1 - i] = (int)scanCodes[i];
+                    keyData[keyData.Length - 1 - i] = scanCodes[i];
                 }
             }
             else
@@ -916,8 +951,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 //
                 // Generate DOWN key press only.
                 //
-                keyUp = new short[] { 0 };
-                keyData = new int[] { (int)scanCodes[0] };
+                keyUp = new short[scanCodes.Length]; // DOWN.
+                keyData = scanCodes;
             }
 
             SendScanCodes(keyUp, keyData);
@@ -936,7 +971,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 // The RDP control sometimes swallows the first key combination
                 // that is sent. So start by a harmless ESC.
                 //
-                SendVirtualKey(Keys.Escape);
                 SendVirtualKey(Keys.Control | Keys.Alt | Keys.Delete );
             }
         }
@@ -950,11 +984,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                //
-                // The RDP control sometimes swallows the first key combination
-                // that is sent. So start by a harmless ESC.
-                //
-                SendVirtualKey(Keys.Escape);
                 SendVirtualKey(Keys.Control | Keys.Shift | Keys.Escape);
             }
         }

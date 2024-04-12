@@ -81,13 +81,8 @@ namespace Google.Solutions.Mvvm.Input
         /// <summary>
         /// Translate modifiers into corresponding virtual keys.
         /// </summary>
-        public static IEnumerable<Keys> TranslateModifiers(Keys chord) 
+        public static IEnumerable<Keys> TranslateModifiers(Keys chord)
         {
-            if (chord.HasFlag(Keys.Shift))
-            {
-                yield return Keys.ShiftKey;
-            }
-
             if (chord.HasFlag(Keys.Control))
             {
                 yield return Keys.ControlKey;
@@ -96,7 +91,11 @@ namespace Google.Solutions.Mvvm.Input
             if (chord.HasFlag(Keys.Alt))
             {
                 yield return Keys.Menu;
+            }
 
+            if (chord.HasFlag(Keys.Shift))
+            {
+                yield return Keys.ShiftKey;
             }
 
             yield return chord & ~(Keys.Shift | Keys.Control | Keys.Alt);

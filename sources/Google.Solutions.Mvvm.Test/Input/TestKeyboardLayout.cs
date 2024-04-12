@@ -68,7 +68,7 @@ namespace Google.Solutions.Mvvm.Test.Input
                 KeyboardLayout.TranslateModifiers(Keys.B));
 
             CollectionAssert.AreEqual(
-                new[] { Keys.ShiftKey, Keys.ControlKey, Keys.Menu, Keys.Delete },
+                new[] { Keys.ControlKey, Keys.Menu, Keys.ShiftKey, Keys.Delete },
                 KeyboardLayout.TranslateModifiers(
                     Keys.Delete | Keys.Shift | Keys.Alt | Keys.Control));
         }
