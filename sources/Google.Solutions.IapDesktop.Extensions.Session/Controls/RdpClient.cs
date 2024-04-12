@@ -855,6 +855,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             // a signature for SendKeys that doesn't work with C-style arrays.
             // Therefore, we use a manually fixed version of IMsRdpClientNonScriptable5.
             //
+            // According to MSDN, scan codes need to be sent in
+            // "WM_KEYDOWN lParam format", but that seems incorrect. Instead,
+            // the API expects raw scan codes.
+            //
+
             var obj = (IMsRdpClientNonScriptable5_SendKeys)this.client.GetOcx();
             obj.SendKeys(keyData.Length, keyUp, keyData);
         }
