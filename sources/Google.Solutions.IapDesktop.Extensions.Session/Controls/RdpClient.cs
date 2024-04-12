@@ -835,47 +835,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         // Synthetic input.
         //---------------------------------------------------------------------
 
-        internal unsafe void OldSendKeys(
-            params Keys[] keyCodes)
-        {
-            if (keyCodes.Length > 10)
-            {
-                throw new ArgumentOutOfRangeException(nameof(keyCodes));
-            }
-
-            var keyUp = new short[keyCodes.Length * 2];
-            var keyData = new int[keyCodes.Length * 2];
-
-            for (var i = 0; i < keyCodes.Length; i++)
-            {
-                var virtualKeyCode = (int)UnsafeNativeMethods.MapVirtualKey((uint)keyCodes[i], 0);
-
-                // Generate DOWN key presses.
-                keyUp[i] = 0;
-                keyData[i] = virtualKeyCode;
-
-                // Generate UP key presses (in reverse order).
-                keyUp[keyUp.Length - 1 - i] = 1;
-                keyData[keyData.Length - 1 - i] = virtualKeyCode;
-            }
-
-            SendScanCodes(keyUp, keyData);
-
-        }
-
-        //---------------------------------------------------------------------
-        // P/Invoke definitions.
-        //---------------------------------------------------------------------
-
-        private static class UnsafeNativeMethods
-        {
-            public const uint E_UNEXPECTED = 0x8000ffff;
-
-            [DllImport("user32.dll")]
-            internal static extern uint MapVirtualKey(uint uCode, uint uMapType);
-        }
-
-
         private static unsafe void SendScanCodesUnsafe(
             IMsRdpClientNonScriptable5 nonScriptable,
             int keyDataLength,
@@ -890,8 +849,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             // in "WM_KEYDOWN lParam format", but that seems incorrect.
             //
 
-            // TODO: move focus
-            // this.client.Focus();
             nonScriptable.SendKeys(keyDataLength, ref *keyUpPtr, ref *keyDataPtr);
         }
 
@@ -1012,12 +969,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 // The RDP control sometimes swallows the first key combination
                 // that is sent. So start by a harmless ESC.
                 //
-                OldSendKeys(
-                    Keys.ControlKey,
-                    Keys.Menu,
-                    Keys.Delete);
-                //SendVirtualKey(Keys.Escape);
-                //SendVirtualKey(Keys.Control | Keys.Alt | Keys.Delete );
+                SendVirtualKey(Keys.Control | Keys.Alt | Keys.Delete );
             }
         }
 
@@ -1030,8 +982,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                SendVirtualKey(Keys.Control | Keys.Alt | Keys.Delete);
-                //SendVirtualKey(Keys.Control | Keys.Shift | Keys.Escape);
+                SendVirtualKey(Keys.Control | Keys.Shift | Keys.Escape);
             }
         }
 
