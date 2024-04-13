@@ -402,8 +402,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
             // 
             // DebugCommonControlsView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(454, 777);
             this.Controls.Add(this.dropDownButton);
             this.Controls.Add(this.toolStrip1);

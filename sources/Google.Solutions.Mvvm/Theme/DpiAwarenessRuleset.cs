@@ -93,7 +93,7 @@ namespace Google.Solutions.Mvvm.Theme
                 //
 
                 Debug.Assert(form.AutoScaleMode == AutoScaleMode.Dpi);
-                Debug.Assert(form.CurrentAutoScaleDimensions.Width >= 96);
+                Debug.Assert(form.CurrentAutoScaleDimensions.Width >= DpiAwareness.DefaultDpi.Width);
                 Debug.Assert(form.CurrentAutoScaleDimensions.Width == form.CurrentAutoScaleDimensions.Height);
             }
             else if (c is PropertyGrid)
@@ -105,9 +105,19 @@ namespace Google.Solutions.Mvvm.Theme
             else if (c is ContainerControl container)
             {
                 //
-                // Containers must use Mode = Inherit.
+                // Containers should use Mode = Inherit if possible.
                 //
-                Debug.Assert(container.AutoScaleMode == AutoScaleMode.Inherit);
+                // Some controls such as GroupBox controls dont properly
+                // auto-scale if the mode is set to Dpi or Inherit. In
+                // these cases, the Mode should be set to Font.
+                //
+                Debug.Assert(container.AutoScaleMode == AutoScaleMode.Inherit ||
+                    container.AutoScaleMode == AutoScaleMode.Font);
+
+                if (container.AutoScaleMode == AutoScaleMode.Font)
+                {
+                    Debug.Assert(container.CurrentAutoScaleDimensions.Width >= DpiAwareness.DefaultFontSize.Width);
+                }
             }
         }
 
@@ -148,11 +158,11 @@ namespace Google.Solutions.Mvvm.Theme
 
         private void StyleTextBox(TextBoxBase textBox)
         {
-            if (textBox.Multiline)
-            {
-                // Quirk: adjust height
-                textBox.Height /= 4; //TODO: What's the right factor here?
-            }
+            //if (textBox.Multiline)
+            //{
+            //    // Quirk: adjust height
+            //    textBox.Height /= 4; //TODO: What's the right factor here?
+            //}
         }
 
         private void StyleTreeView(TreeView treeView)

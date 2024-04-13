@@ -129,8 +129,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
             // 
             // DebugJobServiceView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(541, 451);
             this.Controls.Add(this.spinner);
             this.Controls.Add(this.runInBackgroundCheckBox);

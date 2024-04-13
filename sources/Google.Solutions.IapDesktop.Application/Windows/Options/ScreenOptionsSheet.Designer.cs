@@ -84,8 +84,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // 
             // ScreenOptionsControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.fullScreenBox);
             this.Name = "ScreenOptionsControl";
             this.Size = new System.Drawing.Size(343, 369);

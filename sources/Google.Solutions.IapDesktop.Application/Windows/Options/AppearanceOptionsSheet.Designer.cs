@@ -132,7 +132,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // 
             // AppearanceOptionsSheet
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.scalingBox);
             this.Controls.Add(this.themeBox);
             this.Name = "AppearanceOptionsSheet";

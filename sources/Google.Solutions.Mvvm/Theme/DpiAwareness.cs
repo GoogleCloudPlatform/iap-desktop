@@ -45,6 +45,11 @@ namespace Google.Solutions.Mvvm.Theme
         public static readonly SizeF DefaultDpi = new SizeF(96, 96);
 
         /// <summary>
+        /// Default font size used by the Designer.
+        /// </summary>
+        public static readonly SizeF DefaultFontSize = new SizeF(6F, 13F);
+
+        /// <summary>
         /// Gets or sets the high DPI mode of the process. 
         /// </summary>
         public static DpiAwarenessMode Mode
