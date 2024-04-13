@@ -82,7 +82,22 @@ namespace Google.Solutions.Mvvm.Theme
         private void VerifyScalingSettings(Control c)
         {
 #if DEBUG
-            if (c is Form form && !(form is INestedForm))
+            if (c is ContainerControl container && (
+                container.Controls.OfType<GroupBox>().Any() ||
+                container.Controls.OfType<Button>().Any() ||
+                container.Controls.OfType<RadioButton>().Any()))
+            {
+                //
+                // GroupBoxes and certain other controls don't auto-scale
+                // properly in DPI mode, so the container must use:
+                //
+                //   AutoScaleMode = Font
+                //   CurrentAutoScaleDimensions = DpiAwareness.DefaultFont
+                //
+                Debug.Assert(container.AutoScaleMode == AutoScaleMode.Font);
+                Debug.Assert(container.CurrentAutoScaleDimensions.Width >= DpiAwareness.DefaultFontSize.Width);
+            }
+            else if (c is Form form && !(form is INestedForm))
             {
                 //
                 // Forms must use:
@@ -97,6 +112,15 @@ namespace Google.Solutions.Mvvm.Theme
                 Debug.Assert(form.AutoScaleMode == AutoScaleMode.Dpi);
                 Debug.Assert(form.CurrentAutoScaleDimensions.Width >= DpiAwareness.DefaultDpi.Width);
                 Debug.Assert(form.CurrentAutoScaleDimensions.Width == form.CurrentAutoScaleDimensions.Height);
+
+                if (form.FormBorderStyle == FormBorderStyle.FixedDialog)
+                {
+                    //
+                    // If the Control box is hidden, the size of the form isn't
+                    // adjusted correctly..
+                    //
+                    Debug.Assert(form.ControlBox);
+                }
             }
             else if (c is PropertyGrid)
             {
@@ -104,29 +128,12 @@ namespace Google.Solutions.Mvvm.Theme
                 // PropertyGrid uses Mode = None, and that's ok.
                 //
             }
-            else if (c is ContainerControl container)
-            {
-                if (container.Controls.OfType<GroupBox>().Any() ||
-                    container.Controls.OfType<Button>().Any() ||
-                    container.Controls.OfType<RadioButton>().Any())
-                {
-                    //
-                    // GroupBoxes and certain other controls don't auto-scale
-                    // properly in DPI mode, so the container must use:
-                    //
-                    //   AutoScaleMode = Font
-                    //   CurrentAutoScaleDimensions = DpiAwareness.DefaultFont
-                    //
-                    Debug.Assert(container.AutoScaleMode == AutoScaleMode.Font);
-                    Debug.Assert(container.CurrentAutoScaleDimensions.Width >= DpiAwareness.DefaultFontSize.Width);
-                }
-                else
-                {
-                    //
-                    // Other containers should use Mode = Inherit.
-                    //
-                    Debug.Assert(container.AutoScaleMode == AutoScaleMode.Inherit);
-                }
+            else if (c is ContainerControl otherContainer)
+            { 
+                //
+                // Other containers should use Mode = Inherit.
+                //
+                Debug.Assert(otherContainer.AutoScaleMode == AutoScaleMode.Inherit);
             }
 #endif
         }
