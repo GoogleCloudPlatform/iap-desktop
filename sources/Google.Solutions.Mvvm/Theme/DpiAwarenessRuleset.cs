@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -78,15 +79,16 @@ namespace Google.Solutions.Mvvm.Theme
         // Theming rules.
         //---------------------------------------------------------------------
 
-        private void PrepareControlForFontSizing(Control c)
+        private void VerifyScalingSettings(Control c)
         {
+#if DEBUG
             if (c is Form form && !(form is INestedForm))
             {
                 //
                 // Forms must use:
                 //
                 //   AutoScaleMode = DPI
-                //   CurrentAutoScaleDimensions = 96x96
+                //   CurrentAutoScaleDimensions = DpiAwareness.DefaultDpi
                 //
                 // INestedForm (ToolWindows) are special and must follow
                 // the conventions for ContainerControls.
@@ -104,21 +106,29 @@ namespace Google.Solutions.Mvvm.Theme
             }
             else if (c is ContainerControl container)
             {
-                //
-                // Containers should use Mode = Inherit if possible.
-                //
-                // Some controls such as GroupBox controls dont properly
-                // auto-scale if the mode is set to Dpi or Inherit. In
-                // these cases, the Mode should be set to Font.
-                //
-                Debug.Assert(container.AutoScaleMode == AutoScaleMode.Inherit ||
-                    container.AutoScaleMode == AutoScaleMode.Font);
-
-                if (container.AutoScaleMode == AutoScaleMode.Font)
+                if (container.Controls.OfType<GroupBox>().Any() ||
+                    container.Controls.OfType<Button>().Any() ||
+                    container.Controls.OfType<RadioButton>().Any())
                 {
+                    //
+                    // GroupBoxes and certain other controls don't auto-scale
+                    // properly in DPI mode, so the container must use:
+                    //
+                    //   AutoScaleMode = Font
+                    //   CurrentAutoScaleDimensions = DpiAwareness.DefaultFont
+                    //
+                    Debug.Assert(container.AutoScaleMode == AutoScaleMode.Font);
                     Debug.Assert(container.CurrentAutoScaleDimensions.Width >= DpiAwareness.DefaultFontSize.Width);
                 }
+                else
+                {
+                    //
+                    // Other containers should use Mode = Inherit.
+                    //
+                    Debug.Assert(container.AutoScaleMode == AutoScaleMode.Inherit);
+                }
             }
+#endif
         }
 
         private void StylePictureBox(PictureBox pictureBox)
@@ -216,7 +226,7 @@ namespace Google.Solutions.Mvvm.Theme
                 // Ensure that controls are properly configured
                 // before their handle is created.
                 //
-                controlTheme.AddRule<Control>(PrepareControlForFontSizing);
+                controlTheme.AddRule<Control>(VerifyScalingSettings);
                 controlTheme.AddRule<PictureBox>(StylePictureBox);
                 controlTheme.AddRule<ToolStrip>(StyleToolStrip);
                 controlTheme.AddRule<TextBoxBase>(StyleTextBox);
