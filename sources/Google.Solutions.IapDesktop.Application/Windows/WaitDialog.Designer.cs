@@ -94,7 +94,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(362, 111);
-            this.ControlBox = false;
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.messageLabel);
             this.Controls.Add(this.cancelButton);
