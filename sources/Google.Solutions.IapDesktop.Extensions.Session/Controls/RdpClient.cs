@@ -34,7 +34,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -48,6 +47,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
     public partial class RdpClient : UserControl
     {
         private const string WebAuthnPlugin = "webauthn.dll";
+
+        /// <summary>
+        /// Maximum length of strings to use for SendString. Beyond a certain
+        /// length, results get dicey.
+        /// </summary>
+        private const int MaxSendStringLength = 256;
 
         private readonly Google.Solutions.Tsc.MsRdpClient client;
         private readonly IMsRdpClientNonScriptable5 clientNonScriptable;
@@ -835,23 +840,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         // Synthetic input.
         //---------------------------------------------------------------------
 
-        private static unsafe void SendScanCodesUnsafe(
-            IMsRdpClientNonScriptable5 nonScriptable,
-            int keyDataLength,
-            bool* keyUpPtr,
-            int* keyDataPtr)
-        {
-            //
-            // NB. This wrapper method is essential and must be static, otherwise
-            // marshalling doesn't work correctly on 32-bit.
-            //
-            // NB. According to MSDN, scan codes need to be sent
-            // in "WM_KEYDOWN lParam format", but that seems incorrect.
-            //
-
-            nonScriptable.SendKeys(keyDataLength, ref *keyUpPtr, ref *keyDataPtr);
-        }
-
         private void SendScanCodes(
             short[] keyUp,
             int[] keyData)
@@ -863,23 +851,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             this.client.Focus();
 
             //
-            // Give the control a chance to catch up with events. This is
-            // nasty, but necessary.
+            // NB. The tlbimp-generated IMsRdpClientNonScriptable5 uses
+            // a signature for SendKeys that doesn't work with C-style arrays.
+            // Therefore, we use a manually fixed version of IMsRdpClientNonScriptable5.
             //
-            // Note that the control is more sensitive on x86 than on x64.
+            // According to MSDN, scan codes need to be sent in
+            // "WM_KEYDOWN lParam format", but that seems incorrect. Instead,
+            // the API expects raw scan codes.
             //
-            Thread.Sleep(5);
 
-            unsafe
-            {
-                fixed (short* keyUpPtr = keyUp)
-                fixed (int* keyDataPtr = keyData)
-                {
-                    SendScanCodesUnsafe(this.clientNonScriptable, keyData.Length, (bool*)keyUpPtr, keyDataPtr);
-                }
-            }
+            var obj = (IMsRdpClientNonScriptable5_SendKeys)this.client.GetOcx();
+            obj.SendKeys(keyData.Length, keyUp, keyData);
         }
-
 
         /// <summary>
         /// Send a sequence of virtual keys. Keys may use modifiers.
@@ -936,13 +919,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     //
                     // Generate DOWN key presses.
                     //
-                    keyUp[i] = 0;
+                    keyUp[i] = VariantBool.False;
                     keyData[i] = scanCodes[i];
 
                     //
                     // Generate UP key presses (in reverse order).
                     //
-                    keyUp[keyUp.Length - 1 - i] = 1;
+                    keyUp[keyUp.Length - 1 - i] = VariantBool.True;
                     keyData[keyData.Length - 1 - i] = scanCodes[i];
                 }
             }
@@ -1000,7 +983,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
             var keyboardLayout = KeyboardLayout.Current;
 
-            for (int i = 0; i < text.Length; i++)
+            for (int i = 0; i < text.Length && i < MaxSendStringLength; i++)
             {
                 var ch = text[i];
                 if (ch == '\r' && i < text.Length - 2 && text[i + 1] == '\n')
