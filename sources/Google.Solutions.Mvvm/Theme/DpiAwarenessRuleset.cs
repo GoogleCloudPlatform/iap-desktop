@@ -145,41 +145,13 @@ namespace Google.Solutions.Mvvm.Theme
 
         private void StyleToolStrip(ToolStrip toolStrip)
         {
-            //toolStrip.AutoSize = false;
             toolStrip.ImageScalingSize 
                 = this.deviceCaps.ScaleToSystemDpi(toolStrip.ImageScalingSize);
-            
-            //if (toolStrip is MenuStrip)
-            //{
-            //    return;
-            //}
-
-            //foreach (var item in toolStrip.Items.Cast<ToolStripItem>())
-            //{
-            //    item.Padding = this.deviceCaps.ScaleToSystemDpi(item.Padding);
-            //    item.Margin = this.deviceCaps.ScaleToSystemDpi(item.Margin);
-            //}
-
-            //// TODO: Handle items that are added later.
-            //// TODO: Handle sub-menus
-            
-            //toolStrip.GripMargin = this.deviceCaps.ScaleToSystemDpi(toolStrip.GripMargin);
-            //toolStrip.Padding = this.deviceCaps.ScaleToSystemDpi(toolStrip.Padding);
-            //toolStrip.Margin = this.deviceCaps.ScaleToSystemDpi(toolStrip.Margin);
         }
+
         private void StyleToolStripItem(ToolStripItem item)
         {
-            //item.Padding = this.deviceCaps.ScaleToSystemDpi(item.Padding);
             item.Margin = this.deviceCaps.ScaleToSystemDpi(item.Margin);
-        }
-
-        private void StyleTextBox(TextBoxBase textBox)
-        {
-            //if (textBox.Multiline)
-            //{
-            //    // Quirk: adjust height
-            //    textBox.Height /= 4; //TODO: What's the right factor here?
-            //}
         }
 
         private void StyleTreeView(TreeView treeView)
@@ -203,22 +175,6 @@ namespace Google.Solutions.Mvvm.Theme
             }
         }
 
-        private void ForceRescaleForm(Form c)
-        {
-            if (c.Parent != null)
-            {
-                //
-                // Top-level window. Force scaling and relayout
-                // (after the form's handle has been created).
-                //
-                // Avoid doing the same for child window as that
-                // would cause duplicate scaling.
-                //
-                //c.Font = this.UiFont;
-                c.PerformAutoScale();
-            }
-        }
-
         //---------------------------------------------------------------------
         // IRuleSet
         //---------------------------------------------------------------------
@@ -236,18 +192,12 @@ namespace Google.Solutions.Mvvm.Theme
                 controlTheme.AddRule<Control>(VerifyScalingSettings);
                 controlTheme.AddRule<PictureBox>(StylePictureBox);
                 controlTheme.AddRule<ToolStrip>(StyleToolStrip);
-                controlTheme.AddRule<TextBoxBase>(StyleTextBox);
                 controlTheme.AddRule<TreeView>(StyleTreeView);
                 controlTheme.AddRule<ListView>(StyleListView);
 
                 var menuTheme = new ToolStripItemTheme(true);
                 menuTheme.AddRule(i => StyleToolStripItem(i));
                 controlTheme.AddRules(menuTheme);
-
-                //
-                // Force scaling once the handle has been created.
-                //
-                controlTheme.AddRule<Form>(ForceRescaleForm, ControlTheme.Options.ApplyWhenHandleCreated);
             }
         }
     }
