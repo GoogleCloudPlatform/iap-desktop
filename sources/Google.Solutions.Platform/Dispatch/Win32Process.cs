@@ -408,7 +408,7 @@ namespace Google.Solutions.Platform.Dispatch
                 out uint lpdwProcessId);
 
             [return: MarshalAs(UnmanagedType.Bool)]
-            [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+            [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             internal static extern bool PostMessage(
                 IntPtr hWnd,
                 uint msg,
@@ -421,7 +421,7 @@ namespace Google.Solutions.Platform.Dispatch
                 bool bInheritHandle,
                 uint processId);
 
-            [DllImport("kernel32.dll", SetLastError = true)]
+            [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             [return: MarshalAs(UnmanagedType.Bool)]
             public static extern bool QueryFullProcessImageName(
                 [In] SafeProcessHandle hProcess,
