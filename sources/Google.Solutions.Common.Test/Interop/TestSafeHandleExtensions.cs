@@ -67,17 +67,15 @@ namespace Google.Solutions.Common.Test.Interop
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenTimeoutElapsed_ThenWaitAsyncReturnsFalse()
+        public void WhenTimeoutElapses_ThenWaitAsyncThrowsException()
         {
+            using (var cts = new CancellationTokenSource())
             using (var ev = new ManualResetEvent(false))
             {
-                var result = await ev
-                    .WaitAsync(
-                        TimeSpan.FromMilliseconds(10),
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
+                cts.CancelAfter(TimeSpan.FromMilliseconds(10));
 
-                Assert.IsFalse(result);
+                ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
+                    () => ev.WaitAsync(cts.Token).Wait());
             }
         }
 
@@ -87,7 +85,7 @@ namespace Google.Solutions.Common.Test.Interop
             using (var ev = new ManualResetEvent(false))
             using (var cts = new CancellationTokenSource())
             {
-                var task = ev.WaitAsync(TimeSpan.FromSeconds(60), cts.Token);
+                var task = ev.WaitAsync(cts.Token);
                 cts.Cancel();
 
                 ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
@@ -96,17 +94,13 @@ namespace Google.Solutions.Common.Test.Interop
         }
 
         [Test]
-        public async Task WhenSignalled_ThenWaitAsyncReturnsTrue()
+        public async Task WhenSignalled_ThenWaitAsyncReturns()
         {
             using (var ev = new ManualResetEvent(true))
             {
-                var result = await ev
-                    .WaitAsync(
-                        TimeSpan.FromMilliseconds(10),
-                        CancellationToken.None)
+                await ev
+                    .WaitAsync(CancellationToken.None)
                     .ConfigureAwait(false);
-
-                Assert.IsTrue(result);
             }
         }
     }

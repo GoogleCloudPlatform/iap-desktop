@@ -29,6 +29,8 @@ namespace Google.Solutions.Common.Interop
 {
     public static class SafeHandleExtensions
     {
+        public static readonly TimeSpan Infinite = TimeSpan.FromMilliseconds(int.MaxValue);
+
         /// <summary>
         /// Create a wait handle for a handle so that you can 
         /// use WaitHandle.WaitXxx.
@@ -68,6 +70,37 @@ namespace Google.Solutions.Common.Interop
                 },
                 null,
                 (uint)timeout.TotalMilliseconds,
+                true);
+
+            cancellationToken.Register(() =>
+            {
+                registration.Unregister(waitHandle);
+                completionSource.SetCanceled();
+            });
+
+            return completionSource.Task
+                .ContinueWith(t =>
+                {
+                    registration.Unregister(waitHandle);
+                    return t.Result;
+                });
+        }
+
+
+        /// <summary>
+        /// Wait for handle to be signalled.
+        /// </summary>
+        public static Task WaitAsync(
+            this WaitHandle waitHandle,
+            CancellationToken cancellationToken)
+        {
+            var completionSource = new TaskCompletionSource<object?>();
+
+            var registration = ThreadPool.RegisterWaitForSingleObject(
+                waitHandle,
+                (_, __) => completionSource.SetResult(null),
+                null,
+                Infinite,
                 true);
 
             cancellationToken.Register(() =>
