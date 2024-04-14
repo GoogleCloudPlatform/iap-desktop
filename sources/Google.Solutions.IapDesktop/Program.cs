@@ -695,7 +695,7 @@ namespace Google.Solutions.IapDesktop
                             WaitDialog.Wait(
                                 null,
                                 "Waiting for applications to close...",
-                                cancellationToken =>
+                                async cancellationToken =>
                                 {
                                     //
                                     // Give child processes a fixed time to close,
@@ -704,7 +704,9 @@ namespace Google.Solutions.IapDesktop
                                     using (var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(30)))
                                     using (var combinedCts = timeoutCts.Token.Combine(cancellationToken))
                                     {
-                                        return processFactory.CloseAsync(combinedCts.Token);
+                                        await processFactory
+                                            .CloseAsync(combinedCts.Token)
+                                            .ConfigureAwait(true);
                                     }
                                 });
                         }
