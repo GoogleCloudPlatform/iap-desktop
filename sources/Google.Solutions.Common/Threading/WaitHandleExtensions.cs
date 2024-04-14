@@ -27,7 +27,7 @@ namespace Google.Solutions.Common.Threading
 
     public static class WaitHandleExtensions
     {
-        public static Task<bool> WaitAsync(this WaitHandle waitHandle)
+        public static Task<bool> WaitAsync(this WaitHandle waitHandle)//TODO: delete
         {
             var tcs = new TaskCompletionSource<object?>();
 

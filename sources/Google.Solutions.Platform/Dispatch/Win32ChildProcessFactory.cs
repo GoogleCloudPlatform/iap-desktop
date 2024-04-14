@@ -82,12 +82,11 @@ namespace Google.Solutions.Platform.Dispatch
         /// </summary>
         /// <returns>Number of processes that were closed gracefully</returns>
         public async Task<int> CloseAsync(
-            TimeSpan timeout,
             CancellationToken cancellationToken)
         {
             var result = await Task.WhenAll(this.children
                 .Where(c => c.Process.IsRunning)
-                .Select(c => c.Process.CloseAsync(timeout, cancellationToken)));
+                .Select(c => c.Process.CloseAsync(cancellationToken)));
 
             return result.Count(r => r);
         }

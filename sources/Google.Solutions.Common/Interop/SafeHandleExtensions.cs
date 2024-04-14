@@ -50,46 +50,6 @@ namespace Google.Solutions.Common.Interop
         /// <summary>
         /// Wait for handle to be signalled.
         /// </summary>
-        /// <returns>true if signalled, false if timeout elapsed</returns>
-        public static Task<bool> WaitAsync(
-            this WaitHandle waitHandle,
-            TimeSpan timeout,
-            CancellationToken cancellationToken)
-        {
-            var completionSource = new TaskCompletionSource<bool>();
-
-            var registration = ThreadPool.RegisterWaitForSingleObject(
-                waitHandle,
-                (_, timeoutElapsed) =>
-                {
-                    //
-                    // Return true if the process was signalled (= exited)
-                    // within the timeout, or false otherwise.
-                    //
-                    completionSource.SetResult(!timeoutElapsed);
-                },
-                null,
-                (uint)timeout.TotalMilliseconds,
-                true);
-
-            cancellationToken.Register(() =>
-            {
-                registration.Unregister(waitHandle);
-                completionSource.SetCanceled();
-            });
-
-            return completionSource.Task
-                .ContinueWith(t =>
-                {
-                    registration.Unregister(waitHandle);
-                    return t.Result;
-                });
-        }
-
-
-        /// <summary>
-        /// Wait for handle to be signalled.
-        /// </summary>
         public static Task WaitAsync(
             this WaitHandle waitHandle,
             CancellationToken cancellationToken)

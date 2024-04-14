@@ -31,6 +31,7 @@ using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Logging;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Threading;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Iap;
 using Google.Solutions.Iap.Net;
@@ -700,9 +701,11 @@ namespace Google.Solutions.IapDesktop
                                     // Give child processes a fixed time to close,
                                     // but the user might cancel early.
                                     //
-                                    return processFactory.CloseAsync(
-                                        TimeSpan.FromSeconds(30),
-                                        cancellationToken);
+                                    using (var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(30)))
+                                    using (var combinedCts = timeoutCts.Token.Combine(cancellationToken))
+                                    {
+                                        return processFactory.CloseAsync(combinedCts.Token);
+                                    }
                                 });
                         }
                         catch (Exception e)
