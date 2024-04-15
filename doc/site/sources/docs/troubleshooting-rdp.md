@@ -89,6 +89,17 @@ To check if this is the case, do the following:
 
     If the output is empty, then the VM allows copy/paste.
     
+### Type clipboard text
+
+In situations where copy/paste is disallowed by policy, you can copy text from your local computer to a VM
+by using the **Type clipboard text** command:
+
+1.  On your local computer, copy a piece of text to the clipboard.
+1.  In IAP Desktop, select **Session > Type clipboard text**.
+
+The **Type clipboard text** command simulates keyboard input and only supports characters supported
+by your current keyboard layout. Unsupported characters are replaced with `?`.
+    
 ## :material-message-alert: "Your credentials did not work" when using saved credentials
 
 **Symptom**: You've configured valid credentials, but each time you try to connect to a VM, the _Your credentials did not work_ dialog appears. 
