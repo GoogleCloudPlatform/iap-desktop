@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                 //
                 var processTerminatedTask = process.Job != null
                     ? process.Job.WaitForProcessesAsync(TimeSpan.MaxValue, CancellationToken.None)
-                    : process.WaitAsync(TimeSpan.MaxValue, CancellationToken.None);
+                    : process.WaitAsync(CancellationToken.None);
 
                 _ = processTerminatedTask
                     .ContinueWith(_ =>

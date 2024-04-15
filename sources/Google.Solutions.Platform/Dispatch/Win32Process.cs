@@ -71,20 +71,15 @@ namespace Google.Solutions.Platform.Dispatch
         /// <summary>
         /// Send WM_CLOSE to process and wait for the process to
         /// terminate gracefully. Otherwise, terminate forcefully.
-        /// 
-        /// Returns true if the process terminated gracefully.
         /// </summary>
-        Task<bool> CloseAsync(
-            TimeSpan timeout,
-            CancellationToken cancellationToken);
+        /// <returns>true if the process terminated gracefully.</returns>
+        Task<bool> CloseAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// Wait for process to terminate.
         /// </summary>
         /// <returns>the exit code.</returns>
-        Task<uint> WaitAsync(
-            TimeSpan timeout,
-            CancellationToken cancellationToken);
+        Task<uint> WaitAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// Forcefully terminate the process.
@@ -209,33 +204,23 @@ namespace Google.Solutions.Platform.Dispatch
             }
         }
 
-        public async Task<uint> WaitAsync(
-            TimeSpan timeout,
-            CancellationToken cancellationToken)
+        public async Task<uint> WaitAsync(CancellationToken cancellationToken)
         {
             using (var waitHandle = this.process.ToWaitHandle(false))
             {
-                if (await waitHandle
-                    .WaitAsync(timeout, cancellationToken)
-                    .ConfigureAwait(false))
-                {
-                    //
-                    // Terminated.
-                    //
-                    NativeMethods.GetExitCodeProcess(this.process, out var exitCode);
-                    return exitCode;
-                }
-                else
-                {
-                    throw new TimeoutException(
-                        "The process did not terminate within the allotted timeout");
-                }
+                await waitHandle
+                    .WaitAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                
+                //
+                // Process terminated.
+                //
+                NativeMethods.GetExitCodeProcess(this.process, out var exitCode);
+                return exitCode;
             }
         }
 
-        public async Task<bool> CloseAsync(
-            TimeSpan timeout,
-            CancellationToken cancellationToken)
+        public async Task<bool> CloseAsync(CancellationToken cancellationToken)
         {
             if (!this.IsRunning)
             {
@@ -272,14 +257,22 @@ namespace Google.Solutions.Platform.Dispatch
                 //
                 using (var waitHandle = this.process.ToWaitHandle(false))
                 {
-                    if (await waitHandle
-                        .WaitAsync(timeout, cancellationToken)
-                        .ConfigureAwait(false))
+                    try
                     {
+                        await waitHandle
+                            .WaitAsync(cancellationToken)
+                            .ConfigureAwait(false);
+
                         //
                         // Process exited gracefully within the timeout.
                         //
                         return true;
+                    }
+                    catch (Exception e) when (e.IsCancellation())
+                    {
+                        //
+                        // User cancelled or timeout elapsed.
+                        //
                     }
                 }
             }
@@ -415,7 +408,7 @@ namespace Google.Solutions.Platform.Dispatch
                 out uint lpdwProcessId);
 
             [return: MarshalAs(UnmanagedType.Bool)]
-            [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+            [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             internal static extern bool PostMessage(
                 IntPtr hWnd,
                 uint msg,
@@ -428,7 +421,7 @@ namespace Google.Solutions.Platform.Dispatch
                 bool bInheritHandle,
                 uint processId);
 
-            [DllImport("kernel32.dll", SetLastError = true)]
+            [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             [return: MarshalAs(UnmanagedType.Bool)]
             public static extern bool QueryFullProcessImageName(
                 [In] SafeProcessHandle hProcess,

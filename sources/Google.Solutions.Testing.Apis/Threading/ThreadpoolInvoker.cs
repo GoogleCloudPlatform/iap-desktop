@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Threading;
 using System;
 using System.ComponentModel;
@@ -42,7 +43,7 @@ namespace Google.Solutions.Testing.Apis.Threading
 
         public Task AwaitPendingInvocationsAsync()
         {
-            return this.idle.WaitAsync();
+            return this.idle.WaitAsync(CancellationToken.None);
         }
 
         //---------------------------------------------------------------------

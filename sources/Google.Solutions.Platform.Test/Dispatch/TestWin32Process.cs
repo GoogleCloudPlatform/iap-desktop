@@ -48,9 +48,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            using (var process = factory.CreateProcess(
-                CmdExe,
-                null))
+            using (var process = factory.CreateProcess(CmdExe, null))
             {
                 Assert.AreEqual("cmd.exe", process.ImageName);
 
@@ -67,9 +65,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            using (var process = factory.CreateProcess(
-                CmdExe,
-                null))
+            using (var process = factory.CreateProcess(CmdExe, null))
             {
                 Assert.AreNotEqual(0, process.Id);
 
@@ -87,9 +83,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            var process = factory.CreateProcess(
-                CmdExe,
-                null);
+            var process = factory.CreateProcess(CmdExe, null);
 
             Assert.IsTrue(process.IsRunning);
 
@@ -109,9 +103,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            using (var process = factory.CreateProcess(
-                CmdExe,
-                null))
+            using (var process = factory.CreateProcess(CmdExe, null))
             {
                 StringAssert.Contains("cmd.exe", process.ToString());
                 StringAssert.Contains(process.Id.ToString(), process.ToString());
@@ -129,9 +121,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            using (var process = factory.CreateProcess(
-                CmdExe,
-                null))
+            using (var process = factory.CreateProcess(CmdExe, null))
             {
                 Assert.AreEqual(process.Session, WtsSession.GetCurrent());
 
@@ -148,9 +138,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            using (var process = factory.CreateProcess(
-                CmdExe,
-                null))
+            using (var process = factory.CreateProcess(CmdExe, null))
             {
                 Assert.IsNotNull(process.WaitHandle);
                 Assert.IsFalse(process.WaitHandle.WaitOne(1));
@@ -169,9 +157,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            using (var process = factory.CreateProcess(
-                CmdExe,
-                null))
+            using (var process = factory.CreateProcess(CmdExe, null))
             {
                 Assert.IsNotNull(process.Handle);
                 Assert.IsFalse(process.Handle.IsInvalid);
@@ -194,9 +180,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            using (var process = factory.CreateProcess(
-                CmdExe,
-                null))
+            using (var process = factory.CreateProcess(CmdExe, null))
             {
                 process.Resume();
 
@@ -221,15 +205,14 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            using (var process = factory.CreateProcess(
-                CmdExe,
-                null))
+            using (var cts = new CancellationTokenSource(TimeSpan.Zero))
+            using (var process = factory.CreateProcess(CmdExe, null))
             {
                 process.Resume();
                 Assert.AreEqual(0, process.WindowCount);
 
                 var terminatedGracefully = await process
-                    .CloseAsync(TimeSpan.Zero, CancellationToken.None)
+                    .CloseAsync(cts.Token)
                     .ConfigureAwait(false);
 
                 Assert.IsTrue(terminatedGracefully);
@@ -241,9 +224,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            using (var process = factory.CreateProcess(
-                NotepadExe,
-                null))
+            using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
+            using (var process = factory.CreateProcess(NotepadExe, null))
             {
                 process.Resume();
 
@@ -256,7 +238,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 }
 
                 var terminatedGracefully = await process
-                    .CloseAsync(TimeSpan.FromSeconds(10), CancellationToken.None)
+                    .CloseAsync(cts.Token)
                     .ConfigureAwait(false);
                 Assert.IsTrue(terminatedGracefully);
             }
@@ -267,15 +249,14 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            using (var process = factory.CreateProcess(
-                NotepadExe,
-                null))
+            using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
+            using (var process = factory.CreateProcess(NotepadExe, null))
             {
                 process.Terminate(0);
 
 
                 var terminatedGracefully = await process
-                    .CloseAsync(TimeSpan.FromSeconds(10), CancellationToken.None)
+                    .CloseAsync(cts.Token)
                     .ConfigureAwait(false);
                 Assert.IsTrue(terminatedGracefully);
             }
@@ -290,15 +271,14 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            using (var process = factory.CreateProcess(
-                CmdExe,
-                null))
+            using (var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(5)))
+            using (var process = factory.CreateProcess(CmdExe, null))
             {
                 process.Resume();
 
-                ExceptionAssert.ThrowsAggregateException<TimeoutException>(
+                ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
                     () => process
-                        .WaitAsync(TimeSpan.FromMilliseconds(5), CancellationToken.None)
+                        .WaitAsync(cts.Token)
                         .Wait());
 
                 process.Terminate(0);
@@ -310,12 +290,10 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            using (var process = factory.CreateProcess(
-                CmdExe,
-                null))
+            using (var process = factory.CreateProcess(CmdExe, null))
             using (var cts = new CancellationTokenSource())
             {
-                var task = process.WaitAsync(TimeSpan.FromSeconds(5), cts.Token);
+                var task = process.WaitAsync(cts.Token);
 
                 cts.Cancel();
 
@@ -331,15 +309,14 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            using (var process = factory.CreateProcess(
-                CmdExe,
-                null))
+            using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1)))
+            using (var process = factory.CreateProcess(CmdExe, null))
             {
                 process.Resume();
                 process.Terminate(1);
 
                 var exitCode = await process
-                    .WaitAsync(TimeSpan.FromMilliseconds(5), CancellationToken.None)
+                    .WaitAsync(cts.Token)
                     .ConfigureAwait(false);
 
                 Assert.AreEqual(1, exitCode);

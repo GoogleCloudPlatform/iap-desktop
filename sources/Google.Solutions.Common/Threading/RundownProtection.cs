@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Runtime;
 using System;
 using System.Threading;
@@ -51,7 +52,7 @@ namespace Google.Solutions.Common.Threading
 
         public Task AwaitRundown()
         {
-            return this.rundownEvent.WaitAsync();
+            return this.rundownEvent.WaitAsync(CancellationToken.None);
         }
 
         public void Dispose()

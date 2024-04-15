@@ -91,6 +91,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         [Test]
         public async Task WhenChildTerminated_ThenCloseReturns()
         {
+            using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
             using (var factory = new Win32ChildProcessFactory(false))
             {
                 using (var process = factory.CreateProcess(CmdExe, null))
@@ -99,7 +100,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 }
 
                 var closed = await factory
-                    .CloseAsync(TimeSpan.FromSeconds(1), CancellationToken.None)
+                    .CloseAsync(cts.Token)
                     .ConfigureAwait(false);
 
                 Assert.AreEqual(0, closed);
@@ -109,11 +110,12 @@ namespace Google.Solutions.Platform.Test.Dispatch
         [Test]
         public async Task WhenChildRunning_ThenCloseReturns()
         {
+            using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
             using (var factory = new Win32ChildProcessFactory(false))
             using (var process = factory.CreateProcess(CmdExe, null))
             {
                 var closed = await factory
-                    .CloseAsync(TimeSpan.FromSeconds(1), CancellationToken.None)
+                    .CloseAsync(cts.Token)
                     .ConfigureAwait(false);
 
                 Assert.AreEqual(1, closed);
