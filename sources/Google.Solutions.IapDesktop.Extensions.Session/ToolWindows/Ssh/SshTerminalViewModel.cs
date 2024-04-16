@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                     (IKeyboardInteractiveHandler)this,
                     SynchronizationContext.Current)
                 {
-                    Banner = Libssh2Session.BannerPrefix + Install.UserAgent,
+                    Banner = SshConnection.BannerPrefix + Install.UserAgent,
                     ConnectionTimeout = this.ConnectionTimeout,
 
                     //

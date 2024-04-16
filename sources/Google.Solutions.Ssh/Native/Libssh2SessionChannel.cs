@@ -28,7 +28,7 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// An interactive SSH channel.
     /// </summary>
-    public abstract class Libssh2SessionChannelBase : Libssh2ChannelBase
+    internal abstract class Libssh2SessionChannelBase : Libssh2ChannelBase
     {
         public const string Type = "session";
 
@@ -113,7 +113,7 @@ namespace Google.Solutions.Ssh.Native
         }
     }
 
-    public class Libssh2ShellChannel : Libssh2SessionChannelBase
+    internal class Libssh2ShellChannel : Libssh2SessionChannelBase
     {
         //---------------------------------------------------------------------
         // Ctor.

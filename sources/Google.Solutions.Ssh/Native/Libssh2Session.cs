@@ -35,9 +35,9 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// An (unconnected) Libssh2 session.
     /// </summary>
-    public class Libssh2Session : IDisposable
+    internal class Libssh2Session : IDisposable
     {
-        public const string BannerPrefix = "SSH-2.0-";
+        internal const string BannerPrefix = "SSH-2.0-";
 
         private readonly Libssh2SessionHandle sessionHandle;
         private bool disposed = false;

@@ -577,7 +577,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public Libssh2AuthenticatedSession Authenticate(
+        internal Libssh2AuthenticatedSession Authenticate(
             ISshCredential credential,
             IKeyboardInteractiveHandler keyboardHandler)
         {

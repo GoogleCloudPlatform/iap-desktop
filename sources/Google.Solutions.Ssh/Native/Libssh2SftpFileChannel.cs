@@ -30,7 +30,7 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// Represents an open file that can be read from/written to.
     /// </summary>
-    public class Libssh2SftpFileChannel : IDisposable
+    internal class Libssh2SftpFileChannel : IDisposable
     {
         private readonly Libssh2Session session;
         private readonly Libssh2SftpChannelHandle channelHandle;

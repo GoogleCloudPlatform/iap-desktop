@@ -73,7 +73,7 @@ namespace Google.Solutions.Ssh.Test
         // Helper methods.
         //---------------------------------------------------------------------
 
-        protected static Libssh2Session CreateSession()
+        private protected static Libssh2Session CreateSession()
         {
             var session = new Libssh2Session();
             session.SetTraceHandler(

@@ -33,6 +33,8 @@ namespace Google.Solutions.Ssh
 {
     public class SshConnection : SshWorkerThread
     {
+        public const string BannerPrefix = Libssh2Session.BannerPrefix;
+
         private readonly Queue<SendOperation> sendQueue = new Queue<SendOperation>();
         private readonly TaskCompletionSource<int> connectionCompleted
             = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -61,7 +63,7 @@ namespace Google.Solutions.Ssh
         // Overrides.
         //---------------------------------------------------------------------
 
-        protected override void OnConnected()
+        private protected override void OnConnected()
         {
             //
             // Complete task on callback context.
@@ -69,7 +71,7 @@ namespace Google.Solutions.Ssh
             this.CallbackContext.Post(() => this.connectionCompleted.SetResult(0));
         }
 
-        protected override void OnConnectionError(Exception exception)
+        private protected override void OnConnectionError(Exception exception)
         {
             if (!this.connectionCompleted.Task.IsCompleted)
             {
@@ -80,7 +82,7 @@ namespace Google.Solutions.Ssh
             }
         }
 
-        protected override void OnReadyToSend(Libssh2AuthenticatedSession session)
+        private protected override void OnReadyToSend(Libssh2AuthenticatedSession session)
         {
             lock (this.sendQueue)
             {
@@ -120,7 +122,7 @@ namespace Google.Solutions.Ssh
             }
         }
 
-        protected override void OnSendError(Exception exception)
+        private protected override void OnSendError(Exception exception)
         {
             lock (this.sendQueue)
             {
@@ -129,7 +131,7 @@ namespace Google.Solutions.Ssh
             }
         }
 
-        protected override void OnReadyToReceive(Libssh2AuthenticatedSession session)
+        private protected override void OnReadyToReceive(Libssh2AuthenticatedSession session)
         {
             foreach (var channel in this.channels)
             {
@@ -137,7 +139,7 @@ namespace Google.Solutions.Ssh
             }
         }
 
-        protected override void OnReceiveError(Exception exception)
+        private protected override void OnReceiveError(Exception exception)
         {
             foreach (var channel in this.channels)
             {
@@ -145,7 +147,7 @@ namespace Google.Solutions.Ssh
             }
         }
 
-        protected override void OnBeforeCloseSession()
+        private protected override void OnBeforeCloseSession()
         {
             Debug.Assert(this.IsRunningOnWorkerThread);
 

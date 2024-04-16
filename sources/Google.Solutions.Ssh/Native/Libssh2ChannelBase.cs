@@ -29,7 +29,7 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// An connected and authenticated Libssh2 session.
     /// </summary>
-    public abstract class Libssh2ChannelBase : IDisposable
+    internal abstract class Libssh2ChannelBase : IDisposable
     {
         // NB. This object does not own this handle and should not dispose it.
         protected Libssh2Session Session { get; }

@@ -124,7 +124,7 @@ namespace Google.Solutions.Ssh
         /// Called on worker thread, method should not block for any
         /// significant amount of time.
         /// </summary>
-        protected abstract void OnSendError(Exception exception);
+        private protected abstract void OnSendError(Exception exception);
 
         /// <summary>
         /// Handle an error from an SSH channel.
@@ -132,7 +132,7 @@ namespace Google.Solutions.Ssh
         /// Called on worker thread, method should not block for any
         /// significant amount of time.
         /// </summary>
-        protected abstract void OnReceiveError(Exception exception);
+        private protected abstract void OnReceiveError(Exception exception);
 
         /// <summary>
         /// Called once after SSH connection has been established successfully.
@@ -140,7 +140,7 @@ namespace Google.Solutions.Ssh
         /// Called on worker thread, method should not block for any
         /// significant amount of time.
         /// </summary>
-        protected abstract void OnConnected();
+        private protected abstract void OnConnected();
 
         /// <summary>
         /// Called once after SSH connection has failed.
@@ -148,7 +148,7 @@ namespace Google.Solutions.Ssh
         /// Called on worker thread, method should not block for any
         /// significant amount of time.
         /// </summary>
-        protected abstract void OnConnectionError(Exception exception);
+        private protected abstract void OnConnectionError(Exception exception);
 
         /// <summary>
         /// Perform any operation that sends data.
@@ -156,7 +156,7 @@ namespace Google.Solutions.Ssh
         /// Called on worker thread, method should not block for any
         /// significant amount of time.
         /// </summary>
-        protected abstract void OnReadyToSend(Libssh2AuthenticatedSession session);
+        private protected abstract void OnReadyToSend(Libssh2AuthenticatedSession session);
 
         /// <summary>
         /// Perform any operation that sends data.
@@ -164,12 +164,12 @@ namespace Google.Solutions.Ssh
         /// Called on worker thread, method should not block for any
         /// significant amount of time.
         /// </summary>
-        protected abstract void OnReadyToReceive(Libssh2AuthenticatedSession session);
+        private protected abstract void OnReadyToReceive(Libssh2AuthenticatedSession session);
 
         /// <summary>
         /// Close channels and other resources before session is closed.
         /// </summary>
-        protected abstract void OnBeforeCloseSession();
+        private protected abstract void OnBeforeCloseSession();
 
         protected bool IsConnected
             => this.workerThread.IsAlive &&
