@@ -24,11 +24,11 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Ssh.Native
 {
-    public class SshNativeException : SshException
+    public class Libssh2Exception : SshException
     {
         public LIBSSH2_ERROR ErrorCode { get; }
 
-        internal SshNativeException(
+        internal Libssh2Exception(
             LIBSSH2_ERROR code,
             string errorMessage)
             : base(errorMessage)
@@ -39,11 +39,11 @@ namespace Google.Solutions.Ssh.Native
         }
     }
 
-    public class SshSftpNativeException : SshException
+    public class Libssh2SftpException : SshException
     {
         public LIBSSH2_FX_ERROR ErrorCode { get; }
 
-        private SshSftpNativeException(
+        private Libssh2SftpException(
             LIBSSH2_FX_ERROR errorCode,
             string message)
             : base(message)
@@ -51,14 +51,14 @@ namespace Google.Solutions.Ssh.Native
             this.ErrorCode = errorCode;
         }
 
-        internal static SshSftpNativeException GetLastError(
-            SshSftpChannelHandle channelHandle,
+        internal static Libssh2SftpException GetLastError(
+            Libssh2SftpChannelHandle channelHandle,
             string path)
         {
             var errno = (LIBSSH2_FX_ERROR)
                 NativeMethods.libssh2_sftp_last_error(channelHandle);
 
-            return new SshSftpNativeException(
+            return new Libssh2SftpException(
                 errno,
                 $"{path}: SFTP operation failed: {errno}");
         }
@@ -68,7 +68,7 @@ namespace Google.Solutions.Ssh.Native
     // Error codes.
     //-------------------------------------------------------------------------
 
-    public enum LIBSSH2_ERROR : Int32
+    public enum LIBSSH2_ERROR : int
     {
         NONE = 0,
         SOCKET_NONE = -1,
@@ -89,7 +89,6 @@ namespace Google.Solutions.Ssh.Native
         FILE = -16,
         METHOD_NONE = -17,
         AUTHENTICATION_FAILED = -18,
-        PUBLICKEY_UNRECOGNIZED = -18,
         PUBLICKEY_UNVERIFIED = -19,
         CHANNEL_OUTOFORDER = -20,
         CHANNEL_FAILURE = -21,

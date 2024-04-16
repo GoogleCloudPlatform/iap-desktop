@@ -32,7 +32,7 @@ namespace Google.Solutions.Ssh.Test.Native
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestSshSftpFileChannel : SshFixtureBase
+    public class TestLibssh2SftpFileChannel : SshFixtureBase
     {
         //---------------------------------------------------------------------
         // Read.

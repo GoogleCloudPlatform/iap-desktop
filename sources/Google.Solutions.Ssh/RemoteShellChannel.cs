@@ -41,7 +41,7 @@ namespace Google.Solutions.Ssh
         /// <summary>
         /// Channel handle, must only be accessed on worker thread.
         /// </summary>
-        private readonly SshShellChannel nativeChannel;
+        private readonly Libssh2ShellChannel nativeChannel;
 
         private readonly ITextTerminal terminal;
         private readonly StreamingDecoder decoder;
@@ -52,7 +52,7 @@ namespace Google.Solutions.Ssh
 
         internal RemoteShellChannel(
             RemoteConnection connection,
-            SshShellChannel nativeChannel,
+            Libssh2ShellChannel nativeChannel,
             ITextTerminal terminal)
         {
             this.Connection = connection;
@@ -132,7 +132,7 @@ namespace Google.Solutions.Ssh
                 LIBSSH2_ERROR.SOCKET_TIMEOUT
             };
 
-            var lostConnection = exception.Unwrap() is SshNativeException sshEx &&
+            var lostConnection = exception.Unwrap() is Libssh2Exception sshEx &&
                 errorsIndicatingLostConnection.Contains(sshEx.ErrorCode);
 
             //

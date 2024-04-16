@@ -30,7 +30,7 @@ namespace Google.Solutions.Ssh.Test.Native
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestSshAuthenticatedSession : SshFixtureBase
+    public class TestLibssh2AuthenticatedSession : SshFixtureBase
     {
         //---------------------------------------------------------------------
         // Channel.

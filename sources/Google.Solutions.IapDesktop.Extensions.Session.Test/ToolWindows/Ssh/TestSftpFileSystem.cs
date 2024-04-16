@@ -33,16 +33,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
     [TestFixture]
     public class TestSftpFileSystem
     {
-        private SftpFileSystem CreateFileSystem(params SshSftpFileInfo[] files)
+        private static SftpFileSystem CreateFileSystem(params Libssh2SftpFileInfo[] files)
         {
             return new SftpFileSystem(
-                path => Task.FromResult<IReadOnlyCollection<SshSftpFileInfo>>(
-                    new ReadOnlyCollection<SshSftpFileInfo>(files)));
+                path => Task.FromResult<IReadOnlyCollection<Libssh2SftpFileInfo>>(
+                    new ReadOnlyCollection<Libssh2SftpFileInfo>(files)));
         }
 
-        private SshSftpFileInfo CreateFile(string name, FilePermissions permissions)
+        private static Libssh2SftpFileInfo CreateFile(string name, FilePermissions permissions)
         {
-            return new SshSftpFileInfo(
+            return new Libssh2SftpFileInfo(
                 name,
                 new LIBSSH2_SFTP_ATTRIBUTES()
                 {
@@ -85,14 +85,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     .ListFilesAsync(fs.Root)
                     .ConfigureAwait(false);
 
+                var expected = new[]
+                {
+                    "dir-1",
+                    "dir-2",
+                    "file-1",
+                    "file-2"
+                };
+
                 CollectionAssert.AreEqual(
-                    new[]
-                    {
-                        "dir-1",
-                        "dir-2",
-                        "file-1",
-                        "file-2"
-                    },
+                    expected,
                     files.Select(f => f.Name));
             }
         }

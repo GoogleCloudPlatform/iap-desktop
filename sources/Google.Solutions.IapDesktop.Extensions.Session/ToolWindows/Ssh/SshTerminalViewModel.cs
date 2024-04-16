@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                     (IKeyboardInteractiveHandler)this,
                     SynchronizationContext.Current)
                 {
-                    Banner = SshSession.BannerPrefix + Install.UserAgent,
+                    Banner = Libssh2Session.BannerPrefix + Install.UserAgent,
                     ConnectionTimeout = this.ConnectionTimeout,
 
                     //
@@ -249,7 +249,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                         initialSize)
                     .ConfigureAwait(false);
             }
-            catch (SshNativeException e) when (
+            catch (Libssh2Exception e) when (
                 e.ErrorCode == LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED &&
                 this.Credential is PlatformCredential platformCredential &&
                 platformCredential.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
@@ -263,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                     e,
                     HelpTopics.TroubleshootingOsLogin);
             }
-            catch (SshNativeException e) when (
+            catch (Libssh2Exception e) when (
                 e.ErrorCode == LIBSSH2_ERROR.AUTHENTICATION_FAILED &&
                 this.Credential is PlatformCredential platformCredential)
             {

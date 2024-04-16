@@ -33,7 +33,7 @@ namespace Google.Solutions.Ssh.Test.Native
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestSshSession : SshFixtureBase
+    public class TestLibssh2Session : SshFixtureBase
     {
         private readonly IPEndPoint NonSshEndpoint =
             new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53);
@@ -45,14 +45,14 @@ namespace Google.Solutions.Ssh.Test.Native
         [Test]
         public void WhenRequriedVersionIsHigher_ThenVersionReturnsNull()
         {
-            var version = SshSession.GetVersion(new Version(0xCC, 0xBB, 0xAA));
+            var version = Libssh2Session.GetVersion(new Version(0xCC, 0xBB, 0xAA));
             Assert.IsNull(version);
         }
 
         [Test]
         public void WhenRequriedVersionIsLower_ThenVersionReturnsXxx()
         {
-            var version = SshSession.GetVersion(new Version(1, 0, 0));
+            var version = Libssh2Session.GetVersion(new Version(1, 0, 0));
             Assert.IsNotNull(version);
         }
 
@@ -218,7 +218,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             {
                 Assert.Throws<ArgumentException>(
-                    () => session.GetSupportedAlgorithms((LIBSSH2_METHOD)Int32.MaxValue));
+                    () => session.GetSupportedAlgorithms((LIBSSH2_METHOD)int.MaxValue));
             }
         }
 

@@ -73,9 +73,9 @@ namespace Google.Solutions.Ssh.Test
         // Helper methods.
         //---------------------------------------------------------------------
 
-        protected static SshSession CreateSession()
+        protected static Libssh2Session CreateSession()
         {
-            var session = new SshSession();
+            var session = new Libssh2Session();
             session.SetTraceHandler(
                 LIBSSH2_TRACE.SOCKET |
                     LIBSSH2_TRACE.ERROR |

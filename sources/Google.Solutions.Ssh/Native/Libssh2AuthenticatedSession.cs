@@ -30,10 +30,10 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// An connected and authenticated Libssh2 session.
     /// </summary>
-    public class SshAuthenticatedSession : IDisposable
+    public class Libssh2AuthenticatedSession : IDisposable
     {
         // NB. This object does not own this handle and should not dispose it.
-        internal SshSession Session { get; }
+        internal Libssh2Session Session { get; }
 
         private bool disposed = false;
 
@@ -44,7 +44,7 @@ namespace Google.Solutions.Ssh.Native
         // Ctor.
         //---------------------------------------------------------------------
 
-        internal SshAuthenticatedSession(SshSession session)
+        internal Libssh2AuthenticatedSession(Libssh2Session session)
         {
             this.Session = session;
         }
@@ -53,7 +53,7 @@ namespace Google.Solutions.Ssh.Native
         // Channel.
         //---------------------------------------------------------------------
 
-        private SshChannelHandle OpenChannelInternal(
+        private Libssh2ChannelHandle OpenChannelInternal(
             LIBSSH2_CHANNEL_EXTENDED_DATA mode)
         {
             this.Session.Handle.CheckCurrentThreadOwnsHandle();
@@ -63,8 +63,8 @@ namespace Google.Solutions.Ssh.Native
                 LIBSSH2_ERROR result;
                 var channelHandle = NativeMethods.libssh2_channel_open_ex(
                     this.Session.Handle,
-                    SshSessionChannelBase.Type,
-                    (uint)SshSessionChannelBase.Type.Length,
+                    Libssh2SessionChannelBase.Type,
+                    (uint)Libssh2SessionChannelBase.Type.Length,
                     this.DefaultWindowSize,
                     this.DefaultPacketSize,
                     null,
@@ -90,7 +90,7 @@ namespace Google.Solutions.Ssh.Native
         }
 
         private void SetEnvironmentVariable(
-            SshChannelHandle channelHandle,
+            Libssh2ChannelHandle channelHandle,
             EnvironmentVariable environmentVariable)
         {
             channelHandle.CheckCurrentThreadOwnsHandle();
@@ -132,7 +132,7 @@ namespace Google.Solutions.Ssh.Native
         /// <summary>
         /// Start an interactive shell.
         /// </summary>
-        public SshShellChannel OpenShellChannel(
+        internal Libssh2ShellChannel OpenShellChannel(
             LIBSSH2_CHANNEL_EXTENDED_DATA mode,
             string term,
             ushort widthInChars,
@@ -200,14 +200,14 @@ namespace Google.Solutions.Ssh.Native
 
                 SshEventSource.Log.ShellChannelOpened(term);
 
-                return new SshShellChannel(this.Session, channelHandle);
+                return new Libssh2ShellChannel(this.Session, channelHandle);
             }
         }
 
         /// <summary>
         /// Open a channel for SFTP operations.
         /// </summary>
-        public SshSftpChannel OpenSftpChannel()
+        public Libssh2SftpChannel OpenSftpChannel()
         {
             using (SshTraceSource.Log.TraceMethod().WithoutParameters())
             {
@@ -218,7 +218,7 @@ namespace Google.Solutions.Ssh.Native
 
                 SshEventSource.Log.SftpChannelOpened();
 
-                return new SshSftpChannel(this.Session, channelHandle);
+                return new Libssh2SftpChannel(this.Session, channelHandle);
             }
         }
 

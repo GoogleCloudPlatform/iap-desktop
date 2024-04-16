@@ -156,7 +156,7 @@ namespace Google.Solutions.Ssh
         /// Called on worker thread, method should not block for any
         /// significant amount of time.
         /// </summary>
-        protected abstract void OnReadyToSend(SshAuthenticatedSession session);
+        protected abstract void OnReadyToSend(Libssh2AuthenticatedSession session);
 
         /// <summary>
         /// Perform any operation that sends data.
@@ -164,7 +164,7 @@ namespace Google.Solutions.Ssh
         /// Called on worker thread, method should not block for any
         /// significant amount of time.
         /// </summary>
-        protected abstract void OnReadyToReceive(SshAuthenticatedSession session);
+        protected abstract void OnReadyToReceive(Libssh2AuthenticatedSession session);
 
         /// <summary>
         /// Close channels and other resources before session is closed.
@@ -214,7 +214,7 @@ namespace Google.Solutions.Ssh
                 try
                 {
                     using (workerThreadRundownProtection.Acquire())
-                    using (var session = new SshSession())
+                    using (var session = new Libssh2Session())
                     {
                         session.SetTraceHandler(
                             LIBSSH2_TRACE.SOCKET |
@@ -380,7 +380,7 @@ namespace Google.Solutions.Ssh
                                                 "WSAWaitForMultipleEvents failed");
                                         }
                                     }
-                                    catch (SshNativeException e) when (e.ErrorCode == LIBSSH2_ERROR.EAGAIN)
+                                    catch (Libssh2Exception e) when (e.ErrorCode == LIBSSH2_ERROR.EAGAIN)
                                     {
                                         // Retry operation.
                                     }

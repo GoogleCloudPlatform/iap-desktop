@@ -28,7 +28,7 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// An interactive SSH channel.
     /// </summary>
-    public abstract class SshSessionChannelBase : SshChannelBase
+    public abstract class Libssh2SessionChannelBase : Libssh2ChannelBase
     {
         public const string Type = "session";
 
@@ -36,9 +36,9 @@ namespace Google.Solutions.Ssh.Native
         // Ctor.
         //---------------------------------------------------------------------
 
-        internal SshSessionChannelBase(
-            SshSession session,
-            SshChannelHandle channelHandle)
+        internal Libssh2SessionChannelBase(
+            Libssh2Session session,
+            Libssh2ChannelHandle channelHandle)
             : base(session, channelHandle)
         {
         }
@@ -104,24 +104,24 @@ namespace Google.Solutions.Ssh.Native
                     }
                     finally
                     {
-                        SshSession.Free(signalPtr, IntPtr.Zero);
-                        SshSession.Free(errmsgPtr, IntPtr.Zero);
-                        SshSession.Free(langTagPtr, IntPtr.Zero);
+                        Libssh2Session.Free(signalPtr, IntPtr.Zero);
+                        Libssh2Session.Free(errmsgPtr, IntPtr.Zero);
+                        Libssh2Session.Free(langTagPtr, IntPtr.Zero);
                     }
                 }
             }
         }
     }
 
-    public class SshShellChannel : SshSessionChannelBase
+    public class Libssh2ShellChannel : Libssh2SessionChannelBase
     {
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
-        internal SshShellChannel(
-            SshSession session,
-            SshChannelHandle channelHandle)
+        internal Libssh2ShellChannel(
+            Libssh2Session session,
+            Libssh2ChannelHandle channelHandle)
             : base(session, channelHandle)
         {
         }

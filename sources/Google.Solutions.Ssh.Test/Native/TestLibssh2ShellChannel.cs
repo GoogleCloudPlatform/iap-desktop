@@ -32,12 +32,12 @@ namespace Google.Solutions.Ssh.Test.Native
 
     [TestFixture]
     [UsesCloudResources]
-    public class TestSshShellChannel : SshFixtureBase
+    public class TestLibssh2ShellChannel : SshFixtureBase
     {
         private const string DefaultTerminal = "vanilla";
 
         private string ReadToEnd(
-            SshChannelBase channel,
+            Libssh2ChannelBase channel,
             Encoding encoding)
         {
             channel.WaitForEndOfStream();
@@ -54,7 +54,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         private string ReadUntil(
-            SshChannelBase channel,
+            Libssh2ChannelBase channel,
             string delimiter,
             Encoding encoding)
         {

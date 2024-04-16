@@ -41,12 +41,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 {
     internal sealed class SftpFileSystem : FileBrowser.IFileSystem, IDisposable
     {
-        private readonly Func<string, Task<IReadOnlyCollection<SshSftpFileInfo>>> listRemoteFilesFunc;
+        private readonly Func<string, Task<IReadOnlyCollection<Libssh2SftpFileInfo>>> listRemoteFilesFunc;
         private readonly FileTypeCache fileTypeCache;
 
         private static readonly Regex configFileNamePattern = new Regex("co?ni?f(ig)?$");
 
-        internal FileType TranslateFileType(SshSftpFileInfo sftpFile)
+        internal FileType TranslateFileType(Libssh2SftpFileInfo sftpFile)
         {
             if (sftpFile.IsDirectory)
             {
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
         }
 
         internal SftpFileSystem(
-            Func<string, Task<IReadOnlyCollection<SshSftpFileInfo>>> listRemoteFilesFunc)
+            Func<string, Task<IReadOnlyCollection<Libssh2SftpFileInfo>>> listRemoteFilesFunc)
         {
             this.listRemoteFilesFunc = listRemoteFilesFunc;
             this.fileTypeCache = new FileTypeCache();
@@ -193,11 +193,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
         private class SftpFileItem : FileBrowser.IFileItem
         {
             private readonly FileBrowser.IFileItem parent;
-            private readonly SshSftpFileInfo fileInfo;
+            private readonly Libssh2SftpFileInfo fileInfo;
 
             public SftpFileItem(
                 FileBrowser.IFileItem parent,
-                SshSftpFileInfo fileInfo,
+                Libssh2SftpFileInfo fileInfo,
                 FileType type)
             {
                 this.parent = parent;

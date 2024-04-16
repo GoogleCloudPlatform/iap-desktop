@@ -80,7 +80,7 @@ namespace Google.Solutions.Ssh
             }
         }
 
-        protected override void OnReadyToSend(SshAuthenticatedSession session)
+        protected override void OnReadyToSend(Libssh2AuthenticatedSession session)
         {
             lock (this.sendQueue)
             {
@@ -129,7 +129,7 @@ namespace Google.Solutions.Ssh
             }
         }
 
-        protected override void OnReadyToReceive(SshAuthenticatedSession session)
+        protected override void OnReadyToReceive(Libssh2AuthenticatedSession session)
         {
             foreach (var channel in this.channels)
             {
@@ -167,7 +167,7 @@ namespace Google.Solutions.Ssh
         /// when the connection is ready to send data.
         /// </summary>
         internal Task RunSendOperationAsync(
-            Action<SshAuthenticatedSession> sendOperation)
+            Action<Libssh2AuthenticatedSession> sendOperation)
         {
             if (!this.IsConnected)
             {
@@ -194,7 +194,7 @@ namespace Google.Solutions.Ssh
         }
 
         internal async Task<TResult> RunSendOperationAsync<TResult>(
-            Func<SshAuthenticatedSession, TResult> sendOperation)
+            Func<Libssh2AuthenticatedSession, TResult> sendOperation)
             where TResult : class
         {
             TResult? result = null;
@@ -211,7 +211,7 @@ namespace Google.Solutions.Ssh
         }
 
         internal async Task<TResult> RunThrowingOperationAsync<TResult>(
-            Func<SshAuthenticatedSession, TResult> sendOperation)
+            Func<Libssh2AuthenticatedSession, TResult> sendOperation)
             where TResult : class
         {
             //
@@ -337,9 +337,9 @@ namespace Google.Solutions.Ssh
         protected internal class SendOperation
         {
             internal readonly TaskCompletionSource<uint> CompletionSource;
-            internal readonly Action<SshAuthenticatedSession> Operation;
+            internal readonly Action<Libssh2AuthenticatedSession> Operation;
 
-            internal SendOperation(Action<SshAuthenticatedSession> operation)
+            internal SendOperation(Action<Libssh2AuthenticatedSession> operation)
             {
                 this.Operation = operation;
                 this.CompletionSource = new TaskCompletionSource<uint>();

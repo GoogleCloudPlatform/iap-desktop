@@ -30,7 +30,7 @@ namespace Google.Solutions.Ssh.Test
     internal static class SshAssert
     {
         public static void ThrowsNativeExceptionWithError(
-            SshSession? session,
+            Libssh2Session? session,
             LIBSSH2_ERROR expected,
             Action action)
         {
@@ -41,8 +41,8 @@ namespace Google.Solutions.Ssh.Test
             }
             catch (Exception e) when (!(e is AssertionException))
             {
-                Assert.IsInstanceOf(typeof(SshNativeException), e.Unwrap());
-                Assert.AreEqual(expected, ((SshNativeException)e.Unwrap()).ErrorCode);
+                Assert.IsInstanceOf(typeof(Libssh2Exception), e.Unwrap());
+                Assert.AreEqual(expected, ((Libssh2Exception)e.Unwrap()).ErrorCode);
 
                 if (session != null)
                 {
@@ -63,8 +63,8 @@ namespace Google.Solutions.Ssh.Test
             }
             catch (Exception e) when (!(e is AssertionException))
             {
-                Assert.IsInstanceOf(typeof(SshSftpNativeException), e.Unwrap());
-                Assert.AreEqual(expected, ((SshSftpNativeException)e.Unwrap()).ErrorCode);
+                Assert.IsInstanceOf(typeof(Libssh2SftpException), e.Unwrap());
+                Assert.AreEqual(expected, ((Libssh2SftpException)e.Unwrap()).ErrorCode);
             }
         }
 

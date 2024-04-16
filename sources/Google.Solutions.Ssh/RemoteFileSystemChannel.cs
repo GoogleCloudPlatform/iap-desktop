@@ -55,13 +55,13 @@ namespace Google.Solutions.Ssh
         /// <summary>
         /// Channel handle, must only be accessed on worker thread.
         /// </summary>
-        private readonly SshSftpChannel nativeChannel;
+        private readonly Libssh2SftpChannel nativeChannel;
 
         public override RemoteConnection Connection { get; }
 
         internal RemoteFileSystemChannel(
             RemoteConnection connection,
-            SshSftpChannel nativeChannel)
+            Libssh2SftpChannel nativeChannel)
         {
             this.Connection = connection;
             this.nativeChannel = nativeChannel;
@@ -95,7 +95,7 @@ namespace Google.Solutions.Ssh
         // Publics.
         //---------------------------------------------------------------------
 
-        public Task<IReadOnlyCollection<SshSftpFileInfo>> ListFilesAsync(
+        public Task<IReadOnlyCollection<Libssh2SftpFileInfo>> ListFilesAsync(
             string remotePath)
         {
             Precondition.ExpectNotEmpty(remotePath, nameof(remotePath));

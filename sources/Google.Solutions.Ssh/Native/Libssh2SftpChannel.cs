@@ -31,18 +31,18 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// SFTP channel.
     /// </summary>
-    public class SshSftpChannel : IDisposable
+    public class Libssh2SftpChannel : IDisposable
     {
         private const uint MaxFilenameLength = 256;
 
-        private readonly SshSession session;
-        private readonly SshSftpChannelHandle channelHandle;
+        private readonly Libssh2Session session;
+        private readonly Libssh2SftpChannelHandle channelHandle;
 
         private bool disposed = false;
 
-        internal SshSftpChannel(
-            SshSession session,
-            SshSftpChannelHandle channelHandle)
+        internal Libssh2SftpChannel(
+            Libssh2Session session,
+            Libssh2SftpChannelHandle channelHandle)
         {
             this.session = session;
             this.channelHandle = channelHandle;
@@ -50,12 +50,12 @@ namespace Google.Solutions.Ssh.Native
 
         //---------------------------------------------------------------------
 
-        public IReadOnlyCollection<SshSftpFileInfo> ListFiles(string path)
+        public IReadOnlyCollection<Libssh2SftpFileInfo> ListFiles(string path)
         {
             this.channelHandle.CheckCurrentThreadOwnsHandle();
             Precondition.ExpectNotEmpty(path, nameof(path));
 
-            var files = new LinkedList<SshSftpFileInfo>();
+            var files = new LinkedList<Libssh2SftpFileInfo>();
 
             using (SshTraceSource.Log.TraceMethod().WithParameters(path))
             using (var dirHandle = NativeMethods.libssh2_sftp_open_ex(
@@ -99,16 +99,16 @@ namespace Google.Solutions.Ssh.Native
                             }
                             else
                             {
-                                files.AddLast(new SshSftpFileInfo(
+                                files.AddLast(new Libssh2SftpFileInfo(
                                     Marshal.PtrToStringAnsi(fileNameBuffer.DangerousGetHandle()),
                                     attributes));
                             }
                         }
                     }
                 }
-                catch (SshNativeException e) when (e.ErrorCode == LIBSSH2_ERROR.SFTP_PROTOCOL)
+                catch (Libssh2Exception e) when (e.ErrorCode == LIBSSH2_ERROR.SFTP_PROTOCOL)
                 {
-                    throw SshSftpNativeException.GetLastError(
+                    throw Libssh2SftpException.GetLastError(
                         this.channelHandle,
                         path);
                 }
@@ -137,9 +137,9 @@ namespace Google.Solutions.Ssh.Native
                         throw this.session.CreateException(result);
                     }
                 }
-                catch (SshNativeException e) when (e.ErrorCode == LIBSSH2_ERROR.SFTP_PROTOCOL)
+                catch (Libssh2Exception e) when (e.ErrorCode == LIBSSH2_ERROR.SFTP_PROTOCOL)
                 {
-                    throw SshSftpNativeException.GetLastError(
+                    throw Libssh2SftpException.GetLastError(
                         this.channelHandle,
                         path);
                 }
@@ -165,16 +165,16 @@ namespace Google.Solutions.Ssh.Native
                         throw this.session.CreateException(result);
                     }
                 }
-                catch (SshNativeException e) when (e.ErrorCode == LIBSSH2_ERROR.SFTP_PROTOCOL)
+                catch (Libssh2Exception e) when (e.ErrorCode == LIBSSH2_ERROR.SFTP_PROTOCOL)
                 {
-                    throw SshSftpNativeException.GetLastError(
+                    throw Libssh2SftpException.GetLastError(
                         this.channelHandle,
                         path);
                 }
             }
         }
 
-        public SshSftpFileChannel CreateFile(
+        public Libssh2SftpFileChannel CreateFile(
             string path,
             LIBSSH2_FXF_FLAGS flags,
             FilePermissions mode)
@@ -197,15 +197,15 @@ namespace Google.Solutions.Ssh.Native
 
                     fileHandle.ValidateAndAttachToSession(this.session);
 
-                    return new SshSftpFileChannel(
+                    return new Libssh2SftpFileChannel(
                         this.session,
                         this.channelHandle,
                         fileHandle,
                         path);
                 }
-                catch (SshNativeException e) when (e.ErrorCode == LIBSSH2_ERROR.SFTP_PROTOCOL)
+                catch (Libssh2Exception e) when (e.ErrorCode == LIBSSH2_ERROR.SFTP_PROTOCOL)
                 {
-                    throw SshSftpNativeException.GetLastError(
+                    throw Libssh2SftpException.GetLastError(
                         this.channelHandle,
                         path);
                 }
@@ -231,9 +231,9 @@ namespace Google.Solutions.Ssh.Native
                         throw this.session.CreateException(result);
                     }
                 }
-                catch (SshNativeException e) when (e.ErrorCode == LIBSSH2_ERROR.SFTP_PROTOCOL)
+                catch (Libssh2Exception e) when (e.ErrorCode == LIBSSH2_ERROR.SFTP_PROTOCOL)
                 {
-                    throw SshSftpNativeException.GetLastError(
+                    throw Libssh2SftpException.GetLastError(
                         this.channelHandle,
                         path);
                 }
@@ -265,7 +265,7 @@ namespace Google.Solutions.Ssh.Native
         }
     }
 
-    public struct SshSftpFileInfo
+    public readonly struct Libssh2SftpFileInfo
     {
         private readonly LIBSSH2_SFTP_ATTRIBUTES attributes;
 
@@ -299,7 +299,7 @@ namespace Google.Solutions.Ssh.Native
         public ulong Size
             => this.attributes.filesize;
 
-        internal SshSftpFileInfo(
+        internal Libssh2SftpFileInfo(
             string name,
             LIBSSH2_SFTP_ATTRIBUTES attributes)
         {

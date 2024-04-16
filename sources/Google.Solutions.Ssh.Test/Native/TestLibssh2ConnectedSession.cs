@@ -34,7 +34,7 @@ namespace Google.Solutions.Ssh.Test.Native
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestSshConnectedSession : SshFixtureBase
+    public class TestLibssh2ConnectedSession : SshFixtureBase
     {
         //---------------------------------------------------------------------
         // Banner.
@@ -264,7 +264,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     session.Connect(endpoint);
                     Assert.Fail("Expected exception");
                 }
-                catch (SshNativeException e)
+                catch (Libssh2Exception e)
                 {
                     Assert.AreEqual("Unable to exchange encryption keys", e.Message);
                 }
@@ -655,7 +655,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     () => connection.Authenticate(credential, twoFaHandler));
 
                 Assert.AreEqual(
-                    SshConnectedSession.KeyboardInteractiveRetries,
+                    Libssh2ConnectedSession.KeyboardInteractiveRetries,
                     twoFaHandler.PromptCount);
             }
         }
@@ -691,7 +691,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
                     () => connection.Authenticate(credential, twoFactorHandler));
 
-                Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, twoFactorHandler.PromptCount);
+                Assert.AreEqual(Libssh2ConnectedSession.KeyboardInteractiveRetries, twoFactorHandler.PromptCount);
             }
         }
 
