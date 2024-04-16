@@ -26,6 +26,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Input;
+using Google.Solutions.Platform.Interop;
 using MSTSCLib;
 using System;
 using System.ComponentModel;

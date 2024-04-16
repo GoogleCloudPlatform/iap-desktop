@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.Common.Interop
+namespace Google.Solutions.Platform.Interop
 {
     public enum HRESULT : int
     {

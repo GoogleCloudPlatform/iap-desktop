@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Interop;
+using Google.Solutions.Platform.Interop;
 using NUnit.Framework;
 
-namespace Google.Solutions.Common.Test.Interop
+namespace Google.Solutions.Platform.Test.Interop
 {
     [TestFixture]
     public class TestHresultExtensions

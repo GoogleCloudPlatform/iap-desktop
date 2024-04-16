@@ -98,6 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj" />
+    <ProjectReference Include="..\Google.Solutions.Platform\Google.Solutions.Platform.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Controls\FileBrowser.resx">
