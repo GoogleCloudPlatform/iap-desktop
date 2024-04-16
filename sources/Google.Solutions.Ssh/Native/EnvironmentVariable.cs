@@ -24,7 +24,7 @@ using System;
 
 namespace Google.Solutions.Ssh.Native
 {
-    public struct EnvironmentVariable : IEquatable<EnvironmentVariable>
+    internal struct EnvironmentVariable : IEquatable<EnvironmentVariable>
     {
         public string Name { get; set; }
         public string Value { get; set; }
@@ -40,12 +40,12 @@ namespace Google.Solutions.Ssh.Native
             this.Required = required;
         }
 
-        public override bool Equals(object obj)
+        public readonly override bool Equals(object obj)
         {
             return obj is EnvironmentVariable var && Equals(var);
         }
 
-        public bool Equals(EnvironmentVariable var)
+        public readonly bool Equals(EnvironmentVariable var)
         {
             return
                 var.Name == this.Name &&
@@ -53,7 +53,7 @@ namespace Google.Solutions.Ssh.Native
                 var.Required == this.Required;
         }
 
-        public override int GetHashCode()
+        public readonly override int GetHashCode()
         {
             return this.Name.GetHashCode();
         }

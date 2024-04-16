@@ -33,7 +33,7 @@ namespace Google.Solutions.Ssh
     /// <summary>
     /// Channel for interacting with remote file.
     /// </summary>
-    public class RemoteFileSystemChannel : RemoteChannelBase
+    public class SshFileSystemChannel : SshChannelBase
     {
         //
         // SFTP effectively limits the size of a packet to 32 KB, see
@@ -55,13 +55,13 @@ namespace Google.Solutions.Ssh
         /// <summary>
         /// Channel handle, must only be accessed on worker thread.
         /// </summary>
-        private readonly SshSftpChannel nativeChannel;
+        private readonly Libssh2SftpChannel nativeChannel;
 
-        public override RemoteConnection Connection { get; }
+        public override SshConnection Connection { get; }
 
-        internal RemoteFileSystemChannel(
-            RemoteConnection connection,
-            SshSftpChannel nativeChannel)
+        internal SshFileSystemChannel(
+            SshConnection connection,
+            Libssh2SftpChannel nativeChannel)
         {
             this.Connection = connection;
             this.nativeChannel = nativeChannel;
@@ -95,7 +95,7 @@ namespace Google.Solutions.Ssh
         // Publics.
         //---------------------------------------------------------------------
 
-        public Task<IReadOnlyCollection<SshSftpFileInfo>> ListFilesAsync(
+        public Task<IReadOnlyCollection<Libssh2SftpFileInfo>> ListFilesAsync(
             string remotePath)
         {
             Precondition.ExpectNotEmpty(remotePath, nameof(remotePath));

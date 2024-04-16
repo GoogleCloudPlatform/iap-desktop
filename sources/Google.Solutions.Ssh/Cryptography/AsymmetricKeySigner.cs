@@ -83,7 +83,7 @@ namespace Google.Solutions.Ssh.Cryptography
             }
             else if (algorithm is ECDsaCng ecdsa)
             {
-                return new EcdsaSigner(ecdsa, ownsKey);
+                return new ECDsaSigner(ecdsa, ownsKey);
             }
             else
             {

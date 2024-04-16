@@ -25,7 +25,7 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// Standard authentication methods.
     /// </summary>
-    internal static class AuthenticationMetods
+    internal static class AuthenticationMethods
     {
         public const string PublicKey = "publickey";
         public const string Password = "password";

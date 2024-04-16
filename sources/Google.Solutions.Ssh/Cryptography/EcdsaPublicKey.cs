@@ -30,12 +30,12 @@ namespace Google.Solutions.Ssh.Cryptography
     /// <summary>
     /// An ECDsa public key.
     /// </summary>
-    public class EcdsaPublicKey : PublicKey
+    public class ECDsaPublicKey : PublicKey
     {
         private readonly ECDsaCng key;
         private readonly bool ownsKey;
 
-        public EcdsaPublicKey(ECDsaCng key, bool ownsKey)
+        public ECDsaPublicKey(ECDsaCng key, bool ownsKey)
         {
             this.key = key.ExpectNotNull(nameof(key));
             this.ownsKey = ownsKey;
@@ -113,7 +113,7 @@ namespace Google.Solutions.Ssh.Cryptography
         /// <summary>
         /// Read a key from its wire format (i.e., RFC5656 section 3.1).
         /// </summary>
-        public static EcdsaPublicKey FromWireFormat(byte[] encodedKey)
+        public static ECDsaPublicKey FromWireFormat(byte[] encodedKey)
         {
             encodedKey.ExpectNotNull(nameof(encodedKey));
 
@@ -123,7 +123,7 @@ namespace Google.Solutions.Ssh.Cryptography
             try
             {
                 key.ImportParameters(parameters);
-                return new EcdsaPublicKey(key, true);
+                return new ECDsaPublicKey(key, true);
             }
             catch (Exception e)
             {

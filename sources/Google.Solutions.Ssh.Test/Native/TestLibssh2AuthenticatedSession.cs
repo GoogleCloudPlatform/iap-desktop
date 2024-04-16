@@ -30,7 +30,7 @@ namespace Google.Solutions.Ssh.Test.Native
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestSshAuthenticatedSession : SshFixtureBase
+    public class TestLibssh2AuthenticatedSession : SshFixtureBase
     {
         //---------------------------------------------------------------------
         // Channel.
@@ -113,7 +113,7 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
-                    LIBSSH2_ERROR.PUBLICKEY_UNRECOGNIZED,
+                    LIBSSH2_ERROR.AUTHENTICATION_FAILED,
                     () => connection.Authenticate(
                         credential,
                         new KeyboardInteractiveHandler()));

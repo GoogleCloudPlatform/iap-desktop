@@ -31,8 +31,10 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh
 {
-    public class RemoteConnection : SshWorkerThread
+    public class SshConnection : SshWorkerThread
     {
+        public const string BannerPrefix = Libssh2Session.BannerPrefix;
+
         private readonly Queue<SendOperation> sendQueue = new Queue<SendOperation>();
         private readonly TaskCompletionSource<int> connectionCompleted
             = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -41,10 +43,10 @@ namespace Google.Solutions.Ssh
         // List of open channels. Only accessed on worker thread,
         // so no locking required.
         //
-        private readonly LinkedList<RemoteChannelBase> channels
-            = new LinkedList<RemoteChannelBase>();
+        private readonly LinkedList<SshChannelBase> channels
+            = new LinkedList<SshChannelBase>();
 
-        public RemoteConnection(
+        public SshConnection(
             IPEndPoint endpoint,
             ISshCredential credential,
             IKeyboardInteractiveHandler keyboardHandler,
@@ -61,7 +63,7 @@ namespace Google.Solutions.Ssh
         // Overrides.
         //---------------------------------------------------------------------
 
-        protected override void OnConnected()
+        private protected override void OnConnected()
         {
             //
             // Complete task on callback context.
@@ -69,7 +71,7 @@ namespace Google.Solutions.Ssh
             this.CallbackContext.Post(() => this.connectionCompleted.SetResult(0));
         }
 
-        protected override void OnConnectionError(Exception exception)
+        private protected override void OnConnectionError(Exception exception)
         {
             if (!this.connectionCompleted.Task.IsCompleted)
             {
@@ -80,7 +82,7 @@ namespace Google.Solutions.Ssh
             }
         }
 
-        protected override void OnReadyToSend(SshAuthenticatedSession session)
+        private protected override void OnReadyToSend(Libssh2AuthenticatedSession session)
         {
             lock (this.sendQueue)
             {
@@ -120,7 +122,7 @@ namespace Google.Solutions.Ssh
             }
         }
 
-        protected override void OnSendError(Exception exception)
+        private protected override void OnSendError(Exception exception)
         {
             lock (this.sendQueue)
             {
@@ -129,7 +131,7 @@ namespace Google.Solutions.Ssh
             }
         }
 
-        protected override void OnReadyToReceive(SshAuthenticatedSession session)
+        private protected override void OnReadyToReceive(Libssh2AuthenticatedSession session)
         {
             foreach (var channel in this.channels)
             {
@@ -137,7 +139,7 @@ namespace Google.Solutions.Ssh
             }
         }
 
-        protected override void OnReceiveError(Exception exception)
+        private protected override void OnReceiveError(Exception exception)
         {
             foreach (var channel in this.channels)
             {
@@ -145,7 +147,7 @@ namespace Google.Solutions.Ssh
             }
         }
 
-        protected override void OnBeforeCloseSession()
+        private protected override void OnBeforeCloseSession()
         {
             Debug.Assert(this.IsRunningOnWorkerThread);
 
@@ -167,7 +169,7 @@ namespace Google.Solutions.Ssh
         /// when the connection is ready to send data.
         /// </summary>
         internal Task RunSendOperationAsync(
-            Action<SshAuthenticatedSession> sendOperation)
+            Action<Libssh2AuthenticatedSession> sendOperation)
         {
             if (!this.IsConnected)
             {
@@ -194,7 +196,7 @@ namespace Google.Solutions.Ssh
         }
 
         internal async Task<TResult> RunSendOperationAsync<TResult>(
-            Func<SshAuthenticatedSession, TResult> sendOperation)
+            Func<Libssh2AuthenticatedSession, TResult> sendOperation)
             where TResult : class
         {
             TResult? result = null;
@@ -211,7 +213,7 @@ namespace Google.Solutions.Ssh
         }
 
         internal async Task<TResult> RunThrowingOperationAsync<TResult>(
-            Func<SshAuthenticatedSession, TResult> sendOperation)
+            Func<Libssh2AuthenticatedSession, TResult> sendOperation)
             where TResult : class
         {
             //
@@ -258,7 +260,7 @@ namespace Google.Solutions.Ssh
             return this.connectionCompleted.Task;
         }
 
-        public async Task<RemoteShellChannel> OpenShellAsync(
+        public async Task<SshShellChannel> OpenShellAsync(
             ITextTerminal terminal,
             TerminalSize initialSize)
         {
@@ -296,7 +298,7 @@ namespace Google.Solutions.Ssh
                             initialSize.Rows,
                             environmentVariables);
 
-                        var channel = new RemoteShellChannel(
+                        var channel = new SshShellChannel(
                             this,
                             nativeChannel,
                             terminal);
@@ -309,7 +311,7 @@ namespace Google.Solutions.Ssh
                 .ConfigureAwait(false);
         }
 
-        public async Task<RemoteFileSystemChannel> OpenFileSystemAsync()
+        public async Task<SshFileSystemChannel> OpenFileSystemAsync()
         {
             return await RunSendOperationAsync(
                 session =>
@@ -318,7 +320,7 @@ namespace Google.Solutions.Ssh
 
                     using (session.Session.AsBlocking())
                     {
-                        var channel = new RemoteFileSystemChannel(
+                        var channel = new SshFileSystemChannel(
                             this,
                             session.OpenSftpChannel());
 
@@ -337,81 +339,12 @@ namespace Google.Solutions.Ssh
         protected internal class SendOperation
         {
             internal readonly TaskCompletionSource<uint> CompletionSource;
-            internal readonly Action<SshAuthenticatedSession> Operation;
+            internal readonly Action<Libssh2AuthenticatedSession> Operation;
 
-            internal SendOperation(Action<SshAuthenticatedSession> operation)
+            internal SendOperation(Action<Libssh2AuthenticatedSession> operation)
             {
                 this.Operation = operation;
                 this.CompletionSource = new TaskCompletionSource<uint>();
-            }
-        }
-    }
-
-    /// <summary>
-    /// Base class for channels that support async use.
-    /// </summary>
-    public abstract class RemoteChannelBase : IDisposable
-    {
-        private bool closed = false;
-
-        public abstract RemoteConnection Connection { get; }
-
-        /// <summary>
-        /// Perform receive operation. Called on SSH worker thread.
-        /// </summary>
-        internal abstract void OnReceive();
-
-        /// <summary>
-        /// Receive failed. Called on SSH worker thread.
-        /// </summary>
-        internal abstract void OnReceiveError(Exception exception);
-
-        /// <summary>
-        /// Close handles. Called on SSH worker thread.
-        /// </summary>
-        protected abstract void Close();
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (this.Connection.IsRunningOnWorkerThread)
-            {
-                try
-                {
-                    if (!this.closed)
-                    {
-                        Close();
-                        this.closed = true;
-                    }
-                }
-                catch (Exception e)
-                {
-                    //
-                    // NB. This is non-fatal - we're tearing down the 
-                    // connection anyway.
-                    //
-                    SshTraceSource.Log.TraceError(
-                        "Closing connection failed for {0}: {1}",
-                        Thread.CurrentThread.Name,
-                        e);
-                }
-            }
-            else
-            {
-                this.Connection
-                    .RunSendOperationAsync(c =>
-                    {
-                        using (c.Session.AsBlocking())
-                        {
-                            Dispose();
-                        }
-                    })
-                    .ContinueWith(_ => { });
             }
         }
     }

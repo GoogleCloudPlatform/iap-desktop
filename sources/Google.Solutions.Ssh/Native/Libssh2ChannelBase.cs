@@ -29,12 +29,12 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// An connected and authenticated Libssh2 session.
     /// </summary>
-    public abstract class SshChannelBase : IDisposable
+    internal abstract class Libssh2ChannelBase : IDisposable
     {
         // NB. This object does not own this handle and should not dispose it.
-        protected SshSession Session { get; }
+        protected Libssh2Session Session { get; }
 
-        internal SshChannelHandle ChannelHandle { get; }
+        internal Libssh2ChannelHandle ChannelHandle { get; }
 
         private bool closedForWriting = false;
         private bool disposed = false;
@@ -43,9 +43,9 @@ namespace Google.Solutions.Ssh.Native
         // Ctor.
         //---------------------------------------------------------------------
 
-        internal SshChannelBase(
-            SshSession session,
-            SshChannelHandle channelHandle)
+        internal Libssh2ChannelBase(
+            Libssh2Session session,
+            Libssh2ChannelHandle channelHandle)
         {
             this.Session = session;
             this.ChannelHandle = channelHandle;

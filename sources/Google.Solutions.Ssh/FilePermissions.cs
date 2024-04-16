@@ -21,7 +21,7 @@
 
 using System;
 
-namespace Google.Solutions.Ssh.Native
+namespace Google.Solutions.Ssh
 {
     [Flags]
     public enum FilePermissions : uint

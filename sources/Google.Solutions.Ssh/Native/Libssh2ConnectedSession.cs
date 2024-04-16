@@ -35,12 +35,12 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// An connected Libssh2 session.
     /// </summary>
-    public class SshConnectedSession : IDisposable
+    internal class Libssh2ConnectedSession : IDisposable
     {
         internal const int KeyboardInteractiveRetries = 3;
 
         // NB. This object does not own this handle and should not dispose it.
-        private readonly SshSession session;
+        private readonly Libssh2Session session;
 
         private readonly Socket socket;
         private bool disposed = false;
@@ -62,7 +62,7 @@ namespace Google.Solutions.Ssh.Native
         // Ctor.
         //---------------------------------------------------------------------
 
-        internal SshConnectedSession(SshSession session, Socket socket)
+        internal Libssh2ConnectedSession(Libssh2Session session, Socket socket)
         {
             this.session = session;
             this.socket = socket;
@@ -92,7 +92,7 @@ namespace Google.Solutions.Ssh.Native
         // Algorithms.
         //---------------------------------------------------------------------
 
-        public string[] GetActiveAlgorithms(LIBSSH2_METHOD methodType)
+        internal string[] GetActiveAlgorithms(LIBSSH2_METHOD methodType)
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
             if (!Enum.IsDefined(typeof(LIBSSH2_METHOD), methodType))
@@ -173,7 +173,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public LIBSSH2_HOSTKEY_TYPE GetRemoteHostKeyType()
+        internal LIBSSH2_HOSTKEY_TYPE GetRemoteHostKeyType()
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
 
@@ -241,7 +241,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        private SshAuthenticatedSession AuthenticateWithKeyboard(
+        private Libssh2AuthenticatedSession AuthenticateWithKeyboard(
             ISshCredential credential,
             IKeyboardInteractiveHandler keyboardHandler,
             string defaultPromptName)
@@ -283,7 +283,7 @@ namespace Google.Solutions.Ssh.Native
                 // 
                 // NB. libssh2 assumes text to be encoded in UTF-8.
                 //
-                Debug.Assert(SshSession.Alloc != null);
+                Debug.Assert(Libssh2Session.Alloc != null);
 
                 var responses = new NativeMethods.LIBSSH2_USERAUTH_KBDINT_RESPONSE[prompts.Length];
                 for (var i = 0; i < prompts.Length; i++)
@@ -339,7 +339,7 @@ namespace Google.Solutions.Ssh.Native
                     {
                         var responseTextBytes = Encoding.UTF8.GetBytes(responseText);
                         responses[i].TextLength = responseTextBytes.Length;
-                        responses[i].TextPtr = SshSession.Alloc!(
+                        responses[i].TextPtr = Libssh2Session.Alloc!(
                             new IntPtr(responseTextBytes.Length),
                             IntPtr.Zero);
                         Marshal.Copy(
@@ -397,7 +397,7 @@ namespace Google.Solutions.Ssh.Native
                 {
                     SshEventSource.Log.KeyboardInteractiveAuthenticationCompleted();
 
-                    return new SshAuthenticatedSession(this.session);
+                    return new Libssh2AuthenticatedSession(this.session);
                 }
                 else
                 {
@@ -406,7 +406,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        private SshAuthenticatedSession AuthenticateWithPassword(
+        private Libssh2AuthenticatedSession AuthenticateWithPassword(
             IPasswordCredential credential,
             IKeyboardInteractiveHandler keyboardHandler)
         {
@@ -466,7 +466,7 @@ namespace Google.Solutions.Ssh.Native
                 {
                     SshEventSource.Log.PasswordAuthenticationCompleted();
 
-                    return new SshAuthenticatedSession(this.session);
+                    return new Libssh2AuthenticatedSession(this.session);
                 }
                 else if (passwordChangeCallbackInvocations > 0)
                 {
@@ -481,7 +481,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        private SshAuthenticatedSession AuthenticateWithPublicKey(
+        private Libssh2AuthenticatedSession AuthenticateWithPublicKey(
             IAsymmetricKeyCredential credential,
             IKeyboardInteractiveHandler keyboardHandler)
         {
@@ -516,7 +516,7 @@ namespace Google.Solutions.Ssh.Native
                 // the allocator specified in libssh2_session_init_ex.
                 //
                 signatureLength = new IntPtr(signature.Length);
-                signaturePtr = SshSession.Alloc(signatureLength, IntPtr.Zero);
+                signaturePtr = Libssh2Session.Alloc(signatureLength, IntPtr.Zero);
                 Marshal.Copy(signature, 0, signaturePtr, signature.Length);
 
                 return (int)LIBSSH2_ERROR.NONE;
@@ -540,7 +540,7 @@ namespace Google.Solutions.Ssh.Native
                 {
                     SshEventSource.Log.PublicKeyAuthenticationCompleted();
 
-                    return new SshAuthenticatedSession(this.session);
+                    return new Libssh2AuthenticatedSession(this.session);
                 }
                 else if (result == LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED)
                 {
@@ -555,7 +555,7 @@ namespace Google.Solutions.Ssh.Native
                         "additionally requires {0}",
                         string.Join(", ", requiredMethods));
 
-                    if (requiredMethods.FirstOrDefault() == AuthenticationMetods.KeyboardInteractive)
+                    if (requiredMethods.FirstOrDefault() == AuthenticationMethods.KeyboardInteractive)
                     {
                         return AuthenticateWithKeyboard(
                             credential,
@@ -577,7 +577,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public SshAuthenticatedSession Authenticate(
+        internal Libssh2AuthenticatedSession Authenticate(
             ISshCredential credential,
             IKeyboardInteractiveHandler keyboardHandler)
         {
@@ -600,17 +600,17 @@ namespace Google.Solutions.Ssh.Native
                 //
                 var authenticationMethods = GetAuthenticationMethods(credential.Username);
 
-                if (authenticationMethods.Contains(AuthenticationMetods.PublicKey) &&
+                if (authenticationMethods.Contains(AuthenticationMethods.PublicKey) &&
                     credential is IAsymmetricKeyCredential keyCredential)
                 {
                     return AuthenticateWithPublicKey(keyCredential, keyboardHandler);
                 }
-                else if (authenticationMethods.Contains(AuthenticationMetods.Password) &&
+                else if (authenticationMethods.Contains(AuthenticationMethods.Password) &&
                     credential is IPasswordCredential passwordCredential)
                 {
                     return AuthenticateWithPassword(passwordCredential, keyboardHandler);
                 }
-                else if (authenticationMethods.Contains(AuthenticationMetods.KeyboardInteractive))
+                else if (authenticationMethods.Contains(AuthenticationMethods.KeyboardInteractive))
                 {
                     return AuthenticateWithKeyboard(
                         credential,

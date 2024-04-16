@@ -35,14 +35,14 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// An (unconnected) Libssh2 session.
     /// </summary>
-    public class SshSession : IDisposable
+    internal class Libssh2Session : IDisposable
     {
-        public const string BannerPrefix = "SSH-2.0-";
+        internal const string BannerPrefix = "SSH-2.0-";
 
-        private readonly SshSessionHandle sessionHandle;
+        private readonly Libssh2SessionHandle sessionHandle;
         private bool disposed = false;
 
-        internal SshSessionHandle Handle => this.sessionHandle;
+        internal Libssh2SessionHandle Handle => this.sessionHandle;
 
         internal static readonly NativeMethods.Alloc Alloc;
         internal static readonly NativeMethods.Free Free;
@@ -54,7 +54,7 @@ namespace Google.Solutions.Ssh.Native
         // Ctor.
         //---------------------------------------------------------------------
 
-        static SshSession()
+        static Libssh2Session()
         {
             // Store these delegates in fields to prevent them from being
             // garbage collected. Otherwise callbacks will suddenly
@@ -69,7 +69,7 @@ namespace Google.Solutions.Ssh.Native
                 var result = (LIBSSH2_ERROR)NativeMethods.libssh2_init(0);
                 if (result != LIBSSH2_ERROR.NONE)
                 {
-                    throw new SshNativeException(
+                    throw new Libssh2Exception(
                         result,
                         "Failed to initialize libssh2");
                 }
@@ -80,7 +80,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        internal SshSession()
+        internal Libssh2Session()
         {
             this.sessionHandle = NativeMethods.libssh2_session_init_ex(
                 Alloc,
@@ -153,7 +153,7 @@ namespace Google.Solutions.Ssh.Native
         // Algorithms.
         //---------------------------------------------------------------------
 
-        public string[] GetSupportedAlgorithms(LIBSSH2_METHOD methodType)
+        internal string[] GetSupportedAlgorithms(LIBSSH2_METHOD methodType)
         {
             this.sessionHandle.CheckCurrentThreadOwnsHandle();
             if (!Enum.IsDefined(typeof(LIBSSH2_METHOD), methodType))
@@ -193,7 +193,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public void SetPreferredMethods(
+        internal void SetPreferredMethods(
             LIBSSH2_METHOD methodType,
             string[] methods)
         {
@@ -331,7 +331,7 @@ namespace Google.Solutions.Ssh.Native
         // Handshake.
         //---------------------------------------------------------------------
 
-        public SshConnectedSession Connect(EndPoint remoteEndpoint)
+        public Libssh2ConnectedSession Connect(EndPoint remoteEndpoint)
         {
             this.sessionHandle.CheckCurrentThreadOwnsHandle();
 
@@ -365,7 +365,7 @@ namespace Google.Solutions.Ssh.Native
 
                 SshEventSource.Log.ConnectionHandshakeCompleted(remoteEndpoint.ToString());
 
-                return new SshConnectedSession(this, socket);
+                return new Libssh2ConnectedSession(this, socket);
             }
         }
 
@@ -373,7 +373,7 @@ namespace Google.Solutions.Ssh.Native
         // Error.
         //---------------------------------------------------------------------
 
-        public LIBSSH2_ERROR LastError
+        internal LIBSSH2_ERROR LastError
         {
             get
             {
@@ -384,7 +384,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public SshNativeException CreateException(LIBSSH2_ERROR error)
+        internal Libssh2Exception CreateException(LIBSSH2_ERROR error)
         {
             var lastError = (LIBSSH2_ERROR)NativeMethods.libssh2_session_last_error(
                 this.sessionHandle,
@@ -396,7 +396,7 @@ namespace Google.Solutions.Ssh.Native
 
             if (lastError == error)
             {
-                return new SshNativeException(
+                return new Libssh2Exception(
                     error,
                     Marshal.PtrToStringAnsi(errorMessage, errorMessageLength));
             }
@@ -404,7 +404,7 @@ namespace Google.Solutions.Ssh.Native
             {
                 // The last error is something else, so create a generic
                 // exception
-                return new SshNativeException(
+                return new Libssh2Exception(
                     error,
                     $"SSH operation failed: {error}");
             }
@@ -416,7 +416,7 @@ namespace Google.Solutions.Ssh.Native
 
         private NativeMethods.TraceHandler? TraceHandlerDelegate;
 
-        public void SetTraceHandler(
+        internal void SetTraceHandler(
             LIBSSH2_TRACE mask,
             Action<string> handler)
         {

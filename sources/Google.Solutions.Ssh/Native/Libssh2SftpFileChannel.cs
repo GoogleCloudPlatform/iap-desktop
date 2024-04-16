@@ -30,11 +30,11 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// Represents an open file that can be read from/written to.
     /// </summary>
-    public class SshSftpFileChannel : IDisposable
+    internal class Libssh2SftpFileChannel : IDisposable
     {
-        private readonly SshSession session;
-        private readonly SshSftpChannelHandle channelHandle;
-        private readonly SshSftpFileHandle fileHandle;
+        private readonly Libssh2Session session;
+        private readonly Libssh2SftpChannelHandle channelHandle;
+        private readonly Libssh2SftpFileHandle fileHandle;
         private readonly string filePath;
 
         private bool disposed = false;
@@ -43,7 +43,7 @@ namespace Google.Solutions.Ssh.Native
         {
             if (error == LIBSSH2_ERROR.SFTP_PROTOCOL)
             {
-                return SshSftpNativeException.GetLastError(
+                return Libssh2SftpException.GetLastError(
                     this.channelHandle,
                     this.filePath);
             }
@@ -53,10 +53,10 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        internal SshSftpFileChannel(
-            SshSession session,
-            SshSftpChannelHandle channelHandle,
-            SshSftpFileHandle fileHandle,
+        internal Libssh2SftpFileChannel(
+            Libssh2Session session,
+            Libssh2SftpChannelHandle channelHandle,
+            Libssh2SftpFileHandle fileHandle,
             string filePath)
         {
             this.session = session;
