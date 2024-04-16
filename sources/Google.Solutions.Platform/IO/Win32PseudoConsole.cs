@@ -1,9 +1,29 @@
-﻿using Google.Solutions.Common.Interop;
+﻿//
+// Copyright 2024 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.Common.Interop;
+using Google.Solutions.Common.Runtime;
 using Microsoft.Win32.SafeHandles;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -14,7 +34,7 @@ namespace Google.Solutions.Platform.IO
     /// <summary>
     /// A Win32 pseudo-console for interacting with a process.
     /// </summary>
-    public class Win32PseudoConsole : IPseudoConsole
+    public class Win32PseudoConsole : DisposableBase, IPseudoConsole
     {
         /// <summary>
         /// Encoding used by terminal, which is always UTF-8 (not UCS-2!) 
@@ -22,8 +42,8 @@ namespace Google.Solutions.Platform.IO
         /// </summary>
         internal static Encoding Encoding = new UTF8Encoding(false);
 
-        private readonly ManualResetEvent eofEvent;
-        private readonly TextReader outputWriter;
+        private readonly Task pumpOutputTask;
+        private readonly TextReader outputReader;
         private readonly TextWriter inputWriter;
 
         internal AnonymousPipe InputPipe { get; }
@@ -63,15 +83,13 @@ namespace Google.Solutions.Platform.IO
                 this.Handle = handle;
                 this.InputPipe = stdin;
                 this.OutputPipe = stdout;
-                this.eofEvent = new ManualResetEvent(false);
 
                 this.inputWriter = new StreamWriter(stdin.WriteSide, Encoding)
                 {
                     AutoFlush = true
                 };
-                this.outputWriter = new StreamReader(stdout.ReadSide, Encoding);
-
-                //TODO: this.outputWriter.OnDataReceived(OnDataReceived);
+                this.outputReader = new StreamReader(stdout.ReadSide, Encoding);
+                this.pumpOutputTask = PumpEventsAsync();
             }
             catch (EntryPointNotFoundException)
             {
@@ -80,6 +98,39 @@ namespace Google.Solutions.Platform.IO
 
                 throw new PseudoConsoleException(
                     "This feature requires Windows 10 version 1809 or newer");
+            }
+        }
+
+        private async Task PumpEventsAsync()
+        {
+            var buffer = new char[1024];
+            while (true)
+            {
+                try
+                {
+                    var charsRead = await this.outputReader
+                        .ReadAsync(buffer, 0, buffer.Length)
+                        .ConfigureAwait(false);
+                    if (charsRead == 0)
+                    {
+                        //
+                        // EOF reached.
+                        //
+                        return;
+                    }
+                    else
+                    {
+                        this.OutputAvailable?.Invoke(
+                            this,
+                            new PseudoConsoleDataEventArgs(new string(buffer, 0, charsRead)));
+                    }
+                }
+                catch (Exception e)
+                {
+                    this.OutputFailed?.Invoke(
+                        this, 
+                        new PseudoConsoleErrorEventArgs(e));
+                }
             }
         }
 
@@ -95,8 +146,17 @@ namespace Google.Solutions.Platform.IO
         // IPseudoTerminal.
         //---------------------------------------------------------------------
 
-        public event EventHandler<PseudoConsoleDataEventArgs>? Output;
-        public event EventHandler<PseudoConsoleErrorEventArgs>? Error;
+        /// <summary>
+        /// Raised when output is available. The event can be delivered on
+        /// any thread.
+        /// </summary>
+        public event EventHandler<PseudoConsoleDataEventArgs>? OutputAvailable;
+
+        /// <summary>
+        /// Raised when reading from the console failed. 
+        /// The event can be delivered on any thread.
+        /// </summary>
+        public event EventHandler<PseudoConsoleErrorEventArgs>? OutputFailed;
 
         public bool IsClosed { get; private set; }
 
@@ -121,7 +181,8 @@ namespace Google.Solutions.Platform.IO
                         hresult,
                         "Failed to resize pseudo console");
                 }
-            });
+            },
+            cancellationToken);
         }
 
         public Task WriteAsync(string data)
@@ -140,46 +201,36 @@ namespace Google.Solutions.Platform.IO
             return this.inputWriter.WriteAsync(data);
         }
 
-        public async Task DrainAsync()
+        public Task DrainAsync()
         {
-            ExpectNotClosed();
-            
-            await this.eofEvent
-                .WaitOneAsync()
-                .ConfigureAwait(false);
+            return this.pumpOutputTask;
         }
 
         public async Task CloseAsync()
         {
             this.Handle.Close();
-
-            await DrainAsync().ConfigureAwait(false);
-
             this.IsClosed = true;
+
+            //
+            // Drain all pending output.
+            //
+            await DrainAsync().ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------
         // IDisposable.
         //---------------------------------------------------------------------
 
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             this.inputWriter.Dispose();
-            this.outputWriter.Dispose();
+            this.outputReader.Dispose();
 
             if (!this.IsClosed)
             {
                 this.Handle.Close();
                 this.IsClosed = true;
             }
-
-            this.eofEvent.Dispose();
-        }
-
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
         }
 
         //---------------------------------------------------------------------

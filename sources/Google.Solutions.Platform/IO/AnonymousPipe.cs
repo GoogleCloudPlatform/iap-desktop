@@ -1,20 +1,38 @@
-﻿using Microsoft.Win32.SafeHandles;
+﻿//
+// Copyright 2024 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.Common.Runtime;
+using Microsoft.Win32.SafeHandles;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Platform.IO
 {
     /// <summary>
     /// Win32 anonmous pipe.
     /// </summary>
-    public class AnonymousPipe : IDisposable
+    public class AnonymousPipe : DisposableBase
     {
         internal SafeFileHandle ReadSideHandle { get; }
         internal SafeFileHandle WriteSideHandle { get; }
@@ -120,7 +138,7 @@ namespace Google.Solutions.Platform.IO
         // IDisposable.
         //---------------------------------------------------------------------
 
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
@@ -129,18 +147,6 @@ namespace Google.Solutions.Platform.IO
 
             this.ReadSideHandle.Dispose();
             this.WriteSideHandle.Dispose();
-        }
-
-        ~AnonymousPipe()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
         }
 
         //---------------------------------------------------------------------
