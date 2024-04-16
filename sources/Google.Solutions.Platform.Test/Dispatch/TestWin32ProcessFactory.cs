@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Platform.Dispatch;
+using Google.Solutions.Platform.IO;
 using NUnit.Framework;
 using System;
 using System.Net;
@@ -65,6 +66,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 Assert.IsNotNull(process.Handle);
                 Assert.IsFalse(process.Handle.IsInvalid);
                 Assert.IsNull(process.Job);
+                Assert.IsNull(process.PseudoConsole);
 
                 process.Terminate(1);
             }
@@ -83,6 +85,64 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
             Assert.Throws<InvalidOperationException>(
                 () => factory.CreateProcess(CmdExe, null));
+
+            Assert.IsNotNull(createdProcess);
+            Assert.IsTrue(((Win32Process)createdProcess!).IsDisposed);
+        }
+
+
+        //---------------------------------------------------------------------
+        // CreateProcessWithPseudoConsole.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenExecutableNotFound_ThenCCreateProcessWithPseudoConsoleThrowsException()
+        {
+            var factory = new Win32ProcessFactory();
+
+            Assert.Throws<DispatchException>(() => factory.CreateProcessWithPseudoConsole(
+                "doesnotexist.exe",
+                null,
+                PseudoConsoleSize.Default));
+        }
+
+        [Test]
+        public void WhenExecutablePathFound_ThenCreateProcessWithPseudoConsoleSucceeds()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcessWithPseudoConsole(
+                CmdExe, 
+                null,
+                PseudoConsoleSize.Default))
+            {
+                Assert.IsNotNull(process.Handle);
+                Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.IsNull(process.Job);
+
+                Assert.IsNotNull(process.PseudoConsole);
+                Assert.IsFalse(process.PseudoConsole!.IsClosed);
+
+                process.Terminate(1);
+            }
+        }
+
+        [Test]
+        public void WhenOnProcessCreatedFails_ThenCreateProcessWithPseudoConsoleDisposesProcess()
+        {
+            var factory = new Win32ProcessFactoryWithEvent();
+            IWin32Process? createdProcess = null;
+            factory.ProcessCreated += (_, p) =>
+            {
+                createdProcess = p;
+                throw new InvalidOperationException("mock");
+            };
+
+            Assert.Throws<InvalidOperationException>(
+                () => factory.CreateProcessWithPseudoConsole(
+                    CmdExe,
+                    null,
+                    PseudoConsoleSize.Default));
 
             Assert.IsNotNull(createdProcess);
             Assert.IsTrue(((Win32Process)createdProcess!).IsDisposed);

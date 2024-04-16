@@ -83,15 +83,16 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            var process = factory.CreateProcess(CmdExe, null);
+            using (var process = factory.CreateProcess(CmdExe, null))
+            {
+                Assert.IsTrue(process.IsRunning);
 
-            Assert.IsTrue(process.IsRunning);
+                process.Resume();
+                Assert.IsTrue(process.IsRunning);
 
-            process.Resume();
-            Assert.IsTrue(process.IsRunning);
-
-            process.Dispose();
-            Assert.IsFalse(process.IsRunning);
+                process.Terminate(1);
+                Assert.IsFalse(process.IsRunning);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -193,6 +194,32 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 Assert.IsFalse(process.IsRunning);
 
                 Assert.Throws<DispatchException>(() => process.Terminate(1));
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Exited.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenTerminated_ThenExitedEventIsRaised()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(CmdExe, null))
+            {
+                var eventRaised = new TaskCompletionSource<object?>();
+                process.Exited += (_, __) => eventRaised.SetResult(null);
+
+                process.Resume();
+
+                Assert.IsNotNull(process.Handle);
+                Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.IsTrue(process.IsRunning);
+
+                process.Terminate(1);
+
+                await eventRaised.Task.ConfigureAwait(false);
             }
         }
 

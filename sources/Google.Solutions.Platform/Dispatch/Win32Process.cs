@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Platform.IO;
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.Diagnostics;
@@ -33,82 +34,15 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Platform.Dispatch
 {
-    /// <summary>
-    /// A Win32 process.
-    /// </summary>
-    public interface IWin32Process : IDisposable
-    {
-        /// <summary>
-        /// Image name, without path.
-        /// </summary>
-        string ImageName { get; }
-
-        /// <summary>
-        /// Process ID.
-        /// </summary>
-        uint Id { get; }
-
-        /// <summary>
-        /// Handle for awaiting process termination.
-        /// </summary>
-        WaitHandle WaitHandle { get; }
-
-        /// <summary>
-        /// Process handle.
-        /// </summary>
-        SafeProcessHandle Handle { get; }
-
-        /// <summary>
-        /// Get job this process is associated with, if any.
-        /// </summary>
-        IWin32Job? Job { get; }
-
-        /// <summary>
-        /// Resume the process.
-        /// </summary>
-        void Resume();
-
-        /// <summary>
-        /// Send WM_CLOSE to process and wait for the process to
-        /// terminate gracefully. Otherwise, terminate forcefully.
-        /// </summary>
-        /// <returns>true if the process terminated gracefully.</returns>
-        Task<bool> CloseAsync(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Wait for process to terminate.
-        /// </summary>
-        /// <returns>the exit code.</returns>
-        Task<uint> WaitAsync(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Forcefully terminate the process.
-        /// </summary>
-        void Terminate(uint exitCode);
-
-        /// <summary>
-        /// Indicates whether the process is running.
-        /// </summary>
-        bool IsRunning { get; }
-
-        /// <summary>
-        /// Numer of top-level windows owned by this process.
-        /// </summary>
-        int WindowCount { get; }
-
-        /// <summary>
-        /// The NT/WTS session that this process is running in.
-        /// </summary>
-        IWtsSession Session { get; }
-    }
-
-
     internal class Win32Process : DisposableBase, IWin32Process
     {
         private readonly string imageName;
         private readonly uint processId;
         private readonly SafeProcessHandle process;
         private readonly SafeThreadHandle mainThread;
+        private readonly RegisteredWaitHandle processExitedWaitHandle;
+
+        private bool resumedAtLeastOnce = false;
 
         public Win32Process(
             string imageName,
@@ -122,6 +56,17 @@ namespace Google.Solutions.Platform.Dispatch
             this.mainThread = mainThread.ExpectNotNull(nameof(mainThread));
 
             Debug.Assert(!imageName.Contains("\\"), "Name does not contain path");
+
+            this.WaitHandle = this.process.ToWaitHandle(false);
+            this.processExitedWaitHandle = ThreadPool.RegisterWaitForSingleObject(
+                this.WaitHandle,
+                (state, timedOut) =>
+                {
+                    this.Exited?.Invoke(this, EventArgs.Empty);
+                },
+                null,
+                -1,
+                true);
         }
 
         private void EnumerateTopLevelWindows(Action<IntPtr> action)
@@ -161,8 +106,9 @@ namespace Google.Solutions.Platform.Dispatch
             //
             if (!NativeMethods.EnumWindows(callback, IntPtr.Zero) &&
                 Marshal.GetLastWin32Error() is int lastError &&
-                lastError != NativeMethods.ERROR_SUCCESS &&
-                lastError != NativeMethods.ERROR_INVALID_PARAMETER)
+                (lastError != NativeMethods.ERROR_SUCCESS &&
+                 lastError != NativeMethods.ERROR_INVALID_PARAMETER &&
+                 lastError != NativeMethods.ERROR_INVALID_HANDLE))
             {
                 throw DispatchException.FromLastWin32Error(
                     $"{this.imageName}: Enumerating windows failed");
@@ -170,20 +116,30 @@ namespace Google.Solutions.Platform.Dispatch
         }
 
         //---------------------------------------------------------------------
-        // IProcess.
+        // IWin32Process.
         //---------------------------------------------------------------------
+
+        public event EventHandler? Exited;
 
         public SafeProcessHandle Handle => this.process;
 
         public string ImageName => this.imageName;
 
-        public WaitHandle WaitHandle => this.process.ToWaitHandle(false);
+        public WaitHandle WaitHandle { get; }
 
-        public uint Id => this.processId;
+        public uint Id
+        {
+            get => this.processId;
+        }
+
+        public IWtsSession Session
+        {
+            get => WtsSession.FromProcessId(this.processId);
+        }
 
         public IWin32Job? Job { get; internal set; }
 
-        public IWtsSession Session => WtsSession.FromProcessId(this.processId);
+        public IPseudoConsole? PseudoConsole { get; internal set; }
 
         public bool IsRunning
         {
@@ -296,6 +252,8 @@ namespace Google.Solutions.Platform.Dispatch
                 throw DispatchException.FromLastWin32Error(
                     $"{this.imageName}: Resuming the process failed");
             }
+
+            this.resumedAtLeastOnce = true;
         }
 
         public void Terminate(uint exitCode)
@@ -316,8 +274,23 @@ namespace Google.Solutions.Platform.Dispatch
         {
             base.Dispose(disposing);
 
+            if (!this.resumedAtLeastOnce)
+            {
+                //
+                // If the process is still in suspended case, merely
+                // closing handles will leave the process running. To
+                // avoid that, try terminating the process. This might
+                // fail if some other part has terminated the process
+                // in the meantime.
+                //
+                NativeMethods.TerminateProcess(this.process, 1);
+            }
+
             this.mainThread.Close();
             this.process.Close();
+
+            this.processExitedWaitHandle.Unregister(this.WaitHandle);
+            this.PseudoConsole?.Dispose();
         }
 
         //---------------------------------------------------------------------
@@ -375,6 +348,7 @@ namespace Google.Solutions.Platform.Dispatch
             internal const uint WM_CLOSE = 0x0010;
             internal const int STILL_ACTIVE = 259;
             internal const int ERROR_SUCCESS = 0;
+            internal const int ERROR_INVALID_HANDLE = 6;
             internal const int ERROR_INVALID_PARAMETER = 87;
 
             [DllImport("kernel32.dll", SetLastError = true)]
