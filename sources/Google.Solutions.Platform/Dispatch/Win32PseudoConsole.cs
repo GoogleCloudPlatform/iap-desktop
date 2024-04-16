@@ -133,6 +133,8 @@ namespace Google.Solutions.Platform.Dispatch
                             new PseudoConsoleDataEventArgs(new string(buffer, 0, charsRead)));
                     }
                 }
+                catch (Exception) when (this.IsDisposed)
+                { }
                 catch (Exception e)
                 {
                     this.FatalError?.Invoke(

@@ -103,7 +103,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenClosed_ThenStreamsAreNotClosedYet()
+        public async Task CloseKeepStreamOpen()
         {
             using (var pty = new Win32PseudoConsole(new PseudoConsoleSize(80, 24)))
             {
@@ -126,7 +126,23 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDisposed_ThenStreamsAreClosed()
+        public void DisposeTerminatesProcess()
+        {
+            var factory = new Win32ProcessFactory();
+            using (var process = factory.CreateProcessWithPseudoConsole(
+                "powershell.exe",
+                null,
+                PseudoConsoleSize.Default))
+            {
+                Assert.IsNotNull(process.PseudoConsole);
+                using (var pty = process.PseudoConsole!)
+                {
+                }
+            }
+        }
+
+        [Test]
+        public void DisposeClosesStreams()
         {
             var pty = new Win32PseudoConsole(new PseudoConsoleSize(80, 24));
             pty.Dispose();

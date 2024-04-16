@@ -83,15 +83,16 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var factory = new Win32ProcessFactory();
 
-            var process = factory.CreateProcess(CmdExe, null);
+            using (var process = factory.CreateProcess(CmdExe, null))
+            {
+                Assert.IsTrue(process.IsRunning);
 
-            Assert.IsTrue(process.IsRunning);
+                process.Resume();
+                Assert.IsTrue(process.IsRunning);
 
-            process.Resume();
-            Assert.IsTrue(process.IsRunning);
-
-            process.Dispose();
-            Assert.IsFalse(process.IsRunning);
+                process.Terminate(1);
+                Assert.IsFalse(process.IsRunning);
+            }
         }
 
         //---------------------------------------------------------------------

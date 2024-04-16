@@ -42,6 +42,8 @@ namespace Google.Solutions.Platform.Dispatch
         private readonly SafeThreadHandle mainThread;
         private readonly RegisteredWaitHandle processExitedWaitHandle;
 
+        private bool resumedAtLeastOnce = false;
+
         public Win32Process(
             string imageName,
             uint processId,
@@ -250,6 +252,8 @@ namespace Google.Solutions.Platform.Dispatch
                 throw DispatchException.FromLastWin32Error(
                     $"{this.imageName}: Resuming the process failed");
             }
+
+            this.resumedAtLeastOnce = true;
         }
 
         public void Terminate(uint exitCode)
@@ -269,6 +273,18 @@ namespace Google.Solutions.Platform.Dispatch
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
+
+            if (!this.resumedAtLeastOnce)
+            {
+                //
+                // If the process is still in suspended case, merely
+                // closing handles will leave the process running. To
+                // avoid that, try terminating the process. This might
+                // fail if some other part has terminated the process
+                // in the meantime.
+                //
+                NativeMethods.TerminateProcess(this.process, 1);
+            }
 
             this.mainThread.Close();
             this.process.Close();
