@@ -23,7 +23,7 @@ using Google.Solutions.Common.Util;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Google.Solutions.Common.Interop
+namespace Google.Solutions.Platform.Interop
 {
     public struct ComReference<T> : IDisposable
         where T : class

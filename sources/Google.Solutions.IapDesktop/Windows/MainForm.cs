@@ -41,6 +41,7 @@ using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Drawing;
 using Google.Solutions.Mvvm.Shell;
+using Google.Solutions.Platform.Interop;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Settings.Collection;
 using System;
