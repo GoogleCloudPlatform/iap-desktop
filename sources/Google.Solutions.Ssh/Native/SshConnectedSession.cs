@@ -555,7 +555,7 @@ namespace Google.Solutions.Ssh.Native
                         "additionally requires {0}",
                         string.Join(", ", requiredMethods));
 
-                    if (requiredMethods.FirstOrDefault() == AuthenticationMetods.KeyboardInteractive)
+                    if (requiredMethods.FirstOrDefault() == AuthenticationMethods.KeyboardInteractive)
                     {
                         return AuthenticateWithKeyboard(
                             credential,
@@ -600,17 +600,17 @@ namespace Google.Solutions.Ssh.Native
                 //
                 var authenticationMethods = GetAuthenticationMethods(credential.Username);
 
-                if (authenticationMethods.Contains(AuthenticationMetods.PublicKey) &&
+                if (authenticationMethods.Contains(AuthenticationMethods.PublicKey) &&
                     credential is IAsymmetricKeyCredential keyCredential)
                 {
                     return AuthenticateWithPublicKey(keyCredential, keyboardHandler);
                 }
-                else if (authenticationMethods.Contains(AuthenticationMetods.Password) &&
+                else if (authenticationMethods.Contains(AuthenticationMethods.Password) &&
                     credential is IPasswordCredential passwordCredential)
                 {
                     return AuthenticateWithPassword(passwordCredential, keyboardHandler);
                 }
-                else if (authenticationMethods.Contains(AuthenticationMetods.KeyboardInteractive))
+                else if (authenticationMethods.Contains(AuthenticationMethods.KeyboardInteractive))
                 {
                     return AuthenticateWithKeyboard(
                         credential,

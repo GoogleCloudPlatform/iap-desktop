@@ -24,7 +24,7 @@ using System;
 
 namespace Google.Solutions.Ssh.Native
 {
-    public struct EnvironmentVariable : IEquatable<EnvironmentVariable>
+    internal struct EnvironmentVariable : IEquatable<EnvironmentVariable>
     {
         public string Name { get; set; }
         public string Value { get; set; }
