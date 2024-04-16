@@ -27,14 +27,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
     {
         internal static RdpCredential Empty = new RdpCredential(null, null, null);
 
-        public string User { get; }
-        public SecureString Password { get; }
-        public string Domain { get; }
+        public string? User { get; }
+        public SecureString? Password { get; }
+        public string? Domain { get; }
 
         internal RdpCredential(
-            string user,
-            string domain,
-            SecureString password)
+            string? user,
+            string? domain,
+            SecureString? password)
         {
             this.User = user;
             this.Password = password;
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
             }
             else if (!string.IsNullOrEmpty(this.User))
             {
-                return this.User;
+                return this.User!;
             }
             else
             {

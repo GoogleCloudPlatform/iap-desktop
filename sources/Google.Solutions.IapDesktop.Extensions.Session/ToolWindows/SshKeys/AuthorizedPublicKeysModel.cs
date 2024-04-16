@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                     instanceNode.OperatingSystem == OperatingSystems.Linux);
         }
 
-        internal static async Task<AuthorizedPublicKeysModel> LoadAsync(
+        internal static async Task<AuthorizedPublicKeysModel?> LoadAsync(
             IComputeEngineClient computeClient,
             IResourceManagerClient resourceManagerAdapter,
             IOsLoginProfile osLoginService,
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             //
             var osLoginKeysTask = osLoginService.ListAuthorizedKeysAsync(cancellationToken);
 
-            Task<MetadataAuthorizedPublicKeyProcessor> metadataTask = null;
+            Task<MetadataAuthorizedPublicKeyProcessor>? metadataTask = null;
             if (!IsNodeSupported(node))
             {
                 //
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             var processor = await metadataTask.ConfigureAwait(false);
 
             var items = new List<AuthorizedPublicKeysModel.Item>();
-            string warning = null;
+            string? warning = null;
 
             if (processor.IsOsLoginEnabled)
             {
@@ -195,6 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             else
             {
                 warning = "OS Login is disabled, the list only includes metadata-based keys.";
+
                 //
                 // OS Login disabled - consider metadata keys.
                 //

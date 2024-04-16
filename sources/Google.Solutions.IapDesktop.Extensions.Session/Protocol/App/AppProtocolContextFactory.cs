@@ -81,8 +81,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
                     this.processFactory,
                     instance.Instance);
 
-                Debug.Assert(context.Parameters != null);
-
                 var settings = this.settingsService
                     .GetConnectionSettings(instance)
                     .TypedCollection;
@@ -122,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
             }
         }
 
-        public bool TryParse(Uri uri, out ProtocolTargetLocator locator)
+        public bool TryParse(Uri uri, out ProtocolTargetLocator? locator)
         {
             locator = null;
             return false;

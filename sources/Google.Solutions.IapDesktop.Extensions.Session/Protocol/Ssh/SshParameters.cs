@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         /// <summary>
         /// Terminal locale.
         /// </summary>
-        public CultureInfo Language { get; set; } = null;
+        public CultureInfo? Language { get; set; } = null;
 
         /// <summary>
         /// Timeout to use for SSH connections.

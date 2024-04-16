@@ -25,6 +25,8 @@ using System.Globalization;
 using System.Windows.Forms;
 using VtNetCore.VirtualTerminal;
 
+#nullable disable
+
 namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
     internal static class VirtualTerminalKeyTranslation

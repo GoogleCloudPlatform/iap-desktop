@@ -35,6 +35,8 @@ using VtNetCore.VirtualTerminal.Layout;
 using VtNetCore.VirtualTerminal.Model;
 using VtNetCore.XTermParser;
 
+#nullable disable
+
 namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
     /// <summary>

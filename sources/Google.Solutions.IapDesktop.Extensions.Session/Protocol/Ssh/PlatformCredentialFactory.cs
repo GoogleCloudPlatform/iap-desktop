@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             InstanceLocator instance,
             IAsymmetricKeySigner signer,
             TimeSpan validity,
-            string preferredPosixUsername,
+            string? preferredPosixUsername,
             KeyAuthorizationMethods methods,
             CancellationToken token);
     }
@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             InstanceLocator instance,
             IAsymmetricKeySigner signer,
             TimeSpan validity,
-            string preferredPosixUsername,
+            string? preferredPosixUsername,
             KeyAuthorizationMethods allowedMethods,
             CancellationToken token)
         {

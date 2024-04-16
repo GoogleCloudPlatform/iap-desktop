@@ -38,9 +38,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     internal sealed class SshContext
         : SessionContextBase<ISshCredential, SshParameters>
     {
-        private readonly ISshCredential preAuthorizedCredential;
-        private readonly IPlatformCredentialFactory credentialFactory;
-        private readonly IAsymmetricKeySigner signer;
+        private readonly ISshCredential? preAuthorizedCredential;
+        private readonly IPlatformCredentialFactory? credentialFactory;
+        private readonly IAsymmetricKeySigner? signer;
 
         internal bool UsePlatformManagedCredential
             => this.preAuthorizedCredential == null;
@@ -100,10 +100,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 //
                 // Authorize the key using OS Login or metadata-based keys.
                 //
-                return await this.credentialFactory
+                return await this.credentialFactory!
                     .CreateCredentialAsync(
                         this.Instance,
-                        this.signer,
+                        this.signer!,
                         this.Parameters.PublicKeyValidity,
                         this.Parameters.PreferredUsername.NullIfEmpty(),
                         KeyAuthorizationMethods.All,
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 Debug.Assert(this.signer == null);
                 Debug.Assert(this.Parameters.PreferredUsername == null);
 
-                return this.preAuthorizedCredential;
+                return this.preAuthorizedCredential!;
             }
         }
 
