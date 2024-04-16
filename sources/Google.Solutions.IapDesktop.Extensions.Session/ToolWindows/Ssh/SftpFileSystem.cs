@@ -23,6 +23,7 @@ using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
+using Google.Solutions.Platform.Interop;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
 using System;
@@ -97,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                 // Lookup file type using Shell.
                 //
                 return this.fileTypeCache.Lookup(
-                    WindowsFilename.IsValidFilename(sftpFile.Name) ? sftpFile.Name : "file",
+                    Win32Filename.IsValidFilename(sftpFile.Name) ? sftpFile.Name : "file",
                     FileAttributes.Normal,
                     FileType.IconFlags.None);
             }

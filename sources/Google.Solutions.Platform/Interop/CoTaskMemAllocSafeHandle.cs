@@ -24,7 +24,7 @@ using System;
 using System.Runtime.InteropServices;
 
 
-namespace Google.Solutions.Common.Interop
+namespace Google.Solutions.Platform.Interop
 {
     public sealed class CoTaskMemAllocSafeHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
