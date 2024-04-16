@@ -174,7 +174,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public Libssh2SftpFileChannel CreateFile(
+        internal Libssh2SftpFileChannel CreateFile(
             string path,
             LIBSSH2_FXF_FLAGS flags,
             FilePermissions mode)

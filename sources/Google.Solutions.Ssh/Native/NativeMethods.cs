@@ -104,7 +104,7 @@ namespace Google.Solutions.Ssh.Native
         ILLEGAL_USER_NAME = 15
     }
 
-    public enum LIBSSH2_CHANNEL_EXTENDED_DATA : Int32
+    internal enum LIBSSH2_CHANNEL_EXTENDED_DATA : Int32
     {
         NORMAL = 0,
         IGNORE = 1,
