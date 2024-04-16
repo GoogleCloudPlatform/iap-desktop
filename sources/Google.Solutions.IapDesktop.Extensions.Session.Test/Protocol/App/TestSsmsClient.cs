@@ -42,10 +42,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSsmsNotAvailable_ThenExecutableIsNull()
+        public void WhenSsmsNotAvailable_ThenExecutableThrowsException()
         {
             var client = new SsmsClient(null);
-            Assert.IsNull(client.Executable);
+            string path;
+            Assert.Throws<InvalidOperationException>(
+                () => path = client.Executable);
         }
 
         [Test]
