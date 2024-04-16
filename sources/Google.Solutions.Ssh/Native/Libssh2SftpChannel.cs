@@ -31,7 +31,7 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// SFTP channel.
     /// </summary>
-    public class Libssh2SftpChannel : IDisposable
+    internal class Libssh2SftpChannel : IDisposable
     {
         private const uint MaxFilenameLength = 256;
 

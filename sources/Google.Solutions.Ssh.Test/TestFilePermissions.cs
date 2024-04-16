@@ -19,10 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
 
-namespace Google.Solutions.Ssh.Test.Native
+namespace Google.Solutions.Ssh.Test
 {
     [TestFixture]
     public class TestFilePermissions

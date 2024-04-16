@@ -35,7 +35,7 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// An connected Libssh2 session.
     /// </summary>
-    public class Libssh2ConnectedSession : IDisposable
+    internal class Libssh2ConnectedSession : IDisposable
     {
         internal const int KeyboardInteractiveRetries = 3;
 

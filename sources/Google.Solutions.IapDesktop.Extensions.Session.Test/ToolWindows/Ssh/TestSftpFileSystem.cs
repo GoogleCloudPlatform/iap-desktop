@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh;
+using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
 using System.Collections.Generic;
