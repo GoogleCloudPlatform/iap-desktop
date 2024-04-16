@@ -62,10 +62,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         private readonly IControlTheme theme;
         private readonly IRepository<IApplicationSettings> settingsRepository;
 
-        private RdpViewModel viewModel;
+        private Bound<RdpViewModel> viewModel;
 
         // For testing only.
-        internal event EventHandler AuthenticationWarningDisplayed;
+        internal event EventHandler? AuthenticationWarningDisplayed;
 
         public bool IsClosing { get; private set; } = false;
 
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 //
                 return e is RdpDisconnectedException disconnected &&
                     disconnected.DisconnectReason == 516 && // Unable to establish a connection
-                    this.rdpClient.Server != this.viewModel.Server;
+                    this.rdpClient.Server != this.viewModel.Value.Server;
             }
             catch
             {
@@ -187,11 +187,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         // Publics.
         //---------------------------------------------------------------------
 
-        public InstanceLocator Instance => this.viewModel?.Instance;
+        public InstanceLocator Instance => this.viewModel.Value.Instance!;
 
         public override string Text
         {
-            get => this.viewModel?.Instance?.Name ?? "Remote Desktop";
+            get => this.viewModel.TryGet()?.Instance?.Name ?? "Remote Desktop";
             set { }
         }
 
@@ -199,18 +199,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             RdpViewModel viewModel,
             IBindingContext bindingContext)
         {
-            this.viewModel = viewModel;
+            this.viewModel.Value = viewModel;
         }
 
         public void Connect()
         {
             Debug.Assert(this.rdpClient == null, "Not initialized yet");
-            Debug.Assert(this.viewModel != null, "View bound");
+
+            var viewModel = this.viewModel.Value;
 
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(
-                this.viewModel.Server,
-                this.viewModel.Port,
-                this.viewModel.Parameters.ConnectionTimeout))
+                viewModel.Server,
+                viewModel.Port,
+                viewModel.Parameters!.ConnectionTimeout))
             {
                 //
                 // NB. The initialization needs to happen after the pane is shown, otherwise
@@ -230,23 +231,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 UpdateLayout(LayoutMode.Wait);
                 ResumeLayout();
 
-                this.rdpClient.MainWindow = (Form)this.MainWindow;
+                this.rdpClient!.MainWindow = (Form)this.MainWindow;
 
                 //
                 // Basic connection settings.
                 //
-                this.rdpClient.Server = this.viewModel.Server;
-                this.rdpClient.Domain = this.viewModel.Credential.Domain;
-                this.rdpClient.Username = this.viewModel.Credential.User;
-                this.rdpClient.ServerPort = this.viewModel.Port;
-                this.rdpClient.Password = this.viewModel.Credential.Password?.AsClearText() ?? string.Empty;
-                this.rdpClient.ConnectionTimeout = this.viewModel.Parameters.ConnectionTimeout;
-                this.rdpClient.EnableAdminMode = this.viewModel.Parameters.SessionType == RdpSessionType.Admin;
+                this.rdpClient.Server = viewModel.Server;
+                this.rdpClient.Domain = viewModel.Credential!.Domain;
+                this.rdpClient.Username = viewModel.Credential.User;
+                this.rdpClient.ServerPort = viewModel.Port!.Value;
+                this.rdpClient.Password = viewModel.Credential.Password?.AsClearText() ?? string.Empty;
+                this.rdpClient.ConnectionTimeout = viewModel.Parameters.ConnectionTimeout;
+                this.rdpClient.EnableAdminMode = viewModel.Parameters.SessionType == RdpSessionType.Admin;
 
                 //
                 // Connection security settings.
                 //
-                switch (this.viewModel.Parameters.AuthenticationLevel)
+                switch (viewModel.Parameters.AuthenticationLevel)
                 {
                     case RdpAuthenticationLevel.NoServerAuthentication:
                         this.rdpClient.ServerAuthenticationLevel = 0;
@@ -262,39 +263,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 }
 
                 this.rdpClient.EnableCredentialPrompt =
-                    (this.viewModel.Parameters.UserAuthenticationBehavior == RdpUserAuthenticationBehavior.PromptOnFailure);
+                    (viewModel.Parameters.UserAuthenticationBehavior == RdpUserAuthenticationBehavior.PromptOnFailure);
                 this.rdpClient.EnableNetworkLevelAuthentication =
-                    (this.viewModel.Parameters.NetworkLevelAuthentication != RdpNetworkLevelAuthentication.Disabled);
+                    (viewModel.Parameters.NetworkLevelAuthentication != RdpNetworkLevelAuthentication.Disabled);
                 this.rdpClient.EnableRestrictedAdminMode =
-                    (this.viewModel.Parameters.RestrictedAdminMode == RdpRestrictedAdminMode.Enabled);
+                    (viewModel.Parameters.RestrictedAdminMode == RdpRestrictedAdminMode.Enabled);
 
                 //
                 // Connection bar settings.
                 //
                 this.rdpClient.EnableConnectionBar =
-                    (this.viewModel.Parameters.ConnectionBar != RdpConnectionBarState.Off);
+                    (viewModel.Parameters.ConnectionBar != RdpConnectionBarState.Off);
                 this.rdpClient.EnableConnectionBarMinimizeButton = true;
                 this.rdpClient.EnableConnectionBarPin =
-                    (this.viewModel.Parameters.ConnectionBar == RdpConnectionBarState.Pinned);
+                    (viewModel.Parameters.ConnectionBar == RdpConnectionBarState.Pinned);
                 this.rdpClient.ConnectionBarText = this.Instance.Name;
 
                 //
                 // Local resources settings.
                 //
                 this.rdpClient.EnableClipboardRedirection =
-                    this.viewModel.Parameters.RedirectClipboard == RdpRedirectClipboard.Enabled;
+                    viewModel.Parameters.RedirectClipboard == RdpRedirectClipboard.Enabled;
                 this.rdpClient.EnablePrinterRedirection =
-                    this.viewModel.Parameters.RedirectPrinter == RdpRedirectPrinter.Enabled;
+                    viewModel.Parameters.RedirectPrinter == RdpRedirectPrinter.Enabled;
                 this.rdpClient.EnableSmartCardRedirection =
-                    this.viewModel.Parameters.RedirectSmartCard == RdpRedirectSmartCard.Enabled;
+                    viewModel.Parameters.RedirectSmartCard == RdpRedirectSmartCard.Enabled;
                 this.rdpClient.EnablePortRedirection =
-                    this.viewModel.Parameters.RedirectPort == RdpRedirectPort.Enabled;
+                    viewModel.Parameters.RedirectPort == RdpRedirectPort.Enabled;
                 this.rdpClient.EnableDriveRedirection =
-                    this.viewModel.Parameters.RedirectDrive == RdpRedirectDrive.Enabled;
+                    viewModel.Parameters.RedirectDrive == RdpRedirectDrive.Enabled;
                 this.rdpClient.EnableDeviceRedirection =
-                    this.viewModel.Parameters.RedirectDevice == RdpRedirectDevice.Enabled;
+                    viewModel.Parameters.RedirectDevice == RdpRedirectDevice.Enabled;
 
-                switch (this.viewModel.Parameters.AudioMode)
+                switch (viewModel.Parameters.AudioMode)
                 {
                     case RdpAudioMode.PlayLocally:
                         this.rdpClient.AudioRedirectionMode = 0;
@@ -310,7 +311,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 //
                 // Display settings.
                 //
-                switch (this.viewModel.Parameters.ColorDepth)
+                switch (viewModel.Parameters.ColorDepth)
                 {
                     case RdpColorDepth.HighColor:
                         this.rdpClient.ColorDepth = 16;
@@ -327,7 +328,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 // Keyboard settings.
                 //
                 this.rdpClient.KeyboardHookMode =
-                    (int)this.viewModel.Parameters.HookWindowsKeys;
+                    (int)viewModel.Parameters.HookWindowsKeys;
 
                 //
                 // Set hotkey to trigger OnFocusReleasedEvent. This should be
@@ -338,7 +339,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 this.rdpClient.FullScreenHotKey = ToggleFullScreenHotKey;
 
                 this.rdpClient.EnableWebAuthnRedirection =
-                    (this.viewModel.Parameters.RedirectWebAuthn == RdpRedirectWebAuthn.Enabled);
+                    (viewModel.Parameters.RedirectWebAuthn == RdpRedirectWebAuthn.Enabled);
 
                 this.rdpClient.Connect();
             }
@@ -551,7 +552,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         public bool CanTransferFiles
         {
-            get => (this.viewModel.Parameters.RedirectClipboard == RdpRedirectClipboard.Enabled);
+            get => this.viewModel
+                .Value
+                .Parameters!
+                .RedirectClipboard == RdpRedirectClipboard.Enabled;
         }
 
         public Task DownloadFilesAsync()
@@ -586,7 +590,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         // restore it when it ends.
         //---------------------------------------------------------------------
 
-        private Form rescueWindow = null;
+        private Form? rescueWindow = null;
 
         protected override Size DefaultFloatWindowClientSize => this.Size;
 

@@ -38,11 +38,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         // Initialization properties.
         //---------------------------------------------------------------------
 
-        public InstanceLocator Instance { get; set; }
-        public string Server { get; set; }
-        public ushort Port { get; set; }
-        public RdpParameters Parameters { get; set; }
-        public RdpCredential Credential { get; set; }
+        public InstanceLocator? Instance { get; set; }
+        public string? Server { get; set; }
+        public ushort? Port { get; set; }
+        public RdpParameters? Parameters { get; set; }
+        public RdpCredential? Credential { get; set; }
 
         protected override void OnValidate()
         {

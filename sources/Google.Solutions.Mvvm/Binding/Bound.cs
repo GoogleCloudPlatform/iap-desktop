@@ -39,11 +39,18 @@ namespace Google.Solutions.Mvvm.Binding
     {
         private T value;
 
+        /// <summary>
+        /// Check if bound.
+        /// </summary>
         public readonly bool HasValue
         {
             get => this.value != null;
         }
 
+        /// <summary>
+        /// Bound value.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">If not bound</exception>
         public T Value
         {
             readonly get
@@ -66,6 +73,11 @@ namespace Google.Solutions.Mvvm.Binding
 
                 this.value = value;
             }
+        }
+
+        public T? TryGet()
+        {
+            return this.value;
         }
 
         public static implicit operator T(Bound<T> value)
