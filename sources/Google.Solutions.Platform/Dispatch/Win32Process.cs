@@ -104,8 +104,9 @@ namespace Google.Solutions.Platform.Dispatch
             //
             if (!NativeMethods.EnumWindows(callback, IntPtr.Zero) &&
                 Marshal.GetLastWin32Error() is int lastError &&
-                lastError != NativeMethods.ERROR_SUCCESS &&
-                lastError != NativeMethods.ERROR_INVALID_PARAMETER)
+                (lastError != NativeMethods.ERROR_SUCCESS &&
+                 lastError != NativeMethods.ERROR_INVALID_PARAMETER &&
+                 lastError != NativeMethods.ERROR_INVALID_HANDLE))
             {
                 throw DispatchException.FromLastWin32Error(
                     $"{this.imageName}: Enumerating windows failed");
@@ -331,6 +332,7 @@ namespace Google.Solutions.Platform.Dispatch
             internal const uint WM_CLOSE = 0x0010;
             internal const int STILL_ACTIVE = 259;
             internal const int ERROR_SUCCESS = 0;
+            internal const int ERROR_INVALID_HANDLE = 6;
             internal const int ERROR_INVALID_PARAMETER = 87;
 
             [DllImport("kernel32.dll", SetLastError = true)]
