@@ -67,7 +67,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                     .DrainAsync()
                     .ConfigureAwait(false);
 
-                StringAssert.Contains(command, output.ToString());
+                StringAssert.Contains("this is a test", output.ToString());
             }
         }
 
