@@ -409,7 +409,7 @@ namespace Google.Solutions.Platform.Dispatch
         }
     }
 
-    internal class SafeThreadHandle : SafeWin32Handle
+    internal class SafeThreadHandle : Win32SafeHandle
     {
         public SafeThreadHandle(IntPtr handle, bool ownsHandle)
             : base(handle, ownsHandle)

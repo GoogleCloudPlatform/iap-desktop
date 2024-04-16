@@ -480,7 +480,7 @@ namespace Google.Solutions.Platform.Dispatch
             }
         }
 
-        private class SafeJobHandle : SafeWin32Handle
+        private class SafeJobHandle : Win32SafeHandle
         {
             public SafeJobHandle()
                 : base(true)
@@ -493,7 +493,7 @@ namespace Google.Solutions.Platform.Dispatch
             }
         }
 
-        private class SafeCompletionPortHandle : SafeWin32Handle
+        private class SafeCompletionPortHandle : Win32SafeHandle
         {
             public SafeCompletionPortHandle()
                 : base(true)

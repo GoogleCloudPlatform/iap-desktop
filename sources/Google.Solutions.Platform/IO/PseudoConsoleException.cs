@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Interop;
+using Google.Solutions.Platform.Interop;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;

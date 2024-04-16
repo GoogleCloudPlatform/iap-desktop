@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Platform.Interop;
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;

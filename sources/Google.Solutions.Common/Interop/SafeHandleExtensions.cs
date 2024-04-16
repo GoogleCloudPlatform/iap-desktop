@@ -25,7 +25,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Platform.Interop
+namespace Google.Solutions.Common.Interop
 {
     public static class SafeHandleExtensions
     {
