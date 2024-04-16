@@ -228,7 +228,7 @@ namespace Google.Solutions.Platform.Dispatch
                             IntPtr.Zero,
                             IntPtr.Zero,
                             false,
-                            NativeMethods.CREATE_SUSPENDED,
+                            NativeMethods.CREATE_SUSPENDED | NativeMethods.EXTENDED_STARTUPINFO_PRESENT,
                             IntPtr.Zero,
                             null,
                             ref startupInfo,
@@ -245,6 +245,14 @@ namespace Google.Solutions.Platform.Dispatch
                             new SafeThreadHandle(processInfo.hThread, true))
                         {
                             PseudoConsole = pseudoConsole
+                        };
+
+                        process.Exited += (_, __) =>
+                        {
+                            //
+                            // Close pseudo console stream to unblock readers.
+                            //
+                            _ = pseudoConsole.CloseAsync();
                         };
 
                         InvokeOnProcessCreated(process);

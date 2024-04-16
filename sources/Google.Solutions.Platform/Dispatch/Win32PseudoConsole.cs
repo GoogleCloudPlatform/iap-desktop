@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Runtime;
+using Google.Solutions.Platform.IO;
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.IO;
@@ -29,7 +30,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Platform.IO
+namespace Google.Solutions.Platform.Dispatch
 {
     /// <summary>
     /// A Win32 pseudo-console for interacting with a process.
@@ -95,7 +96,7 @@ namespace Google.Solutions.Platform.IO
                     throw new PseudoConsoleException(
                         "This feature requires Windows 10 version 1809 or newer");
                 }
-            } 
+            }
             catch
             {
                 stdin.Dispose();
@@ -132,7 +133,7 @@ namespace Google.Solutions.Platform.IO
                 catch (Exception e)
                 {
                     this.OutputFailed?.Invoke(
-                        this, 
+                        this,
                         new PseudoConsoleErrorEventArgs(e));
                 }
             }
@@ -189,13 +190,6 @@ namespace Google.Solutions.Platform.IO
             cancellationToken);
         }
 
-        public Task WriteAsync(string data)
-        {
-            ExpectNotClosed();
-
-            return WriteAsync(data, CancellationToken.None);
-        }
-
         public Task WriteAsync(
             string data,
             CancellationToken cancellationToken)
@@ -227,8 +221,13 @@ namespace Google.Solutions.Platform.IO
 
         protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
+
             this.inputWriter.Dispose();
+            this.InputPipe.Dispose();
+
             this.outputReader.Dispose();
+            this.OutputPipe.Dispose();
 
             if (!this.IsClosed)
             {

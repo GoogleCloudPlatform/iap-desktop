@@ -34,87 +34,13 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Platform.Dispatch
 {
-    /// <summary>
-    /// A Win32 process.
-    /// </summary>
-    public interface IWin32Process : IDisposable
-    {
-        /// <summary>
-        /// Image name, without path.
-        /// </summary>
-        string ImageName { get; }
-
-        /// <summary>
-        /// Process ID.
-        /// </summary>
-        uint Id { get; }
-
-        /// <summary>
-        /// Handle for awaiting process termination.
-        /// </summary>
-        WaitHandle WaitHandle { get; }
-
-        /// <summary>
-        /// Process handle.
-        /// </summary>
-        SafeProcessHandle Handle { get; }
-
-        /// <summary>
-        /// Get job this process is associated with, if any.
-        /// </summary>
-        IWin32Job? Job { get; }
-
-        /// <summary>
-        /// Resume the process.
-        /// </summary>
-        void Resume();
-
-        /// <summary>
-        /// Send WM_CLOSE to process and wait for the process to
-        /// terminate gracefully. Otherwise, terminate forcefully.
-        /// </summary>
-        /// <returns>true if the process terminated gracefully.</returns>
-        Task<bool> CloseAsync(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Wait for process to terminate.
-        /// </summary>
-        /// <returns>the exit code.</returns>
-        Task<uint> WaitAsync(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Forcefully terminate the process.
-        /// </summary>
-        void Terminate(uint exitCode);
-
-        /// <summary>
-        /// Indicates whether the process is running.
-        /// </summary>
-        bool IsRunning { get; }
-
-        /// <summary>
-        /// Numer of top-level windows owned by this process.
-        /// </summary>
-        int WindowCount { get; }
-
-        /// <summary>
-        /// The NT/WTS session that this process is running in.
-        /// </summary>
-        IWtsSession Session { get; }
-
-        /// <summary>
-        /// Pseudo-console for this process, if any.
-        /// </summary>
-        IPseudoConsole? PseudoConsole { get; }
-    }
-
-
     internal class Win32Process : DisposableBase, IWin32Process
     {
         private readonly string imageName;
         private readonly uint processId;
         private readonly SafeProcessHandle process;
         private readonly SafeThreadHandle mainThread;
+        private readonly RegisteredWaitHandle processExitedWaitHandle;
 
         public Win32Process(
             string imageName,
@@ -128,6 +54,17 @@ namespace Google.Solutions.Platform.Dispatch
             this.mainThread = mainThread.ExpectNotNull(nameof(mainThread));
 
             Debug.Assert(!imageName.Contains("\\"), "Name does not contain path");
+
+            this.WaitHandle = this.process.ToWaitHandle(false);
+            this.processExitedWaitHandle = ThreadPool.RegisterWaitForSingleObject(
+                this.WaitHandle,
+                (state, timedOut) =>
+                {
+                    this.Exited?.Invoke(this, EventArgs.Empty);
+                },
+                null,
+                -1,
+                true);
         }
 
         private void EnumerateTopLevelWindows(Action<IntPtr> action)
@@ -176,14 +113,16 @@ namespace Google.Solutions.Platform.Dispatch
         }
 
         //---------------------------------------------------------------------
-        // IProcess.
+        // IWin32Process.
         //---------------------------------------------------------------------
+
+        public event EventHandler? Exited;
 
         public SafeProcessHandle Handle => this.process;
 
         public string ImageName => this.imageName;
 
-        public WaitHandle WaitHandle => this.process.ToWaitHandle(false);
+        public WaitHandle WaitHandle { get; }
 
         public uint Id
         {
@@ -332,6 +271,9 @@ namespace Google.Solutions.Platform.Dispatch
 
             this.mainThread.Close();
             this.process.Close();
+
+            this.processExitedWaitHandle.Unregister(this.WaitHandle);
+            this.PseudoConsole?.Dispose();
         }
 
         //---------------------------------------------------------------------

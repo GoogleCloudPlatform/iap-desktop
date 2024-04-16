@@ -140,6 +140,8 @@ namespace Google.Solutions.Platform.IO
 
         protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
+
             if (disposing)
             {
                 // TODO: dispose managed state (managed objects)

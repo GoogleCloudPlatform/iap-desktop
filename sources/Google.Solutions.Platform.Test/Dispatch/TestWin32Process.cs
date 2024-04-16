@@ -197,6 +197,32 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         //---------------------------------------------------------------------
+        // Exited.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenTerminated_ThenExitedEventIsRaised()
+        {
+            var factory = new Win32ProcessFactory();
+
+            using (var process = factory.CreateProcess(CmdExe, null))
+            {
+                var eventRaised = new TaskCompletionSource<object?>();
+                process.Exited += (_, __) => eventRaised.SetResult(null);
+
+                process.Resume();
+
+                Assert.IsNotNull(process.Handle);
+                Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.IsTrue(process.IsRunning);
+
+                process.Terminate(1);
+
+                await eventRaised.Task.ConfigureAwait(false);
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Close.
         //---------------------------------------------------------------------
 

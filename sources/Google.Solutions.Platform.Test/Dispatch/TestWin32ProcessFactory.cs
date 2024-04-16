@@ -103,7 +103,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             Assert.Throws<DispatchException>(() => factory.CreateProcessWithPseudoConsole(
                 "doesnotexist.exe",
                 null,
-                new PseudoConsoleSize(80, 24)));
+                PseudoConsoleSize.Default));
         }
 
         [Test]
@@ -114,7 +114,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var process = factory.CreateProcessWithPseudoConsole(
                 CmdExe, 
                 null,
-                new PseudoConsoleSize(80, 24)))
+                PseudoConsoleSize.Default))
             {
                 Assert.IsNotNull(process.Handle);
                 Assert.IsFalse(process.Handle.IsInvalid);
@@ -142,7 +142,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 () => factory.CreateProcessWithPseudoConsole(
                     CmdExe,
                     null,
-                    new PseudoConsoleSize(80, 24)));
+                    PseudoConsoleSize.Default));
 
             Assert.IsNotNull(createdProcess);
             Assert.IsTrue(((Win32Process)createdProcess!).IsDisposed);

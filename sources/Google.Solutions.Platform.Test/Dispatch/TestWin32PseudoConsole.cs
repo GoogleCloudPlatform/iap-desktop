@@ -19,15 +19,58 @@
 // under the License.
 //
 
+using Google.Solutions.Platform.Dispatch;
 using Google.Solutions.Platform.IO;
 using NUnit.Framework;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Platform.Test.IO
+namespace Google.Solutions.Platform.Test.Dispatch
 {
     [TestFixture]
     public class TestWin32PseudoConsole
     {
+        //---------------------------------------------------------------------
+        // OutputAvailable.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task OutputAvailable()
+        {
+            var factory = new Win32ProcessFactory();
+            using (var process = factory.CreateProcessWithPseudoConsole(
+                "powershell.exe",
+                null,
+                PseudoConsoleSize.Default))
+            {
+                Assert.IsNotNull(process.PseudoConsole);
+                var pty = process.PseudoConsole!;
+                
+                var output = new StringBuilder();
+                pty.OutputAvailable += (_, args) =>
+                {
+                    output.Append(args.Data);
+                };
+
+                process.Resume();
+
+                var command = "Write-Host 'this is a test'";
+                await pty
+                    .WriteAsync(command + "\r\n", CancellationToken.None)
+                    .ConfigureAwait(false);
+                await pty
+                    .WriteAsync("exit\r\n", CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                await pty
+                    .DrainAsync()
+                    .ConfigureAwait(false);
+
+                StringAssert.Contains(command, output.ToString());
+            }
+        }
+
         //---------------------------------------------------------------------
         // Close.
         //---------------------------------------------------------------------

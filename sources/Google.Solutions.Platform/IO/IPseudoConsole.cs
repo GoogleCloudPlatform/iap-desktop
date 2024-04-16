@@ -79,6 +79,8 @@ namespace Google.Solutions.Platform.IO
     /// </summary>
     public readonly struct PseudoConsoleSize
     {
+        internal static readonly PseudoConsoleSize Default = new PseudoConsoleSize(80, 24);
+
         public PseudoConsoleSize(ushort width, ushort height)
         {
             Debug.Assert(width > 0 && height > 0);
