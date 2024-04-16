@@ -153,7 +153,7 @@ namespace Google.Solutions.Ssh.Native
         // Algorithms.
         //---------------------------------------------------------------------
 
-        public string[] GetSupportedAlgorithms(LIBSSH2_METHOD methodType)
+        internal string[] GetSupportedAlgorithms(LIBSSH2_METHOD methodType)
         {
             this.sessionHandle.CheckCurrentThreadOwnsHandle();
             if (!Enum.IsDefined(typeof(LIBSSH2_METHOD), methodType))
@@ -193,7 +193,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public void SetPreferredMethods(
+        internal void SetPreferredMethods(
             LIBSSH2_METHOD methodType,
             string[] methods)
         {
@@ -416,7 +416,7 @@ namespace Google.Solutions.Ssh.Native
 
         private NativeMethods.TraceHandler? TraceHandlerDelegate;
 
-        public void SetTraceHandler(
+        internal void SetTraceHandler(
             LIBSSH2_TRACE mask,
             Action<string> handler)
         {

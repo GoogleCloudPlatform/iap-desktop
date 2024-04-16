@@ -45,7 +45,7 @@ namespace Google.Solutions.Ssh.Native
         SHA256 = 3
     }
 
-    public enum LIBSSH2_METHOD : Int32
+    internal enum LIBSSH2_METHOD : Int32
     {
         KEX = 0,
         HOSTKEY = 1,
@@ -61,7 +61,7 @@ namespace Google.Solutions.Ssh.Native
 
     [Flags]
     [SuppressMessage("Naming", "CA1714:Flags enums should have plural names")]
-    public enum LIBSSH2_TRACE : Int32
+    internal enum LIBSSH2_TRACE : Int32
     {
         TRANS = (1 << 1),
         KEX = (1 << 2),
@@ -74,7 +74,7 @@ namespace Google.Solutions.Ssh.Native
         SOCKET = (1 << 9)
     }
 
-    public enum LIBSSH2_HOSTKEY_TYPE : Int32
+    internal enum LIBSSH2_HOSTKEY_TYPE : Int32
     {
         UNKNOWN = 0,
         RSA = 1,

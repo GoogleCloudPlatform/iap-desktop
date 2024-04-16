@@ -92,7 +92,7 @@ namespace Google.Solutions.Ssh.Native
         // Algorithms.
         //---------------------------------------------------------------------
 
-        public string[] GetActiveAlgorithms(LIBSSH2_METHOD methodType)
+        internal string[] GetActiveAlgorithms(LIBSSH2_METHOD methodType)
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
             if (!Enum.IsDefined(typeof(LIBSSH2_METHOD), methodType))
@@ -173,7 +173,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public LIBSSH2_HOSTKEY_TYPE GetRemoteHostKeyType()
+        internal LIBSSH2_HOSTKEY_TYPE GetRemoteHostKeyType()
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
 
