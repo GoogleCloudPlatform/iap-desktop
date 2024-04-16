@@ -26,16 +26,16 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
-    public class EcdsaSigner : DisposableBase, IAsymmetricKeySigner
+    public class ECDsaSigner : DisposableBase, IAsymmetricKeySigner
     {
         private readonly ECDsaCng key;
         private readonly bool ownsKey;
 
-        public EcdsaSigner(ECDsaCng key, bool ownsKey)
+        public ECDsaSigner(ECDsaCng key, bool ownsKey)
         {
             this.key = key.ExpectNotNull(nameof(key));
 
-            this.PublicKey = new EcdsaPublicKey(key, false);
+            this.PublicKey = new ECDsaPublicKey(key, false);
             this.ownsKey = ownsKey;
         }
 

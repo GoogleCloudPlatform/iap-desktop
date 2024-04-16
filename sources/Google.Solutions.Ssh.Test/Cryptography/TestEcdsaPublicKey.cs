@@ -39,7 +39,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void TypeNistp256()
         {
             using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP256)))
-            using (var publicKey = new EcdsaPublicKey(key, true))
+            using (var publicKey = new ECDsaPublicKey(key, true))
             {
                 Assert.AreEqual("ecdsa-sha2-nistp256", publicKey.Type);
             }
@@ -49,7 +49,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void TypeNistp384()
         {
             using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP384)))
-            using (var publicKey = new EcdsaPublicKey(key, true))
+            using (var publicKey = new ECDsaPublicKey(key, true))
             {
                 Assert.AreEqual("ecdsa-sha2-nistp384", publicKey.Type);
             }
@@ -59,7 +59,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void TypeNistp521()
         {
             using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP521)))
-            using (var publicKey = new EcdsaPublicKey(key, true))
+            using (var publicKey = new ECDsaPublicKey(key, true))
             {
                 Assert.AreEqual("ecdsa-sha2-nistp521", publicKey.Type);
             }
@@ -76,7 +76,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
                 SampleKeys.Nistp384,
                 SampleKeys.Nistp512)] string encodedKey)
         {
-            using (var key = EcdsaPublicKey.FromWireFormat(Convert.FromBase64String(encodedKey)))
+            using (var key = ECDsaPublicKey.FromWireFormat(Convert.FromBase64String(encodedKey)))
             {
                 Assert.AreEqual(
                     encodedKey,
@@ -91,7 +91,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
                 SampleKeys.Rsa2048)] string encodedKey)
         {
             Assert.Throws<SshFormatException>(
-                () => EcdsaPublicKey.FromWireFormat(Convert.FromBase64String(encodedKey)));
+                () => ECDsaPublicKey.FromWireFormat(Convert.FromBase64String(encodedKey)));
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             [Values(1, 20, 40)] int take)
         {
             Assert.Throws<SshFormatException>(
-                () => EcdsaPublicKey.FromWireFormat(
+                () => ECDsaPublicKey.FromWireFormat(
                     Convert.FromBase64String(SampleKeys.Nistp256).Take(take).ToArray()));
         }
 
@@ -111,12 +111,12 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         public void WhenOwnsKeyIsTrue_ThenDisposeClosesKey()
         {
             var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP256));
-            using (var publicKey = new EcdsaPublicKey(key, true))
+            using (var publicKey = new ECDsaPublicKey(key, true))
             {
                 Assert.IsFalse(key.IsDisposed());
             }
 
-            using (var publicKey = new EcdsaPublicKey(key, true))
+            using (var publicKey = new ECDsaPublicKey(key, true))
             {
                 Assert.IsTrue(key.IsDisposed());
             }
@@ -127,12 +127,12 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         {
             using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP256)))
             {
-                using (var publicKey = new EcdsaPublicKey(key, false))
+                using (var publicKey = new ECDsaPublicKey(key, false))
                 {
                     Assert.IsFalse(key.IsDisposed());
                 }
 
-                using (var publicKey = new EcdsaPublicKey(key, false))
+                using (var publicKey = new ECDsaPublicKey(key, false))
                 {
                     Assert.IsFalse(key.IsDisposed());
                 }
