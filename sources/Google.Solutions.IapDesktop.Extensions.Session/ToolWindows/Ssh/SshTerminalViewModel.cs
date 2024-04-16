@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Download;
+using Google.Solutions.Platform.Interop;
 using Google.Solutions.Platform.Security;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
@@ -472,7 +473,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                                     //
                                     var targetFile = new FileInfo(Path.Combine(
                                         targetDirectory.FullName,
-                                        WindowsFilename.EscapeFilename(file.Name)));
+                                        Win32Filename.EscapeFilename(file.Name)));
                                     using (var fileStream = targetFile.OpenWrite())
                                     {
                                         await fsChannel.DownloadFileAsync(

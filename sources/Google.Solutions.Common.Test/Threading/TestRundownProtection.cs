@@ -48,7 +48,7 @@ namespace Google.Solutions.Common.Test.Threading
                 // back to 0.
 
                 await protection
-                    .AwaitRundown()
+                    .WaitAsync()
                     .ConfigureAwait(false);
             }
         }

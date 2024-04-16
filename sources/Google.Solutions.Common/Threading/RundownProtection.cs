@@ -50,7 +50,11 @@ namespace Google.Solutions.Common.Threading
                 });
         }
 
-        public Task AwaitRundown()
+        /// <summary>
+        /// Await safe rundown.
+        /// </summary>
+        /// <returns></returns>
+        public Task WaitAsync()
         {
             return this.rundownEvent.WaitAsync(CancellationToken.None);
         }
