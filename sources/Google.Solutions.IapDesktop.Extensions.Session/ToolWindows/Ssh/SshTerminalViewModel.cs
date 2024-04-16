@@ -46,6 +46,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 #pragma warning disable CA1031 // Do not catch general exception types
+#nullable disable
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 {
@@ -91,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
         // Initialization properties.
         //---------------------------------------------------------------------
 
-        internal CultureInfo? Language { get; set; }
+        internal CultureInfo Language { get; set; }
         internal IPEndPoint Endpoint { get; set; }
         internal ISshCredential Credential { get; set; }
         internal TimeSpan ConnectionTimeout { get; set; }
