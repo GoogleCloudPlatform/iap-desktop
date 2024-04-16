@@ -34,13 +34,25 @@ namespace Google.Solutions.Platform.IO
     {
         /// <summary>
         /// Raised when output is available.
+        /// 
+        /// The event can be delivered on any thread.
         /// </summary>
         event EventHandler<PseudoConsoleDataEventArgs>? OutputAvailable;
 
         /// <summary>
-        /// Raised when reading output failed.
+        /// Raised when a fatal error occured. After a fatal error,
+        /// might be in an unusable state and should be closed.
+        /// 
+        /// The event can be delivered on any thread
         /// </summary>
-        event EventHandler<PseudoConsoleErrorEventArgs>? OutputFailed;
+        event EventHandler<PseudoConsoleErrorEventArgs>? FatalError;
+
+        /// <summary>
+        /// Raised when the console was disconnected.
+        /// 
+        /// The event can be delivered on any thread
+        /// </summary>
+        event EventHandler<EventArgs>? Disconnected;
 
         /// <summary>
         /// Check if the device is closed, indicating that the

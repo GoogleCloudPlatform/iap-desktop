@@ -30,6 +30,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable VSTHRD004 // Return task
+
 namespace Google.Solutions.Platform.Dispatch
 {
     /// <summary>
@@ -121,6 +123,7 @@ namespace Google.Solutions.Platform.Dispatch
                         //
                         // EOF reached.
                         //
+                        this.Disconnected?.Invoke(this, EventArgs.Empty);
                         return;
                     }
                     else
@@ -132,7 +135,7 @@ namespace Google.Solutions.Platform.Dispatch
                 }
                 catch (Exception e)
                 {
-                    this.OutputFailed?.Invoke(
+                    this.FatalError?.Invoke(
                         this,
                         new PseudoConsoleErrorEventArgs(e));
                 }
@@ -151,17 +154,11 @@ namespace Google.Solutions.Platform.Dispatch
         // IPseudoTerminal.
         //---------------------------------------------------------------------
 
-        /// <summary>
-        /// Raised when output is available. The event can be delivered on
-        /// any thread.
-        /// </summary>
         public event EventHandler<PseudoConsoleDataEventArgs>? OutputAvailable;
 
-        /// <summary>
-        /// Raised when reading from the console failed. 
-        /// The event can be delivered on any thread.
-        /// </summary>
-        public event EventHandler<PseudoConsoleErrorEventArgs>? OutputFailed;
+        public event EventHandler<PseudoConsoleErrorEventArgs>? FatalError;
+
+        public event EventHandler<EventArgs>? Disconnected;
 
         public bool IsClosed { get; private set; }
 

@@ -36,7 +36,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task OutputAvailable()
+        public async Task WhenProcessWritesToStdout_ThenOutputAvailableIsRaised()
         {
             var factory = new Win32ProcessFactory();
             using (var process = factory.CreateProcessWithPseudoConsole(
@@ -68,6 +68,33 @@ namespace Google.Solutions.Platform.Test.Dispatch
                     .ConfigureAwait(false);
 
                 StringAssert.Contains("this is a test", output.ToString());
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Disconnected.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenProcessTerminated_ThenDisconnectedIsRaised()
+        {
+            var factory = new Win32ProcessFactory();
+            using (var process = factory.CreateProcessWithPseudoConsole(
+                "powershell.exe",
+                null,
+                PseudoConsoleSize.Default))
+            {
+                Assert.IsNotNull(process.PseudoConsole);
+                var pty = process.PseudoConsole!;
+
+                var eventRaised = false;
+                pty.Disconnected += (_, __) => eventRaised = true;
+
+                process.Terminate(1);
+
+                await pty.DrainAsync().ConfigureAwait(false);
+
+                Assert.IsTrue(eventRaised);
             }
         }
 

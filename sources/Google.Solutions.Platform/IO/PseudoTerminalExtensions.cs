@@ -56,13 +56,14 @@ namespace Google.Solutions.Platform.IO
                 this.callbackContext = context.ExpectNotNull(nameof(context));
 
                 this.console.OutputAvailable += OnOutputAvailable;
-                this.console.OutputFailed += OnOutputFailed;
+                this.console.FatalError += OnFatalError;
+                this.console.Disconnected += OnDisconnected;
             }
 
-            private void OnOutputFailed(object sender, PseudoConsoleErrorEventArgs args)
+            private void OnFatalError(object sender, PseudoConsoleErrorEventArgs args)
             {
                 this.callbackContext.Send(
-                    _ => this.OutputFailed?.Invoke(this, args),
+                    _ => this.FatalError?.Invoke(this, args),
                     null);
             }
 
@@ -72,13 +73,20 @@ namespace Google.Solutions.Platform.IO
                     _ => this.OutputAvailable?.Invoke(this, args),
                     null);
             }
+            private void OnDisconnected(object sender, EventArgs args)
+            {
+                this.callbackContext.Send(
+                    _ => this.Disconnected?.Invoke(this, args),
+                    null);
+            }
 
             //---------------------------------------------------------------------
             // IPseudoConsole.
             //---------------------------------------------------------------------
 
             public event EventHandler<PseudoConsoleDataEventArgs>? OutputAvailable;
-            public event EventHandler<PseudoConsoleErrorEventArgs>? OutputFailed;
+            public event EventHandler<PseudoConsoleErrorEventArgs>? FatalError;
+            public event EventHandler<EventArgs>? Disconnected;
 
             public bool IsClosed
             {
@@ -110,7 +118,8 @@ namespace Google.Solutions.Platform.IO
             public void Dispose()
             {
                 this.console.OutputAvailable -= OnOutputAvailable;
-                this.console.OutputFailed -= OnOutputFailed;
+                this.console.FatalError -= OnFatalError;
+                this.console.Disconnected -= OnDisconnected;
 
                 this.console.Dispose();
             }

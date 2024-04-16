@@ -142,11 +142,6 @@ namespace Google.Solutions.Platform.IO
         {
             base.Dispose(disposing);
 
-            if (disposing)
-            {
-                // TODO: dispose managed state (managed objects)
-            }
-
             this.ReadSideHandle.Dispose();
             this.WriteSideHandle.Dispose();
         }
