@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         /// POSIX username to log in with, only applicable when
         /// using metadata-based keys.
         /// </summary>
-        public string PreferredUsername { get; set; } = null;
+        public string? PreferredUsername { get; set; } = null;
 
         /// <summary>
         /// Validity to apply when authorizing the public key.

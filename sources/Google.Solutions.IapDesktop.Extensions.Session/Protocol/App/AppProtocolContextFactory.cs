@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
                     {
                         context.NetworkCredential = new NetworkCredential(
                             settings.RdpUsername.Value,
-                            (SecureString)settings.RdpPassword.Value,
+                            (SecureString?)settings.RdpPassword.Value,
                             settings.RdpDomain.Value);
                     }
                 }

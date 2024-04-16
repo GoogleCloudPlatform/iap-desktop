@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
         // Initialization properties.
         //---------------------------------------------------------------------
 
-        internal CultureInfo Language { get; set; }
+        internal CultureInfo? Language { get; set; }
         internal IPEndPoint Endpoint { get; set; }
         internal ISshCredential Credential { get; set; }
         internal TimeSpan ConnectionTimeout { get; set; }

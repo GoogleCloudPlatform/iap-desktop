@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             return new RdpCredential(
                 settings.RdpUsername.Value,
                 settings.RdpDomain.Value,
-                (SecureString)settings.RdpPassword.Value);
+                (SecureString?)settings.RdpPassword.Value);
         }
 
         private RdpContext CreateRdpContext(
@@ -360,7 +360,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                     this.iapTransportFactory,
                     this.directTransportFactory,
                     this.credentialFactory,
-                    signer,
+                    signer!,
                     node.Instance);
 
                 context.Parameters.PublicKeyValidity = validity;
@@ -380,8 +380,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                     this.iapTransportFactory,
                     this.directTransportFactory,
                     new StaticPasswordCredential(
-                        username,
-                        (SecureString)settings.SshPassword.Value ?? SecureStringExtensions.Empty),
+                        username!,
+                        ((SecureString?)settings.SshPassword.Value) ?? SecureStringExtensions.Empty),
                     node.Instance);
             }
 

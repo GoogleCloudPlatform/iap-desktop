@@ -29,9 +29,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 {
     internal sealed class SsmsClient : IAppProtocolClient
     {
-        private readonly Ssms ssms; // null if not found.
+        private readonly Ssms? ssms; // null if not found.
 
-        internal SsmsClient(Ssms ssms)
+        internal SsmsClient(Ssms? ssms)
         {
             this.ssms = ssms;
         }

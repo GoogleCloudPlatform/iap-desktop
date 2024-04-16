@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         internal static Color DefaultBackgroundColor = Color.FromArgb(48, 48, 48);
 #endif
 
-        public event EventHandler<EventArgs<ITerminalSettings>> SettingsChanged;
+        public event EventHandler<EventArgs<ITerminalSettings>>? SettingsChanged;
 
         public TerminalSettingsRepository(RegistryKey key)
             : this(new RegistrySettingsStore(key))

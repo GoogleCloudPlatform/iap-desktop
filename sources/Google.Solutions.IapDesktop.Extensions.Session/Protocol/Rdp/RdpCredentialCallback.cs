@@ -97,13 +97,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         public class CredentialCallbackResponse
         {
             [JsonProperty("User")]
-            public string User { get; set; }
+            public string? User { get; set; }
 
             [JsonProperty("Domain")]
-            public string Domain { get; set; }
+            public string? Domain { get; set; }
 
             [JsonProperty("Password")]
-            public string Password { get; set; }
+            public string? Password { get; set; }
         }
     }
 

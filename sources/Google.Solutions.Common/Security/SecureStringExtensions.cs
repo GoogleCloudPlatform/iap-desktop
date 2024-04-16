@@ -26,14 +26,21 @@ namespace Google.Solutions.Common.Security
 {
     public static class SecureStringExtensions
     {
-        public static SecureString Empty = FromClearText(string.Empty);
+        public static readonly SecureString Empty = FromClearText(string.Empty);
 
+        /// <summary>
+        /// Convert SecureString to plain text.
+        /// </summary>
         public static string AsClearText(this SecureString secureString)
         {
             return new NetworkCredential(string.Empty, secureString).Password;
         }
 
-        public static SecureString FromClearText(string plaintextString)
+        /// <summary>
+        /// Convert a string to a SecureString.
+        /// </summary>
+        /// <returns>SecureString. Empty string if input was null.</returns>
+        public static SecureString FromClearText(string? plaintextString)
         {
             return new NetworkCredential(string.Empty, plaintextString).SecurePassword;
         }

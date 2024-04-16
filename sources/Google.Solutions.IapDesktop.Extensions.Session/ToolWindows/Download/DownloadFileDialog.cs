@@ -40,8 +40,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Download
             IWin32Window owner,
             string caption,
             FileBrowser.IFileSystem fileSystem,
-            out IEnumerable<FileBrowser.IFileItem> sourceItems,
-            out DirectoryInfo targetDirectory);
+            out IEnumerable<FileBrowser.IFileItem>? sourceItems,
+            out DirectoryInfo? targetDirectory);
     }
 
     [Service(typeof(IDownloadFileDialog))]
@@ -59,8 +59,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Download
             IWin32Window owner,
             string caption,
             FileBrowser.IFileSystem fileSystem,
-            out IEnumerable<FileBrowser.IFileItem> sourceItems,
-            out DirectoryInfo targetDirectory)
+            out IEnumerable<FileBrowser.IFileItem>? sourceItems,
+            out DirectoryInfo? targetDirectory)
         {
             sourceItems = null;
             targetDirectory = null;

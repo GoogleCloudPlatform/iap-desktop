@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             return name;
         }
 
-        private static Image CreateIcon(AppProtocol protocol)
+        private static Image? CreateIcon(AppProtocol protocol)
         {
             if (protocol.Client?.Executable is var executable &&
                 executable != null &&
@@ -113,7 +113,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                     cancellationToken)
                 .ConfigureAwait(true);
 
-            var client = this.contextFactory.Protocol.Client;
+            var client = this.contextFactory.Protocol
+                .Client
+                .ExpectNotNull("Client is null");
 
             if (!client.IsNetworkLevelAuthenticationSupported ||
                 context.Parameters.NetworkLevelAuthentication == AppNetworkLevelAuthenticationState.Disabled)
