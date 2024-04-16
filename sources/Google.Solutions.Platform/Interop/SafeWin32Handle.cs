@@ -24,7 +24,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Google.Solutions.Common.Interop
+namespace Google.Solutions.Platform.Interop
 {
     public abstract class SafeWin32Handle : SafeHandleZeroOrMinusOneIsInvalid
     {
