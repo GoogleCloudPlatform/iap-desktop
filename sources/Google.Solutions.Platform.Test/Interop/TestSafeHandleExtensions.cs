@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Interop;
+using Google.Solutions.Platform.Interop;
 using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
@@ -27,7 +28,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.Test.Interop
+namespace Google.Solutions.Platform.Test.Interop
 {
     [TestFixture]
     public class TestSafeHandleExtensions

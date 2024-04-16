@@ -25,7 +25,7 @@ using System.Runtime.InteropServices;
 
 namespace Google.Solutions.Platform.Interop
 {
-    public struct ComReference<T> : IDisposable
+    public readonly struct ComReference<T> : IDisposable
         where T : class
     {
         public T Object { get; }
