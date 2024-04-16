@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh
 {
-    public class RemoteConnection : SshWorkerThread
+    public class SshConnection : SshWorkerThread
     {
         private readonly Queue<SendOperation> sendQueue = new Queue<SendOperation>();
         private readonly TaskCompletionSource<int> connectionCompleted
@@ -41,10 +41,10 @@ namespace Google.Solutions.Ssh
         // List of open channels. Only accessed on worker thread,
         // so no locking required.
         //
-        private readonly LinkedList<RemoteChannelBase> channels
-            = new LinkedList<RemoteChannelBase>();
+        private readonly LinkedList<SshChannelBase> channels
+            = new LinkedList<SshChannelBase>();
 
-        public RemoteConnection(
+        public SshConnection(
             IPEndPoint endpoint,
             ISshCredential credential,
             IKeyboardInteractiveHandler keyboardHandler,
@@ -258,7 +258,7 @@ namespace Google.Solutions.Ssh
             return this.connectionCompleted.Task;
         }
 
-        public async Task<RemoteShellChannel> OpenShellAsync(
+        public async Task<SshShellChannel> OpenShellAsync(
             ITextTerminal terminal,
             TerminalSize initialSize)
         {
@@ -296,7 +296,7 @@ namespace Google.Solutions.Ssh
                             initialSize.Rows,
                             environmentVariables);
 
-                        var channel = new RemoteShellChannel(
+                        var channel = new SshShellChannel(
                             this,
                             nativeChannel,
                             terminal);
@@ -309,7 +309,7 @@ namespace Google.Solutions.Ssh
                 .ConfigureAwait(false);
         }
 
-        public async Task<RemoteFileSystemChannel> OpenFileSystemAsync()
+        public async Task<SshFileSystemChannel> OpenFileSystemAsync()
         {
             return await RunSendOperationAsync(
                 session =>
@@ -318,7 +318,7 @@ namespace Google.Solutions.Ssh
 
                     using (session.Session.AsBlocking())
                     {
-                        var channel = new RemoteFileSystemChannel(
+                        var channel = new SshFileSystemChannel(
                             this,
                             session.OpenSftpChannel());
 

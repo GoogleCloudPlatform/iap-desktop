@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
     public class SshTerminalViewModel
         : TerminalViewModelBase, IKeyboardInteractiveHandler, ITextTerminal
     {
-        private RemoteShellChannel sshChannel = null;
+        private SshShellChannel sshChannel = null;
 
         private readonly IConfirmationDialog confirmationDialog;
         private readonly IOperationProgressDialog operationProgressDialog;
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
         // ITextTerminal.
         //---------------------------------------------------------------------
 
-        string ITextTerminal.TerminalType => RemoteShellChannel.DefaultTerminal;
+        string ITextTerminal.TerminalType => SshShellChannel.DefaultTerminal;
 
         CultureInfo ITextTerminal.Locale => this.Language;
 
@@ -219,12 +219,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
         // Actions.
         //---------------------------------------------------------------------
 
-        private async Task<RemoteShellChannel> ConnectAndTranslateErrorsAsync(
+        private async Task<SshShellChannel> ConnectAndTranslateErrorsAsync(
             TerminalSize initialSize)
         {
             try
             {
-                var connection = new RemoteConnection(
+                var connection = new SshConnection(
                     this.Endpoint,
                     this.Credential,
                     (IKeyboardInteractiveHandler)this,

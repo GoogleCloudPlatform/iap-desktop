@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var ipAddress = await GetPublicAddressFromLocatorAsync(instance)
                 .ConfigureAwait(false);
 
-            using (var connection = new RemoteConnection(
+            using (var connection = new SshConnection(
                 new IPEndPoint(ipAddress, 22),
                 credential,
                 handler,

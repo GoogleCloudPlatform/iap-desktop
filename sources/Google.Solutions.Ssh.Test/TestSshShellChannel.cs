@@ -34,7 +34,7 @@ namespace Google.Solutions.Ssh.Test
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestRemoteShellChannel : SshFixtureBase
+    public class TestSshShellChannel : SshFixtureBase
     {
         private class BufferingTerminal : ITextTerminal
         {
@@ -97,7 +97,7 @@ namespace Google.Solutions.Ssh.Test
 
             var terminal = new BufferingTerminal();
 
-            using (var connection = new RemoteConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 credential,
                 new KeyboardInteractiveHandler(),
@@ -110,7 +110,7 @@ namespace Google.Solutions.Ssh.Test
 
                 var channel = await connection.OpenShellAsync(
                         terminal,
-                        RemoteShellChannel.DefaultTerminalSize)
+                        SshShellChannel.DefaultTerminalSize)
                     .ConfigureAwait(false);
 
                 await channel.SendAsync("whoami\n").ConfigureAwait(false);
@@ -147,7 +147,7 @@ namespace Google.Solutions.Ssh.Test
                 Locale = new CultureInfo("en-AU")
             };
 
-            using (var connection = new RemoteConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 credential,
                 new KeyboardInteractiveHandler(),
@@ -159,7 +159,7 @@ namespace Google.Solutions.Ssh.Test
 
                 using (var channel = await connection.OpenShellAsync(
                         terminal,
-                        RemoteShellChannel.DefaultTerminalSize)
+                        SshShellChannel.DefaultTerminalSize)
                     .ConfigureAwait(false))
                 {
                 }
@@ -186,7 +186,7 @@ namespace Google.Solutions.Ssh.Test
                 Locale = new CultureInfo("en-AU")
             };
 
-            using (var connection = new RemoteConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 credential,
                 new KeyboardInteractiveHandler(),
@@ -201,7 +201,7 @@ namespace Google.Solutions.Ssh.Test
 
                 var channel = await connection.OpenShellAsync(
                         terminal,
-                        RemoteShellChannel.DefaultTerminalSize)
+                        SshShellChannel.DefaultTerminalSize)
                     .ConfigureAwait(false);
 
                 await channel
@@ -237,7 +237,7 @@ namespace Google.Solutions.Ssh.Test
                 Locale = new CultureInfo("en-AU")
             };
 
-            using (var connection = new RemoteConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 credential,
                 new KeyboardInteractiveHandler(),
@@ -253,7 +253,7 @@ namespace Google.Solutions.Ssh.Test
 
                 var channel = await connection.OpenShellAsync(
                         terminal,
-                        RemoteShellChannel.DefaultTerminalSize)
+                        SshShellChannel.DefaultTerminalSize)
                     .ConfigureAwait(false);
 
                 await channel
@@ -287,7 +287,7 @@ namespace Google.Solutions.Ssh.Test
                 Locale = null
             };
 
-            using (var connection = new RemoteConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 credential,
                 new KeyboardInteractiveHandler(),
@@ -302,7 +302,7 @@ namespace Google.Solutions.Ssh.Test
 
                 var channel = await connection.OpenShellAsync(
                         terminal,
-                        RemoteShellChannel.DefaultTerminalSize)
+                        SshShellChannel.DefaultTerminalSize)
                     .ConfigureAwait(false);
 
                 await channel

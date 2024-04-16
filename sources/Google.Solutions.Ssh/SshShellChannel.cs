@@ -32,7 +32,7 @@ namespace Google.Solutions.Ssh
     /// <summary>
     /// Channel for interacting with a remote shell.
     /// </summary>
-    public class RemoteShellChannel : RemoteChannelBase
+    public class SshShellChannel : SshChannelBase
     {
         public const string DefaultTerminal = "xterm";
         public static readonly Encoding DefaultEncoding = Encoding.UTF8;
@@ -48,10 +48,10 @@ namespace Google.Solutions.Ssh
 
         private readonly byte[] receiveBuffer = new byte[64 * 1024];
 
-        public override RemoteConnection Connection { get; }
+        public override SshConnection Connection { get; }
 
-        internal RemoteShellChannel(
-            RemoteConnection connection,
+        internal SshShellChannel(
+            SshConnection connection,
             Libssh2ShellChannel nativeChannel,
             ITextTerminal terminal)
         {

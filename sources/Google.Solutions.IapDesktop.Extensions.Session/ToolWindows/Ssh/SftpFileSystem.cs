@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             this.Root = new SftpRootItem();
         }
 
-        public SftpFileSystem(RemoteFileSystemChannel channel)
+        public SftpFileSystem(SshFileSystemChannel channel)
             : this((path) => channel.ListFilesAsync(path))
         {
             channel.ExpectNotNull(nameof(channel));

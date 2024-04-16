@@ -34,7 +34,7 @@ namespace Google.Solutions.Ssh.Test
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestRemoteFileSystemChannel : SshFixtureBase
+    public class TestSshFileSystemChannel : SshFixtureBase
     {
         public static Stream CreateStream(string content)
         {
@@ -61,7 +61,7 @@ namespace Google.Solutions.Ssh.Test
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
-            using (var connection = new RemoteConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 credential,
                 new KeyboardInteractiveHandler(),
@@ -93,7 +93,7 @@ namespace Google.Solutions.Ssh.Test
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
-            using (var connection = new RemoteConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 credential,
                 new KeyboardInteractiveHandler(),
@@ -126,7 +126,7 @@ namespace Google.Solutions.Ssh.Test
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
-            using (var connection = new RemoteConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 credential,
                 new KeyboardInteractiveHandler(),
@@ -162,7 +162,7 @@ namespace Google.Solutions.Ssh.Test
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
-            using (var connection = new RemoteConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 credential,
                 new KeyboardInteractiveHandler(),
@@ -201,7 +201,7 @@ namespace Google.Solutions.Ssh.Test
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
-            using (var connection = new RemoteConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 credential,
                 new KeyboardInteractiveHandler(),
@@ -242,7 +242,7 @@ namespace Google.Solutions.Ssh.Test
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
-            using (var connection = new RemoteConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 credential,
                 new KeyboardInteractiveHandler(),
@@ -289,7 +289,7 @@ namespace Google.Solutions.Ssh.Test
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
-            using (var connection = new RemoteConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 credential,
                 new KeyboardInteractiveHandler(),
@@ -327,7 +327,7 @@ namespace Google.Solutions.Ssh.Test
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
-            using (var connection = new RemoteConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 credential,
                 new KeyboardInteractiveHandler(),
@@ -365,7 +365,7 @@ namespace Google.Solutions.Ssh.Test
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
-            using (var connection = new RemoteConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 credential,
                 new KeyboardInteractiveHandler(),

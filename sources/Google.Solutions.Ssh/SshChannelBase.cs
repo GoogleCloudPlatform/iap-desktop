@@ -28,11 +28,11 @@ namespace Google.Solutions.Ssh
     /// <summary>
     /// Base class for channels that support async use.
     /// </summary>
-    public abstract class RemoteChannelBase : IDisposable
+    public abstract class SshChannelBase : IDisposable
     {
         private bool closed = false;
 
-        public abstract RemoteConnection Connection { get; }
+        public abstract SshConnection Connection { get; }
 
         /// <summary>
         /// Perform receive operation. Called on SSH worker thread.
