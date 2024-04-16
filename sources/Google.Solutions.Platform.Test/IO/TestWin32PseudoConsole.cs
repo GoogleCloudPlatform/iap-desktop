@@ -21,7 +21,6 @@
 
 using Google.Solutions.Platform.IO;
 using NUnit.Framework;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Platform.Test.IO

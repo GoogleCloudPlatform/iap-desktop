@@ -77,7 +77,7 @@ namespace Google.Solutions.Platform.IO
     /// <summary>
     /// Size of a console, in characters.
     /// </summary>
-    public struct PseudoConsoleSize
+    public readonly struct PseudoConsoleSize
     {
         public PseudoConsoleSize(ushort width, ushort height)
         {

@@ -20,7 +20,9 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Platform.IO;
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.Diagnostics;
@@ -38,18 +40,24 @@ namespace Google.Solutions.Platform.Dispatch
     {
         /// <summary>
         /// Start a new process.
-        /// 
-        /// The process is created suspended and must be resumed explicitly.
         /// </summary>
+        /// <returns>Suspended process</returns>
         IWin32Process CreateProcess(
             string executable,
             string? arguments);
 
         /// <summary>
-        /// Start a new process as a different user.
-        /// 
-        /// The process is created suspended and must be resumed explicitly.
+        /// Start a new process and attach a pseudo-console.
         /// </summary>
+        /// <returns>Suspended process</returns>
+        IWin32Process CreateProcessWithPseudoConsole(
+            string executable,
+            string? arguments,
+            PseudoConsoleSize pseudoConsoleSize);
+
+        /// <summary>
+        /// Start a new process as a different user.
+        /// <returns>Suspended process</returns>
         IWin32Process CreateProcessAsUser(
             string executable,
             string? arguments,
@@ -137,6 +145,117 @@ namespace Google.Solutions.Platform.Dispatch
 
                 InvokeOnProcessCreated(process);
                 return process;
+            }
+        }
+
+        public IWin32Process CreateProcessWithPseudoConsole(
+            string executable,
+            string? arguments,
+            PseudoConsoleSize pseudoConsoleSize)
+        {
+            using (PlatformTraceSource.Log.TraceMethod()
+                .WithParameters(executable, arguments))
+            {
+                //
+                // Create a STARTUPINFOEX as described in 
+                // https://docs.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session
+                //
+
+                var size = IntPtr.Zero;
+                NativeMethods.InitializeProcThreadAttributeList(
+                    IntPtr.Zero,
+                    1,
+                    0,
+                    ref size);
+                if (size == IntPtr.Zero)
+                {
+                    throw DispatchException.FromLastWin32Error(
+                        "Calculating the number of bytes for the " +
+                        "thread attribute list failed");
+                }
+
+                using (var attributeListHandle = 
+                    GlobalAllocSafeHandle.GlobalAlloc((uint)size.ToInt32()))
+                {
+                    var startupInfo = new NativeMethods.STARTUPINFOEX();
+                    startupInfo.StartupInfo.cb = 
+                        Marshal.SizeOf<NativeMethods.STARTUPINFOEX>();
+                    startupInfo.lpAttributeList = 
+                        attributeListHandle.DangerousGetHandle();
+
+                    if (!NativeMethods.InitializeProcThreadAttributeList(
+                        startupInfo.lpAttributeList,
+                        1,
+                        0,
+                        ref size))
+                    {
+                        throw DispatchException.FromLastWin32Error(
+                            "Creating the thread attribute list failed");
+                    }
+
+                    var pseudoConsole = new Win32PseudoConsole(pseudoConsoleSize);
+                    try
+                    {
+                        if (!NativeMethods.UpdateProcThreadAttribute(
+                            startupInfo.lpAttributeList,
+                            0,
+                            (IntPtr)NativeMethods.PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE,
+                            pseudoConsole.Handle.DangerousGetHandle(),
+                            (IntPtr)IntPtr.Size,
+                            IntPtr.Zero,
+                            IntPtr.Zero))
+                        {
+                            throw DispatchException.FromLastWin32Error(
+                                "Attaching the pseudo-console failed");
+                        }
+
+                        var processSecurityAttributes =
+                            new NativeMethods.SECURITY_ATTRIBUTES
+                        {
+                            nLength = Marshal
+                                .SizeOf<NativeMethods.SECURITY_ATTRIBUTES>()
+                        };
+                        var threadSecurityAttributes = 
+                            new NativeMethods.SECURITY_ATTRIBUTES
+                        {
+                            nLength = Marshal
+                                .SizeOf<NativeMethods.SECURITY_ATTRIBUTES>()
+                        };
+
+                        if (!NativeMethods.CreateProcess(
+                            null,
+                            $"{Quote(executable)} {arguments}",
+                            IntPtr.Zero,
+                            IntPtr.Zero,
+                            false,
+                            NativeMethods.CREATE_SUSPENDED,
+                            IntPtr.Zero,
+                            null,
+                            ref startupInfo,
+                            out var processInfo))
+                        {
+                            throw DispatchException.FromLastWin32Error(
+                                $"Launching process for {executable} failed");
+                        }
+
+                        var process = new Win32Process(
+                            new FileInfo(executable).Name,
+                            processInfo.dwProcessId,
+                            new SafeProcessHandle(processInfo.hProcess, true),
+                            new SafeThreadHandle(processInfo.hThread, true))
+                        {
+                            PseudoConsole = pseudoConsole
+                        };
+
+                        InvokeOnProcessCreated(process);
+                        return process;
+                    }
+                    catch
+                    {
+                        pseudoConsole.Dispose();
+                        throw;
+                    }
+                }
             }
         }
 
@@ -236,6 +355,21 @@ namespace Google.Solutions.Platform.Dispatch
                 public IntPtr hStdError;
             }
 
+            [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+            internal struct STARTUPINFOEX
+            {
+                public STARTUPINFO StartupInfo;
+                public IntPtr lpAttributeList;
+            }
+
+            [StructLayout(LayoutKind.Sequential)]
+            internal struct SECURITY_ATTRIBUTES
+            {
+                public int nLength;
+                public IntPtr lpSecurityDescriptor;
+                public bool bInheritHandle;
+            }
+
             [StructLayout(LayoutKind.Sequential)]
             internal struct PROCESS_INFORMATION
             {
@@ -244,6 +378,30 @@ namespace Google.Solutions.Platform.Dispatch
                 public uint dwProcessId;
                 public uint dwThreadId;
             }
+
+            [DllImport("kernel32.dll", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool InitializeProcThreadAttributeList(
+                IntPtr lpAttributeList,
+                int dwAttributeCount,
+                int dwFlags,
+                ref IntPtr lpSize);
+
+            [DllImport("kernel32.dll", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool DeleteProcThreadAttributeList(
+                IntPtr lpAttributeList);
+
+            [DllImport("kernel32.dll", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool UpdateProcThreadAttribute(
+                IntPtr lpAttributeList,
+                uint dwFlags,
+                IntPtr attribute,
+                IntPtr lpValue,
+                IntPtr cbSize,
+                IntPtr lpPreviousValue,
+                IntPtr lpReturnSize);
 
             [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             [return: MarshalAs(UnmanagedType.Bool)]
@@ -257,6 +415,20 @@ namespace Google.Solutions.Platform.Dispatch
                 IntPtr lpEnvironment,
                 string? lpCurrentDirectory,
                 [In] ref STARTUPINFO lpStartupInfo,
+                out PROCESS_INFORMATION lpProcessInformation);
+
+            [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool CreateProcess(
+                string? lpApplicationName,
+                string lpCommandLine,
+                IntPtr lpProcessAttributes,
+                IntPtr lpThreadAttributes,
+                bool bInheritHandles,
+                uint dwCreationFlags,
+                IntPtr lpEnvironment,
+                string? lpCurrentDirectory,
+                [In] ref STARTUPINFOEX lpStartupInfo,
                 out PROCESS_INFORMATION lpProcessInformation);
 
             [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]

@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Platform.IO;
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.Diagnostics;
@@ -100,6 +101,11 @@ namespace Google.Solutions.Platform.Dispatch
         /// The NT/WTS session that this process is running in.
         /// </summary>
         IWtsSession Session { get; }
+
+        /// <summary>
+        /// Pseudo-console for this process, if any.
+        /// </summary>
+        IPseudoConsole? PseudoConsole { get; }
     }
 
 
@@ -179,11 +185,19 @@ namespace Google.Solutions.Platform.Dispatch
 
         public WaitHandle WaitHandle => this.process.ToWaitHandle(false);
 
-        public uint Id => this.processId;
+        public uint Id
+        {
+            get => this.processId;
+        }
+
+        public IWtsSession Session
+        {
+            get => WtsSession.FromProcessId(this.processId);
+        }
 
         public IWin32Job? Job { get; internal set; }
 
-        public IWtsSession Session => WtsSession.FromProcessId(this.processId);
+        public IPseudoConsole? PseudoConsole { get; internal set; }
 
         public bool IsRunning
         {

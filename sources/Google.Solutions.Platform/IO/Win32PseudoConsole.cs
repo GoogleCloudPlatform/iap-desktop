@@ -57,47 +57,51 @@ namespace Google.Solutions.Platform.IO
 
             try
             {
-                var hresult = NativeMethods.CreatePseudoConsole(
-                    new NativeMethods.COORD
+                try
+                {
+                    var hresult = NativeMethods.CreatePseudoConsole(
+                        new NativeMethods.COORD
+                        {
+                            X = (short)size.Width,
+                            Y = (short)size.Height
+                        },
+                        stdin.ReadSideHandle,
+                        stdout.WriteSideHandle,
+                        0,
+                        out var handle);
+                    if (hresult.Failed())
                     {
-                        X = (short)size.Width,
-                        Y = (short)size.Height
-                    },
-                    stdin.ReadSideHandle,
-                    stdout.WriteSideHandle,
-                    0,
-                    out var handle);
-                if (hresult.Failed())
-                {
-                    stdin.Dispose();
-                    stdout.Dispose();
+                        throw PseudoConsoleException.FromHresult(
+                            hresult,
+                            "Failed to create pseudo console");
+                    }
 
-                    throw PseudoConsoleException.FromHresult(
-                        hresult,
-                        "Failed to create pseudo console");
+                    stdout.CloseWriteSide();
+                    stdin.CloseReadSide();
+
+                    this.Handle = handle;
+                    this.InputPipe = stdin;
+                    this.OutputPipe = stdout;
+
+                    this.inputWriter = new StreamWriter(stdin.WriteSide, Encoding)
+                    {
+                        AutoFlush = true
+                    };
+                    this.outputReader = new StreamReader(stdout.ReadSide, Encoding);
+                    this.pumpOutputTask = PumpEventsAsync();
                 }
-
-                stdout.CloseWriteSide();
-                stdin.CloseReadSide();
-
-                this.Handle = handle;
-                this.InputPipe = stdin;
-                this.OutputPipe = stdout;
-
-                this.inputWriter = new StreamWriter(stdin.WriteSide, Encoding)
+                catch (EntryPointNotFoundException)
                 {
-                    AutoFlush = true
-                };
-                this.outputReader = new StreamReader(stdout.ReadSide, Encoding);
-                this.pumpOutputTask = PumpEventsAsync();
-            }
-            catch (EntryPointNotFoundException)
+                    throw new PseudoConsoleException(
+                        "This feature requires Windows 10 version 1809 or newer");
+                }
+            } 
+            catch
             {
                 stdin.Dispose();
                 stdout.Dispose();
 
-                throw new PseudoConsoleException(
-                    "This feature requires Windows 10 version 1809 or newer");
+                throw;
             }
         }
 
