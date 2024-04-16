@@ -459,7 +459,7 @@ namespace Google.Solutions.Ssh
         /// </summary>
         public static Task JoinAllWorkerThreadsAsync()
         {
-            return workerThreadRundownProtection.AwaitRundown();
+            return workerThreadRundownProtection.WaitAsync();
         }
 
         //---------------------------------------------------------------------

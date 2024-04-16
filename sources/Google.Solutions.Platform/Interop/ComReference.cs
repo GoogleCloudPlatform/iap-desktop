@@ -19,30 +19,34 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Interop;
-using NUnit.Framework;
+using Google.Solutions.Common.Util;
+using System;
+using System.Runtime.InteropServices;
 
-namespace Google.Solutions.Common.Test.Interop
+namespace Google.Solutions.Platform.Interop
 {
-    [TestFixture]
-    public class TestHresultExtensions
+    public readonly struct ComReference<T> : IDisposable
+        where T : class
     {
-        [Test]
-        public void Succeeded()
-        {
-            Assert.IsTrue(HRESULT.S_OK.Succeeded());
-            Assert.IsTrue(HRESULT.S_FALSE.Succeeded());
+        public T Object { get; }
 
-            Assert.IsFalse(HRESULT.E_UNEXPECTED.Succeeded());
+        internal ComReference(T obj)
+        {
+            this.Object = obj.ExpectNotNull(nameof(obj));
         }
 
-        [Test]
-        public void Failed()
+        public void Dispose()
         {
-            Assert.IsFalse(HRESULT.S_OK.Failed());
-            Assert.IsFalse(HRESULT.S_FALSE.Failed());
+            Marshal.ReleaseComObject(this.Object);
+        }
+    }
 
-            Assert.IsTrue(HRESULT.E_UNEXPECTED.Failed());
+    public static class ComReference
+    {
+        public static ComReference<TInterface> For<TInterface>(TInterface obj)
+            where TInterface : class
+        {
+            return new ComReference<TInterface>(obj);
         }
     }
 }

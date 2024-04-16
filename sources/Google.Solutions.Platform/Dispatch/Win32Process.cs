@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Platform.Interop;
 using Google.Solutions.Platform.IO;
 using Microsoft.Win32.SafeHandles;
 using System;
@@ -408,7 +409,7 @@ namespace Google.Solutions.Platform.Dispatch
         }
     }
 
-    internal class SafeThreadHandle : SafeWin32Handle
+    internal class SafeThreadHandle : Win32SafeHandle
     {
         public SafeThreadHandle(IntPtr handle, bool ownsHandle)
             : base(handle, ownsHandle)

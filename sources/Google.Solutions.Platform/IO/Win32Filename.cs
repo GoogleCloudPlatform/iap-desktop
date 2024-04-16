@@ -22,12 +22,12 @@
 using System.IO;
 using System.Linq;
 
-namespace Google.Solutions.Common.Interop
+namespace Google.Solutions.Platform.Interop
 {
     /// <summary>
     /// Utility methods for dealing with Win32 filenames.
     /// </summary>
-    public static class WindowsFilename
+    public static class Win32Filename
     {
         private static readonly string[] DosDevices =
         {

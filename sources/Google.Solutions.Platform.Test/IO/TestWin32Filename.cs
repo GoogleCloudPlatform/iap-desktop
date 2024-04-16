@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Interop;
+using Google.Solutions.Platform.Interop;
 using NUnit.Framework;
 
-namespace Google.Solutions.Common.Test.Interop
+namespace Google.Solutions.Platform.Test.Interop
 {
     [TestFixture]
     public class TestWindowsFilename
@@ -34,16 +34,16 @@ namespace Google.Solutions.Common.Test.Interop
         [Test]
         public void WhenFileHasExtension_ThenStripExtensionRemovesExtension()
         {
-            Assert.AreEqual("file", WindowsFilename.StripExtension("file.txt"));
-            Assert.AreEqual(".txt", WindowsFilename.StripExtension(".txt.tmp"));
-            Assert.AreEqual("file.txt", WindowsFilename.StripExtension("file.txt.tmp"));
+            Assert.AreEqual("file", Win32Filename.StripExtension("file.txt"));
+            Assert.AreEqual(".txt", Win32Filename.StripExtension(".txt.tmp"));
+            Assert.AreEqual("file.txt", Win32Filename.StripExtension("file.txt.tmp"));
         }
 
         [Test]
         public void WhenFileHasNoExtension_ThenStripExtensionRetainsName()
         {
-            Assert.AreEqual(".file", WindowsFilename.StripExtension(".file"));
-            Assert.AreEqual("file", WindowsFilename.StripExtension("file"));
+            Assert.AreEqual(".file", Win32Filename.StripExtension(".file"));
+            Assert.AreEqual("file", Win32Filename.StripExtension("file"));
         }
 
         //---------------------------------------------------------------------
@@ -54,28 +54,28 @@ namespace Google.Solutions.Common.Test.Interop
         public void WhenFilenameIsDosDevice_ThenIsValidFilenameReturnsFalse(
             [Values("con", "Prn", "AUX", "NUL", "COM1", "COM9", "LPT1", "lpt9.txt")] string name)
         {
-            Assert.IsFalse(WindowsFilename.IsValidFilename(name));
+            Assert.IsFalse(Win32Filename.IsValidFilename(name));
         }
 
         [Test]
         public void WhenFilenameContainsInvalidCharacters_ThenIsValidFilenameReturnsFalse(
             [Values("f<.txt", ":.txt", "\"file\".txt", "\\f", "?.txt", "*.*")] string name)
         {
-            Assert.IsFalse(WindowsFilename.IsValidFilename(name));
+            Assert.IsFalse(Win32Filename.IsValidFilename(name));
         }
 
         [Test]
         public void WhenFilenameHasTrailingDot_ThenIsValidFilenameReturnsFalse(
             [Values("file.txt.")] string name)
         {
-            Assert.IsFalse(WindowsFilename.IsValidFilename(name));
+            Assert.IsFalse(Win32Filename.IsValidFilename(name));
         }
 
         [Test]
         public void WhenFilenameIsWin32Compliant_ThenIsValidFilenameReturnsTrue(
             [Values(".file.txt", "f", "null.txt")] string name)
         {
-            Assert.IsTrue(WindowsFilename.IsValidFilename(name));
+            Assert.IsTrue(Win32Filename.IsValidFilename(name));
         }
 
         //---------------------------------------------------------------------
@@ -85,21 +85,21 @@ namespace Google.Solutions.Common.Test.Interop
         [Test]
         public void WhenFilenameIsWin32Compliant_ThenEscapeFilenameRetainsName()
         {
-            Assert.AreEqual("File.txt", WindowsFilename.EscapeFilename("File.txt"));
-            Assert.AreEqual("File with spaces", WindowsFilename.EscapeFilename("File with spaces"));
-            Assert.AreEqual(".dotfile", WindowsFilename.EscapeFilename(".dotfile"));
-            Assert.AreEqual("NULl.AUX", WindowsFilename.EscapeFilename("NULl.AUX"));
+            Assert.AreEqual("File.txt", Win32Filename.EscapeFilename("File.txt"));
+            Assert.AreEqual("File with spaces", Win32Filename.EscapeFilename("File with spaces"));
+            Assert.AreEqual(".dotfile", Win32Filename.EscapeFilename(".dotfile"));
+            Assert.AreEqual("NULl.AUX", Win32Filename.EscapeFilename("NULl.AUX"));
         }
 
         [Test]
         public void WhenFilenameNotWin32Compliant_ThenEscapeFilenameReturnsCompliantName()
         {
-            Assert.IsTrue(WindowsFilename.IsValidFilename(WindowsFilename.EscapeFilename(".")));
-            Assert.IsTrue(WindowsFilename.IsValidFilename(WindowsFilename.EscapeFilename("file.")));
-            Assert.IsTrue(WindowsFilename.IsValidFilename(WindowsFilename.EscapeFilename("NUL")));
-            Assert.IsTrue(WindowsFilename.IsValidFilename(WindowsFilename.EscapeFilename("NUL.")));
-            Assert.IsTrue(WindowsFilename.IsValidFilename(WindowsFilename.EscapeFilename("AUX.txt")));
-            Assert.IsTrue(WindowsFilename.IsValidFilename(WindowsFilename.EscapeFilename("\"file\"")));
+            Assert.IsTrue(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename(".")));
+            Assert.IsTrue(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename("file.")));
+            Assert.IsTrue(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename("NUL")));
+            Assert.IsTrue(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename("NUL.")));
+            Assert.IsTrue(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename("AUX.txt")));
+            Assert.IsTrue(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename("\"file\"")));
         }
     }
 }

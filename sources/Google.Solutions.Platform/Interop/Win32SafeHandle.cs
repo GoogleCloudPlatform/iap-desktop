@@ -24,20 +24,20 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Google.Solutions.Common.Interop
+namespace Google.Solutions.Platform.Interop
 {
-    public abstract class SafeWin32Handle : SafeHandleZeroOrMinusOneIsInvalid
+    public abstract class Win32SafeHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
 #if DEBUG
         private readonly string stackTrace = Environment.StackTrace;
 #endif
 
-        protected SafeWin32Handle(bool ownsHandle)
+        protected Win32SafeHandle(bool ownsHandle)
             : base(ownsHandle)
         {
         }
 
-        protected SafeWin32Handle(IntPtr handle, bool ownsHandle)
+        protected Win32SafeHandle(IntPtr handle, bool ownsHandle)
             : base(ownsHandle)
         {
             SetHandle(handle);
@@ -50,7 +50,7 @@ namespace Google.Solutions.Common.Interop
             return closed;
         }
 
-        ~SafeWin32Handle()
+        ~Win32SafeHandle()
         {
 
 #if DEBUG

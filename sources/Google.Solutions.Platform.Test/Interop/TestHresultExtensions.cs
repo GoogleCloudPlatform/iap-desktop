@@ -19,38 +19,30 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Interop;
+using Google.Solutions.Platform.Interop;
 using NUnit.Framework;
 
-namespace Google.Solutions.Common.Test.Interop
+namespace Google.Solutions.Platform.Test.Interop
 {
     [TestFixture]
-    public class TestCoTaskMemAllocSafeHandle : CommonFixtureBase
+    public class TestHresultExtensions
     {
         [Test]
-        public void WhenMemoryFreed_ThenHandleIsInvalid()
+        public void Succeeded()
         {
-            var handle = CoTaskMemAllocSafeHandle.Alloc(8);
-            Assert.IsFalse(handle.IsClosed);
-            Assert.IsFalse(handle.IsInvalid);
+            Assert.IsTrue(HRESULT.S_OK.Succeeded());
+            Assert.IsTrue(HRESULT.S_FALSE.Succeeded());
 
-            handle.Dispose();
-
-            Assert.IsTrue(handle.IsClosed);
-            Assert.IsFalse(handle.IsInvalid);
+            Assert.IsFalse(HRESULT.E_UNEXPECTED.Succeeded());
         }
 
         [Test]
-        public void WhenStringFreed_ThenHandleIsInvalid()
+        public void Failed()
         {
-            var handle = CoTaskMemAllocSafeHandle.Alloc("test");
-            Assert.IsFalse(handle.IsClosed);
-            Assert.IsFalse(handle.IsInvalid);
+            Assert.IsFalse(HRESULT.S_OK.Failed());
+            Assert.IsFalse(HRESULT.S_FALSE.Failed());
 
-            handle.Dispose();
-
-            Assert.IsTrue(handle.IsClosed);
-            Assert.IsFalse(handle.IsInvalid);
+            Assert.IsTrue(HRESULT.E_UNEXPECTED.Failed());
         }
     }
 }

@@ -54,7 +54,7 @@ namespace Google.Solutions.Ssh.Native
                 LIBSSH2_HOSTKEY_HASH.MD5 => 16,
                 LIBSSH2_HOSTKEY_HASH.SHA1 => 16,
                 LIBSSH2_HOSTKEY_HASH.SHA256 => 32,
-                _ => throw new ArgumentException(nameof(hashType)),
+                _ => throw new ArgumentException("The hash is not supported"),
             };
         }
 
@@ -97,7 +97,7 @@ namespace Google.Solutions.Ssh.Native
             this.session.Handle.CheckCurrentThreadOwnsHandle();
             if (!Enum.IsDefined(typeof(LIBSSH2_METHOD), methodType))
             {
-                throw new ArgumentException(nameof(methodType));
+                throw new ArgumentException("The method is not supported");
             }
 
             using (SshTraceSource.Log.TraceMethod().WithParameters(methodType))
@@ -127,7 +127,7 @@ namespace Google.Solutions.Ssh.Native
             this.session.Handle.CheckCurrentThreadOwnsHandle();
             if (!Enum.IsDefined(typeof(LIBSSH2_HOSTKEY_HASH), hashType))
             {
-                throw new ArgumentException(nameof(hashType));
+                throw new ArgumentException("The hash is not supported");
             }
 
             using (SshTraceSource.Log.TraceMethod().WithParameters(hashType))

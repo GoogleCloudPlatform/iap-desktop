@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Interop;
 using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.Platform.Interop;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;

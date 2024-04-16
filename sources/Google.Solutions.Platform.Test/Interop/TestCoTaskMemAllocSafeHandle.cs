@@ -19,34 +19,38 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
-using System;
-using System.Runtime.InteropServices;
+using Google.Solutions.Platform.Interop;
+using NUnit.Framework;
 
-namespace Google.Solutions.Common.Interop
+namespace Google.Solutions.Platform.Test.Interop
 {
-    public struct ComReference<T> : IDisposable
-        where T : class
+    [TestFixture]
+    public class TestCoTaskMemAllocSafeHandle 
     {
-        public T Object { get; }
-
-        internal ComReference(T obj)
+        [Test]
+        public void WhenMemoryFreed_ThenHandleIsInvalid()
         {
-            this.Object = obj.ExpectNotNull(nameof(obj));
+            var handle = CoTaskMemAllocSafeHandle.Alloc(8);
+            Assert.IsFalse(handle.IsClosed);
+            Assert.IsFalse(handle.IsInvalid);
+
+            handle.Dispose();
+
+            Assert.IsTrue(handle.IsClosed);
+            Assert.IsFalse(handle.IsInvalid);
         }
 
-        public void Dispose()
+        [Test]
+        public void WhenStringFreed_ThenHandleIsInvalid()
         {
-            Marshal.ReleaseComObject(this.Object);
-        }
-    }
+            var handle = CoTaskMemAllocSafeHandle.Alloc("test");
+            Assert.IsFalse(handle.IsClosed);
+            Assert.IsFalse(handle.IsInvalid);
 
-    public static class ComReference
-    {
-        public static ComReference<TInterface> For<TInterface>(TInterface obj)
-            where TInterface : class
-        {
-            return new ComReference<TInterface>(obj);
+            handle.Dispose();
+
+            Assert.IsTrue(handle.IsClosed);
+            Assert.IsFalse(handle.IsInvalid);
         }
     }
 }

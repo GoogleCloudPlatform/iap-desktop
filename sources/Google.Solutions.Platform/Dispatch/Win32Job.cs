@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Platform.Interop;
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.Collections.Generic;
@@ -479,7 +480,7 @@ namespace Google.Solutions.Platform.Dispatch
             }
         }
 
-        private class SafeJobHandle : SafeWin32Handle
+        private class SafeJobHandle : Win32SafeHandle
         {
             public SafeJobHandle()
                 : base(true)
@@ -492,7 +493,7 @@ namespace Google.Solutions.Platform.Dispatch
             }
         }
 
-        private class SafeCompletionPortHandle : SafeWin32Handle
+        private class SafeCompletionPortHandle : Win32SafeHandle
         {
             public SafeCompletionPortHandle()
                 : base(true)

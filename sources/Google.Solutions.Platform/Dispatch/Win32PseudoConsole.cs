@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Runtime;
+using Google.Solutions.Platform.Interop;
 using Google.Solutions.Platform.IO;
 using Microsoft.Win32.SafeHandles;
 using System;

@@ -158,7 +158,7 @@ namespace Google.Solutions.Ssh.Native
             this.sessionHandle.CheckCurrentThreadOwnsHandle();
             if (!Enum.IsDefined(typeof(LIBSSH2_METHOD), methodType))
             {
-                throw new ArgumentException(nameof(methodType));
+                throw new ArgumentException("The method is not supported");
             }
 
             using (SshTraceSource.Log.TraceMethod().WithParameters(methodType))

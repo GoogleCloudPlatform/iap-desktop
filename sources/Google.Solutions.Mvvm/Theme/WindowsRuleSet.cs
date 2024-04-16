@@ -24,6 +24,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Drawing;
 using Google.Solutions.Mvvm.Interop;
+using Google.Solutions.Platform.Interop;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;

@@ -23,6 +23,7 @@ using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.Platform.Interop;
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.ComponentModel;
