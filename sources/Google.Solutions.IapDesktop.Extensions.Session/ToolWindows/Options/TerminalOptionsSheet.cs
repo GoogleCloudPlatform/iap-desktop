@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                     Font = this.viewModel.Value.TerminalFont.Value
                 })
                 {
-                    if (dialog.ShowDialog(this) == DialogResult.OK)
+                    if (dialog.ShowDialog(this) == DialogResult.OK && dialog.Font != null)
                     {
                         // Strip the font style.
                         this.viewModel.Value.TerminalFont.Value = new Font(
