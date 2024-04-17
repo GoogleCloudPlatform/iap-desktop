@@ -26,6 +26,8 @@ using Google.Solutions.Mvvm.Binding;
 using System.Diagnostics;
 using System.Drawing;
 
+#nullable disable
+
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
 {
     [Service(ServiceLifetime.Transient)]
@@ -43,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.IsNavigationUsingControlArrrowEnabled = ObservableProperty.Build(false);
             this.IsScrollingUsingCtrlUpDownEnabled = ObservableProperty.Build(false);
             this.IsScrollingUsingCtrlHomeEndEnabled = ObservableProperty.Build(false);
-            this.TerminalFont = ObservableProperty.Build<Font?>(null);
+            this.TerminalFont = ObservableProperty.Build<Font>(null);
             this.TerminalForegroundColor = ObservableProperty.Build<Color>(Color.White);
             this.TerminalBackgroundColor = ObservableProperty.Build<Color>(Color.Black);
 
@@ -114,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             settings.IsScrollingUsingCtrlHomeEndEnabled.Value =
                 this.IsScrollingUsingCtrlHomeEndEnabled.Value;
             settings.FontFamily.Value =
-                this.TerminalFont.Value!.FontFamily.Name;
+                this.TerminalFont.Value.FontFamily.Name;
             settings.FontSizeAsDword.Value =
                 TerminalSettingsRepository.DwordFromFontSize(this.TerminalFont.Value.Size);
             settings.ForegroundColorArgb.Value =
@@ -146,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
 
         public ObservableProperty<bool> IsScrollingUsingCtrlHomeEndEnabled { get; }
 
-        public ObservableProperty<Font?> TerminalFont { get; }
+        public ObservableProperty<Font> TerminalFont { get; }
 
         public ObservableProperty<Color> TerminalForegroundColor { get; }
 
