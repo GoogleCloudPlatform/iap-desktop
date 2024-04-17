@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows
     public class SessionViewBase : DocumentWindow
     {
         private readonly IBindingContext bindingContext;
-        private ICommandContainer<ISession> contextCommands;
+        private ICommandContainer<ISession>? contextCommands;
 
         protected SessionViewBase(IBindingContext bindingContext)
         {
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows
         // Context menu.
         //---------------------------------------------------------------------
 
-        public ICommandContainer<ISession> ContextCommands
+        public ICommandContainer<ISession>? ContextCommands
         {
             get => this.contextCommands;
             set
@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows
                 }
                 else
                 {
-                    this.contextCommands = value;
+                    this.contextCommands = value.ExpectNotNull(nameof(value));
                     this.contextCommands.BindTo(
                         this.TabPageContextMenuStrip,
                         this.bindingContext);
