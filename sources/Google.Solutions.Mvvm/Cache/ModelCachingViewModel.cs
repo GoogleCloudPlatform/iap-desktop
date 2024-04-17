@@ -60,7 +60,10 @@ namespace Google.Solutions.Mvvm.Cache
         {
             if (this.Model != null)
             {
+                //
                 // Reset.
+                //
+
                 this.Model = default(TModel);
                 ApplyModel(false);
             }
@@ -69,9 +72,11 @@ namespace Google.Solutions.Mvvm.Cache
             var model = this.modelCache.Lookup(key);
             if (model != null)
             {
+                //
                 // Apply model synchronously.
-                this.modelCache.Add(key, model);
+                //
 
+                this.modelCache.Add(key, model);
                 this.Model = model;
                 ApplyModel(true);
             }
@@ -79,22 +84,30 @@ namespace Google.Solutions.Mvvm.Cache
             {
                 if (this.tokenSourceForCurrentTask != null)
                 {
+                    //
                     // Another asynchronous load/bind operation is ongoing.
                     // Cancel that one because we won't need its result.
+                    //
 
                     CommonTraceSource.Log.TraceVerbose("Cancelling previous model load task");
                     this.tokenSourceForCurrentTask.Cancel();
                     this.tokenSourceForCurrentTask = null;
                 }
 
+                //
                 // Load model.
+                //
+
                 this.tokenSourceForCurrentTask = new CancellationTokenSource();
                 try
                 {
                     this.Model = await LoadModelAsync(key, this.tokenSourceForCurrentTask.Token)
                         .ConfigureAwait(true);  // Back to original (UI) thread.
 
-                    this.modelCache.Add(key, this.Model);
+                    if (this.Model != null)
+                    {
+                        this.modelCache.Add(key, this.Model);
+                    }
 
                     ApplyModel(false);
                 }
@@ -116,7 +129,7 @@ namespace Google.Solutions.Mvvm.Cache
             return SwitchToModelAsync(this.ModelKey);
         }
 
-        protected abstract Task<TModel> LoadModelAsync(
+        protected abstract Task<TModel?> LoadModelAsync(
             TModelKey key,
             CancellationToken token);
 

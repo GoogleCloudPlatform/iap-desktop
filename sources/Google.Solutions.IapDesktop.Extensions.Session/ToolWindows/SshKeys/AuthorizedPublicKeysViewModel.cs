@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                         await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
                                 this.computeClient.GetInstance(),
                                 this.resourceManagerAdapter.GetInstance(),
-                                this.ModelKey,
+                                this.ModelKey!,
                                 item,
                                 cancellationToken)
                             .ConfigureAwait(true);
@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        protected override async Task<AuthorizedPublicKeysModel> LoadModelAsync(
+        protected override async Task<AuthorizedPublicKeysModel?> LoadModelAsync(
             IProjectModelNode node,
             CancellationToken token)
         {

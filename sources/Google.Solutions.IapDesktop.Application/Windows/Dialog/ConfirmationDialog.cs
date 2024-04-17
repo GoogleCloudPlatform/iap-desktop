@@ -29,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
     public interface IConfirmationDialog
     {
         DialogResult Confirm(
-            IWin32Window parent,
+            IWin32Window? parent,
             string text,
             string caption,
             string title);
@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
     public class ConfirmationDialog : IConfirmationDialog
     {
         public DialogResult Confirm(
-            IWin32Window parent,
+            IWin32Window? parent,
             string message,
             string caption,
             string title)
