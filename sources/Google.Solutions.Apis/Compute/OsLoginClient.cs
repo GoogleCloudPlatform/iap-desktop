@@ -66,7 +66,7 @@ namespace Google.Solutions.Apis.Compute
         /// <param name="zone"></param>
         /// <param name="key">public key, in OpenSSH format</param>
         /// <returns></returns>
-        Task<string?> SignPublicKeyAsync(
+        Task<string> SignPublicKeyAsync(
             ZoneLocator zone,
             string key,
             CancellationToken cancellationToken);
@@ -298,7 +298,7 @@ namespace Google.Solutions.Apis.Compute
             }
         }
 
-        public async Task<string?> SignPublicKeyAsync(
+        public async Task<string> SignPublicKeyAsync(
             ZoneLocator zone,
             string key,
             CancellationToken cancellationToken)
@@ -341,7 +341,11 @@ namespace Google.Solutions.Apis.Compute
                         .ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
 
-                    return response.SignedSshPublicKey;
+                    Invariant.ExpectNotNull(
+                        response.SignedSshPublicKey, 
+                        "SignedSshPublicKey");
+
+                    return response.SignedSshPublicKey!;
                 }
                 catch (GoogleApiException e) when (
                     e.Error != null &&

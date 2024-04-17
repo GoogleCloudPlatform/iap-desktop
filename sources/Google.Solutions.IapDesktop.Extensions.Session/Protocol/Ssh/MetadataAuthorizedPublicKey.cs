@@ -101,12 +101,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 !string.IsNullOrWhiteSpace(match.Groups[5].Value))
             {
                 // This is a managed key.
+                var keyMetadata = JsonConvert.DeserializeObject<
+                    ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata>(
+                        match.Groups[5].Value);
+
                 return new ManagedMetadataAuthorizedPublicKey(
                     username,
                     keyType,
                     key,
-                    JsonConvert.DeserializeObject<ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata>(
-                        match.Groups[5].Value));
+                    keyMetadata!);
             }
             else
             {
