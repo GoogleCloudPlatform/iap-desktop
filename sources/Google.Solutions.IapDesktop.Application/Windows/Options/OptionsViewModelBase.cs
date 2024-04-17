@@ -26,13 +26,22 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
+    /// <summary>
+    /// Base class for view models for options pages.
+    /// </summary>
     public abstract class OptionsViewModelBase<TSettings>
         : PropertiesSheetViewModelBase
         where TSettings : ISettingsCollection
     {
         private readonly IRepository<TSettings> repository;
 
-        public OptionsViewModelBase(
+        /// <summary>
+        /// Deriving classes should do the following in their constructor:
+        /// 
+        /// 1. Call repository.GetSettings() and initialize the view model.
+        /// 2. Invoke OnInitializationCompleted.
+        /// </summary>
+        protected OptionsViewModelBase(
             string title,
             IRepository<TSettings> repository)
             : base(title)
@@ -47,8 +56,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         /// </summary>
         protected void OnInitializationCompleted()
         {
-            Load(this.repository.GetSettings());
-
             this.IsDirty.Value = false;
         }
 
@@ -88,8 +95,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         // Abstracts.
         //---------------------------------------------------------------------
 
-        protected abstract void Load(TSettings settings);
-
+        /// <summary>
+        /// Update settings to reflect latest view model state.
+        /// </summary>
         protected abstract void Save(TSettings settings);
     }
 }

@@ -31,8 +31,6 @@ using Google.Solutions.Settings.Collection;
 using System;
 using System.Reflection;
 
-#nullable disable
-
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
     internal class GeneralOptionsViewModel : OptionsViewModelBase<IApplicationSettings>
@@ -47,6 +45,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             HelpClient helpService)
             : base("General", settingsRepository)
         {
+            var settings = settingsRepository.GetSettings();
+
             this.protocolRegistry = protocolRegistry;
             this.telemetryCollector = telemetryCollector;
 
@@ -57,30 +57,18 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 string.Empty,
                 () => helpService.OpenTopic(HelpTopics.Privacy));
 
-            this.IsUpdateCheckEditable = ObservableProperty.Build(false);
-            this.IsUpdateCheckEnabled = ObservableProperty.Build(false);
-            this.IsBrowserIntegrationEnabled = ObservableProperty.Build(false);
-            this.IsTelemetryEditable = ObservableProperty.Build(false);
-            this.IsTelemetryEnabled = ObservableProperty.Build(false);
-
-            MarkDirtyWhenPropertyChanges(this.IsUpdateCheckEnabled);
-            MarkDirtyWhenPropertyChanges(this.IsBrowserIntegrationEnabled);
-            MarkDirtyWhenPropertyChanges(this.IsTelemetryEnabled);
-
-            base.OnInitializationCompleted();
-        }
-
-        //---------------------------------------------------------------------
-        // Overrides.
-        //---------------------------------------------------------------------
-
-        protected override void Load(IApplicationSettings settings)
-        {
-            this.IsUpdateCheckEnabled.Value = settings.IsUpdateCheckEnabled.Value;
-            this.IsUpdateCheckEditable.Value = !settings.IsUpdateCheckEnabled.IsReadOnly;
-
-            this.IsTelemetryEnabled.Value = settings.IsTelemetryEnabled.Value;
-            this.IsTelemetryEditable.Value = !settings.IsTelemetryEnabled.IsReadOnly;
+            this.IsUpdateCheckEditable = ObservableProperty.Build(
+                !settings.IsUpdateCheckEnabled.IsReadOnly);
+            this.IsUpdateCheckEnabled = ObservableProperty.Build(
+                settings.IsUpdateCheckEnabled.Value);
+            this.IsBrowserIntegrationEnabled = ObservableProperty.Build(
+                this.protocolRegistry.IsRegistered(
+                    IapRdpUrl.Scheme,
+                    ExecutableLocation));
+            this.IsTelemetryEditable = ObservableProperty.Build(
+                !settings.IsTelemetryEnabled.IsReadOnly);
+            this.IsTelemetryEnabled = ObservableProperty.Build(
+                settings.IsTelemetryEnabled.Value);
 
             this.LastUpdateCheck = settings.LastUpdateCheck.IsDefault
                 ? "never"
@@ -89,9 +77,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                     .ToLocalTime()
                     .ToString();
 
-            this.IsBrowserIntegrationEnabled.Value = this.protocolRegistry.IsRegistered(
-                IapRdpUrl.Scheme,
-                ExecutableLocation);
+            MarkDirtyWhenPropertyChanges(this.IsUpdateCheckEnabled);
+            MarkDirtyWhenPropertyChanges(this.IsBrowserIntegrationEnabled);
+            MarkDirtyWhenPropertyChanges(this.IsTelemetryEnabled);
+
+            base.OnInitializationCompleted();
         }
 
         protected override void Save(IApplicationSettings settings)

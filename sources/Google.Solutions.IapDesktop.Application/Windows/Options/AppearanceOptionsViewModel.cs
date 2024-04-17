@@ -24,8 +24,6 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Settings.Collection;
 
-#nullable disable
-
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
     internal class AppearanceOptionsViewModel : OptionsViewModelBase<IThemeSettings>
@@ -33,15 +31,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         public AppearanceOptionsViewModel(IRepository<IThemeSettings> settingsRepository)
             : base("Appearance", settingsRepository)
         {
-            base.OnInitializationCompleted();
-        }
+            var settings = settingsRepository.GetSettings();
 
-        //---------------------------------------------------------------------
-        // Overrides.
-        //---------------------------------------------------------------------
-
-        protected override void Load(IThemeSettings settings)
-        {
             //
             // If Windows doesn't support dark mode, none other than
             // the default scheme are guaranteed to work.
@@ -57,7 +48,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 
             MarkDirtyWhenPropertyChanges(this.SelectedTheme);
             MarkDirtyWhenPropertyChanges(this.IsGdiScalingEnabled);
+
+            base.OnInitializationCompleted();
         }
+
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
 
         protected override void Save(IThemeSettings settings)
         {

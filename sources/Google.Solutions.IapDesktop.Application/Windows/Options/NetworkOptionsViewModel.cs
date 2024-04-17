@@ -27,7 +27,6 @@ using System;
 using System.Diagnostics;
 
 #pragma warning disable CA1822 // Mark members as static
-#nullable disable
 
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
@@ -35,11 +34,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
     {
         private readonly IHttpProxyAdapter proxyAdapter;
 
-        private string proxyPacAddress = null;
-        private string proxyServer = null;
-        private string proxyPort = null;
-        private string proxyUsername = null;
-        private string proxyPassword = null;
+        private string? proxyPacAddress = null;
+        private string? proxyServer = null;
+        private string? proxyPort = null;
+        private string? proxyUsername = null;
+        private string? proxyPassword = null;
 
         public NetworkOptionsViewModel(
             IRepository<IApplicationSettings> settingsRepository,
@@ -48,15 +47,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         {
             this.proxyAdapter = proxyAdapter;
 
-            base.OnInitializationCompleted();
-        }
+            var settings = settingsRepository.GetSettings();
 
-        //---------------------------------------------------------------------
-        // Overrides.
-        //---------------------------------------------------------------------
-
-        protected override void Load(IApplicationSettings settings)
-        {
             this.IsProxyEditable =
                 !settings.ProxyUrl.IsReadOnly &&
                 !settings.ProxyPacUrl.IsReadOnly;
@@ -68,7 +60,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 this.proxyPort = proxyUrl.Port.ToString();
             }
 
-            if (!string.IsNullOrEmpty(settings.ProxyPacUrl.Value) &&
+            if (settings.ProxyPacUrl.Value != null &&
+                !string.IsNullOrEmpty(settings.ProxyPacUrl.Value) &&
                 IsValidProxyAutoConfigurationAddress(settings.ProxyPacUrl.Value))
             {
                 this.proxyPacAddress = settings.ProxyPacUrl.Value;
@@ -79,7 +72,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 this.proxyUsername = settings.ProxyUsername.Value;
                 this.proxyPassword = settings.ProxyPassword.GetClearTextValue();
             }
+
+            base.OnInitializationCompleted();
         }
+
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
 
         protected override void Save(IApplicationSettings settings)
         {
@@ -252,7 +251,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             => this.IsCustomProxyServerEnabled ||
                this.IsProxyAutoConfigurationEnabled;
 
-        public string ProxyAutoconfigurationAddress
+        public string? ProxyAutoconfigurationAddress
         {
             get => this.proxyPacAddress;
             set
@@ -263,7 +262,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             }
         }
 
-        public string ProxyServer
+        public string? ProxyServer
         {
             get => this.proxyServer;
             set
@@ -274,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             }
         }
 
-        public string ProxyPort
+        public string? ProxyPort
         {
             get => this.proxyPort;
             set
@@ -305,7 +304,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             }
         }
 
-        public string ProxyUsername
+        public string? ProxyUsername
         {
             get => this.proxyUsername;
             set
@@ -316,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             }
         }
 
-        public string ProxyPassword
+        public string? ProxyPassword
         {
             get => this.proxyPassword;
             set
@@ -331,15 +330,15 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         // Actions.
         //---------------------------------------------------------------------
 
-        public bool IsValidProxyPort(string port)
+        public bool IsValidProxyPort(string? port)
             => int.TryParse(port, out var portNumber) &&
                 portNumber > 0 &&
                 portNumber <= ushort.MaxValue;
 
-        public bool IsValidProxyHost(string host)
+        public bool IsValidProxyHost(string? host)
             => Uri.TryCreate($"http://{host}", UriKind.Absolute, out var _);
 
-        public bool IsValidProxyAutoConfigurationAddress(string pacAddress)
+        public bool IsValidProxyAutoConfigurationAddress(string? pacAddress)
             => Uri.TryCreate(pacAddress, UriKind.Absolute, out var uri) &&
                (uri.Scheme == "http" || uri.Scheme == "https");
 
