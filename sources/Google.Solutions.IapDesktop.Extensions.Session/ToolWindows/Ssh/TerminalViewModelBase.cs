@@ -33,6 +33,8 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
+#nullable disable
+
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 {
 

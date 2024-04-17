@@ -53,8 +53,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
         private readonly Service<IComputeEngineClient> computeClient;
         private readonly Service<IResourceManagerClient> resourceManagerAdapter;
 
-        private string filter;
-        private AuthorizedPublicKeysModel.Item selectedItem;
+        private string? filter;
+        private AuthorizedPublicKeysModel.Item? selectedItem;
 
         public AuthorizedPublicKeysViewModel(
             IServiceProvider serviceProvider)
@@ -68,8 +68,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
 
             this.IsListEnabled = ObservableProperty.Build(false);
             this.IsLoading = ObservableProperty.Build(false);
-            this.WindowTitle = ObservableProperty.Build<string>(null);
-            this.InformationText = ObservableProperty.Build<string>(null);
+            this.WindowTitle = ObservableProperty.Build<string?>(null);
+            this.InformationText = ObservableProperty.Build<string?>(null);
 
             this.RefreshCommand = ObservableCommand.Build(
                 "Refresh",
@@ -99,11 +99,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
 
         public ObservableProperty<bool> IsLoading { get; }
 
-        public ObservableProperty<string> WindowTitle { get; }
+        public ObservableProperty<string?> WindowTitle { get; }
 
-        public ObservableProperty<string> InformationText { get; }
+        public ObservableProperty<string?> InformationText { get; }
 
-        public AuthorizedPublicKeysModel.Item SelectedItem
+        public AuthorizedPublicKeysModel.Item? SelectedItem
         {
             get => this.selectedItem;
             set
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
         // "Input" properties.
         //---------------------------------------------------------------------
 
-        public string Filter
+        public string? Filter
         {
             get => this.filter;
             set
@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                         await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
                                 this.computeClient.GetInstance(),
                                 this.resourceManagerAdapter.GetInstance(),
-                                this.ModelKey,
+                                this.ModelKey!,
                                 item,
                                 cancellationToken)
                             .ConfigureAwait(true);
@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        protected override async Task<AuthorizedPublicKeysModel> LoadModelAsync(
+        protected override async Task<AuthorizedPublicKeysModel?> LoadModelAsync(
             IProjectModelNode node,
             CancellationToken token)
         {

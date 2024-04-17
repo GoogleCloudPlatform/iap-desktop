@@ -52,6 +52,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// <summary>
         /// Try to parse a URL as a protocol locator.
         /// </summary>
-        bool TryParse(Uri uri, out ProtocolTargetLocator locator);
+        bool TryParse(Uri uri, out ProtocolTargetLocator? locator);
     }
 }

@@ -208,9 +208,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         {
             if (allowedMethods.HasFlag(KeyAuthorizationMethods.ProjectMetadata))
             {
-                return MetadataAuthorizedPublicKeySet
-                    .FromMetadata(this.projectDetails.CommonInstanceMetadata)?
-                    .Keys;
+                var keySet = MetadataAuthorizedPublicKeySet
+                    .FromMetadata(this.projectDetails.CommonInstanceMetadata);
+
+                return (keySet?.Keys).EnsureNotNull();
             }
             else
             {

@@ -29,6 +29,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+#nullable disable
+
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 {
     [Service]

@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         /// <summary>
         /// Terminal locale.
         /// </summary>
-        public CultureInfo Language { get; set; } = null;
+        public CultureInfo? Language { get; set; } = null;
 
         /// <summary>
         /// Timeout to use for SSH connections.
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         /// POSIX username to log in with, only applicable when
         /// using metadata-based keys.
         /// </summary>
-        public string PreferredUsername { get; set; } = null;
+        public string? PreferredUsername { get; set; } = null;
 
         /// <summary>
         /// Validity to apply when authorizing the public key.

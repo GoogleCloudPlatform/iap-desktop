@@ -229,6 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     .EnsureNotNull()
                     .Select(k => AuthorizedPublicKey.TryParse(k.Value))
                     .Where(k => k != null)
+                    .Select(k => k!)
                     .ToList();
             }
         }
@@ -273,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 this.ExpireOn = expiresOn;
             }
 
-            public static AuthorizedPublicKey TryParse(
+            public static AuthorizedPublicKey? TryParse(
                 SshPublicKey osLoginKey)
             {
                 //

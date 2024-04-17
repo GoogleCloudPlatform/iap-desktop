@@ -47,8 +47,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.ConnectionS
             this.settingsService = settingsService;
             this.globalSessionBroker = globalSessionBroker;
 
-            this.informationText = ObservableProperty.Build<string>(null);
-            this.inspectedObject = ObservableProperty.Build<object>(null);
+            this.informationText = ObservableProperty.Build<string?>(null);
+            this.inspectedObject = ObservableProperty.Build<object?>(null);
             this.windowTitle = ObservableProperty.Build(DefaultWindowTitle);
         }
 
@@ -56,12 +56,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.ConnectionS
         // Observable properties.
         //---------------------------------------------------------------------
 
-        private readonly ObservableProperty<string> informationText;
-        private readonly ObservableProperty<object> inspectedObject;
+        private readonly ObservableProperty<string?> informationText;
+        private readonly ObservableProperty<object?> inspectedObject;
         private readonly ObservableProperty<string> windowTitle;
 
-        public IObservableProperty<string> InformationText => this.informationText;
-        public IObservableProperty<object> InspectedObject => this.inspectedObject;
+        public IObservableProperty<string?> InformationText => this.informationText;
+        public IObservableProperty<object?> InspectedObject => this.inspectedObject;
         public IObservableProperty<string> WindowTitle => this.windowTitle;
 
         //---------------------------------------------------------------------
@@ -70,10 +70,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.ConnectionS
 
         public void SaveChanges()
         {
-            Debug.Assert(this.inspectedObject != null);
+            Debug.Assert(this.inspectedObject.Value != null);
 
-            var settings = (IPersistentSettingsCollection)this.inspectedObject.Value;
-            settings.Save();
+            if (this.inspectedObject.Value != null)
+            {
+                var settings = (IPersistentSettingsCollection)this.inspectedObject.Value;
+                settings.Save();
+            }
         }
 
         public Task SwitchToModelAsync(IProjectModelNode node)

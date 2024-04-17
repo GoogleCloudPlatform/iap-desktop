@@ -56,17 +56,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             return this.Name.GetHashCode();
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as SshProtocol);
         }
 
-        public bool Equals(IProtocol other)
+        public bool Equals(IProtocol? other)
         {
             return other is SshProtocol && other != null;
         }
 
-        public static bool operator ==(SshProtocol obj1, SshProtocol obj2)
+        public static bool operator ==(SshProtocol? obj1, SshProtocol? obj2)
         {
             if (obj1 is null)
             {
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             return obj1.Equals(obj2);
         }
 
-        public static bool operator !=(SshProtocol obj1, SshProtocol obj2)
+        public static bool operator !=(SshProtocol? obj1, SshProtocol? obj2)
         {
             return !(obj1 == obj2);
         }

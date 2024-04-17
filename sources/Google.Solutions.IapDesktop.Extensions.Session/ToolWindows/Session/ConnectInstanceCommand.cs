@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             Debug.Assert(IsEnabled(node));
 
             var instanceNode = (IProjectModelInstanceNode)node;
-            ISession session = null;
+            ISession? session = null;
 
             //
             // Select node so that tracking windows are updated.

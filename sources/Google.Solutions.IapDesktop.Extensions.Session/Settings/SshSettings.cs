@@ -73,8 +73,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
         internal SshSettingsRepository(
             RegistryKey settingsKey,
-            RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey,
+            RegistryKey? machinePolicyKey,
+            RegistryKey? userPolicyKey,
             UserProfile.SchemaVersion schemaVersion)
             : base(settingsKey, machinePolicyKey, userPolicyKey)
         {

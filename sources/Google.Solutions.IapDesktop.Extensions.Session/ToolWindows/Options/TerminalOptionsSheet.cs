@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
     [ServiceCategory(typeof(IPropertiesSheetView))]
     public partial class TerminalOptionsSheet : UserControl, IPropertiesSheetView
     {
-        private TerminalOptionsViewModel viewModel;
+        private Bound<TerminalOptionsViewModel> viewModel;
         private readonly IExceptionDialog exceptionDialog;
 
         public TerminalOptionsSheet(
@@ -50,24 +50,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
 
         public void Bind(PropertiesSheetViewModelBase viewModelBase, IBindingContext bindingContext)
         {
-            this.viewModel = (TerminalOptionsViewModel)viewModelBase;
+            var viewModel = (TerminalOptionsViewModel)viewModelBase;
+            this.viewModel.Value = viewModel;
 
             //
             // Clipboard box.
             //
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.BindObservableProperty(
                 c => c.Checked,
-                this.viewModel,
+                viewModel,
                 m => m.IsCopyPasteUsingCtrlCAndCtrlVEnabled,
                 bindingContext);
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.BindObservableProperty(
                 c => c.Checked,
-                this.viewModel,
+                viewModel,
                 m => m.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled,
                 bindingContext);
             this.convertTypographicQuotesCheckBox.BindObservableProperty(
                 c => c.Checked,
-                this.viewModel,
+                viewModel,
                 m => m.IsQuoteConvertionOnPasteEnabled,
                 bindingContext);
 
@@ -76,17 +77,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             //
             this.selectUsingShiftArrrowEnabledCheckBox.BindObservableProperty(
                 c => c.Checked,
-                this.viewModel,
+                viewModel,
                 m => m.IsSelectUsingShiftArrrowEnabled,
                 bindingContext);
             this.selectAllUsingCtrlAEnabledCheckBox.BindObservableProperty(
                 c => c.Checked,
-                this.viewModel,
+                viewModel,
                 m => m.IsSelectAllUsingCtrlAEnabled,
                 bindingContext);
             this.navigationUsingControlArrrowEnabledCheckBox.BindObservableProperty(
                 c => c.Checked,
-                this.viewModel,
+                viewModel,
                 m => m.IsNavigationUsingControlArrrowEnabled,
                 bindingContext);
 
@@ -95,12 +96,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             //
             this.scrollUsingCtrlUpDownCheckBox.BindObservableProperty(
                 c => c.Checked,
-                this.viewModel,
+                viewModel,
                 m => m.IsScrollingUsingCtrlUpDownEnabled,
                 bindingContext);
             this.scrollUsingCtrlHomeEndcheckBox.BindObservableProperty(
                 c => c.Checked,
-                this.viewModel,
+                viewModel,
                 m => m.IsScrollingUsingCtrlHomeEndEnabled,
                 bindingContext);
 
@@ -109,17 +110,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             //
             this.terminalLook.BindReadonlyObservableProperty(
                 c => c.Font,
-                this.viewModel,
+                viewModel,
                 m => m.TerminalFont,
                 bindingContext);
             this.terminalLook.BindReadonlyObservableProperty(
                 c => c.ForeColor,
-                this.viewModel,
+                viewModel,
                 m => m.TerminalForegroundColor,
                 bindingContext);
             this.terminalLook.BindReadonlyObservableProperty(
                 c => c.BackColor,
-                this.viewModel,
+                viewModel,
                 m => m.TerminalBackgroundColor,
                 bindingContext);
         }
@@ -153,16 +154,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                     ShowEffects = false,
 
                     // Sizes are in pixel, not points.
-                    MinSize = (int)Math.Ceiling(this.viewModel.MinimumFontSize * this.PointsToPixelRatio),
-                    MaxSize = (int)Math.Floor(this.viewModel.MaximumFontSize * this.PointsToPixelRatio),
+                    MinSize = (int)Math.Ceiling(this.viewModel.Value.MinimumFontSize * this.PointsToPixelRatio),
+                    MaxSize = (int)Math.Floor(this.viewModel.Value.MaximumFontSize * this.PointsToPixelRatio),
 
-                    Font = this.viewModel.TerminalFont.Value
+                    Font = this.viewModel.Value.TerminalFont.Value
                 })
                 {
-                    if (dialog.ShowDialog(this) == DialogResult.OK)
+                    if (dialog.ShowDialog(this) == DialogResult.OK && dialog.Font != null)
                     {
                         // Strip the font style.
-                        this.viewModel.TerminalFont.Value = new Font(
+                        this.viewModel.Value.TerminalFont.Value = new Font(
                             dialog.Font.FontFamily,
                             dialog.Font.Size);
                     }
@@ -184,19 +185,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                     AnyColor = true,
                     SolidColorOnly = true,
                     Color = sender == this.selectBackgroundColorButton
-                        ? this.viewModel.TerminalBackgroundColor.Value
-                        : this.viewModel.TerminalForegroundColor.Value
+                        ? this.viewModel.Value.TerminalBackgroundColor.Value
+                        : this.viewModel.Value.TerminalForegroundColor.Value
                 })
                 {
                     if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
                         if (sender == this.selectBackgroundColorButton)
                         {
-                            this.viewModel.TerminalBackgroundColor.Value = dialog.Color;
+                            this.viewModel.Value.TerminalBackgroundColor.Value = dialog.Color;
                         }
                         else
                         {
-                            this.viewModel.TerminalForegroundColor.Value = dialog.Color;
+                            this.viewModel.Value.TerminalForegroundColor.Value = dialog.Color;
                         }
                     }
                 }

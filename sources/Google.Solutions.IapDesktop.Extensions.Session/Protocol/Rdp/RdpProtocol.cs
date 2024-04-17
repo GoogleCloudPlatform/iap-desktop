@@ -56,17 +56,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
             return this.Name.GetHashCode();
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as RdpProtocol);
         }
 
-        public bool Equals(IProtocol other)
+        public bool Equals(IProtocol? other)
         {
             return other is RdpProtocol && other != null;
         }
 
-        public static bool operator ==(RdpProtocol obj1, RdpProtocol obj2)
+        public static bool operator ==(RdpProtocol? obj1, RdpProtocol? obj2)
         {
             if (obj1 is null)
             {
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
             return obj1.Equals(obj2);
         }
 
-        public static bool operator !=(RdpProtocol obj1, RdpProtocol obj2)
+        public static bool operator !=(RdpProtocol? obj1, RdpProtocol? obj2)
         {
             return !(obj1 == obj2);
         }

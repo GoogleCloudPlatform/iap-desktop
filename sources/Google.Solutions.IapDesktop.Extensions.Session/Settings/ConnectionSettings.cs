@@ -62,20 +62,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             //
             // RDP Settings.
             //
-            this.RdpUsername = store.Read<string>(
+            this.RdpUsername = store.Read<string?>(
                 "Username",
                 "Username",
                 "Username of a local user, SAM account name of a domain user, or UPN (user@domain).",
                 Categories.WindowsCredentials,
                 null,
                 _ => true);
-            this.RdpPassword = store.Read<SecureString>(
+            this.RdpPassword = store.Read<SecureString?>(
                 "Password",
                 "Password",
                 "Windows logon password.",
                 Categories.WindowsCredentials,
                 null);
-            this.RdpDomain = store.Read<string>(
+            this.RdpDomain = store.Read<string?>(
                 "Domain",
                 "Domain",
                 "NetBIOS domain name or computer name. Leave blank when using UPN as username.",
@@ -231,15 +231,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 "Automatically create an SSH key pair and publish it using OS Login or metadata keys.",
                 Categories.SshCredentials,
                 Protocol.Ssh.SshPublicKeyAuthentication._Default);
-            this.SshUsername = store.Read<string>(
+            this.SshUsername = store.Read<string?>(
                 "SshUsername",
                 "Username",
                 "Linux username, optional",
                 Categories.SshCredentials,
                 null,
-                username => string.IsNullOrEmpty(username) ||
+                username => username == null ||
+                            string.IsNullOrEmpty(username) ||
                             LinuxUser.IsValidUsername(username));
-            this.SshPassword = store.Read<SecureString>(
+            this.SshPassword = store.Read<SecureString?>(
                 "SshPassword",
                 "Password",
                 "Password, only applicable if public key authentication is disabled",
@@ -256,7 +257,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             //
             // App Settings.
             //
-            this.AppUsername = store.Read<string>(
+            this.AppUsername = store.Read<string?>(
                 "AppUsername",
                 null, // Hidden.
                 null, // Hidden.
@@ -277,9 +278,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // RDP settings.
         //---------------------------------------------------------------------
 
-        public ISetting<string> RdpUsername { get; }
-        public ISetting<SecureString> RdpPassword { get; }
-        public ISetting<string> RdpDomain { get; }
+        public ISetting<string?> RdpUsername { get; }
+        public ISetting<SecureString?> RdpPassword { get; }
+        public ISetting<string?> RdpDomain { get; }
         public ISetting<RdpConnectionBarState> RdpConnectionBar { get; }
         public ISetting<RdpAuthenticationLevel> RdpAuthenticationLevel { get; }
         public ISetting<RdpColorDepth> RdpColorDepth { get; }
@@ -340,8 +341,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
         public ISetting<int> SshPort { get; private set; }
         public ISetting<SessionTransportType> SshTransport { get; private set; }
-        public ISetting<string> SshUsername { get; private set; }
-        public ISetting<SecureString> SshPassword { get; private set; }
+        public ISetting<string?> SshUsername { get; private set; }
+        public ISetting<SecureString?> SshPassword { get; private set; }
         public ISetting<int> SshConnectionTimeout { get; private set; }
         public ISetting<SshPublicKeyAuthentication> SshPublicKeyAuthentication { get; private set; }
 
@@ -363,7 +364,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // App settings.
         //---------------------------------------------------------------------
 
-        public ISetting<string> AppUsername { get; private set; }
+        public ISetting<string?> AppUsername { get; private set; }
         public ISetting<AppNetworkLevelAuthenticationState> AppNetworkLevelAuthentication { get; private set; }
 
         internal IEnumerable<ISetting> AppSettings => new ISetting[]

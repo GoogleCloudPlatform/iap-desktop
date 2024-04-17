@@ -29,6 +29,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+#nullable disable
+
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
 {
     [Service(ServiceLifetime.Transient)]

@@ -50,8 +50,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     signers[keyType] = signer;
                 }
 
-                Debug.Assert(signer != null);
-
                 return signer;
             }
         }

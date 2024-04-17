@@ -47,6 +47,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 #pragma warning disable CA1031 // Do not catch general exception types
+#nullable disable
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 {

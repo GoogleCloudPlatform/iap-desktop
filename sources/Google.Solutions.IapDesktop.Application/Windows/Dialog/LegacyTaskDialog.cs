@@ -36,9 +36,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string windowTitle,
             string mainInstruction,
             string content,
-            string details,
+            string? details,
             IList<string> optionCaptions,
-            string verificationText,
+            string? verificationText,
             out bool verificationFlagPressed);
     }
 
@@ -65,9 +65,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string windowTitle,
             string mainInstruction,
             string content,
-            string details,
+            string? details,
             IList<string> optionCaptions,
-            string verificationText,
+            string? verificationText,
             out bool verificationFlagPressed)
         {
             // The options to show.

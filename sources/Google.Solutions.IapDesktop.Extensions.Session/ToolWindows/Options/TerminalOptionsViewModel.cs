@@ -26,6 +26,8 @@ using Google.Solutions.Mvvm.Binding;
 using System.Diagnostics;
 using System.Drawing;
 
+#nullable disable
+
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
 {
     [Service(ServiceLifetime.Transient)]

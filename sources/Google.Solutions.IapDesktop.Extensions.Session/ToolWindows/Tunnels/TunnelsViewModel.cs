@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Tunnels
     public class TunnelsViewModel : ViewModelBase
     {
         private readonly IIapTransportFactory factory;
-        private IIapTunnel selectedTunnel = null;
+        private IIapTunnel? selectedTunnel = null;
 
         //---------------------------------------------------------------------
         // Properties for data binding.
@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Tunnels
         public ObservableCollection<IIapTunnel> Tunnels { get; }
             = new ObservableCollection<IIapTunnel>();
 
-        public IIapTunnel SelectedTunnel
+        public IIapTunnel? SelectedTunnel
         {
             get => this.selectedTunnel;
             set

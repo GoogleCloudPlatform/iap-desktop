@@ -55,6 +55,9 @@ namespace Google.Solutions.Common.Test.Security
             Assert.AreEqual(
                 "test",
                 SecureStringExtensions.FromClearText("test").AsClearText());
+            Assert.AreEqual(
+                string.Empty,
+                SecureStringExtensions.FromClearText(null).AsClearText());
         }
     }
 }

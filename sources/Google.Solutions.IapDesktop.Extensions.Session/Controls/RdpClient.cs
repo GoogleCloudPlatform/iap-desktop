@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         private ConnectionState state = ConnectionState.NotConnected;
 
         private readonly DeferredCallback deferResize;
-        private Form parentForm = null;
+        private Form? parentForm = null;
 
         private int keysSent = 0;
 
@@ -181,22 +181,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         /// <summary>
         /// Connection state has changed.
         /// </summary>
-        public event EventHandler StateChanged;
+        public event EventHandler? StateChanged;
 
         /// <summary>
         /// Connection closed abnormally.
         /// </summary>
-        public event EventHandler<ExceptionEventArgs> ConnectionFailed;
+        public event EventHandler<ExceptionEventArgs>? ConnectionFailed;
 
         /// <summary>
         /// Connection closed normally.
         /// </summary>
-        public event EventHandler<ConnectionClosedEventArgs> ConnectionClosed;
+        public event EventHandler<ConnectionClosedEventArgs>? ConnectionClosed;
 
         /// <summary>
         /// The server authentication warning has been displayed.
         /// </summary>
-        internal event EventHandler ServerAuthenticationWarningDisplayed;
+        internal event EventHandler? ServerAuthenticationWarningDisplayed;
 
         private void ExpectState(ConnectionState expectedState)
         {
@@ -570,7 +570,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 //
                 // Force focus back to main window. 
                 // 
-                this.MainWindow.Focus();
+                this.MainWindow?.Focus();
 
                 this.State = ConnectionState.Disconnecting;
 
@@ -706,7 +706,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 // Release focus and move it to the main window. This ensures
                 // that any other shortcuts start applying again.
                 //
-                this.MainWindow.Focus();
+                this.MainWindow?.Focus();
             }
         }
 
@@ -762,16 +762,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
+                Debug.Assert(fullScreenForm != null);
+
                 //
                 // Minimize this window.
                 //
-                fullScreenForm.WindowState = FormWindowState.Minimized;
+                fullScreenForm!.WindowState = FormWindowState.Minimized;
 
                 //
                 // Minimize the main form (which is still running in the 
                 // back)
                 //
-                this.MainWindow.WindowState = FormWindowState.Minimized;
+                if (this.MainWindow != null)
+                {
+                    this.MainWindow.WindowState = FormWindowState.Minimized;
+                }
             }
         }
 
@@ -784,7 +789,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         /// In case of an MDI environment, this should be the outmost 
         /// window, not the direct parent window.
         /// </summary>
-        public Form MainWindow { get; set; }
+        public Form? MainWindow { get; set; }
 
         public void Connect()
         {
@@ -1032,8 +1037,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         // However, it does not resize the control automatically.
         //---------------------------------------------------------------------
 
-        private FullScreenContext fullScreenContext = null;
-        private static Form fullScreenForm = null;
+        private FullScreenContext? fullScreenContext = null;
+        private static Form? fullScreenForm = null;
 
         private static void MoveControls(Control source, Control target)
         {
@@ -1066,6 +1071,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 else if (value)
                 {
                     Debug.Assert(this.fullScreenContext != null);
+                    Debug.Assert(this.parentForm != null);
 
                     //
                     // Enter full-screen.
@@ -1088,7 +1094,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                         //
                         fullScreenForm = new Form()
                         {
-                            Icon = this.parentForm.Icon,
+                            Icon = this.parentForm!.Icon,
                             FormBorderStyle = FormBorderStyle.None,
                             StartPosition = FormStartPosition.Manual,
                             TopMost = true,
@@ -1100,7 +1106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     // Use current screen bounds if none specified.
                     //
                     fullScreenForm.Bounds =
-                        this.fullScreenContext.Bounds ?? Screen.FromControl(this).Bounds;
+                        this.fullScreenContext!.Bounds ?? Screen.FromControl(this).Bounds;
 
                     MoveControls(this, fullScreenForm);
 
@@ -1118,16 +1124,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 }
                 else
                 {
+                    Debug.Assert(fullScreenForm != null);
+
                     //
                     // Return from full-screen.
                     //
 
-                    MoveControls(fullScreenForm, this);
+                    MoveControls(fullScreenForm!, this);
 
                     //
                     // Only hide the window, we might need it again.
                     //
-                    fullScreenForm.Hide();
+                    fullScreenForm!.Hide();
 
                     //
                     // Resize back to original size.

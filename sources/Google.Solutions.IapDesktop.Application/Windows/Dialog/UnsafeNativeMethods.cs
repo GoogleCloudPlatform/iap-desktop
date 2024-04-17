@@ -115,10 +115,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             public int nDefaultRadioButton;
 
             [MarshalAs(UnmanagedType.LPWStr)]
-            public string pszVerificationText;
+            public string? pszVerificationText;
 
             [MarshalAs(UnmanagedType.LPWStr)]
-            public string pszExpandedInformation;
+            public string? pszExpandedInformation;
 
             [MarshalAs(UnmanagedType.LPWStr)]
             public string pszExpandedControlText;

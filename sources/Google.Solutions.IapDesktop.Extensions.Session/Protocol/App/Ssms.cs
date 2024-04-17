@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
         /// <summary>
         /// Try to find a local installation of SSMS.
         /// </summary>
-        public static bool TryFind(out Ssms ssms)
+        public static bool TryFind(out Ssms? ssms)
         {
             //
             // Try to locate SSMS by identifying the executable
@@ -129,8 +129,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
                 ASSOCF flags,
                 ASSOCSTR str,
                 string pszAssoc,
-                string pszExtra,
-                [Out] StringBuilder pszOut,
+                string? pszExtra,
+                [Out] StringBuilder? pszOut,
                 ref uint pcchOut);
 
             public enum ASSOCF

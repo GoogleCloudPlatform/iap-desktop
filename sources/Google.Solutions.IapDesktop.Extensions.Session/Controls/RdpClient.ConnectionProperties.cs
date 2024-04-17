@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string Server
+        public string? Server
         {
             get => this.client.Server;
             set
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string Domain
+        public string? Domain
         {
             get => this.client.Domain;
             set
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string Username
+        public string? Username
         {
             get => this.client.UserName;
             set
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string Password
+        public string? Password
         {
             get => "*";
             set

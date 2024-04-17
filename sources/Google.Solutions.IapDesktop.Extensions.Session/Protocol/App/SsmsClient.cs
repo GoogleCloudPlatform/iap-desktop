@@ -29,9 +29,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 {
     internal sealed class SsmsClient : IAppProtocolClient
     {
-        private readonly Ssms ssms; // null if not found.
+        private readonly Ssms? ssms; // null if not found.
 
-        internal SsmsClient(Ssms ssms)
+        internal SsmsClient(Ssms? ssms)
         {
             this.ssms = ssms;
         }
@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
             : this(TryFindSsms())
         { }
 
-        private static Ssms TryFindSsms()
+        private static Ssms? TryFindSsms()
         {
             Ssms.TryFind(out var ssms);
             return ssms;
@@ -69,7 +69,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 
         public string Executable
         {
-            get => this.ssms?.ExecutablePath;
+            get => this.ssms?.ExecutablePath 
+                ?? throw new InvalidOperationException("SSMS is not available");
         }
 
 
@@ -92,8 +93,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
             }
             else if (!string.IsNullOrWhiteSpace(parameters.PreferredUsername))
             {
-                if (parameters.PreferredUsername.Contains("\"") ||
-                    parameters.PreferredUsername.Contains("'"))
+                if (parameters.PreferredUsername!.Contains("\"") ||
+                    parameters.PreferredUsername!.Contains("'"))
                 {
                     throw new ArgumentException("The username contains invalid characters");
                 }

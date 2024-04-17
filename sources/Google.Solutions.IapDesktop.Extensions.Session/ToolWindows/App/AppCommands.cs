@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                         this.notifyDialog,
                         false);
 
-                    if (protocol.Client.IsNetworkLevelAuthenticationSupported)
+                    if (protocol.Client!.IsNetworkLevelAuthenticationSupported)
                     {
                         //
                         // Add anther "as user..." command.

@@ -188,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
             public string Path => string.Empty;
 
-            public event PropertyChangedEventHandler PropertyChanged;
+            public event PropertyChangedEventHandler? PropertyChanged;
         }
 
         private class SftpFileItem : FileBrowser.IFileItem
@@ -252,7 +252,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                 }
             }
 
-            public event PropertyChangedEventHandler PropertyChanged;
+            public event PropertyChangedEventHandler? PropertyChanged;
         }
     }
 }

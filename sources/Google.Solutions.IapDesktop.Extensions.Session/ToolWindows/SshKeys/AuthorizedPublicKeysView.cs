@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
     public partial class AuthorizedPublicKeysView
         : ProjectExplorerTrackingToolWindow<AuthorizedPublicKeysViewModel>, IView<AuthorizedPublicKeysViewModel>
     {
-        private AuthorizedPublicKeysViewModel viewModel;
+        private Bound<AuthorizedPublicKeysViewModel> viewModel;
 
         public AuthorizedPublicKeysView(
             IServiceProvider serviceProvider)
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             AuthorizedPublicKeysViewModel viewModel,
             IBindingContext bindingContext)
         {
-            this.viewModel = viewModel;
+            this.viewModel.Value = viewModel;
 
             this.panel.BindReadonlyObservableProperty(
                 c => c.Text,
@@ -72,19 +72,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                 viewModel,
                 m => m.WindowTitle,
                 bindingContext);
-            this.viewModel.ResetWindowTitleAndInformationBar();  // Fire event to set initial window title.
+            viewModel.ResetWindowTitleAndInformationBar();  // Fire event to set initial window title.
 
             //
             // Bind tool strip.
             //
             this.toolStrip.BindReadonlyObservableProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsListEnabled,
                 bindingContext);
             this.deleteToolStripButton.BindReadonlyProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsDeleteButtonEnabled,
                 bindingContext);
 
@@ -93,25 +93,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             //
             this.keysList.BindReadonlyObservableProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsListEnabled,
                 bindingContext);
 
-            this.keysList.List.BindCollection(this.viewModel.FilteredKeys);
+            this.keysList.List.BindCollection(viewModel.FilteredKeys);
             this.keysList.List.BindProperty(
                 l => l.SelectedModelItem,
-                this.viewModel,
-                m => this.viewModel.SelectedItem,
+                viewModel,
+                m => viewModel.SelectedItem,
                 bindingContext);
 
             this.keysList.BindProperty(
                 c => c.SearchTerm,
-                this.viewModel,
+                viewModel,
                 m => m.Filter,
                 bindingContext);
             this.keysList.BindReadonlyObservableProperty(
                 c => c.Loading,
-                this.viewModel,
+                viewModel,
                 m => m.IsLoading,
                 bindingContext);
             this.keysList.SearchOnKeyDown = true;
@@ -121,11 +121,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             // Bind commands.
             //
             this.refreshToolStripButton.BindObservableCommand(
-                this.viewModel,
+                viewModel,
                 m => m.RefreshCommand,
                 bindingContext);
             this.deleteToolStripButton.BindObservableCommand(
-                this.viewModel,
+                viewModel,
                 m => m.DeleteSelectedItemCommand,
                 bindingContext);
         }
@@ -137,7 +137,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
         protected override async Task SwitchToNodeAsync(IProjectModelNode node)
         {
             Debug.Assert(!this.InvokeRequired, "running on UI thread");
-            await this.viewModel.SwitchToModelAsync(node)
+            await this.viewModel.Value
+                .SwitchToModelAsync(node)
                 .ConfigureAwait(true);
         }
 
