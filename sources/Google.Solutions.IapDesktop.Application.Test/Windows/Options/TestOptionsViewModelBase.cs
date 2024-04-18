@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             optionsViewModel.MarkDirty();
             optionsViewModel.ApplyChangesAsync().Wait();
 
-            repository.Verify(r => r.GetSettings(), Times.Exactly(2));
+            repository.Verify(r => r.GetSettings(), Times.Exactly(1));
             repository.Verify(r => r.SetSettings(It.IsAny<ISettingsCollection>()), Times.Once);
             Assert.AreEqual(1, optionsViewModel.SaveCalls);
         }
