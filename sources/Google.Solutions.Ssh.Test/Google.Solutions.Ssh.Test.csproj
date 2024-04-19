@@ -10,7 +10,7 @@
     <PackageReference Include="Google.Apis.Auth" Version="1.67.0" />
     <PackageReference Include="Google.Apis.Compute.v1" Version="1.67.0.3351" />
     <PackageReference Include="Google.Apis.Core" Version="1.67.0" />
-    <PackageReference Include="Google.Solutions.ThirdParty.Libssh2" Version="1.11.0.34" />
+    <PackageReference Include="Google.Solutions.ThirdParty.Libssh2.Cng" Version="1.11.101" />
     <PackageReference Include="Moq" Version="4.20.70" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NUnit" Version="3.13.3" />
