@@ -30,6 +30,11 @@ LIBSSH2_URL = https://github.com/libssh2/libssh2.git
 LIBSSH2_VERSION = 1.11.$(TAG)
 LIBSSH2_PACKAGE_ID = Google.Solutions.ThirdParty.Libssh2.Cng
 
+#
+# NB. CMAKE_POLICY_DEFAULT_CMP0091=NEW is required, otherwise cmake 
+#     silently ignores CMAKE_MSVC_RUNTIME_LIBRARY.
+#
+
 LIBSSH2_OPTIONS = \
 	-DBUILD_STATIC_LIBS=OFF \
 	-DBUILD_SHARED_LIBS=ON \
@@ -39,8 +44,7 @@ LIBSSH2_OPTIONS = \
 	-DENABLE_ZLIB_COMPRESSION=OFF \
 	-DENABLE_ECDSA_WINCNG=ON \
 	-DENABLE_DEBUG_LOGGING=ON \
-	-DCMAKE_C_FLAGS_RELEASE=/MT \
-	-DCMAKE_C_FLAGS_DEBUG=/MTd
+	-DCMAKE_POLICY_DEFAULT_CMP0091=NEW
 
 !if ("$(PLATFORM)" == "x86")
 CMAKE_PLATFORM = Win32
@@ -50,8 +54,10 @@ CMAKE_PLATFORM = $(PLATFORM)
 
 !if ("$(CONFIGURATION)" == "Debug")
 CMAKE_CONFIGURATION = Debug
+LIBSSH2_OPTIONS = $(LIBSSH2_OPTIONS) -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebug
 !else
 CMAKE_CONFIGURATION = RelWithDebInfo
+LIBSSH2_OPTIONS = $(LIBSSH2_OPTIONS) -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
 !endif
 
 CMAKE = cmake
@@ -141,6 +147,7 @@ package: $(MAKEDIR)\obj\$(LIBSSH2_PACKAGE_ID).$(LIBSSH2_VERSION).nupkg
 
 clean:
 	cd $(MAKEDIR)\obj
+	-del *.nupkg
 	$(CMAKE) --build build\x86 --target clean
 	$(CMAKE) --build build\x64 --target clean
 
