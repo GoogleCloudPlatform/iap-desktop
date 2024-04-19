@@ -74,8 +74,8 @@ if ($Nmake -eq $null)
     $Nmake = $NmakeCandidates | Resolve-Path  -ErrorAction Ignore | Select-Object -ExpandProperty Path -First 1
     if ($Nmake)
     {
-        $NMakeDir = (Split-Path $NMake -Parent)
-        $env:Path += ";$NMakeDir"
+        $NmakeDir = (Split-Path $NMake -Parent)
+        $env:Path += ";$NmakeDir"
     }
     else
     {
@@ -83,6 +83,32 @@ if ($Nmake -eq $null)
         exit 1
     }
 }
+
+#------------------------------------------------------------------------------
+# Find cmake and add to PATH
+#------------------------------------------------------------------------------
+
+$Cmake = (Get-Command "cmake.exe" -ErrorAction SilentlyContinue).Source
+if ($Cmake -eq $null)
+{
+    $CmakeCandidates = `
+        "${Env:ProgramFiles}\Microsoft Visual Studio\*\*\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe",
+        "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe",
+        "c:\VS\VC\Tools\MSVC\*\bin\Hostx86\*\nmake.exe"
+    $Cmake = $CmakeCandidates | Resolve-Path  -ErrorAction Ignore | Select-Object -ExpandProperty Path -First 1
+    if ($Cmake)
+    {
+        $CmakeDir = (Split-Path $NMake -Parent)
+        $env:Path += ";$CmakeDir"
+    }
+    else
+    {
+        Write-Host "Could not find cmake" -ForegroundColor Red
+        exit 1
+    }
+}
+
+$env:CMAKE = $Cmake
 
 #------------------------------------------------------------------------------
 # Find nuget and add to PATH
