@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         {
             var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(false);
-            client.SetupGet(c => c.Executable).Returns("doesnotexist.exe");
+            client.SetupGet(c => c.Executable).Throws(new Exception());
 
             var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
@@ -188,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         {
             var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
-            client.SetupGet(c => c.Executable).Throws(new Exception());
+            client.SetupGet(c => c.Executable).Returns(CmdExe);
 
             var command = new ConnectAppProtocolWithClientCommand(
                 new Mock<IWin32Window>().Object,
