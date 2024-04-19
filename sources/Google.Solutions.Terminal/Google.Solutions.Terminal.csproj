@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Google.Solutions.IapDesktop.props" />
+  <PropertyGroup>
+    <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Google.Solutions.ThirdParty.Terminal" Version="1.19.10821" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Google.Solutions.Mvvm\Google.Solutions.Mvvm.csproj" />
+  </ItemGroup>
+
+</Project>
