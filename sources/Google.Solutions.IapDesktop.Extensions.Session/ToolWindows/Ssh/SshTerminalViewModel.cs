@@ -303,6 +303,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                         HelpTopics.ManagingMetadataAuthorizedKeys);
                 }
             }
+            catch (Libssh2Exception e) when (
+                e.ErrorCode == LIBSSH2_ERROR.KEY_EXCHANGE_FAILURE &&
+                Environment.OSVersion.Version.Build <= 10000)
+            {
+                //
+                // Libssh2's CNG support requires Windows 10+.
+                //
+                throw new PlatformNotSupportedException(
+                    "SSH is not supported on this version of Windows");
+            }
         }
 
         public override async Task ConnectAsync(TerminalSize initialSize)
