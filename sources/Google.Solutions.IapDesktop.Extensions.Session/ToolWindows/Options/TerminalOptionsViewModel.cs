@@ -37,17 +37,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             ITerminalSettingsRepository settingsRepository)
             : base("Terminal", settingsRepository)
         {
-            this.IsCopyPasteUsingCtrlCAndCtrlVEnabled = ObservableProperty.Build(false);
-            this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled = ObservableProperty.Build(false);
-            this.IsSelectAllUsingCtrlAEnabled = ObservableProperty.Build(false);
-            this.IsSelectUsingShiftArrrowEnabled = ObservableProperty.Build(false);
-            this.IsQuoteConvertionOnPasteEnabled = ObservableProperty.Build(false);
-            this.IsNavigationUsingControlArrrowEnabled = ObservableProperty.Build(false);
-            this.IsScrollingUsingCtrlUpDownEnabled = ObservableProperty.Build(false);
-            this.IsScrollingUsingCtrlHomeEndEnabled = ObservableProperty.Build(false);
-            this.TerminalFont = ObservableProperty.Build<Font>(null);
-            this.TerminalForegroundColor = ObservableProperty.Build<Color>(Color.White);
-            this.TerminalBackgroundColor = ObservableProperty.Build<Color>(Color.Black);
+            var settings = settingsRepository.GetSettings();
+
+            this.IsCopyPasteUsingCtrlCAndCtrlVEnabled = ObservableProperty.Build(
+                settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value);
+            this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled = ObservableProperty.Build(
+                settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value);
+            this.IsSelectAllUsingCtrlAEnabled = ObservableProperty.Build(
+                settings.IsSelectAllUsingCtrlAEnabled.Value);
+            this.IsSelectUsingShiftArrrowEnabled = ObservableProperty.Build(
+                settings.IsSelectUsingShiftArrrowEnabled.Value);
+            this.IsQuoteConvertionOnPasteEnabled = ObservableProperty.Build(
+                settings.IsQuoteConvertionOnPasteEnabled.Value);
+            this.IsNavigationUsingControlArrrowEnabled = ObservableProperty.Build(
+                settings.IsNavigationUsingControlArrrowEnabled.Value);
+            this.IsScrollingUsingCtrlUpDownEnabled = ObservableProperty.Build(
+                settings.IsScrollingUsingCtrlUpDownEnabled.Value);
+            this.IsScrollingUsingCtrlHomeEndEnabled = ObservableProperty.Build(
+                settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
+            this.TerminalFont = ObservableProperty.Build<Font>(new Font(
+                settings.FontFamily.Value,
+                TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.Value)));
+            this.TerminalForegroundColor = ObservableProperty.Build<Color>(
+                Color.FromArgb(settings.ForegroundColorArgb.Value));
+            this.TerminalBackgroundColor = ObservableProperty.Build<Color>(
+                Color.FromArgb(settings.BackgroundColorArgb.Value));
 
             MarkDirtyWhenPropertyChanges(this.IsCopyPasteUsingCtrlCAndCtrlVEnabled);
             MarkDirtyWhenPropertyChanges(this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled);
@@ -67,33 +81,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         //---------------------------------------------------------------------
         // Overrides.
         //---------------------------------------------------------------------
-
-        protected override void Load(ITerminalSettings settings)
-        {
-            this.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value =
-                settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value;
-            this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value =
-                settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value;
-            this.IsSelectAllUsingCtrlAEnabled.Value =
-                settings.IsSelectAllUsingCtrlAEnabled.Value;
-            this.IsSelectUsingShiftArrrowEnabled.Value =
-                settings.IsSelectUsingShiftArrrowEnabled.Value;
-            this.IsQuoteConvertionOnPasteEnabled.Value =
-                settings.IsQuoteConvertionOnPasteEnabled.Value;
-            this.IsNavigationUsingControlArrrowEnabled.Value =
-                settings.IsNavigationUsingControlArrrowEnabled.Value;
-            this.IsScrollingUsingCtrlUpDownEnabled.Value =
-                settings.IsScrollingUsingCtrlUpDownEnabled.Value;
-            this.IsScrollingUsingCtrlHomeEndEnabled.Value =
-                settings.IsScrollingUsingCtrlHomeEndEnabled.Value;
-            this.TerminalFont.Value = new Font(
-                settings.FontFamily.Value,
-                TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.Value));
-            this.TerminalForegroundColor.Value = Color.FromArgb(
-                settings.ForegroundColorArgb.Value);
-            this.TerminalBackgroundColor.Value = Color.FromArgb(
-                settings.BackgroundColorArgb.Value);
-        }
 
         protected override void Save(ITerminalSettings settings)
         {

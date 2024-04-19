@@ -43,7 +43,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         private class OptionsViewModel : OptionsViewModelBase<ISettingsCollection>
         {
             public bool ThrowOnSave = false;
-            public int LoadCalls = 0;
             public int SaveCalls = 0;
 
             public OptionsViewModel(
@@ -52,12 +51,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 : base(title, settingsRepository)
             {
                 OnInitializationCompleted();
-            }
-
-            protected override void Load(ISettingsCollection settings)
-            {
-                this.LoadCalls++;
-                Assert.IsNotNull(settings);
             }
 
             protected override void Save(ISettingsCollection settings)
@@ -107,23 +100,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         //---------------------------------------------------------------------
-        // Load.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void ConstructorReadsSettingsAndCallsLoad()
-        {
-            var repository = CreateRepositoryMock();
-            var optionsViewModel = new OptionsViewModel(
-                "Sample",
-                repository.Object);
-
-            repository.Verify(r => r.GetSettings(), Times.Once);
-            Assert.AreEqual(1, optionsViewModel.LoadCalls);
-            Assert.AreEqual(0, optionsViewModel.SaveCalls);
-        }
-
-        //---------------------------------------------------------------------
         // ApplyChanges.
         //---------------------------------------------------------------------
 
@@ -138,9 +114,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             optionsViewModel.MarkDirty();
             optionsViewModel.ApplyChangesAsync().Wait();
 
-            repository.Verify(r => r.GetSettings(), Times.Exactly(2));
+            repository.Verify(r => r.GetSettings(), Times.Exactly(1));
             repository.Verify(r => r.SetSettings(It.IsAny<ISettingsCollection>()), Times.Once);
-            Assert.AreEqual(1, optionsViewModel.LoadCalls);
             Assert.AreEqual(1, optionsViewModel.SaveCalls);
         }
 

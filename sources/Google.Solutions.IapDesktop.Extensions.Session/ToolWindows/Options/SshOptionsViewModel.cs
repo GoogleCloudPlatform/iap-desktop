@@ -44,15 +44,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         public SshOptionsViewModel(IRepository<ISshSettings> settingsRepository)
             : base("SSH", settingsRepository)
         {
-            base.OnInitializationCompleted();
-        }
+            var settings = settingsRepository.GetSettings();
 
-        //---------------------------------------------------------------------
-        // Overrides.
-        //---------------------------------------------------------------------
-
-        protected override void Load(ISshSettings settings)
-        {
             this.PublicKeyType = ObservableProperty.Build(settings.PublicKeyType.Value);
             this.IsPublicKeyTypeEditable = !settings.PublicKeyType.IsReadOnly;
 
@@ -74,7 +67,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             MarkDirtyWhenPropertyChanges(this.UsePersistentKey);
             MarkDirtyWhenPropertyChanges(this.PublicKeyValidityInDays);
             MarkDirtyWhenPropertyChanges(this.IsPropagateLocaleEnabled);
+
+            base.OnInitializationCompleted();
         }
+
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
 
         protected override void Save(ISshSettings settings)
         {

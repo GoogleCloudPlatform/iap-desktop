@@ -28,8 +28,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-#nullable disable
-
 namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
     internal class ScreenOptionsViewModel : OptionsViewModelBase<IApplicationSettings>
@@ -37,15 +35,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         public ScreenOptionsViewModel(IRepository<IApplicationSettings> settingsRepository)
             : base("Display", settingsRepository)
         {
-            base.OnInitializationCompleted();
-        }
+            var settings = settingsRepository.GetSettings();
 
-        //---------------------------------------------------------------------
-        // Overrides.
-        //---------------------------------------------------------------------
-
-        protected override void Load(IApplicationSettings settings)
-        {
             var fullScreenDevices =
                 (settings.FullScreenDevices.Value ?? string.Empty)
                     .Split(ApplicationSettingsRepository.FullScreenDevicesSeparator)
@@ -56,7 +47,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 {
                     IsSelected = fullScreenDevices.Contains(s.DeviceName)
                 }));
+
+            base.OnInitializationCompleted();
         }
+
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
 
         protected override void Save(IApplicationSettings settings)
         {

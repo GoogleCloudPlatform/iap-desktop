@@ -40,6 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             HelpClient helpService)
             : base("Access", settingsRepository)
         {
+            var settings = settingsRepository.GetSettings();
 
             this.OpenCertificateAuthenticationHelp = ObservableCommand.Build(
                 string.Empty,
@@ -48,14 +49,20 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 string.Empty,
                 () => helpService.OpenTopic(HelpTopics.PrivateServiceConnectOverview));
 
-            this.IsDeviceCertificateAuthenticationEditable = ObservableProperty.Build(false);
-            this.IsDeviceCertificateAuthenticationEnabled = ObservableProperty.Build(false);
+            this.IsDeviceCertificateAuthenticationEditable = ObservableProperty.Build(
+                !settings.IsDeviceCertificateAuthenticationEnabled.IsReadOnly);
+            this.IsDeviceCertificateAuthenticationEnabled = ObservableProperty.Build(
+                settings.IsDeviceCertificateAuthenticationEnabled.Value);
 
-            this.PrivateServiceConnectEndpoint = ObservableProperty.Build<string?>(null);
-            this.IsPrivateServiceConnectEnabled = ObservableProperty.Build(false);
-            this.IsPrivateServiceConnectEditable = ObservableProperty.Build(false);
+            this.PrivateServiceConnectEndpoint = ObservableProperty.Build<string?>(
+                settings.PrivateServiceConnectEndpoint.Value);
+            this.IsPrivateServiceConnectEnabled = ObservableProperty.Build(
+                !settings.PrivateServiceConnectEndpoint.IsDefault);
+            this.IsPrivateServiceConnectEditable = ObservableProperty.Build(
+                !settings.PrivateServiceConnectEndpoint.IsReadOnly);
 
-            this.ConnectionPoolLimit = ObservableProperty.Build<decimal>(0m);
+            this.ConnectionPoolLimit = ObservableProperty.Build<decimal>(
+                settings.ConnectionLimit.Value);
 
             MarkDirtyWhenPropertyChanges(this.IsDeviceCertificateAuthenticationEnabled);
             MarkDirtyWhenPropertyChanges(this.IsPrivateServiceConnectEnabled);
@@ -68,24 +75,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         //---------------------------------------------------------------------
         // Overrides.
         //---------------------------------------------------------------------
-
-        protected override void Load(IAccessSettings settings)
-        {
-            this.IsDeviceCertificateAuthenticationEnabled.Value =
-                settings.IsDeviceCertificateAuthenticationEnabled.Value;
-            this.IsDeviceCertificateAuthenticationEditable.Value =
-                !settings.IsDeviceCertificateAuthenticationEnabled.IsReadOnly;
-
-            this.PrivateServiceConnectEndpoint.Value =
-                settings.PrivateServiceConnectEndpoint.Value;
-            this.IsPrivateServiceConnectEnabled.Value =
-                !settings.PrivateServiceConnectEndpoint.IsDefault;
-            this.IsPrivateServiceConnectEditable.Value =
-                !settings.PrivateServiceConnectEndpoint.IsReadOnly;
-
-            this.ConnectionPoolLimit.Value = (decimal)
-                settings.ConnectionLimit.Value;
-        }
 
         [SuppressMessage("Usage", "VSTHRD002:Avoid problematic synchronous waits", Justification = "")]
         protected override void Save(IAccessSettings settings)
