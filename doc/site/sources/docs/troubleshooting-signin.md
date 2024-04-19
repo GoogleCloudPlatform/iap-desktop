@@ -55,9 +55,6 @@ As a Cloud Identity or Workspace administrator, you can fix this error by allow-
         Optionally, this setting also lets you
         [disable reauthentication :octicons-link-external-16:](https://support.google.com/a/answer/9368756)
         for IAP Desktop.
-        
-    !!!Note
-        IAP Desktop doesn't use any [restricted API scopes :octicons-link-external-16:](https://support.google.com/cloud/answer/13464325).
     
 1.  On the **Review** page, confiirm your choice of settings and click **Finish**.
 
