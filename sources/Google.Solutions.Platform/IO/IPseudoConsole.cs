@@ -91,7 +91,7 @@ namespace Google.Solutions.Platform.IO
     /// </summary>
     public readonly struct PseudoConsoleSize
     {
-        internal static readonly PseudoConsoleSize Default = new PseudoConsoleSize(80, 24);
+        public static readonly PseudoConsoleSize Default = new PseudoConsoleSize(80, 24);
 
         public PseudoConsoleSize(ushort width, ushort height)
         {
@@ -104,6 +104,11 @@ namespace Google.Solutions.Platform.IO
         public ushort Width { get; }
 
         public ushort Height { get; }
+
+        public override string ToString()
+        {
+            return $"{this.Width}x{this.Height}";
+        }
     }
 
 
@@ -119,12 +124,12 @@ namespace Google.Solutions.Platform.IO
 
         public bool IsEof { get; private set; }
 
-        internal static PseudoConsoleDataEventArgs Eof = new PseudoConsoleDataEventArgs(string.Empty)
+        public static PseudoConsoleDataEventArgs Eof = new PseudoConsoleDataEventArgs(string.Empty)
         {
             IsEof = true
         };
 
-        internal PseudoConsoleDataEventArgs(string data)
+        public PseudoConsoleDataEventArgs(string data)
         {
             this.Data = data;
         }

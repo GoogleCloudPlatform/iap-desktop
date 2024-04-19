@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -78,11 +79,18 @@ namespace Google.Solutions.Mvvm.Interop
         public event EventHandler<Exception>? UnhandledException;
         public bool IsDisposed { get; private set; }
 
+        /// <summary>
+        /// Install a window hook for subclassing.
+        /// </summary>
+        /// <param name="windowHandle">Window handle</param>
+        /// <param name="owningComponent">Component that owns the window</param>
+        /// <param name="wndProc">The window's WndProc</param>
         public SubclassCallback(
-            Control control,
+            IntPtr windowHandle,
+            Component owningComponent,
             WndProc wndProc)
         {
-            if (control == null || control.Handle == IntPtr.Zero)
+            if (windowHandle == IntPtr.Zero)
             {
                 throw new ArgumentException("Control has no handle");
             }
@@ -91,8 +99,8 @@ namespace Google.Solutions.Mvvm.Interop
                 throw new ArgumentException("Wndproc is null", nameof(wndProc));
             }
 
-            this.WindowHandle = control.Handle;
-            this.wndProc = wndProc;
+            this.WindowHandle = windowHandle;
+            this.wndProc = wndProc.ExpectNotNull(nameof(wndProc));
 
             //
             // Install a hook for this particular window.
@@ -106,16 +114,28 @@ namespace Google.Solutions.Mvvm.Interop
             //   being prevented from GC collecting
             // - our own resources are being cleaned up.
             //
-            control.Disposed += (_, __) => Dispose();
+            owningComponent.Disposed += (_, __) => Dispose();
 
             if (!NativeMethods.SetWindowSubclass(
-                control.Handle,
+                windowHandle,
                 this.hookProcPtr,
                 UIntPtr.Zero,
                 UIntPtr.Zero))
             {
                 throw new Win32Exception("Installing the window hook failed");
             }
+        }
+
+        /// <summary>
+        /// Install a window hook for subclassing.
+        /// </summary>
+        /// <param name="control">Control to subclass</param>
+        /// <param name="wndProc">The control's WndProc</param>
+        public SubclassCallback(
+            Control control,
+            WndProc wndProc)
+            : this(control.Handle, control, wndProc)
+        {
         }
 
         //---------------------------------------------------------------------
