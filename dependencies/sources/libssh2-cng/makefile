@@ -22,13 +22,18 @@ CONFIGURATION = Release
 PLATFORM = x86
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 100
+TAG = 101
 
 LIBSSH2_REF = 9d195e950281812c4ef066e4c0b82cf488b028ff
 LIBSSH2_URL = https://github.com/libssh2/libssh2.git
 
 LIBSSH2_VERSION = 1.11.$(TAG)
 LIBSSH2_PACKAGE_ID = Google.Solutions.ThirdParty.Libssh2.Cng
+
+#
+# NB. CMAKE_POLICY_DEFAULT_CMP0091=NEW is required, otherwise cmake 
+#     silently ignores CMAKE_MSVC_RUNTIME_LIBRARY.
+#
 
 LIBSSH2_OPTIONS = \
 	-DBUILD_STATIC_LIBS=OFF \
@@ -39,8 +44,7 @@ LIBSSH2_OPTIONS = \
 	-DENABLE_ZLIB_COMPRESSION=OFF \
 	-DENABLE_ECDSA_WINCNG=ON \
 	-DENABLE_DEBUG_LOGGING=ON \
-	-DCMAKE_C_FLAGS_RELEASE=/MT \
-	-DCMAKE_C_FLAGS_DEBUG=/MTd
+	-DCMAKE_POLICY_DEFAULT_CMP0091=NEW
 
 !if ("$(PLATFORM)" == "x86")
 CMAKE_PLATFORM = Win32
@@ -50,8 +54,10 @@ CMAKE_PLATFORM = $(PLATFORM)
 
 !if ("$(CONFIGURATION)" == "Debug")
 CMAKE_CONFIGURATION = Debug
+LIBSSH2_OPTIONS = $(LIBSSH2_OPTIONS) -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebug
 !else
 CMAKE_CONFIGURATION = RelWithDebInfo
+LIBSSH2_OPTIONS = $(LIBSSH2_OPTIONS) -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
 !endif
 
 CMAKE = cmake
@@ -82,11 +88,14 @@ $(MAKEDIR)\obj\$(CMAKE_BUILDDIR)\src\$(CMAKE_CONFIGURATION)\libssh2.dll: $(MAKED
 	cd $(MAKEDIR)\obj
 	
 	powershell -Command "(Get-Content src\libssh2.rc) \
-		-replace 'The libssh2 library\\0','libssh2, built for IAP Desktop' | \
+		-replace 'The libssh2 library\\0','libssh2 with CNG, built for IAP Desktop' | \
 		Out-File src\libssh2.rc -Encoding ascii"
 	powershell -Command "(Get-Content src\libssh2.rc) \
 		-replace 'LIBSSH2_VERSION_PATCH','$(TAG)' | \
 		Out-File src\libssh2.rc -Encoding ascii"
+	powershell -Command "(Get-Content include\libssh2.h) \
+		-replace '1_DEV','$(TAG)' | \
+		Out-File include\libssh2.h -Encoding ascii"
 	
 	$(CMAKE) \
 		$(CMAKE_OPTS) \
@@ -141,6 +150,7 @@ package: $(MAKEDIR)\obj\$(LIBSSH2_PACKAGE_ID).$(LIBSSH2_VERSION).nupkg
 
 clean:
 	cd $(MAKEDIR)\obj
+	-del *.nupkg
 	$(CMAKE) --build build\x86 --target clean
 	$(CMAKE) --build build\x64 --target clean
 
