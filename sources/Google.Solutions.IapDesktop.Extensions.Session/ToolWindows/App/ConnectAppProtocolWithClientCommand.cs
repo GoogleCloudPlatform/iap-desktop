@@ -60,8 +60,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
 
         private static Image? CreateIcon(AppProtocol protocol)
         {
-            if (protocol.Client?.Executable is var executable &&
-                executable != null &&
+            if (protocol.Client != null &&
+                protocol.Client.IsAvailable &&
+                protocol.Client.Executable is string executable &&
                 File.Exists(executable))
             {
                 //

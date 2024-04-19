@@ -150,9 +150,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenClientExecutableNotFound_ThenImageIsNull()
+        public void WhenClientNotAvailable_ThenImageIsNull()
         {
             var client = new Mock<IAppProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(false);
+            client.SetupGet(c => c.Executable).Throws(new Exception());
+
+            var command = new ConnectAppProtocolWithClientCommand(
+                new Mock<IWin32Window>().Object,
+                new SynchronousJobService(),
+                CreateFactory(client.Object, null),
+                new Mock<ICredentialDialog>().Object,
+                new Mock<INotifyDialog>().Object);
+
+            Assert.IsNull(command.Image);
+        }
+
+        [Test]
+        public void WhenClientAvailableButExecutableNotFound_ThenImageIsNull()
+        {
+            var client = new Mock<IAppProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
             client.SetupGet(c => c.Executable).Returns("doesnotexist.exe");
 
             var command = new ConnectAppProtocolWithClientCommand(
@@ -166,9 +184,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         }
 
         [Test]
-        public void WhenClientExecutableFound_ThenImageIsAvailable()
+        public void WhenClientAvailable_ThenImageIsAvailable()
         {
             var client = new Mock<IAppProtocolClient>();
+            client.SetupGet(c => c.IsAvailable).Returns(true);
             client.SetupGet(c => c.Executable).Returns(CmdExe);
 
             var command = new ConnectAppProtocolWithClientCommand(
