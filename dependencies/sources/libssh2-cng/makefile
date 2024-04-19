@@ -54,6 +54,7 @@ CMAKE_CONFIGURATION = Debug
 CMAKE_CONFIGURATION = RelWithDebInfo
 !endif
 
+CMAKE = cmake
 CMAKE_GENERATOR = "Visual Studio 17 2022"
 CMAKE_OPTS = -Wno-dev -DCMAKE_BUILD_TYPE=$(CONFIGURATION) -A $(CMAKE_PLATFORM)
 CMAKE_BUILDDIR = build\$(PLATFORM)
@@ -87,13 +88,13 @@ $(MAKEDIR)\obj\$(CMAKE_BUILDDIR)\src\$(CMAKE_CONFIGURATION)\libssh2.dll: $(MAKED
 		-replace 'LIBSSH2_VERSION_PATCH','$(TAG)' | \
 		Out-File src\libssh2.rc -Encoding ascii"
 	
-	cmake \
+	$(CMAKE) \
 		$(CMAKE_OPTS) \
 		-G $(CMAKE_GENERATOR) \
 		$(LIBSSH2_OPTIONS) \
 		-B $(CMAKE_BUILDDIR)
 	
-	cmake --build $(CMAKE_BUILDDIR) --config $(CMAKE_CONFIGURATION)
+	$(CMAKE) --build $(CMAKE_BUILDDIR) --config $(CMAKE_CONFIGURATION)
 
 compile: $(MAKEDIR)\obj\$(CMAKE_BUILDDIR)\src\$(CMAKE_CONFIGURATION)\libssh2.dll
 
@@ -140,8 +141,8 @@ package: $(MAKEDIR)\obj\$(LIBSSH2_PACKAGE_ID).$(LIBSSH2_VERSION).nupkg
 
 clean:
 	cd $(MAKEDIR)\obj
-	cmake --build build\x86 --target clean
-	cmake --build build\x64 --target clean
+	$(CMAKE) --build build\x86 --target clean
+	$(CMAKE) --build build\x64 --target clean
 
 distclean:
     -rd /S /Q $(MAKEDIR)\obj
