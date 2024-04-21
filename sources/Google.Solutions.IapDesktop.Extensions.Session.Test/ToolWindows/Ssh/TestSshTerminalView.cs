@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             InstanceLocator instance,
             IAuthorization authorization,
             SshKeyType keyType,
-            CultureInfo language = null)
+            CultureInfo? language = null)
         {
             var serviceProvider = CreateServiceProvider();
 
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var transport = await CreateTransportForPublicAddress(instance, 22)
                 .ConfigureAwait(true);
 
-            SshTerminalView pane = null;
+            SshTerminalView? pane = null;
             await AssertRaisesEventAsync<SessionStartedEvent>(
                 async () => pane = (SshTerminalView)await broker
                     .ConnectSshSessionAsync(instance, transport, sshParameters, sshCredential)
@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 
             PumpWindowMessages();
 
-            pane.Disposed += (_, __) => transport.Dispose();
+            pane!.Disposed += (_, __) => transport.Dispose();
             return pane;
         }
 
@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
             Assert.AreEqual(
                 SocketError.ConnectionRefused,
-                ((SocketException)this.ExceptionShown).SocketErrorCode);
+                ((SocketException)this.ExceptionShown!).SocketErrorCode);
 
             await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
@@ -276,7 +276,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
             Assert.AreEqual(
                 SocketError.ConnectionRefused,
-                ((SocketException)this.ExceptionShown).SocketErrorCode);
+                ((SocketException)this.ExceptionShown!).SocketErrorCode);
 
             await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
