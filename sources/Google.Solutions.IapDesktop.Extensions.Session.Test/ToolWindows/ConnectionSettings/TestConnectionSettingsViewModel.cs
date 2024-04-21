@@ -37,20 +37,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Connec
     {
         private const string SampleProjectId = "project-1";
         private const string TestKeyPath = @"Software\Google\__Test";
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
+        private static readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser,
             RegistryView.Default);
 
-        private ConnectionSettingsService service;
-
-        [SetUp]
-        public void SetUp()
+        private static ConnectionSettingsService CreateConnectionSettingsService()
         {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
-            var projectRepository = new ProjectRepository(this.hkcu.CreateSubKey(TestKeyPath));
+            var projectRepository = new ProjectRepository(hkcu.CreateSubKey(TestKeyPath));
             var settingsRepository = new ConnectionSettingsRepository(projectRepository);
-            this.service = new ConnectionSettingsService(settingsRepository);
 
             // Set some initial project settings.
             projectRepository.AddProject(new ProjectLocator(SampleProjectId));
@@ -58,6 +54,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Connec
             var projectSettings = settingsRepository.GetProjectSettings(new ProjectLocator(SampleProjectId));
             projectSettings.RdpDomain.Value = "project-domain";
             settingsRepository.SetProjectSettings(projectSettings);
+
+            return new ConnectionSettingsService(settingsRepository);
         }
 
         //---------------------------------------------------------------------
@@ -67,12 +65,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Connec
         [Test]
         public async Task WhenInstanceIsRunning_ThenInformationTextIsSet()
         {
+            var service = CreateConnectionSettingsService();
+
             var broker = new Mock<ISessionBroker>();
-            broker.Setup(b => b.IsConnected(
-                    It.IsAny<InstanceLocator>()))
+            broker
+                .Setup(b => b.IsConnected(It.IsAny<InstanceLocator>()))
                 .Returns(true);
             var viewModel = new ConnectionSettingsViewModel(
-                this.service,
+                service,
                 broker.Object);
 
             var node = new Mock<IProjectModelInstanceNode>();
@@ -92,12 +92,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Connec
         [Test]
         public async Task WhenInstanceIsNotRunning_ThenInformationTextIsNull()
         {
+            var service = CreateConnectionSettingsService();
+
             var broker = new Mock<ISessionBroker>();
-            broker.Setup(b => b.IsConnected(
-                    It.IsAny<InstanceLocator>()))
+            broker
+                .Setup(b => b.IsConnected(It.IsAny<InstanceLocator>()))
                 .Returns(false);
             var viewModel = new ConnectionSettingsViewModel(
-                this.service,
+                service,
                 broker.Object);
 
             var node = new Mock<IProjectModelInstanceNode>();
@@ -119,12 +121,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Connec
         [Test]
         public async Task WhenSwitchingToCloudNode_ThenInspectedObjectIsNull()
         {
+            var service = CreateConnectionSettingsService();
+
             var broker = new Mock<ISessionBroker>();
-            broker.Setup(b => b.IsConnected(
-                    It.IsAny<InstanceLocator>()))
+            broker
+                .Setup(b => b.IsConnected(It.IsAny<InstanceLocator>()))
                 .Returns(false);
             var viewModel = new ConnectionSettingsViewModel(
-                this.service,
+                service,
                 broker.Object);
 
             var node = new Mock<IProjectModelCloudNode>();
@@ -142,12 +146,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Connec
         [Test]
         public async Task WhenSwitchingToProjectNode_ThenInspectedObjectIsSet()
         {
+            var service = CreateConnectionSettingsService();
+
             var broker = new Mock<ISessionBroker>();
-            broker.Setup(b => b.IsConnected(
-                    It.IsAny<InstanceLocator>()))
+            broker
+                .Setup(b => b.IsConnected(It.IsAny<InstanceLocator>()))
                 .Returns(false);
             var viewModel = new ConnectionSettingsViewModel(
-                this.service,
+                service,
                 broker.Object);
 
             var node = new Mock<IProjectModelProjectNode>();
@@ -175,12 +181,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Connec
         [Test]
         public async Task WhenSwitchingToZoneNode_ThenInspectedObjectIsSet()
         {
+            var service = CreateConnectionSettingsService();
+
             var broker = new Mock<ISessionBroker>();
-            broker.Setup(b => b.IsConnected(
-                    It.IsAny<InstanceLocator>()))
+            broker
+                .Setup(b => b.IsConnected(It.IsAny<InstanceLocator>()))
                 .Returns(false);
             var viewModel = new ConnectionSettingsViewModel(
-                this.service,
+                service,
                 broker.Object);
 
             var node = new Mock<IProjectModelZoneNode>();
@@ -208,12 +216,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Connec
         [Test]
         public async Task WhenSwitchingToInstanceNode_ThenInspectedObjectIsSet()
         {
+            var service = CreateConnectionSettingsService();
+
             var broker = new Mock<ISessionBroker>();
-            broker.Setup(b => b.IsConnected(
-                    It.IsAny<InstanceLocator>()))
+            broker
+                .Setup(b => b.IsConnected(It.IsAny<InstanceLocator>()))
                 .Returns(false);
             var viewModel = new ConnectionSettingsViewModel(
-                this.service,
+                service,
                 broker.Object);
 
             var node = new Mock<IProjectModelInstanceNode>();
