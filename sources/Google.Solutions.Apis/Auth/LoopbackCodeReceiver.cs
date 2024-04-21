@@ -54,6 +54,15 @@ namespace Google.Solutions.Apis.Auth
         {
             this.path = path.ExpectNotEmpty(nameof(path));
             this.responseHtml = responseHtml.ExpectNotEmpty(nameof(responseHtml));
+
+            if (!path.EndsWith("/"))
+            {
+                //
+                // The path must end with a trailing slash for the
+                // listener prefix to work correctly.
+                //
+                throw new ArgumentException("Path must end with a trailing slash");
+            }
         }
 
         protected virtual void OpenBrowser(string url)
@@ -108,7 +117,13 @@ namespace Google.Solutions.Apis.Auth
         {
             var authorizationUrl = url.Build().AbsoluteUri;
 
+            //
+            // NB. HttpListener.GetContextAsync() doesn't accept a
+            // cancellation token, so the HttpListener needs to be stopped
+            // to abort the GetContextAsync() call.
+            //
             using (var listener = new HttpListener())
+            using (cancellationToken.Register(listener.Stop))
             {
                 ApiTraceSource.Log.TraceVerbose(
                     "Start listener for {0}...", this.RedirectUri);
@@ -121,68 +136,85 @@ namespace Google.Solutions.Apis.Auth
 
                 OpenBrowser(authorizationUrl);
 
-                //
-                // NB. HttpListener.GetContextAsync() doesn't accept a
-                // cancellation token, so the HttpListener needs to be stopped
-                // to abort the GetContextAsync() call.
-                //
-                HttpListenerContext context;
-                using (cancellationToken.Register(listener.Stop))
+                try
                 {
-                    try
+                    while (true)
                     {
-                        context = await listener
+                        var context = await listener
                             .GetContextAsync()
                             .ConfigureAwait(false);
-                    }
-                    catch (Exception) when (cancellationToken.IsCancellationRequested)
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
 
-                        //
-                        // Next line will never be reached because cancellation will
-                        // always have been requested in this catch block.
-                        // But it's required to satisfy compiler.
-                        //
-                        throw new InvalidOperationException();
-                    }
-                    catch (Exception e)
-                    {
-                        ApiTraceSource.Log.TraceError(e);
-                        throw;
+                        if (!this.path.Equals(
+                            context.Request.Url.AbsolutePath,
+                            StringComparison.OrdinalIgnoreCase))
+                        {
+                            //
+                            // Different path (for ex, /favicon.ico). Ignore.
+                            //
+
+                            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                            context.Response.Close();
+                        }
+                        else if (context.Request.QueryString.Keys.Count == 0)
+                        {
+                            //
+                            // Can't possibly be an OAuth response. Ignore.
+                            //
+                            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                            context.Response.Close();
+                        }
+                        else
+                        {
+                            var queryParameters = context.Request.QueryString;
+
+                            //
+                            // This looks like an OAuth response. Generate a response
+                            // to show in the user's browser.
+                            //
+                            var bytes = Encoding.UTF8.GetBytes(this.responseHtml);
+
+                            context.Response.ContentLength64 = bytes.Length;
+                            context.Response.SendChunked = false;
+                            context.Response.KeepAlive = false;
+
+                            var output = context.Response.OutputStream;
+                            await output
+                                .WriteAsync(bytes, 0, bytes.Length)
+                                .ConfigureAwait(false);
+                            await output
+                                .FlushAsync()
+                                .ConfigureAwait(false);
+                            output.Close();
+                            context.Response.Close();
+
+                            //
+                            // Create a new response URL with a dictionary that contains
+                            // all the response query parameters.
+                            //
+                            return new AuthorizationCodeResponseUrl(
+                                queryParameters
+                                    .AllKeys
+                                    .Where(k => k != null) // k is null if there's no equal sign.
+                                    .ToDictionary(k => k, k => queryParameters[k]));
+                        }
                     }
                 }
+                catch (Exception) when (cancellationToken.IsCancellationRequested)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                var queryParameters = context.Request.QueryString;
-
-                //
-                // Write a "close" response.
-                //
-                var bytes = Encoding.UTF8.GetBytes(this.responseHtml);
-
-                context.Response.ContentLength64 = bytes.Length;
-                context.Response.SendChunked = false;
-                context.Response.KeepAlive = false;
-
-                var output = context.Response.OutputStream;
-                await output
-                    .WriteAsync(bytes, 0, bytes.Length)
-                    .ConfigureAwait(false);
-                await output
-                    .FlushAsync()
-                    .ConfigureAwait(false);
-                output.Close();
-                context.Response.Close();
-
-                //
-                // Create a new response URL with a dictionary that contains
-                // all the response query parameters.
-                //
-                return new AuthorizationCodeResponseUrl(
-                    queryParameters
-                        .AllKeys
-                        .Where(k => k != null) // k is null if there's no equal sign.
-                        .ToDictionary(k => k, k => queryParameters[k]));
+                    //
+                    // Next line will never be reached because cancellation will
+                    // always have been requested in this catch block.
+                    // But it's required to satisfy compiler.
+                    //
+                    throw new InvalidOperationException();
+                }
+                catch (Exception e)
+                {
+                    ApiTraceSource.Log.TraceError(e);
+                    throw;
+                }
             }
         }
     }
