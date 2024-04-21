@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Download
         }
 
         public DialogResult SelectDownloadFiles(
-            IWin32Window owner,
+            IWin32Window? owner,
             string caption,
             FileBrowser.IFileSystem fileSystem,
             out IEnumerable<FileBrowser.IFileItem>? sourceItems,

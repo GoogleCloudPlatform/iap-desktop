@@ -63,12 +63,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
 
         private AppProtocolContextFactory CreateFactory(
             IAppProtocolClient client,
-            Extensions.Session.Settings.ConnectionSettings settings)
+            Extensions.Session.Settings.ConnectionSettings? settings)
         {
             var settingsService = new Mock<IConnectionSettingsService>();
-            settingsService
-                .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
-                .Returns(settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+            if (settings != null)
+            {
+                settingsService
+                    .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
+                    .Returns(settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+            }
 
             return new AppProtocolContextFactory(
                 new AppProtocol(
@@ -343,7 +346,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
             settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Disabled;
 
-            string username = null;
+            string? username = null;
             var dialog = new Mock<ICredentialDialog>();
             dialog
                 .Setup(d => d.PromptForUsername(
@@ -476,7 +479,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(context.NetworkCredential);
-            Assert.AreEqual("user", context.NetworkCredential.UserName);
+            Assert.AreEqual("user", context!.NetworkCredential.UserName);
             Assert.AreEqual("domain", context.NetworkCredential.Domain);
             Assert.AreEqual("password", context.NetworkCredential.Password);
         }
@@ -491,7 +494,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
             settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Enabled;
 
-            NetworkCredential userCredential = null;
+            NetworkCredential? userCredential = null;
             var dialog = new Mock<ICredentialDialog>();
             dialog
                 .Setup(d => d.PromptForWindowsCredentials(

@@ -35,9 +35,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             if (!Ssms.TryFind(out var ssms))
             {
                 Assert.Inconclusive("SSMS not installed");
+                return;
             }
 
-            Assert.IsTrue(File.Exists(ssms.ExecutablePath));
+            Assert.IsTrue(File.Exists(ssms!.ExecutablePath));
         }
     }
 }

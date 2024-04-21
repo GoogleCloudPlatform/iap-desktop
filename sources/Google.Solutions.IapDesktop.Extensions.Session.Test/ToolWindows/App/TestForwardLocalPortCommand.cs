@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         [Test]
         public void WhenInputDialogCancelled_ThenCreateContextThrowsException()
         {
-            string input = null;
+            string? input = null;
             var inputDialog = new Mock<IInputDialog>();
             inputDialog.Setup(d => d.Prompt(
                 It.IsAny<IWin32Window>(),

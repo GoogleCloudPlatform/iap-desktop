@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 .Setup(a => a.GetAsync<RdpCredentialCallback.CredentialCallbackResponse>(
                     SampleCallbackUrl,
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync((RdpCredentialCallback.CredentialCallbackResponse)null);
+                .ReturnsAsync((RdpCredentialCallback.CredentialCallbackResponse?)null);
 
             var service = new RdpCredentialCallback(adapter.Object);
             var credentials = await service

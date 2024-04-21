@@ -244,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
                     .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
-                RdpClient.ConnectionClosedEventArgs eventArgs = null;
+                RdpClient.ConnectionClosedEventArgs? eventArgs = null;
                 window.Client.ConnectionClosed += (_, e) => eventArgs = e;
 
                 //
@@ -257,7 +257,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
                     .ConfigureAwait(true);
 
                 Assert.NotNull(eventArgs);
-                Assert.AreEqual(RdpClient.DisconnectReason.FormClosed, eventArgs.Reason);
+                Assert.AreEqual(RdpClient.DisconnectReason.FormClosed, eventArgs!.Reason);
             }
         }
 
@@ -271,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 
                 window.Show();
 
-                ExceptionEventArgs eventArgs = null;
+                ExceptionEventArgs? eventArgs = null;
                 window.Client.ConnectionFailed += (_, e) => eventArgs = e;
 
                 //
@@ -283,7 +283,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
                     .ConfigureAwait(true);
 
                 Assert.NotNull(eventArgs);
-                Assert.IsInstanceOf<RdpDisconnectedException>(eventArgs.Exception);
+                Assert.IsInstanceOf<RdpDisconnectedException>(eventArgs!.Exception);
 
                 window.Close();
             }

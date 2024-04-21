@@ -26,6 +26,7 @@ using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
 {
@@ -47,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
             var target = new Mock<IProtocolTarget>();
             target
                 .Setup(t => t.Traits)
-                .Returns((IEnumerable<ITrait>)null);
+                .Returns(Enumerable.Empty<ITrait>());
 
             Assert.IsFalse(RdpProtocol.Protocol.IsAvailable(target.Object));
         }

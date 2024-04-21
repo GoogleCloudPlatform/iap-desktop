@@ -34,7 +34,7 @@ namespace Google.Solutions.Common.Test.Security
         //---------------------------------------------------------------------
 
         [Test]
-        public void AsClearText()
+        public void WhenSecureStringIsNotNull_ThenAsClearTextReturnsString()
         {
             var s = new SecureString();
             s.AppendChar('t');
@@ -43,6 +43,12 @@ namespace Google.Solutions.Common.Test.Security
             s.AppendChar('t');
 
             Assert.AreEqual("test", s.AsClearText());
+        }
+
+        [Test]
+        public void WhenSecureStringIsNull_ThenAsClearTextReturnsEmpty()
+        {
+            Assert.AreEqual(string.Empty, SecureStringExtensions.AsClearText(null));
         }
 
         //---------------------------------------------------------------------

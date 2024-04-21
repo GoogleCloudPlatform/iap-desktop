@@ -209,7 +209,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// <summary>
         /// Show dialog. Disposes the view and view model afterwards.
         /// </summary>
-        public DialogResult ShowDialog(IWin32Window parent)
+        public DialogResult ShowDialog(IWin32Window? parent)
         {
             if (this.shown)
             {

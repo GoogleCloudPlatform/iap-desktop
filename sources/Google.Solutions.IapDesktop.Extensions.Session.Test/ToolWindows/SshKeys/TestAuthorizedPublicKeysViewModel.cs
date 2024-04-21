@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
     public class TestAuthorizedPublicKeysViewModel
     {
         private static AuthorizedPublicKeysViewModel CreateViewModel(
-            IConfirmationDialog confirmationDialog = null)
+            IConfirmationDialog? confirmationDialog = null)
         {
             var registry = new ServiceRegistry();
             registry.AddSingleton<IJobService>(new SynchronousJobService());

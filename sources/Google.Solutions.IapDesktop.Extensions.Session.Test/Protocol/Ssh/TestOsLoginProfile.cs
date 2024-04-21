@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 CreateAuthorization<IGaiaOidcSession>());
 
             ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => profile.AuthorizeKeyAsync(
-                null,
+                null!,
                 OsLoginSystemType.Linux,
                 new Mock<IAsymmetricKeySigner>().Object,
                 TimeSpan.FromDays(1),
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => profile.AuthorizeKeyAsync(
                 SampleZone,
                 OsLoginSystemType.Linux,
-                null,
+                null!,
                 TimeSpan.FromDays(1),
                 CancellationToken.None).Wait());
         }

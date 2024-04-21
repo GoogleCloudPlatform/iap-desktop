@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 .ReturnsAsync(new Mock<ISession>().Object);
 
             var sessionBroker = new Mock<ISessionBroker>();
-            ISession nullSession;
+            ISession? nullSession;
             sessionBroker
                 .Setup(s => s.TryActivateSession(SampleLocator, out nullSession))
                 .Returns(false);
