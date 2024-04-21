@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             InstanceLocator instance,
             IAuthorization authorization,
             SshKeyType keyType,
-            CultureInfo language = null)
+            CultureInfo? language = null)
         {
             var authorizedKey = await
                 CreateAuthorizedKeyAsync(
@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             {
                 viewModel.View = window;
 
-                DataEventArgs argsReceived = null;
+                DataEventArgs? argsReceived = null;
                 viewModel.DataReceived += (s, a) =>
                 {
                     argsReceived = a;
@@ -204,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                 var terminal = (ITextTerminal)viewModel;
                 terminal.OnDataReceived("some data");
 
-                Assert.AreEqual("some data", argsReceived.Data);
+                Assert.AreEqual("some data", argsReceived!.Data);
             }
         }
 
@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     .ConnectAsync(new TerminalSize(80, 24))
                     .ConfigureAwait(false);
 
-                ConnectionErrorEventArgs argsReceived = null;
+                ConnectionErrorEventArgs? argsReceived = null;
                 viewModel.ConnectionLost += (s, a) =>
                 {
                     argsReceived = a;
@@ -239,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     TerminalErrorType.ConnectionLost,
                     new ArgumentException());
 
-                Assert.IsInstanceOf<ArgumentException>(argsReceived.Error);
+                Assert.IsInstanceOf<ArgumentException>(argsReceived!.Error);
                 this.eventService.Verify(s => s.PublishAsync(
                     It.IsAny<SessionAbortedEvent>()), Times.Once());
             }
@@ -264,7 +264,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             {
                 viewModel.View = window;
 
-                ConnectionErrorEventArgs argsReceived = null;
+                ConnectionErrorEventArgs? argsReceived = null;
                 viewModel.ConnectionFailed += (s, a) =>
                 {
                     argsReceived = a;
@@ -276,7 +276,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     TerminalErrorType.ConnectionFailed,
                     new ArgumentException());
 
-                Assert.IsInstanceOf<ArgumentException>(argsReceived.Error);
+                Assert.IsInstanceOf<ArgumentException>(argsReceived!.Error);
                 this.eventService.Verify(s => s.PublishAsync(
                     It.IsAny<SessionAbortedEvent>()), Times.Once());
             }
@@ -354,7 +354,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     ConnectionTimeout = TimeSpan.FromSeconds(10)
                 };
 
-                ConnectionErrorEventArgs argsReceived = null;
+                ConnectionErrorEventArgs? argsReceived = null;
                 viewModel.ConnectionFailed += (s, a) =>
                 {
                     argsReceived = a;
@@ -364,7 +364,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     .ConnectAsync(new TerminalSize(80, 24))
                     .ConfigureAwait(true);
 
-                Assert.IsInstanceOf<MetadataKeyAuthenticationFailedException>(argsReceived.Error);
+                Assert.IsInstanceOf<MetadataKeyAuthenticationFailedException>(argsReceived!.Error);
                 eventService.Verify(s => s.PublishAsync(
                     It.IsAny<SessionAbortedEvent>()), Times.Once());
 

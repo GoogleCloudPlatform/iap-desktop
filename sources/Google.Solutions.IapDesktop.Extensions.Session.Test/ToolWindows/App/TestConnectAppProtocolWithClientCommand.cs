@@ -398,7 +398,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(context.NetworkCredential);
-            Assert.AreEqual("user", context.NetworkCredential.UserName);
+            Assert.AreEqual("user", context.NetworkCredential!.UserName);
             Assert.AreEqual("domain", context.NetworkCredential.Domain);
             Assert.AreEqual("password", context.NetworkCredential.Password);
         }
@@ -437,7 +437,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(context.NetworkCredential);
-            Assert.AreEqual("user", context.NetworkCredential.UserName);
+            Assert.AreEqual("user", context.NetworkCredential!.UserName);
             Assert.AreEqual("domain", context.NetworkCredential.Domain);
             Assert.AreEqual("password", context.NetworkCredential.Password);
         }
@@ -479,7 +479,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(context.NetworkCredential);
-            Assert.AreEqual("user", context!.NetworkCredential.UserName);
+            Assert.AreEqual("user", context!.NetworkCredential!.UserName);
             Assert.AreEqual("domain", context.NetworkCredential.Domain);
             Assert.AreEqual("password", context.NetworkCredential.Password);
         }

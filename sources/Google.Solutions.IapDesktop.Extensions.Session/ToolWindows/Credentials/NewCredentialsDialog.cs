@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
     public interface INewCredentialsDialog
     {
         GenerateCredentialsDialogResult ShowDialog(
-            IWin32Window owner,
+            IWin32Window? owner,
             string suggestedUsername);
     }
 
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
         }
 
         public GenerateCredentialsDialogResult ShowDialog(
-            IWin32Window owner,
+            IWin32Window? owner,
             string suggestedUsername)
         {
             using (var dialog = this.dialogFactory.CreateDialog())

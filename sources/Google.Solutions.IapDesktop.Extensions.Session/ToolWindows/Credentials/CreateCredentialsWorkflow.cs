@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
         }
 
         public async Task CreateCredentialsAsync(
-            IWin32Window owner,
+            IWin32Window? owner,
             InstanceLocator instanceLocator,
             Settings.ConnectionSettings settings,
             bool silent)

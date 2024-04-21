@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                     It.IsAny<string>()))
                 .Returns(new GenerateCredentialsDialogResult(
                     DialogResult.Cancel,
-                    null)); // Cancel dialog
+                    string.Empty)); // Cancel dialog
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
             settings.RdpUsername.Value = "alice";
@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                     It.IsAny<string>()))
                 .Returns(new GenerateCredentialsDialogResult(
                     DialogResult.Cancel,
-                    null)); // Cancel dialog
+                    string.Empty)); // Cancel dialog
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
 
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                     It.IsAny<string>()))
                 .Returns(new GenerateCredentialsDialogResult(
                     DialogResult.Cancel,
-                    null)); // Cancel dialog
+                    string.Empty)); // Cancel dialog
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
             settings.RdpUsername.Value = "";
