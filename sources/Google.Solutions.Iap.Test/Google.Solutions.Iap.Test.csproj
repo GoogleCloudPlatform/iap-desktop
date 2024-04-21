@@ -17,7 +17,6 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
   </ItemGroup>
   <ItemGroup>
