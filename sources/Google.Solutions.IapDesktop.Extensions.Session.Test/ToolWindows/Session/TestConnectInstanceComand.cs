@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 .ReturnsAsync(new Mock<ISession>().Object);
 
             var sessionBroker = new Mock<ISessionBroker>();
-            ISession nullSession;
+            ISession? nullSession;
             sessionBroker
                 .Setup(s => s.TryActivateSession(SampleLocator, out nullSession))
                 .Returns(false);
@@ -256,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 .ExecuteAsync(instance)
                 .ConfigureAwait(false);
 
-            ISession session;
+            ISession? session;
             sessionBroker.Verify(
                 s => s.TryActivateSession(SampleLocator, out session),
                 Times.Never);
@@ -286,7 +286,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 .ReturnsAsync(new Mock<ISession>().Object);
 
             var sessionBroker = new Mock<ISessionBroker>();
-            ISession nullSession;
+            ISession? nullSession;
             sessionBroker
                 .Setup(s => s.TryActivateSession(SampleLocator, out nullSession))
                 .Returns(false);

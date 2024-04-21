@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             .OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
         private SshSettingsRepository CreateSettingsRepository(
-            IDictionary<string, object> policies = null)
+            IDictionary<string, object>? policies = null)
         {
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
             this.hkcu.DeleteSubKeyTree(TestMachinePolicyKeyPath, false);

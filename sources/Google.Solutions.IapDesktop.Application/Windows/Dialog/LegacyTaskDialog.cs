@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
     public interface ILegacyTaskDialog
     {
         int ShowOptionsTaskDialog(
-            IWin32Window parent,
+            IWin32Window? parent,
             IntPtr mainIcon,
             string windowTitle,
             string mainInstruction,
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         private readonly int ButtonIdOffset = 1000;
 
         public int ShowOptionsTaskDialog(
-            IWin32Window parent,
+            IWin32Window? parent,
             IntPtr mainIcon,
             string windowTitle,
             string mainInstruction,

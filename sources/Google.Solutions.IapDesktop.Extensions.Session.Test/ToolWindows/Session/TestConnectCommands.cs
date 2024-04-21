@@ -494,7 +494,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 .ConfigureAwait(false);
 
             var sessionBroker = new Mock<ISessionBroker>();
-            ISession session;
+            ISession? session;
             sessionBroker.Verify(
                 s => s.TryActivateSession(It.IsAny<InstanceLocator>(), out session),
                 Times.Never);

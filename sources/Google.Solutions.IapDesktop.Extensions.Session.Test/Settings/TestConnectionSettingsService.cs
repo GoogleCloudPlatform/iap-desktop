@@ -35,27 +35,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
     {
         private static readonly ProjectLocator SampleProject = new ProjectLocator("project-1");
         private const string TestKeyPath = @"Software\Google\__Test";
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
+        private static readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser,
             RegistryView.Default);
 
-        private ConnectionSettingsService service;
-
-        [SetUp]
-        public void SetUp()
+        private static ConnectionSettingsService CreateConnectionSettingsService()
         {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
-            var projectRepository = new ProjectRepository(this.hkcu.CreateSubKey(TestKeyPath));
+            var projectRepository = new ProjectRepository(hkcu.CreateSubKey(TestKeyPath));
             var settingsRepository = new ConnectionSettingsRepository(projectRepository);
-            this.service = new ConnectionSettingsService(settingsRepository);
-
+            
             // Set some initial project settings.
             projectRepository.AddProject(SampleProject);
 
             var projectSettings = settingsRepository.GetProjectSettings(SampleProject);
             projectSettings.RdpDomain.Value = "project-domain";
             settingsRepository.SetProjectSettings(projectSettings);
+
+            return new ConnectionSettingsService(settingsRepository);
         }
 
         private IProjectModelProjectNode CreateProjectNode()
@@ -92,16 +90,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenNodeUnsupported_ThenIsConnectionSettingsAvailableReturnsFalse()
         {
-            Assert.IsFalse(this.service.IsConnectionSettingsAvailable(
+            var service = CreateConnectionSettingsService();
+
+            Assert.IsFalse(service.IsConnectionSettingsAvailable(
                 new Mock<IProjectModelNode>().Object));
-            Assert.IsFalse(this.service.IsConnectionSettingsAvailable(
+            Assert.IsFalse(service.IsConnectionSettingsAvailable(
                 new Mock<IProjectModelCloudNode>().Object));
         }
 
         [Test]
         public void WhenNodeUnsupported_ThenGetConnectionSettingsRaisesArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => this.service.GetConnectionSettings(
+            var service = CreateConnectionSettingsService();
+
+            Assert.Throws<ArgumentException>(() => service.GetConnectionSettings(
                 new Mock<IProjectModelNode>().Object));
         }
 
@@ -112,22 +114,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenReadingProjectSettings_ThenExistingProjectSettingIsVisible()
         {
+            var service = CreateConnectionSettingsService();
             var projectNode = CreateProjectNode();
 
-            var settings = this.service.GetConnectionSettings(projectNode);
+            var settings = service.GetConnectionSettings(projectNode);
             Assert.AreEqual("project-domain", settings.TypedCollection.RdpDomain.Value);
         }
 
         [Test]
         public void WhenChangingProjectSetting_ThenSettingIsSaved()
         {
+            var service = CreateConnectionSettingsService();
             var projectNode = CreateProjectNode();
 
-            var firstSettings = this.service.GetConnectionSettings(projectNode);
+            var firstSettings = service.GetConnectionSettings(projectNode);
             firstSettings.TypedCollection.RdpUsername.Value = "bob";
             firstSettings.Save();
 
-            var secondSettings = this.service.GetConnectionSettings(projectNode);
+            var secondSettings = service.GetConnectionSettings(projectNode);
             Assert.AreEqual("bob", secondSettings.TypedCollection.RdpUsername.Value);
         }
 
@@ -138,22 +142,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenReadingZoneSettings_ThenExistingProjectSettingIsVisible()
         {
+            var service = CreateConnectionSettingsService();
             var zoneNode = CreateZoneNode();
 
-            var settings = this.service.GetConnectionSettings(zoneNode);
+            var settings = service.GetConnectionSettings(zoneNode);
             Assert.AreEqual("project-domain", settings.TypedCollection.RdpDomain.Value);
         }
 
         [Test]
         public void WhenChangingZoneSetting_ThenSettingIsSaved()
         {
+            var service = CreateConnectionSettingsService();
             var zoneNode = CreateZoneNode();
 
-            var firstSettings = this.service.GetConnectionSettings(zoneNode);
+            var firstSettings = service.GetConnectionSettings(zoneNode);
             firstSettings.TypedCollection.RdpUsername.Value = "bob";
             firstSettings.Save();
 
-            var secondSettings = this.service.GetConnectionSettings(zoneNode);
+            var secondSettings = service.GetConnectionSettings(zoneNode);
             Assert.AreEqual("bob", secondSettings.TypedCollection.RdpUsername.Value);
         }
 
@@ -164,22 +170,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenReadingVmInstanceSettings_ThenExistingProjectSettingIsVisible()
         {
+            var service = CreateConnectionSettingsService();
             var vmNode = CreateVmInstanceNode();
 
-            var settings = this.service.GetConnectionSettings(vmNode);
+            var settings = service.GetConnectionSettings(vmNode);
             Assert.AreEqual("project-domain", settings.TypedCollection.RdpDomain.Value);
         }
 
         [Test]
         public void WhenChangingVmInstanceSetting_ThenSettingIsSaved()
         {
+            var service = CreateConnectionSettingsService();
             var vmNode = CreateVmInstanceNode();
 
-            var firstSettings = this.service.GetConnectionSettings(vmNode);
+            var firstSettings = service.GetConnectionSettings(vmNode);
             firstSettings.TypedCollection.RdpUsername.Value = "bob";
             firstSettings.Save();
 
-            var secondSettings = this.service.GetConnectionSettings(vmNode);
+            var secondSettings = service.GetConnectionSettings(vmNode);
             Assert.AreEqual("bob", secondSettings.TypedCollection.RdpUsername.Value);
         }
 
@@ -192,12 +200,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             [Values("user", null)]
                 string username)
         {
-            var projectSettings = this.service.GetConnectionSettings(CreateProjectNode());
+            var service = CreateConnectionSettingsService();
+
+            var projectSettings = service.GetConnectionSettings(CreateProjectNode());
             projectSettings.TypedCollection.RdpUsername.Value = username;
             projectSettings.Save();
 
             // Inherited value is shown...
-            var instanceSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
+            var instanceSettings = service.GetConnectionSettings(CreateVmInstanceNode());
             Assert.AreEqual(username, instanceSettings.TypedCollection.RdpUsername.Value);
             Assert.IsTrue(instanceSettings.TypedCollection.RdpUsername.IsDefault);
         }
@@ -205,20 +215,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenUsernameSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
-            var projectSettings = this.service.GetConnectionSettings(CreateProjectNode());
+            var service = CreateConnectionSettingsService();
+
+            var projectSettings = service.GetConnectionSettings(CreateProjectNode());
             projectSettings.TypedCollection.RdpUsername.Value = "root-value";
             projectSettings.Save();
 
-            var zoneSettings = this.service.GetConnectionSettings(CreateZoneNode());
+            var zoneSettings = service.GetConnectionSettings(CreateZoneNode());
             zoneSettings.TypedCollection.RdpUsername.Value = "overriden-value";
             zoneSettings.Save();
 
             // Inherited value is shown...
-            zoneSettings = this.service.GetConnectionSettings(CreateZoneNode());
+            zoneSettings = service.GetConnectionSettings(CreateZoneNode());
             Assert.AreEqual("overriden-value", zoneSettings.TypedCollection.RdpUsername.Value);
             Assert.IsFalse(zoneSettings.TypedCollection.RdpUsername.IsDefault);
 
-            var instanceSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
+            var instanceSettings = service.GetConnectionSettings(CreateVmInstanceNode());
             Assert.AreEqual("overriden-value", instanceSettings.TypedCollection.RdpUsername.Value);
             Assert.IsTrue(instanceSettings.TypedCollection.RdpUsername.IsDefault);
         }
@@ -226,12 +238,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenPortSetInProject_ProjectValueIsInheritedDownToVm()
         {
-            var projectSettings = this.service.GetConnectionSettings(CreateProjectNode());
+            var service = CreateConnectionSettingsService();
+
+            var projectSettings = service.GetConnectionSettings(CreateProjectNode());
             projectSettings.TypedCollection.RdpPort.Value = 13389;
             projectSettings.Save();
 
             // Inherited value is shown...
-            var instanceSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
+            var instanceSettings = service.GetConnectionSettings(CreateVmInstanceNode());
             Assert.AreEqual(13389, instanceSettings.TypedCollection.RdpPort.Value);
             Assert.IsTrue(instanceSettings.TypedCollection.RdpPort.IsDefault);
         }
@@ -239,17 +253,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenPortSetInZoneAndResetInVm_ZoneVmValueApplies()
         {
-            var zoneSettings = this.service.GetConnectionSettings(CreateZoneNode());
+            var service = CreateConnectionSettingsService();
+
+            var zoneSettings = service.GetConnectionSettings(CreateZoneNode());
             zoneSettings.TypedCollection.RdpPort.Value = 13389;
             zoneSettings.Save();
 
             // Reset to default...
-            var instanceSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
+            var instanceSettings = service.GetConnectionSettings(CreateVmInstanceNode());
             instanceSettings.TypedCollection.RdpPort.Value = 3389;
             instanceSettings.Save();
 
             // Own value is shown...
-            var effectiveSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
+            var effectiveSettings = service.GetConnectionSettings(CreateVmInstanceNode());
             Assert.AreEqual(3389, effectiveSettings.TypedCollection.RdpPort.Value);
             Assert.IsFalse(effectiveSettings.TypedCollection.RdpPort.IsDefault);
         }
@@ -257,17 +273,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenPortSetInProjectAndResetInVm_ZoneVmValueApplies()
         {
-            var projectSettings = this.service.GetConnectionSettings(CreateProjectNode());
+            var service = CreateConnectionSettingsService();
+
+            var projectSettings = service.GetConnectionSettings(CreateProjectNode());
             projectSettings.TypedCollection.RdpPort.Value = 13389;
             projectSettings.Save();
 
             // Reset to default...
-            var instanceSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
+            var instanceSettings = service.GetConnectionSettings(CreateVmInstanceNode());
             instanceSettings.TypedCollection.RdpPort.Value = 3389;
             instanceSettings.Save();
 
             // Own value is shown...
-            var effectiveSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
+            var effectiveSettings = service.GetConnectionSettings(CreateVmInstanceNode());
             Assert.AreEqual(3389, effectiveSettings.TypedCollection.RdpPort.Value);
             Assert.IsFalse(effectiveSettings.TypedCollection.RdpPort.IsDefault);
         }
@@ -279,9 +297,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenInstanceIsWindows_ThenSettingsContainRdpAndAppSettings()
         {
+            var service = CreateConnectionSettingsService();
             var vmNode = CreateVmInstanceNode(true);
 
-            var settings = this.service.GetConnectionSettings(vmNode);
+            var settings = service.GetConnectionSettings(vmNode);
 
             CollectionAssert.IsSupersetOf(
                 settings.Settings,
@@ -298,9 +317,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenInstanceIsLinux_ThenSettingsContainSshAndAppSettings()
         {
+            var service = CreateConnectionSettingsService();
             var vmNode = CreateVmInstanceNode(false);
 
-            var settings = this.service.GetConnectionSettings(vmNode);
+            var settings = service.GetConnectionSettings(vmNode);
 
             CollectionAssert.IsSupersetOf(
                 settings.Settings,
@@ -321,9 +341,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void AppUsername()
         {
+            var service = CreateConnectionSettingsService();
             var vmNode = CreateVmInstanceNode(false);
 
-            var settings = this.service.GetConnectionSettings(vmNode);
+            var settings = service.GetConnectionSettings(vmNode);
 
             settings.TypedCollection.AppUsername.Value = "sa";
             settings.TypedCollection.AppUsername.Value = null;

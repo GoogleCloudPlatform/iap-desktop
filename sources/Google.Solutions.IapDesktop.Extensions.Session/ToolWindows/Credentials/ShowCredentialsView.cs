@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
     public interface IShowCredentialsDialog
     {
         void ShowDialog(
-            IWin32Window owner,
+            IWin32Window? owner,
             string username,
             string password);
     }
@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
         }
 
         public void ShowDialog(
-            IWin32Window owner,
+            IWin32Window? owner,
             string username,
             string password)
         {

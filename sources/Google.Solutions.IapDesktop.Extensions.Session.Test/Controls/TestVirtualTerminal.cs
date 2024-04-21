@@ -30,6 +30,8 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
+#nullable disable
+
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 {
     [TestFixture]

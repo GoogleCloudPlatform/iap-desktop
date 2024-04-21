@@ -35,24 +35,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
     public class TestConnectionSettingsRepository
     {
         private const string TestKeyPath = @"Software\Google\__Test";
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
+        private static readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser,
             RegistryView.Default);
 
-        private ProjectRepository projectRepository;
-
-        private ConnectionSettingsRepository repository;
-
-        [SetUp]
-        public void SetUp()
+        private static ProjectRepository CreateProjectRepository()
         {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-
-            this.projectRepository = new ProjectRepository(baseKey);
-            this.repository = new ConnectionSettingsRepository(
-                this.projectRepository);
+            hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            return new ProjectRepository(hkcu.CreateSubKey(TestKeyPath));
         }
 
         //---------------------------------------------------------------------
@@ -62,9 +52,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void WhenProjectIdDoesNotExist_ThenGetProjectSettingsThrowsKeyNotFoundException()
         {
+            var repository = new ConnectionSettingsRepository(CreateProjectRepository());
+
             Assert.Throws<KeyNotFoundException>(() =>
             {
-                this.repository.GetProjectSettings(new ProjectLocator("project-1"));
+                repository.GetProjectSettings(new ProjectLocator("project-1"));
             });
         }
 
@@ -73,8 +65,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             var project = new ProjectLocator("project-1");
 
-            this.projectRepository.AddProject(project);
-            var settings = this.repository.GetProjectSettings(project);
+            var projectRepository = CreateProjectRepository();
+            projectRepository.AddProject(project);
+
+            var repository = new ConnectionSettingsRepository(projectRepository);
+            var settings = repository.GetProjectSettings(project);
 
             Assert.AreEqual(project, settings.Resource);
             Assert.IsTrue(settings.RdpUsername.IsDefault);
@@ -99,13 +94,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             var project = new ProjectLocator("project-1");
 
-            this.projectRepository.AddProject(project);
-            var originalSettings = this.repository.GetProjectSettings(project);
+            var projectRepository = CreateProjectRepository();
+            projectRepository.AddProject(project);
+
+            var repository = new ConnectionSettingsRepository(projectRepository);
+            var originalSettings = repository.GetProjectSettings(project);
             originalSettings.RdpUsername.Value = "user";
 
-            this.repository.SetProjectSettings(originalSettings);
+            repository.SetProjectSettings(originalSettings);
 
-            var settings = this.repository.GetProjectSettings(project);
+            var settings = repository.GetProjectSettings(project);
 
             Assert.AreEqual(originalSettings.Resource, settings.Resource);
             Assert.AreEqual(originalSettings.RdpUsername.Value, settings.RdpUsername.Value);
@@ -116,16 +114,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             var project = new ProjectLocator("project-1");
 
-            this.projectRepository.AddProject(project);
-            var originalSettings = this.repository.GetProjectSettings(project);
+            var projectRepository = CreateProjectRepository();
+            projectRepository.AddProject(project);
+
+            var repository = new ConnectionSettingsRepository(projectRepository);
+            var originalSettings = repository.GetProjectSettings(project);
             originalSettings.RdpUsername.Value = "user";
 
-            this.repository.SetProjectSettings(originalSettings);
+            repository.SetProjectSettings(originalSettings);
 
             originalSettings.RdpUsername.Value = "new-user";
-            this.repository.SetProjectSettings(originalSettings);
+            repository.SetProjectSettings(originalSettings);
 
-            var settings = this.repository.GetProjectSettings(project);
+            var settings = repository.GetProjectSettings(project);
 
             Assert.AreEqual(originalSettings.Resource, settings.Resource);
             Assert.AreEqual(originalSettings.RdpUsername.Value, settings.RdpUsername.Value);
@@ -136,16 +137,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             var project = new ProjectLocator("project-1");
 
-            this.projectRepository.AddProject(project);
-            var originalSettings = this.repository.GetProjectSettings(project);
-            originalSettings.RdpUsername.Value = "user";
-            this.repository.SetProjectSettings(originalSettings);
+            var projectRepository = CreateProjectRepository();
+            projectRepository.AddProject(project);
 
-            this.projectRepository.RemoveProject(project);
+            var repository = new ConnectionSettingsRepository(projectRepository);
+            var originalSettings = repository.GetProjectSettings(project);
+            originalSettings.RdpUsername.Value = "user";
+            repository.SetProjectSettings(originalSettings);
+
+            projectRepository.RemoveProject(project);
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
-                this.repository.GetProjectSettings(project);
+                repository.GetProjectSettings(project);
             });
         }
 
@@ -158,9 +162,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             var zone = new ZoneLocator("project-1", "zone-1");
 
+            var repository = new ConnectionSettingsRepository(CreateProjectRepository());
             Assert.Throws<KeyNotFoundException>(() =>
             {
-                this.repository.GetZoneSettings(zone);
+                repository.GetZoneSettings(zone);
             });
         }
 
@@ -169,8 +174,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             var zone = new ZoneLocator("project-1", "zone-1");
 
-            this.projectRepository.AddProject(zone.Project);
-            var settings = this.repository.GetZoneSettings(zone);
+            var projectRepository = CreateProjectRepository();
+            projectRepository.AddProject(zone.Project);
+
+            var repository = new ConnectionSettingsRepository(projectRepository);
+            var settings = repository.GetZoneSettings(zone);
 
             Assert.AreEqual(zone, settings.Resource);
             Assert.IsTrue(settings.RdpUsername.IsDefault);
@@ -195,12 +203,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             var zone = new ZoneLocator("project-1", "zone-1");
 
-            this.projectRepository.AddProject(zone.Project);
-            var originalSettings = this.repository.GetZoneSettings(zone);
-            originalSettings.RdpUsername.Value = "user-1";
-            this.repository.SetZoneSettings(originalSettings);
+            var projectRepository = CreateProjectRepository();
+            projectRepository.AddProject(zone.Project);
 
-            var settings = this.repository.GetZoneSettings(zone);
+            var repository = new ConnectionSettingsRepository(projectRepository);
+            var originalSettings = repository.GetZoneSettings(zone);
+            originalSettings.RdpUsername.Value = "user-1";
+            repository.SetZoneSettings(originalSettings);
+
+            var settings = repository.GetZoneSettings(zone);
 
             Assert.AreEqual("user-1", settings.RdpUsername.Value);
         }
@@ -210,16 +221,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             var zone = new ZoneLocator("project-1", "zone-1");
 
-            this.projectRepository.AddProject(zone.Project);
-            var originalSettings = this.repository.GetZoneSettings(zone);
-            originalSettings.RdpUsername.Value = "user-1";
-            this.repository.SetZoneSettings(originalSettings);
+            var projectRepository = CreateProjectRepository();
+            projectRepository.AddProject(zone.Project);
 
-            this.projectRepository.RemoveProject(zone.Project);
+            var repository = new ConnectionSettingsRepository(projectRepository);
+            var originalSettings = repository.GetZoneSettings(zone);
+            originalSettings.RdpUsername.Value = "user-1";
+            repository.SetZoneSettings(originalSettings);
+
+            projectRepository.RemoveProject(zone.Project);
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
-                this.repository.GetZoneSettings(zone);
+                repository.GetZoneSettings(zone);
             });
         }
 
@@ -232,9 +246,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 
+            var repository = new ConnectionSettingsRepository(CreateProjectRepository());
             Assert.Throws<KeyNotFoundException>(() =>
             {
-                this.repository.GetInstanceSettings(instance);
+                repository.GetInstanceSettings(instance);
             });
         }
 
@@ -243,8 +258,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-            this.projectRepository.AddProject(instance.Project);
-            var settings = this.repository.GetInstanceSettings(instance);
+            var projectRepository = CreateProjectRepository();
+            projectRepository.AddProject(instance.Project);
+
+            var repository = new ConnectionSettingsRepository(projectRepository);
+            var settings = repository.GetInstanceSettings(instance);
 
             Assert.AreEqual(instance, settings.Resource);
             Assert.IsTrue(settings.RdpUsername.IsDefault);
@@ -274,8 +292,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-            this.projectRepository.AddProject(instance.Project);
-            var originalSettings = this.repository.GetInstanceSettings(instance);
+            var projectRepository = CreateProjectRepository();
+            projectRepository.AddProject(instance.Project);
+
+            var repository = new ConnectionSettingsRepository(projectRepository);
+            var originalSettings = repository.GetInstanceSettings(instance);
             originalSettings.RdpUsername.Value = "user-1";
             originalSettings.RdpConnectionBar.Value = RdpConnectionBarState.Pinned;
             originalSettings.RdpAuthenticationLevel.Value = RdpAuthenticationLevel.RequireServerAuthentication;
@@ -290,10 +311,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             originalSettings.RdpPort.Value = 13389;
             originalSettings.RdpTransport.Value = SessionTransportType.Vpc;
 
-            this.repository.SetInstanceSettings(originalSettings);
+            repository.SetInstanceSettings(originalSettings);
 
 
-            var settings = this.repository.GetInstanceSettings(instance);
+            var settings = repository.GetInstanceSettings(instance);
 
             Assert.AreEqual("user-1", settings.RdpUsername.Value);
             Assert.AreEqual(RdpConnectionBarState.Pinned, settings.RdpConnectionBar.Value);
@@ -315,16 +336,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-            this.projectRepository.AddProject(instance.Project);
-            var originalSettings = this.repository.GetInstanceSettings(instance);
-            originalSettings.RdpUsername.Value = "user-1";
-            this.repository.SetInstanceSettings(originalSettings);
+            var projectRepository = CreateProjectRepository();
+            projectRepository.AddProject(instance.Project);
 
-            this.projectRepository.RemoveProject(instance.Project);
+            var repository = new ConnectionSettingsRepository(projectRepository);
+            var originalSettings = repository.GetInstanceSettings(instance);
+            originalSettings.RdpUsername.Value = "user-1";
+            repository.SetInstanceSettings(originalSettings);
+
+            projectRepository.RemoveProject(instance.Project);
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
-                this.repository.GetInstanceSettings(instance);
+                repository.GetInstanceSettings(instance);
             });
         }
 
@@ -338,7 +362,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var url = IapRdpUrl.FromString(
                 "iap-rdp:///project-1/zone-1/instance-1?username=john%20doe&RdpPort=13389");
 
-            var settings = this.repository.GetInstanceSettings(url, out var foundInInventory);
+            var repository = new ConnectionSettingsRepository(CreateProjectRepository());
+            var settings = repository.GetInstanceSettings(url, out var foundInInventory);
             Assert.IsNotNull(settings);
             Assert.IsFalse(foundInInventory);
 
@@ -359,11 +384,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             //
             // Set project-wide defaults.
             //
-            this.projectRepository.AddProject(instance.Project);
-            var projectSettings = this.repository.GetProjectSettings(instance.Project);
+            var projectRepository = CreateProjectRepository();
+            projectRepository.AddProject(instance.Project);
+
+            var repository = new ConnectionSettingsRepository(projectRepository);
+            var projectSettings = repository.GetProjectSettings(instance.Project);
             projectSettings.RdpUsername.Value = "user-1";
             projectSettings.RdpDomain.Value = "domain";
-            this.repository.SetProjectSettings(projectSettings);
+            repository.SetProjectSettings(projectSettings);
 
             //
             // Expect defaults to be applied.
@@ -371,7 +399,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var url = IapRdpUrl.FromString(
                 "iap-rdp:///project-1/zone-1/instance-1?username=john%20doe&RdpPort=13389");
 
-            var settings = this.repository.GetInstanceSettings(url, out var foundInInventory);
+            var settings = repository.GetInstanceSettings(url, out var foundInInventory);
             Assert.IsNotNull(settings);
             Assert.IsTrue(foundInInventory);
             Assert.AreEqual(instance, settings.Resource);

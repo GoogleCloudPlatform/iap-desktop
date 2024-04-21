@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                 .ConfigureAwait(true);
 
             Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
-            Assert.AreEqual(516, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
+            Assert.AreEqual(516, ((RdpDisconnectedException)this.ExceptionShown!).DisconnectReason);
         }
 
         //---------------------------------------------------------------------
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
 
                 Assert.IsNotNull(this.ExceptionShown);
                 Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
-                Assert.AreEqual(2055, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
+                Assert.AreEqual(2055, ((RdpDisconnectedException)this.ExceptionShown!).DisconnectReason);
             }
         }
 
@@ -206,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                     serviceProvider.GetService<IToolWindowHost>(),
                     serviceProvider.GetService<IJobService>());
 
-                RdpView session = null;
+                RdpView? session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
                     () => session = (RdpView)broker.ConnectRdpSession(
                         instance,
@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                 Assert.IsNull(this.ExceptionShown);
 
                 // Float.
-                session.FloatAt(new Rectangle(0, 0, 800, 600));
+                session!.FloatAt(new Rectangle(0, 0, 800, 600));
                 await Task.Delay(TimeSpan.FromSeconds(2))
                     .ConfigureAwait(true);
 

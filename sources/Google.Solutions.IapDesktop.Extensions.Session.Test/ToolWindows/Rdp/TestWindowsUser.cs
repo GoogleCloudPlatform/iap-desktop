@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             Assert.AreEqual(
                 Environment.UserName,
                 WindowsUser.SuggestUsername(
-                    CreateSession(null)));
+                    CreateSession(null!)));
         }
 
         [Test]

@@ -88,8 +88,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
            bool legacySshKeyPresent,
            bool projectWideKeysBlockedForProject,
            bool projectWideKeysBlockedForInstance,
-           MetadataAuthorizedPublicKeySet existingProjectKeySet = null,
-           MetadataAuthorizedPublicKeySet existingInstanceKeySet = null)
+           MetadataAuthorizedPublicKeySet? existingProjectKeySet = null,
+           MetadataAuthorizedPublicKeySet? existingInstanceKeySet = null)
         {
             var projectMetadata = new Metadata();
 

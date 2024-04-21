@@ -49,12 +49,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
         private static AppProtocolContextFactory CreateFactory(
-            Extensions.Session.Settings.ConnectionSettings settings)
+            Extensions.Session.Settings.ConnectionSettings? settings)
         {
             var settingsService = new Mock<IConnectionSettingsService>();
-            settingsService
-                .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
-                .Returns(settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+            if (settings != null)
+            {
+                settingsService
+                    .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
+                    .Returns(settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+            }
 
             var transport = new Mock<ITransport>();
             transport.SetupGet(t => t.Target).Returns(SampleInstance);

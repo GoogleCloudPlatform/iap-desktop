@@ -65,8 +65,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         }
 
         private Mock<IComputeEngineClient> CreateComputeEngineAdapterMock(
-            IDictionary<string, string> projectMetadata,
-            IDictionary<string, string> instanceMetadata)
+            IDictionary<string, string>? projectMetadata,
+            IDictionary<string, string>? instanceMetadata)
         {
             var adapter = new Mock<IComputeEngineClient>();
             adapter.Setup(a => a.GetProjectAsync(
@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(model);
-            Assert.AreEqual("Project 1", model.DisplayName);
+            Assert.AreEqual("Project 1", model!.DisplayName);
 
             Assert.AreEqual(1, model.Items.Count());
             Assert.AreEqual(KeyAuthorizationMethods.Oslogin, model.Items.First().AuthorizationMethod);
@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(model);
-            Assert.AreEqual("Project 1", model.DisplayName);
+            Assert.AreEqual("Project 1", model!.DisplayName);
 
             Assert.AreEqual(1, model.Items.Count());
             Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, model.Items.ToList()[0].AuthorizationMethod);
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(model);
-            Assert.AreEqual("Project 1", model.DisplayName);
+            Assert.AreEqual("Project 1", model!.DisplayName);
 
             CollectionAssert.IsEmpty(model.Items);
         }
@@ -313,7 +313,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(model);
-            Assert.AreEqual("instance-1", model.DisplayName);
+            Assert.AreEqual("instance-1", model!.DisplayName);
 
             Assert.AreEqual(1, model.Items.Count());
             Assert.AreEqual(KeyAuthorizationMethods.Oslogin, model.Items.First().AuthorizationMethod);
@@ -348,7 +348,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(model);
-            Assert.AreEqual("instance-1", model.DisplayName);
+            Assert.AreEqual("instance-1", model!.DisplayName);
 
             Assert.AreEqual(2, model.Items.Count());
             Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, model.Items.ToList()[0].AuthorizationMethod);
@@ -386,7 +386,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(model);
-            Assert.AreEqual("instance-1", model.DisplayName);
+            Assert.AreEqual("instance-1", model!.DisplayName);
 
             Assert.AreEqual(1, model.Items.Count());
             Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, model.Items.ToList()[0].AuthorizationMethod);

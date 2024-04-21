@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
     public interface ISelectCredentialsDialog
     {
         Task SelectCredentialsAsync(
-           IWin32Window owner,
+           IWin32Window? owner,
            InstanceLocator instanceLocator,
            Settings.ConnectionSettings settings,
            RdpCredentialGenerationBehavior allowedBehavior,
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
         }
 
         public async Task SelectCredentialsAsync(
-            IWin32Window owner,
+            IWin32Window? owner,
             InstanceLocator instanceLocator,
             Settings.ConnectionSettings settings,
             RdpCredentialGenerationBehavior allowedBehavior,

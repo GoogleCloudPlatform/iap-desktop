@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         [Test]
         public void WhenFontNotFound_ThenIsValidFontReturnsFalse()
         {
-            Assert.IsFalse(TerminalFont.IsValidFont((string)null));
+            Assert.IsFalse(TerminalFont.IsValidFont(string.Empty));
             Assert.IsFalse(TerminalFont.IsValidFont("doesnotexist"));
         }
 

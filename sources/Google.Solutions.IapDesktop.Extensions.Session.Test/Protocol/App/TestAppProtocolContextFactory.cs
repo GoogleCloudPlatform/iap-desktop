@@ -207,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(context.NetworkCredential);
-            Assert.AreEqual("password", context.NetworkCredential.Password);
+            Assert.AreEqual("password", context.NetworkCredential!.Password);
             Assert.AreEqual("domain", context.NetworkCredential.Domain);
         }
 

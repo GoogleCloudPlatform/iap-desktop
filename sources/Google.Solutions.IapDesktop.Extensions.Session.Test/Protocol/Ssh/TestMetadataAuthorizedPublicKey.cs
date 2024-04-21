@@ -157,8 +157,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 "AAAA",
                 "bob@gmail.com");
 
-            Assert.IsFalse(key.Equals((object)null));
-            Assert.IsFalse(key.Equals((MetadataAuthorizedPublicKey)null));
+            Assert.IsFalse(key.Equals((object?)null));
+            Assert.IsFalse(key!.Equals((MetadataAuthorizedPublicKey?)null));
         }
 
         [Test]
