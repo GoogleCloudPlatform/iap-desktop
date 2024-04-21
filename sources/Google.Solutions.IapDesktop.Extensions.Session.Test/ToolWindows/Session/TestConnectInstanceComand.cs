@@ -256,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 .ExecuteAsync(instance)
                 .ConfigureAwait(false);
 
-            ISession session;
+            ISession? session;
             sessionBroker.Verify(
                 s => s.TryActivateSession(SampleLocator, out session),
                 Times.Never);
