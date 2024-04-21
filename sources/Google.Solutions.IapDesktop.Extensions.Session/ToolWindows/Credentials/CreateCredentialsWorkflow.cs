@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
     public interface ICreateCredentialsWorkflow
     {
         Task CreateCredentialsAsync(
-            IWin32Window owner,
+            IWin32Window? owner,
             InstanceLocator instanceRef,
             Settings.ConnectionSettings settings,
             bool silent);
