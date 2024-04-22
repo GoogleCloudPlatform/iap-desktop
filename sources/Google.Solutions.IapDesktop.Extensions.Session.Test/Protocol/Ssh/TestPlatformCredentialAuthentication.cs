@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             }
         }
 
-        private async Task VerifyCredentialAsync(
+        private static async Task VerifyCredentialAsync(
             InstanceLocator instance,
             IAsymmetricKeyCredential credential,
             IKeyboardInteractiveHandler handler)

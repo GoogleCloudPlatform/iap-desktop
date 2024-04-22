@@ -55,7 +55,7 @@ namespace Google.Solutions.Iap.Net
         /// <summary>
         /// Allow callers to modify the "User-Agent" header of HTTP requests.
         /// </summary>
-        public static SystemPatch UnrestrictUserAgentHeader
+        public static readonly SystemPatch UnrestrictUserAgentHeader
             = new UnrestrictHeaderPatch("User-Agent");
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Google.Solutions.Iap.Net
         /// that extracts the userinfo part of an URL (http://userinfo@host/) 
         /// and sets it as Host header.
         /// </summary>
-        public static SystemPatch SetUsernameAsHostHeaderForWssRequests
+        public static readonly SystemPatch SetUsernameAsHostHeaderForWssRequests
             = new SetUsernameAsHostHeaderPatch("wss:");
 
         //---------------------------------------------------------------------
@@ -250,9 +250,8 @@ namespace Google.Solutions.Iap.Net
                 var prop = typeof(WebRequest).GetProperty(
                     "PrefixList",
                     BindingFlags.NonPublic | BindingFlags.Static);
-                var prefixes = prop?.GetValue(null) as ArrayList;
 
-                if (prefixes == null)
+                if (!(prop?.GetValue(null) is ArrayList prefixes))
                 {
                     throw new InvalidOperationException("Accessing WebRequest.PrefixList failed");
                 }
@@ -275,8 +274,7 @@ namespace Google.Solutions.Iap.Net
                                 "Accessing WebRequestPrefixElement.Creator failed");
                         }
 
-                        var original = creatorProperty.GetValue(entry) as IWebRequestCreate;
-                        if (original == null)
+                        if (!(creatorProperty.GetValue(entry) is IWebRequestCreate original))
                         {
                             throw new InvalidOperationException(
                                 "WebRequestPrefixElement.Creator uses an unexpected type");

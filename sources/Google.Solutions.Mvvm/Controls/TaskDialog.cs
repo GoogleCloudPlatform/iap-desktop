@@ -116,7 +116,7 @@ namespace Google.Solutions.Mvvm.Controls
                     var flags =
                         TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA |
                         TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS;
-                    if (commandButtons.Any())
+                    if (commandButtons.Count != 0)
                     {
                         flags |= TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS;
                     }
@@ -133,7 +133,9 @@ namespace Google.Solutions.Mvvm.Controls
                         MainIcon = parameters.Icon?.Handle ?? IntPtr.Zero,
                         pszMainInstruction = parameters.Heading,
                         pszContent = parameters.Text,
-                        pButtons = commandButtons.Any() ? commandButtonsHandle.DangerousGetHandle() : IntPtr.Zero,
+                        pButtons = commandButtons.Count != 0 
+                            ? commandButtonsHandle.DangerousGetHandle() 
+                            : IntPtr.Zero,
                         cButtons = (uint)commandButtons.Count,
                         pszExpandedInformation = parameters.Footnote,
                         pszVerificationText = parameters.VerificationCheckBox?.Text,

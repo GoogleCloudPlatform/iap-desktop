@@ -239,3 +239,9 @@ dotnet_diagnostic.VSTHRD110.severity = suggestion
 dotnet_diagnostic.VSTHRD200.severity = suggestion
 
 csharp_prefer_simple_using_statement = false
+
+# CA1861: Avoid constant arrays as arguments
+dotnet_diagnostic.CA1861.severity = none
+
+# CA1860: Avoid using 'Enumerable.Any()' extension method
+dotnet_diagnostic.CA1860.severity = none

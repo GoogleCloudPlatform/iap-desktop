@@ -23,10 +23,10 @@
 
 namespace Google.Solutions.Ssh
 {
-    public struct TerminalSize
+    public readonly struct TerminalSize
     {
-        public ushort Columns;
-        public ushort Rows;
+        public readonly ushort Columns;
+        public readonly ushort Rows;
 
         public TerminalSize(ushort columns, ushort rows)
         {

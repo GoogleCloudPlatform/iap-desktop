@@ -159,7 +159,7 @@ namespace Google.Solutions.Iap.Test.Net
                 using (var clientStream = new WebSocketStream(connection.Client))
                 {
                     var bytesRead = await clientStream
-                        .ReadAsync(new byte[0], 0, 0, CancellationToken.None)
+                        .ReadAsync(Array.Empty<byte>(), 0, 0, CancellationToken.None)
                         .ConfigureAwait(false);
 
                     Assert.AreEqual(0, bytesRead);

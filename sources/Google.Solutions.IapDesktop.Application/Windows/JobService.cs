@@ -72,11 +72,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows
     public class JobService : IJobService
     {
         private readonly IJobHost host;
-        private readonly IAuthorization authorization;
 
-        public JobService(IAuthorization authorization, IJobHost host)
+        public JobService(IJobHost host)
         {
-            this.authorization = authorization;
             this.host = host;
         }
 

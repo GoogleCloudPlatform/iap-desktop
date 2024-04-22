@@ -75,9 +75,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
         public void WhenSelectedIndexChanges_ThenPropertyIsUpdated()
         {
             var prop = ObservableProperty.Build<Dish>(Dish.Dumplings);
-            var adapter = new BindableComboBox.SelectionAdapter<Dish>(prop);
-
-            adapter.SelectedIndex = 0;
+            var adapter = new BindableComboBox.SelectionAdapter<Dish>(prop)
+            {
+                SelectedIndex = 0
+            };
             Assert.AreEqual(0, adapter.SelectedIndex);
             Assert.AreEqual(Dish.Pizza, prop.Value);
         }

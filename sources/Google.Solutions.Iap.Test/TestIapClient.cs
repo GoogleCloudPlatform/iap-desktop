@@ -43,7 +43,7 @@ namespace Google.Solutions.Iap.Test
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");
 
-        private Mock<IAuthorization> CreateAuthorization(DeviceEnrollmentState state)
+        private static Mock<IAuthorization> CreateAuthorization(DeviceEnrollmentState state)
         {
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(state);

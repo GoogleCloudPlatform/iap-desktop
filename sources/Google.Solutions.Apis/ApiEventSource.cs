@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Tracing;
 
 namespace Google.Solutions.Apis
@@ -26,6 +27,9 @@ namespace Google.Solutions.Apis
     /// <summary>
     /// ETW event source.
     /// </summary>
+    [SuppressMessage("Style", 
+        "IDE0060:Remove unused parameter", 
+        Justification = "ETW parameters")]
     [EventSource(Name = ProviderName, Guid = ProviderGuid)]
     public sealed class ApiEventSource : EventSource
     {

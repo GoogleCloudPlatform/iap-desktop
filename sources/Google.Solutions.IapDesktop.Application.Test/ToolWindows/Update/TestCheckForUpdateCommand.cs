@@ -458,9 +458,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 CreateCancelledDialog(),
                 new Mock<IBrowser>().Object);
 
-            command.Execute(
-                new Mock<IMainWindow>().Object,
-                CancellationToken.None);
+            command.Execute(CancellationToken.None);
 
             feed.Verify(f => f.FindLatestReleaseAsync(
                 ReleaseFeedOptions.None,
@@ -480,9 +478,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 CreateCancelledDialog(),
                 new Mock<IBrowser>().Object);
 
-            command.Execute(
-                new Mock<IMainWindow>().Object,
-                CancellationToken.None);
+            command.Execute(CancellationToken.None);
 
             feed.Verify(f => f.FindLatestReleaseAsync(
                 ReleaseFeedOptions.IncludeCanaryReleases,

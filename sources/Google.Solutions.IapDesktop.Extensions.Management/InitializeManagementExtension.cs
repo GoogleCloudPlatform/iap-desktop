@@ -40,12 +40,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management
     [Service(ServiceLifetime.Singleton, DelayCreation = false)]
     public class InitializeManagementExtension
     {
-        private readonly IServiceProvider serviceProvider;
-
         public InitializeManagementExtension(IServiceProvider serviceProvider)
         {
-            this.serviceProvider = serviceProvider;
-
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
             var packageInventoryCommands = serviceProvider.GetService<PackageInventoryCommands>();

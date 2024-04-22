@@ -141,17 +141,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
 
         private static int GetImageIndex(EventBase e)
         {
-            switch (e.Severity)
+            return e.Severity switch
             {
-                case "ERROR":
-                    return 2;
-
-                case "WARNING":
-                    return 1;
-
-                default:
-                    return 0;
-            }
+                "ERROR" => 2,
+                "WARNING" => 1,
+                _ => 0,
+            };
         }
 
         private static string GetInstanceName(EventBase e)

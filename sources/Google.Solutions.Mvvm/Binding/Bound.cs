@@ -75,7 +75,7 @@ namespace Google.Solutions.Mvvm.Binding
             }
         }
 
-        public T? TryGet()
+        public readonly T? TryGet()
         {
             return this.value;
         }

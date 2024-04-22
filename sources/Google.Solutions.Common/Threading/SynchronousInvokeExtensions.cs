@@ -47,7 +47,7 @@ namespace Google.Solutions.Common.Threading
 
                 var ar = invoker.BeginInvoke((Action)(() =>
                 {
-                    action
+                    _ = action
                        .Invoke()
                        .ContinueWith(t =>
                        {

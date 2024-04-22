@@ -51,7 +51,7 @@ namespace Google.Solutions.Apis.Test.Client
 
         private const string SampleEndpoint = "https://sample.googleapis.com/";
 
-        private Mock<IAuthorization> CreateAuthorization(DeviceEnrollmentState state)
+        private static Mock<IAuthorization> CreateAuthorization(DeviceEnrollmentState state)
         {
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(state);

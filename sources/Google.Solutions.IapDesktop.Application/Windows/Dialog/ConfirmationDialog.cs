@@ -64,17 +64,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                     out _,
                     out _);
 
-                switch (buttonPressed)
+                return buttonPressed switch
                 {
-                    case UnsafeNativeMethods.IDYES:
-                        return DialogResult.Yes;
-
-                    case UnsafeNativeMethods.IDNO:
-                        return DialogResult.No;
-
-                    default:
-                        return DialogResult.Abort;
-                }
+                    UnsafeNativeMethods.IDYES => DialogResult.Yes,
+                    UnsafeNativeMethods.IDNO => DialogResult.No,
+                    _ => DialogResult.Abort,
+                };
             }
         }
     }

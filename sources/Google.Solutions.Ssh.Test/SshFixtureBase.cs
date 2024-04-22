@@ -42,7 +42,7 @@ namespace Google.Solutions.Ssh.Test
 {
     public abstract class SshFixtureBase : FixtureBase
     {
-        private static readonly IDictionary<string, IAsymmetricKeyCredential> cachedCredentials =
+        private static readonly Dictionary<string, IAsymmetricKeyCredential> cachedCredentials =
             new Dictionary<string, IAsymmetricKeyCredential>();
 
         protected override IEnumerable<TraceSource> Sources

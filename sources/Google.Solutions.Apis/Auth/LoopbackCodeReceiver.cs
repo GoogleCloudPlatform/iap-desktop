@@ -179,10 +179,10 @@ namespace Google.Solutions.Apis.Auth
 
                             var output = context.Response.OutputStream;
                             await output
-                                .WriteAsync(bytes, 0, bytes.Length)
+                                .WriteAsync(bytes, 0, bytes.Length, CancellationToken.None)
                                 .ConfigureAwait(false);
                             await output
-                                .FlushAsync()
+                                .FlushAsync(CancellationToken.None)
                                 .ConfigureAwait(false);
                             output.Close();
                             context.Response.Close();

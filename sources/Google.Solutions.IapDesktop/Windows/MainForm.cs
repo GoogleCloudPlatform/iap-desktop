@@ -403,7 +403,7 @@ namespace Google.Solutions.IapDesktop.Windows
                             checkForUpdates.LastSurveyVersion = lastSurveyVersion;
                         }
 
-                        checkForUpdates.Execute(this, cts.Token);
+                        checkForUpdates.Execute(cts.Token);
 
                         settings.LastUpdateCheck.Value = DateTime.UtcNow.ToBinary();
                         settings.IsSurveyEnabled.Value = checkForUpdates.EnableSurveys;
@@ -566,7 +566,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         internal void ConnectToUrl(IapRdpUrl url)
         {
-            ConnectToUrlAsync(url).ContinueWith(_ => { });
+            _ = ConnectToUrlAsync(url).ContinueWith(_ => { });
         }
 
         private void dockPanel_ActiveContentChanged(object sender, EventArgs e)

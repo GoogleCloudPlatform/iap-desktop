@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
                    instanceNode.IsRunning;
             }
 
-            public async override Task ExecuteAsync(IProjectModelNode node)
+            public override async Task ExecuteAsync(IProjectModelNode node)
             {
                 Debug.Assert(IsAvailable(node));
                 Debug.Assert(IsEnabled(node));

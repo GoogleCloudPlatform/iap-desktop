@@ -32,7 +32,7 @@ namespace Google.Solutions.Mvvm.Shell
     public sealed class FileTypeCache : IDisposable
     {
         private readonly object cacheLock = new object();
-        private readonly IDictionary<CacheKey, FileType> cache
+        private readonly Dictionary<CacheKey, FileType> cache
             = new Dictionary<CacheKey, FileType>();
 
         internal int CacheSize => this.cache.Count;
@@ -86,7 +86,7 @@ namespace Google.Solutions.Mvvm.Shell
             public string? FileExtension;
             public IconFlags Flags;
 
-            public override bool Equals(object obj)
+            public readonly override bool Equals(object obj)
             {
                 return obj is CacheKey key &&
                     key.Attributes == this.Attributes &&
@@ -94,7 +94,7 @@ namespace Google.Solutions.Mvvm.Shell
                     key.Flags == this.Flags;
             }
 
-            public override int GetHashCode()
+            public readonly override int GetHashCode()
             {
                 return ((int)this.Attributes) ^
                     ((int)this.Flags) ^

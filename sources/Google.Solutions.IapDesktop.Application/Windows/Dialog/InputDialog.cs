@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         /// </summary>
         public ValidationCallback Validate { get; set; }
 
-        internal void ExpectValid()
+        internal readonly void ExpectValid()
         {
             this.Title.ExpectNotNull(nameof(this.Title));
             this.Caption.ExpectNotNull(nameof(this.Caption));
