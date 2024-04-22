@@ -233,34 +233,32 @@ namespace Google.Solutions.IapDesktop
                     // configuration, so give the user a chance to change proxy
                     // settings.
                     //
-                    try
+                    var dialogParameters = new TaskDialogParameters(
+                        "Authorization failed",
+                        "IAP Desktop failed to complete the OAuth authorization. " +
+                            "This might be due to network communication issues.",
+                        retryArgs.Exception.Message)
                     {
-                        if (serviceProvider.GetService<ILegacyTaskDialog>()
-                            .ShowOptionsTaskDialog(
-                                dialog.ViewModel.View,
-                                TaskDialogIcons.TD_ERROR_ICON,
-                                "Authorization failed",
-                                "IAP Desktop failed to complete the OAuth authorization. " +
-                                    "This might be due to network communication issues.",
-                                retryArgs.Exception.Message,
-                                retryArgs.Exception.FullMessage(),
-                                new[]
-                                {
-                                    "Change network settings"
-                                },
-                                null,
-                                out var _) == 0)
-                        {
-                            //
-                            // Open settings.
-                            //
-                            retryArgs.Retry = OptionsDialog.Show(
-                                dialog.ViewModel.View,
-                                (IServiceCategoryProvider)serviceProvider) == DialogResult.OK;
-                        }
+                        Footnote = retryArgs.Exception.FullMessage(),
+                        Icon = TaskDialogIcon.Error
+                    };
+
+                    dialogParameters.Buttons.Add(TaskDialogStandardButton.Cancel);
+                    dialogParameters.Buttons.Add(new TaskDialogCommandLinkButton(
+                        "Change network settings",
+                        DialogResult.OK));
+
+                    if (serviceProvider
+                        .GetService<ITaskDialog>()
+                        .ShowDialog(dialog.ViewModel.View, dialogParameters) == DialogResult.OK)
+                    {
+                        //
+                        // Open settings.
+                        //
+                        retryArgs.Retry = OptionsDialog.Show(
+                            dialog.ViewModel.View,
+                            (IServiceCategoryProvider)serviceProvider) == DialogResult.OK;
                     }
-                    catch (OperationCanceledException)
-                    { }
                 };
 
                 dialog.ViewModel.ShowOptions += (_, args) =>
