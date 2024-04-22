@@ -32,7 +32,7 @@ namespace Google.Solutions.Mvvm.Shell
     public sealed class FileTypeCache : IDisposable
     {
         private readonly object cacheLock = new object();
-        private readonly IDictionary<CacheKey, FileType> cache
+        private readonly Dictionary<CacheKey, FileType> cache
             = new Dictionary<CacheKey, FileType>();
 
         internal int CacheSize => this.cache.Count;

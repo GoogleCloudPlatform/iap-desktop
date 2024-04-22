@@ -45,9 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Diagnostics
     [Service]
     public class DiagnosticsCommands
     {
-        public DiagnosticsCommands(
-            IConnectionSettingsService settingsService,
-            IProjectWorkspace workspace)
+        public DiagnosticsCommands(IProjectWorkspace workspace)
         {
             this.GenerateHtmlPage = new GenerateHtmlPageCommand(workspace);
         }

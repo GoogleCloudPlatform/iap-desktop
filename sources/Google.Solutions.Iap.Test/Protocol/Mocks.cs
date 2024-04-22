@@ -41,13 +41,10 @@ namespace Google.Solutions.Iap.Test.Protocol
         public WebSocketCloseStatus? ExpectServerCloseCodeOnRead { get; set; }
         public WebSocketCloseStatus? ExpectServerCloseCodeOnWrite { get; set; }
 
-        public int MaxWriteSize => int.MaxValue;
-        public int MinReadSize => 1;
-
         public Task CloseAsync(CancellationToken cancellationToken)
         {
             this.CloseCount++;
-            return Task.Delay(0);
+            return Task.Delay(0, CancellationToken.None);
         }
 
         public Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
@@ -99,7 +96,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 Assert.AreEqual(this.ExpectedWriteData[this.WriteCount], data);
 
                 this.WriteCount++;
-                return Task.Delay(0);
+                return Task.Delay(0, CancellationToken.None);
             }
             else if (this.ExpectServerCloseCodeOnWrite.HasValue)
             {
@@ -110,7 +107,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             else
             {
                 this.WriteCount++;
-                return Task.Delay(0);
+                return Task.Delay(0, CancellationToken.None);
             }
         }
 
