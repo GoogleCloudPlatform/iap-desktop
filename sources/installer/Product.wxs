@@ -68,13 +68,27 @@
         Type="raw"/>
     </Property>
 
-    <Condition Message="This application is only supported on Windows 8, Windows Server 2012, or higher.">
+    <Property Id="WINDOWS_CURRENTBUILDNUMBER">
+      <RegistrySearch 
+        Id="CurrentBuildNumberSearch"
+        Root="HKLM"
+        Key="SOFTWARE\Microsoft\Windows NT\CurrentVersion"
+        Name="CurrentBuildNumber"
+        Type="raw" />
+    </Property>
+
+    <Condition Message="This version of IAP Desktop requires Windows 10, Windows Server 2016, or higher.">
       <!-- 
-        The WebSocket implementation is only available in Windows 8/2012 and higher,
-        see https://docs.microsoft.com/en-us/dotnet/api/system.net.websockets.clientwebsocket?view=netframework-4.8.
+        - The WebSocket implementation is only available in Windows 8/2012 and higher,
+          see https://docs.microsoft.com/en-us/dotnet/api/system.net.websockets.clientwebsocket?view=netframework-4.8.
+        - Libssh2 CNG/ECDSA support requires Windows 10 or later.
+
         Plus, older versions of Windows are out of support by now anyway.
+
+        NB. Windows 10 still uses VersionNT=603 and WindowsBuild=9600, so 
+        we need to check the build number from the registry.
       -->
-      <![CDATA[Installed OR (VersionNT >= 602)]]>
+      <![CDATA[Installed OR (VersionNT >= 603 AND WINDOWS_CURRENTBUILDNUMBER >= 10000)]]>
     </Condition>
     <Condition Message="You need administrative privileges to install IAP Desktop on Windows Server. For more details, see https://bit.ly/iapdesktop-install.">
       <!-- 
