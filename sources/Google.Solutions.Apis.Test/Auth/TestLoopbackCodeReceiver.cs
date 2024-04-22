@@ -50,6 +50,13 @@ namespace Google.Solutions.Apis.Test.Auth
             }
         }
 
+        [Test]
+        public void WhenPathLacksSlash_ThenConstructorThrowsException()
+        {
+            Assert.Throws<ArgumentException>(
+                () => new LoopbackCodeReceiver("/auth", "response"));
+        }
+
         //---------------------------------------------------------------------
         // ReceiveCode.
         //---------------------------------------------------------------------
@@ -143,6 +150,49 @@ namespace Google.Solutions.Apis.Test.Auth
 
                 Assert.AreEqual("c1", response.Error);
                 Assert.IsNull(response.State);
+            }
+        }
+
+        [Test]
+        public async Task WhenReceivingIrrelevantRequests_ThenReceiveCodeKeepsListening(
+            [Values("/", "/auth/")] string path)
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                var receiver = new Receiver(path, "done");
+                var url = new AuthorizationCodeRequestUrl(SampleUri);
+
+                var receiveTask = receiver.ReceiveCodeAsync(url, tokenSource.Token);
+                using (var client = new HttpClient())
+                {
+                    await Task.Delay(TimeSpan.FromMilliseconds(10));
+
+                    await client
+                        .GetAsync(new UriBuilder(receiver.RedirectUri)
+                        {
+                            Path = "/favicon.ico"
+                        }.Uri)
+                        .ConfigureAwait(false);
+
+                    await client
+                        .GetAsync(receiver.RedirectUri) // Missing parameters
+                        .ConfigureAwait(false);
+
+                    var htmlResponse = await client
+                        .GetAsync($"{receiver.RedirectUri}?code=c1&state=s1")
+                        .ConfigureAwait(false);
+
+                    var html = await htmlResponse.Content
+                        .ReadAsStringAsync()
+                        .ConfigureAwait(false);
+
+                    Assert.AreEqual("done", html);
+                }
+
+                var response = await receiveTask.ConfigureAwait(false);
+
+                Assert.AreEqual("c1", response.Code);
+                Assert.AreEqual("s1", response.State);
             }
         }
     }
