@@ -96,16 +96,17 @@ namespace Google.Solutions.Ssh.Test.Native
                 // Trigger an error
                 try
                 {
-                    session.SetPreferredMethods(LIBSSH2_METHOD.KEX, new[] { "invalid" });
-                }
-                catch (Exception)
-                { }
+                    session.SetPreferredMethods((LIBSSH2_METHOD)(-1), new[] { "invalid" });
 
-                var exception = session.CreateException(LIBSSH2_ERROR.METHOD_NOT_SUPPORTED);
-                Assert.AreEqual(
-                    "The requested method(s) are not currently supported",
-                    exception.Message);
-                Assert.AreEqual(LIBSSH2_ERROR.METHOD_NOT_SUPPORTED, exception.ErrorCode);
+                    Assert.Fail();
+                }
+                catch (Libssh2Exception e)
+                {
+                    Assert.AreEqual(
+                        "Invalid parameter specified for method_type",
+                        e.Message);
+                    Assert.AreEqual(LIBSSH2_ERROR.INVAL, e.ErrorCode);
+                }
             }
         }
 
