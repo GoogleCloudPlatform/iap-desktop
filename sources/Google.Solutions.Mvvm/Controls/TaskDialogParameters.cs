@@ -125,7 +125,6 @@ namespace Google.Solutions.Mvvm.Controls
         private const int IDCANCEL = 2;
         private const int IDABORT = 3;
         private const int IDRETRY = 4;
-        private const int IDIGNORE = 5;
         private const int IDYES = 6;
         private const int IDNO = 7;
 

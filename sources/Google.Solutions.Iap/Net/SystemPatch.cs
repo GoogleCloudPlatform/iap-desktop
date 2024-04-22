@@ -55,7 +55,7 @@ namespace Google.Solutions.Iap.Net
         /// <summary>
         /// Allow callers to modify the "User-Agent" header of HTTP requests.
         /// </summary>
-        public static SystemPatch UnrestrictUserAgentHeader
+        public static readonly SystemPatch UnrestrictUserAgentHeader
             = new UnrestrictHeaderPatch("User-Agent");
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Google.Solutions.Iap.Net
         /// that extracts the userinfo part of an URL (http://userinfo@host/) 
         /// and sets it as Host header.
         /// </summary>
-        public static SystemPatch SetUsernameAsHostHeaderForWssRequests
+        public static readonly SystemPatch SetUsernameAsHostHeaderForWssRequests
             = new SetUsernameAsHostHeaderPatch("wss:");
 
         //---------------------------------------------------------------------

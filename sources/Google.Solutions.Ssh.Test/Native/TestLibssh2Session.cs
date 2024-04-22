@@ -96,7 +96,8 @@ namespace Google.Solutions.Ssh.Test.Native
                 // Trigger an error
                 try
                 {
-                    session.SetPreferredMethods((LIBSSH2_METHOD)(-1), new[] { "invalid" });
+                    var methods = new[] { "invalid" };
+                    session.SetPreferredMethods((LIBSSH2_METHOD)(-1), methods);
 
                     Assert.Fail();
                 }
@@ -241,9 +242,10 @@ namespace Google.Solutions.Ssh.Test.Native
 
             using (var session = CreateSession())
             {
+                var methods = new[] { "diffie-hellman-group-exchange-sha1" };
                 session.SetPreferredMethods(
                     LIBSSH2_METHOD.KEX,
-                    new[] { "diffie-hellman-group-exchange-sha1" });
+                    methods);
 
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
@@ -269,12 +271,13 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             using (var session = CreateSession())
             {
+                var methods = new[] { "invalid" };
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.INVAL,
                     () => session.SetPreferredMethods(
                         (LIBSSH2_METHOD)(-1),
-                        new[] { "invalid" }));
+                        methods));
             }
         }
 

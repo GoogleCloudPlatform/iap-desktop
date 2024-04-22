@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows
                 return ((IProjectModelInstanceNode)context).IsRunning;
             }
 
-            public async override Task ExecuteAsync(IProjectModelNode context)
+            public override async Task ExecuteAsync(IProjectModelNode context)
             {
                 var instance = (IProjectModelInstanceNode)context;
 

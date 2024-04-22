@@ -77,7 +77,7 @@ namespace Google.Solutions.Apis.Test.Auth
             }
         }
 
-        private Mock<IOidcSession> CreateSession()
+        private static Mock<IOidcSession> CreateSession()
         {
             var session = new Mock<IOidcSession>();
             session

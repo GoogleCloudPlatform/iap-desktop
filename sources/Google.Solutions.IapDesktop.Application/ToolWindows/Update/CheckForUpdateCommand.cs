@@ -214,7 +214,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
             }
         }
 
-        public void Execute(TContext context, CancellationToken cancellationToken)
+        public void Execute(CancellationToken cancellationToken)
         {
             var latestRelease = this.feed
                 .FindLatestReleaseAsync(
@@ -244,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
 
         public override void Execute(TContext context)
         {
-            Execute(context, CancellationToken.None);
+            Execute(CancellationToken.None);
         }
 
         public override async Task ExecuteAsync(TContext context)

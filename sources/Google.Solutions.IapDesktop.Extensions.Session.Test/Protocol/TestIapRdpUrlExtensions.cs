@@ -50,8 +50,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         public void WhenUshortQueryParameterIsNullOrEmpty_ThenTryGetParameterReturnsFalse(
             [Values(null, "", " ")] string emptyValue)
         {
-            var queryParameters = new NameValueCollection();
-            queryParameters.Add("RdpPort", emptyValue);
+            var queryParameters = new NameValueCollection
+            {
+                { "RdpPort", emptyValue }
+            };
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
             Assert.IsFalse(url.TryGetParameter("RdpPort", out ushort _));
@@ -61,8 +63,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         public void WhenUshortQueryParameterOutOfRange_ThenTryGetParameterReturnsFalse(
             [Values("-1", "999999999")] string wrongValue)
         {
-            var queryParameters = new NameValueCollection();
-            queryParameters.Add("RdpPort", wrongValue);
+            var queryParameters = new NameValueCollection
+            {
+                { "RdpPort", wrongValue }
+            };
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
             Assert.IsFalse(url.TryGetParameter("RdpPort", out ushort _));
@@ -71,8 +75,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         [Test]
         public void WhenUshortQueryParameterValid_ThenTryGetParameterReturnsTrue()
         {
-            var queryParameters = new NameValueCollection();
-            queryParameters.Add("RdpPort", "3389");
+            var queryParameters = new NameValueCollection
+            {
+                { "RdpPort", "3389" }
+            };
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
             Assert.IsTrue(url.TryGetParameter("RdpPort", out ushort value));
@@ -95,8 +101,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         public void WhenStringQueryParameterIsNullOrEmpty_ThenTryGetParameterReturnsFalse(
             [Values(null, "", " ")] string emptyValue)
         {
-            var queryParameters = new NameValueCollection();
-            queryParameters.Add("Username", emptyValue);
+            var queryParameters = new NameValueCollection
+            {
+                { "Username", emptyValue }
+            };
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
             Assert.IsFalse(url.TryGetParameter("username", out string _));
@@ -105,8 +113,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         [Test]
         public void WhenStringQueryParameterValid_ThenTryGetParameterReturnsTrue()
         {
-            var queryParameters = new NameValueCollection();
-            queryParameters.Add("username", "bob");
+            var queryParameters = new NameValueCollection
+            {
+                { "username", "bob" }
+            };
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
             Assert.IsTrue(url.TryGetParameter("username", out string value));
@@ -129,8 +139,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         public void WhenEnumQueryParameterIsNullOrEmpty_ThenTryGetParameterReturnsFalse(
             [Values(null, "", " ")] string emptyValue)
         {
-            var queryParameters = new NameValueCollection();
-            queryParameters.Add("AudioMode", emptyValue);
+            var queryParameters = new NameValueCollection
+            {
+                { "AudioMode", emptyValue }
+            };
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
             Assert.IsFalse(url.TryGetParameter<RdpAudioMode>("AudioMode", out var _));
@@ -140,8 +152,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         public void WhenEnumQueryParameterOutOfRange_ThenTryGetParameterReturnsFalse(
             [Values("-1", "999999999")] string wrongValue)
         {
-            var queryParameters = new NameValueCollection();
-            queryParameters.Add("AudioMode", wrongValue);
+            var queryParameters = new NameValueCollection
+            {
+                { "AudioMode", wrongValue }
+            };
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
             Assert.IsFalse(url.TryGetParameter<RdpAudioMode>("AudioMode", out var _));
@@ -150,8 +164,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         [Test]
         public void WhenEnumQueryParameterValid_ThenTryGetParameterReturnsTrue()
         {
-            var queryParameters = new NameValueCollection();
-            queryParameters.Add("AudioMode", "2");
+            var queryParameters = new NameValueCollection
+            {
+                { "AudioMode", "2" }
+            };
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
             Assert.IsTrue(url.TryGetParameter<RdpAudioMode>("AudioMode", out var value));
@@ -165,8 +181,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         [Test]
         public void WhenQueryParameterMissing_ThenApplyLeavesOriginalValue()
         {
-            var parameters = new RdpParameters();
-            parameters.AudioMode = RdpAudioMode.PlayOnServer;
+            var parameters = new RdpParameters
+            {
+                AudioMode = RdpAudioMode.PlayOnServer
+            };
             Assert.AreNotEqual(RdpAudioMode._Default, parameters.AudioMode);
 
             parameters.ApplyUrlParameterIfSet<RdpAudioMode>(
@@ -181,12 +199,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         public void WhenQueryParameterIsNullOrEmpty_ThenApplyLeavesOriginalValue(
             [Values(null, "", " ")] string emptyValue)
         {
-            var parameters = new RdpParameters();
-            parameters.AudioMode = RdpAudioMode.PlayOnServer;
+            var parameters = new RdpParameters
+            {
+                AudioMode = RdpAudioMode.PlayOnServer
+            };
             Assert.AreNotEqual(RdpAudioMode._Default, parameters.AudioMode);
 
-            var queryParameters = new NameValueCollection();
-            queryParameters.Add("AudioMode", emptyValue);
+            var queryParameters = new NameValueCollection
+            {
+                { "AudioMode", emptyValue }
+            };
 
             parameters.ApplyUrlParameterIfSet<RdpAudioMode>(
                 new IapRdpUrl(SampleLocator, queryParameters),
@@ -200,12 +222,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         public void WhenQueryParameterOutOfRange_ThenApplyLeavesOriginalValue(
             [Values("-1", "999999999")] string wrongValue)
         {
-            var parameters = new RdpParameters();
-            parameters.AudioMode = RdpAudioMode.PlayOnServer;
+            var parameters = new RdpParameters
+            {
+                AudioMode = RdpAudioMode.PlayOnServer
+            };
             Assert.AreNotEqual(RdpAudioMode._Default, parameters.AudioMode);
 
-            var queryParameters = new NameValueCollection();
-            queryParameters.Add("AudioMode", wrongValue);
+            var queryParameters = new NameValueCollection
+            {
+                { "AudioMode", wrongValue }
+            };
 
             parameters.ApplyUrlParameterIfSet<RdpAudioMode>(
                 new IapRdpUrl(SampleLocator, queryParameters),
@@ -218,12 +244,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         [Test]
         public void WhenQueryParameterValid_ThenApplyReplacesOriginalValue()
         {
-            var parameters = new RdpParameters();
-            parameters.AudioMode = RdpAudioMode.PlayOnServer;
+            var parameters = new RdpParameters
+            {
+                AudioMode = RdpAudioMode.PlayOnServer
+            };
             Assert.AreNotEqual(RdpAudioMode._Default, parameters.AudioMode);
 
-            var queryParameters = new NameValueCollection();
-            queryParameters.Add("AudioMode", "2");
+            var queryParameters = new NameValueCollection
+            {
+                { "AudioMode", "2" }
+            };
 
             parameters.ApplyUrlParameterIfSet<RdpAudioMode>(
                 new IapRdpUrl(SampleLocator, queryParameters),

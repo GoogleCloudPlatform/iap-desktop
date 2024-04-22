@@ -157,8 +157,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new InstanceLocator("project-1", "zone-1", "instance-1"),
                 new NameValueCollection());
 
-            var parameters = new NameValueCollection();
-            parameters.Add("key", "value");
+            var parameters = new NameValueCollection
+            {
+                { "key", "value" }
+            };
             var locator2 = new TargetLocator(
                 "one",
                 ProtocolOne,
