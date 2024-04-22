@@ -77,7 +77,7 @@ namespace Google.Solutions.Common.Test.Util
             Assert.Throws<ArgumentNullException>(
                 () => Precondition.ExpectNotNullOrZeroSized((string[]?)null, "test"));
             Assert.Throws<ArgumentException>(
-                () => Precondition.ExpectNotNullOrZeroSized(new string[0], "test"));
+                () => Precondition.ExpectNotNullOrZeroSized(Array.Empty<string>(), "test"));
         }
 
         [Test]

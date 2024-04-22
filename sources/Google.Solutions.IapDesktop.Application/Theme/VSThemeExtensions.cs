@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     //
                     e.ArrowColor = this.palette.CommandBarMenuPopupDefault.Arrow;
                 }
-                else if (e.Item is ToolStripDropDownButton dropDown &&
+                else if (e.Item is ToolStripDropDownButton &&
                          e.Item.Owner is ToolStrip toolStrip)
                 {
                     if (toolStrip is StatusStrip)

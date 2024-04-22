@@ -113,7 +113,7 @@ namespace Google.Solutions.Mvvm.Binding
         // Inner classes.
         //---------------------------------------------------------------------
 
-        internal struct Sheet
+        internal readonly struct Sheet
         {
             public readonly IPropertiesSheetView View;
             public readonly PropertiesSheetViewModelBase ViewModel;

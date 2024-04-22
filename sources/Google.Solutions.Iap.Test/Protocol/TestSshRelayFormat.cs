@@ -281,7 +281,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             public void WhenDataIsEmpty_ThenEncodeThrowsException()
             {
                 var message = new byte[SshRelayFormat.Data.MaxPayloadLength];
-                var data = new byte[0];
+                var data = Array.Empty<byte>();
 
                 Assert.Throws<ArgumentException>(
                     () => SshRelayFormat.Data.Encode(message, data, 0, (uint)data.Length));

@@ -27,7 +27,7 @@ namespace Google.Solutions.Apis.Client
     /// Directions for connecting to a particular endpoint of the
     /// Google API.
     /// </summary>
-    public struct ServiceEndpointDirections
+    public readonly struct ServiceEndpointDirections
     {
         /// <summary>
         /// Type of endpoint.

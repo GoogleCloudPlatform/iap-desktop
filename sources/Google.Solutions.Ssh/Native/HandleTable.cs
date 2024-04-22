@@ -39,7 +39,7 @@ namespace Google.Solutions.Ssh.Native
     {
 #if DEBUG
         private static readonly object handlesLock = new object();
-        private static readonly IDictionary<SafeHandle, string> handles = new Dictionary<SafeHandle, string>();
+        private static readonly Dictionary<SafeHandle, string> handles = new Dictionary<SafeHandle, string>();
 
 #endif
 

@@ -49,9 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Diagnostics
             IConnectionSettingsService settingsService,
             IProjectWorkspace workspace)
         {
-            this.GenerateHtmlPage = new GenerateHtmlPageCommand(
-                settingsService,
-                workspace);
+            this.GenerateHtmlPage = new GenerateHtmlPageCommand(workspace);
         }
 
         //---------------------------------------------------------------------
@@ -70,15 +68,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Diagnostics
         /// </summary>
         private class GenerateHtmlPageCommand : MenuCommandBase<IProjectModelNode>
         {
-            private readonly IConnectionSettingsService settingsService;
             private readonly IProjectWorkspace workspace;
 
-            public GenerateHtmlPageCommand(
-                IConnectionSettingsService settingsService,
-                IProjectWorkspace workspace)
+            public GenerateHtmlPageCommand(IProjectWorkspace workspace)
                 : base("Generate &HTML page")
             {
-                this.settingsService = settingsService;
                 this.workspace = workspace;
             }
 

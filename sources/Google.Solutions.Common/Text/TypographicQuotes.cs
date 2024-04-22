@@ -26,7 +26,7 @@ namespace Google.Solutions.Common.Text
 {
     public static class TypographicQuotes
     {
-        private static readonly IDictionary<char, char> conversionTable = new Dictionary<char, char>()
+        private static readonly Dictionary<char, char> conversionTable = new Dictionary<char, char>()
         {
             { '\u00AB', '\"' }, // left-pointing double angle quotation mark
             { '\u00BB', '\"' }, // right-pointing double angle quotation mark

@@ -403,7 +403,7 @@ namespace Google.Solutions.Iap.Protocol
         // Helper structs.
         //---------------------------------------------------------------------
 
-        private struct UnacknoledgedWrite
+        private readonly struct UnacknoledgedWrite
         {
             public readonly byte[] Data;
             public readonly ulong SequenceNumber;

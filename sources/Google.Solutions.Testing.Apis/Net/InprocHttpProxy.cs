@@ -49,7 +49,7 @@ namespace Google.Solutions.Testing.Apis.Net
         private readonly LinkedList<string> connectionTargets = new LinkedList<string>();
         private readonly TcpListener listener;
 
-        private readonly IDictionary<string, string> staticFiles =
+        private readonly Dictionary<string, string> staticFiles =
             new Dictionary<string, string>();
 
         public IEnumerable<string> ConnectionTargets => this.connectionTargets;
