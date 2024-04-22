@@ -96,16 +96,17 @@ namespace Google.Solutions.Ssh.Test.Native
                 // Trigger an error
                 try
                 {
-                    session.SetPreferredMethods(LIBSSH2_METHOD.KEX, new[] { "invalid" });
-                }
-                catch (Exception)
-                { }
+                    session.SetPreferredMethods((LIBSSH2_METHOD)(-1), new[] { "invalid" });
 
-                var exception = session.CreateException(LIBSSH2_ERROR.METHOD_NOT_SUPPORTED);
-                Assert.AreEqual(
-                    "The requested method(s) are not currently supported",
-                    exception.Message);
-                Assert.AreEqual(LIBSSH2_ERROR.METHOD_NOT_SUPPORTED, exception.ErrorCode);
+                    Assert.Fail();
+                }
+                catch (Libssh2Exception e)
+                {
+                    Assert.AreEqual(
+                        "Invalid parameter specified for method_type",
+                        e.Message);
+                    Assert.AreEqual(LIBSSH2_ERROR.INVAL, e.ErrorCode);
+                }
             }
         }
 
@@ -135,6 +136,10 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
 
+                CollectionAssert.Contains(algorithms, "ecdh-sha2-nistp256");
+                CollectionAssert.Contains(algorithms, "ecdh-sha2-nistp384");
+                CollectionAssert.Contains(algorithms, "ecdh-sha2-nistp521");
+
                 CollectionAssert.Contains(algorithms, "diffie-hellman-group-exchange-sha256");
                 CollectionAssert.Contains(algorithms, "diffie-hellman-group-exchange-sha1");
                 CollectionAssert.Contains(algorithms, "diffie-hellman-group14-sha1");
@@ -143,7 +148,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void WhenRequestingHostkey_ThenSupportedAlgorithmsIncludesRsaAndDss()
+        public void WhenRequestingHostkey_ThenSupportedAlgorithmsIncludesRsaAndEcdsa()
         {
             using (var session = CreateSession())
             {
@@ -151,8 +156,13 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
 
+                CollectionAssert.Contains(algorithms, "ecdsa-sha2-nistp256");
+                CollectionAssert.Contains(algorithms, "ecdsa-sha2-nistp384");
+                CollectionAssert.Contains(algorithms, "ecdsa-sha2-nistp521");
+
                 CollectionAssert.Contains(algorithms, "ssh-rsa");
-                CollectionAssert.Contains(algorithms, "ssh-dss");
+                CollectionAssert.Contains(algorithms, "rsa-sha2-256");
+                CollectionAssert.Contains(algorithms, "rsa-sha2-512");
             }
         }
 
@@ -261,9 +271,9 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
-                    LIBSSH2_ERROR.METHOD_NOT_SUPPORTED,
+                    LIBSSH2_ERROR.INVAL,
                     () => session.SetPreferredMethods(
-                        LIBSSH2_METHOD.KEX,
+                        (LIBSSH2_METHOD)(-1),
                         new[] { "invalid" }));
             }
         }
