@@ -135,6 +135,10 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
 
+                CollectionAssert.Contains(algorithms, "ecdh-sha2-nistp256");
+                CollectionAssert.Contains(algorithms, "ecdh-sha2-nistp384");
+                CollectionAssert.Contains(algorithms, "ecdh-sha2-nistp521");
+
                 CollectionAssert.Contains(algorithms, "diffie-hellman-group-exchange-sha256");
                 CollectionAssert.Contains(algorithms, "diffie-hellman-group-exchange-sha1");
                 CollectionAssert.Contains(algorithms, "diffie-hellman-group14-sha1");
@@ -151,8 +155,13 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
 
+                CollectionAssert.Contains(algorithms, "ecdh-sha2-nistp256");
+                CollectionAssert.Contains(algorithms, "ecdh-sha2-nistp384");
+                CollectionAssert.Contains(algorithms, "ecdh-sha2-nistp521");
+
                 CollectionAssert.Contains(algorithms, "ssh-rsa");
-                CollectionAssert.Contains(algorithms, "ssh-dss");
+                CollectionAssert.Contains(algorithms, "rsa-sha2-256");
+                CollectionAssert.Contains(algorithms, "rsa-sha2-512");
             }
         }
 
