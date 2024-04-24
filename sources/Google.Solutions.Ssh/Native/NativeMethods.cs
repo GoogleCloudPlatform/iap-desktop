@@ -160,10 +160,6 @@ namespace Google.Solutions.Ssh.Native
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
         internal static extern Int32 libssh2_init(Int32 flags);
 
-        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern IntPtr libssh2_version(
-            int requiredVersion);
-
         //---------------------------------------------------------------------
         // Session functions.
         //---------------------------------------------------------------------

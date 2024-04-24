@@ -38,22 +38,10 @@ namespace Google.Solutions.Ssh.Test.Native
         private readonly IPEndPoint NonSshEndpoint =
             new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53);
 
-        //---------------------------------------------------------------------
-        // Version.
-        //---------------------------------------------------------------------
-
         [Test]
-        public void WhenRequriedVersionIsHigher_ThenVersionReturnsNull()
+        public void WhenNotInitialized_ThenHandleThrowsException()
         {
-            var version = Libssh2Session.GetVersion(new Version(0xCC, 0xBB, 0xAA));
-            Assert.IsNull(version);
-        }
-
-        [Test]
-        public void WhenRequriedVersionIsLower_ThenVersionReturnsXxx()
-        {
-            var version = Libssh2Session.GetVersion(new Version(1, 0, 0));
-            Assert.IsNotNull(version);
+            Assert.Fail();
         }
 
         //---------------------------------------------------------------------
