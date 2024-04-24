@@ -45,7 +45,7 @@ namespace Google.Solutions.Ssh.Native
         private readonly Socket socket;
         private bool disposed = false;
 
-        public Socket Socket => this.socket;
+        private DateTime nextKeepaliveDueTime = DateTime.Now;
 
         private static int HostKeyHashLength(LIBSSH2_HOSTKEY_HASH hashType)
         {
@@ -66,6 +66,51 @@ namespace Google.Solutions.Ssh.Native
         {
             this.session = session;
             this.socket = socket;
+        }
+
+        internal Socket Socket
+        {
+            get => this.socket;
+        }
+
+        //---------------------------------------------------------------------
+        // Keepalive.
+        //---------------------------------------------------------------------
+
+        public void ConfigureKeepAlive(
+            bool wantServerResponse,
+            TimeSpan interval)
+        {
+            using (SshTraceSource.Log.TraceMethod().WithParameters(
+                wantServerResponse,
+                interval))
+            {
+                NativeMethods.libssh2_keepalive_config(
+                    this.session.Handle,
+                    wantServerResponse ? 1 : 0,
+                    (uint)interval.TotalSeconds);
+            }
+        }
+
+        public void KeepAlive()
+        {
+            if (DateTime.Now > this.nextKeepaliveDueTime)
+            {
+                SshTraceSource.Log.TraceVerbose("Sending keepalive");
+
+                var result = (LIBSSH2_ERROR)NativeMethods.libssh2_keepalive_send(
+                    this.session.Handle,
+                    out var secondsTillNextKeepalive);
+
+                if (result != LIBSSH2_ERROR.NONE)
+                {
+                    throw this.session.CreateException(result);
+                }
+
+                Debug.Assert(secondsTillNextKeepalive > 0);
+                this.nextKeepaliveDueTime =
+                    this.nextKeepaliveDueTime.AddSeconds(secondsTillNextKeepalive);
+            }
         }
 
         //---------------------------------------------------------------------

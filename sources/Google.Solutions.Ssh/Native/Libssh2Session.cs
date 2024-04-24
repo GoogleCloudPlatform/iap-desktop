@@ -48,8 +48,6 @@ namespace Google.Solutions.Ssh.Native
         internal static readonly NativeMethods.Free Free;
         internal static readonly NativeMethods.Realloc Realloc;
 
-        private DateTime nextKeepaliveDueTime = DateTime.Now;
-
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
@@ -286,46 +284,6 @@ namespace Google.Solutions.Ssh.Native
         /// </summary>
         public TimeSpan KeyboardInteractivePromptTimeout { get; set; }
             = TimeSpan.FromMinutes(1);
-
-        //---------------------------------------------------------------------
-        // Keepalive.
-        //---------------------------------------------------------------------
-
-        public void ConfigureKeepAlive(
-            bool wantServerResponse,
-            TimeSpan interval)
-        {
-            using (SshTraceSource.Log.TraceMethod().WithParameters(
-                wantServerResponse,
-                interval))
-            {
-                NativeMethods.libssh2_keepalive_config(
-                    this.sessionHandle,
-                    wantServerResponse ? 1 : 0,
-                    (uint)interval.TotalSeconds);
-            }
-        }
-
-        public void KeepAlive()
-        {
-            if (DateTime.Now > this.nextKeepaliveDueTime)
-            {
-                SshTraceSource.Log.TraceVerbose("Sending keepalive");
-
-                var result = (LIBSSH2_ERROR)NativeMethods.libssh2_keepalive_send(
-                    this.sessionHandle,
-                    out var secondsTillNextKeepalive);
-
-                if (result != LIBSSH2_ERROR.NONE)
-                {
-                    throw CreateException(result);
-                }
-
-                Debug.Assert(secondsTillNextKeepalive > 0);
-                this.nextKeepaliveDueTime =
-                    this.nextKeepaliveDueTime.AddSeconds(secondsTillNextKeepalive);
-            }
-        }
 
         //---------------------------------------------------------------------
         // Handshake.
