@@ -23,7 +23,9 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -39,27 +41,32 @@ namespace Google.Solutions.Ssh.Native
     {
         internal const string BannerPrefix = "SSH-2.0-";
 
-        private readonly Libssh2SessionHandle sessionHandle;
+        private Libssh2SessionHandle? sessionHandle;
         private bool disposed = false;
 
-        internal Libssh2SessionHandle Handle => this.sessionHandle;
+        private string? banner = null;
+        private bool blocking;
+        private TimeSpan timeout = TimeSpan.Zero;
+        private NativeMethods.TraceHandler? traceHandlerDelegate;
+        private LIBSSH2_TRACE traceMask = (LIBSSH2_TRACE)0;
+        private readonly Dictionary<LIBSSH2_METHOD, string[]> preferredMethods 
+            = new Dictionary<LIBSSH2_METHOD, string[]>();
 
         internal static readonly NativeMethods.Alloc Alloc;
         internal static readonly NativeMethods.Free Free;
         internal static readonly NativeMethods.Realloc Realloc;
 
-        private DateTime nextKeepaliveDueTime = DateTime.Now;
-
         //---------------------------------------------------------------------
-        // Ctor.
+        // Initialization.
         //---------------------------------------------------------------------
 
         static Libssh2Session()
         {
+            //
             // Store these delegates in fields to prevent them from being
             // garbage collected. Otherwise callbacks will suddenly
             // start hitting GC'ed memory.
-
+            //
             Alloc = (size, context) => Marshal.AllocHGlobal(size);
             Realloc = (ptr, size, context) => Marshal.ReAllocHGlobal(ptr, size);
             Free = (ptr, context) => Marshal.FreeHGlobal(ptr);
@@ -82,45 +89,114 @@ namespace Google.Solutions.Ssh.Native
 
         internal Libssh2Session()
         {
-            this.sessionHandle = NativeMethods.libssh2_session_init_ex(
-                Alloc,
-                Free,
-                Realloc,
-                IntPtr.Zero);
-
+            //
             // Use blocking I/O by default.
-            this.IsBlocking = true;
+            //
+            this.blocking = true;
         }
 
-        public static string GetVersion(Version requiredVersion)
+        /// <summary>
+        /// Lazily initialize a Libssh2 session.
+        /// </summary>
+        private void InitializeSession(bool force)
         {
-            using (SshTraceSource.Log.TraceMethod().WithParameters(requiredVersion))
+            using (SshTraceSource.Log.TraceMethod().WithParameters(force))
             {
-                var requiredVersionEncoded =
-                    (requiredVersion.Major << 16) |
-                    (requiredVersion.Minor << 8) |
-                    (requiredVersion.Build);
+                if (this.sessionHandle != null && force)
+                {
+                    //
+                    // Close existing session to force re-initialization.
+                    //
+                    this.sessionHandle.CheckCurrentThreadOwnsHandle();
+                    this.sessionHandle.Dispose();
+                    this.sessionHandle = null;
+                }
 
-                return Marshal.PtrToStringAnsi(
-                    NativeMethods.libssh2_version(
-                        requiredVersionEncoded));
+                if (this.sessionHandle == null)
+                {
+                    this.sessionHandle = NativeMethods.libssh2_session_init_ex(
+                        Alloc,
+                        Free,
+                        Realloc,
+                        IntPtr.Zero);
+
+                    if (this.traceHandlerDelegate != null)
+                    {
+                        //
+                        // NB. We must not pass a delegate to libssh2_trace_sethandler
+                        // as it might be garbage-collected while still being referenced
+                        // by native code.
+                        //
+
+                        NativeMethods.libssh2_trace_sethandler(
+                            this.sessionHandle,
+                            IntPtr.Zero,
+                            this.traceHandlerDelegate);
+
+                        NativeMethods.libssh2_trace(
+                            this.sessionHandle,
+                            this.traceMask);
+                    }
+
+                    NativeMethods.libssh2_session_set_timeout(
+                        this.sessionHandle,
+                        (int)this.timeout.TotalMilliseconds);
+
+                    NativeMethods.libssh2_session_set_blocking(
+                        this.sessionHandle,
+                        this.blocking ? 1 : 0);
+
+                    if (this.banner != null)
+                    {
+                        _ = NativeMethods.libssh2_session_banner_set(
+                            this.sessionHandle,
+                            this.banner);
+                    }
+
+                    foreach (var preferredMethod in this.preferredMethods)
+                    {
+                        var prefs = string.Join(",", preferredMethod.Value);
+                        var result = (LIBSSH2_ERROR)NativeMethods.libssh2_session_method_pref(
+                            this.sessionHandle,
+                            preferredMethod.Key,
+                            prefs);
+                        if (result != LIBSSH2_ERROR.NONE)
+                        {
+                            throw CreateException(result);
+                        }
+                    }
+                }
+
+                Debug.Assert(this.sessionHandle != null);
             }
         }
+
+        internal Libssh2SessionHandle Handle
+        {
+            get => this.sessionHandle ?? 
+                throw new InvalidOperationException("The session has not been initialized");
+        }
+
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
 
         public bool IsBlocking
         {
-            get
-            {
-                this.sessionHandle.CheckCurrentThreadOwnsHandle();
-                return NativeMethods.libssh2_session_get_blocking(
-                    this.sessionHandle) != 0;
-            }
+            get => this.blocking;
             private set
             {
-                this.sessionHandle.CheckCurrentThreadOwnsHandle();
-                NativeMethods.libssh2_session_set_blocking(
-                    this.sessionHandle,
-                    value ? 1 : 0);
+                this.blocking = value;
+                if (this.sessionHandle != null)
+                {
+                    //
+                    // Apply to existing session.
+                    //
+                    this.sessionHandle.CheckCurrentThreadOwnsHandle();
+                    NativeMethods.libssh2_session_set_blocking(
+                        this.sessionHandle,
+                        value ? 1 : 0);
+                }
             }
         }
 
@@ -153,13 +229,19 @@ namespace Google.Solutions.Ssh.Native
         // Algorithms.
         //---------------------------------------------------------------------
 
+        /// <summary>
+        /// Query the list of supported algorithms.
+        /// 
+        /// This forces the session to be initialized.
+        /// </summary>
         internal string[] GetSupportedAlgorithms(LIBSSH2_METHOD methodType)
         {
-            this.sessionHandle.CheckCurrentThreadOwnsHandle();
-            if (!Enum.IsDefined(typeof(LIBSSH2_METHOD), methodType))
-            {
-                throw new ArgumentException("The method is not supported");
-            }
+            //
+            // Initialize session if that hasn't happened yet.
+            //
+            InitializeSession(false);
+
+            this.sessionHandle!.CheckCurrentThreadOwnsHandle();
 
             using (SshTraceSource.Log.TraceMethod().WithParameters(methodType))
             {
@@ -193,36 +275,24 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
+        
         internal void SetPreferredMethods(
             LIBSSH2_METHOD methodType,
             string[] methods)
         {
-            this.sessionHandle.CheckCurrentThreadOwnsHandle();
-
             Precondition.ExpectNotNullOrZeroSized(methods, nameof(methods));
+            Precondition.Expect(
+                this.sessionHandle == null,
+                "Method must be called before the session is initialized");
 
-            using (SshTraceSource.Log.TraceMethod().WithParameters(
-                methodType,
-                methods))
-            {
-                var prefs = string.Join(",", methods);
-
-                var result = (LIBSSH2_ERROR)NativeMethods.libssh2_session_method_pref(
-                    this.sessionHandle,
-                    methodType,
-                    prefs);
-                if (result != LIBSSH2_ERROR.NONE)
-                {
-                    throw CreateException(result);
-                }
-            }
+            this.preferredMethods[methodType] = methods;
         }
 
         //---------------------------------------------------------------------
         // Banner.
         //---------------------------------------------------------------------
 
-        public void SetLocalBanner(string banner)
+        public void SetLocalBanner(string banner) // TODO: Convert to property
         {
             if (!banner.StartsWith(BannerPrefix))
             {
@@ -230,15 +300,7 @@ namespace Google.Solutions.Ssh.Native
                     $"Banner must start with '{BannerPrefix}'");
             }
 
-            this.sessionHandle.CheckCurrentThreadOwnsHandle();
-            Precondition.ExpectNotEmpty(banner, nameof(banner));
-
-            using (SshTraceSource.Log.TraceMethod().WithParameters(banner))
-            {
-                _ = NativeMethods.libssh2_session_banner_set(
-                    this.sessionHandle,
-                    banner);
-            }
+            this.banner = banner;
         }
 
         //---------------------------------------------------------------------
@@ -250,20 +312,15 @@ namespace Google.Solutions.Ssh.Native
         /// </summary>
         public TimeSpan Timeout
         {
-            get
-            {
-                this.sessionHandle.CheckCurrentThreadOwnsHandle();
-
-                using (SshTraceSource.Log.TraceMethod().WithoutParameters())
-                {
-                    var millis = NativeMethods.libssh2_session_get_timeout(
-                        this.sessionHandle);
-                    return TimeSpan.FromMilliseconds(millis);
-                }
-            }
+            get => this.timeout;
             set
             {
-                using (SshTraceSource.Log.TraceMethod().WithParameters(value))
+                this.timeout = value;
+
+                //
+                // Update existing session.
+                //
+                if (this.sessionHandle != null)
                 {
                     this.sessionHandle.CheckCurrentThreadOwnsHandle();
 
@@ -288,84 +345,70 @@ namespace Google.Solutions.Ssh.Native
             = TimeSpan.FromMinutes(1);
 
         //---------------------------------------------------------------------
-        // Keepalive.
-        //---------------------------------------------------------------------
-
-        public void ConfigureKeepAlive(
-            bool wantServerResponse,
-            TimeSpan interval)
-        {
-            using (SshTraceSource.Log.TraceMethod().WithParameters(
-                wantServerResponse,
-                interval))
-            {
-                NativeMethods.libssh2_keepalive_config(
-                    this.sessionHandle,
-                    wantServerResponse ? 1 : 0,
-                    (uint)interval.TotalSeconds);
-            }
-        }
-
-        public void KeepAlive()
-        {
-            if (DateTime.Now > this.nextKeepaliveDueTime)
-            {
-                SshTraceSource.Log.TraceVerbose("Sending keepalive");
-
-                var result = (LIBSSH2_ERROR)NativeMethods.libssh2_keepalive_send(
-                    this.sessionHandle,
-                    out var secondsTillNextKeepalive);
-
-                if (result != LIBSSH2_ERROR.NONE)
-                {
-                    throw CreateException(result);
-                }
-
-                Debug.Assert(secondsTillNextKeepalive > 0);
-                this.nextKeepaliveDueTime =
-                    this.nextKeepaliveDueTime.AddSeconds(secondsTillNextKeepalive);
-            }
-        }
-
-        //---------------------------------------------------------------------
         // Handshake.
         //---------------------------------------------------------------------
 
+        private const ushort MaxKexRetries = 3;
+
         public Libssh2ConnectedSession Connect(EndPoint remoteEndpoint)
         {
-            this.sessionHandle.CheckCurrentThreadOwnsHandle();
-
             using (SshTraceSource.Log.TraceMethod().WithParameters(remoteEndpoint))
             {
-                var socket = new Socket(
-                    AddressFamily.InterNetwork,
-                    SocketType.Stream,
-                    ProtocolType.Tcp)
+                for (int kexAttempt = 0; ; kexAttempt++)
                 {
+                    var socket = new Socket(
+                        AddressFamily.InterNetwork,
+                        SocketType.Stream,
+                        ProtocolType.Tcp)
+                    {
+                        //
+                        // Flush input data immediately so that the user does not
+                        // experience a lag.
+                        //
+                        NoDelay = true
+                    };
+
                     //
-                    // Flush input data immediately so that the user does not
-                    // experience a lag.
+                    // Initialize session if that hasn't happened yet.
                     //
-                    NoDelay = true
-                };
+                    InitializeSession(kexAttempt > 0);
+                    this.sessionHandle!.CheckCurrentThreadOwnsHandle();
 
-                SshEventSource.Log.ConnectionHandshakeInitiated(remoteEndpoint.ToString());
+                    SshEventSource.Log.ConnectionHandshakeInitiated(remoteEndpoint.ToString());
 
-                socket.Connect(remoteEndpoint);
+                    socket.Connect(remoteEndpoint);
 
-                var result = (LIBSSH2_ERROR)NativeMethods.libssh2_session_handshake(
-                    this.sessionHandle,
-                    socket.Handle);
+                    var result = (LIBSSH2_ERROR)NativeMethods.libssh2_session_handshake(
+                        this.sessionHandle,
+                        socket.Handle);
 
-                if (result != LIBSSH2_ERROR.NONE)
-                {
-                    socket.Close();
-                    throw CreateException(result);
+                    if (result == LIBSSH2_ERROR.KEY_EXCHANGE_FAILURE && kexAttempt < MaxKexRetries)
+                    {
+                        //
+                        // When using the WinCNG backend, key exchanges can occasionally fail,
+                        // see https://github.com/libssh2/libssh2/issues/804.
+                        //
+                        // Retry a few times.
+                        //
+
+                        SshTraceSource.Log.TraceWarning("KEX failed, retrying...");
+                        socket.Close();
+                    }
+                    else if (result != LIBSSH2_ERROR.NONE)
+                    {
+                        //
+                        // Some other error occured, don't retry.
+                        //
+                        socket.Close();
+                        throw CreateException(result);
+                    }
+                    else
+                    {
+                        SshEventSource.Log.ConnectionHandshakeCompleted(remoteEndpoint.ToString());
+
+                        return new Libssh2ConnectedSession(this, socket);
+                    }
                 }
-
-                SshEventSource.Log.ConnectionHandshakeCompleted(remoteEndpoint.ToString());
-
-                return new Libssh2ConnectedSession(this, socket);
             }
         }
 
@@ -377,76 +420,66 @@ namespace Google.Solutions.Ssh.Native
         {
             get
             {
-                this.sessionHandle.CheckCurrentThreadOwnsHandle();
+                if (this.sessionHandle == null)
+                {
+                    return LIBSSH2_ERROR.NONE;
+                }
+                else
+                {
+                    this.sessionHandle.CheckCurrentThreadOwnsHandle();
 
-                return (LIBSSH2_ERROR)NativeMethods.libssh2_session_last_errno(
-                    this.sessionHandle);
+                    return (LIBSSH2_ERROR)
+                        NativeMethods.libssh2_session_last_errno(this.sessionHandle);
+                }
             }
         }
 
         internal Libssh2Exception CreateException(LIBSSH2_ERROR error)
         {
-            var lastError = (LIBSSH2_ERROR)NativeMethods.libssh2_session_last_error(
-                this.sessionHandle,
-                out var errorMessage,
-                out var errorMessageLength,
-                0);
-
-            SshEventSource.Log.ConnectionErrorEncountered((int)error);
-
-            if (lastError == error)
+            if (this.sessionHandle != null)
             {
-                return new Libssh2Exception(
-                    error,
-                    Marshal.PtrToStringAnsi(errorMessage, errorMessageLength));
+                var lastError = (LIBSSH2_ERROR)NativeMethods.libssh2_session_last_error(
+                    this.sessionHandle,
+                    out var errorMessage,
+                    out var errorMessageLength,
+                    0);
+
+                SshEventSource.Log.ConnectionErrorEncountered((int)error);
+
+                if (lastError == error)
+                {
+                    return new Libssh2Exception(
+                        error,
+                        Marshal.PtrToStringAnsi(errorMessage, errorMessageLength));
+                }
             }
-            else
-            {
-                // The last error is something else, so create a generic
-                // exception
-                return new Libssh2Exception(
-                    error,
-                    $"SSH operation failed: {error}");
-            }
+
+            //
+            // Fall back to using a generic error message.
+            //
+            return new Libssh2Exception(
+                error,
+                $"SSH operation failed: {error}");
         }
 
         //---------------------------------------------------------------------
         // Tracing.
         //---------------------------------------------------------------------
 
-        private NativeMethods.TraceHandler? TraceHandlerDelegate;
-
         internal void SetTraceHandler(
             LIBSSH2_TRACE mask,
             Action<string> handler)
         {
-            this.sessionHandle.CheckCurrentThreadOwnsHandle();
-            Precondition.ExpectNotNull(handler, nameof(handler));
-
-            using (SshTraceSource.Log.TraceMethod().WithParameters(mask))
+            this.traceHandlerDelegate = (sessionPtr, contextPtr, dataPtr, length) =>
             {
-                // Store this delegate in a field to prevent it from being
-                // garbage collected. Otherwise callbacks will suddenly
-                // start hitting GC'ed memory.
-                this.TraceHandlerDelegate = (sessionPtr, contextPtr, dataPtr, length) =>
-                {
-                    Debug.Assert(contextPtr == IntPtr.Zero);
+                Debug.Assert(contextPtr == IntPtr.Zero);
 
-                    var data = new byte[length.ToInt32()];
-                    Marshal.Copy(dataPtr, data, 0, length.ToInt32());
+                var data = new byte[length.ToInt32()];
+                Marshal.Copy(dataPtr, data, 0, length.ToInt32());
 
-                    handler(Encoding.ASCII.GetString(data));
-                };
-
-                NativeMethods.libssh2_trace_sethandler(
-                    this.sessionHandle,
-                    IntPtr.Zero,
-                    this.TraceHandlerDelegate);
-
-                NativeMethods.libssh2_trace(
-                    this.sessionHandle,
-                    mask);
-            }
+                handler(Encoding.ASCII.GetString(data));
+            };
+            this.traceMask = mask;
         }
 
         //---------------------------------------------------------------------
@@ -459,7 +492,6 @@ namespace Google.Solutions.Ssh.Native
             GC.SuppressFinalize(this);
         }
 
-        // Protected implementation of Dispose pattern.
         protected virtual void Dispose(bool disposing)
         {
             if (this.disposed)
@@ -469,15 +501,18 @@ namespace Google.Solutions.Ssh.Native
 
             if (disposing)
             {
+                if (this.sessionHandle != null)
+                {
+                    this.sessionHandle.CheckCurrentThreadOwnsHandle();
 
-                this.sessionHandle.CheckCurrentThreadOwnsHandle();
+                    NativeMethods.libssh2_trace_sethandler(
+                        this.sessionHandle,
+                        IntPtr.Zero,
+                        null);
 
-                NativeMethods.libssh2_trace_sethandler(
-                    this.sessionHandle,
-                    IntPtr.Zero,
-                    null);
+                    this.sessionHandle.Dispose();
+                }
 
-                this.sessionHandle.Dispose();
                 this.disposed = true;
             }
         }

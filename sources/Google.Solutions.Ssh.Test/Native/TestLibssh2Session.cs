@@ -39,21 +39,16 @@ namespace Google.Solutions.Ssh.Test.Native
             new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53);
 
         //---------------------------------------------------------------------
-        // Version.
+        // Handle.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenRequriedVersionIsHigher_ThenVersionReturnsNull()
+        public void WhenNotInitialized_ThenHandleThrowsException()
         {
-            var version = Libssh2Session.GetVersion(new Version(0xCC, 0xBB, 0xAA));
-            Assert.IsNull(version);
-        }
-
-        [Test]
-        public void WhenRequriedVersionIsLower_ThenVersionReturnsXxx()
-        {
-            var version = Libssh2Session.GetVersion(new Version(1, 0, 0));
-            Assert.IsNotNull(version);
+            using (var session = CreateSession())
+            {
+                Assert.Throws<InvalidOperationException>(() => _ = session.Handle);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -93,20 +88,21 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             using (var session = CreateSession())
             {
-                // Trigger an error
                 try
                 {
-                    var methods = new[] { "invalid" };
-                    session.SetPreferredMethods((LIBSSH2_METHOD)(-1), methods);
+                    //
+                    // Trigger an error.
+                    //
+                    session.GetSupportedAlgorithms((LIBSSH2_METHOD)(-1));
 
                     Assert.Fail();
                 }
                 catch (Libssh2Exception e)
                 {
                     Assert.AreEqual(
-                        "Invalid parameter specified for method_type",
+                        "Unknown method type",
                         e.Message);
-                    Assert.AreEqual(LIBSSH2_ERROR.INVAL, e.ErrorCode);
+                    Assert.AreEqual(LIBSSH2_ERROR.METHOD_NOT_SUPPORTED, e.ErrorCode);
                 }
             }
         }
@@ -125,7 +121,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         //---------------------------------------------------------------------
-        // Algorithms.
+        // GetSupportedAlgorithms.
         //---------------------------------------------------------------------
 
         [Test]
@@ -228,13 +224,17 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             using (var session = CreateSession())
             {
-                Assert.Throws<ArgumentException>(
+                Assert.Throws<Libssh2Exception>(
                     () => session.GetSupportedAlgorithms((LIBSSH2_METHOD)int.MaxValue));
             }
         }
 
+        //---------------------------------------------------------------------
+        // SetPreferredMethods.
+        //---------------------------------------------------------------------
+
         [Test]
-        public async Task WhenPreferringIncompatibleAlgorithm_ThenConnectFails(
+        public async Task WhenPreferredMethodNotAccepted_ThenConnectFails(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -255,6 +255,27 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
+        public async Task WhenPreferredMethodIsInvalid_ThenConnectFails(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var session = CreateSession())
+            {
+                var methods = new[] { "invalid" };
+                session.SetPreferredMethods(
+                    (LIBSSH2_METHOD)(-1),
+                    methods);
+
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.INVAL,
+                    () => session.Connect(endpoint));
+            }
+        }
+
+        [Test]
         public void WhenPreferredMethodIsEmpty_ThenSetPreferredMethodsThrowsNotSupportedError()
         {
             using (var session = CreateSession())
@@ -263,21 +284,6 @@ namespace Google.Solutions.Ssh.Test.Native
                     () => session.SetPreferredMethods(
                         LIBSSH2_METHOD.KEX,
                         Array.Empty<string>()));
-            }
-        }
-
-        [Test]
-        public void WhenPreferredMethodIsInvalid_ThenSetPreferredMethodsThrowsArgumentException()
-        {
-            using (var session = CreateSession())
-            {
-                var methods = new[] { "invalid" };
-                SshAssert.ThrowsNativeExceptionWithError(
-                    session,
-                    LIBSSH2_ERROR.INVAL,
-                    () => session.SetPreferredMethods(
-                        (LIBSSH2_METHOD)(-1),
-                        methods));
             }
         }
 

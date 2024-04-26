@@ -294,7 +294,7 @@ namespace Google.Solutions.Ssh
                                 //
                                 // NB. This method must not be called before the handshake has completed.
                                 //
-                                session.ConfigureKeepAlive(false, this.KeepAliveInterval);
+                                connectedSession.ConfigureKeepAlive(false, this.KeepAliveInterval);
 
                                 var waitHandles = new[]
                                 {
@@ -371,7 +371,7 @@ namespace Google.Solutions.Ssh
                                             // keepalive. Libssh2 will ignore the call if no
                                             // keepalive is due yet.
                                             // 
-                                            session.KeepAlive();
+                                            connectedSession.KeepAlive();
                                         }
                                         else if (waitResult == NativeMethods.WSA_WAIT_FAILED)
                                         {
