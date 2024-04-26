@@ -112,7 +112,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
             using (var session = CreateSession())
             {
-                session.Banner = "test-123";
+                session.Banner = "test123";
                 using (var connection = session.Connect(endpoint))
                 {
                     Assert.IsFalse(connection.IsAuthenticated);
