@@ -33,8 +33,6 @@ namespace Google.Solutions.Ssh
 {
     public class SshConnection : SshWorkerThread
     {
-        public const string BannerPrefix = Libssh2Session.BannerPrefix;
-
         private readonly Queue<SendOperation> sendQueue = new Queue<SendOperation>();
         private readonly TaskCompletionSource<int> connectionCompleted
             = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);

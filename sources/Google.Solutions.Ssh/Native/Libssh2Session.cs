@@ -25,7 +25,6 @@ using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -39,12 +38,13 @@ namespace Google.Solutions.Ssh.Native
     /// </summary>
     internal class Libssh2Session : IDisposable
     {
-        internal const string BannerPrefix = "SSH-2.0-";
+        private const string BannerPrefix = "SSH-2.0-";
+        private const ushort MaxKexAttempts = 3;
 
         private Libssh2SessionHandle? sessionHandle;
         private bool disposed = false;
 
-        private string? banner = null;
+        private string? banner;
         private bool blocking;
         private TimeSpan timeout = TimeSpan.Zero;
         private NativeMethods.TraceHandler? traceHandlerDelegate;
@@ -123,9 +123,10 @@ namespace Google.Solutions.Ssh.Native
                     if (this.traceHandlerDelegate != null)
                     {
                         //
-                        // NB. We must not pass a delegate to libssh2_trace_sethandler
-                        // as it might be garbage-collected while still being referenced
-                        // by native code.
+                        // NB. We must not pass an anonymous delegate to
+                        // libssh2_trace_sethandler as it might be garbage-
+                        // collected while still being referenced by native
+                        // code.
                         //
 
                         NativeMethods.libssh2_trace_sethandler(
@@ -146,11 +147,11 @@ namespace Google.Solutions.Ssh.Native
                         this.sessionHandle,
                         this.blocking ? 1 : 0);
 
-                    if (this.banner != null)
+                    if (this.Banner != null)
                     {
                         _ = NativeMethods.libssh2_session_banner_set(
                             this.sessionHandle,
-                            this.banner);
+                            BannerPrefix + this.Banner);
                     }
 
                     foreach (var preferredMethod in this.preferredMethods)
@@ -181,6 +182,24 @@ namespace Google.Solutions.Ssh.Native
         // Publics.
         //---------------------------------------------------------------------
 
+        /// <summary>
+        /// Custom banner to use during handshake.
+        /// </summary>
+        public string? Banner
+        {
+            get => this.banner;
+            set
+            {
+                Precondition.Expect(
+                    value.All(c => c != '-' && !char.IsWhiteSpace(c)),
+                    "Banner must not contain whitespace or dashes");
+                this.banner = value;
+            }
+        }
+
+        /// <summary>
+        /// Set whether touse blocking I/O or Unix-style non-blocking I/O.
+        /// </summary>
         public bool IsBlocking
         {
             get => this.blocking;
@@ -200,12 +219,18 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
+        /// <summary>
+        /// Enable blocking I/O for a using block.
+        /// </summary>
         public IDisposable AsBlocking()
         {
             this.IsBlocking = true;
             return Disposable.For(() => this.IsBlocking = false);
         }
 
+        /// <summary>
+        /// Enable blocking I/O for a using block.
+        /// </summary>
         public IDisposable AsBlocking(TimeSpan timeout)
         {
             this.IsBlocking = true;
@@ -219,21 +244,19 @@ namespace Google.Solutions.Ssh.Native
             });
         }
 
+        /// <summary>
+        /// Enable non-blocking I/O for a using block.
+        /// </summary>
         public IDisposable AsNonBlocking()
         {
             this.IsBlocking = false;
             return Disposable.For(() => this.IsBlocking = true);
         }
 
-        //---------------------------------------------------------------------
-        // Algorithms.
-        //---------------------------------------------------------------------
-
         /// <summary>
         /// Query the list of supported algorithms.
-        /// 
-        /// This forces the session to be initialized.
         /// </summary>
+        /// <remarks>This forces the session to be initialized.</remarks>
         internal string[] GetSupportedAlgorithms(LIBSSH2_METHOD methodType)
         {
             //
@@ -275,7 +298,10 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        
+        /// <summary>
+        /// Set preferred methods.
+        /// </summary>
+        /// <remarks>Must be called before Connect()</remarks>
         internal void SetPreferredMethods(
             LIBSSH2_METHOD methodType,
             string[] methods)
@@ -287,25 +313,6 @@ namespace Google.Solutions.Ssh.Native
 
             this.preferredMethods[methodType] = methods;
         }
-
-        //---------------------------------------------------------------------
-        // Banner.
-        //---------------------------------------------------------------------
-
-        public void SetLocalBanner(string banner) // TODO: Convert to property
-        {
-            if (!banner.StartsWith(BannerPrefix))
-            {
-                throw new ArgumentException(
-                    $"Banner must start with '{BannerPrefix}'");
-            }
-
-            this.banner = banner;
-        }
-
-        //---------------------------------------------------------------------
-        // Timeout.
-        //---------------------------------------------------------------------
 
         /// <summary>
         /// Timeout for blocking operations.
@@ -331,6 +338,9 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
+        /// <summary>
+        /// Temporarily adjust timeout for the duration of a using block.
+        /// </summary>
         public IDisposable WithTimeout(TimeSpan timeout)
         {
             var originalTimeout = this.Timeout;
@@ -344,12 +354,10 @@ namespace Google.Solutions.Ssh.Native
         public TimeSpan KeyboardInteractivePromptTimeout { get; set; }
             = TimeSpan.FromMinutes(1);
 
-        //---------------------------------------------------------------------
-        // Handshake.
-        //---------------------------------------------------------------------
-
-        private const ushort MaxKexRetries = 3;
-
+        /// <summary>
+        /// Connect to remote server and initiate handshake.
+        /// </summary>
+        /// <remarks>Forces the native session to be initialzed.</remarks>
         public Libssh2ConnectedSession Connect(EndPoint remoteEndpoint)
         {
             using (SshTraceSource.Log.TraceMethod().WithParameters(remoteEndpoint))
@@ -382,7 +390,7 @@ namespace Google.Solutions.Ssh.Native
                         this.sessionHandle,
                         socket.Handle);
 
-                    if (result == LIBSSH2_ERROR.KEY_EXCHANGE_FAILURE && kexAttempt < MaxKexRetries)
+                    if (result == LIBSSH2_ERROR.KEY_EXCHANGE_FAILURE && kexAttempt < MaxKexAttempts)
                     {
                         //
                         // When using the WinCNG backend, key exchanges can occasionally fail,
@@ -391,7 +399,10 @@ namespace Google.Solutions.Ssh.Native
                         // Retry a few times.
                         //
 
-                        SshTraceSource.Log.TraceWarning("KEX failed, retrying...");
+                        SshTraceSource.Log.TraceWarning(
+                            "KEX failed (attempt {0}/{1}), retrying...",
+                            kexAttempt,
+                            MaxKexAttempts);
                         socket.Close();
                     }
                     else if (result != LIBSSH2_ERROR.NONE)
@@ -416,6 +427,9 @@ namespace Google.Solutions.Ssh.Native
         // Error.
         //---------------------------------------------------------------------
 
+        /// <summary>
+        /// Query last error encountered.
+        /// </summary>
         internal LIBSSH2_ERROR LastError
         {
             get
@@ -462,10 +476,6 @@ namespace Google.Solutions.Ssh.Native
                 $"SSH operation failed: {error}");
         }
 
-        //---------------------------------------------------------------------
-        // Tracing.
-        //---------------------------------------------------------------------
-
         internal void SetTraceHandler(
             LIBSSH2_TRACE mask,
             Action<string> handler)
@@ -483,7 +493,7 @@ namespace Google.Solutions.Ssh.Native
         }
 
         //---------------------------------------------------------------------
-        // Dispose.
+        // IDisposable.
         //---------------------------------------------------------------------
 
         public void Dispose()

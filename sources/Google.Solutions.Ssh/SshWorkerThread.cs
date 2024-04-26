@@ -227,7 +227,7 @@ namespace Google.Solutions.Ssh
 
                         if (!string.IsNullOrEmpty(this.Banner))
                         {
-                            session.SetLocalBanner(this.Banner!);
+                            session.Banner = this.Banner!;
                         }
 
                         session.Timeout = this.ConnectionTimeout;

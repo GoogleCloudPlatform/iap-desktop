@@ -104,16 +104,6 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCustomBannerHasWrongPrefix_ThenSetLocalBannerThrowsArgumentException()
-        {
-            using (var session = CreateSession())
-            {
-                Assert.Throws<ArgumentException>(
-                    () => session.SetLocalBanner("SSH-test-123"));
-            }
-        }
-
-        [Test]
         public async Task WhenCustomBannerSet_ThenConnectionSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
@@ -122,7 +112,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
             using (var session = CreateSession())
             {
-                session.SetLocalBanner("SSH-2.0-test-123");
+                session.Banner = "test-123";
                 using (var connection = session.Connect(endpoint))
                 {
                     Assert.IsFalse(connection.IsAuthenticated);
