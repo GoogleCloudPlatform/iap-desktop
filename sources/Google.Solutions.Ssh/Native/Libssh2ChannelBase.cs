@@ -198,7 +198,7 @@ namespace Google.Solutions.Ssh.Native
         }
 
         //---------------------------------------------------------------------
-        // Dispose.
+        // IDisposable.
         //---------------------------------------------------------------------
 
         public void Dispose()
@@ -207,7 +207,6 @@ namespace Google.Solutions.Ssh.Native
             GC.SuppressFinalize(this);
         }
 
-        // Protected implementation of Dispose pattern.
         protected virtual void Dispose(bool disposing)
         {
             if (this.disposed)

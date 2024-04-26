@@ -371,7 +371,7 @@ namespace Google.Solutions.Ssh
                                             // keepalive. Libssh2 will ignore the call if no
                                             // keepalive is due yet.
                                             // 
-                                            connectedSession.KeepAlive();
+                                            connectedSession.SendKeepAlive();
                                         }
                                         else if (waitResult == NativeMethods.WSA_WAIT_FAILED)
                                         {

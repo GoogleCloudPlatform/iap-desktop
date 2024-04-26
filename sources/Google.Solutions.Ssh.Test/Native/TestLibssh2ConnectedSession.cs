@@ -50,7 +50,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                var banner = connection.GetRemoteBanner();
+                var banner = connection.RemoteBanner;
                 Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
                 Assert.IsNotNull(banner);
             }
@@ -132,7 +132,7 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 using (var connection = session.Connect(endpoint))
                 {
-                    StringAssert.StartsWith("SSH", connection.GetRemoteBanner());
+                    StringAssert.StartsWith("SSH", connection.RemoteBanner);
                 }
             }
         }
