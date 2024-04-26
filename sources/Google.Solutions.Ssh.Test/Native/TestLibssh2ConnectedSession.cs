@@ -85,7 +85,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenRequestedAlgorithmInvalid_ThenGetActiveAlgorithmsThrowsException(
+        public async Task WhenRequestedAlgorithmInvalid_ThenGetActiveAlgorithmsReturnsEmpty(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -94,8 +94,9 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                Assert.Throws<ArgumentException>(
-                    () => connection.GetActiveAlgorithms((LIBSSH2_METHOD)9999999));
+                Assert.AreEqual(
+                    Array.Empty<string>(),
+                    connection.GetActiveAlgorithms((LIBSSH2_METHOD)9999999));
             }
         }
 
