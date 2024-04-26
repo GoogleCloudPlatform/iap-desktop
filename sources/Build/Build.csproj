@@ -6,7 +6,8 @@
   <PropertyGroup>
     <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
   </PropertyGroup>
-  <ItemGroup><!-- 
+  <ItemGroup>
+    <!-- 
       These packages contain tools and we must use specific versions of them. 
       Comment out these references before running a solution-wide Update-Package.
     -->    

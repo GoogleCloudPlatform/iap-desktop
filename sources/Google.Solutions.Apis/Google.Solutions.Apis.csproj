@@ -6,13 +6,13 @@
     <Description>API extensions library</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Apis" Version="1.67.0" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.67.0" />
-    <PackageReference Include="Google.Apis.CloudOSLogin.v1" Version="1.67.0.3272" />
-    <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.67.0.3356" />
-    <PackageReference Include="Google.Apis.Compute.v1" Version="1.67.0.3351" />
-    <PackageReference Include="Google.Apis.Core" Version="1.67.0" />
-    <PackageReference Include="Google.Apis.Logging.v2" Version="1.67.0.3357" />
+    <PackageReference Include="Google.Apis" Version="1.68.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
+    <PackageReference Include="Google.Apis.CloudOSLogin.v1" Version="1.68.0.3272" />
+    <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.68.0.3356" />
+    <PackageReference Include="Google.Apis.Compute.v1" Version="1.68.0.3384" />
+    <PackageReference Include="Google.Apis.Core" Version="1.68.0" />
+    <PackageReference Include="Google.Apis.Logging.v2" Version="1.68.0.3389" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
