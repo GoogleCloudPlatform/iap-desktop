@@ -74,9 +74,12 @@ namespace Google.Solutions.Ssh.Native
         }
 
         //---------------------------------------------------------------------
-        // Keepalive.
+        // Publics.
         //---------------------------------------------------------------------
 
+        /// <summary>
+        /// Configure keep-alive behavior.
+        /// </summary>
         public void ConfigureKeepAlive(
             bool wantServerResponse,
             TimeSpan interval)
@@ -92,7 +95,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public void KeepAlive()
+        public void SendKeepAlive()
         {
             if (DateTime.Now > this.nextKeepaliveDueTime)
             {
@@ -113,37 +116,27 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        //---------------------------------------------------------------------
-        // Banner.
-        //---------------------------------------------------------------------
-
-        public string? GetRemoteBanner()
+        public string? RemoteBanner
         {
-            this.session.Handle.CheckCurrentThreadOwnsHandle();
-
-            using (SshTraceSource.Log.TraceMethod().WithoutParameters())
+            get
             {
-                var bannerPtr = NativeMethods.libssh2_session_banner_get(
-                    this.session.Handle);
+                this.session.Handle.CheckCurrentThreadOwnsHandle();
 
-                return bannerPtr == IntPtr.Zero
-                    ? null
-                    : Marshal.PtrToStringAnsi(bannerPtr);
+                using (SshTraceSource.Log.TraceMethod().WithoutParameters())
+                {
+                    var bannerPtr = NativeMethods.libssh2_session_banner_get(
+                        this.session.Handle);
+
+                    return bannerPtr == IntPtr.Zero
+                        ? null
+                        : Marshal.PtrToStringAnsi(bannerPtr);
+                }
             }
         }
-
-
-        //---------------------------------------------------------------------
-        // Algorithms.
-        //---------------------------------------------------------------------
 
         internal string[] GetActiveAlgorithms(LIBSSH2_METHOD methodType)
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
-            if (!Enum.IsDefined(typeof(LIBSSH2_METHOD), methodType))
-            {
-                throw new ArgumentException("The method is not supported");
-            }
 
             using (SshTraceSource.Log.TraceMethod().WithParameters(methodType))
             {
@@ -162,10 +155,6 @@ namespace Google.Solutions.Ssh.Native
                 }
             }
         }
-
-        //---------------------------------------------------------------------
-        // Host key.
-        //---------------------------------------------------------------------
 
         public byte[]? GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH hashType)
         {
@@ -240,10 +229,6 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        //---------------------------------------------------------------------
-        // User auth.
-        //---------------------------------------------------------------------
-
         public bool IsAuthenticated
         {
             get
@@ -285,6 +270,10 @@ namespace Google.Solutions.Ssh.Native
                 }
             }
         }
+
+        //---------------------------------------------------------------------
+        // User authentication.
+        //---------------------------------------------------------------------
 
         private Libssh2AuthenticatedSession AuthenticateWithKeyboard(
             ISshCredential credential,
@@ -673,7 +662,7 @@ namespace Google.Solutions.Ssh.Native
         }
 
         //---------------------------------------------------------------------
-        // Dispose.
+        // IDisposable.
         //---------------------------------------------------------------------
 
         public void Dispose()
@@ -682,7 +671,6 @@ namespace Google.Solutions.Ssh.Native
             GC.SuppressFinalize(this);
         }
 
-        // Protected implementation of Dispose pattern.
         protected virtual void Dispose(bool disposing)
         {
             if (this.disposed)

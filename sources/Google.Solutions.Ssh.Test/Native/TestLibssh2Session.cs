@@ -52,6 +52,20 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         //---------------------------------------------------------------------
+        // Banner.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenBannerInvalid_ThenSetBannerThrowsException(
+            [Values("-1", "a b")]string banner)
+        {
+            using (var session = CreateSession())
+            {
+                Assert.Throws<ArgumentException>(() => session.Banner = banner);
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Timeout.
         //---------------------------------------------------------------------
 

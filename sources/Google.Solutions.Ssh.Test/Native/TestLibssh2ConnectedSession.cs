@@ -50,7 +50,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                var banner = connection.GetRemoteBanner();
+                var banner = connection.RemoteBanner;
                 Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
                 Assert.IsNotNull(banner);
             }
@@ -85,7 +85,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenRequestedAlgorithmInvalid_ThenGetActiveAlgorithmsThrowsException(
+        public async Task WhenRequestedAlgorithmInvalid_ThenGetActiveAlgorithmsReturnsEmpty(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -94,24 +94,15 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                Assert.Throws<ArgumentException>(
-                    () => connection.GetActiveAlgorithms((LIBSSH2_METHOD)9999999));
+                Assert.AreEqual(
+                    Array.Empty<string>(),
+                    connection.GetActiveAlgorithms((LIBSSH2_METHOD)9999999));
             }
         }
 
         //---------------------------------------------------------------------
         // Banner.
         //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenCustomBannerHasWrongPrefix_ThenSetLocalBannerThrowsArgumentException()
-        {
-            using (var session = CreateSession())
-            {
-                Assert.Throws<ArgumentException>(
-                    () => session.SetLocalBanner("SSH-test-123"));
-            }
-        }
 
         [Test]
         public async Task WhenCustomBannerSet_ThenConnectionSucceeds(
@@ -122,7 +113,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
             using (var session = CreateSession())
             {
-                session.SetLocalBanner("SSH-2.0-test-123");
+                session.Banner = "test123";
                 using (var connection = session.Connect(endpoint))
                 {
                     Assert.IsFalse(connection.IsAuthenticated);
@@ -142,7 +133,7 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 using (var connection = session.Connect(endpoint))
                 {
-                    StringAssert.StartsWith("SSH", connection.GetRemoteBanner());
+                    StringAssert.StartsWith("SSH", connection.RemoteBanner);
                 }
             }
         }

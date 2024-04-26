@@ -232,8 +232,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                     (IKeyboardInteractiveHandler)this,
                     SynchronizationContext.Current)
                 {
-                    Banner = SshConnection.BannerPrefix + Install.UserAgent,
                     ConnectionTimeout = this.ConnectionTimeout,
+                    Banner = Install.UserAgent
+                        .ToApplicationName()
+                        .Replace("-", string.Empty),
 
                     //
                     // NB. Do not join worker thread as this could block the
