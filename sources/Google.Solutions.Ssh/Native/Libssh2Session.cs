@@ -286,7 +286,7 @@ namespace Google.Solutions.Ssh.Native
         {
             Precondition.ExpectNotNullOrZeroSized(methods, nameof(methods));
             Precondition.Expect(
-                this.sessionHandle != null,
+                this.sessionHandle == null,
                 "Method must be called before the session is initialized");
 
             this.preferredMethods[methodType] = methods;
@@ -352,45 +352,67 @@ namespace Google.Solutions.Ssh.Native
         // Handshake.
         //---------------------------------------------------------------------
 
+        private const ushort MaxKexRetries = 3;
+
         public Libssh2ConnectedSession Connect(EndPoint remoteEndpoint)
         {
             using (SshTraceSource.Log.TraceMethod().WithParameters(remoteEndpoint))
             {
-                var socket = new Socket(
-                    AddressFamily.InterNetwork,
-                    SocketType.Stream,
-                    ProtocolType.Tcp)
+                for (int kexAttempt = 0; ; kexAttempt++)
                 {
+                    var socket = new Socket(
+                        AddressFamily.InterNetwork,
+                        SocketType.Stream,
+                        ProtocolType.Tcp)
+                    {
+                        //
+                        // Flush input data immediately so that the user does not
+                        // experience a lag.
+                        //
+                        NoDelay = true
+                    };
+
                     //
-                    // Flush input data immediately so that the user does not
-                    // experience a lag.
+                    // Initialize session if that hasn't happened yet.
                     //
-                    NoDelay = true
-                };
+                    InitializeSession(kexAttempt > 0);
+                    this.sessionHandle!.CheckCurrentThreadOwnsHandle();
 
-                //
-                // Initialize session if that hasn't happened yet.
-                //
-                InitializeSession(false);
-                this.sessionHandle!.CheckCurrentThreadOwnsHandle();
+                    SshEventSource.Log.ConnectionHandshakeInitiated(remoteEndpoint.ToString());
 
-                SshEventSource.Log.ConnectionHandshakeInitiated(remoteEndpoint.ToString());
+                    socket.Connect(remoteEndpoint);
 
-                socket.Connect(remoteEndpoint);
+                    var result = (LIBSSH2_ERROR)NativeMethods.libssh2_session_handshake(
+                        this.sessionHandle,
+                        socket.Handle);
 
-                var result = (LIBSSH2_ERROR)NativeMethods.libssh2_session_handshake(
-                    this.sessionHandle,
-                    socket.Handle);
+                    if (result == LIBSSH2_ERROR.KEY_EXCHANGE_FAILURE && kexAttempt < MaxKexRetries)
+                    {
+                        //
+                        // When using the WinCNG backend, key exchanges can occasionally fail,
+                        // see https://github.com/libssh2/libssh2/issues/804.
+                        //
+                        // Retry a few times.
+                        //
 
-                if (result != LIBSSH2_ERROR.NONE)
-                {
-                    socket.Close();
-                    throw CreateException(result);
+                        SshTraceSource.Log.TraceWarning("KEX failed, retrying...");
+                        socket.Close();
+                    }
+                    else if (result != LIBSSH2_ERROR.NONE)
+                    {
+                        //
+                        // Some other error occured, don't retry.
+                        //
+                        socket.Close();
+                        throw CreateException(result);
+                    }
+                    else
+                    {
+                        SshEventSource.Log.ConnectionHandshakeCompleted(remoteEndpoint.ToString());
+
+                        return new Libssh2ConnectedSession(this, socket);
+                    }
                 }
-
-                SshEventSource.Log.ConnectionHandshakeCompleted(remoteEndpoint.ToString());
-
-                return new Libssh2ConnectedSession(this, socket);
             }
         }
 

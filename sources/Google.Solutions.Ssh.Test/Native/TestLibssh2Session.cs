@@ -38,10 +38,17 @@ namespace Google.Solutions.Ssh.Test.Native
         private readonly IPEndPoint NonSshEndpoint =
             new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53);
 
+        //---------------------------------------------------------------------
+        // Handle.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenNotInitialized_ThenHandleThrowsException()
         {
-            Assert.Fail();
+            using (var session = CreateSession())
+            {
+                Assert.Throws<InvalidOperationException>(() => _ = session.Handle);
+            }
         }
 
         //---------------------------------------------------------------------
