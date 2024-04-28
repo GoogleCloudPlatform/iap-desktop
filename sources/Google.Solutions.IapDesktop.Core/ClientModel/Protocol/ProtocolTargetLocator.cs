@@ -126,7 +126,5 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         {
             return !(obj1 == obj2);
         }
-
-        // TODO: Move TryGetParameter, etc
     }
 }
