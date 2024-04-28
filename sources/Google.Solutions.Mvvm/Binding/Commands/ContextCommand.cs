@@ -89,20 +89,4 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             return this.queryStateFunc(context);
         }
     }
-
-    public static class CommandExtensions // TODO: Move to command container
-    {
-        public static ICommandContainer<TContext> AddCommand<TContext>(
-            this ICommandContainer<TContext> container,
-            string text,
-            Func<TContext, CommandState> queryStateFunc,
-            Action<TContext> executeAction)
-            where TContext : class
-        {
-            return container.AddCommand(new ContextCommand<TContext>(
-                text,
-                queryStateFunc,
-                executeAction));
-        }
-    }
 }

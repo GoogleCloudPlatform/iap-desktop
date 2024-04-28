@@ -60,13 +60,14 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
             {
                 var observedContexts = new List<string>();
                 container.AddCommand(
-                    "toplevel",
-                    ctx =>
-                    {
-                        observedContexts.Add(ctx);
-                        return CommandState.Enabled;
-                    },
-                    ctx => Assert.Fail());
+                    new ContextCommand<string>(
+                        "toplevel",
+                        ctx =>
+                        {
+                            observedContexts.Add(ctx);
+                            return CommandState.Enabled;
+                        },
+                        ctx => Assert.Fail()));
 
                 source.Context = "ctx-2";
 
@@ -90,20 +91,22 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 new Mock<IBindingContext>().Object))
             {
                 var subContainer = container.AddCommand(
-                    "parent",
-                    ctx => CommandState.Enabled,
-                    ctx => { });
+                    new ContextCommand<string>(
+                        "parent",
+                        ctx => CommandState.Enabled,
+                        ctx => { }));
 
                 var observedContexts = new List<string>();
 
                 subContainer.AddCommand(
-                    "child",
-                    ctx =>
-                    {
-                        observedContexts.Add(ctx);
-                        return CommandState.Enabled;
-                    },
-                    ctx => Assert.Fail());
+                    new ContextCommand<string>(
+                        "child",
+                        ctx =>
+                        {
+                            observedContexts.Add(ctx);
+                            return CommandState.Enabled;
+                        },
+                        ctx => Assert.Fail()));
 
                 source.Context = "ctx-2";
 
@@ -127,9 +130,10 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 new Mock<IBindingContext>().Object))
             {
                 container.AddCommand(
-                    "toplevel",
-                    ctx => CommandState.Enabled,
-                    ctx => Assert.AreEqual("ctx-2", ctx));
+                    new ContextCommand<string>(
+                        "toplevel",
+                        ctx => CommandState.Enabled,
+                        ctx => Assert.AreEqual("ctx-2", ctx)));
 
                 source.Context = "ctx-2";
             }
@@ -149,9 +153,10 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 new Mock<IBindingContext>().Object))
             {
                 container.AddCommand(
-                    "toplevel",
-                    ctx => CommandState.Enabled,
-                    ctx => Assert.AreEqual("ctx-1", ctx));
+                    new ContextCommand<string>(
+                        "toplevel",
+                        ctx => CommandState.Enabled,
+                        ctx => Assert.AreEqual("ctx-1", ctx)));
 
                 source.Context = "ctx-2";
             }
@@ -172,9 +177,10 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 PropertyAssert.RaisesCollectionChangedNotification(
                     container.MenuItems,
                     () => container.AddCommand(
-                        "toplevel",
-                        ctx => CommandState.Enabled,
-                        ctx => Assert.Fail()),
+                        new ContextCommand<string>(
+                            "toplevel",
+                            ctx => CommandState.Enabled,
+                            ctx => Assert.Fail())),
                     NotifyCollectionChangedAction.Add);
             }
         }
