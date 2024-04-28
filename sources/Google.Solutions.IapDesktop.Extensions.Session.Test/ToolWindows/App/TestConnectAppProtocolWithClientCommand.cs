@@ -419,9 +419,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             dialog
                 .Setup(d => d.PromptForWindowsCredentials(
                     It.IsAny<IWin32Window>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<AuthenticationPackage>(),
+                    It.IsAny<CredentialDialogParameters>(),
                     out userCredential))
                 .Returns(DialogResult.OK);
 
@@ -460,9 +458,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             dialog
                 .Setup(d => d.PromptForWindowsCredentials(
                     It.IsAny<IWin32Window>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<AuthenticationPackage>(),
+                    It.IsAny<CredentialDialogParameters>(),
                     out userCredential))
                 .Returns(DialogResult.OK);
 
@@ -499,9 +495,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             dialog
                 .Setup(d => d.PromptForWindowsCredentials(
                     It.IsAny<IWin32Window>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<AuthenticationPackage>(),
+                    It.IsAny<CredentialDialogParameters>(),
                     out userCredential))
                 .Returns(DialogResult.Cancel);
 

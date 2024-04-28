@@ -256,11 +256,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows
                 if (this.serviceProvider.GetService<ICredentialDialog>()
                     .PromptForWindowsCredentials(
                         mainWindow,
-                        $"Join {instance.DisplayName} to domain",
-                        $"Enter Active Directory credentials for {domainName}.\n\n" +
-                            "The credentials will be used to join the computer to the " +
-                            "domain and will not be saved.",
-                        AuthenticationPackage.Kerberos,
+                        new CredentialDialogParameters()
+                        {
+                            Caption = $"Join {instance.DisplayName} to domain",
+                            Message = $"Enter Active Directory credentials for {domainName}.\n\n" +
+                                "The credentials will be used to join the computer to the " +
+                                "domain and will not be saved.",
+                            Package = AuthenticationPackage.Kerberos
+                        },
                         out var credential) != DialogResult.OK)
                 {
                     return;

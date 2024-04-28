@@ -88,9 +88,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
 
             if (dialog.PromptForWindowsCredentials(
                 null,
-                "Caption",
-                "Message",
-                AuthenticationPackage.Any,
+                new CredentialDialogParameters()
+                {
+                    Caption = "Caption",
+                    Message = "Message",
+                    Package = AuthenticationPackage.Any
+                },
                 out var credentials) == DialogResult.OK)
             {
                 Assert.NotNull(credentials);
@@ -106,10 +109,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
 
             if (dialog.PromptForWindowsCredentials(
                 null,
-                "Caption",
-                "Message",
-                AuthenticationPackage.Any,
-                new NetworkCredential("bob@example.com", "password"),
+                new CredentialDialogParameters()
+                {
+                    Caption = "Caption",
+                    Message = "Message",
+                    Package = AuthenticationPackage.Any,
+                    InputCredential = new NetworkCredential("bob@example.com", "password")
+                },
                 out var credentials) == DialogResult.OK)
             {
                 Assert.NotNull(credentials);

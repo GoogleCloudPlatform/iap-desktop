@@ -161,9 +161,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                     //
                     if (this.credentialDialog.PromptForWindowsCredentials(
                         this.ownerWindow,
-                        this.contextFactory.Protocol.Name,
-                        $"Enter credentials for {instance.DisplayName}",
-                        AuthenticationPackage.Any,
+                        new CredentialDialogParameters()
+                        {
+                            Caption = this.contextFactory.Protocol.Name,
+                            Message = $"Enter credentials for {instance.DisplayName}",
+                            Package = AuthenticationPackage.Any
+                        },
                         out var credential) != DialogResult.OK)
                     {
                         //

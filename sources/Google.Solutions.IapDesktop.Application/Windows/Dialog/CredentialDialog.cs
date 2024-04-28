@@ -41,20 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         /// </summary>
         DialogResult PromptForWindowsCredentials(
             IWin32Window? owner,
-            string caption,
-            string message,
-            AuthenticationPackage package,
-            NetworkCredential? inputCredential,
-            out NetworkCredential? credential);
-
-        /// <summary>
-        /// Prompt for Windows credential using the CredUI API.
-        /// </summary>
-        DialogResult PromptForWindowsCredentials(
-            IWin32Window? owner,
-            string caption,
-            string message,
-            AuthenticationPackage package,
+            CredentialDialogParameters parameters,
             out NetworkCredential? credential);
 
         /// <summary>
@@ -65,6 +52,29 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             string caption,
             string message,
             out string? username);
+    }
+
+    public struct CredentialDialogParameters
+    {
+        /// <summary>
+        /// Caption to show in dialog.
+        /// </summary>
+        public string Caption { get; set; }
+
+        /// <summary>
+        /// Message to show in dialog.
+        /// </summary>
+        public string Message { get; set; }
+
+        /// <summary>
+        /// Authentication package.
+        /// </summary>
+        public AuthenticationPackage Package { get; set; }
+
+        /// <summary>
+        /// Credential to pre-populate the dialog with.
+        /// </summary>
+        public NetworkCredential? InputCredential { get; set; }
     }
 
     public enum AuthenticationPackage
@@ -83,42 +93,24 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         {
             this.themeService = themeService.ExpectNotNull(nameof(themeService));
         }
-        public DialogResult PromptForWindowsCredentials(
-            IWin32Window? owner,
-            string caption,
-            string message,
-            AuthenticationPackage package,
-            out NetworkCredential? credential)
-        {
-            return PromptForWindowsCredentials(
-                owner,
-                caption,
-                message,
-                package,
-                null,
-                out credential);
-        }
 
         public DialogResult PromptForWindowsCredentials(
             IWin32Window? owner,
-            string caption,
-            string message,
-            AuthenticationPackage package,
-            NetworkCredential? inputCredential,
+            CredentialDialogParameters parameters,
             out NetworkCredential? credential)
         {
             var uiInfo = new NativeMethods.CREDUI_INFO()
             {
                 cbSize = Marshal.SizeOf<NativeMethods.CREDUI_INFO>(),
                 hwndParent = owner?.Handle ?? IntPtr.Zero,
-                pszCaptionText = caption,
-                pszMessageText = message
+                pszCaptionText = parameters.Caption,
+                pszMessageText = parameters.Message
             };
 
             using (var packedInCredential = new PackedCredential(
-                inputCredential ?? new NetworkCredential()))
+                parameters.InputCredential ?? new NetworkCredential()))
             {
-                var packageId = LookupAuthenticationPackageId(package);
+                var packageId = LookupAuthenticationPackageId(parameters.Package);
                 var save = false;
 
                 var error = NativeMethods.CredUIPromptForWindowsCredentials(
