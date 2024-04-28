@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
     [SkipCodeCoverage("View code")]
     public partial class NewCredentialsView : Form, IView<NewCredentialsViewModel>
     {
-        public NewCredentialsView(IThemeService themeService)
+        public NewCredentialsView()
         {
             InitializeComponent();
         }

@@ -30,9 +30,9 @@ namespace Google.Solutions.Common.Runtime
     /// Container for IDisposable objects that can be disposed
     /// at once.
     /// </summary>
-    public class DisposableContainer : IDisposable
+    public sealed class DisposableContainer : IDisposable
     {
-        private readonly IList<IDisposable> disposables;
+        private readonly List<IDisposable> disposables;
 
         public DisposableContainer(params IDisposable[] disposables)
         {

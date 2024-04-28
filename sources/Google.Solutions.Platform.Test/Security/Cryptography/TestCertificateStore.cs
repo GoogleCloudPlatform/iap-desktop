@@ -148,7 +148,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
             var store = new CertificateStore();
             store.AddUserCertitficate(ExampleCertificate);
 
-            var certificates = store.ListComputerCertificates(
+            var certificates = store.ListMachineCertificates(
                 cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
 
             Assert.IsNotNull(certificates);
@@ -161,7 +161,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
             var store = new CertificateStore();
             store.AddUserCertitficate(ExampleCertificate);
 
-            var certificates = store.ListComputerCertificates(cert => false);
+            var certificates = store.ListMachineCertificates(cert => false);
 
             Assert.IsNotNull(certificates);
             CollectionAssert.IsEmpty(certificates);

@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics
         /// </summary>
         public sealed class Context
         {
-            public static Context None = new Context();
+            public static readonly Context None = new Context();
         }
 
         public DebugMenu(IServiceCategoryProvider serviceProvider)

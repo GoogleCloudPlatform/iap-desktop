@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             return computeAdapter;
         }
 
-        private Mock<IProjectRepository> CreateProjectRepositoryMock(
+        private static Mock<IProjectRepository> CreateProjectRepositoryMock(
             params string[] addedProjectIds)
         {
             var projectRepository = new Mock<IProjectRepository>();

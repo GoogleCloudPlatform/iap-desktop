@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             return node.Object;
         }
 
-        private SerialOutputViewModel CreateViewModel(IAuthorization authorization)
+        private static SerialOutputViewModel CreateViewModel(IAuthorization authorization)
 
         {
             var serviceProvider = new ServiceRegistry();

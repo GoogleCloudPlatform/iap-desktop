@@ -29,21 +29,26 @@ using System.Security.Cryptography.X509Certificates;
 namespace Google.Solutions.Platform.Security.Cryptography
 {
     /// <summary>
-    /// Adapter for the Windows certificate store.
+    /// Windows certificate store.
     /// </summary>
     public interface ICertificateStore
     {
-        IEnumerable<X509Certificate2> ListComputerCertificates(
+        /// <summary>
+        /// List certificates from the machine certificate store.
+        /// </summary>
+        IEnumerable<X509Certificate2> ListMachineCertificates(
             Predicate<X509Certificate2> filter);
 
+        /// <summary>
+        /// List certificates from the user's certificate store.
+        /// </summary>
         IEnumerable<X509Certificate2> ListUserCertificates(
             Predicate<X509Certificate2> filter);
     }
 
     public class CertificateStore : ICertificateStore
     {
-        internal void AddUserCertitficate(
-            X509Certificate2 certificate)
+        internal static void AddUserCertitficate(X509Certificate2 certificate)
         {
             using (PlatformTraceSource.Log.TraceMethod().WithoutParameters())
             using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
@@ -52,8 +57,8 @@ namespace Google.Solutions.Platform.Security.Cryptography
                 store.Add(certificate);
             }
         }
-        internal void RemoveUserCertitficate(
-            X509Certificate2 certificate)
+
+        internal static void RemoveUserCertitficate(X509Certificate2 certificate)
         {
             using (PlatformTraceSource.Log.TraceMethod().WithoutParameters())
             using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
@@ -63,7 +68,7 @@ namespace Google.Solutions.Platform.Security.Cryptography
             }
         }
 
-        private IEnumerable<X509Certificate2> ListCertitficates(
+        private static IEnumerable<X509Certificate2> ListCertitficates(
             StoreLocation storeLocation,
             Predicate<X509Certificate2> filter)
         {
@@ -88,13 +93,17 @@ namespace Google.Solutions.Platform.Security.Cryptography
             }
         }
 
+        //---------------------------------------------------------------------
+        // ICertificateStore.
+        //---------------------------------------------------------------------
+
         public IEnumerable<X509Certificate2> ListUserCertificates(
             Predicate<X509Certificate2> filter)
         {
             return ListCertitficates(StoreLocation.CurrentUser, filter);
         }
 
-        public IEnumerable<X509Certificate2> ListComputerCertificates(
+        public IEnumerable<X509Certificate2> ListMachineCertificates(
             Predicate<X509Certificate2> filter)
         {
             return ListCertitficates(StoreLocation.LocalMachine, filter);

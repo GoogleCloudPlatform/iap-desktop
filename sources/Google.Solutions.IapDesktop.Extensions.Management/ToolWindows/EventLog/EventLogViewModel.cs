@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
                 RaisePropertyChange();
 
                 // Reload from backend.
-                InvalidateAsync().ConfigureAwait(true);
+                _ = InvalidateAsync().ConfigureAwait(true);
             }
         }
 
@@ -201,7 +201,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
         // Actions.
         //---------------------------------------------------------------------
 
-        public void Refresh() => InvalidateAsync().ConfigureAwait(true);
+        public void Refresh()
+        {
+            _ = InvalidateAsync().ConfigureAwait(true);
+        }
 
         public void OpenSelectedEventInCloudConsole()
         {

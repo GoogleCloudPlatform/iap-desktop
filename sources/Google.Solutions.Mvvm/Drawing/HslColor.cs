@@ -130,7 +130,7 @@ namespace Google.Solutions.Mvvm.Drawing
         // Publics.
         //---------------------------------------------------------------------
 
-        public Color ToColor()
+        public readonly Color ToColor()
         {
             float r, g, b;
 
@@ -158,14 +158,14 @@ namespace Google.Solutions.Mvvm.Drawing
         // Operators and equality.
         //---------------------------------------------------------------------
 
-        public override int GetHashCode()
+        public readonly override int GetHashCode()
         {
             return ToBase256(this.H) << 16 |
                    ToBase256(this.S) << 8 |
                    ToBase256(this.L);
         }
 
-        public override bool Equals(object obj)
+        public readonly override bool Equals(object obj)
         {
             return obj is HslColor hsl &&
                 hsl.H == this.H &&
@@ -173,9 +173,19 @@ namespace Google.Solutions.Mvvm.Drawing
                 hsl.L == this.L;
         }
 
-        public override string ToString()
+        public readonly override string ToString()
         {
             return $"H={ToBase256(this.H)}, S={ToBase256(this.S)}, L={ToBase256(this.L)}";
+        }
+
+        public static bool operator ==(HslColor left, HslColor right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(HslColor left, HslColor right)
+        {
+            return !(left == right);
         }
     }
 }
