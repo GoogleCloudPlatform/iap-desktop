@@ -62,33 +62,24 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         public ThemeService(IRepository<IThemeSettings> themeSettingsRepository)
         {
             var settings = themeSettingsRepository.GetSettings();
-
-            WindowsRuleSet windowsTheme;
-
-            switch (settings.Theme.Value)
+            var windowsTheme = settings.Theme.Value switch
             {
-                case ApplicationTheme.System:
-                    //
-                    // Use same mode as Windows.
-                    //
-                    windowsTheme = new WindowsRuleSet(SystemTheme.ShouldAppsUseDarkMode);
-                    break;
+                //
+                // Use same mode as Windows.
+                //
+                ApplicationTheme.System => new WindowsRuleSet(SystemTheme.ShouldAppsUseDarkMode),
 
-                case ApplicationTheme.Dark:
-                    //
-                    // Use dark mode if possible.
-                    //
-                    windowsTheme = new WindowsRuleSet(SystemTheme.IsDarkModeSupported);
-                    break;
+                //
+                // Use dark mode if possible.
+                //
+                ApplicationTheme.Dark => new WindowsRuleSet(SystemTheme.IsDarkModeSupported),
 
-                default:
-                    //
-                    // Use safe defaults that also work on downlevel
-                    // versions of Windows.
-                    //
-                    windowsTheme = new WindowsRuleSet(false);
-                    break;
-            }
+                //
+                // Use safe defaults that also work on downlevel
+                // versions of Windows.
+                //
+                _ => new WindowsRuleSet(false),
+            };
 
             var vsTheme = windowsTheme.IsDarkModeEnabled
                 ? VSTheme.GetDarkTheme()

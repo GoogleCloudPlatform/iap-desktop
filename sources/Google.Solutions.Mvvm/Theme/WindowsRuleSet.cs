@@ -210,7 +210,7 @@ namespace Google.Solutions.Mvvm.Theme
             }
         }
 
-        private static void ResetWindowTheme(Control control)
+        internal static void ResetWindowTheme(Control control)
         {
             _ = NativeMethods.SetWindowTheme(control.Handle, string.Empty, string.Empty);
         }

@@ -57,7 +57,7 @@ namespace Google.Solutions.Apis.Crm
             CancellationToken cancellationToken);
     }
 
-    public class ResourceManagerClient : ApiClientBase, IResourceManagerClient
+    public sealed class ResourceManagerClient : ApiClientBase, IResourceManagerClient, IDisposable
     {
         private readonly CloudResourceManagerService service;
 
@@ -189,16 +189,7 @@ namespace Google.Solutions.Apis.Crm
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                this.service.Dispose();
-            }
+            this.service.Dispose();
         }
     }
 

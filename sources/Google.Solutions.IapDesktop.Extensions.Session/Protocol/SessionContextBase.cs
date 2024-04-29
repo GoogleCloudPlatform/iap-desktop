@@ -44,33 +44,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             TimeSpan connectionTimeout,
             CancellationToken cancellationToken)
         {
-            switch (transportType)
+            return transportType switch
             {
-                case SessionTransportType.IapTunnel:
-                    return await this.iapTransportFactory
-                        .CreateTransportAsync(
-                            protocol,
-                            new CurrentProcessPolicy(),
-                            this.Instance,
-                            port,
-                            null, // Auto-assign
-                            connectionTimeout,
-                            cancellationToken)
-                        .ConfigureAwait(false);
+                SessionTransportType.IapTunnel => await this.iapTransportFactory
+                    .CreateTransportAsync(
+                        protocol,
+                        new CurrentProcessPolicy(),
+                        this.Instance,
+                        port,
+                        null, // Auto-assign
+                        connectionTimeout,
+                        cancellationToken)
+                    .ConfigureAwait(false),
 
-                case SessionTransportType.Vpc:
-                    return await this.directTransportFactory
-                        .CreateTransportAsync(
-                            protocol,
-                            this.Instance,
-                            NetworkInterfaceType.PrimaryInternal,
-                            port,
-                            cancellationToken)
-                        .ConfigureAwait(false);
+                SessionTransportType.Vpc => await this.directTransportFactory
+                    .CreateTransportAsync(
+                        protocol,
+                        this.Instance,
+                        NetworkInterfaceType.PrimaryInternal,
+                        port,
+                        cancellationToken)
+                    .ConfigureAwait(false),
 
-                default:
-                    throw new ArgumentException("Unrecognized transport type");
-            }
+                _ => throw new ArgumentException("Unrecognized transport type"),
+            };
         }
 
         protected SessionContextBase(
