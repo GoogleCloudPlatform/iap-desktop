@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
             ProjectId = "project-3"
         };
 
-        private Mock<IProjectPickerModel> CreateModelMock()
+        private static Mock<IProjectPickerModel> CreateModelMock()
         {
             var model = new Mock<IProjectPickerModel>();
 

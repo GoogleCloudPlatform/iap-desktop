@@ -56,9 +56,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows
                 new Mock<IContextSource<ISession>>().Object,
                 new Mock<IBindingContext>().Object);
             commands.AddCommand(
-                "test-command",
-                s => CommandState.Enabled,
-                s => { });
+                new ContextCommand<ISession>(
+                    "test-command",
+                    s => CommandState.Enabled,
+                    s => { }));
 
 
             using (var window = new SessionPane()
@@ -87,9 +88,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows
                 new Mock<IContextSource<ISession>>().Object,
                 new Mock<IBindingContext>().Object);
             commands.AddCommand(
-                "test-command",
-                s => CommandState.Enabled,
-                s => { });
+                new ContextCommand<ISession>(
+                    "test-command",
+                    s => CommandState.Enabled,
+                    s => { }));
 
             using (var window = new SessionPane()
             {
@@ -113,9 +115,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows
                     new Mock<IContextSource<ISession>>().Object,
                     new Mock<IBindingContext>().Object);
                 commands.AddCommand(
-                    "test-command",
-                    s => CommandState.Enabled,
-                    s => { });
+                    new ContextCommand<ISession>(
+                        "test-command",
+                        s => CommandState.Enabled,
+                        s => { }));
                 window.ContextCommands = commands;
                 Assert.IsFalse(window.ShowCloseMenuItemInContextMenu);
 

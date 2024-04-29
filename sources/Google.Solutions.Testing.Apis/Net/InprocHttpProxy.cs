@@ -164,7 +164,7 @@ namespace Google.Solutions.Testing.Apis.Net
             this.listener = new TcpListener(new IPEndPoint(IPAddress.Loopback, port));
             this.listener.Start();
 
-            Task.Run(() => DispatchRequests());
+            _ = Task.Run(() => DispatchRequests());
         }
 
         public InProcessHttpProxy() : this(nextProxyPort++)

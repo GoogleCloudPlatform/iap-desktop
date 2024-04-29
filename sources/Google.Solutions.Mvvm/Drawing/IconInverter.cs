@@ -39,7 +39,7 @@ namespace Google.Solutions.Mvvm.Drawing
         private float grayFactor = 1;
         private float colorFactor = 1;
 
-        private bool IsGrayish(byte red, byte green, byte blue)
+        private static bool IsGrayish(byte red, byte green, byte blue)
         {
             var rgb = new[] { red, green, blue };
             return rgb.Max() - rgb.Min() < 10;

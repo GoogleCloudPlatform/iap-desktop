@@ -99,8 +99,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         [SetUp]
         public void SetUp()
         {
-            var store = new CertificateStore();
-            store.RemoveUserCertitficate(ExampleCertificate);
+            CertificateStore.RemoveUserCertitficate(ExampleCertificate);
         }
 
         //---------------------------------------------------------------------
@@ -110,9 +109,9 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         [Test]
         public void WhenPredicateMatches_ThenListUserCertificatesReturnsUserCertificate()
         {
-            var store = new CertificateStore();
-            store.AddUserCertitficate(ExampleCertificate);
+            CertificateStore.AddUserCertitficate(ExampleCertificate);
 
+            var store = new CertificateStore();
             var certificates = store.ListUserCertificates(
                 cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
 
@@ -129,9 +128,9 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         [Test]
         public void WhenPredicateDoesNotMatch_ThenListUserCertificatesReturnsEmpty()
         {
-            var store = new CertificateStore();
-            store.AddUserCertitficate(ExampleCertificate);
+            CertificateStore.AddUserCertitficate(ExampleCertificate);
 
+            var store = new CertificateStore();
             var certificates = store.ListUserCertificates(cert => false);
 
             Assert.IsNotNull(certificates);
@@ -145,10 +144,10 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         [Test]
         public void ListComputerCertificatesDoesNotReturnUserCertificate()
         {
+            CertificateStore.AddUserCertitficate(ExampleCertificate);
+            
             var store = new CertificateStore();
-            store.AddUserCertitficate(ExampleCertificate);
-
-            var certificates = store.ListComputerCertificates(
+            var certificates = store.ListMachineCertificates(
                 cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
 
             Assert.IsNotNull(certificates);
@@ -158,10 +157,10 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         [Test]
         public void WhenPredicateDoesNotMatch_ThenListComputerCertificatesReturnsEmpty()
         {
+            CertificateStore.AddUserCertitficate(ExampleCertificate);
+            
             var store = new CertificateStore();
-            store.AddUserCertitficate(ExampleCertificate);
-
-            var certificates = store.ListComputerCertificates(cert => false);
+            var certificates = store.ListMachineCertificates(cert => false);
 
             Assert.IsNotNull(certificates);
             CollectionAssert.IsEmpty(certificates);

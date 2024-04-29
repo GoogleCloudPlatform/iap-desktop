@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                         details.Append($"    Domain: {error.Domain}\n");
                         details.Append($"    Location: {error.Location}\n");
                         details.Append($"    Reason: {error.Reason}\n");
-                        details.Append("\n");
+                        details.Append('\n');
                     }
 
                     message = apiException.Error.Message;
@@ -199,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                         details.Append(e.InnerException.GetType().Name);
                         details.Append(":\n");
                         details.Append(innerException.Message);
-                        details.Append("\n");
+                        details.Append('\n');
                     }
 
                     message = e.Message;

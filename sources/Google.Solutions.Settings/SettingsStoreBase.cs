@@ -105,7 +105,7 @@ namespace Google.Solutions.Settings
             void Write(TSource key);
         }
 
-        protected class MappedSetting<T> : SettingBase<T>, IMappedSetting // TODO: Merge into SettingBase
+        protected class MappedSetting<T> : SettingBase<T>, IMappedSetting
         {
             private readonly IValueAccessor<TSource, T> accessor;
             private readonly Predicate<T> validate;

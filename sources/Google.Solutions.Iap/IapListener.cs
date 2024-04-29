@@ -211,7 +211,7 @@ namespace Google.Solutions.Iap
                             OnClientConnected(clientStream.ToString());
                             this.ClientsAccepted++;
 
-                            Task.WhenAll(
+                            _ = Task.WhenAll(
                                     clientStream.RelayToAsync(serverStream, SshRelayStream.MaxWriteSize, token),
                                     serverStream.RelayToAsync(clientStream, SshRelayStream.MinReadSize, token))
                                 .ContinueWith(t =>

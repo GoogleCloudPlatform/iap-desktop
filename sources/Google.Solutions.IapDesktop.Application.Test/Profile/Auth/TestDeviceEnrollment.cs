@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
             Assert.IsNull(enrollment.Certificate);
 
             certificateStore.Verify(
-                s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()),
+                s => s.ListMachineCertificates(It.IsAny<Predicate<X509Certificate2>>()),
                 Times.Never);
             certificateStore.Verify(
                 s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()),
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 .Setup(s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
             certificateStore
-                .Setup(s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()))
+                .Setup(s => s.ListMachineCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
 
             var enrollment = DeviceEnrollment.Create(
@@ -201,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
 
             var certificateStore = new Mock<ICertificateStore>();
             certificateStore
-                .Setup(s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()))
+                .Setup(s => s.ListMachineCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
             certificateStore
                 .Setup(s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()))
@@ -228,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
 
             var certificateStore = new Mock<ICertificateStore>();
             certificateStore
-                .Setup(s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()))
+                .Setup(s => s.ListMachineCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(() => new[] { CertificateUtil.CertificateFromPem(EndpointVerificationCertificate) });
             certificateStore
                 .Setup(s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()))
@@ -269,7 +269,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 .Setup(s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
             certificateStore
-                .Setup(s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()))
+                .Setup(s => s.ListMachineCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
 
             var enrollment = DeviceEnrollment.Create(
@@ -305,7 +305,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                     new[] { CertificateUtil.CertificateFromPem(CustomCertificateForServerAuth) }
                     .Where(c => predicate(c)));
             certificateStore
-                .Setup(s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()))
+                .Setup(s => s.ListMachineCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
 
             var enrollment = DeviceEnrollment.Create(
@@ -336,7 +336,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
 
             var certificateStore = new Mock<ICertificateStore>();
             certificateStore
-                .Setup(s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()))
+                .Setup(s => s.ListMachineCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
             certificateStore
                 .Setup(s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()))
