@@ -89,7 +89,7 @@ namespace Google.Solutions.Ssh.Cryptography
 
         public override bool Equals(object obj)
         {
-            return obj is PublicKey && Equals((PublicKey)obj);
+            return obj is PublicKey key && Equals(key);
         }
 
         public override int GetHashCode()

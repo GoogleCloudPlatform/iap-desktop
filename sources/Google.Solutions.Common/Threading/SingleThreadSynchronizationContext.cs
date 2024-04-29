@@ -158,7 +158,7 @@ namespace Google.Solutions.Common.Threading
         /// A queued callback that is scheduled to be executed within
         /// the synchronization context, on the single theread.
         /// </summary>
-        private struct QueuedCallback
+        private readonly struct QueuedCallback
         {
             private readonly ExecutionContext executionContext;
             private readonly SendOrPostCallback callback;

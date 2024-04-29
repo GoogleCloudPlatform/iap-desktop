@@ -81,7 +81,7 @@ namespace Google.Solutions.Ssh
             }
             else
             {
-                this.Connection
+                _ = this.Connection
                     .RunSendOperationAsync(c =>
                     {
                         using (c.Session.AsBlocking())

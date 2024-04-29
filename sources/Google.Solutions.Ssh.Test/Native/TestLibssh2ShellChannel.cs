@@ -36,7 +36,7 @@ namespace Google.Solutions.Ssh.Test.Native
     {
         private const string DefaultTerminal = "vanilla";
 
-        private string ReadToEnd(
+        private static string ReadToEnd(
             Libssh2ChannelBase channel,
             Encoding encoding)
         {
@@ -53,7 +53,7 @@ namespace Google.Solutions.Ssh.Test.Native
             return text.ToString();
         }
 
-        private string ReadUntil(
+        private static string ReadUntil(
             Libssh2ChannelBase channel,
             string delimiter,
             Encoding encoding)

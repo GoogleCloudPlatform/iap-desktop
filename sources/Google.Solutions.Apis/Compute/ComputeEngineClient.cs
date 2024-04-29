@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Compute
 {
-    public sealed class ComputeEngineClient : ApiClientBase, IComputeEngineClient
+    public sealed class ComputeEngineClient : ApiClientBase, IComputeEngineClient, IDisposable
     {
         private readonly ComputeService service;
 

@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Client
 {
-    public class RestClient : IDisposable
+    public sealed class RestClient : IDisposable
     {
         //
         // Use a custom timeout (default is 100sec).

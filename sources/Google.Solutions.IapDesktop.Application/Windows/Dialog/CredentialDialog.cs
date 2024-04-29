@@ -168,20 +168,15 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
 
             using (var lsa = Lsa.ConnectUntrusted())
             {
-                switch (package)
+                var packageName = package switch
                 {
-                    case AuthenticationPackage.Ntlm:
-                        return lsa.LookupAuthenticationPackage(Lsa.MSV1_0_PACKAGE_NAME);
+                    AuthenticationPackage.Ntlm => Lsa.MSV1_0_PACKAGE_NAME,
+                    AuthenticationPackage.Kerberos => Lsa.MICROSOFT_KERBEROS_NAME_A,
+                    AuthenticationPackage.Negoriate => Lsa.NEGOSSP_NAME_A,
+                    _ => throw new ArgumentException(nameof(package)),
+                };
 
-                    case AuthenticationPackage.Kerberos:
-                        return lsa.LookupAuthenticationPackage(Lsa.MICROSOFT_KERBEROS_NAME_A);
-
-                    case AuthenticationPackage.Negoriate:
-                        return lsa.LookupAuthenticationPackage(Lsa.NEGOSSP_NAME_A);
-
-                    default:
-                        throw new ArgumentException(nameof(package));
-                }
+                return lsa.LookupAuthenticationPackage(packageName);
             }
         }
 
@@ -431,8 +426,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             {
                 public struct LSA_STRING
                 {
-                    public UInt16 Length;
-                    public UInt16 MaximumLength;
+                    public ushort Length;
+                    public ushort MaximumLength;
                     public /*PCHAR*/ IntPtr Buffer;
                 }
 
@@ -449,7 +444,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 public static extern uint LsaLookupAuthenticationPackage(
                     [In] LsaSafeHandle LsaHandle,
                     [In] ref LSA_STRING PackageName,
-                    [Out] out UInt32 AuthenticationPackage);
+                    [Out] out uint AuthenticationPackage);
             }
 
             private class LsaSafeHandle : SafeHandleZeroOrMinusOneIsInvalid

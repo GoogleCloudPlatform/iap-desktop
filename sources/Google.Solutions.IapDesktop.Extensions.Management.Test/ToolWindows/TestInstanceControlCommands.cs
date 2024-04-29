@@ -48,27 +48,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
             InstanceControlCommand controlCommand)
         {
             var commands = new InstanceControlCommands(serviceProvider);
-            switch (controlCommand)
+            return controlCommand switch
             {
-                case InstanceControlCommand.Start:
-                    return commands.ContextMenuStart;
-
-                case InstanceControlCommand.Stop:
-                    return commands.ContextMenuStop;
-
-                case InstanceControlCommand.Suspend:
-                    return commands.ContextMenuSuspend;
-
-                case InstanceControlCommand.Resume:
-                    return commands.ContextMenuResume;
-
-                case InstanceControlCommand.Reset:
-                    return commands.ContextMenuReset;
-
-                default:
-                    throw new ArgumentException(
-                        "Unknown InstanceControlCommand: " + controlCommand);
-            }
+                InstanceControlCommand.Start => commands.ContextMenuStart,
+                InstanceControlCommand.Stop => commands.ContextMenuStop,
+                InstanceControlCommand.Suspend => commands.ContextMenuSuspend,
+                InstanceControlCommand.Resume => commands.ContextMenuResume,
+                InstanceControlCommand.Reset => commands.ContextMenuReset,
+                _ => throw new ArgumentException(
+                    "Unknown InstanceControlCommand: " + controlCommand),
+            };
         }
 
         //---------------------------------------------------------------------

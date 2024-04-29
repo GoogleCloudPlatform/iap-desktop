@@ -30,7 +30,7 @@ namespace Google.Solutions.Common.Test.Util
     [TestFixture]
     public class TestExceptionExtensions : CommonFixtureBase
     {
-        private static Exception CreateException()
+        private static ArgumentException CreateException()
         {
             try
             {

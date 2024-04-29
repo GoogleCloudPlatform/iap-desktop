@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             return node.Object;
         }
 
-        private AppProtocolContextFactory CreateFactory(
+        private static AppProtocolContextFactory CreateFactory(
             IAppProtocolClient client,
             Extensions.Session.Settings.ConnectionSettings? settings)
         {

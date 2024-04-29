@@ -55,33 +55,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
             PackageInventoryType inventoryType,
             IEnumerable<GuestOsInfo> inventory)
         {
-            switch (inventoryType)
+            return inventoryType switch
             {
-                case PackageInventoryType.AvailablePackages:
-                    return new PackageInventoryModel(
-                        displayName,
-                        inventory.Any(),
-                        inventory
-                            .Where(i => i.AvailablePackages != null)
-                            .SelectMany(i => i.AvailablePackages
-                                .AllPackages
-                                .Select(p => new Item(i.Instance, p))));
+                PackageInventoryType.AvailablePackages => new PackageInventoryModel(
+                    displayName,
+                    inventory.Any(),
+                    inventory
+                        .Where(i => i.AvailablePackages != null)
+                        .SelectMany(i => i.AvailablePackages
+                            .AllPackages
+                            .Select(p => new Item(i.Instance, p)))),
 
+                PackageInventoryType.InstalledPackages => new PackageInventoryModel(
+                    displayName,
+                    inventory.Any(),
+                    inventory
+                        .Where(i => i.InstalledPackages != null)
+                        .SelectMany(i => i.InstalledPackages
+                            .AllPackages
+                            .Select(p => new Item(i.Instance, p)))),
 
-                case PackageInventoryType.InstalledPackages:
-                    return new PackageInventoryModel(
-                        displayName,
-                        inventory.Any(),
-                        inventory
-                            .Where(i => i.InstalledPackages != null)
-                            .SelectMany(i => i.InstalledPackages
-                                .AllPackages
-                                .Select(p => new Item(i.Instance, p))));
-
-                default:
-                    throw new ArgumentException(nameof(inventoryType));
-
-            }
+                _ => throw new ArgumentException(nameof(inventoryType)),
+            };
         }
 
         public static async Task<PackageInventoryModel> LoadAsync(
