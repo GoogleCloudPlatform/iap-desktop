@@ -167,6 +167,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
                             Message = $"Enter credentials for {instance.DisplayName}",
                             Package = AuthenticationPackage.Any
                         },
+                        out var _,
                         out var credential) != DialogResult.OK)
                     {
                         //

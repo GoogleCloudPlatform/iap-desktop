@@ -415,11 +415,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Enabled;
 
             var userCredential = new NetworkCredential("user", "password", "domain");
+            bool save;
             var dialog = new Mock<ICredentialDialog>();
             dialog
                 .Setup(d => d.PromptForWindowsCredentials(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<CredentialDialogParameters>(),
+                    out save,
                     out userCredential))
                 .Returns(DialogResult.OK);
 
@@ -454,11 +456,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             settings.RdpDomain.Value = "ignore";
 
             var userCredential = new NetworkCredential("user", "password", "domain");
+            bool save;
             var dialog = new Mock<ICredentialDialog>();
             dialog
                 .Setup(d => d.PromptForWindowsCredentials(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<CredentialDialogParameters>(),
+                    out save,
                     out userCredential))
                 .Returns(DialogResult.OK);
 
@@ -491,11 +495,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Enabled;
 
             NetworkCredential? userCredential = null;
+            bool save;
             var dialog = new Mock<ICredentialDialog>();
             dialog
                 .Setup(d => d.PromptForWindowsCredentials(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<CredentialDialogParameters>(),
+                    out save,
                     out userCredential))
                 .Returns(DialogResult.Cancel);
 

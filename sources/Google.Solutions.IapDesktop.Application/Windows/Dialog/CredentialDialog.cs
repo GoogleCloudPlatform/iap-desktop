@@ -42,6 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         DialogResult PromptForWindowsCredentials(
             IWin32Window? owner,
             CredentialDialogParameters parameters,
+            out bool save,
             out NetworkCredential? credential);
 
         /// <summary>
@@ -72,6 +73,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         public AuthenticationPackage Package { get; set; }
 
         /// <summary>
+        /// Display checkbox to save credentials.
+        /// </summary>
+        public bool ShowSaveCheckbox { get; set; }
+
+        /// <summary>
         /// Credential to pre-populate the dialog with.
         /// </summary>
         public NetworkCredential? InputCredential { get; set; }
@@ -97,6 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         public DialogResult PromptForWindowsCredentials(
             IWin32Window? owner,
             CredentialDialogParameters parameters,
+            out bool save,
             out NetworkCredential? credential)
         {
             var uiInfo = new NativeMethods.CREDUI_INFO()
@@ -111,7 +118,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 parameters.InputCredential ?? new NetworkCredential()))
             {
                 var packageId = LookupAuthenticationPackageId(parameters.Package);
-                var save = false;
+                var saveCheckboxState = false;
+                var flags = NativeMethods.CREDUIWIN_FLAGS.AUTHPACKAGE_ONLY;
+
+                if (parameters.ShowSaveCheckbox)
+                {
+                    flags |= NativeMethods.CREDUIWIN_FLAGS.CHECKBOX;
+                }
 
                 var error = NativeMethods.CredUIPromptForWindowsCredentials(
                     ref uiInfo,
@@ -121,12 +134,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                     packedInCredential.Size,
                     out var outAuthBuffer,
                     out var outAuthBufferSize,
-                    ref save,
-                    NativeMethods.CREDUIWIN_FLAGS.AUTHPACKAGE_ONLY);
+                    ref saveCheckboxState,
+                    flags);
 
                 if (error == NativeMethods.ERROR_CANCELLED)
                 {
                     credential = null;
+                    save = false;
                     return DialogResult.Cancel;
                 }
                 else if (error != NativeMethods.ERROR_NOERROR)
@@ -139,11 +153,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                     outAuthBufferSize))
                 {
                     credential = packedOutCredential.Unpack();
+                    save = saveCheckboxState;
                     return DialogResult.OK;
                 }
             }
         }
-
 
         internal static uint LookupAuthenticationPackageId(AuthenticationPackage package)
         {

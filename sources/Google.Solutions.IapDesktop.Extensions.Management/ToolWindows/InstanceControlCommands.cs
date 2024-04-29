@@ -264,6 +264,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows
                                 "domain and will not be saved.",
                             Package = AuthenticationPackage.Kerberos
                         },
+                        out var _,
                         out var credential) != DialogResult.OK)
                 {
                     return;
