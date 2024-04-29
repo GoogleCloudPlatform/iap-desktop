@@ -2,7 +2,7 @@
 
 IAP Desktop is a Remote Desktop and SSH client that lets you connect to your Google Cloud VM instances from anywhere.
 
-[<img src="doc/images/download.png">](https://github.com/GoogleCloudPlatform/iap-desktop/releases/latest/download/IapDesktop.msi)
+[<img src="doc/images/download.png">](https://github.com/GoogleCloudPlatform/iap-desktop/releases/latest/download/IapDesktopX64.msi)
 [<img src="doc/images/documentation.png">](https://googlecloudplatform.github.io/iap-desktop/)
 
 <sub>
