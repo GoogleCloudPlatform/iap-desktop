@@ -68,18 +68,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         public void WhenSettingsUsernameProvided_ThenNewCredentialDialogShowsUsername()
         {
             var newCredentialViewModel = new NewCredentialsViewModel();
-            var newCredentialDialogFactory = new Mock<IDialogFactory<NewCredentialsView, NewCredentialsViewModel>>();
-            newCredentialDialogFactory
-                .Setup(f => f.CreateDialog())
-                .Returns(new MockDialog<NewCredentialsView, NewCredentialsViewModel>(
-                    newCredentialViewModel,
-                    DialogResult.Cancel)); // Cancel dialog.
+            var newCredentialDialogFactory = new MockDialogFactory<NewCredentialsView, NewCredentialsViewModel>(
+                DialogResult.Cancel, // Cancel dialog.
+                newCredentialViewModel);
 
             var workflow = new CreateCredentialsWorkflow(
                 new Mock<IAuthorization>().Object,
                 new Mock<IJobService>().Object,
                 new Mock<IWindowsCredentialGenerator>().Object,
-                newCredentialDialogFactory.Object,
+                newCredentialDialogFactory,
                 new Mock<IDialogFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
@@ -100,18 +97,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
             [Values("", null)]string value)
         {
             var newCredentialViewModel = new NewCredentialsViewModel();
-            var newCredentialDialogFactory = new Mock<IDialogFactory<NewCredentialsView, NewCredentialsViewModel>>();
-            newCredentialDialogFactory
-                .Setup(f => f.CreateDialog())
-                .Returns(new MockDialog<NewCredentialsView, NewCredentialsViewModel>(
-                    newCredentialViewModel,
-                    DialogResult.Cancel)); // Cancel dialog.
+            var newCredentialDialogFactory = new MockDialogFactory<NewCredentialsView, NewCredentialsViewModel>(
+                DialogResult.Cancel, // Cancel dialog.
+                newCredentialViewModel);
 
             var workflow = new CreateCredentialsWorkflow(
                 CreateAuthorizationMock("bobsemail@gmail.com").Object,
                 new Mock<IJobService>().Object,
                 new Mock<IWindowsCredentialGenerator>().Object,
-                newCredentialDialogFactory.Object,
+                newCredentialDialogFactory,
                 new Mock<IDialogFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
@@ -127,124 +121,119 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
             Assert.AreEqual("bobsemail", newCredentialViewModel.Username);
         }
 
-// TODO: update tests
-//        [Test]
-//        public async Task WhenPromptSucceeds_ThenCredentialIsGeneratedAndShown()
-//        {
-//            var serviceRegistry = new ServiceRegistry();
-//            serviceRegistry.AddSingleton(
-//                CreateAuthorizationMock("bobsemail@gmail.com").Object);
+        //[Test]
+        //public async Task WhenPromptSucceeds_ThenCredentialIsGeneratedAndShown()
+        //{
+        //    var newCredentialViewModel = new NewCredentialsViewModel();
+        //    var newCredentialDialogFactory = new MockDialogFactory<NewCredentialsView, NewCredentialsViewModel>(
+        //        DialogResult.OK,
+        //        newCredentialViewModel);
 
-//            serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
-//            serviceRegistry.AddMock<IWindowsCredentialGenerator>()
-//                .Setup(a => a.CreateWindowsCredentialsAsync(
-//                    It.IsAny<InstanceLocator>(),
-//                    It.Is<string>(user => user == "bob-admin"),
-//                    It.Is<UserFlags>(t => t == UserFlags.AddToAdministrators),
-//                    It.IsAny<CancellationToken>()))
-//                .ReturnsAsync(new NetworkCredential("bob-admin", "password"));
+        //    var showCredentialDialogFactory = new MockDialogFactory<ShowCredentialsView, ShowCredentialsViewModel>(
+        //        DialogResult.OK);
 
-//            var showCredDialog = serviceRegistry.AddMock<IShowCredentialsDialog>();
-//            var credDialog = serviceRegistry.AddMock<INewCredentialsDialog>();
-//            credDialog
-//                .Setup(d => d.ShowDialog(
-//                    It.IsAny<IWin32Window>(),
-//                    It.IsAny<string>()))
-//                .Returns(new GenerateCredentialsDialogResult(
-//                    DialogResult.OK,
-//                    "bob-admin"));
+        //    var credentialGenerator = new Mock<IWindowsCredentialGenerator>();
+        //    credentialGenerator
+        //        .Setup(a => a.CreateWindowsCredentialsAsync(
+        //            It.IsAny<InstanceLocator>(),
+        //            It.Is<string>(user => user == "bob-admin"),
+        //            It.Is<UserFlags>(t => t == UserFlags.AddToAdministrators),
+        //            It.IsAny<CancellationToken>()))
+        //        .ReturnsAsync(new NetworkCredential("bob-admin", "password"));
 
-//            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
-//            settings.RdpUsername.Value = "";
+        //    var workflow = new CreateCredentialsWorkflow(
+        //        CreateAuthorizationMock("bob-admin@gmail.com").Object,
+        //        new SynchronousJobService(),
+        //        credentialGenerator.Object,
+        //        newCredentialDialogFactory,
+        //        showCredentialDialogFactory);
 
-//            var credentialsService = new CreateCredentialsWorkflow(serviceRegistry);
-//            await credentialsService.CreateCredentialsAsync(
-//                    null,
-//                    SampleInstance,
-//                    settings,
-//                    false)
-//                .ConfigureAwait(false);
+        //    var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
+        //    settings.RdpUsername.Value = "";
 
-//            credDialog.Verify(d => d.ShowDialog(
-//                It.IsAny<IWin32Window>(),
-//                It.Is<string>(u => u == "bobsemail")), Times.Once);
-//            showCredDialog.Verify(d => d.ShowDialog(
-//                It.IsAny<IWin32Window>(),
-//                It.Is<string>(u => u == "bob-admin"),
-//                "password"), Times.Once);
-//        }
+        //    await workflow
+        //        .CreateCredentialsAsync(
+        //            null,
+        //            SampleInstance,
+        //            settings,
+        //            false)
+        //        .ConfigureAwait(false);
 
-//        //---------------------------------------------------------------------
-//        // Silent.
-//        //---------------------------------------------------------------------
+        //    Assert.AreEqual("bob-admin", showCredentialViewModel.Username);
+        //    Assert.AreEqual("password", showCredentialViewModel.Password);
+        //}
 
-//        [Test]
-//        public async Task WhenSuggestedUserNameProvidedAndSilentIsTrue_ThenSuggestionIsUsedWithoutPrompting()
-//        {
-//            var serviceRegistry = new ServiceRegistry();
-//            serviceRegistry.AddSingleton(
-//                CreateAuthorizationMock("bobsemail@gmail.com").Object);
+        //        //---------------------------------------------------------------------
+        //        // Silent.
+        //        //---------------------------------------------------------------------
 
-//            serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
-//            serviceRegistry.AddMock<IWindowsCredentialGenerator>()
-//                .Setup(a => a.CreateWindowsCredentialsAsync(
-//                    It.IsAny<InstanceLocator>(),
-//                    It.Is<string>(user => user == "alice"),
-//                    It.Is<UserFlags>(t => t == UserFlags.AddToAdministrators),
-//                    It.IsAny<CancellationToken>()))
-//                .ReturnsAsync(new NetworkCredential("alice", "password"));
+        //        [Test]
+        //        public async Task WhenSuggestedUserNameProvidedAndSilentIsTrue_ThenSuggestionIsUsedWithoutPrompting()
+        //        {
+        //            var serviceRegistry = new ServiceRegistry();
+        //            serviceRegistry.AddSingleton(
+        //                CreateAuthorizationMock("bobsemail@gmail.com").Object);
 
-//            var credDialog = serviceRegistry.AddMock<INewCredentialsDialog>();
-//            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
-//            settings.RdpUsername.Value = "alice";
+        //            serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
+        //            serviceRegistry.AddMock<IWindowsCredentialGenerator>()
+        //                .Setup(a => a.CreateWindowsCredentialsAsync(
+        //                    It.IsAny<InstanceLocator>(),
+        //                    It.Is<string>(user => user == "alice"),
+        //                    It.Is<UserFlags>(t => t == UserFlags.AddToAdministrators),
+        //                    It.IsAny<CancellationToken>()))
+        //                .ReturnsAsync(new NetworkCredential("alice", "password"));
 
-//            var credentialsService = new CreateCredentialsWorkflow(serviceRegistry);
-//            await credentialsService.CreateCredentialsAsync(
-//                    null,
-//                    SampleInstance,
-//                    settings,
-//                    true)
-//                .ConfigureAwait(false);
+        //            var credDialog = serviceRegistry.AddMock<INewCredentialsDialog>();
+        //            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
+        //            settings.RdpUsername.Value = "alice";
 
-//            Assert.AreEqual("alice", settings.RdpUsername.Value);
-//            Assert.AreEqual("password", settings.RdpPassword.GetClearTextValue());
-//            credDialog.Verify(d => d.ShowDialog(
-//                It.IsAny<IWin32Window>(),
-//                It.IsAny<string>()), Times.Never);
-//        }
+        //            var credentialsService = new CreateCredentialsWorkflow(serviceRegistry);
+        //            await credentialsService.CreateCredentialsAsync(
+        //                    null,
+        //                    SampleInstance,
+        //                    settings,
+        //                    true)
+        //                .ConfigureAwait(false);
 
-//        [Test]
-//        public async Task WhenNoSuggestedUserNameProvidedAndSilentIsTrue_ThenSuggestionIsDerivedFromSigninNameWithoutPrompting()
-//        {
-//            var serviceRegistry = new ServiceRegistry();
-//            serviceRegistry.AddSingleton(
-//                CreateAuthorizationMock("bobsemail@gmail.com").Object);
+        //            Assert.AreEqual("alice", settings.RdpUsername.Value);
+        //            Assert.AreEqual("password", settings.RdpPassword.GetClearTextValue());
+        //            credDialog.Verify(d => d.ShowDialog(
+        //                It.IsAny<IWin32Window>(),
+        //                It.IsAny<string>()), Times.Never);
+        //        }
 
-//            serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
-//            serviceRegistry.AddMock<IWindowsCredentialGenerator>()
-//                .Setup(a => a.CreateWindowsCredentialsAsync(
-//                    It.IsAny<InstanceLocator>(),
-//                    It.Is<string>(user => user == "bobsemail"),
-//                    It.Is<UserFlags>(t => t == UserFlags.AddToAdministrators),
-//                    It.IsAny<CancellationToken>()))
-//                .ReturnsAsync(new NetworkCredential("bobsemail", "password"));
+        //        [Test]
+        //        public async Task WhenNoSuggestedUserNameProvidedAndSilentIsTrue_ThenSuggestionIsDerivedFromSigninNameWithoutPrompting()
+        //        {
+        //            var serviceRegistry = new ServiceRegistry();
+        //            serviceRegistry.AddSingleton(
+        //                CreateAuthorizationMock("bobsemail@gmail.com").Object);
 
-//            var credDialog = serviceRegistry.AddMock<INewCredentialsDialog>();
-//            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
+        //            serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
+        //            serviceRegistry.AddMock<IWindowsCredentialGenerator>()
+        //                .Setup(a => a.CreateWindowsCredentialsAsync(
+        //                    It.IsAny<InstanceLocator>(),
+        //                    It.Is<string>(user => user == "bobsemail"),
+        //                    It.Is<UserFlags>(t => t == UserFlags.AddToAdministrators),
+        //                    It.IsAny<CancellationToken>()))
+        //                .ReturnsAsync(new NetworkCredential("bobsemail", "password"));
 
-//            var credentialsService = new CreateCredentialsWorkflow(serviceRegistry);
-//            await credentialsService.CreateCredentialsAsync(
-//                    null,
-//                    SampleInstance,
-//                    settings,
-//                    true)
-//                .ConfigureAwait(false);
+        //            var credDialog = serviceRegistry.AddMock<INewCredentialsDialog>();
+        //            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
 
-//            Assert.AreEqual("bobsemail", settings.RdpUsername.Value);
-//            Assert.AreEqual("password", settings.RdpPassword.GetClearTextValue());
-//            credDialog.Verify(d => d.ShowDialog(
-//                It.IsAny<IWin32Window>(),
-//                It.IsAny<string>()), Times.Never);
-//        }
+        //            var credentialsService = new CreateCredentialsWorkflow(serviceRegistry);
+        //            await credentialsService.CreateCredentialsAsync(
+        //                    null,
+        //                    SampleInstance,
+        //                    settings,
+        //                    true)
+        //                .ConfigureAwait(false);
+
+        //            Assert.AreEqual("bobsemail", settings.RdpUsername.Value);
+        //            Assert.AreEqual("password", settings.RdpPassword.GetClearTextValue());
+        //            credDialog.Verify(d => d.ShowDialog(
+        //                It.IsAny<IWin32Window>(),
+        //                It.IsAny<string>()), Times.Never);
+        //        }
     }
 }

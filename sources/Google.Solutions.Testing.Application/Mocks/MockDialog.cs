@@ -19,8 +19,10 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
+using Moq;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Testing.Application.Mocks
@@ -51,6 +53,37 @@ namespace Google.Solutions.Testing.Application.Mocks
         public DialogResult ShowDialog(IWin32Window? parent)
         {
             return this.result;
+        }
+    }
+
+    public class MockDialogFactory<TView, TViewModel> : IDialogFactory<TView, TViewModel>
+        where TView : Form, IView<TViewModel>
+        where TViewModel : ViewModelBase
+    {
+        private readonly TViewModel? viewModel;
+        private readonly DialogResult result;
+
+        public MockDialogFactory(DialogResult result, TViewModel? viewModel)
+        {
+            this.viewModel = viewModel;
+            this.result = result;
+        }
+
+        public MockDialogFactory(DialogResult result) : this(result, null)
+        {
+        }
+
+        public IControlTheme? Theme { get; set; }
+
+        public IDialog<TView, TViewModel> CreateDialog(TViewModel viewModel)
+        {
+            return new MockDialog<TView, TViewModel>(viewModel, this.result);
+        }
+
+        public IDialog<TView, TViewModel> CreateDialog()
+        {
+            this.viewModel.ExpectNotNull("No view model provided");
+            return new MockDialog<TView, TViewModel>(this.viewModel!, this.result);
         }
     }
 }

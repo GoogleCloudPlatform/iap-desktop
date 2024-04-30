@@ -51,7 +51,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         {
             this.serviceRegistry.AddSingleton<ILegacyTaskDialog>(taskDialogMock.Object);
             this.serviceRegistry.AddMock<IConfigureCredentialsWorkflow>();
-            //this.serviceRegistry.AddMock<IShowCredentialsDialog>();
 
             var credentialsService = this.serviceRegistry.AddMock<ICreateCredentialsWorkflow>();
             credentialsService
