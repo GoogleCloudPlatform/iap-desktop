@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Settings;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -36,6 +37,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
 {
     public interface ICreateCredentialsWorkflow
     {
+        Task<NetworkCredential> CreateCredentialsAsync(
+            IWin32Window? owner,
+            InstanceLocator instanceLocator,
+            string? username,
+            bool silent);
+
         Task CreateCredentialsAsync(
             IWin32Window? owner,
             InstanceLocator instanceRef,
@@ -81,19 +88,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             this.showCredentialFactory.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
         }
 
-        public async Task CreateCredentialsAsync(
+        public async Task<NetworkCredential> CreateCredentialsAsync(
             IWin32Window? owner,
             InstanceLocator instanceLocator,
-            Settings.ConnectionSettings settings,
+            string? username,
             bool silent)
         {
-            string username;
-            if (settings.RdpUsername.Value != null && 
-                WindowsUser.IsLocalUsername(settings.RdpUsername.Value))
-            {
-                username = settings.RdpUsername.Value;
-            }
-            else
+            if (username == null ||
+                string.IsNullOrEmpty(username) ||
+                !WindowsUser.IsLocalUsername(username))
             {
                 username = WindowsUser.SuggestUsername(this.authorization.Session);
             }
@@ -137,6 +140,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
                     dialog.ShowDialog(owner);
                 }
             }
+
+            return credentials;
+        }
+
+        public async Task CreateCredentialsAsync(
+            IWin32Window? owner,
+            InstanceLocator instanceLocator,
+            Settings.ConnectionSettings settings,
+            bool silent)
+        {
+            var credentials = await CreateCredentialsAsync(
+                owner,
+                instanceLocator,
+                settings.RdpUsername.Value,
+                silent);
 
             //
             // Save credentials.
