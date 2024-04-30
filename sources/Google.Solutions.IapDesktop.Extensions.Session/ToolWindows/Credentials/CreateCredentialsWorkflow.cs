@@ -22,9 +22,11 @@
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Settings;
 using System;
 using System.Threading.Tasks;
@@ -47,11 +49,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
     [Service(typeof(ICreateCredentialsWorkflow))]
     public class CreateCredentialsWorkflow : ICreateCredentialsWorkflow
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly ViewFactory<NewCredentialsView, NewCredentialsViewModel> dialogFactory;
+        private readonly IServiceProvider serviceProvider; //TODO: remove
 
-        public CreateCredentialsWorkflow(IServiceProvider serviceProvider) // TODO: Inject Service<>
+        public CreateCredentialsWorkflow(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
+
+            this.dialogFactory = serviceProvider
+                .GetViewFactory<NewCredentialsView, NewCredentialsViewModel>();
+            this.dialogFactory.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
         }
 
         public async Task CreateCredentialsAsync(
@@ -77,18 +84,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
                 //
                 // Prompt user to customize the defaults.
                 //
-
-                var dialogResult = this.serviceProvider
-                    .GetService<INewCredentialsDialog>()
-                    .ShowDialog(owner, username);
-
-                if (dialogResult.Result == DialogResult.OK)
+                using (var dialog = this.dialogFactory.CreateDialog())
                 {
-                    username = dialogResult.Username;
-                }
-                else
-                {
-                    throw new OperationCanceledException();
+                    dialog.ViewModel.Username = username;
+                    if (dialog.ShowDialog(owner) == DialogResult.OK)
+                    {
+                        username = dialog.ViewModel.Username;
+                    }
+                    else
+                    {
+                        throw new OperationCanceledException();
+                    }
                 }
             }
 
