@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,30 +19,38 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
+using System.Windows.Forms;
 
-namespace Google.Solutions.Mvvm.Binding
+namespace Google.Solutions.Testing.Application.Mocks
 {
     /// <summary>
-    /// MVVM view.
+    /// Mock dialog that returns a predefined result.
     /// </summary>
-    public interface IView<TViewModel>
+    public class MockDialog<TView, TViewModel> : IDialog<TView, TViewModel>
+        where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
-        /// <summary>
-        /// Bind view model to model. This method is only
-        /// called once, briefly after construction.
-        /// </summary>
-        void Bind(TViewModel viewModel, IBindingContext context);
-    }
+        private readonly DialogResult result;
 
-    /// <summary>
-    /// Optional interface to implement by views if they need access
-    /// to the "raw" theme.
-    /// </summary>
-    internal interface IThemedView<TViewModel> : IView<TViewModel>
-        where TViewModel : ViewModelBase
-    {
-        void SetTheme(IControlTheme theme);
+        public MockDialog(TViewModel viewModel, DialogResult result)
+        {
+            this.ViewModel = viewModel;
+            this.result = result;
+        }
+
+        public IControlTheme? Theme { get; set; }
+
+        public TViewModel ViewModel { get; }
+
+        public void Dispose()
+        {
+        }
+
+        public DialogResult ShowDialog(IWin32Window? parent)
+        {
+            return this.result;
+        }
     }
 }
