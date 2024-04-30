@@ -29,8 +29,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
     [Service]
     public class NewCredentialsViewModel : ViewModelBase
     {
+        //
         // SAM usernames do not permit these characters, see
         // https://docs.microsoft.com/en-us/windows/desktop/adschema/a-samaccountname
+        //
         private const string DisallowedCharactersInUsername = "\"/\\[]:;|=,+*?<>";
 
         private static readonly string[] ReservedUsernames = new[]
@@ -49,7 +51,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
         private string username = string.Empty;
 
         public bool IsAllowedCharacterForUsername(char c)
-            => !DisallowedCharactersInUsername.Contains(c);
+        {
+            return !DisallowedCharactersInUsername.Contains(c);
+        }
 
         //---------------------------------------------------------------------
         // Observable "output" properties.
@@ -68,10 +72,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
         }
 
         public bool IsUsernameReserved
-            => ReservedUsernames.Contains(this.username.ToLower());
+        {
+            get => ReservedUsernames.Contains(this.username.ToLower());
+        }
 
         public bool IsOkButtonEnabled
-            => !string.IsNullOrWhiteSpace(this.username) &&
+        {
+            get => !string.IsNullOrWhiteSpace(this.username) &&
                !ReservedUsernames.Contains(this.username.ToLower());
+        }
     }
 }

@@ -36,6 +36,11 @@ namespace Google.Solutions.Mvvm.Binding
         where TViewModel : ViewModelBase
     {
         /// <summary>
+        /// Get or set the theme to apply, optional.
+        /// </summary>
+        IControlTheme? Theme { get; set; }
+
+        /// <summary>
         /// Create dialog using an existing view model.
         /// </summary>
         IDialog<TView, TViewModel> CreateDialog(TViewModel viewModel);

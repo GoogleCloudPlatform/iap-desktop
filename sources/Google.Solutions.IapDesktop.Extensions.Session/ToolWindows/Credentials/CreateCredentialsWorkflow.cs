@@ -49,16 +49,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
     [Service(typeof(ICreateCredentialsWorkflow))]
     public class CreateCredentialsWorkflow : ICreateCredentialsWorkflow
     {
-        private readonly ViewFactory<NewCredentialsView, NewCredentialsViewModel> dialogFactory;
-        private readonly IServiceProvider serviceProvider; //TODO: remove
+        private readonly IAuthorization authorization;
+        private readonly IJobService jobService;
+        private readonly IWindowsCredentialGenerator credentialGenerator;
+        private readonly IDialogFactory<NewCredentialsView, NewCredentialsViewModel> newCredentialFactory;
+        private readonly IDialogFactory<ShowCredentialsView, ShowCredentialsViewModel> showCredentialFactory;
+
+        internal CreateCredentialsWorkflow(
+            IAuthorization authorization,
+            IJobService jobService,
+            IWindowsCredentialGenerator credentialGenerator,
+            IDialogFactory<NewCredentialsView, NewCredentialsViewModel> newCredentialFactory,
+            IDialogFactory<ShowCredentialsView, ShowCredentialsViewModel> showCredentialFactory)
+        {
+            this.authorization = authorization;
+            this.jobService = jobService;
+            this.credentialGenerator = credentialGenerator;
+            this.newCredentialFactory = newCredentialFactory;
+            this.showCredentialFactory = showCredentialFactory;
+        }
 
         public CreateCredentialsWorkflow(IServiceProvider serviceProvider)
+            : this(
+                serviceProvider.GetService<IAuthorization>(),
+                serviceProvider.GetService<IJobService>(),
+                serviceProvider.GetService<IWindowsCredentialGenerator>(),
+                serviceProvider.GetViewFactory<NewCredentialsView, NewCredentialsViewModel>(),
+                serviceProvider.GetViewFactory<ShowCredentialsView, ShowCredentialsViewModel>())
         {
-            this.serviceProvider = serviceProvider;
-
-            this.dialogFactory = serviceProvider
-                .GetViewFactory<NewCredentialsView, NewCredentialsViewModel>();
-            this.dialogFactory.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
+            this.newCredentialFactory.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
+            this.showCredentialFactory.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
         }
 
         public async Task CreateCredentialsAsync(
@@ -75,8 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             }
             else
             {
-                username = WindowsUser.SuggestUsername(
-                    this.serviceProvider.GetService<IAuthorization>().Session);
+                username = WindowsUser.SuggestUsername(this.authorization.Session);
             }
 
             if (!silent)
@@ -84,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
                 //
                 // Prompt user to customize the defaults.
                 //
-                using (var dialog = this.dialogFactory.CreateDialog())
+                using (var dialog = this.newCredentialFactory.CreateDialog())
                 {
                     dialog.ViewModel.Username = username;
                     if (dialog.ShowDialog(owner) == DialogResult.OK)
@@ -98,37 +117,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
                 }
             }
 
-            var credentials = await this.serviceProvider.GetService<IJobService>().RunAsync(
+            var credentials = await this.jobService.RunAsync(
                 new JobDescription("Generating Windows logon credentials..."),
-                token => this.serviceProvider
-                    .GetService<IWindowsCredentialGenerator>()
+                token => this.credentialGenerator
                     .CreateWindowsCredentialsAsync(
                         instanceLocator,
                         username,
                         UserFlags.AddToAdministrators,
                         token))
-                .ConfigureAwait(true);
+                    .ConfigureAwait(true);
 
             if (!silent)
             {
-                this.serviceProvider.GetService<IShowCredentialsDialog>().ShowDialog(
-                    owner,
-                    credentials.UserName,
-                    credentials.Password);
+                using (var dialog = this.showCredentialFactory.CreateDialog(
+                    new ShowCredentialsViewModel(
+                        credentials.UserName,
+                        credentials.Password)))
+                {
+                    dialog.ShowDialog(owner);
+                }
             }
 
+            //
             // Save credentials.
+            //
             settings.RdpUsername.Value = credentials.UserName;
             settings.RdpPassword.SetClearTextValue(credentials.Password);
 
+            //
             // NB. The computer might be joined to a domain, therefore force a local logon.
+            //
             settings.RdpDomain.Value = ".";
         }
 
         public async Task<bool> IsGrantedPermissionToGenerateCredentials(InstanceLocator instance)
         {
-            return await this.serviceProvider
-                .GetService<IWindowsCredentialGenerator>()
+            return await this.credentialGenerator
                 .IsGrantedPermissionToCreateWindowsCredentialsAsync(instance)
                 .ConfigureAwait(false);
         }
