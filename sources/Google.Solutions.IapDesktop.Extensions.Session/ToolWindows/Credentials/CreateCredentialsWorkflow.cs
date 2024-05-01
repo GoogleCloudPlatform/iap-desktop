@@ -35,8 +35,12 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
 {
-    public interface ICreateCredentialsWorkflow
+    public interface ICreateCredentialsWorkflow // TODO: remove
     {
+        /// <summary>
+        /// Guide user through a sequence of dialogs to
+        /// create new Windows credentials.
+        /// </summary>
         Task<NetworkCredential> CreateCredentialsAsync(
             IWin32Window? owner,
             InstanceLocator instanceLocator,

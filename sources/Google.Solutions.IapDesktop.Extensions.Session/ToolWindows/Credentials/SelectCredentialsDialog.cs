@@ -33,7 +33,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
 {
-    public interface ISelectCredentialsDialog
+    public interface ISelectCredentialsDialog // TODO: remove
     {
         Task SelectCredentialsAsync(
            IWin32Window? owner,

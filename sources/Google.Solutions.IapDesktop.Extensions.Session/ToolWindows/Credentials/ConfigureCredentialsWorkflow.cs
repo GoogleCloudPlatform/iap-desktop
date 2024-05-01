@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.ConnectionSetti
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
 {
-    public interface IConfigureCredentialsWorkflow
+    public interface IConfigureCredentialsWorkflow // TODO: remove
     {
         void ShowCredentialsDialog();
     }
