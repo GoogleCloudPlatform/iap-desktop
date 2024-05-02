@@ -20,9 +20,9 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Properties;
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Runtime.InteropServices;
@@ -30,38 +30,34 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
 {
-    public interface IShowCredentialsDialog
-    {
-        void ShowDialog(
-            IWin32Window? owner,
-            string username,
-            string password);
-    }
-
-    [Service(typeof(IShowCredentialsDialog))]
+    [Service]
     [SkipCodeCoverage("View code")]
-    public partial class ShowCredentialsView : Form, IShowCredentialsDialog
+    public partial class ShowCredentialsView : Form, IView<ShowCredentialsViewModel>
     {
-        public ShowCredentialsView(IThemeService themeService)
+        public ShowCredentialsView()
         {
             InitializeComponent();
-
-            themeService.DialogTheme.ApplyTo(this);
 
             var copyButton = this.passwordText.AddOverlayButton(Resources.Copy_16x);
             copyButton.Click += (s, a) => ClipboardUtil.SetText(this.passwordText.Text);
             copyButton.TabIndex = this.passwordText.TabIndex + 1;
         }
 
-        public void ShowDialog(
-            IWin32Window? owner,
-            string username,
-            string password)
+        public void Bind(
+            ShowCredentialsViewModel viewModel,
+            IBindingContext bindingContext)
         {
-            this.usernameText.Text = username;
-            this.passwordText.Text = password;
+            this.usernameText.BindReadonlyProperty(
+                v => v.Text,
+                viewModel,
+                m => m.Username,
+                bindingContext);
 
-            ShowDialog(owner);
+            this.passwordText.BindReadonlyProperty(
+                v => v.Text,
+                viewModel,
+                m => m.Password,
+                bindingContext);
         }
 
         //---------------------------------------------------------------------

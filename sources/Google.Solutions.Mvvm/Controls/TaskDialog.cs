@@ -38,7 +38,7 @@ namespace Google.Solutions.Mvvm.Controls
         /// Show a dialog.
         /// </summary>
         DialogResult ShowDialog(
-            IWin32Window parent,
+            IWin32Window? parent,
             TaskDialogParameters parameters);
     }
 
@@ -52,7 +52,7 @@ namespace Google.Solutions.Mvvm.Controls
         internal NativeMethods.TaskDialogIndirectDelegate? TaskDialogIndirect { get; set; }
 
         public DialogResult ShowDialog(
-            IWin32Window parent,
+            IWin32Window? parent,
             TaskDialogParameters parameters)
         {
             parameters.ExpectNotNull(nameof(parameters));

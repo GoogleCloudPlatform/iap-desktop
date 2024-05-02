@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,32 +19,21 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.ConnectionSettings;
+using Google.Solutions.Mvvm.Binding;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
 {
-    public interface IConfigureCredentialsWorkflow
+    [Service]
+    public class ShowCredentialsViewModel : ViewModelBase
     {
-        void ShowCredentialsDialog();
-    }
-
-    [Service(typeof(IConfigureCredentialsWorkflow))]
-    public class ConfigureCredentialsWorkflow : IConfigureCredentialsWorkflow
-    {
-        private readonly IToolWindowHost toolWindowHost;
-
-        public ConfigureCredentialsWorkflow(IToolWindowHost toolWindowHost)
+        public ShowCredentialsViewModel(string username, string password)
         {
-            this.toolWindowHost = toolWindowHost;
+            this.Username = username;
+            this.Password = password;
         }
 
-        public void ShowCredentialsDialog()
-        {
-            this.toolWindowHost
-                .GetToolWindow<ConnectionSettingsView, ConnectionSettingsViewModel>()
-                .Show();
-        }
+        public string Username { get; }
+        public string Password { get; }
     }
 }

@@ -32,6 +32,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.Platform.Security.Cryptography;
 using Google.Solutions.Settings.Collection;
 using Google.Solutions.Ssh;
@@ -95,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
         private readonly IRepository<ISshSettings> sshSettingsRepository;
         private readonly IIapTransportFactory iapTransportFactory;
         private readonly IDirectTransportFactory directTransportFactory;
-        private readonly ISelectCredentialsDialog credentialDialog;
+        private readonly IRdpCredentialEditorFactory rdpCredentialEditor;
         private readonly IRdpCredentialCallback rdpCredentialCallbackService;
 
         public SessionContextFactory(
@@ -106,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             IConnectionSettingsService settingsService,
             IIapTransportFactory iapTransportFactory,
             IDirectTransportFactory directTransportFactory,
-            ISelectCredentialsDialog credentialDialog,
+            IRdpCredentialEditorFactory rdpCredentialEditor,
             IRdpCredentialCallback credentialCallbackService,
             IRepository<ISshSettings> sshSettingsRepository)
         {
@@ -117,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             this.settingsService = settingsService.ExpectNotNull(nameof(settingsService));
             this.iapTransportFactory = iapTransportFactory.ExpectNotNull(nameof(iapTransportFactory));
             this.directTransportFactory = directTransportFactory.ExpectNotNull(nameof(directTransportFactory));
-            this.credentialDialog = credentialDialog;
+            this.rdpCredentialEditor = rdpCredentialEditor;
             this.rdpCredentialCallbackService = credentialCallbackService.ExpectNotNull(nameof(credentialCallbackService));
             this.sshSettingsRepository = sshSettingsRepository.ExpectNotNull(nameof(sshSettingsRepository));
         }
@@ -181,37 +182,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
 
             var settings = this.settingsService.GetConnectionSettings(node);
 
-            if (!flags.HasFlag(RdpCreateSessionFlags.ForcePasswordPrompt))
-            {
-                //
-                // Show prompt, and persist any generated credentials.
-                //
-                await this.credentialDialog
-                    .SelectCredentialsAsync(
-                        this.window,
-                        node.Instance,
-                        settings.TypedCollection,
-                        RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound,
-                        true)
-                    .ConfigureAwait(true);
-
-                settings.Save();
-            }
-
-            var instanceSettings = (ConnectionSettings)settings.TypedCollection;
-            var credential = CreateRdpCredentialFromSettings(instanceSettings);
+            var credentialEditor = this.rdpCredentialEditor.Edit(settings.TypedCollection);
 
             if (flags.HasFlag(RdpCreateSessionFlags.ForcePasswordPrompt))
             {
                 //
-                // Clear (only!) the password to force the default RDP logon
-                // screen to appear.
+                // Force a prompt, even though the settings might
+                // contain valid credentials.
                 //
-                credential = new RdpCredential(
-                    credential.User,
-                    credential.Domain,
-                    null);
+                credentialEditor.AllowSave = false;
+                credentialEditor.PromptForCredentials();
             }
+            else
+            {
+                //
+                // Give the user a chance to amend credentials in case
+                // the settings don't contain any credentials yet.
+                //
+                Debug.Assert(credentialEditor.AllowSave);
+
+                await credentialEditor
+                    .AmendCredentialsAsync(RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound)
+                    .ConfigureAwait(true);
+
+                if (credentialEditor.AllowSave)
+                {
+                    settings.Save();
+                }
+            }
+
+            var instanceSettings = (ConnectionSettings)settings.TypedCollection;
+            var credential = CreateRdpCredentialFromSettings(instanceSettings);
 
             return CreateRdpContext(
                 node.Instance,
@@ -236,6 +237,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 // This project/VM exists in the inventory, so the settings
                 // represent a merge of stored settings and URL-based
                 // settings.
+                //
                 sources |= RdpParameters.ParameterSources.Inventory;
             }
 
@@ -267,13 +269,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 //
                 // Show prompt, but don't persist any generated credentials.
                 //
-                await this.credentialDialog
-                    .SelectCredentialsAsync(
-                        this.window,
-                        url.Instance,
-                        settings,
-                        allowedBehavior,
-                        false)
+                var credentialEditor = this.rdpCredentialEditor.Edit(settings);
+                credentialEditor.AllowSave = false;
+                await credentialEditor
+                    .AmendCredentialsAsync(allowedBehavior)
                     .ConfigureAwait(true);
 
                 return CreateRdpContext(
