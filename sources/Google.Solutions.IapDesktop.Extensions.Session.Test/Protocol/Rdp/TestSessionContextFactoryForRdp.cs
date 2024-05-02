@@ -74,12 +74,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 UserProfile.SchemaVersion.Current);
         }
 
+
+        private static Mock<IRdpCredentialEditorFactory> CreateRdpCredentialEditorFactoryMock()
+        {
+            var editor = new Mock<IRdpCredentialEditor>();
+            editor.SetupGet(e => e.AllowSave).Returns(true);
+
+            var factory = new Mock<IRdpCredentialEditorFactory>();
+            factory
+                .Setup(f => f.Edit(It.IsAny<ConnectionSettings>()))
+                .Returns(editor.Object);
+            return factory;
+        }
+
         //---------------------------------------------------------------------
         // CreateRdpSessionContext - node.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUsingForcePasswordPromptFlag_ThenCreateRdpSessionContextByNodeUsesClearPassword()
+        public async Task WhenUsingForcePasswordPromptFlag_ThenCreateRdpSessionContextPrompts()
         {
             var settings = new ConnectionSettings(SampleLocator);
             settings.RdpUsername.Value = "existinguser";
@@ -90,7 +103,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
                 .Returns(settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
-            var vmNode = CreateInstanceNodeMock();
+            var editor = new Mock<IRdpCredentialEditor>();
+            editor.SetupGet(e => e.AllowSave).Returns(true);
+
+            var editorFactory = new Mock<IRdpCredentialEditorFactory>();
+            editorFactory
+                .Setup(f => f.Edit(It.IsAny<ConnectionSettings>()))
+                .Returns(editor.Object);
 
             var factory = new SessionContextFactory(
                 new Mock<IMainWindow>().Object,
@@ -100,23 +119,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 settingsService.Object,
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
-                new Mock<IRdpCredentialEditorFactory>().Object,
+                editorFactory.Object,
                 new Mock<IRdpCredentialCallback>().Object,
                 CreateSshSettingsRepository());
 
             var context = (RdpContext)await factory
                 .CreateRdpSessionContextAsync(
-                    vmNode.Object,
+                    CreateInstanceNodeMock().Object,
                     RdpCreateSessionFlags.ForcePasswordPrompt,
                     CancellationToken.None)
                 .ConfigureAwait(false);
             Assert.IsNotNull(context);
 
             Assert.AreEqual(RdpParameters.ParameterSources.Inventory, context.Parameters.Sources);
-            Assert.AreEqual("existinguser", context.Credential.User);
-            Assert.AreEqual("", context.Credential.Password.AsClearText());
-        }
 
+            editor.Verify(e => e.PromptForCredentials(false), Times.Once);
+        }
 
         [Test]
         public async Task WhenUsingDefaultFlags_ThenCreateRdpSessionContextByNodeUsesPersistentCredentials()
@@ -142,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 settingsService.Object,
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
-                new Mock<IRdpCredentialEditorFactory>().Object,
+                CreateRdpCredentialEditorFactoryMock().Object,
                 new Mock<IRdpCredentialCallback>().Object,
                 CreateSshSettingsRepository());
 
@@ -165,110 +183,93 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         //---------------------------------------------------------------------
         // CreateRdpSessionContext - url.
         //---------------------------------------------------------------------
-        //TODO:fix tests
-        //[Test]
-        //public async Task WhenNoCredentialsExist_ThenCreateRdpSessionContextByUrlUsesEmptyCredentials()
-        //{
-        //    var url = IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance");
 
-        //    var settingsService = new Mock<IConnectionSettingsService>();
-        //    var foundInInventory = false;
-        //    settingsService
-        //        .Setup(s => s.GetConnectionSettings(url, out foundInInventory))
-        //        .Returns(new ConnectionSettings(url.Instance));
+        [Test]
+        public async Task WhenNoCredentialsExist_ThenCreateRdpSessionContextByUrlUsesEmptyCredentials()
+        {
+            var url = IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance");
 
-        //    var credentialDialog = new Mock<IRdpCredentialEditorFactory>();
-        //    credentialDialog.Setup(p => p.SelectCredentialsAsync(
-        //            It.IsAny<IWin32Window>(),
-        //            It.IsAny<InstanceLocator>(),
-        //            It.IsAny<ConnectionSettings>(),
-        //            RdpCredentialGenerationBehavior._Default,
-        //            It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
+            var settingsService = new Mock<IConnectionSettingsService>();
+            var foundInInventory = false;
+            settingsService
+                .Setup(s => s.GetConnectionSettings(url, out foundInInventory))
+                .Returns(new ConnectionSettings(url.Instance));
 
-        //    var callbackService = new Mock<IRdpCredentialCallback>();
+            var callbackService = new Mock<IRdpCredentialCallback>();
 
-        //    var factory = new SessionContextFactory(
-        //        new Mock<IMainWindow>().Object,
-        //        new Mock<IAuthorization>().Object,
-        //        new Mock<IKeyStore>().Object,
-        //        new Mock<IPlatformCredentialFactory>().Object,
-        //        settingsService.Object,
-        //        new Mock<IIapTransportFactory>().Object,
-        //        new Mock<IDirectTransportFactory>().Object,
-        //        credentialDialog.Object,
-        //        new Mock<IRdpCredentialCallback>().Object,
-        //        CreateSshSettingsRepository());
+            var factory = new SessionContextFactory(
+                new Mock<IMainWindow>().Object,
+                new Mock<IAuthorization>().Object,
+                new Mock<IKeyStore>().Object,
+                new Mock<IPlatformCredentialFactory>().Object,
+                settingsService.Object,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
+                CreateRdpCredentialEditorFactoryMock().Object,
+                new Mock<IRdpCredentialCallback>().Object,
+                CreateSshSettingsRepository());
 
-        //    var context = (RdpContext)await factory
-        //        .CreateRdpSessionContextAsync(
-        //            url,
-        //            CancellationToken.None)
-        //        .ConfigureAwait(false);
-        //    Assert.IsNotNull(context);
+            var context = (RdpContext)await factory
+                .CreateRdpSessionContextAsync(
+                    url,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+            Assert.IsNotNull(context);
 
-        //    Assert.AreEqual(RdpParameters.ParameterSources.Url, context.Parameters.Sources);
-        //    Assert.IsNull(context.Credential.User);
+            Assert.AreEqual(RdpParameters.ParameterSources.Url, context.Parameters.Sources);
+            Assert.IsNull(context.Credential.User);
 
-        //    settingsService.Verify(s => s.GetConnectionSettings(
-        //        It.IsAny<IProjectModelNode>()), Times.Never);
-        //    callbackService.Verify(s => s.GetCredentialsAsync(
-        //        It.IsAny<Uri>(),
-        //        It.IsAny<CancellationToken>()), Times.Never);
-        //}
+            settingsService.Verify(s => s.GetConnectionSettings(
+                It.IsAny<IProjectModelNode>()), Times.Never);
+            callbackService.Verify(s => s.GetCredentialsAsync(
+                It.IsAny<Uri>(),
+                It.IsAny<CancellationToken>()), Times.Never);
+        }
 
-        //[Test]
-        //public async Task WhenCredentialsExist_ThenCreateRdpSessionContextByUrlUsesStoredCredentials()
-        //{
-        //    var url = IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance-1?username=john%20doe");
-        //    var settings = new ConnectionSettings(url.Instance);
-        //    settings.RdpUsername.Value = "john doe";
+        [Test]
+        public async Task WhenCredentialsExist_ThenCreateRdpSessionContextByUrlUsesStoredCredentials()
+        {
+            var url = IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance-1?username=john%20doe");
+            var settings = new ConnectionSettings(url.Instance);
+            settings.RdpUsername.Value = "john doe";
 
-        //    var settingsService = new Mock<IConnectionSettingsService>();
-        //    var foundInInventory = true;
-        //    settingsService
-        //        .Setup(s => s.GetConnectionSettings(url, out foundInInventory))
-        //        .Returns(settings);
+            var settingsService = new Mock<IConnectionSettingsService>();
+            var foundInInventory = true;
+            settingsService
+                .Setup(s => s.GetConnectionSettings(url, out foundInInventory))
+                .Returns(settings);
 
-        //    var credentialDialog = new Mock<IRdpCredentialEditorFactory>();
-        //    credentialDialog
-        //        .Setup(p => p.SelectCredentialsAsync(
-        //            It.IsAny<IWin32Window>(),
-        //            It.IsAny<InstanceLocator>(),
-        //            It.IsAny<ConnectionSettings>(),
-        //            RdpCredentialGenerationBehavior._Default,
-        //            It.IsAny<bool>()));
+            var callbackService = new Mock<IRdpCredentialCallback>();
 
-        //    var callbackService = new Mock<IRdpCredentialCallback>();
+            var factory = new SessionContextFactory(
+                new Mock<IMainWindow>().Object,
+                new Mock<IAuthorization>().Object,
+                new Mock<IKeyStore>().Object,
+                new Mock<IPlatformCredentialFactory>().Object,
+                settingsService.Object,
+                new Mock<IIapTransportFactory>().Object,
+                new Mock<IDirectTransportFactory>().Object,
+                CreateRdpCredentialEditorFactoryMock().Object,
+                new Mock<IRdpCredentialCallback>().Object,
+                CreateSshSettingsRepository());
 
-        //    var factory = new SessionContextFactory(
-        //        new Mock<IMainWindow>().Object,
-        //        new Mock<IAuthorization>().Object,
-        //        new Mock<IKeyStore>().Object,
-        //        new Mock<IPlatformCredentialFactory>().Object,
-        //        settingsService.Object,
-        //        new Mock<IIapTransportFactory>().Object,
-        //        new Mock<IDirectTransportFactory>().Object,
-        //        credentialDialog.Object,
-        //        new Mock<IRdpCredentialCallback>().Object,
-        //        CreateSshSettingsRepository());
+            var context = (RdpContext)await factory
+                .CreateRdpSessionContextAsync(url, CancellationToken.None)
+                .ConfigureAwait(false);
+            Assert.IsNotNull(context);
 
-        //    var context = (RdpContext)await factory
-        //        .CreateRdpSessionContextAsync(url, CancellationToken.None)
-        //        .ConfigureAwait(false);
-        //    Assert.IsNotNull(context);
+            Assert.AreEqual(
+                RdpParameters.ParameterSources.Inventory | RdpParameters.ParameterSources.Url,
+                context.Parameters.Sources);
+            Assert.AreEqual("john doe", context.Credential.User);
 
-        //    Assert.AreEqual(
-        //        RdpParameters.ParameterSources.Inventory | RdpParameters.ParameterSources.Url,
-        //        context.Parameters.Sources);
-        //    Assert.AreEqual("john doe", context.Credential.User);
-
-        //    settingsService.Verify(s => s.GetConnectionSettings(
-        //        url,
-        //        out foundInInventory), Times.Once);
-        //    callbackService.Verify(s => s.GetCredentialsAsync(
-        //        It.IsAny<Uri>(),
-        //        It.IsAny<CancellationToken>()), Times.Never);
-        //}
+            settingsService.Verify(s => s.GetConnectionSettings(
+                url,
+                out foundInInventory), Times.Once);
+            callbackService.Verify(s => s.GetCredentialsAsync(
+                It.IsAny<Uri>(),
+                It.IsAny<CancellationToken>()), Times.Never);
+        }
 
         //---------------------------------------------------------------------
         // CreateRdpSessionContext - url + callback.
@@ -292,7 +293,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 new Mock<IConnectionSettingsService>().Object,
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
-                new Mock<IRdpCredentialEditorFactory>().Object,
+                CreateRdpCredentialEditorFactoryMock().Object,
                 callbackService.Object,
                 CreateSshSettingsRepository());
 
@@ -336,7 +337,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 settingsService.Object,
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
-                new Mock<IRdpCredentialEditorFactory>().Object,
+                CreateRdpCredentialEditorFactoryMock().Object,
                 callbackService.Object,
                 CreateSshSettingsRepository());
 

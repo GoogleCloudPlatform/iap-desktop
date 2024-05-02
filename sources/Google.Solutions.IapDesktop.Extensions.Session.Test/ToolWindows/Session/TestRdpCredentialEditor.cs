@@ -552,6 +552,46 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 It.IsAny<TaskDialogParameters>()), Times.Never());
         }
 
+        [Test]
+        [TestCase(RdpCredentialGenerationBehavior.Allow)]
+        [TestCase(RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound)]
+        public async Task WhenCredentialGenerationAllowedAndCredentialsComplete_ThenAmendCredentialsReturns(
+            RdpCredentialGenerationBehavior behavior)
+        {
+            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
+            settings.RdpUsername.Value = "user";
+            settings.RdpPassword.SetClearTextValue("password");
+
+            var taskDialog = new Mock<ITaskDialog>();
+            var credentialDialog = new Mock<ICredentialDialog>();
+
+            var editor = new RdpCredentialEditor(
+                null,
+                settings,
+                new Mock<IAuthorization>().Object,
+                new SynchronousJobService(),
+                new Mock<IWindowsCredentialGenerator>().Object,
+                taskDialog.Object,
+                credentialDialog.Object,
+                new Mock<IDialogFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
+                new Mock<IDialogFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
+
+            await editor
+                .AmendCredentialsAsync(behavior)
+                .ConfigureAwait(false);
+
+            bool save;
+            NetworkCredential? credential;
+            credentialDialog.Verify(d => d.PromptForWindowsCredentials(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<CredentialDialogParameters>(),
+                out save,
+                out credential), Times.Never());
+            taskDialog.Verify(d => d.ShowDialog(
+                null,
+                It.IsAny<TaskDialogParameters>()), Times.Never());
+        }
+
         //---------------------------------------------------------------------
         // AmendCredentials - Disallow.
         //---------------------------------------------------------------------
