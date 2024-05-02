@@ -30,6 +30,18 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         // Task Dialog definitions.
         //---------------------------------------------------------------------
 
+        internal static class TaskDialogIcons
+        {
+            public static readonly IntPtr TD_WARNING_ICON = new IntPtr(65535);
+            public static readonly IntPtr TD_ERROR_ICON = new IntPtr(65534);
+            public static readonly IntPtr TD_INFORMATION_ICON = new IntPtr(65533);
+            public static readonly IntPtr TD_SHIELD_ICON = new IntPtr(65532);
+            public static readonly IntPtr TD_SHIELD_ICON_GRAY_BACKGROUND = new IntPtr(65527);
+            public static readonly IntPtr TD_SHIELD_ICON_GREEN_BACKGROUND = new IntPtr(65528);
+            public static readonly IntPtr TD_SHIELD_ICON_INFO_BACKGROUND = new IntPtr(65531);
+            public static readonly IntPtr TD_SHIELD_ICON_WARNING_BACKGROUND = new IntPtr(65530);
+        }
+
         [Flags]
         internal enum TASKDIALOG_FLAGS : uint
         {

@@ -385,7 +385,6 @@ namespace Google.Solutions.IapDesktop
 
                 preAuthLayer.AddSingleton<IClock>(SystemClock.Default);
                 preAuthLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
-                preAuthLayer.AddTransient<ILegacyTaskDialog, LegacyTaskDialog>();
                 preAuthLayer.AddTransient<ITaskDialog, TaskDialog>();
                 preAuthLayer.AddTransient<ICredentialDialog, CredentialDialog>();
                 preAuthLayer.AddTransient<IInputDialog, InputDialog>();
