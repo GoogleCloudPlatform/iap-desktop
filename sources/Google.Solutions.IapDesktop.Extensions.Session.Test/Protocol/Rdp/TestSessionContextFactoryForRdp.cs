@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
 
             Assert.AreEqual(RdpParameters.ParameterSources.Inventory, context.Parameters.Sources);
 
-            editor.Verify(e => e.PromptForCredentials(false), Times.Once);
+            editor.Verify(e => e.PromptForCredentials(), Times.Once);
         }
 
         [Test]

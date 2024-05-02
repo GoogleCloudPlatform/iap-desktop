@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 new Mock<IDialogFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             editor.Settings.RdpUsername.Value = username;
-            editor.PromptForCredentials(true);
+            editor.PromptForCredentials();
 
             credentialDialog.Verify(
                 d => d.PromptForWindowsCredentials(
@@ -206,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 new Mock<IDialogFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
                 new Mock<IDialogFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
-            editor.PromptForCredentials(true);
+            editor.PromptForCredentials();
 
             Assert.AreEqual(allowSave, editor.AllowSave);
         }

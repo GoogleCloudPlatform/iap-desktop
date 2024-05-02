@@ -190,7 +190,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 // Force a prompt, even though the settings might
                 // contain valid credentials.
                 //
-                credentialEditor.PromptForCredentials(false);
+                credentialEditor.AllowSave = false;
+                credentialEditor.PromptForCredentials();
             }
             else
             {
@@ -198,6 +199,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 // Give the user a chance to amend credentials in case
                 // the settings don't contain any credentials yet.
                 //
+                Debug.Assert(credentialEditor.AllowSave);
+
                 await credentialEditor
                     .AmendCredentialsAsync(RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound)
                     .ConfigureAwait(true);
@@ -266,8 +269,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 //
                 // Show prompt, but don't persist any generated credentials.
                 //
-                await this.rdpCredentialEditor
-                    .Edit(settings)
+                var credentialEditor = this.rdpCredentialEditor.Edit(settings);
+                credentialEditor.AllowSave = false;
+                await credentialEditor
                     .AmendCredentialsAsync(allowedBehavior)
                     .ConfigureAwait(true);
 

@@ -48,13 +48,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         /// <summary>
         /// Check if changes are allowed to be saved.
         /// </summary>
-        public bool AllowSave { get; }
+        public bool AllowSave { get; set; }
 
         /// <summary>
         /// Prompt user to enter password.
         /// </summary>
         /// <exception cref="OperationCanceledException">when cancelled by user</exception>
-        void PromptForCredentials(bool showSaveCheckbox);
+        void PromptForCredentials();
 
         /// <summary>
         /// Generate new credentials and update connection settings.
@@ -207,15 +207,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         // IRdpCredentialEditor.
         //---------------------------------------------------------------------
 
-        public bool AllowSave { get; private set; } = true;
+        public bool AllowSave { get; set; } = true;
 
-        public void PromptForCredentials(bool showSaveCheckbox)
+        public void PromptForCredentials()
         {
             var parameters = new CredentialDialogParameters()
             {
                 Caption = $"Enter your credentials for {this.Instance.Name}",
                 Message = "These credentials will be used to connect to the VM",
-                ShowSaveCheckbox = showSaveCheckbox,
+                ShowSaveCheckbox = this.AllowSave,
                 InputCredential = string.IsNullOrEmpty(this.Settings.RdpUsername.Value)
                     ? null
                     : new NetworkCredential(
@@ -338,7 +338,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                     break;
 
                 case EnterCredentialsResult:
-                    PromptForCredentials(true);
+                    PromptForCredentials();
                     break;
 
                 case DialogResult.Cancel:
