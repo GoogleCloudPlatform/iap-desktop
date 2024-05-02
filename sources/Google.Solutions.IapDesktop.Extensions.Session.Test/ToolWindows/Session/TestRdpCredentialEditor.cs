@@ -536,7 +536,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 It.IsAny<TaskDialogParameters>()), Times.Never());
         }
 
-
         //---------------------------------------------------------------------
         // AmendCredentials - Disallow.
         //---------------------------------------------------------------------
