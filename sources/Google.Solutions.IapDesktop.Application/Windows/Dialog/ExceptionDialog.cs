@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                     dwFlags = 0,
                     dwCommonButtons = UnsafeNativeMethods.TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_OK_BUTTON,
                     pszWindowTitle = "An error occurred",
-                    MainIcon = TaskDialogIcons.TD_ERROR_ICON,
+                    MainIcon = UnsafeNativeMethods.TaskDialogIcons.TD_ERROR_ICON,
                     pszMainInstruction = caption,
                     pszContent = message,
                     pszExpandedInformation = details.ToString()
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                     //
                     // Add help link to footer.
                     //
-                    config.FooterIcon = TaskDialogIcons.TD_INFORMATION_ICON;
+                    config.FooterIcon = UnsafeNativeMethods.TaskDialogIcons.TD_INFORMATION_ICON;
                     config.dwFlags |= UnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA |
                                       UnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS;
                     config.pszFooter = $"For more information, see <A HREF=\"#\">{helpTopic.Title}</A>";
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                     //
                     // Add bug report link to footer.
                     //
-                    config.FooterIcon = TaskDialogIcons.TD_INFORMATION_ICON;
+                    config.FooterIcon = UnsafeNativeMethods.TaskDialogIcons.TD_INFORMATION_ICON;
                     config.dwFlags |= UnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA |
                                       UnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS;
                     config.pszFooter = "If this looks wrong, consider <A HREF=\"#\">reporting an issue</A>.";
