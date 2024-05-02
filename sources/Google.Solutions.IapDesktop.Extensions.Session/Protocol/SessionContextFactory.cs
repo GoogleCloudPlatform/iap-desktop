@@ -236,6 +236,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
                 // This project/VM exists in the inventory, so the settings
                 // represent a merge of stored settings and URL-based
                 // settings.
+                //
                 sources |= RdpParameters.ParameterSources.Inventory;
             }
 

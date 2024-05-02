@@ -1,4 +1,25 @@
-﻿using Google.Solutions.Apis.Auth;
+﻿//
+// Copyright 2024 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Windows;
@@ -30,6 +51,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         public bool AllowSave { get; }
 
         /// <summary>
+        /// Prompt user to enter password.
+        /// </summary>
+        /// <exception cref="OperationCanceledException">when cancelled by user</exception>
+        void PromptForCredentials(bool showSaveCheckbox);
+
+        /// <summary>
         /// Generate new credentials and update connection settings.
         /// </summary>
         /// <exception cref="OperationCanceledException">when cancelled by user</exception>
@@ -43,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             RdpCredentialGenerationBehavior generationBehavior);
     }
 
-    public class RdpCredentialEditor : IRdpCredentialEditor
+    internal class RdpCredentialEditor : IRdpCredentialEditor
     {
         private readonly IWin32Window? owner;
         private readonly IAuthorization authorization;
@@ -97,36 +124,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             get => 
                 !string.IsNullOrEmpty(this.Settings.RdpUsername.Value) &&
                 !string.IsNullOrEmpty(this.Settings.RdpPassword.GetClearTextValue());
-        }
-
-        internal void PromptForCredentials()
-        {
-            var parameters = new CredentialDialogParameters()
-            {
-                Caption = $"Enter your credentials for {this.Instance.Name}",
-                Message = "These credentials will be used to connect to the VM",
-                ShowSaveCheckbox = true,
-                InputCredential = string.IsNullOrEmpty(this.Settings.RdpUsername.Value)
-                    ? null
-                    : new NetworkCredential(
-                        this.Settings.RdpUsername.Value,
-                        (string?)null,
-                        this.Settings.RdpDomain.Value)
-            };
-
-            if (this.credentialDialog.PromptForWindowsCredentials(
-                this.owner,
-                parameters,
-                out var save,
-                out var credential) == DialogResult.Cancel || credential == null)
-            {
-                throw new OperationCanceledException();
-            }
-
-            this.AllowSave = save;
-            this.Settings.RdpUsername.Value = credential.UserName;
-            this.Settings.RdpPassword.SetClearTextValue(credential.Password);
-            this.Settings.RdpDomain.Value = credential.Domain;
         }
 
         internal async Task<bool> IsGrantedPermissionToCreateWindowsCredentialsAsync()
@@ -212,11 +209,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         public bool AllowSave { get; private set; } = true;
 
-        /// <summary>
-        /// Create new credentials and use them to replace 
-        /// current credentials (if any).
-        /// </summary>
-        /// <exception cref="OperationCanceledException">when cancelled</exception>
+        public void PromptForCredentials(bool showSaveCheckbox)
+        {
+            var parameters = new CredentialDialogParameters()
+            {
+                Caption = $"Enter your credentials for {this.Instance.Name}",
+                Message = "These credentials will be used to connect to the VM",
+                ShowSaveCheckbox = showSaveCheckbox,
+                InputCredential = string.IsNullOrEmpty(this.Settings.RdpUsername.Value)
+                    ? null
+                    : new NetworkCredential(
+                        this.Settings.RdpUsername.Value,
+                        (string?)null,
+                        this.Settings.RdpDomain.Value)
+            };
+
+            if (this.credentialDialog.PromptForWindowsCredentials(
+                this.owner,
+                parameters,
+                out var save,
+                out var credential) == DialogResult.Cancel || credential == null)
+            {
+                throw new OperationCanceledException();
+            }
+
+            this.AllowSave = save;
+            this.Settings.RdpUsername.Value = credential.UserName;
+            this.Settings.RdpPassword.SetClearTextValue(credential.Password);
+            this.Settings.RdpDomain.Value = credential.Domain;
+        }
+
         public async Task GenerateCredentialsAsync(bool silent)
         {
             var credentials = await CreateCredentialsAsync(
@@ -237,11 +259,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             this.Settings.RdpDomain.Value = ".";
         }
 
-        /// <summary>
-        /// Allow user to amend or replace the current credentials
-        /// if they're incomplete.
-        /// </summary>
-        /// <exception cref="OperationCanceledException">when cancelled</exception>
         public async Task AmendCredentialsAsync(
             RdpCredentialGenerationBehavior allowedBehavior)
         { 
@@ -314,7 +331,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                     break;
 
                 case EnterCredentialsResult:
-                    PromptForCredentials();
+                    PromptForCredentials(true);
                     break;
 
                 case DialogResult.Cancel:

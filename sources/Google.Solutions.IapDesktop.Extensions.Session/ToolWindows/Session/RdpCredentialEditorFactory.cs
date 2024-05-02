@@ -41,13 +41,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         IRdpCredentialEditor Edit(Settings.ConnectionSettings settings);
     }
 
+    [Service(typeof(IRdpCredentialEditorFactory))]
     public class RdpCredentialEditorFactory : IRdpCredentialEditorFactory
     {
         private readonly IServiceProvider serviceProvider;
 
         public RdpCredentialEditorFactory(IServiceProvider serviceProvider)
         {
-            this.serviceProvider = serviceProvider;)
+            this.serviceProvider = serviceProvider;
         }
 
         public IRdpCredentialEditor Edit(Settings.ConnectionSettings settings)
