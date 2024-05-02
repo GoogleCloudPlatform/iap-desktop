@@ -30,6 +30,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.Platform.Security.Cryptography;
 using Google.Solutions.Settings;
 using Google.Solutions.Settings.Collection;
@@ -149,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 settingsService.Object,
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
-                new Mock<ISelectCredentialsDialog>().Object,
+                new Mock<IRdpCredentialEditorFactory>().Object,
                 new Mock<IRdpCredentialCallback>().Object,
                 CreateSshSettingsRepository(true, TimeSpan.FromMinutes(1)));
 
@@ -188,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 settingsService.Object,
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
-                new Mock<ISelectCredentialsDialog>().Object,
+                new Mock<IRdpCredentialEditorFactory>().Object,
                 new Mock<IRdpCredentialCallback>().Object,
                 CreateSshSettingsRepository(true, TimeSpan.FromMinutes(1)));
 
@@ -237,7 +238,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 settingsService.Object,
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
-                new Mock<ISelectCredentialsDialog>().Object,
+                new Mock<IRdpCredentialEditorFactory>().Object,
                 new Mock<IRdpCredentialCallback>().Object,
                 sshSettingsRepository);
 
@@ -269,7 +270,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 settingsService.Object,
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
-                new Mock<ISelectCredentialsDialog>().Object,
+                new Mock<IRdpCredentialEditorFactory>().Object,
                 new Mock<IRdpCredentialCallback>().Object,
                 CreateSshSettingsRepository(true, TimeSpan.FromMinutes(123)));
 
@@ -310,7 +311,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 settingsService.Object,
                 new Mock<IIapTransportFactory>().Object,
                 new Mock<IDirectTransportFactory>().Object,
-                new Mock<ISelectCredentialsDialog>().Object,
+                new Mock<IRdpCredentialEditorFactory>().Object,
                 new Mock<IRdpCredentialCallback>().Object,
                 CreateSshSettingsRepository(false, TimeSpan.FromMinutes(123)));
 

@@ -120,9 +120,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                         CancellationToken.None)
                     .ConfigureAwait(true);
 
-                Debug.Assert(this.Flags == RdpCreateSessionFlags.None ||
-                    (context as RdpContext)?.Credential.Password == null);
-
                 try
                 {
                     session = await this.sessionFactory

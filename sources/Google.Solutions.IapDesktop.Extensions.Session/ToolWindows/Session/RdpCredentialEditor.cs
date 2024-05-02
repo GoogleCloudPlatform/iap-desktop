@@ -305,6 +305,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                     "Generate new credentials",
                     GenerateNewCredentialsResult));
             }
+            else if (this.AreCredentialsComplete)
+            {
+                //
+                // We have credentials, so just go ahead and connect.
+                // 
+                return;
+            }
 
             dialogParameters.Buttons.Add(new TaskDialogCommandLinkButton(
                 "Enter credentials manually",
