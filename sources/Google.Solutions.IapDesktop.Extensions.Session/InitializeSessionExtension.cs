@@ -244,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             var credentialCommands = new CredentialCommands(
                 mainForm,
                 serviceProvider.GetService<IConnectionSettingsService>(),
-                serviceProvider.GetService<ICreateCredentialsWorkflow>());
+                serviceProvider.GetService<IRdpCredentialEditorFactory>());
 
             projectExplorer.ContextMenuCommands.AddCommand(
                 credentialCommands.ContextMenuNewCredentials,

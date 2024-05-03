@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Properties;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -38,19 +39,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
         public CredentialCommands(
             IWin32Window window,
             IConnectionSettingsService settingsService,
-            ICreateCredentialsWorkflow workflow)
+            IRdpCredentialEditorFactory rdpCredentialEditor)
         {
             this.ContextMenuNewCredentials = new NewCredentialsCommand(
                 window,
                 settingsService,
-                workflow)
+                rdpCredentialEditor)
             {
                 CommandType = MenuCommandType.MenuCommand
             };
             this.ToolbarNewCredentials = new NewCredentialsCommand(
                 window,
                 settingsService,
-                workflow)
+                rdpCredentialEditor)
             {
                 CommandType = MenuCommandType.MenuCommand
             };
@@ -67,17 +68,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
         {
             private readonly IWin32Window window;
             private readonly IConnectionSettingsService settingsService;
-            private readonly ICreateCredentialsWorkflow workflow;
+            private readonly IRdpCredentialEditorFactory rdpCredentialEditor;
 
             public NewCredentialsCommand(
                 IWin32Window window,
                 IConnectionSettingsService settingsService,
-                ICreateCredentialsWorkflow workflow)
+                IRdpCredentialEditorFactory rdpCredentialEditor)
                 : base("New logon &credentials...")
             {
                 this.window = window;
                 this.settingsService = settingsService;
-                this.workflow = workflow;
+                this.rdpCredentialEditor = rdpCredentialEditor;
 
                 this.Image = Resources.AddCredentials_16;
                 this.ActivityText = "Generating new Windows logon credentials";
@@ -106,13 +107,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
 
                 var settings = this.settingsService.GetConnectionSettings(node);
 
-                await this.workflow
-                    .CreateCredentialsAsync(
-                        this.window,
-                        instanceNode.Instance,
-                        settings.TypedCollection,
-                        false)
-                    .ConfigureAwait(true);
+                await this.rdpCredentialEditor
+                    .Edit(settings.TypedCollection)
+                    .GenerateCredentialsAsync(false)
+                    .ConfigureAwait(false);
 
                 settings.Save();
             }
