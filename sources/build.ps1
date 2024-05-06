@@ -101,10 +101,13 @@ if ($Cmake -eq $null)
         $CmakeDir = (Split-Path $CMake -Parent)
         $env:Path += ";$CmakeDir"
     }
-    elseif (!$args.Contains("SKIP_ASSEMBLY_BUILD"))
+    else
     {
         Write-Host "Could not find cmake" -ForegroundColor Red
-        exit 1
+
+        #
+        # cmake isn't needed for all targets, so allow build to proceed.
+        #
     }
 }
 
