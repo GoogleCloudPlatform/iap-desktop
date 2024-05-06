@@ -101,7 +101,7 @@ if ($Cmake -eq $null)
         $CmakeDir = (Split-Path $CMake -Parent)
         $env:Path += ";$CmakeDir"
     }
-    else
+    elseif (-not $env:SKIP_ASSEMBLY_BUILD)
     {
         Write-Host "Could not find cmake" -ForegroundColor Red
         exit 1
