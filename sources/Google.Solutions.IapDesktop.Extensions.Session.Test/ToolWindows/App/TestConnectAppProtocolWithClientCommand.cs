@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
 
         private static AppProtocolContextFactory CreateFactory(
             IAppProtocolClient client,
-            Extensions.Session.Settings.ConnectionSettings? settings)
+            ConnectionSettings? settings)
         {
             var settingsService = new Mock<IConnectionSettingsService>();
             if (settings != null)
@@ -220,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new SynchronousJobService(),
                 CreateFactory(
                     client.Object,
-                    new Extensions.Session.Settings.ConnectionSettings(SampleLocator)),
+                    new ConnectionSettings(SampleLocator)),
                 new Mock<ICredentialDialog>().Object,
                 new Mock<INotifyDialog>().Object);
 
@@ -243,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(false);
             client.SetupGet(c => c.IsUsernameRequired).Returns(true);
 
-            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
+            var settings = new ConnectionSettings(SampleLocator);
             settings.AppUsername.Value = "user";
 
             var command = new ConnectAppProtocolWithClientCommand(
@@ -269,7 +269,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
             client.SetupGet(c => c.IsUsernameRequired).Returns(true);
 
-            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
+            var settings = new ConnectionSettings(SampleLocator);
             settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Disabled;
 
             var username = "user";
@@ -305,7 +305,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
             client.SetupGet(c => c.IsUsernameRequired).Returns(true);
 
-            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
+            var settings = new ConnectionSettings(SampleLocator);
             settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Disabled;
             settings.AppUsername.Value = "ignore";
 
@@ -343,7 +343,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
             client.SetupGet(c => c.IsUsernameRequired).Returns(true);
 
-            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
+            var settings = new ConnectionSettings(SampleLocator);
             settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Disabled;
 
             string? username = null;
@@ -380,7 +380,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             client.SetupGet(c => c.IsAvailable).Returns(true);
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
 
-            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
+            var settings = new ConnectionSettings(SampleLocator);
             settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Enabled;
             settings.RdpUsername.Value = "user";
             settings.RdpPassword.SetClearTextValue("password");
@@ -411,7 +411,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             client.SetupGet(c => c.IsAvailable).Returns(true);
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
 
-            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
+            var settings = new ConnectionSettings(SampleLocator);
             settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Enabled;
 
             var userCredential = new NetworkCredential("user", "password", "domain");
@@ -449,7 +449,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             client.SetupGet(c => c.IsAvailable).Returns(true);
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
 
-            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
+            var settings = new ConnectionSettings(SampleLocator);
             settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Enabled;
             settings.RdpUsername.Value = "ignore";
             settings.RdpPassword.SetClearTextValue("ignore");
@@ -491,7 +491,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             client.SetupGet(c => c.IsAvailable).Returns(true);
             client.SetupGet(c => c.IsNetworkLevelAuthenticationSupported).Returns(true);
 
-            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleLocator);
+            var settings = new ConnectionSettings(SampleLocator);
             settings.AppNetworkLevelAuthentication.Value = AppNetworkLevelAuthenticationState.Enabled;
 
             NetworkCredential? userCredential = null;
@@ -537,7 +537,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService
                 .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
-                .Returns(new Extensions.Session.Settings.ConnectionSettings(SampleLocator)
+                .Returns(new ConnectionSettings(SampleLocator)
                     .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
             var factory = new AppProtocolContextFactory(

@@ -27,6 +27,7 @@ using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
+using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.Mvvm.Binding;
@@ -116,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         {
             var editor = new RdpCredentialEditor(
                 null,
-                new Extensions.Session.Settings.ConnectionSettings(SampleInstance),
+                new ConnectionSettings(SampleInstance),
                 new Mock<IAuthorization>().Object,
                 new Mock<IJobService>().Object,
                 new Mock<IWindowsCredentialGenerator>().Object,
@@ -157,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var editor = new RdpCredentialEditor(
                 null,
-                new Extensions.Session.Settings.ConnectionSettings(SampleInstance),
+                new ConnectionSettings(SampleInstance),
                 new Mock<IAuthorization>().Object,
                 new Mock<IJobService>().Object,
                 new Mock<IWindowsCredentialGenerator>().Object,
@@ -197,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var editor = new RdpCredentialEditor(
                 null,
-                new Extensions.Session.Settings.ConnectionSettings(SampleInstance),
+                new ConnectionSettings(SampleInstance),
                 new Mock<IAuthorization>().Object,
                 new Mock<IJobService>().Object,
                 new Mock<IWindowsCredentialGenerator>().Object,
@@ -228,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var editor = new RdpCredentialEditor(
                 null,
-                new Extensions.Session.Settings.ConnectionSettings(SampleInstance),
+                new ConnectionSettings(SampleInstance),
                 new Mock<IAuthorization>().Object,
                 new Mock<IJobService>().Object,
                 credentialGenerator.Object,
@@ -259,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var editor = new RdpCredentialEditor(
                 null,
-                new Extensions.Session.Settings.ConnectionSettings(SampleInstance),
+                new ConnectionSettings(SampleInstance),
                 new Mock<IAuthorization>().Object,
                 new Mock<IJobService>().Object,
                 new Mock<IWindowsCredentialGenerator>().Object,
@@ -290,7 +291,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var editor = new RdpCredentialEditor(
                 null,
-                new Extensions.Session.Settings.ConnectionSettings(SampleInstance),
+                new ConnectionSettings(SampleInstance),
                 CreateAuthorizationMock("bobsemail@gmail.com").Object,
                 new Mock<IJobService>().Object,
                 new Mock<IWindowsCredentialGenerator>().Object,
@@ -324,7 +325,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var editor = new RdpCredentialEditor(
                 null,
-                new Extensions.Session.Settings.ConnectionSettings(SampleInstance),
+                new ConnectionSettings(SampleInstance),
                 new Mock<IAuthorization>().Object,
                 new SynchronousJobService(),
                 CreateCredentialGeneratorMock(generatedCredentials).Object,
@@ -356,7 +357,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var editor = new RdpCredentialEditor(
                 null,
-                new Extensions.Session.Settings.ConnectionSettings(SampleInstance),
+                new ConnectionSettings(SampleInstance),
                 new Mock<IAuthorization>().Object,
                 new SynchronousJobService(),
                 CreateCredentialGeneratorMock(generatedCredentials).Object,
@@ -384,7 +385,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public async Task GenerateCredentialsUpdatesSettings()
         {
-            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
+            var settings = new ConnectionSettings(SampleInstance);
             settings.RdpUsername.Value = "bob";
 
             var generatedCredentials = new NetworkCredential("bob", "password");
@@ -415,7 +416,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public async Task WhenNlaDisabled_ThenAmendCredentialsReturns()
         {
-            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
+            var settings = new ConnectionSettings(SampleInstance);
             settings.RdpNetworkLevelAuthentication.Value = RdpNetworkLevelAuthentication.Disabled;
 
             var editor = new RdpCredentialEditor(
@@ -447,7 +448,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var editor = new RdpCredentialEditor(
                 null,
-                new Extensions.Session.Settings.ConnectionSettings(SampleInstance),
+                new ConnectionSettings(SampleInstance),
                 CreateAuthorizationMock("bob@example.com").Object,
                 new SynchronousJobService(),
                 CreateCredentialGeneratorMock(generatedCredentials).Object,
@@ -471,7 +472,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var editor = new RdpCredentialEditor(
                 null,
-                new Extensions.Session.Settings.ConnectionSettings(SampleInstance),
+                new ConnectionSettings(SampleInstance),
                 new Mock<IAuthorization>().Object,
                 new SynchronousJobService(),
                 new Mock<IWindowsCredentialGenerator>().Object,
@@ -504,7 +505,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var editor = new RdpCredentialEditor(
                 null,
-                new Extensions.Session.Settings.ConnectionSettings(SampleInstance),
+                new ConnectionSettings(SampleInstance),
                 new Mock<IAuthorization>().Object,
                 new SynchronousJobService(),
                 CreateCredentialGeneratorMock(new NetworkCredential()).Object,
@@ -532,7 +533,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var editor = new RdpCredentialEditor(
                 null,
-                new Extensions.Session.Settings.ConnectionSettings(SampleInstance),
+                new ConnectionSettings(SampleInstance),
                 new Mock<IAuthorization>().Object,
                 new SynchronousJobService(),
                 new Mock<IWindowsCredentialGenerator>().Object,
@@ -558,7 +559,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         public async Task WhenCredentialGenerationAllowedAndCredentialsComplete_ThenAmendCredentialsReturns(
             RdpCredentialGenerationBehavior behavior)
         {
-            var settings = new Extensions.Session.Settings.ConnectionSettings(SampleInstance);
+            var settings = new ConnectionSettings(SampleInstance);
             settings.RdpUsername.Value = "user";
             settings.RdpPassword.SetClearTextValue("password");
 
@@ -603,7 +604,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var editor = new RdpCredentialEditor(
                 null,
-                new Extensions.Session.Settings.ConnectionSettings(SampleInstance),
+                new ConnectionSettings(SampleInstance),
                 new Mock<IAuthorization>().Object,
                 new SynchronousJobService(),
                 CreateCredentialGeneratorMock(new NetworkCredential()).Object,
