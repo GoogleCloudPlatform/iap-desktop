@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         /// <summary>
         /// Create an editor object for the connection settings.
         /// </summary>
-        IRdpCredentialEditor Edit(Settings.ConnectionSettings settings);
+        IRdpCredentialEditor Edit(Extensions.Session.Settings.ConnectionSettings settings);
     }
 
     [Service(typeof(IRdpCredentialEditorFactory))]
@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             this.serviceProvider = serviceProvider;
         }
 
-        public IRdpCredentialEditor Edit(Settings.ConnectionSettings settings)
+        public IRdpCredentialEditor Edit(Extensions.Session.Settings.ConnectionSettings settings)
         {
             var themeService = this.serviceProvider.GetService<IThemeService>();
 

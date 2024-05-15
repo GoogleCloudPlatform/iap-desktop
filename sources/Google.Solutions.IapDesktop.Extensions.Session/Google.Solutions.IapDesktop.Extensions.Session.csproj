@@ -42,7 +42,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="ToolWindows\ConnectionSettings\ConnectionSettingsView.cs" />
+    <Compile Update="ToolWindows\Settings\ConnectionSettingsView.cs" />
     <Compile Update="ToolWindows\Credentials\NewCredentialsView.cs">
       <SubType>Form</SubType>
     </Compile>

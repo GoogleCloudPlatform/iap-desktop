@@ -22,12 +22,12 @@
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Settings;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Moq;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settings
 {
     [TestFixture]
     public class TestConnectionSettingsCommands

@@ -27,7 +27,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Settings
 {
     [Service]
     public class ConnectionSettingsCommands

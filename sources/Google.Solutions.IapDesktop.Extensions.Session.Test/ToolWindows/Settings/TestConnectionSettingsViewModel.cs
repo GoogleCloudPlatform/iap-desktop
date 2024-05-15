@@ -24,13 +24,13 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Settings;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settings
 {
     [TestFixture]
     public class TestConnectionSettingsViewModel

@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         internal RdpCredentialEditor(
             IWin32Window? owner,
-            Settings.ConnectionSettings settings,
+            Extensions.Session.Settings.ConnectionSettings settings,
             IAuthorization authorization,
             IJobService jobService,
             IWindowsCredentialGenerator credentialGenerator,
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         /// <summary>
         /// Settings that are being editied.
         /// </summary>
-        public Settings.ConnectionSettings Settings { get; }
+        public Extensions.Session.Settings.ConnectionSettings Settings { get; }
 
         /// <summary>
         /// Instance for which settings are being edited.

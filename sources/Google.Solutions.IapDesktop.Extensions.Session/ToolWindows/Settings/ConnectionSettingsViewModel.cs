@@ -29,7 +29,7 @@ using Google.Solutions.Settings.Collection;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Settings
 {
     [Service]
     public class ConnectionSettingsViewModel : ViewModelBase, IPropertiesInspectorViewModel
