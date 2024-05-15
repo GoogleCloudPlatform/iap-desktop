@@ -23,6 +23,7 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Download;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Testing.Apis.Integration;
@@ -35,7 +36,7 @@ using System.Drawing;
 using System.IO;
 using System.Threading;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Download
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]

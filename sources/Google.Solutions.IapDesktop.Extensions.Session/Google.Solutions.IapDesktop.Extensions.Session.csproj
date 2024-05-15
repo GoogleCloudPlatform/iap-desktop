@@ -77,10 +77,10 @@
       <DependentUpon>AuthorizedPublicKeysView.cs</DependentUpon>
     </Compile>
     <Compile Update="ToolWindows\SshKeys\AuthorizedPublicKeysList.cs" />
-    <Compile Update="ToolWindows\Download\DownloadFileView.cs">
+    <Compile Update="ToolWindows\Ssh\DownloadFileView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="ToolWindows\Download\DownloadFileView.Designer.cs">
+    <Compile Update="ToolWindows\Ssh\DownloadFileView.Designer.cs">
       <DependentUpon>DownloadFileView.cs</DependentUpon>
     </Compile>
     <Compile Update="ToolWindows\Ssh\SshTerminalView.cs" />
@@ -131,7 +131,7 @@
     <EmbeddedResource Update="ToolWindows\SshKeys\AuthorizedPublicKeysView.resx">
       <DependentUpon>AuthorizedPublicKeysView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="ToolWindows\Download\DownloadFileView.resx">
+    <EmbeddedResource Update="ToolWindows\Ssh\DownloadFileView.resx">
       <DependentUpon>DownloadFileView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="ToolWindows\Ssh\TerminalPaneBase.resx">
@@ -225,5 +225,8 @@
     <EmbeddedResource Include="Properties\DefaultAppProtocols\mysql-tunnel.iapc" />
     <EmbeddedResource Include="Properties\DefaultAppProtocols\postgres-tunnel.iapc" />
     <EmbeddedResource Include="Properties\DefaultAppProtocols\sqlserver-tunnel.iapc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ToolWindows\Download\" />
   </ItemGroup>
 </Project>

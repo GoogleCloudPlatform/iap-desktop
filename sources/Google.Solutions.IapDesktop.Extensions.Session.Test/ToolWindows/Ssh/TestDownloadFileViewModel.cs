@@ -28,7 +28,7 @@ using System;
 using System.Drawing;
 using System.IO;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Download
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 {
     [TestFixture]
     public class TestDownloadFileViewModel
