@@ -122,7 +122,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenReferencesAreEquivalent_ThenGetHasCodeIsSame()
+        public void WhenReferencesAreEquivalent_ThenGetHashCodeIsSame()
         {
             var ref1 = new DiskTypeLocator("proj", "zone", "pd-standard");
             var ref2 = new DiskTypeLocator("proj", "zone", "pd-standard");

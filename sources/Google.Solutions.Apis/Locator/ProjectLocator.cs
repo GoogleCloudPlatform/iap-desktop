@@ -49,7 +49,7 @@ namespace Google.Solutions.Apis.Locator
             }
             else
             {
-                throw new ArgumentException($"'{resourceReference}' is not a valid global resource reference");
+                throw new ArgumentException($"'{resourceReference}' is not a valid global locator");
             }
         }
 

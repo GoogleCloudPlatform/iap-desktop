@@ -71,7 +71,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenReferencesAreEquivalent_ThenGetHasCodeIsSame()
+        public void WhenReferencesAreEquivalent_ThenGetHashCodeIsSame()
         {
             var ref1 = new AccessLevelLocator("policy-1", "level-1");
             var ref2 = new AccessLevelLocator("policy-1", "level-1");

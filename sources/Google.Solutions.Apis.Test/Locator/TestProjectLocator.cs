@@ -80,10 +80,6 @@ namespace Google.Solutions.Apis.Test.Locator
                 "/project-1"));
         }
 
-        //---------------------------------------------------------------------
-        // Equality.
-        //---------------------------------------------------------------------
-
         [Test]
         public void WhenPathInvalid_ParseThrowsArgumentException()
         {
@@ -91,6 +87,10 @@ namespace Google.Solutions.Apis.Test.Locator
                 "projects/project-1/zone"));
             Assert.Throws<ArgumentException>(() => ProjectLocator.Parse(""));
         }
+
+        //---------------------------------------------------------------------
+        // Equality.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
@@ -105,7 +105,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenReferencesAreEquivalent_ThenGetHasCodeIsSame()
+        public void WhenReferencesAreEquivalent_ThenGetHashCodeIsSame()
         {
             var ref1 = new ProjectLocator("proj");
             var ref2 = new ProjectLocator("proj");

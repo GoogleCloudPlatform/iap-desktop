@@ -122,7 +122,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenReferencesAreEquivalent_ThenGetHasCodeIsSame()
+        public void WhenReferencesAreEquivalent_ThenGetHashCodeIsSame()
         {
             var ref1 = new NodeTypeLocator("proj", "zone", "c2-node-60-240");
             var ref2 = new NodeTypeLocator("proj", "zone", "c2-node-60-240");

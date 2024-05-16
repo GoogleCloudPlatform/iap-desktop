@@ -27,15 +27,8 @@ using System;
 namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
-    public class TestZoneLocator : CommonFixtureBase
+    public class TestOrganizationLocator : CommonFixtureBase
     {
-        [Test]
-        public void Project()
-        {
-            var ref1 = new ZoneLocator("project-1", "zone-1");
-            Assert.AreEqual(ref1.ProjectId, ref1.Project.Name);
-        }
-
         //---------------------------------------------------------------------
         // Parse.
         //---------------------------------------------------------------------
@@ -43,61 +36,36 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void WhenPathIsValid_ParseReturnsObject()
         {
-            var ref1 = ZoneLocator.Parse(
-                "projects/project-1/zones/us-central1-a");
+            var ref1 = OrganizationLocator.Parse(
+                "organizations/12345678900001");
 
-            Assert.AreEqual("zones", ref1.ResourceType);
-            Assert.AreEqual("us-central1-a", ref1.Name);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.AreEqual("organizations", ref1.ResourceType);
+            Assert.AreEqual(12345678900001, ref1.Id);
         }
 
         [Test]
-        public void WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
+        public void WhenPathLacksOrganization_ParseThrowsArgumentException()
         {
-            var ref1 = ZoneLocator.Parse(
-                "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a");
-
-            Assert.AreEqual("zones", ref1.ResourceType);
-            Assert.AreEqual("us-central1-a", ref1.Name);
-            Assert.AreEqual("project-1", ref1.ProjectId);
-        }
-
-        [Test]
-        public void WhenQualifiedByGoogleapisHost_ParseReturnsObject()
-        {
-            var ref1 = ZoneLocator.Parse(
-                "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a");
-
-            Assert.AreEqual("zones", ref1.ResourceType);
-            Assert.AreEqual("us-central1-a", ref1.Name);
-            Assert.AreEqual("project-1", ref1.ProjectId);
-        }
-
-        [Test]
-        public void WhenPathLacksProject_ParseThrowsArgumentException()
-        {
-            Assert.Throws<ArgumentException>(() => ZoneLocator.Parse(
-                "/project-1/project-1/zones/us-central1-a"));
+            Assert.Throws<ArgumentException>(() => OrganizationLocator.Parse("/1"));
         }
 
         [Test]
         public void WhenPathInvalid_ParseThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => ZoneLocator.Parse(
-                "projects/project-1/zone/us-central1-a"));
-            Assert.Throws<ArgumentException>(() => ZoneLocator.Parse(
-                "projects/project-1/zones"));
+            Assert.Throws<ArgumentException>(() => OrganizationLocator.Parse("x/1"));
+            Assert.Throws<ArgumentException>(() => OrganizationLocator.Parse("1"));
         }
 
         //---------------------------------------------------------------------
         // Equality.
         //---------------------------------------------------------------------
 
+
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
         {
-            var ref1 = new ZoneLocator("proj", "us-central1-a");
-            var ref2 = new ZoneLocator("proj", "us-central1-a");
+            var ref1 = new OrganizationLocator(12345678900001);
+            var ref2 = new OrganizationLocator(12345678900001);
 
             Assert.IsTrue(ref1.Equals(ref2));
             Assert.IsTrue(ref1.Equals((object)ref2));
@@ -108,8 +76,8 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void WhenReferencesAreEquivalent_ThenGetHashCodeIsSame()
         {
-            var ref1 = new ZoneLocator("proj", "us-central1-a");
-            var ref2 = new ZoneLocator("proj", "us-central1-a");
+            var ref1 = new OrganizationLocator(12345678900001);
+            var ref2 = new OrganizationLocator(12345678900001);
 
             Assert.AreEqual(ref1.GetHashCode(), ref2.GetHashCode());
         }
@@ -117,7 +85,7 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
         {
-            var ref1 = new ZoneLocator("proj", "us-central1-a");
+            var ref1 = new OrganizationLocator(12345678900001);
             var ref2 = ref1;
 
             Assert.IsTrue(ref1.Equals(ref2));
@@ -129,8 +97,8 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void WhenReferencesAreNotEquivalent_ThenEqualsReturnsFalse()
         {
-            var ref1 = new ZoneLocator("proj-1", "us-central1-a");
-            var ref2 = new ZoneLocator("proj-2", "us-central1-a");
+            var ref1 = new OrganizationLocator(12345678900001);
+            var ref2 = new OrganizationLocator(12345678900002);
 
             Assert.IsFalse(ref1.Equals(ref2));
             Assert.IsFalse(ref1.Equals((object)ref2));
@@ -141,7 +109,7 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TestEqualsNull()
         {
-            var ref1 = new ZoneLocator("proj", "us-central1-a");
+            var ref1 = new OrganizationLocator(12345678900001);
 
             Assert.IsFalse(ref1.Equals(null));
             Assert.IsFalse(ref1!.Equals((object?)null));
@@ -158,22 +126,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void WhenCreatedFromPath_ThenToStringReturnsPath()
         {
-            var path = "projects/project-1/zones/us-central1-a";
+            var path = "organizations/12345678900001";
 
             Assert.AreEqual(
                 path,
-                ZoneLocator.Parse(path).ToString());
-        }
-
-        [Test]
-        public void WhenCreatedFromUrl_ThenToStringReturnsPath()
-        {
-            var path = "projects/project-1/zones/us-central1-a";
-
-            Assert.AreEqual(
-                path,
-                ZoneLocator.Parse(
-                    "https://www.googleapis.com/compute/v1/" + path).ToString());
+                OrganizationLocator.Parse(path).ToString());
         }
     }
 }
