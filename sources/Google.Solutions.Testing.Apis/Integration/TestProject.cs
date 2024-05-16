@@ -28,6 +28,7 @@ using Google.Apis.Json;
 using Google.Apis.Services;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.Testing.Apis.Auth;
 using Newtonsoft.Json;
 using System;
@@ -61,6 +62,11 @@ namespace Google.Solutions.Testing.Apis.Integration
         /// Project to run tests in.
         /// </summary>
         public static string ProjectId => Configuration.ProjectId;
+
+        /// <summary>
+        /// Project to run tests in.
+        /// </summary>
+        public static ProjectLocator Project => new ProjectLocator(ProjectId);
 
         /// <summary>
         /// Zone to run tests in.

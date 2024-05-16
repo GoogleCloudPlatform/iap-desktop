@@ -63,6 +63,25 @@ namespace Google.Solutions.Apis.Crm
             ProjectLocator project,
             IReadOnlyCollection<string> permissions,
             CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Lookup parent organization for a project.
+        /// </summary>
+        /// <returns>
+        /// Locator or null if the parent doesn't belong to an organization
+        /// or the user has insifficient permission to lookup the parent organization
+        /// </returns>
+        Task<OrganizationLocator?> FindOrganizationAsync(
+            ProjectLocator project,
+            CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Get organization details.
+        /// </summary>
+        /// <exception cref="ResourceAccessDeniedException">when access denied</exception>
+        Task<Organization> GetOrganizationAsync(
+            OrganizationLocator organization, 
+            CancellationToken cancellationToken);
     }
 
     public sealed class ResourceManagerClient : ApiClientBase, IResourceManagerClient, IDisposable
@@ -188,6 +207,82 @@ namespace Google.Solutions.Apis.Crm
                 return response != null &&
                     response.Permissions != null &&
                     permissions.All(p => response.Permissions.Contains(p));
+            }
+        }
+
+        public async Task<OrganizationLocator?> FindOrganizationAsync(
+            ProjectLocator project, 
+            CancellationToken cancellationToken)
+        {
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
+            {
+                try
+                {
+                    var response = await this.service.Projects
+                        .GetAncestry(new GetAncestryRequest(), project.Name)
+                        .ExecuteAsync(cancellationToken)
+                        .ConfigureAwait(false);
+
+                    //
+                    // The response contains all parent folders and the
+                    // organization. But if the user doesn't have sufficient
+                    // permission, this list can be incomplete or empty.
+                    //
+                    // NB. There's no way to know whether the project isn't part
+                    // of an organization or whether user lacks the permission
+                    // to access the organization.
+                    //
+
+                    var organization = response.Ancestor
+                        .EnsureNotNull()
+                        .FirstOrDefault(a => a.ResourceId?.Type == "organization");
+
+                    if (organization != null && long.TryParse(
+                        organization.ResourceId.Id,
+                        out var id))
+                    {
+                        return new OrganizationLocator(id);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                catch (GoogleApiException e) when (e.IsAccessDenied())
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"You do not have sufficient permissions to access project {project.Name}. " +
+                        "You need the 'Compute Viewer' role (or an equivalent custom role) " +
+                        "to perform this action.",
+                        HelpTopics.ProjectAccessControl,
+                        e);
+                }
+            }
+        }
+
+        public async Task<Organization> GetOrganizationAsync(// TODO: test
+            OrganizationLocator organization, 
+            CancellationToken cancellationToken)
+        {
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(organization))
+            {
+                try
+                {
+                    return await this.service.Organizations
+                        .Get(organization.ToString())
+                        .ExecuteAsync(cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (GoogleApiException e) when (e.IsAccessDenied())
+                {
+                    throw new ResourceAccessDeniedException(
+                        "You do not have sufficient permissions to access the " +
+                        $"organization {organization}. " +
+                        "You need the 'Organization Viewer' role (or an equivalent " +
+                        "custom role) to perform this action.",
+                        HelpTopics.ProjectAccessControl,
+                        e);
+                }
             }
         }
 

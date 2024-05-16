@@ -211,6 +211,82 @@ namespace Google.Solutions.Apis.Test.Crm
         }
 
         //---------------------------------------------------------------------
+        // FindOrganization.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenProjectIdInvalid_ThenFindOrganizationThrowsResourceAccessDeniedException(
+            [Credential(Role = PredefinedRole.ServiceUsageConsumer)] ResourceTask<IAuthorization> auth)
+        {
+            var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
+                await auth,
+                TestProject.UserAgent);
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => client.FindOrganizationAsync(
+                    new ProjectLocator("invalid"),
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenUserInRole_ThenFindOrganizationReturnsId(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
+        {
+            var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
+                await auth,
+                TestProject.UserAgent);
+            var org = await client
+                .FindOrganizationAsync(
+                    TestProject.Project,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(org);
+            Assert.AreNotEqual(0, org!.Id);
+        }
+
+        //---------------------------------------------------------------------
+        // GetOrganization.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenOrganizationIdInvalid_ThenGetOrganizationThrowsResourceAccessDeniedException(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
+        {
+            var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
+                await auth,
+                TestProject.UserAgent);
+
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => client.GetOrganizationAsync(
+                    new OrganizationLocator(0),    
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenUserNotInRole_ThenGetOrganizationThrowsResourceAccessDeniedException(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
+        {
+            var client = new ResourceManagerClient(
+                ResourceManagerClient.CreateEndpoint(),
+                await auth,
+                TestProject.UserAgent);
+
+            var org = await client
+                .FindOrganizationAsync(
+                    TestProject.Project,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(org);
+
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
+                 () => client.GetOrganizationAsync(org!, CancellationToken.None).Wait());
+        }
+
+        //---------------------------------------------------------------------
         // ProjectFilter.
         //---------------------------------------------------------------------
 
