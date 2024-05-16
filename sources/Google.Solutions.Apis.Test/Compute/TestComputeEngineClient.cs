@@ -61,8 +61,9 @@ namespace Google.Solutions.Apis.Test.Compute
                 await auth,
                 TestProject.UserAgent);
 
-            var project = await client.GetProjectAsync(
-                    TestProject.ProjectId,
+            var project = await client
+                .GetProjectAsync(
+                    new ProjectLocator(TestProject.ProjectId),
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -83,8 +84,9 @@ namespace Google.Solutions.Apis.Test.Compute
                 await auth,
                 TestProject.UserAgent);
 
-            var project = await client.GetProjectAsync(
-                    TestProject.ProjectId,
+            var project = await client
+                .GetProjectAsync(
+                    new ProjectLocator(TestProject.ProjectId),
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -103,7 +105,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => client.GetProjectAsync(
-                    TestProject.ProjectId,
+                    new ProjectLocator(TestProject.ProjectId),
                     CancellationToken.None).Wait());
         }
 
@@ -118,7 +120,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
             ExceptionAssert.ThrowsAggregateException<ResourceNotFoundException>(
                 () => client.GetProjectAsync(
-                    TestProject.InvalidProjectId,
+                    new ProjectLocator(TestProject.InvalidProjectId),
                     CancellationToken.None).Wait());
         }
 
@@ -140,8 +142,9 @@ namespace Google.Solutions.Apis.Test.Compute
                 await auth,
                 TestProject.UserAgent);
 
-            var instances = await client.ListInstancesAsync(
-                    TestProject.ProjectId,
+            var instances = await client
+                .ListInstancesAsync(
+                    new ProjectLocator(TestProject.ProjectId),
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -183,7 +186,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => client.ListInstancesAsync(
-                    TestProject.ProjectId,
+                    new ProjectLocator(TestProject.ProjectId),
                     CancellationToken.None).Wait());
         }
 

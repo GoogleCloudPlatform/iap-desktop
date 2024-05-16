@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var computeAdapter = new Mock<IComputeEngineClient>();
             computeAdapter
                 .Setup(a => a.ListInstancesAsync(
-                    It.Is<string>(id => id == projectId.Name),
+                    projectId,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(instances);
 
@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     It.IsAny<CancellationToken>()),
                 Times.Once);
             computeClient.Verify(a => a.ListInstancesAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }
@@ -253,11 +253,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 
             var computeAdapter = new Mock<IComputeEngineClient>();
             computeAdapter.Setup(a => a.ListInstancesAsync(
-                    accessibleProject.Name,
+                    accessibleProject,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Instance[0]);
             computeAdapter.Setup(a => a.ListInstancesAsync(
-                    It.Is<string>(id => id == "inaccessible-project"),
+                    inaccessibleProject,
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ResourceAccessDeniedException("test", new Exception()));
 
@@ -325,7 +325,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     It.IsAny<CancellationToken>()),
                 Times.Once);
             computeClient.Verify(a => a.ListInstancesAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }
@@ -356,7 +356,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     It.IsAny<CancellationToken>()),
                 Times.Exactly(2));
             computeClient.Verify(a => a.ListInstancesAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()),
                 Times.Exactly(2));
         }
@@ -442,7 +442,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             Assert.AreEqual(1, zone2.Instances.Count());
 
             computeAdapter.Verify(a => a.ListInstancesAsync(
-                    SampleProjectId.Name,
+                    SampleProjectId,
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }
@@ -477,7 +477,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             Assert.AreSame(zones, zonesSecondLoad);
 
             computeAdapter.Verify(a => a.ListInstancesAsync(
-                    SampleProjectId.Name,
+                    SampleProjectId,
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }
@@ -510,7 +510,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             Assert.AreNotSame(zones, zonesSecondLoad);
 
             computeAdapter.Verify(a => a.ListInstancesAsync(
-                    SampleProjectId.Name,
+                    SampleProjectId,
                     It.IsAny<CancellationToken>()),
                 Times.Exactly(2));
         }

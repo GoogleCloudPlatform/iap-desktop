@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var client = new Mock<IComputeEngineClient>();
             client
                 .Setup(a => a.ListInstancesAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[]
                 {
@@ -239,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             // Reapplying filter must not cause reload.
             computeClient.Verify(
                 a => a.ListInstancesAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -354,7 +354,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             // Reapplying filter must not cause reload.
             computeClient.Verify(
                 a => a.ListInstancesAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -1051,7 +1051,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             // Event must not cause reload.
             computeClient.Verify(
                 a => a.ListInstancesAsync(
-                    It.Is<string>(p => p == SampleProjectId),
+                    new ProjectLocator(SampleProjectId),
                     It.IsAny<CancellationToken>()), Times.Once);
         }
 

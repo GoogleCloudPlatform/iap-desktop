@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
             using (CoreTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 var instances = await this.computeClient
-                    .ListInstancesAsync(project.ProjectId, token)
+                    .ListInstancesAsync(project.Project, token)
                     .ConfigureAwait(false);
 
                 var zoneLocators = instances

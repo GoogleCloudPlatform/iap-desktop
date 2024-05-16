@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var adapter = new Mock<IComputeEngineClient>();
             adapter
                 .Setup(a => a.GetProjectAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Project()
                 {

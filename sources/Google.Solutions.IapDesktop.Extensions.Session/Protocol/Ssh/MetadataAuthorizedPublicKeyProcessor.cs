@@ -145,12 +145,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             //
             // Query metadata for instance and project in parallel.
             //
-            var instanceDetailsTask = computeClient.GetInstanceAsync(
+            var instanceDetailsTask = computeClient
+                .GetInstanceAsync(
                     instance,
                     token)
                 .ConfigureAwait(false);
-            var projectDetailsTask = computeClient.GetProjectAsync(
-                    instance.ProjectId,
+            var projectDetailsTask = computeClient
+                .GetProjectAsync(
+                    instance.Project,
                     token)
                 .ConfigureAwait(false);
 
@@ -170,9 +172,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             Precondition.ExpectNotNull(computeClient, nameof(computeClient));
             Precondition.ExpectNotNull(project, nameof(project));
 
-            var projectDetails = await computeClient.GetProjectAsync(
-                    project.ProjectId,
-                    token)
+            var projectDetails = await computeClient
+                .GetProjectAsync(project, token)
                 .ConfigureAwait(false);
 
             return new ProjectMetadataAuthorizedPublicKeyProcessor(

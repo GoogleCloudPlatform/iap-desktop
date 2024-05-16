@@ -444,7 +444,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
 
             var project = await computeClient
                 .GetProjectAsync(
-                    instanceLocator.ProjectId,
+                    instanceLocator.Project,
                     token)
                 .ConfigureAwait(false);
 

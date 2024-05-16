@@ -69,15 +69,15 @@ namespace Google.Solutions.Apis.Compute
         //---------------------------------------------------------------------
 
         public async Task<Project> GetProjectAsync(
-            string projectId,
+            ProjectLocator project,
             CancellationToken cancellationToken)
         {
-            using (ApiTraceSource.Log.TraceMethod().WithParameters(projectId))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
             {
                 try
                 {
                     return await this.service.Projects
-                        .Get(projectId).ExecuteAsync(cancellationToken)
+                        .Get(project.Name).ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
                 catch (GoogleApiException e) when (e.IsAccessDeniedByVpcServiceControlPolicy())
@@ -87,7 +87,7 @@ namespace Google.Solutions.Apis.Compute
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
-                        $"You do not have sufficient permissions to access project {projectId}. " +
+                        $"You do not have sufficient permissions to access project {project.Name}. " +
                         "You need the 'Compute Viewer' role (or an equivalent custom role) " +
                         "to perform this action.",
                         HelpTopics.ProjectAccessControl,
@@ -96,7 +96,7 @@ namespace Google.Solutions.Apis.Compute
                 catch (GoogleApiException e) when (e.IsNotFound())
                 {
                     throw new ResourceNotFoundException(
-                        $"The project {projectId} does not exist",
+                        $"The project {project.Name} does not exist",
                         e);
                 }
             }
@@ -107,14 +107,14 @@ namespace Google.Solutions.Apis.Compute
         //---------------------------------------------------------------------
 
         public async Task<IEnumerable<Instance>> ListInstancesAsync(
-            string projectId,
+            ProjectLocator project,
             CancellationToken cancellationToken)
         {
-            using (ApiTraceSource.Log.TraceMethod().WithParameters(projectId))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
             {
                 try
                 {
-                    var request = this.service.Instances.AggregatedList(projectId);
+                    var request = this.service.Instances.AggregatedList(project.Name);
 
                     //
                     // Ignore zones or regions that are currently unavailable,
@@ -151,7 +151,7 @@ namespace Google.Solutions.Apis.Compute
                 {
                     throw new ResourceAccessDeniedException(
                         "You do not have sufficient permissions to list VM instances in " +
-                        $"project {projectId}. " +
+                        $"project {project.Name}. " +
                         "You need the 'Compute Viewer' role (or an equivalent custom role) " +
                         "to perform this action.",
                         HelpTopics.ProjectAccessControl,
@@ -160,7 +160,7 @@ namespace Google.Solutions.Apis.Compute
                 catch (GoogleApiException e) when (e.IsNotFound())
                 {
                     throw new ResourceNotFoundException(
-                        $"The project {projectId} does not exist",
+                        $"The project {project.Name} does not exist",
                         e);
                 }
             }
