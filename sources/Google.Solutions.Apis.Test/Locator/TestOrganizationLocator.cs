@@ -20,15 +20,22 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Test;
+using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
 
 namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
-    public class TestOrganizationLocator : CommonFixtureBase
+    public class TestOrganizationLocator 
+        : EquatableFixtureBase<OrganizationLocator, OrganizationLocator>
     {
+
+        protected override OrganizationLocator CreateInstance()
+        {
+            return new OrganizationLocator(12345678900001);
+        }
+
         //---------------------------------------------------------------------
         // Parse.
         //---------------------------------------------------------------------
@@ -50,73 +57,10 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenPathInvalid_ParseThrowsArgumentException()
+        public void WhenPathInvalid_ParseThrowsArgumentException(
+            [Values("x/1", "organizations/", "organizations/0xxx")] string path)
         {
-            Assert.Throws<ArgumentException>(() => OrganizationLocator.Parse("x/1"));
-            Assert.Throws<ArgumentException>(() => OrganizationLocator.Parse("1"));
-        }
-
-        //---------------------------------------------------------------------
-        // Equality.
-        //---------------------------------------------------------------------
-
-
-        [Test]
-        public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
-        {
-            var ref1 = new OrganizationLocator(12345678900001);
-            var ref2 = new OrganizationLocator(12345678900001);
-
-            Assert.IsTrue(ref1.Equals(ref2));
-            Assert.IsTrue(ref1.Equals((object)ref2));
-            Assert.IsTrue(ref1 == ref2);
-            Assert.IsFalse(ref1 != ref2);
-        }
-
-        [Test]
-        public void WhenReferencesAreEquivalent_ThenGetHashCodeIsSame()
-        {
-            var ref1 = new OrganizationLocator(12345678900001);
-            var ref2 = new OrganizationLocator(12345678900001);
-
-            Assert.AreEqual(ref1.GetHashCode(), ref2.GetHashCode());
-        }
-
-        [Test]
-        public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
-        {
-            var ref1 = new OrganizationLocator(12345678900001);
-            var ref2 = ref1;
-
-            Assert.IsTrue(ref1.Equals(ref2));
-            Assert.IsTrue(ref1.Equals((object)ref2));
-            Assert.IsTrue(ref1 == ref2);
-            Assert.IsFalse(ref1 != ref2);
-        }
-
-        [Test]
-        public void WhenReferencesAreNotEquivalent_ThenEqualsReturnsFalse()
-        {
-            var ref1 = new OrganizationLocator(12345678900001);
-            var ref2 = new OrganizationLocator(12345678900002);
-
-            Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object)ref2));
-            Assert.IsFalse(ref1 == ref2);
-            Assert.IsTrue(ref1 != ref2);
-        }
-
-        [Test]
-        public void TestEqualsNull()
-        {
-            var ref1 = new OrganizationLocator(12345678900001);
-
-            Assert.IsFalse(ref1.Equals(null));
-            Assert.IsFalse(ref1!.Equals((object?)null));
-            Assert.IsFalse(ref1 == null);
-            Assert.IsFalse(null == ref1);
-            Assert.IsTrue(ref1 != null);
-            Assert.IsTrue(null != ref1);
+            Assert.Throws<ArgumentException>(() => OrganizationLocator.Parse(path));
         }
 
         //---------------------------------------------------------------------
