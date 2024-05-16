@@ -30,7 +30,6 @@ namespace Google.Solutions.Apis.Test.Locator
     public class TestOrganizationLocator 
         : EquatableFixtureBase<OrganizationLocator, OrganizationLocator>
     {
-
         protected override OrganizationLocator CreateInstance()
         {
             return new OrganizationLocator(12345678900001);

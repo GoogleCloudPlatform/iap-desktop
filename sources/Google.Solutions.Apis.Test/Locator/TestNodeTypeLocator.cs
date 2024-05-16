@@ -21,14 +21,21 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Test;
+using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
 
 namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
-    public class TestNodeTypeLocator : CommonFixtureBase
+    public class TestNodeTypeLocator
+        : EquatableFixtureBase<NodeTypeLocator, NodeTypeLocator>
     {
+        protected override NodeTypeLocator CreateInstance()
+        {
+            return new NodeTypeLocator("project-1", "zone-1", "type-1");
+        }
+
         [Test]
         public void Project()
         {
@@ -110,40 +117,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
-        {
-            var ref1 = new NodeTypeLocator("proj", "zone", "c2-node-60-240");
-            var ref2 = new NodeTypeLocator("proj", "zone", "c2-node-60-240");
-
-            Assert.IsTrue(ref1.Equals(ref2));
-            Assert.IsTrue(ref1.Equals((object)ref2));
-            Assert.IsTrue(ref1 == ref2);
-            Assert.IsFalse(ref1 != ref2);
-        }
-
-        [Test]
-        public void WhenReferencesAreEquivalent_ThenGetHashCodeIsSame()
-        {
-            var ref1 = new NodeTypeLocator("proj", "zone", "c2-node-60-240");
-            var ref2 = new NodeTypeLocator("proj", "zone", "c2-node-60-240");
-
-            Assert.AreEqual(ref1.GetHashCode(), ref2.GetHashCode());
-        }
-
-        [Test]
-        public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
-        {
-            var ref1 = new NodeTypeLocator("proj", "zone", "c2-node-60-240");
-            var ref2 = ref1;
-
-            Assert.IsTrue(ref1.Equals(ref2));
-            Assert.IsTrue(ref1.Equals((object)ref2));
-            Assert.IsTrue(ref1 == ref2);
-            Assert.IsFalse(ref1 != ref2);
-        }
-
-        [Test]
-        public void WhenReferencesAreNotEquivalent_ThenEqualsReturnsFalse()
+        public void WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
         {
             var ref1 = new NodeTypeLocator("proj", "zone1", "c2-node-60-240");
             var ref2 = new NodeTypeLocator("proj", "zone2", "c2-node-60-240");
@@ -152,19 +126,6 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.IsFalse(ref1.Equals((object?)ref2));
             Assert.IsFalse(ref1 == ref2);
             Assert.IsTrue(ref1 != ref2);
-        }
-
-        [Test]
-        public void TestEqualsNull()
-        {
-            var ref1 = new NodeTypeLocator("proj", "zone", "c2-node-60-240");
-
-            Assert.IsFalse(ref1.Equals(null));
-            Assert.IsFalse(ref1!.Equals((object?)null));
-            Assert.IsFalse(ref1 == null);
-            Assert.IsFalse(null == ref1);
-            Assert.IsTrue(ref1 != null);
-            Assert.IsTrue(null != ref1);
         }
 
         //---------------------------------------------------------------------
