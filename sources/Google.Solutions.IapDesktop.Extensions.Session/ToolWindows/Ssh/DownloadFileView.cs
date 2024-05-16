@@ -21,10 +21,11 @@
 
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh;
 using Google.Solutions.Mvvm.Binding;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Download
+namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 {
     [Service]
     internal partial class DownloadFileView : Form, IView<DownloadFileViewModel>

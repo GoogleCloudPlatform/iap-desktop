@@ -36,7 +36,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys;

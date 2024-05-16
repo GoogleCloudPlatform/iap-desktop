@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Download
+namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 {
     partial class DownloadFileView
     {

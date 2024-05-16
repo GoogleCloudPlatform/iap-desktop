@@ -31,7 +31,6 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Download;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh;
 using Google.Solutions.Mvvm.Binding;

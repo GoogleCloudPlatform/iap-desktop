@@ -50,4 +50,7 @@
   <ItemGroup>
     <Compile Remove="obj\x86\Release\.NETFramework,Version=v4.6.2.AssemblyAttributes.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ToolWindows\Download\" />
+  </ItemGroup>
 </Project>

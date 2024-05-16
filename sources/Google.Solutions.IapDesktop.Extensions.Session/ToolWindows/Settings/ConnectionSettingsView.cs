@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Settings
 {
     [SkipCodeCoverage("All logic in view model")]
     [Service(ServiceLifetime.Singleton)]

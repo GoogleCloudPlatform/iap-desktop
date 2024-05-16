@@ -30,7 +30,6 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Download;
 using Google.Solutions.Platform.Interop;
 using Google.Solutions.Platform.Security;
 using Google.Solutions.Ssh;

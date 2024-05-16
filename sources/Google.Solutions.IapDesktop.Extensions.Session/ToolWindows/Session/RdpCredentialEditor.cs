@@ -36,6 +36,7 @@ using System.Windows.Forms;
 using Google.Solutions.Mvvm.Controls;
 using System.Linq;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
+using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
@@ -83,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         internal RdpCredentialEditor(
             IWin32Window? owner,
-            Settings.ConnectionSettings settings,
+            ConnectionSettings settings,
             IAuthorization authorization,
             IJobService jobService,
             IWindowsCredentialGenerator credentialGenerator,
@@ -109,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         /// <summary>
         /// Settings that are being editied.
         /// </summary>
-        public Settings.ConnectionSettings Settings { get; }
+        public ConnectionSettings Settings { get; }
 
         /// <summary>
         /// Instance for which settings are being edited.

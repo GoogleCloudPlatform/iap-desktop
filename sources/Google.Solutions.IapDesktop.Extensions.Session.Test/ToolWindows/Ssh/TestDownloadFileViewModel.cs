@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Download;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
 using Moq;
@@ -28,7 +28,7 @@ using System;
 using System.Drawing;
 using System.IO;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Download
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 {
     [TestFixture]
     public class TestDownloadFileViewModel

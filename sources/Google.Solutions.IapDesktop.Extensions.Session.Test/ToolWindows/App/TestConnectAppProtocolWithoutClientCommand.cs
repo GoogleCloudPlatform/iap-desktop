@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
         private static AppProtocolContextFactory CreateFactory(
-            Extensions.Session.Settings.ConnectionSettings? settings)
+            ConnectionSettings? settings)
         {
             var settingsService = new Mock<IConnectionSettingsService>();
             if (settings != null)
@@ -151,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
 
             var command = new ConnectAppProtocolWithoutClientCommand(
                 new SynchronousJobService(),
-                CreateFactory(new Extensions.Session.Settings.ConnectionSettings(SampleInstance)),
+                CreateFactory(new ConnectionSettings(SampleInstance)),
                 notifyDialog.Object);
 
             var node = new Mock<IProjectModelInstanceNode>();
