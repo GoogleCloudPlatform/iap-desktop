@@ -111,33 +111,36 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             Status = "TERMINATED"
         };
 
-        private const string SampleProjectId = "project-1";
+        private static readonly ProjectLocator SampleProjectId = new ProjectLocator("project-1");
 
         private static Mock<IResourceManagerClient> CreateResourceManagerClientMock()
         {
             var resourceManagerAdapter = new Mock<IResourceManagerClient>();
-            resourceManagerAdapter.Setup(a => a.GetProjectAsync(
-                    It.Is<string>(id => id == SampleProjectId),
+            resourceManagerAdapter
+                .Setup(a => a.GetProjectAsync(
+                    SampleProjectId,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Google.Apis.CloudResourceManager.v1.Data.Project()
                 {
-                    ProjectId = SampleProjectId,
-                    Name = $"[{SampleProjectId}]"
+                    ProjectId = SampleProjectId.Name,
+                    Name = $"[{SampleProjectId.Name}]"
                 });
-            resourceManagerAdapter.Setup(a => a.GetProjectAsync(
-                    It.Is<string>(id => id != SampleProjectId),
+            resourceManagerAdapter
+                .Setup(a => a.GetProjectAsync(
+                    It.Is<ProjectLocator>(id => id != SampleProjectId),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ResourceAccessDeniedException("inaccessible", new Exception()));
             return resourceManagerAdapter;
         }
 
         private static Mock<IComputeEngineClient> CreateComputeEngineClientMock(
-            string projectId,
+            ProjectLocator projectId,
             params Instance[] instances)
         {
             var computeAdapter = new Mock<IComputeEngineClient>();
-            computeAdapter.Setup(a => a.ListInstancesAsync(
-                    It.Is<string>(id => id == projectId),
+            computeAdapter
+                .Setup(a => a.ListInstancesAsync(
+                    projectId,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(instances);
 
@@ -145,11 +148,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         private static Mock<IProjectRepository> CreateProjectRepositoryMock(
-            params string[] addedProjectIds)
+            params ProjectLocator[] addedProjectIds)
         {
             var projectRepository = new Mock<IProjectRepository>();
-            projectRepository.Setup(r => r.ListProjectsAsync())
-                .ReturnsAsync(addedProjectIds.Select(id => new ProjectLocator(id)));
+            projectRepository
+                .Setup(r => r.ListProjectsAsync())
+                .ReturnsAsync(addedProjectIds);
 
             return projectRepository;
         }
@@ -172,14 +176,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 eventService.Object);
 
             await workspace
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectAsync(SampleProjectId)
                 .ConfigureAwait(true);
 
-            projectRepository.Verify(p => p.AddProject(
-                    It.Is<ProjectLocator>(id => id.Name == SampleProjectId)),
-                Times.Once);
+            projectRepository.Verify(p => p.AddProject(SampleProjectId), Times.Once);
             eventService.Verify(s => s.PublishAsync<ProjectAddedEvent>(
-                    It.Is<ProjectAddedEvent>(e => e.ProjectId == SampleProjectId)),
+                    It.Is<ProjectAddedEvent>(e => e.ProjectId == SampleProjectId.Name)),
                 Times.Once);
         }
 
@@ -200,14 +202,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 eventService.Object);
 
             await workspace
-                .RemoveProjectAsync(new ProjectLocator(SampleProjectId))
+                .RemoveProjectAsync(SampleProjectId)
                 .ConfigureAwait(true);
 
-            projectRepository.Verify(p => p.RemoveProject(
-                    It.Is<ProjectLocator>(id => id.Name == SampleProjectId)),
-                Times.Once);
+            projectRepository.Verify(p => p.RemoveProject(SampleProjectId), Times.Once);
             eventService.Verify(s => s.PublishAsync<ProjectDeletedEvent>(
-                    It.Is<ProjectDeletedEvent>(e => e.ProjectId == SampleProjectId)),
+                    It.Is<ProjectDeletedEvent>(e => e.ProjectId == SampleProjectId.Name)),
                 Times.Once);
         }
 
@@ -232,15 +232,15 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 .ConfigureAwait(true);
 
             Assert.AreEqual(1, model.Projects.Count());
-            Assert.AreEqual(SampleProjectId, model.Projects.First().Project.Name);
+            Assert.AreEqual(SampleProjectId, model.Projects.First().Project);
             Assert.AreEqual("[project-1]", model.Projects.First().DisplayName);
 
             resourceManagerClient.Verify(a => a.GetProjectAsync(
-                    It.Is<string>(id => id == SampleProjectId),
+                    SampleProjectId,
                     It.IsAny<CancellationToken>()),
                 Times.Once);
             computeClient.Verify(a => a.ListInstancesAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }
@@ -248,19 +248,22 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenSomeProjectsInaccessible_ThenGetRootNodeLoadsOtherProjects()
         {
+            var accessibleProject = new ProjectLocator("accessible-project");
+            var inaccessibleProject = new ProjectLocator("inaccessible-project");
+
             var computeAdapter = new Mock<IComputeEngineClient>();
             computeAdapter.Setup(a => a.ListInstancesAsync(
-                    It.Is<string>(id => id == "accessible-project"),
+                    accessibleProject,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Instance[0]);
             computeAdapter.Setup(a => a.ListInstancesAsync(
-                    It.Is<string>(id => id == "inaccessible-project"),
+                    inaccessibleProject,
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ResourceAccessDeniedException("test", new Exception()));
 
             var resourceManagerAdapter = new Mock<IResourceManagerClient>();
             resourceManagerAdapter.Setup(a => a.GetProjectAsync(
-                    It.Is<string>(id => id == "accessible-project"),
+                    accessibleProject,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Google.Apis.CloudResourceManager.v1.Data.Project()
                 {
@@ -268,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     Name = "accessible-project"
                 });
             resourceManagerAdapter.Setup(a => a.GetProjectAsync(
-                    It.Is<string>(id => id == "inaccessible-project"),
+                    inaccessibleProject,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Google.Apis.CloudResourceManager.v1.Data.Project()
                 {
@@ -280,8 +283,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 computeAdapter.Object,
                 resourceManagerAdapter.Object,
                 CreateProjectRepositoryMock(
-                    "accessible-project",
-                    "inaccessible-project").Object,
+                    accessibleProject,
+                    inaccessibleProject).Object,
                 new Mock<IEventQueue>().Object);
 
             var model = await workspace
@@ -318,11 +321,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             Assert.AreSame(model, modelSecondLoad);
 
             resourceManagerAdapter.Verify(a => a.GetProjectAsync(
-                    It.Is<string>(id => id == SampleProjectId),
+                    SampleProjectId,
                     It.IsAny<CancellationToken>()),
                 Times.Once);
             computeClient.Verify(a => a.ListInstancesAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }
@@ -349,11 +352,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             Assert.AreNotSame(model, modelSecondLoad);
 
             resourceManagerAdapter.Verify(a => a.GetProjectAsync(
-                    It.Is<string>(id => id == SampleProjectId),
+                    SampleProjectId,
                     It.IsAny<CancellationToken>()),
                 Times.Exactly(2));
             computeClient.Verify(a => a.ListInstancesAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()),
                 Times.Exactly(2));
         }
@@ -361,12 +364,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         [Test]
         public async Task WhenProjectInaccessible_ThenGetRootNodeAsyncLoadsRemainingProjects()
         {
+            var nonexistingProjectId = new ProjectLocator("nonexisting-1");
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(SampleProjectId).Object,
                 CreateResourceManagerClientMock().Object,
                 CreateProjectRepositoryMock(
                     SampleProjectId,
-                    "nonexisting-1").Object,
+                    nonexistingProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
             var projects = (await workspace
@@ -377,8 +381,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 
             Assert.AreEqual(2, projects.Count);
 
-            Assert.AreEqual(SampleProjectId, projects[0].Project.Name);
-            Assert.AreEqual("nonexisting-1", projects[1].Project.Name);
+            Assert.AreEqual(SampleProjectId, projects[0].Project);
+            Assert.AreEqual(nonexistingProjectId, projects[1].Project);
         }
 
         [Test]
@@ -386,7 +390,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         {
             var resourceManagerAdapter = new Mock<IResourceManagerClient>();
             resourceManagerAdapter.Setup(a => a.GetProjectAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new TokenResponseException(new TokenErrorResponse()
                 {
@@ -423,7 +427,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 
             var zones = await workspace
                 .GetZoneNodesAsync(
-                    new ProjectLocator(SampleProjectId),
+                    SampleProjectId,
                     false,
                     CancellationToken.None)
                 .ConfigureAwait(true);
@@ -438,7 +442,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             Assert.AreEqual(1, zone2.Instances.Count());
 
             computeAdapter.Verify(a => a.ListInstancesAsync(
-                    It.Is<string>(id => id == SampleProjectId),
+                    SampleProjectId,
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }
@@ -459,13 +463,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 
             var zones = await workspace
                 .GetZoneNodesAsync(
-                    new ProjectLocator(SampleProjectId),
+                    SampleProjectId,
                     false,
                     CancellationToken.None)
                 .ConfigureAwait(true);
             var zonesSecondLoad = await workspace
                 .GetZoneNodesAsync(
-                    new ProjectLocator(SampleProjectId),
+                    SampleProjectId,
                     false,
                     CancellationToken.None)
                 .ConfigureAwait(true);
@@ -473,7 +477,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             Assert.AreSame(zones, zonesSecondLoad);
 
             computeAdapter.Verify(a => a.ListInstancesAsync(
-                    It.Is<string>(id => id == SampleProjectId),
+                    SampleProjectId,
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }
@@ -493,12 +497,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 new Mock<IEventQueue>().Object);
 
             var zones = await workspace.GetZoneNodesAsync(
-                    new ProjectLocator(SampleProjectId),
+                    SampleProjectId,
                     true,
                     CancellationToken.None)
                 .ConfigureAwait(true);
             var zonesSecondLoad = await workspace.GetZoneNodesAsync(
-                    new ProjectLocator(SampleProjectId),
+                    SampleProjectId,
                     true,
                     CancellationToken.None)
                 .ConfigureAwait(true);
@@ -506,7 +510,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             Assert.AreNotSame(zones, zonesSecondLoad);
 
             computeAdapter.Verify(a => a.ListInstancesAsync(
-                    It.Is<string>(id => id == SampleProjectId),
+                    SampleProjectId,
                     It.IsAny<CancellationToken>()),
                 Times.Exactly(2));
         }
@@ -526,7 +530,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 new Mock<IEventQueue>().Object);
 
             var zones = await workspace.GetZoneNodesAsync(
-                    new ProjectLocator(SampleProjectId),
+                    SampleProjectId,
                     false,
                     CancellationToken.None)
                 .ConfigureAwait(true);
@@ -555,7 +559,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 new Mock<IEventQueue>().Object);
 
             var zones = await workspace.GetZoneNodesAsync(
-                    new ProjectLocator(SampleProjectId),
+                    SampleProjectId,
                     false,
                     CancellationToken.None)
                 .ConfigureAwait(true);
@@ -616,7 +620,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 .ConfigureAwait(true));
 
             var project = await workspace.GetNodeAsync(
-                    new ProjectLocator(SampleProjectId),
+                    SampleProjectId,
                     CancellationToken.None)
                 .ConfigureAwait(true);
             Assert.IsInstanceOf(typeof(IProjectModelProjectNode), project);
@@ -755,7 +759,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 
             await workspace
                 .SetActiveNodeAsync(
-                    new ProjectLocator(SampleProjectId),
+                    SampleProjectId,
                     CancellationToken.None)
                 .ConfigureAwait(true);
 

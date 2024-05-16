@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                     Name = "instance-1"
                 });
             gceAdapter.Setup(a => a.GetProjectAsync(
-                It.Is<string>(projectId => projectId == "project-1"),
+                It.Is<ProjectLocator>(projectId => projectId.Name == "project-1"),
                 It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Google.Apis.Compute.v1.Data.Project()
                 {

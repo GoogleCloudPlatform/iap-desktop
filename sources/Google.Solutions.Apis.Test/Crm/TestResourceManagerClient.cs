@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Crm;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
@@ -60,8 +61,9 @@ namespace Google.Solutions.Apis.Test.Crm
                 await auth,
                 TestProject.UserAgent);
 
-            var project = await client.GetProjectAsync(
-                    TestProject.ProjectId,
+            var project = await client
+                .GetProjectAsync(
+                    new ProjectLocator(TestProject.ProjectId),
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -81,8 +83,9 @@ namespace Google.Solutions.Apis.Test.Crm
                 ResourceManagerClient.CreateEndpoint(),
                 await auth,
                 TestProject.UserAgent);
-            var result = await client.IsAccessGrantedAsync(
-                    TestProject.ProjectId,
+            var result = await client
+                .IsAccessGrantedAsync(
+                    new ProjectLocator(TestProject.ProjectId),
                     new[] { Permissions.ComputeInstancesGet },
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -98,8 +101,9 @@ namespace Google.Solutions.Apis.Test.Crm
                 ResourceManagerClient.CreateEndpoint(),
                 await auth,
                 TestProject.UserAgent);
-            var result = await client.IsAccessGrantedAsync(
-                    TestProject.ProjectId,
+            var result = await client
+                .IsAccessGrantedAsync(
+                    new ProjectLocator(TestProject.ProjectId),
                     new[] { "compute.disks.create", Permissions.ComputeInstancesGet },
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -119,8 +123,9 @@ namespace Google.Solutions.Apis.Test.Crm
                 ResourceManagerClient.CreateEndpoint(),
                 await auth,
                 TestProject.UserAgent);
-            var project = await client.GetProjectAsync(
-                    TestProject.ProjectId,
+            var project = await client
+                .GetProjectAsync(
+                    new ProjectLocator(TestProject.ProjectId),
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -138,7 +143,7 @@ namespace Google.Solutions.Apis.Test.Crm
                 TestProject.UserAgent);
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => client.GetProjectAsync(
-                    TestProject.ProjectId,
+                    new ProjectLocator(TestProject.ProjectId),
                     CancellationToken.None).Wait());
         }
 
@@ -152,7 +157,7 @@ namespace Google.Solutions.Apis.Test.Crm
                 TestProject.UserAgent);
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => client.GetProjectAsync(
-                    "invalid",
+                    new ProjectLocator("invalid"),
                     CancellationToken.None).Wait());
         }
 

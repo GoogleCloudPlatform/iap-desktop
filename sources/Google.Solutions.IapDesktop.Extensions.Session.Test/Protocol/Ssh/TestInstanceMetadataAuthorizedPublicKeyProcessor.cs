@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var adapter = new Mock<IComputeEngineClient>();
             adapter
                 .Setup(a => a.GetProjectAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Project()
                 {
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var adapter = new Mock<IResourceManagerClient>();
             adapter
                 .Setup(a => a.IsAccessGrantedAsync(
-                        It.IsAny<string>(),
+                        It.IsAny<ProjectLocator>(),
                         It.Is<IReadOnlyCollection<string>>(
                             c => c.Contains(Permissions.ComputeProjectsSetCommonInstanceMetadata) &&
                                  c.Contains(Permissions.ServiceAccountsActAs)),
@@ -505,7 +505,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     It.IsAny<CancellationToken>()), Times.Never);
 
                 computeClient.Verify(a => a.UpdateCommonInstanceMetadataAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<Action<Metadata>>(),
                     It.IsAny<CancellationToken>()), Times.Never);
             }
@@ -558,7 +558,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     It.IsAny<CancellationToken>()), Times.Never);
 
                 computeClient.Verify(a => a.UpdateCommonInstanceMetadataAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<Action<Metadata>>(),
                     It.IsAny<CancellationToken>()), Times.Never);
             }
@@ -613,7 +613,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     It.IsAny<CancellationToken>()), Times.Never);
 
                 computeClient.Verify(a => a.UpdateCommonInstanceMetadataAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<Action<Metadata>>(),
                     It.IsAny<CancellationToken>()), Times.Once);
             }
@@ -668,7 +668,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     It.IsAny<CancellationToken>()), Times.Never);
 
                 computeClient.Verify(a => a.UpdateCommonInstanceMetadataAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<Action<Metadata>>(),
                     It.IsAny<CancellationToken>()), Times.Once);
             }
@@ -887,7 +887,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 Assert.AreEqual("bob", authorizedKey.Username);
 
                 computeClient.Verify(a => a.UpdateCommonInstanceMetadataAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<Action<Metadata>>(),
                     It.IsAny<CancellationToken>()), Times.Once);
             }
@@ -905,7 +905,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 projectWideKeysBlockedForInstance: false);
             computeClient
                 .Setup(a => a.UpdateCommonInstanceMetadataAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<Action<Metadata>>(),
                     It.IsAny<CancellationToken>()))
                 .Throws(new GoogleApiException("GCE", "mock-error")
@@ -1182,7 +1182,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false);
 
             computeClient.Verify(a => a.UpdateCommonInstanceMetadataAsync(
-                It.IsAny<string>(),
+                It.IsAny<ProjectLocator>(),
                 It.IsAny<Action<Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Once);
 

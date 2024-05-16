@@ -37,6 +37,11 @@ namespace Google.Solutions.Apis.Locator
         {
         }
 
+        public ZoneLocator(ProjectLocator project, string name)
+            : this(project.Name, name)
+        {
+        }
+
         public static ZoneLocator Parse(string resourceReference)
         {
             resourceReference = StripUrlPrefix(resourceReference);

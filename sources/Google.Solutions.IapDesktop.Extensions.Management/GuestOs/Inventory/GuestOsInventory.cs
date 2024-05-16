@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
             CancellationToken token)
         {
             var instances = await this.computeClient
-                .ListInstancesAsync(projectId, token)
+                .ListInstancesAsync(new ProjectLocator(projectId), token)
                 .ConfigureAwait(false);
 
             return await ListInventoryAsync(

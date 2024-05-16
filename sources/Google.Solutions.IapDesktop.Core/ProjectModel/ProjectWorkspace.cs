@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                     tasks.Add(
                         new ProjectLocator(project.ProjectId),
                         this.resourceManagerClient
-                            .GetProjectAsync(project.ProjectId, token));
+                            .GetProjectAsync(project.Project, token));
                 }
 
                 foreach (var task in tasks)
@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
             using (CoreTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 var instances = await this.computeClient
-                    .ListInstancesAsync(project.ProjectId, token)
+                    .ListInstancesAsync(project.Project, token)
                     .ConfigureAwait(false);
 
                 var zoneLocators = instances

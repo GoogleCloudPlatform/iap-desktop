@@ -40,7 +40,7 @@ namespace Google.Solutions.Apis.Compute
         //---------------------------------------------------------------------
 
         Task<Project> GetProjectAsync(
-            string projectId,
+            ProjectLocator projectId,
             CancellationToken cancellationToken);
 
         //---------------------------------------------------------------------
@@ -52,7 +52,7 @@ namespace Google.Solutions.Apis.Compute
             CancellationToken cancellationToken);
 
         Task<IEnumerable<Instance>> ListInstancesAsync(
-            string projectId,
+            ProjectLocator projectId,
             CancellationToken cancellationToken);
 
         Task<IEnumerable<Instance>> ListInstancesAsync(
@@ -86,7 +86,7 @@ namespace Google.Solutions.Apis.Compute
            CancellationToken token);
 
         Task UpdateCommonInstanceMetadataAsync(
-            string projectId,
+            ProjectLocator project,
             Action<Metadata> updateMetadata,
             CancellationToken token);
 

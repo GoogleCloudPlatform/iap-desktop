@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             var gceAdapter = registry.AddMock<IComputeEngineClient>();
             gceAdapter.Setup(a => a.GetProjectAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Project()
                 {

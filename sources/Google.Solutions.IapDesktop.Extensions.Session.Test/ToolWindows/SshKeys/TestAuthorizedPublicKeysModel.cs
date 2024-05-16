@@ -40,13 +40,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
     public class TestAuthorizedPublicKeysModel
     {
         private static Mock<IProjectModelProjectNode> CreateProjectNodeMock(
-            string projectId,
+            ProjectLocator project,
             string displayName)
         {
             var nodeMock = new Mock<IProjectModelProjectNode>();
             nodeMock.SetupGet(n => n.DisplayName).Returns(displayName);
-            nodeMock.SetupGet(n => n.Project).Returns(
-                new ProjectLocator(projectId));
+            nodeMock.SetupGet(n => n.Project).Returns(project);
 
             return nodeMock;
         }
@@ -64,13 +63,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
             return nodeMock;
         }
 
-        private Mock<IComputeEngineClient> CreateComputeEngineAdapterMock(
+        private static Mock<IComputeEngineClient> CreateComputeEngineAdapterMock(
+            ProjectLocator project,
             IDictionary<string, string>? projectMetadata,
             IDictionary<string, string>? instanceMetadata)
         {
             var adapter = new Mock<IComputeEngineClient>();
-            adapter.Setup(a => a.GetProjectAsync(
-                    It.IsAny<string>(),
+            adapter
+                .Setup(a => a.GetProjectAsync(
+                    project,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Project()
                 {
@@ -83,7 +84,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                                 Value = kvp.Value
                             })
                             .ToList()
-                    }
+                    },
+                    Name = project.Name
                 });
 
             adapter.Setup(a => a.GetInstanceAsync(
@@ -178,7 +180,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { osLoginKey });
 
+            var project = new ProjectLocator("project-1");
             var computeEngineAdapterMock = CreateComputeEngineAdapterMock(
+                project,
                 new Dictionary<string, string>
                 {
                     { MetadataAuthorizedPublicKeyProcessor.EnableOsLoginFlag, "true" },
@@ -190,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     computeEngineAdapterMock.Object,
                     new Mock<IResourceManagerClient>().Object,
                     osLoginServiceMock.Object,
-                    CreateProjectNodeMock("project-1", "Project 1").Object,
+                    CreateProjectNodeMock(project, "Project 1").Object,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -211,7 +215,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { osLoginKey });
 
+            var project = new ProjectLocator("project-1");
             var computeEngineAdapterMock = CreateComputeEngineAdapterMock(
+                project,
                 new Dictionary<string, string>
                 {
                     { "ssh-keys", "alice:ssh-rsa ALICES-KEY alice@gmail.com" }
@@ -222,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     computeEngineAdapterMock.Object,
                     new Mock<IResourceManagerClient>().Object,
                     osLoginServiceMock.Object,
-                    CreateProjectNodeMock("project-1", "Project 1").Object,
+                    CreateProjectNodeMock(project, "Project 1").Object,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -243,7 +249,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { osLoginKey });
 
+            var project = new ProjectLocator("project-1");
             var computeEngineAdapterMock = CreateComputeEngineAdapterMock(
+                project,
                 new Dictionary<string, string>
                 {
                     { MetadataAuthorizedPublicKeyProcessor.BlockProjectSshKeysFlag, "true" },
@@ -255,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     computeEngineAdapterMock.Object,
                     new Mock<IResourceManagerClient>().Object,
                     osLoginServiceMock.Object,
-                    CreateProjectNodeMock("project-1", "Project 1").Object,
+                    CreateProjectNodeMock(project, "Project 1").Object,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -283,7 +291,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
             Assert.IsNull(model);
         }
 
-
         [Test]
         public async Task WhenScopeIsInstanceAndOsLoginEnabled_ThenModelIncludesOsLoginKeys()
         {
@@ -293,7 +300,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { osLoginKey });
 
+            var project = new ProjectLocator("project-1");
             var computeEngineAdapterMock = CreateComputeEngineAdapterMock(
+                project,
                 new Dictionary<string, string>
                 {
                     { MetadataAuthorizedPublicKeyProcessor.EnableOsLoginFlag, "true" },
@@ -329,7 +338,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { osLoginKey });
 
+            var project = new ProjectLocator("project-1");
             var computeEngineAdapterMock = CreateComputeEngineAdapterMock(
+                project,
                 new Dictionary<string, string>
                 {
                     { "ssh-keys", "alice:ssh-rsa ALICES-KEY alice@gmail.com" }
@@ -366,7 +377,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { osLoginKey });
 
+            var project = new ProjectLocator("project-1");
             var computeEngineAdapterMock = CreateComputeEngineAdapterMock(
+                project,
                 new Dictionary<string, string>
                 {
                     { "ssh-keys", "alice:ssh-rsa ALICES-KEY alice@gmail.com" }
@@ -459,7 +472,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 It.IsAny<CancellationToken>()), Times.Never);
 
             computeEngineMock.Verify(s => s.UpdateCommonInstanceMetadataAsync(
-                It.IsAny<string>(),
+                It.IsAny<ProjectLocator>(),
                 It.IsAny<Action<Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Never);
         }
@@ -490,7 +503,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 It.IsAny<CancellationToken>()), Times.Once);
 
             computeEngineMock.Verify(s => s.UpdateCommonInstanceMetadataAsync(
-                It.IsAny<string>(),
+                It.IsAny<ProjectLocator>(),
                 It.IsAny<Action<Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Never);
         }
@@ -498,16 +511,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         [Test]
         public async Task WhenAuthorizationMethodIsProjectMetadataAndNodeIsInstance_ThenDeleteFromOsLoginDeletesKeyDeletesProjectMetadata()
         {
+            var projectId = new ProjectLocator("project-1");
             var computeEngineMock = new Mock<IComputeEngineClient>();
             computeEngineMock.Setup(a => a.GetProjectAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Project());
+                .ReturnsAsync(new Project()
+                {
+                    Name = projectId.Name
+                });
 
             var instance = new Mock<IProjectModelInstanceNode>();
             instance
                 .SetupGet(i => i.Instance)
-                .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
+                .Returns(new InstanceLocator(projectId, "zone-1", "instance-1"));
 
             await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
                     computeEngineMock.Object,
@@ -525,7 +542,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 It.IsAny<CancellationToken>()), Times.Never);
 
             computeEngineMock.Verify(s => s.UpdateCommonInstanceMetadataAsync(
-                It.IsAny<string>(),
+                It.IsAny<ProjectLocator>(),
                 It.IsAny<Action<Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Once);
         }
@@ -533,16 +550,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         [Test]
         public async Task WhenAuthorizationMethodIsProjectMetadataAndNodeIsProject_ThenDeleteFromOsLoginDeletesKeyDeletesProjectMetadata()
         {
+            var projectId = new ProjectLocator("project-1");
             var computeEngineMock = new Mock<IComputeEngineClient>();
             computeEngineMock.Setup(a => a.GetProjectAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Project());
+                .ReturnsAsync(new Project()
+                {
+                    Name = projectId.Name
+                });
 
             var project = new Mock<IProjectModelProjectNode>();
             project
                 .SetupGet(i => i.Project)
-                .Returns(new ProjectLocator("project-1"));
+                .Returns(projectId);
 
             await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
                     computeEngineMock.Object,
@@ -560,7 +581,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 It.IsAny<CancellationToken>()), Times.Never);
 
             computeEngineMock.Verify(s => s.UpdateCommonInstanceMetadataAsync(
-                It.IsAny<string>(),
+                It.IsAny<ProjectLocator>(),
                 It.IsAny<Action<Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Once);
         }
