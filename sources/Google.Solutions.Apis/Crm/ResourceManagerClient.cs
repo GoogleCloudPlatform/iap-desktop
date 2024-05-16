@@ -24,6 +24,7 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Requests;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using System;
@@ -40,7 +41,7 @@ namespace Google.Solutions.Apis.Crm
     public interface IResourceManagerClient : IClient
     {
         Task<Project> GetProjectAsync(
-            string projectId,
+            ProjectLocator project,
             CancellationToken cancellationToken);
 
         Task<FilteredProjectList> ListProjectsAsync(
@@ -52,7 +53,7 @@ namespace Google.Solutions.Apis.Crm
         /// Test if all permissions have been granted.
         /// </summary>
         Task<bool> IsAccessGrantedAsync(
-            string projectId,
+            ProjectLocator project,
             IReadOnlyCollection<string> permissions,
             CancellationToken cancellationToken);
     }
@@ -83,22 +84,22 @@ namespace Google.Solutions.Apis.Crm
         //---------------------------------------------------------------------
 
         public async Task<Project> GetProjectAsync(
-            string projectId,
+            ProjectLocator project,
             CancellationToken cancellationToken)
         {
-            using (ApiTraceSource.Log.TraceMethod().WithParameters(projectId))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
             {
                 try
                 {
                     return await this.service.Projects
-                        .Get(projectId)
+                        .Get(project.Name)
                         .ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
-                        $"You do not have sufficient permissions to access project {projectId}. " +
+                        $"You do not have sufficient permissions to access project {project.Name}. " +
                         "You need the 'Compute Viewer' role (or an equivalent custom role) " +
                         "to perform this action.",
                         HelpTopics.ProjectAccessControl,
@@ -161,7 +162,7 @@ namespace Google.Solutions.Apis.Crm
         }
 
         public async Task<bool> IsAccessGrantedAsync(
-            string projectId,
+            ProjectLocator project,
             IReadOnlyCollection<string> permissions,
             CancellationToken cancellationToken)
         {
@@ -174,7 +175,7 @@ namespace Google.Solutions.Apis.Crm
                         {
                             Permissions = permissions.ToList()
                         },
-                        projectId)
+                        project.Name)
                     .ExecuteAsync(cancellationToken)
                     .ConfigureAwait(false);
                 return response != null &&

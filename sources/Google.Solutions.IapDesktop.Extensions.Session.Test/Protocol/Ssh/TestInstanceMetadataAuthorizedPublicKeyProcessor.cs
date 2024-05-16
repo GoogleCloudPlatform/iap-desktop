@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var adapter = new Mock<IResourceManagerClient>();
             adapter
                 .Setup(a => a.IsAccessGrantedAsync(
-                        It.IsAny<string>(),
+                        It.IsAny<ProjectLocator>(),
                         It.Is<IReadOnlyCollection<string>>(
                             c => c.Contains(Permissions.ComputeProjectsSetCommonInstanceMetadata) &&
                                  c.Contains(Permissions.ServiceAccountsActAs)),

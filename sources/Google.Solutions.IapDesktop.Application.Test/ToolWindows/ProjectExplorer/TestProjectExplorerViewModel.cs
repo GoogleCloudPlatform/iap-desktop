@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var client = new Mock<IResourceManagerClient>();
             client
                 .Setup(a => a.GetProjectAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Google.Apis.CloudResourceManager.v1.Data.Project()
                 {
@@ -494,9 +494,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         [Test]
         public async Task WhenMultipleProjectsAdded_ThenProjectsAreOrderedByDisplayName()
         {
+            var project2 = new ProjectLocator("project-2");
+            var inaccessible = new ProjectLocator("inaccessible-1");
+
             var resourceManagerClient = CreateResourceManagerClient();
             resourceManagerClient.Setup(a => a.GetProjectAsync(
-                    It.Is<string>(id => id == "project-2"),
+                    project2,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Google.Apis.CloudResourceManager.v1.Data.Project()
                 {
@@ -504,13 +507,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                     Name = "project-2"  // Same as id
                 });
             resourceManagerClient.Setup(a => a.GetProjectAsync(
-                    It.Is<string>(id => id == "inaccessible-1"),
+                    inaccessible,
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ResourceAccessDeniedException("inaccessible", new Exception()));
 
             var projectRepository = CreateProjectRepository();
-            projectRepository.AddProject(new ProjectLocator("project-2"));
-            projectRepository.AddProject(new ProjectLocator("inaccessible-1"));
+            projectRepository.AddProject(project2);
+            projectRepository.AddProject(inaccessible);
             projectRepository.AddProject(new ProjectLocator(SampleProjectId));
 
             var viewModel = CreateViewModel(
