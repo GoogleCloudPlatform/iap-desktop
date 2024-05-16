@@ -347,16 +347,17 @@ namespace Google.Solutions.Apis.Compute
         }
 
         public async Task UpdateCommonInstanceMetadataAsync(
-            string projectId,
+            ProjectLocator project,
             Action<Metadata> updateMetadata,
             CancellationToken token)
         {
-            using (ApiTraceSource.Log.TraceMethod().WithParameters(projectId))
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
             {
                 try
                 {
-                    await this.service.Projects.UpdateMetadataAsync(
-                            projectId,
+                    await this.service.Projects
+                        .UpdateMetadataAsync(
+                            project.Name,
                             updateMetadata,
                             token)
                         .ConfigureAwait(false);
@@ -368,14 +369,14 @@ namespace Google.Solutions.Apis.Compute
                     //
                     throw new ResourceAccessDeniedException(
                         "You don't have sufficient permissions to modify " +
-                            $"the metadata of project {projectId}",
+                            $"the metadata of project {project.Name}",
                         HelpTopics.ProjectAccessControl,
                         e);
                 }
                 catch (GoogleApiException e) when (e.IsNotFound())
                 {
                     throw new ResourceNotFoundException(
-                        $"The project {projectId} does not exist",
+                        $"The project {project.Name} does not exist",
                         e);
                 }
             }

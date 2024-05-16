@@ -459,7 +459,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 It.IsAny<CancellationToken>()), Times.Never);
 
             computeEngineMock.Verify(s => s.UpdateCommonInstanceMetadataAsync(
-                It.IsAny<string>(),
+                It.IsAny<ProjectLocator>(),
                 It.IsAny<Action<Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Never);
         }
@@ -490,7 +490,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 It.IsAny<CancellationToken>()), Times.Once);
 
             computeEngineMock.Verify(s => s.UpdateCommonInstanceMetadataAsync(
-                It.IsAny<string>(),
+                It.IsAny<ProjectLocator>(),
                 It.IsAny<Action<Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Never);
         }
@@ -525,7 +525,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 It.IsAny<CancellationToken>()), Times.Never);
 
             computeEngineMock.Verify(s => s.UpdateCommonInstanceMetadataAsync(
-                It.IsAny<string>(),
+                It.IsAny<ProjectLocator>(),
                 It.IsAny<Action<Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Once);
         }
@@ -560,7 +560,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 It.IsAny<CancellationToken>()), Times.Never);
 
             computeEngineMock.Verify(s => s.UpdateCommonInstanceMetadataAsync(
-                It.IsAny<string>(),
+                It.IsAny<ProjectLocator>(),
                 It.IsAny<Action<Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Once);
         }

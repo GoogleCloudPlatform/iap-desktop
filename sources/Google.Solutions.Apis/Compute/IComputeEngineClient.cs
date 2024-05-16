@@ -86,7 +86,7 @@ namespace Google.Solutions.Apis.Compute
            CancellationToken token);
 
         Task UpdateCommonInstanceMetadataAsync(
-            string projectId,
+            ProjectLocator project,
             Action<Metadata> updateMetadata,
             CancellationToken token);
 

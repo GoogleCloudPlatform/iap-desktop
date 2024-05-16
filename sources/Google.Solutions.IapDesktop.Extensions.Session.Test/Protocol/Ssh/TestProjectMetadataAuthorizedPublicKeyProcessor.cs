@@ -308,7 +308,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false);
 
             computeClient.Verify(a => a.UpdateCommonInstanceMetadataAsync(
-                It.IsAny<string>(),
+                It.IsAny<ProjectLocator>(),
                 It.IsAny<Action<Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Once);
         }

@@ -224,8 +224,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             MetadataAuthorizedPublicKey key,
             CancellationToken cancellationToken)
         {
-            await this.computeClient.UpdateCommonInstanceMetadataAsync(
-                    this.projectDetails.Name,
+            await this.computeClient
+                .UpdateCommonInstanceMetadataAsync(
+                    new ProjectLocator(this.projectDetails.Name),
                     metadata => RemovePublicKeyFromMetadata(metadata, key),
                     cancellationToken)
                 .ConfigureAwait(false);
@@ -297,8 +298,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         {
             if (allowedMethods.HasFlag(KeyAuthorizationMethods.ProjectMetadata))
             {
-                await this.computeClient.UpdateCommonInstanceMetadataAsync(
-                        this.instance.ProjectId,
+                await this.computeClient
+                    .UpdateCommonInstanceMetadataAsync(
+                        this.instance.Project,
                         metadata => RemovePublicKeyFromMetadata(metadata, key),
                         cancellationToken)
                     .ConfigureAwait(false);
@@ -306,7 +308,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
             if (allowedMethods.HasFlag(KeyAuthorizationMethods.InstanceMetadata))
             {
-                await this.computeClient.UpdateMetadataAsync(
+                await this.computeClient
+                    .UpdateMetadataAsync(
                         this.instance,
                         metadata => RemovePublicKeyFromMetadata(metadata, key),
                         cancellationToken)
@@ -436,19 +439,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     {
                         if (useInstanceKeySet)
                         {
-                            await this.computeClient.UpdateMetadataAsync(
-                                this.instance,
-                                metadata => AddPublicKeyToMetadata(metadata, metadataKey),
-                                token)
-                            .ConfigureAwait(false);
+                            await this.computeClient
+                                .UpdateMetadataAsync(
+                                    this.instance,
+                                    metadata => AddPublicKeyToMetadata(metadata, metadataKey),
+                                    token)
+                                .ConfigureAwait(false);
                         }
                         else
                         {
-                            await this.computeClient.UpdateCommonInstanceMetadataAsync(
-                                this.instance.ProjectId,
-                                metadata => AddPublicKeyToMetadata(metadata, metadataKey),
-                                token)
-                           .ConfigureAwait(false);
+                            await this.computeClient
+                                .UpdateCommonInstanceMetadataAsync(
+                                    this.instance.Project,
+                                    metadata => AddPublicKeyToMetadata(metadata, metadataKey),
+                                    token)
+                               .ConfigureAwait(false);
                         }
                     },
                     cancellationToken)
