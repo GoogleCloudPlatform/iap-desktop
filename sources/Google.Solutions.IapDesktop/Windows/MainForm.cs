@@ -712,9 +712,9 @@ namespace Google.Solutions.IapDesktop.Windows
                 {
                     if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
-                        using (var profile = UserProfile.CreateProfile(
-                            this.serviceProvider.GetService<IInstall>(),
-                            dialog.ViewModel.ProfileName))
+                        using (var profile = this.serviceProvider
+                            .GetService<IInstall>()
+                            .CreateProfile(dialog.ViewModel.ProfileName))
                         {
                             this.viewModel.LaunchInstanceWithProfile(profile.Name);
                         }

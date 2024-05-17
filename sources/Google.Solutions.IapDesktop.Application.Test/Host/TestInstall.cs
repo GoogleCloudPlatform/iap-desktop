@@ -20,10 +20,12 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Host;
+using Google.Solutions.IapDesktop.Application.Profile;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Host
 {
@@ -31,6 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
     public class TestInstall
     {
         private const string TestBaseKeyPath = @"Software\Google\__Test";
+        private const string TestProfileName = "__Test";
 
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser,
@@ -200,6 +203,162 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             StringAssert.Contains(
                 $"/{Install.CpuArchitecture.ToString().ToLower()}",
                 Install.UserAgent.Platform);
+        }
+
+
+        //---------------------------------------------------------------------
+        // CreateProfile.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenProfileNameIsNotValid_ThenCreateProfileThrowsException()
+        {
+            var install = new Install(TestBaseKeyPath);
+
+            Assert.Throws<ArgumentException>(() => install.CreateProfile("Föö"));
+        }
+
+        [Test]
+        public void WhenProfileNameIsNull_ThenCreateProfileThrowsException()
+        {
+            var install = new Install(TestBaseKeyPath);
+
+            Assert.Throws<ArgumentException>(() => install.CreateProfile(null!));
+        }
+
+        [Test]
+        public void WhenProfileExists_ThenCreateProfileOpensProfile()
+        {
+            var install = new Install(TestBaseKeyPath);
+
+            install.CreateProfile(TestProfileName);
+            using (var profile = install.CreateProfile(TestProfileName))
+            {
+                Assert.IsNotNull(profile);
+                Assert.AreEqual(TestProfileName, profile.Name);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // OpenProfile.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenProfileNameIsNotValid_ThenOpenProfileThrowsException()
+        {
+            var install = new Install(TestBaseKeyPath);
+
+            Assert.Throws<ArgumentException>(() => install.OpenProfile("Föö"));
+        }
+
+        [Test]
+        public void WhenProfileDoesNotExist_ThenOpenProfileThrowsException()
+        {
+            var install = new Install(TestBaseKeyPath);
+
+            Assert.Throws<ProfileNotFoundException>(
+                () => install.OpenProfile("This does not exist"));
+        }
+
+        [Test]
+        public void WhenProfileExists_ThenOpenProfileOpensProfile()
+        {
+            var install = new Install(TestBaseKeyPath);
+
+            using (install.CreateProfile(TestProfileName))
+            { }
+
+            using (var profile = install.OpenProfile(TestProfileName))
+            {
+                Assert.IsNotNull(profile);
+                Assert.AreEqual(TestProfileName, profile.Name);
+                Assert.IsFalse(profile.IsDefault);
+                Assert.IsNotNull(profile.SettingsKey);
+            }
+        }
+
+        [Test]
+        public void WhenProfileNameIsNullThenOpenProfileReturnsDefaultProfile()
+        {
+            var install = new Install(TestBaseKeyPath);
+
+            var profile = install.OpenProfile(null);
+            Assert.AreEqual("Default", profile.Name);
+            Assert.IsTrue(profile.IsDefault);
+        }
+
+        //---------------------------------------------------------------------
+        // DeleteProfile.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenProfileDoesNotExist_ThenDeleteProfileDoesNothing()
+        {
+            var install = new Install(TestBaseKeyPath);
+
+            install.DeleteProfile("This does not exist");
+        }
+
+        [Test]
+        public void WhenProfileExists_ThenDeleteProfileDeletesProfile()
+        {
+            var install = new Install(TestBaseKeyPath);
+
+            using (install.CreateProfile(TestProfileName))
+            { }
+
+            install.DeleteProfile(TestProfileName);
+
+            Assert.Throws<ProfileNotFoundException>(
+                () => install.OpenProfile(TestProfileName));
+        }
+
+        //---------------------------------------------------------------------
+        // ListProfiles.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenProfileCreated_ThenListProfilesIncludesProfile()
+        {
+            var install = new Install(TestBaseKeyPath);
+
+            using (install.CreateProfile(TestProfileName))
+            { }
+
+            var list = install.Profiles;
+
+            Assert.IsNotNull(list);
+            CollectionAssert.Contains(list, TestProfileName);
+        }
+
+        [Test]
+        public void WhenDefaultProfileCreated_ThenListProfilesIncludesDefaultProfile()
+        {
+            var install = new Install(TestBaseKeyPath);
+
+            using (install.OpenProfile(null))
+            { }
+
+            var list = install.Profiles;
+
+            Assert.IsNotNull(list);
+            CollectionAssert.Contains(list, "Default");
+        }
+
+        [Test]
+        public void WhenNonProfileKeysPresent_ThenListProfilesIgnoresKeys()
+        {
+            var install = new Install(TestBaseKeyPath);
+
+            this.hkcu.CreateSubKey($"{install.BaseKeyPath}\\________Notaprofile", true);
+
+            using (install.OpenProfile(null))
+            { }
+
+            var list = install.Profiles;
+
+            Assert.IsNotNull(list);
+            Assert.IsFalse(list.Any(p => p.EndsWith("Notaprofile", StringComparison.OrdinalIgnoreCase)));
         }
     }
 }

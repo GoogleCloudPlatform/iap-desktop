@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop
         {
             try
             {
-                return UserProfile.OpenProfile(install, options.Profile);
+                return install.OpenProfile(options.Profile);
             }
             catch (Exception e)
             {
