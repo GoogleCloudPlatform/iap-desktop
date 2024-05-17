@@ -24,8 +24,6 @@ using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using NUnit.Framework;
-using System;
-using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Profile
 {
@@ -45,11 +43,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
             this.hkcu.DeleteSubKeyTree(TestProfilesKeyPath, false);
             using (this.hkcu.CreateSubKey(TestProfilesKeyPath, false))
             { }
-        }
-
-        private Install CreateInstall()
-        {
-            return new Install(TestProfilesKeyPath);
         }
 
         //---------------------------------------------------------------------
@@ -96,149 +89,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         }
 
         //---------------------------------------------------------------------
-        // CreateProfile.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenProfileNameIsNotValid_ThenCreateProfileThrowsException()
-        {
-            Assert.Throws<ArgumentException>(
-                () => UserProfile.CreateProfile(CreateInstall(), "Föö"));
-        }
-
-        [Test]
-        public void WhenProfileNameIsNull_ThenCreateProfileThrowsException()
-        {
-            Assert.Throws<ArgumentException>(
-                () => UserProfile.CreateProfile(CreateInstall(), null!));
-        }
-
-        [Test]
-        public void WhenProfileExists_ThenCreateProfileOpensProfile()
-        {
-            UserProfile.CreateProfile(CreateInstall(), TestProfileName);
-            using (var profile = UserProfile.CreateProfile(CreateInstall(), TestProfileName))
-            {
-                Assert.IsNotNull(profile);
-                Assert.AreEqual(TestProfileName, profile.Name);
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // OpenProfile.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenProfileNameIsNotValid_ThenOpenProfileThrowsException()
-        {
-            Assert.Throws<ArgumentException>(
-                () => UserProfile.OpenProfile(CreateInstall(), "Föö"));
-        }
-
-        [Test]
-        public void WhenProfileDoesNotExist_ThenOpenProfileThrowsException()
-        {
-            Assert.Throws<ProfileNotFoundException>(
-                () => UserProfile.OpenProfile(CreateInstall(), "This does not exist"));
-        }
-
-        [Test]
-        public void WhenProfileExists_ThenOpenProfileOpensProfile()
-        {
-            using (UserProfile.CreateProfile(CreateInstall(), TestProfileName))
-            { }
-
-            using (var profile = UserProfile.OpenProfile(CreateInstall(), TestProfileName))
-            {
-                Assert.IsNotNull(profile);
-                Assert.AreEqual(TestProfileName, profile.Name);
-                Assert.IsFalse(profile.IsDefault);
-                Assert.IsNotNull(profile.SettingsKey);
-            }
-        }
-
-        [Test]
-        public void WhenProfileNameIsNullThenOpenProfileReturnsDefaultProfile()
-        {
-            var profile = UserProfile.OpenProfile(CreateInstall(), null);
-            Assert.AreEqual("Default", profile.Name);
-            Assert.IsTrue(profile.IsDefault);
-        }
-
-        //---------------------------------------------------------------------
-        // DeleteProfile.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenProfileDoesNotExist_ThenDeleteProfileDoesNothing()
-        {
-            UserProfile.DeleteProfile(CreateInstall(), "This does not exist");
-        }
-
-        [Test]
-        public void WhenProfileExists_ThenDeleteProfileDeletesProfile()
-        {
-            using (UserProfile.CreateProfile(CreateInstall(), TestProfileName))
-            { }
-
-            UserProfile.DeleteProfile(CreateInstall(), TestProfileName);
-
-            Assert.Throws<ProfileNotFoundException>(
-                () => UserProfile.OpenProfile(CreateInstall(), TestProfileName));
-        }
-
-        //---------------------------------------------------------------------
-        // ListProfiles.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenProfileCreated_ThenListProfilesIncludesProfile()
-        {
-            using (UserProfile.CreateProfile(CreateInstall(), TestProfileName))
-            { }
-
-            var list = UserProfile.ListProfiles(CreateInstall());
-
-            Assert.IsNotNull(list);
-            CollectionAssert.Contains(list, TestProfileName);
-        }
-
-        [Test]
-        public void WhenDefaultProfileCreated_ThenListProfilesIncludesDefaultProfile()
-        {
-            using (UserProfile.OpenProfile(CreateInstall(), null))
-            { }
-
-            var list = UserProfile.ListProfiles(CreateInstall());
-
-            Assert.IsNotNull(list);
-            CollectionAssert.Contains(list, "Default");
-        }
-
-        [Test]
-        public void WhenNonProfileKeysPresent_ThenListProfilesIgnoresKeys()
-        {
-            var install = CreateInstall();
-
-            this.hkcu.CreateSubKey($"{install.BaseKeyPath}\\________Notaprofile", true);
-
-            using (UserProfile.OpenProfile(install, null))
-            { }
-
-            var list = UserProfile.ListProfiles(CreateInstall());
-
-            Assert.IsNotNull(list);
-            Assert.IsFalse(list.Any(p => p.EndsWith("Notaprofile", StringComparison.OrdinalIgnoreCase)));
-        }
-
-        //---------------------------------------------------------------------
         // SchemaVersion.
         //---------------------------------------------------------------------
 
         [Test]
         public void WhenDefaultProfileDoesNotExist_ThenSchemaVersionIsCurrent()
         {
-            using (var profile = UserProfile.OpenProfile(CreateInstall(), null))
+            var install = new Install(TestProfilesKeyPath);
+
+            using (var profile = install.OpenProfile(null))
             {
                 Assert.AreNotEqual(UserProfile.SchemaVersion.Initial, profile.Version);
                 Assert.AreEqual(UserProfile.SchemaVersion.Current, profile.Version);
@@ -248,10 +107,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         [Test]
         public void WhenDefaultProfileExistsWithoutVersion_ThenSchemaVersionIsInitial()
         {
-            var install = CreateInstall();
+            var install = new Install(TestProfilesKeyPath);
 
             this.hkcu.CreateSubKey($@"{install.BaseKeyPath}\1.0");
-            using (var profile = UserProfile.OpenProfile(install, null))
+            using (var profile = install.OpenProfile(null))
             {
                 Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);
             }
@@ -260,7 +119,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         [Test]
         public void WhenNewProfileCreated_ThenSchemaVersionIsCurrent()
         {
-            using (var profile = UserProfile.CreateProfile(CreateInstall(), TestProfileName))
+            var install = new Install(TestProfilesKeyPath);
+
+            using (var profile = install.CreateProfile(TestProfileName))
             {
                 Assert.AreNotEqual(UserProfile.SchemaVersion.Initial, profile.Version);
                 Assert.AreEqual(UserProfile.SchemaVersion.Current, profile.Version);
@@ -270,7 +131,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         [Test]
         public void WhenProfileLacksVersionValue_ThenSchemaVersionIsOne()
         {
-            using (var profile = UserProfile.CreateProfile(CreateInstall(), TestProfileName))
+            var install = new Install(TestProfilesKeyPath);
+
+            using (var profile = install.CreateProfile(TestProfileName))
             {
                 profile.SettingsKey.DeleteValue("SchemaVersion");
                 Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);
@@ -280,7 +143,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         [Test]
         public void WhenProfileVersionInvalid_ThenSchemaVersionIsOne()
         {
-            using (var profile = UserProfile.CreateProfile(CreateInstall(), TestProfileName))
+            var install = new Install(TestProfilesKeyPath);
+
+            using (var profile = install.CreateProfile(TestProfileName))
             {
                 profile.SettingsKey.DeleteValue("SchemaVersion");
                 profile.SettingsKey.SetValue("SchemaVersion", "junk");
