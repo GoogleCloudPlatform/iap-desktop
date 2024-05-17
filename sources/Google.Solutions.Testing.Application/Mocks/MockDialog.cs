@@ -56,7 +56,7 @@ namespace Google.Solutions.Testing.Application.Mocks
         }
     }
 
-    public class MockDialogFactory<TView, TViewModel> : IDialogFactory<TView, TViewModel>
+    public class MockDialogFactory<TView, TViewModel> : IViewFactory<TView, TViewModel>
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
@@ -84,6 +84,11 @@ namespace Google.Solutions.Testing.Application.Mocks
         {
             this.viewModel.ExpectNotNull("No view model provided");
             return new MockDialog<TView, TViewModel>(this.viewModel!, this.result);
+        }
+
+        public IWindow<TView, TViewModel> CreateWindow()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

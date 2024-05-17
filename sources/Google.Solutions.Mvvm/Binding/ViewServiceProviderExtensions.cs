@@ -78,7 +78,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// <summary>
         /// Create an MVVM-enabled window and view model using the service provider.
         /// </summary>
-        public static Window<TView, TViewModel> GetWindow<TView, TViewModel>(
+        public static IWindow<TView, TViewModel> GetWindow<TView, TViewModel>(
             this IServiceProvider serviceProvider)
             where TView : Form, IView<TViewModel>
             where TViewModel : ViewModelBase
@@ -89,7 +89,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// <summary>
         /// Create an MVVM-enabled window and view model using the service provider.
         /// </summary>
-        public static Window<TView, TViewModel> GetWindow<TView, TViewModel>(
+        public static IWindow<TView, TViewModel> GetWindow<TView, TViewModel>(
             this IServiceProvider serviceProvider,
             IControlTheme theme)
             where TView : Form, IView<TViewModel>

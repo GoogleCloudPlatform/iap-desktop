@@ -29,9 +29,7 @@ namespace Google.Solutions.Mvvm.Binding
     /// <summary>
     /// Factory for creating dialogs.
     /// </summary>
-    /// <typeparam name="TView"></typeparam>
-    /// <typeparam name="TViewModel"></typeparam>
-    public interface IDialogFactory<TView, TViewModel>
+    public interface IViewFactory<TView, TViewModel>
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
@@ -49,13 +47,18 @@ namespace Google.Solutions.Mvvm.Binding
         /// Create dialog.
         /// </summary>
         IDialog<TView, TViewModel> CreateDialog();
+
+        /// <summary>
+        /// Create window.
+        /// </summary>
+        IWindow<TView, TViewModel> CreateWindow();
     }
 
     /// <summary>
     /// Factory for creating Views of the same kind. A new instance
     /// and view model is used for each View.
     /// </summary>
-    public class ViewFactory<TView, TViewModel> : IDialogFactory<TView, TViewModel>
+    public class ViewFactory<TView, TViewModel> : IViewFactory<TView, TViewModel>
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
@@ -93,7 +96,7 @@ namespace Google.Solutions.Mvvm.Binding
             return CreateDialog(CreateViewModel());
         }
 
-        public Window<TView, TViewModel> CreateWindow()
+        public IWindow<TView, TViewModel> CreateWindow()
         {
             var view = new Window<TView, TViewModel>(
                 this.serviceProvider,
@@ -129,6 +132,29 @@ namespace Google.Solutions.Mvvm.Binding
         /// Show the dialog.
         /// </summary>
         DialogResult ShowDialog(IWin32Window? parent);
+    }
+
+    /// <summary>
+    /// Hydrated view that can be shown as a top-level window.
+    /// </summary>
+    public interface IWindow<TView, TViewModel>
+        where TView : class, IView<TViewModel>
+        where TViewModel : ViewModelBase
+    {
+        /// <summary>
+        /// Get or set the theme to apply.
+        /// </summary>
+        IControlTheme? Theme { get; set; }
+
+        /// <summary>
+        /// View model used by the dialog.
+        /// </summary>
+        TViewModel ViewModel { get; }
+
+        /// <summary>
+        /// Window form.
+        /// </summary>
+        TView Form { get; }
     }
 
     public sealed class Dialog<TView, TViewModel> : IDialog<TView, TViewModel>
@@ -212,7 +238,7 @@ namespace Google.Solutions.Mvvm.Binding
         }
     }
 
-    public sealed class Window<TView, TViewModel>
+    public sealed class Window<TView, TViewModel> : IWindow<TView, TViewModel>
         where TView : class, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
