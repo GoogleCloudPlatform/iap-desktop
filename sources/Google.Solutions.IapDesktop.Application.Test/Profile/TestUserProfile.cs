@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         [Test]
         public void WhenNameIsDefault_ThenIsValidProfileNameReturnsFalse()
         {
-            Assert.IsFalse(UserProfile.IsValidProfileName(UserProfile.DefaultProfileName.ToLower()));
+            Assert.IsFalse(UserProfile.IsValidProfileName(UserProfile.DefaultName.ToLower()));
         }
 
         //---------------------------------------------------------------------

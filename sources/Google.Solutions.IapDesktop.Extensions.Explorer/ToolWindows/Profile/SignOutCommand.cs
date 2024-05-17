@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Profile
                     // selection, we couldn't know for sure that the profile
                     // isn't currently being used by another instance.
                     //
-                    UserProfile.DeleteProfile(this.install, profile.Name);
+                    this.install.DeleteProfile(profile.Name);
 
                     //
                     // Perform a hard exit to avoid touching the

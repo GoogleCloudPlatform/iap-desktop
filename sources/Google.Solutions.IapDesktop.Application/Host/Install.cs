@@ -21,9 +21,11 @@
 
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Properties;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -73,6 +75,27 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// Unique ID for this installation.
         /// </summary>
         string UniqueId { get; }
+
+        /// <summary>
+        /// List profiles.
+        /// </summary>
+        IEnumerable<string> Profiles { get; }
+
+        /// <summary>
+        /// Create a new (secondary) profile.
+        /// </summary>
+        UserProfile CreateProfile(string name);
+
+        /// <summary>
+        /// Open the default profile or a secondary profile. The default profile
+        /// is created automatically if it doesn't exist yet.
+        /// </summary>
+        UserProfile OpenProfile(string? name);
+
+        /// <summary>
+        /// Delete a secondary profile.
+        /// </summary>
+        void DeleteProfile(string name);
     }
 
     public enum Architecture
@@ -85,7 +108,18 @@ namespace Google.Solutions.IapDesktop.Application.Host
     {
         private const string VersionHistoryValueName = "InstalledVersionHistory";
 
+        private const string DefaultProfileKey = "1.0";
+        private const string ProfileKeyPrefix = DefaultProfileKey + ".";
+
+        /// <summary>
+        /// Base path to profile settings.
+        /// </summary>
         public const string DefaultBaseKeyPath = @"Software\Google\IapDesktop";
+
+        /// <summary>
+        /// Path to policies. This path is independent of the profile.
+        /// </summary>
+        private const string PoliciesKeyPath = @"Software\Policies\Google\IapDesktop\1.0";
 
         private static readonly Version assemblyVersion;
         private static readonly string uniqueId;
@@ -249,6 +283,140 @@ namespace Google.Solutions.IapDesktop.Application.Host
                         return history.Any()
                             ? history.Max()
                             : null;
+                    }
+                }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Manage profiles.
+        //---------------------------------------------------------------------
+
+        public UserProfile CreateProfile(string name)
+        {
+            if (!UserProfile.IsValidProfileName(name))
+            {
+                throw new ArgumentException("Invalid profile name");
+            }
+
+            using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
+            {
+                using (var profileKey = hkcu.CreateSubKey($@"{this.BaseKeyPath}\{ProfileKeyPrefix}{name}"))
+                {
+                    //
+                    // Store the current schema version to allow future readers
+                    // to decide whether certain backward-compatibility is needed
+                    // or not.
+                    //
+                    profileKey.SetValue(
+                        UserProfile.SchemaVersionValueName,
+                        UserProfile.SchemaVersion.Current,
+                        RegistryValueKind.DWord);
+                }
+            }
+
+            return OpenProfile(name);
+        }
+
+        public UserProfile OpenProfile(string? name)
+        {
+            if (name != null && !UserProfile.IsValidProfileName(name))
+            {
+                throw new ArgumentException($"Invalid profile name: {name}");
+            }
+
+            using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
+            using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default))
+            {
+                if (name == null)
+                {
+                    //
+                    // Open or create default profile. For backwards compatibility
+                    // reasons, the default profile uses the key "1.0".
+                    //
+                    var profileKeyPath = $@"{this.BaseKeyPath}\{DefaultProfileKey}";
+                    var profileKey = hkcu.OpenSubKey(profileKeyPath, true);
+                    if (profileKey != null)
+                    {
+                        //
+                        // Default profile exists, open it.
+                        //
+                    }
+                    else
+                    {
+                        //
+                        // Key doesn't exist yet. Create new default profile and
+                        // mark it as latest-version.
+                        //
+                        profileKey = hkcu.CreateSubKey(profileKeyPath, true);
+                        profileKey.SetValue(
+                            UserProfile.SchemaVersionValueName,
+                            UserProfile.SchemaVersion.Current,
+                            RegistryValueKind.DWord);
+                    }
+
+                    return new UserProfile(
+                        UserProfile.DefaultName, 
+                        profileKey,
+                        hklm.OpenSubKey(PoliciesKeyPath),
+                        hkcu.OpenSubKey(PoliciesKeyPath),
+                        true);
+                }
+                else
+                {
+                    //
+                    // Open existing profile.
+                    //
+                    var profileKey = hkcu.OpenSubKey($@"{this.BaseKeyPath}\{ProfileKeyPrefix}{name}", true);
+                    if (profileKey == null)
+                    {
+                        throw new ProfileNotFoundException("Unknown profile: " + name);
+                    }
+
+                    return new UserProfile(
+                        name, 
+                        profileKey,
+                        hklm.OpenSubKey(PoliciesKeyPath),
+                        hkcu.OpenSubKey(PoliciesKeyPath),
+                        false);
+                }
+            }
+        }
+
+        public void DeleteProfile(string name)
+        {
+            using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
+            {
+                var path = $@"{this.BaseKeyPath}\{ProfileKeyPrefix}{name}";
+                using (var key = hkcu.OpenSubKey(path))
+                {
+                    if (key != null)
+                    {
+                        hkcu.DeleteSubKeyTree(path);
+                    }
+                }
+            }
+        }
+
+        public IEnumerable<string> Profiles
+        {
+            get
+            {
+                using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
+                using (var profiles = hkcu.OpenSubKey(this.BaseKeyPath))
+                {
+                    if (profiles == null)
+                    {
+                        return Enumerable.Empty<string>();
+                    }
+                    else
+                    {
+                        return profiles.GetSubKeyNames()
+                            .EnsureNotNull()
+                            .Where(n => n == DefaultProfileKey || n.StartsWith(ProfileKeyPrefix))
+                            .Select(n => n == DefaultProfileKey
+                                ? UserProfile.DefaultName
+                                : n.Substring(ProfileKeyPrefix.Length));
                     }
                 }
             }

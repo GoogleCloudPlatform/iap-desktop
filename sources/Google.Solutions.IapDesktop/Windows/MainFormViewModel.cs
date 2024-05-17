@@ -136,8 +136,8 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public IEnumerable<string> AlternativeProfileNames
         {
-            get => UserProfile
-                .ListProfiles(this.install)
+            get => this.install
+                .Profiles
                 .Where(name => name != this.profile.Name);
         }
 
@@ -191,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             Program.LaunchNewInstance(new CommandLineOptions()
             {
-                Profile = profileName != UserProfile.DefaultProfileName
+                Profile = profileName != UserProfile.DefaultName
                     ? profileName
                     : null
             });
