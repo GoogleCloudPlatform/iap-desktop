@@ -242,7 +242,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             // Generate credentials (Windows/RDP only).
             //
             var credentialCommands = new CredentialCommands(
-                mainForm,
                 serviceProvider.GetService<IConnectionSettingsService>(),
                 serviceProvider.GetService<IRdpCredentialEditorFactory>());
 

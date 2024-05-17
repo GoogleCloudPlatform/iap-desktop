@@ -37,19 +37,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
     public class CredentialCommands
     {
         public CredentialCommands(
-            IWin32Window window,
             IConnectionSettingsService settingsService,
             IRdpCredentialEditorFactory rdpCredentialEditor)
         {
             this.ContextMenuNewCredentials = new NewCredentialsCommand(
-                window,
                 settingsService,
                 rdpCredentialEditor)
             {
                 CommandType = MenuCommandType.MenuCommand
             };
             this.ToolbarNewCredentials = new NewCredentialsCommand(
-                window,
                 settingsService,
                 rdpCredentialEditor)
             {
@@ -66,17 +63,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
 
         private class NewCredentialsCommand : MenuCommandBase<IProjectModelNode>
         {
-            private readonly IWin32Window window;
             private readonly IConnectionSettingsService settingsService;
             private readonly IRdpCredentialEditorFactory rdpCredentialEditor;
 
             public NewCredentialsCommand(
-                IWin32Window window,
                 IConnectionSettingsService settingsService,
                 IRdpCredentialEditorFactory rdpCredentialEditor)
                 : base("New logon &credentials...")
             {
-                this.window = window;
                 this.settingsService = settingsService;
                 this.rdpCredentialEditor = rdpCredentialEditor;
 
@@ -102,8 +96,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             {
                 Debug.Assert(IsAvailable(node));
                 Debug.Assert(IsEnabled(node));
-
-                var instanceNode = (IProjectModelInstanceNode)node;
 
                 var settings = this.settingsService.GetConnectionSettings(node);
 

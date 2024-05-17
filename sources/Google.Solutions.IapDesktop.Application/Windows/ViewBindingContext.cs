@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             this.exceptionDialog = exceptionDialog.ExpectNotNull(nameof(exceptionDialog));
         }
 
-        private static IWin32Window? GetMainWindow()
+        private static Win32Window? GetMainWindow()
         {
             var mainWindowHwnd = Process.GetCurrentProcess().MainWindowHandle;
             return mainWindowHwnd == IntPtr.Zero ? null : new Win32Window(mainWindowHwnd);

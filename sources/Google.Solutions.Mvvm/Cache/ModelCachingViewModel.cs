@@ -64,7 +64,7 @@ namespace Google.Solutions.Mvvm.Cache
                 // Reset.
                 //
 
-                this.Model = default(TModel);
+                this.Model = default;
                 ApplyModel(false);
             }
 
