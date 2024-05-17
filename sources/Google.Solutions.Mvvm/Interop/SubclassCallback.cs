@@ -88,7 +88,7 @@ namespace Google.Solutions.Mvvm.Interop
             }
             else if (wndProc == null)
             {
-                throw new ArgumentException(nameof(wndProc));
+                throw new ArgumentException("Wndproc is null", nameof(wndProc));
             }
 
             this.WindowHandle = control.Handle;

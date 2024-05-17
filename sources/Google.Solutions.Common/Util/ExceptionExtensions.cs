@@ -83,14 +83,12 @@ namespace Google.Solutions.Common.Util
 
         public static string ToString(this Exception exception, ExceptionFormatOptions options)
         {
-            switch (options)
+            return options switch
             {
-                case ExceptionFormatOptions.IncludeOffsets:
-                    return StackTraceBuilder.CreateStackTraceWithOffsets(exception);
-
-                default:
-                    return exception.ToString();
-            }
+                ExceptionFormatOptions.IncludeOffsets => StackTraceBuilder
+                    .CreateStackTraceWithOffsets(exception),
+                _ => exception.ToString(),
+            };
         }
 
         private static class StackTraceBuilder
