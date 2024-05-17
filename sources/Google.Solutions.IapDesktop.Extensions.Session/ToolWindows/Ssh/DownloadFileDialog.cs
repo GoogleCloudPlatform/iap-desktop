@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
     [Service(typeof(IDownloadFileDialog))]
     public class DownloadFileDialog : IDownloadFileDialog
     {
-        private readonly ViewFactory<DownloadFileView, DownloadFileViewModel> dialogFactory;
+        private readonly WindowFactory<DownloadFileView, DownloadFileViewModel> dialogFactory;
 
         public DownloadFileDialog(IServiceProvider serviceProvider)
         {

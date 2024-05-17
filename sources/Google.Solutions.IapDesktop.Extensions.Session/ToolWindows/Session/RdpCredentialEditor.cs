@@ -79,8 +79,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         private readonly IWindowsCredentialGenerator credentialGenerator;
         private readonly ITaskDialog taskDialog;
         private readonly ICredentialDialog credentialDialog;
-        private readonly IViewFactory<NewCredentialsView, NewCredentialsViewModel> newCredentialFactory;
-        private readonly IViewFactory<ShowCredentialsView, ShowCredentialsViewModel> showCredentialFactory;
+        private readonly IWindowFactory<NewCredentialsView, NewCredentialsViewModel> newCredentialFactory;
+        private readonly IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel> showCredentialFactory;
 
         internal RdpCredentialEditor(
             IWin32Window? owner,
@@ -90,8 +90,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             IWindowsCredentialGenerator credentialGenerator,
             ITaskDialog taskDialog,
             ICredentialDialog credentialDialog,
-            IViewFactory<NewCredentialsView, NewCredentialsViewModel> newCredentialFactory,
-            IViewFactory<ShowCredentialsView, ShowCredentialsViewModel> showCredentialFactory)
+            IWindowFactory<NewCredentialsView, NewCredentialsViewModel> newCredentialFactory,
+            IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel> showCredentialFactory)
         {
             this.owner = owner;
             this.Settings = settings;

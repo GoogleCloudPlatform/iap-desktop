@@ -27,9 +27,9 @@ using System.Windows.Forms;
 namespace Google.Solutions.Mvvm.Binding
 {
     /// <summary>
-    /// Factory for creating dialogs.
+    /// Factory for creating windows using a view and a view model.
     /// </summary>
-    public interface IViewFactory<TView, TViewModel>
+    public interface IWindowFactory<TView, TViewModel>
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
@@ -39,82 +39,25 @@ namespace Google.Solutions.Mvvm.Binding
         IControlTheme? Theme { get; set; }
 
         /// <summary>
-        /// Create dialog using an existing view model.
+        /// Create a dialog window using an existing view model.
         /// </summary>
-        IDialog<TView, TViewModel> CreateDialog(TViewModel viewModel);
+        IDialogWindow<TView, TViewModel> CreateDialog(TViewModel viewModel);
 
         /// <summary>
-        /// Create dialog.
+        /// Create a dialog window.
         /// </summary>
-        IDialog<TView, TViewModel> CreateDialog();
+        IDialogWindow<TView, TViewModel> CreateDialog();
 
         /// <summary>
-        /// Create window.
+        /// Create a top-level window.
         /// </summary>
-        IWindow<TView, TViewModel> CreateWindow();
+        ITopLevelWindow<TView, TViewModel> CreateWindow();
     }
 
     /// <summary>
-    /// Factory for creating Views of the same kind. A new instance
-    /// and view model is used for each View.
+    /// Window that can be shown as a dialog.
     /// </summary>
-    public class ViewFactory<TView, TViewModel> : IViewFactory<TView, TViewModel>
-        where TView : Form, IView<TViewModel>
-        where TViewModel : ViewModelBase
-    {
-        private readonly IServiceProvider serviceProvider;
-
-        private TViewModel CreateViewModel()
-        {
-            return (TViewModel)this.serviceProvider.GetService(typeof(TViewModel));
-        }
-
-        /// <summary>
-        /// Get or set the theme to apply, optional.
-        /// </summary>
-        public IControlTheme? Theme { get; set; }
-
-        internal ViewFactory(IServiceProvider serviceProvider)
-        {
-            this.serviceProvider = serviceProvider.ExpectNotNull(nameof(serviceProvider));
-        }
-
-        public IDialog<TView, TViewModel> CreateDialog(TViewModel viewModel)
-        {
-            var view = new Dialog<TView, TViewModel>(this.serviceProvider, viewModel);
-
-            if (this.Theme != null)
-            {
-                view.Theme = this.Theme;
-            }
-
-            return view;
-        }
-
-        public IDialog<TView, TViewModel> CreateDialog()
-        {
-            return CreateDialog(CreateViewModel());
-        }
-
-        public IWindow<TView, TViewModel> CreateWindow()
-        {
-            var view = new Window<TView, TViewModel>(
-                this.serviceProvider,
-                (TViewModel)this.serviceProvider.GetService(typeof(TViewModel)));
-
-            if (this.Theme != null)
-            {
-                view.Theme = this.Theme;
-            }
-
-            return view;
-        }
-    }
-
-    /// <summary>
-    /// Hydrated view that can be shown as a dialog.
-    /// </summary>
-    public interface IDialog<TView, TViewModel> : IDisposable
+    public interface IDialogWindow<TView, TViewModel> : IDisposable
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
@@ -135,9 +78,9 @@ namespace Google.Solutions.Mvvm.Binding
     }
 
     /// <summary>
-    /// Hydrated view that can be shown as a top-level window.
+    /// Window that can be shown as a top-level window.
     /// </summary>
-    public interface IWindow<TView, TViewModel>
+    public interface ITopLevelWindow<TView, TViewModel>
         where TView : class, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
@@ -157,7 +100,60 @@ namespace Google.Solutions.Mvvm.Binding
         TView Form { get; }
     }
 
-    public sealed class Dialog<TView, TViewModel> : IDialog<TView, TViewModel>
+    public class WindowFactory<TView, TViewModel> : IWindowFactory<TView, TViewModel>
+        where TView : Form, IView<TViewModel>
+        where TViewModel : ViewModelBase
+    {
+        private readonly IServiceProvider serviceProvider;
+
+        private TViewModel CreateViewModel()
+        {
+            return (TViewModel)this.serviceProvider.GetService(typeof(TViewModel));
+        }
+
+        /// <summary>
+        /// Get or set the theme to apply, optional.
+        /// </summary>
+        public IControlTheme? Theme { get; set; }
+
+        internal WindowFactory(IServiceProvider serviceProvider)
+        {
+            this.serviceProvider = serviceProvider.ExpectNotNull(nameof(serviceProvider));
+        }
+
+        public IDialogWindow<TView, TViewModel> CreateDialog(TViewModel viewModel)
+        {
+            var view = new Dialog<TView, TViewModel>(this.serviceProvider, viewModel);
+
+            if (this.Theme != null)
+            {
+                view.Theme = this.Theme;
+            }
+
+            return view;
+        }
+
+        public IDialogWindow<TView, TViewModel> CreateDialog()
+        {
+            return CreateDialog(CreateViewModel());
+        }
+
+        public ITopLevelWindow<TView, TViewModel> CreateWindow()
+        {
+            var view = new Window<TView, TViewModel>(
+                this.serviceProvider,
+                (TViewModel)this.serviceProvider.GetService(typeof(TViewModel)));
+
+            if (this.Theme != null)
+            {
+                view.Theme = this.Theme;
+            }
+
+            return view;
+        }
+    }
+
+    public sealed class Dialog<TView, TViewModel> : IDialogWindow<TView, TViewModel>
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
@@ -238,7 +234,7 @@ namespace Google.Solutions.Mvvm.Binding
         }
     }
 
-    public sealed class Window<TView, TViewModel> : IWindow<TView, TViewModel>
+    public sealed class Window<TView, TViewModel> : ITopLevelWindow<TView, TViewModel>
         where TView : class, IView<TViewModel>
         where TViewModel : ViewModelBase
     {

@@ -123,8 +123,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 new Mock<IWindowsCredentialGenerator>().Object,
                 new Mock<ITaskDialog>().Object,
                 new Mock<ICredentialDialog>().Object,
-                new Mock<IViewFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
-                new Mock<IViewFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
+                new Mock<IWindowFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
+                new Mock<IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             editor.Settings.RdpUsername.Value = username;
             editor.Settings.RdpPassword.SetClearTextValue(password);
@@ -164,8 +164,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 new Mock<IWindowsCredentialGenerator>().Object,
                 new Mock<ITaskDialog>().Object,
                 credentialDialog.Object,
-                new Mock<IViewFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
-                new Mock<IViewFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
+                new Mock<IWindowFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
+                new Mock<IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             editor.Settings.RdpUsername.Value = username;
             editor.PromptForCredentials();
@@ -204,8 +204,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 new Mock<IWindowsCredentialGenerator>().Object,
                 new Mock<ITaskDialog>().Object,
                 credentialDialog.Object,
-                new Mock<IViewFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
-                new Mock<IViewFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
+                new Mock<IWindowFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
+                new Mock<IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             editor.PromptForCredentials();
 
@@ -235,8 +235,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 credentialGenerator.Object,
                 new Mock<ITaskDialog>().Object,
                 new Mock<ICredentialDialog>().Object,
-                new Mock<IViewFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
-                new Mock<IViewFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
+                new Mock<IWindowFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
+                new Mock<IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             Assert.IsTrue(await editor
                 .IsGrantedPermissionToCreateWindowsCredentialsAsync()
@@ -267,7 +267,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 new Mock<ITaskDialog>().Object,
                 new Mock<ICredentialDialog>().Object,
                 newCredentialDialogFactory,
-                new Mock<IViewFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
+                new Mock<IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
                 () => editor.CreateCredentialsAsync(
@@ -298,7 +298,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 new Mock<ITaskDialog>().Object,
                 new Mock<ICredentialDialog>().Object,
                 newCredentialDialogFactory,
-                new Mock<IViewFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
+                new Mock<IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
                 () => editor.CreateCredentialsAsync(
@@ -363,8 +363,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 CreateCredentialGeneratorMock(generatedCredentials).Object,
                 new Mock<ITaskDialog>().Object,
                 new Mock<ICredentialDialog>().Object,
-                new Mock<IViewFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
-                new Mock<IViewFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
+                new Mock<IWindowFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
+                new Mock<IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             var credentials = await editor
                 .CreateCredentialsAsync(
@@ -397,8 +397,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 CreateCredentialGeneratorMock(generatedCredentials).Object,
                 new Mock<ITaskDialog>().Object,
                 new Mock<ICredentialDialog>().Object,
-                new Mock<IViewFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
-                new Mock<IViewFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
+                new Mock<IWindowFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
+                new Mock<IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             await editor
                 .GenerateCredentialsAsync(true)
@@ -427,8 +427,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 new Mock<IWindowsCredentialGenerator>().Object,
                 new Mock<ITaskDialog>().Object,
                 new Mock<ICredentialDialog>().Object,
-                new Mock<IViewFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
-                new Mock<IViewFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
+                new Mock<IWindowFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
+                new Mock<IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             Assert.IsNull(editor.Settings.RdpUsername.Value);
 
@@ -454,8 +454,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 CreateCredentialGeneratorMock(generatedCredentials).Object,
                 new Mock<ITaskDialog>().Object,
                 new Mock<ICredentialDialog>().Object,
-                new Mock<IViewFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
-                new Mock<IViewFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
+                new Mock<IWindowFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
+                new Mock<IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             await editor
                 .AmendCredentialsAsync(RdpCredentialGenerationBehavior.Force)
@@ -480,8 +480,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 CreateCredentialDialogMock(
                     DialogResult.OK,
                     promptedCredentials).Object,
-                new Mock<IViewFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
-                new Mock<IViewFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
+                new Mock<IWindowFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
+                new Mock<IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             await editor
                 .AmendCredentialsAsync(RdpCredentialGenerationBehavior.Force)
@@ -511,8 +511,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 CreateCredentialGeneratorMock(new NetworkCredential()).Object,
                 taskDialog.Object,
                 new Mock<ICredentialDialog>().Object,
-                new Mock<IViewFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
-                new Mock<IViewFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
+                new Mock<IWindowFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
+                new Mock<IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             await editor
                 .AmendCredentialsAsync(behavior)
@@ -541,8 +541,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 CreateCredentialDialogMock(
                     DialogResult.OK,
                     new NetworkCredential()).Object,
-                new Mock<IViewFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
-                new Mock<IViewFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
+                new Mock<IWindowFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
+                new Mock<IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             await editor
                 .AmendCredentialsAsync(behavior)
@@ -574,8 +574,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 new Mock<IWindowsCredentialGenerator>().Object,
                 taskDialog.Object,
                 credentialDialog.Object,
-                new Mock<IViewFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
-                new Mock<IViewFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
+                new Mock<IWindowFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
+                new Mock<IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             await editor
                 .AmendCredentialsAsync(behavior)
@@ -612,8 +612,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 CreateCredentialDialogMock(
                     DialogResult.OK,
                     new NetworkCredential()).Object,
-                new Mock<IViewFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
-                new Mock<IViewFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
+                new Mock<IWindowFactory<NewCredentialsView, NewCredentialsViewModel>>().Object,
+                new Mock<IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel>>().Object);
 
             await editor
                 .AmendCredentialsAsync(RdpCredentialGenerationBehavior.Disallow)
