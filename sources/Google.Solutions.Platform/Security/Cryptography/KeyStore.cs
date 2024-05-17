@@ -61,7 +61,7 @@ namespace Google.Solutions.Platform.Security.Cryptography
             this.Provider = provider;
         }
 
-        private bool CheckKeyExists(string name)
+        private static bool CheckKeyExists(string name)
         {
             try
             {

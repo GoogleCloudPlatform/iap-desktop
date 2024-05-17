@@ -152,7 +152,7 @@ namespace Google.Solutions.Platform.Net
 
             if (string.IsNullOrEmpty(domain))
             {
-                throw new ArgumentException(nameof(pattern));
+                throw new ArgumentException("Pattern is empty", nameof(pattern));
             }
 
             var includeSubdomains = domain.StartsWith(SubdomainWilcard);

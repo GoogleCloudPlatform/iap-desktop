@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             return Disposable.For(() => this.IsLoading = false);
         }
 
-        private async Task RefreshAsync(ViewModelNode node)
+        private static async Task RefreshAsync(ViewModelNode node)
         {
             if (!node.CanReload)
             {

@@ -54,12 +54,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
 
     public class ProjectPickerDialog : IProjectPickerDialog
     {
-        private readonly IExceptionDialog exceptionDialog;
         private readonly ViewFactory<ProjectPickerView, ProjectPickerViewModel> viewFactory;
 
         public ProjectPickerDialog(IServiceProvider serviceProvider)
         {
-            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
             this.viewFactory = serviceProvider.GetViewFactory<ProjectPickerView, ProjectPickerViewModel>();
             this.viewFactory.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
         }
