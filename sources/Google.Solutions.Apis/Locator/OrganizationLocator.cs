@@ -22,6 +22,8 @@
 using System;
 using System.Text.RegularExpressions;
 
+#pragma warning disable CA1822 // Mark members as static
+
 namespace Google.Solutions.Apis.Locator
 {
     /// <summary>

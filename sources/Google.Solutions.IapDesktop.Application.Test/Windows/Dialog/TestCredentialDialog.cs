@@ -85,7 +85,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
         {
             var dialog = new CredentialDialog(
                 new Service<IThemeService>(new Mock<IServiceProvider>().Object));
-
             if (dialog.PromptForWindowsCredentials(
                 null,
                 new CredentialDialogParameters()
@@ -94,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
                     Message = "Message",
                     Package = AuthenticationPackage.Any
                 },
-                out var save,
+                out _,
                 out var credentials) == DialogResult.OK)
             {
                 Assert.NotNull(credentials);
@@ -107,7 +106,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
         {
             var dialog = new CredentialDialog(
                 new Service<IThemeService>(new Mock<IServiceProvider>().Object));
-
             if (dialog.PromptForWindowsCredentials(
                 null,
                 new CredentialDialogParameters()
@@ -117,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
                     Package = AuthenticationPackage.Any,
                     ShowSaveCheckbox = true
                 },
-                out var save,
+                out _,
                 out var credentials) == DialogResult.OK)
             {
                 Assert.NotNull(credentials);
@@ -140,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
                     Package = AuthenticationPackage.Any,
                     InputCredential = new NetworkCredential("bob@example.com", "password")
                 },
-                out var save,
+                out _,
                 out var credentials) == DialogResult.OK)
             {
                 Assert.NotNull(credentials);

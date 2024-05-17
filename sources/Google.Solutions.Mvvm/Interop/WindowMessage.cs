@@ -21,6 +21,8 @@
 
 using System.Windows.Forms;
 
+#pragma warning disable CA1069 // Enums values should not be duplicated
+
 namespace Google.Solutions.Mvvm.Interop
 {
     public enum WindowMessage

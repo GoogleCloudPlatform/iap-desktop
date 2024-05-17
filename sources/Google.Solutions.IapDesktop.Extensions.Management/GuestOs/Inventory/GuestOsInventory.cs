@@ -90,17 +90,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
             Instance instance,
             OperatingSystems operatingSystems)
         {
-            switch (operatingSystems)
+            return operatingSystems switch
             {
-                case OperatingSystems.Windows:
-                    return instance.IsWindowsInstance();
-
-                case OperatingSystems.Linux:
-                    return !instance.IsWindowsInstance();
-
-                default:
-                    return true;
-            }
+                OperatingSystems.Windows => instance.IsWindowsInstance(),
+                OperatingSystems.Linux => !instance.IsWindowsInstance(),
+                _ => true,
+            };
         }
 
         //---------------------------------------------------------------------

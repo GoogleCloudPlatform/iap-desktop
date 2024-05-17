@@ -103,8 +103,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
                 Debug.Assert(IsAvailable(node));
                 Debug.Assert(IsEnabled(node));
 
-                var instanceNode = (IProjectModelInstanceNode)node;
-
                 var settings = this.settingsService.GetConnectionSettings(node);
 
                 await this.rdpCredentialEditor
