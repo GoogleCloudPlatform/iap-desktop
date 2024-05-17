@@ -140,7 +140,7 @@ namespace Google.Solutions.Mvvm.Binding
 
         public ITopLevelWindow<TView, TViewModel> CreateWindow()
         {
-            var view = new Window<TView, TViewModel>(
+            var view = new TopLevelWindow<TView, TViewModel>(
                 this.serviceProvider,
                 (TViewModel)this.serviceProvider.GetService(typeof(TViewModel)));
 
@@ -234,7 +234,7 @@ namespace Google.Solutions.Mvvm.Binding
         }
     }
 
-    public sealed class Window<TView, TViewModel> : ITopLevelWindow<TView, TViewModel>
+    public sealed class TopLevelWindow<TView, TViewModel> : ITopLevelWindow<TView, TViewModel>
         where TView : class, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
@@ -249,7 +249,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// </summary>
         public IControlTheme? Theme { get; set; }
 
-        internal Window(IServiceProvider serviceProvider, TViewModel viewModel)
+        internal TopLevelWindow(IServiceProvider serviceProvider, TViewModel viewModel)
         {
             this.serviceProvider = serviceProvider;
             this.ViewModel = viewModel;
