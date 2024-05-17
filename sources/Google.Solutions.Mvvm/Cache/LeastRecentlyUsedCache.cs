@@ -40,7 +40,7 @@ namespace Google.Solutions.Mvvm.Cache
         {
             if (capacity < 1)
             {
-                throw new ArgumentException(nameof(capacity));
+                throw new ArgumentException("Invalid capacity", nameof(capacity));
             }
 
             this.capacity = capacity;
@@ -59,7 +59,7 @@ namespace Google.Solutions.Mvvm.Cache
                 return value;
             }
 
-            return default(V);
+            return default;
         }
 
         public void Add(K key, V val)

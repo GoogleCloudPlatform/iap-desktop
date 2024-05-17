@@ -363,7 +363,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 // 
                 // Update active node in model.
                 //
-                this.workspace.SetActiveNodeAsync(
+                _ = this.workspace.SetActiveNodeAsync(
                         value?.Locator,
                         CancellationToken.None)
                     .ContinueWith(_ => { });
