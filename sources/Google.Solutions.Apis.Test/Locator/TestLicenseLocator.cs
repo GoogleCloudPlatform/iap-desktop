@@ -21,14 +21,21 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Test;
+using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
 
 namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
-    public class TestLicenseLocator : CommonFixtureBase
+    public class TestLicenseLocator
+        : EquatableFixtureBase<LicenseLocator, LicenseLocator>
     {
+        protected override LicenseLocator CreateInstance()
+        {
+            return new LicenseLocator("project-1", "type-1");
+        }
+
         [Test]
         public void Project()
         {
@@ -80,10 +87,6 @@ namespace Google.Solutions.Apis.Test.Locator
                 "/project-1/project-1/global/licenses/windows-10-enterprise-byol"));
         }
 
-        //---------------------------------------------------------------------
-        // Equality.
-        //---------------------------------------------------------------------
-
         [Test]
         public void WhenPathInvalid_ParseThrowsArgumentException()
         {
@@ -95,41 +98,12 @@ namespace Google.Solutions.Apis.Test.Locator
                 "/"));
         }
 
-        [Test]
-        public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
-        {
-            var ref1 = new LicenseLocator("proj", "windows-10-enterprise-byol");
-            var ref2 = new LicenseLocator("proj", "windows-10-enterprise-byol");
-
-            Assert.IsTrue(ref1.Equals(ref2));
-            Assert.IsTrue(ref1.Equals((object)ref2));
-            Assert.IsTrue(ref1 == ref2);
-            Assert.IsFalse(ref1 != ref2);
-        }
+        //---------------------------------------------------------------------
+        // Equality.
+        //---------------------------------------------------------------------
 
         [Test]
-        public void WhenReferencesAreEquivalent_ThenGetHasCodeIsSame()
-        {
-            var ref1 = new LicenseLocator("proj", "windows-10-enterprise-byol");
-            var ref2 = new LicenseLocator("proj", "windows-10-enterprise-byol");
-
-            Assert.AreEqual(ref1.GetHashCode(), ref2.GetHashCode());
-        }
-
-        [Test]
-        public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
-        {
-            var ref1 = new LicenseLocator("proj", "windows-10-enterprise-byol");
-            var ref2 = ref1;
-
-            Assert.IsTrue(ref1.Equals(ref2));
-            Assert.IsTrue(ref1.Equals((object?)ref2));
-            Assert.IsTrue(ref1 == ref2);
-            Assert.IsFalse(ref1 != ref2);
-        }
-
-        [Test]
-        public void WhenReferencesAreNotEquivalent_ThenEqualsReturnsFalse()
+        public void WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
         {
             var ref1 = new LicenseLocator("proj-1", "windows-10-enterprise-byol");
             var ref2 = new LicenseLocator("proj-2", "windows-10-enterprise-byol");
@@ -138,19 +112,6 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.IsFalse(ref1.Equals((object?)ref2));
             Assert.IsFalse(ref1 == ref2);
             Assert.IsTrue(ref1 != ref2);
-        }
-
-        [Test]
-        public void TestEqualsNull()
-        {
-            var ref1 = new LicenseLocator("proj", "windows-10-enterprise-byol");
-
-            Assert.IsFalse(ref1.Equals(null));
-            Assert.IsFalse(ref1!.Equals((object?)null));
-            Assert.IsFalse(ref1 == null);
-            Assert.IsFalse(null == ref1);
-            Assert.IsTrue(ref1 != null);
-            Assert.IsTrue(null != ref1);
         }
 
         //---------------------------------------------------------------------

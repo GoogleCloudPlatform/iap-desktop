@@ -26,7 +26,7 @@ using System.Diagnostics;
 namespace Google.Solutions.Apis.Locator
 {
     /// <summary>
-    /// Locator for a resource.
+    /// Locator for a project resource.
     /// </summary>
     public abstract class ResourceLocator : IEquatable<ResourceLocator>
     {

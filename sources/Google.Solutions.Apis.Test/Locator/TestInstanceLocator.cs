@@ -21,13 +21,20 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Test;
+using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 
 namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
-    public class TestInstanceLocator : CommonFixtureBase
+    public class TestInstanceLocator
+        : EquatableFixtureBase<InstanceLocator, InstanceLocator>
     {
+        protected override InstanceLocator CreateInstance()
+        {
+            return new InstanceLocator("project-1", "zone-1", "instance-1");
+        }
+
         [Test]
         public void Project()
         {
@@ -65,31 +72,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
-        {
-            var ref1 = new InstanceLocator("proj", "zone", "inst");
-            var ref2 = new InstanceLocator("proj", "zone", "inst");
-
-            Assert.IsTrue(ref1.Equals(ref2));
-            Assert.IsTrue(ref1.Equals((object?)ref2));
-            Assert.IsTrue(ref1 == ref2);
-            Assert.IsFalse(ref1 != ref2);
-        }
-
-        [Test]
-        public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
-        {
-            var ref1 = new InstanceLocator("proj", "zone", "inst");
-            var ref2 = ref1;
-
-            Assert.IsTrue(ref1.Equals(ref2));
-            Assert.IsTrue(ref1.Equals((object?)ref2));
-            Assert.IsTrue(ref1 == ref2);
-            Assert.IsFalse(ref1 != ref2);
-        }
-
-        [Test]
-        public void WhenReferencesAreNotEquivalent_ThenEqualsReturnsFalse()
+        public void WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
         {
             var ref1 = new InstanceLocator("proj", "zone", "inst");
             var ref2 = new InstanceLocator("proj", "zone", "other");
@@ -110,19 +93,6 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.IsFalse(ref2.Equals((object?)ref1));
             Assert.IsFalse(ref1.Equals(ref2));
             Assert.IsFalse(ref1.Equals((object?)ref2));
-        }
-
-        [Test]
-        public void TestEqualsNull()
-        {
-            var ref1 = new InstanceLocator("proj", "zone", "inst");
-
-            Assert.IsFalse(ref1.Equals(null));
-            Assert.IsFalse(ref1!.Equals((object?)null));
-            Assert.IsFalse(ref1 == null);
-            Assert.IsFalse(null == ref1);
-            Assert.IsTrue(ref1 != null);
-            Assert.IsTrue(null != ref1);
         }
     }
 }

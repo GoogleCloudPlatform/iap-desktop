@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
@@ -28,14 +27,14 @@ using System;
 namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
-    public class TestAccessLevelLocator
-        : EquatableFixtureBase<AccessLevelLocator, AccessLevelLocator>
+    public class TestOrganizationLocator 
+        : EquatableFixtureBase<OrganizationLocator, OrganizationLocator>
     {
-        protected override AccessLevelLocator CreateInstance()
+        protected override OrganizationLocator CreateInstance()
         {
-            return new AccessLevelLocator("policy-1", "level-1");
+            return new OrganizationLocator(12345678900001);
         }
-    
+
         //---------------------------------------------------------------------
         // Parse.
         //---------------------------------------------------------------------
@@ -43,38 +42,24 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void WhenPathIsValid_ParseReturnsObject()
         {
-            var ref1 = AccessLevelLocator.Parse(
-                "accessPolicies/policy-1/accessLevels/level-1");
+            var ref1 = OrganizationLocator.Parse(
+                "organizations/12345678900001");
 
-            Assert.AreEqual("policy-1", ref1.AccessPolicy);
-            Assert.AreEqual("level-1", ref1.AccessLevel);
+            Assert.AreEqual("organizations", ref1.ResourceType);
+            Assert.AreEqual(12345678900001, ref1.Id);
         }
 
         [Test]
-        public void WhenPathInvalid_ParseThrowsArgumentException()
+        public void WhenPathLacksOrganization_ParseThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => AccessLevelLocator.Parse(
-                "accessPolicies/policy-1/notaccessLevels/level-1"));
-            Assert.Throws<ArgumentException>(() => AccessLevelLocator.Parse(
-                "/policy-1/accessLevels/level-1"));
-            Assert.Throws<ArgumentException>(() => AccessLevelLocator.Parse(
-                "/"));
+            Assert.Throws<ArgumentException>(() => OrganizationLocator.Parse("/1"));
         }
 
-        //---------------------------------------------------------------------
-        // Equality.
-        //---------------------------------------------------------------------
-
         [Test]
-        public void WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
+        public void WhenPathInvalid_ParseThrowsArgumentException(
+            [Values("x/1", "organizations/", "organizations/0xxx")] string path)
         {
-            var ref1 = new AccessLevelLocator("proj-1", "level-1");
-            var ref2 = new AccessLevelLocator("proj-2", "level-1");
-
-            Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object)ref2));
-            Assert.IsFalse(ref1 == ref2);
-            Assert.IsTrue(ref1 != ref2);
+            Assert.Throws<ArgumentException>(() => OrganizationLocator.Parse(path));
         }
 
         //---------------------------------------------------------------------
@@ -84,11 +69,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void WhenCreatedFromPath_ThenToStringReturnsPath()
         {
-            var path = "accessPolicies/policy-1/accessLevels/level-1";
+            var path = "organizations/12345678900001";
 
             Assert.AreEqual(
                 path,
-                AccessLevelLocator.Parse(path).ToString());
+                OrganizationLocator.Parse(path).ToString());
         }
     }
 }

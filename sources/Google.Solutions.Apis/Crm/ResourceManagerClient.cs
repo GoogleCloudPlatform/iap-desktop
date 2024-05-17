@@ -40,10 +40,17 @@ namespace Google.Solutions.Apis.Crm
     /// </summary>
     public interface IResourceManagerClient : IClient
     {
+        /// <summary>
+        /// Get project details.
+        /// </summary>
+        /// <exception cref="ResourceAccessDeniedException">when access denied</exception>
         Task<Project> GetProjectAsync(
             ProjectLocator project,
             CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Search for projects.
+        /// </summary>
         Task<FilteredProjectList> ListProjectsAsync(
             ProjectFilter? filter,
             int? maxResults,
