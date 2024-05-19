@@ -34,7 +34,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// Returns a factory for MVVM-enabled Views. The View class
         /// and the view model are created using the service provider.
         /// </summary>
-        public static WindowFactory<TView, TViewModel> GetViewFactory<TView, TViewModel>(
+        public static IWindowFactory<TView, TViewModel> GetViewFactory<TView, TViewModel>(
             this IServiceProvider serviceProvider)
             where TView : Form, IView<TViewModel>
             where TViewModel : ViewModelBase
