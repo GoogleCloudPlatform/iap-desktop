@@ -41,12 +41,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
         public DebugThemeView(
             IMainWindow mainWindow,
             ToolWindowStateRepository stateRepository,
-            IThemeService themeService)
+            IMainWindowTheme theme)
             : base(mainWindow, stateRepository, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft)
         {
             InitializeComponent();
 
-            var palette = themeService.DockPanelTheme.ColorPalette;
+            var palette = theme.DockPanelTheme.ColorPalette;
             this.propertyGrid.SelectedObject = new ColorPaletteInspector(palette);
         }
 

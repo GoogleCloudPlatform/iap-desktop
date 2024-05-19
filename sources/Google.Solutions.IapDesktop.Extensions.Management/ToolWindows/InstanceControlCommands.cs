@@ -228,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows
                 string domainName;
                 string newComputerName;
 
-                var theme = this.serviceProvider.GetService<IThemeService>().DialogTheme;
+                var theme = this.serviceProvider.GetService<IDialogTheme>();
                 using (var dialog = this.serviceProvider.GetDialog<JoinView, JoinViewModel>(theme))
                 {
                     dialog.ViewModel.ComputerName.Value = instance.DisplayName;

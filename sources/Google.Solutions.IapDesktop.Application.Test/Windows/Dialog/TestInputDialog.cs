@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
             }
 
             var dialog = new InputDialog(
-                new Service<IThemeService>(new Mock<IServiceProvider>().Object));
+                new Service<ISystemDialogTheme>(new Mock<IServiceProvider>().Object));
 
             if (dialog.Prompt(
                 null,

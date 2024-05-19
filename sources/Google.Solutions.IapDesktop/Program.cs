@@ -185,8 +185,7 @@ namespace Google.Solutions.IapDesktop
 
         private static IAuthorization AuthorizeOrExit(IServiceProvider serviceProvider)
         {
-            var theme = serviceProvider.GetService<IThemeService>().DialogTheme;
-            Debug.Assert(theme != null);
+            var theme = serviceProvider.GetService<IDialogTheme>();
 
             using (var dialog = serviceProvider
                 .GetDialog<AuthorizeView, AuthorizeViewModel>(theme))
@@ -448,9 +447,17 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddSingleton(new ToolWindowStateRepository(
                     profile.SettingsKey.CreateSubKey("ToolWindows")));
                 preAuthLayer.AddSingleton<IBindingContext, ViewBindingContext>();
-                preAuthLayer.AddSingleton<IThemeService, ThemeService>();
                 preAuthLayer.AddTransient<IQuarantine, Quarantine>();
                 preAuthLayer.AddTransient<IBrowserProtocolRegistry, BrowserProtocolRegistry>();
+
+                //
+                // Load themes.
+                //
+                var themes = Themes.Load(themeSettingsRepository);
+                preAuthLayer.AddSingleton<ISystemDialogTheme>(themes.SystemDialogTheme);
+                preAuthLayer.AddSingleton<IDialogTheme>(themes.DialogTheme);
+                preAuthLayer.AddSingleton<IToolWindowTheme>(themes.ToolWindowTheme);
+                preAuthLayer.AddSingleton<IMainWindowTheme>(themes.MainWindowTheme);
 
                 //
                 // Configure networking settings.

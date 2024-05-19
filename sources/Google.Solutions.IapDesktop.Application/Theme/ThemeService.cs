@@ -19,47 +19,38 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Settings.Collection;
+using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
 {
-    /// <summary>
-    /// Applies themes to controls and dialogs.
-    /// </summary>
-    public interface IThemeService
+    public class Themes
     {
-        /// <summary>
-        /// Theme for system dialogs and other secondary windows.
-        /// </summary>
-        IControlTheme SystemDialogTheme { get; }
+        public ISystemDialogTheme SystemDialogTheme { get; }
+        public IDialogTheme DialogTheme { get; }
+        public IToolWindowTheme ToolWindowTheme { get; }
+        public IMainWindowTheme MainWindowTheme { get; }
+
+        private Themes(
+            ISystemDialogTheme systemDialogTheme,
+            IDialogTheme dialogTheme,
+            IToolWindowTheme toolWindowTheme,
+            IMainWindowTheme mainWindowTheme)
+        {
+            this.SystemDialogTheme = systemDialogTheme;
+            this.DialogTheme = dialogTheme;
+            this.ToolWindowTheme = toolWindowTheme;
+            this.MainWindowTheme = mainWindowTheme;
+        }
 
         /// <summary>
-        /// Theme for dialogs and other secondary windows.
+        /// Load themes from the respository.
         /// </summary>
-        IControlTheme DialogTheme { get; }
-
-        /// <summary>
-        /// Theme for tool windows, docked or undocked.
-        /// </summary>
-        IControlTheme ToolWindowTheme { get; }
-
-        /// <summary>
-        /// Theme for the main window.
-        /// </summary>
-        IControlTheme MainWindowTheme { get; }
-
-        /// <summary>
-        /// Theme for the docking suite.
-        /// </summary>
-        ThemeBase DockPanelTheme { get; }
-    }
-
-    public class ThemeService : IThemeService
-    {
-        public ThemeService(IRepository<IThemeSettings> themeSettingsRepository)
+        public static Themes Load(IRepository<IThemeSettings> themeSettingsRepository) // TODO: make async
         {
             var settings = themeSettingsRepository.GetSettings();
             var windowsTheme = settings.Theme.Value switch
@@ -103,29 +94,66 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 .AddRuleSet(new VSThemeDockWindowRuleSet(vsTheme))
                 .AddRuleSet(new GdiScalingRuleset());
 
-            //
-            // Apply the resulting theme to the different kinds of windows we have.
-            //
-            this.DockPanelTheme = vsTheme;
-            this.SystemDialogTheme = systemDialogTheme;
-            this.DialogTheme = dialogTheme;
-            this.MainWindowTheme = dockWindowTheme;
-            this.ToolWindowTheme = dockWindowTheme;
 
             if (vsTheme.Extender.FloatWindowFactory is VSThemeExtensions.FloatWindowFactory factory)
             {
                 factory.Theme = dialogTheme;
             }
+
+            return new Themes(
+                new SystemDialogWindowTheme(systemDialogTheme),
+                new DialogWindowTheme(dialogTheme),
+                new ToolWindowWindowTheme(dockWindowTheme),
+                new MainWindowWindowTheme(dockWindowTheme, vsTheme));
         }
 
         //---------------------------------------------------------------------
-        // ITheme.
+        // Typed theme wrappers.
         //---------------------------------------------------------------------
 
-        public ThemeBase DockPanelTheme { get; }
-        public IControlTheme SystemDialogTheme { get; }
-        public IControlTheme DialogTheme { get; }
-        public IControlTheme ToolWindowTheme { get; }
-        public IControlTheme MainWindowTheme { get; }
+        private abstract class WindowThemeBase : IControlTheme // TODO: rename wrapper classes
+        {
+            private readonly IControlTheme theme;
+
+            protected WindowThemeBase(IControlTheme theme)
+            {
+                this.theme = theme.ExpectNotNull(nameof(theme));
+            }
+
+            public void ApplyTo(Control control)
+            {
+                this.theme.ApplyTo(control);
+            }
+        }
+
+        private class SystemDialogWindowTheme : WindowThemeBase, ISystemDialogTheme
+        {
+            internal SystemDialogWindowTheme(IControlTheme theme) : base(theme)
+            { }
+        }
+
+        private class DialogWindowTheme : WindowThemeBase, IDialogTheme
+        {
+            internal DialogWindowTheme(IControlTheme theme) : base(theme)
+            { }
+        }
+
+        private class MainWindowWindowTheme : WindowThemeBase, IMainWindowTheme
+        {
+            internal MainWindowWindowTheme(
+                IControlTheme theme,
+                ThemeBase dockPanelTheme) : base(theme)
+            {
+                this.DockPanelTheme = dockPanelTheme;
+            }
+
+            public ThemeBase DockPanelTheme { get;}
+        }
+
+        private class ToolWindowWindowTheme : WindowThemeBase, IToolWindowTheme
+        {
+            internal ToolWindowWindowTheme(IControlTheme theme) : base(theme)
+            { }
+        }
     }
 }

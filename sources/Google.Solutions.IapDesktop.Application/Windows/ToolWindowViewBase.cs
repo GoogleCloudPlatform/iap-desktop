@@ -445,7 +445,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                     view,
                     serviceProvider.GetService<TToolWindowViewModel>(),
                     serviceProvider.GetService<IBindingContext>(),
-                    serviceProvider.GetService<IThemeService>().ToolWindowTheme);
+                    serviceProvider.GetService<IToolWindowTheme>());
                 view.boundWindow = boundWindow;
 
                 if (view.HideOnClose)

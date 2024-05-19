@@ -88,11 +88,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
 
     public class InputDialog : IInputDialog
     {
-        private readonly Service<IThemeService> themeService;
+        private readonly Service<ISystemDialogTheme> theme;
 
-        public InputDialog(Service<IThemeService> themeService)
+        public InputDialog(Service<ISystemDialogTheme> theme)
         {
-            this.themeService = themeService.ExpectNotNull(nameof(themeService));
+            this.theme = theme.ExpectNotNull(nameof(theme));
         }
 
         public DialogResult Prompt(
@@ -106,10 +106,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             {
                 try
                 {
-                    this.themeService
-                        .GetInstance()?
-                        .SystemDialogTheme
-                        .ApplyTo(dialog);
+                    this.theme.GetInstance().ApplyTo(dialog);
                 }
                 catch (UnknownServiceException)
                 { }

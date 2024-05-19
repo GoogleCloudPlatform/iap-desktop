@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         public void WhenViewIsSingleton_ThenViewIsBoundOnlyOnce()
         {
             var registry = new ServiceRegistry();
-            registry.AddMock<IThemeService>();
+            registry.AddMock<IToolWindowTheme>();
             registry.AddMock<IBindingContext>();
             registry.AddSingleton<SampleView>();
             registry.AddTransient<SampleViewModel>();
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         public void WhenViewIsTransient_ThenEachInstanceIsBound()
         {
             var registry = new ServiceRegistry();
-            registry.AddMock<IThemeService>();
+            registry.AddMock<IToolWindowTheme>();
             registry.AddMock<IBindingContext>();
             registry.AddTransient<SampleView>();
             registry.AddTransient<SampleViewModel>();
