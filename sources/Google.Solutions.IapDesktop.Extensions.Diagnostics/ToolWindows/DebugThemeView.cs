@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
         {
             InitializeComponent();
 
-            var palette = themeService.DockPanelTheme.ColorPalette;
+            var palette = themeService.MainWindowTheme.DockPanelTheme.ColorPalette;
             this.propertyGrid.SelectedObject = new ColorPaletteInspector(palette);
         }
 

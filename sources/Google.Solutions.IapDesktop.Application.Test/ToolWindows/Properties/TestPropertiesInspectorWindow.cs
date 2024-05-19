@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Properties
             this.ServiceRegistry.AddMock<IProjectExplorer>();
             this.ServiceRegistry.AddMock<IThemeService>()
                 .SetupGet(t => t.ToolWindowTheme)
-                .Returns(new Mock<IControlTheme>().Object);
+                .Returns(new Mock<IToolWindowTheme>().Object);
         }
 
         [Test]
