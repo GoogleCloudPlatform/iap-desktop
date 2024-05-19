@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
         public void PromptForWindowsCredentials()
         {
             var dialog = new CredentialDialog(
-                new Service<IThemeService>(new Mock<IServiceProvider>().Object));
+                new Service<ISystemDialogTheme>(new Mock<IServiceProvider>().Object));
             if (dialog.PromptForWindowsCredentials(
                 null,
                 new CredentialDialogParameters()
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
         public void PromptForWindowsCredentialsWithSaveOption()
         {
             var dialog = new CredentialDialog(
-                new Service<IThemeService>(new Mock<IServiceProvider>().Object));
+                new Service<ISystemDialogTheme>(new Mock<IServiceProvider>().Object));
             if (dialog.PromptForWindowsCredentials(
                 null,
                 new CredentialDialogParameters()
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
         public void PromptForWindowsCredentialsWithPrefill()
         {
             var dialog = new CredentialDialog(
-                new Service<IThemeService>(new Mock<IServiceProvider>().Object));
+                new Service<ISystemDialogTheme>(new Mock<IServiceProvider>().Object));
 
             if (dialog.PromptForWindowsCredentials(
                 null,
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
         public void PromptForUsername()
         {
             var dialog = new CredentialDialog(
-                new Service<IThemeService>(new Mock<IServiceProvider>().Object));
+                new Service<ISystemDialogTheme>(new Mock<IServiceProvider>().Object));
 
             if (dialog.PromptForUsername(
                 null,

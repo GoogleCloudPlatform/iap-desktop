@@ -90,7 +90,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             var registry = new ServiceRegistry(this.ServiceRegistry);
             registry.AddTransient<RdpView>();
             registry.AddTransient<RdpViewModel>();
-            registry.AddMock<IThemeService>();
             registry.AddMock<IBindingContext>();
             registry.AddTransient<IToolWindowHost, ToolWindowHost>();
             registry.AddSingleton(authorization);

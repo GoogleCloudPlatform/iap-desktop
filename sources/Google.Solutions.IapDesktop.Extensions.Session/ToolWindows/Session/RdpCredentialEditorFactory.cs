@@ -53,13 +53,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         public IRdpCredentialEditor Edit(Extensions.Session.Settings.ConnectionSettings settings)
         {
-            var themeService = this.serviceProvider.GetService<IThemeService>();
+            var theme = this.serviceProvider.GetService<IDialogTheme>();
 
             var newCredentialFactory = this.serviceProvider.GetViewFactory<NewCredentialsView, NewCredentialsViewModel>();
-            newCredentialFactory.Theme = themeService.DialogTheme;
+            newCredentialFactory.Theme = theme;
 
             var showCredentialFactory = this.serviceProvider.GetViewFactory<ShowCredentialsView, ShowCredentialsViewModel>();
-            showCredentialFactory.Theme = themeService.DialogTheme;
+            showCredentialFactory.Theme = theme;
 
             return new RdpCredentialEditor(
                 this.serviceProvider.GetService<IWin32Window>(),

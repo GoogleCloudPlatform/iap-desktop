@@ -28,35 +28,29 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
 {
-    /// <summary>
-    /// Applies themes to controls and dialogs.
-    /// </summary>
-    public interface IThemeService
+    public class Themes
     {
-        /// <summary>
-        /// Theme for system dialogs and other secondary windows.
-        /// </summary>
-        ISystemDialogTheme SystemDialogTheme { get; }
+        public ISystemDialogTheme SystemDialogTheme { get; }
+        public IDialogTheme DialogTheme { get; }
+        public IToolWindowTheme ToolWindowTheme { get; }
+        public IMainWindowTheme MainWindowTheme { get; }
+
+        private Themes(
+            ISystemDialogTheme systemDialogTheme,
+            IDialogTheme dialogTheme,
+            IToolWindowTheme toolWindowTheme,
+            IMainWindowTheme mainWindowTheme)
+        {
+            this.SystemDialogTheme = systemDialogTheme;
+            this.DialogTheme = dialogTheme;
+            this.ToolWindowTheme = toolWindowTheme;
+            this.MainWindowTheme = mainWindowTheme;
+        }
 
         /// <summary>
-        /// Theme for dialogs and other secondary windows.
+        /// Load themes from the respository.
         /// </summary>
-        IDialogTheme DialogTheme { get; }
-
-        /// <summary>
-        /// Theme for tool windows, docked or undocked.
-        /// </summary>
-        IToolWindowTheme ToolWindowTheme { get; }
-
-        /// <summary>
-        /// Theme for the main window.
-        /// </summary>
-        IMainWindowTheme MainWindowTheme { get; }
-    }
-
-    public class ThemeService : IThemeService
-    {
-        public ThemeService(IRepository<IThemeSettings> themeSettingsRepository)
+        public static Themes Load(IRepository<IThemeSettings> themeSettingsRepository) // TODO: make async
         {
             var settings = themeSettingsRepository.GetSettings();
             var windowsTheme = settings.Theme.Value switch
@@ -100,34 +94,24 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 .AddRuleSet(new VSThemeDockWindowRuleSet(vsTheme))
                 .AddRuleSet(new GdiScalingRuleset());
 
-            //
-            // Apply the resulting theme to the different kinds of windows we have.
-            //
-            this.SystemDialogTheme = new SystemDialogWindowTheme(systemDialogTheme);
-            this.DialogTheme = new DialogWindowTheme(dialogTheme);
-            this.MainWindowTheme = new MainWindowWindowTheme(dockWindowTheme, vsTheme);
-            this.ToolWindowTheme = new ToolWindowWindowTheme(dockWindowTheme);
 
             if (vsTheme.Extender.FloatWindowFactory is VSThemeExtensions.FloatWindowFactory factory)
             {
                 factory.Theme = dialogTheme;
             }
+
+            return new Themes(
+                new SystemDialogWindowTheme(systemDialogTheme),
+                new DialogWindowTheme(dialogTheme),
+                new ToolWindowWindowTheme(dockWindowTheme),
+                new MainWindowWindowTheme(dockWindowTheme, vsTheme));
         }
-
-        //---------------------------------------------------------------------
-        // ITheme.
-        //---------------------------------------------------------------------
-
-        public ISystemDialogTheme SystemDialogTheme { get; }
-        public IDialogTheme DialogTheme { get; }
-        public IToolWindowTheme ToolWindowTheme { get; }
-        public IMainWindowTheme MainWindowTheme { get; }
 
         //---------------------------------------------------------------------
         // Typed theme wrappers.
         //---------------------------------------------------------------------
 
-        private abstract class WindowThemeBase : IControlTheme
+        private abstract class WindowThemeBase : IControlTheme // TODO: rename wrapper classes
         {
             private readonly IControlTheme theme;
 

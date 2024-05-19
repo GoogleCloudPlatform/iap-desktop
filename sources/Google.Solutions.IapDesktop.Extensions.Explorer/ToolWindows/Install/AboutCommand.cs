@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
         {
             using (var view = this.serviceProvider.GetDialog<AboutView, AboutViewModel>())
             {
-                view.Theme = this.serviceProvider.GetService<IThemeService>().DialogTheme;
+                view.Theme = this.serviceProvider.GetService<IDialogTheme>();
                 view.ShowDialog(this.serviceProvider.GetService<IMainWindow>());
             }
         }

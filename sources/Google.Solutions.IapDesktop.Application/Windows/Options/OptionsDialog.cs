@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
         {
             using (var dialog = serviceProvider.GetDialog<PropertiesView, PropertiesViewModel>())
             {
-                dialog.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
+                dialog.Theme = serviceProvider.GetService<IDialogTheme>();
 
                 var appSettingsRepository = serviceProvider.GetService<IRepository<IApplicationSettings>>();
 

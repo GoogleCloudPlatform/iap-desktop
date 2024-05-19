@@ -82,7 +82,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddMock<IExceptionDialog>();
-            serviceRegistry.AddMock<IThemeService>();
             serviceRegistry.AddTransient<DownloadFileView>();
             serviceRegistry.AddTransient<DownloadFileViewModel>();
 

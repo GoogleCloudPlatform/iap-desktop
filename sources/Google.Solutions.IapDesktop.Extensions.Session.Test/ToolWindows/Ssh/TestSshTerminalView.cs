@@ -97,12 +97,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var registry = new ServiceRegistry(this.ServiceRegistry);
             registry.AddTransient<SshTerminalView>();
             registry.AddTransient<SshTerminalViewModel>();
-            registry.AddMock<IThemeService>();
             registry.AddMock<IConfirmationDialog>();
             registry.AddMock<IOperationProgressDialog>();
             registry.AddMock<IDownloadFileDialog>();
             registry.AddMock<IQuarantine>();
-            registry.AddMock<IThemeService>();
+            registry.AddMock<IToolWindowTheme>();
             registry.AddMock<IBindingContext>();
             registry.AddMock<IInputDialog>();
             registry.AddTransient<IToolWindowHost, ToolWindowHost>();

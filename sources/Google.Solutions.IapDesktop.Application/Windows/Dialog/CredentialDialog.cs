@@ -93,11 +93,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
 
     public class CredentialDialog : ICredentialDialog
     {
-        private readonly Service<IThemeService> themeService;
+        private readonly Service<ISystemDialogTheme> theme;
 
-        public CredentialDialog(Service<IThemeService> themeService)
+        public CredentialDialog(Service<ISystemDialogTheme> theme)
         {
-            this.themeService = themeService.ExpectNotNull(nameof(themeService));
+            this.theme = theme.ExpectNotNull(nameof(theme));
         }
 
         public DialogResult PromptForWindowsCredentials(
@@ -197,10 +197,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             {
                 try
                 {
-                    this.themeService
-                        .GetInstance()?
-                        .SystemDialogTheme
-                        .ApplyTo(dialog);
+                    this.theme.GetInstance().ApplyTo(dialog);
                 }
                 catch (UnknownServiceException)
                 { }

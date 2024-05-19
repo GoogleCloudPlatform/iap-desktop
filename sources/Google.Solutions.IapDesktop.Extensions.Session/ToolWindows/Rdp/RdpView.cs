@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
             this.eventService = serviceProvider.GetService<IEventQueue>();
-            this.theme = serviceProvider.GetService<IThemeService>().ToolWindowTheme;
+            this.theme = serviceProvider.GetService<IToolWindowTheme>();
             this.settingsRepository = serviceProvider.GetService<IRepository<IApplicationSettings>>();
         }
 

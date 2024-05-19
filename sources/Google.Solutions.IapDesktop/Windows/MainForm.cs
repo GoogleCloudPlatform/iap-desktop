@@ -71,7 +71,8 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private readonly MainFormViewModel viewModel;
 
-        private readonly IThemeService themeService;
+        private readonly IMainWindowTheme windowTheme;
+        private readonly IDialogTheme dialogTheme;
         private readonly IRepository<IApplicationSettings> applicationSettings;
         private readonly IServiceProvider serviceProvider;
         private readonly IBindingContext bindingContext;
@@ -91,7 +92,8 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             this.serviceProvider = serviceProvider;
 
-            this.themeService = this.serviceProvider.GetService<IThemeService>();
+            this.windowTheme = this.serviceProvider.GetService<IMainWindowTheme>();
+            this.dialogTheme = this.serviceProvider.GetService<IDialogTheme>();
             this.applicationSettings = this.serviceProvider.GetService<IRepository<IApplicationSettings>>();
             this.bindingContext = serviceProvider.GetService<IBindingContext>();
 
@@ -119,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             SuspendLayout();
 
-            this.themeService.MainWindowTheme.ApplyTo(this);
+            this.windowTheme.ApplyTo(this);
 
             this.MinimumSize = MinimumWindowSize;
 
@@ -698,7 +700,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 button.Size);
 
             this.serviceProvider
-                .GetWindow<AccessInfoFlyoutView, AccessInfoViewModel>(this.themeService.MainWindowTheme)
+                .GetWindow<AccessInfoFlyoutView, AccessInfoViewModel>(this.windowTheme)
                 .Form
                 .Show(this, screenPosition, ContentAlignment.TopLeft);
         }
@@ -708,7 +710,7 @@ namespace Google.Solutions.IapDesktop.Windows
             try
             {
                 using (var dialog = this.serviceProvider
-                    .GetDialog<NewProfileView, NewProfileViewModel>(this.themeService.DialogTheme))
+                    .GetDialog<NewProfileView, NewProfileViewModel>(this.dialogTheme))
                 {
                     if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
@@ -748,7 +750,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     // Show WaitDialog, blocking all user intraction.
                     //
                     var waitDialog = new WaitDialog(this, jobDescription.StatusMessage, cancellationSource);
-                    this.themeService.DialogTheme.ApplyTo(waitDialog);
+                    this.dialogTheme.ApplyTo(waitDialog);
                     return waitDialog;
 
                 default:
@@ -759,7 +761,7 @@ namespace Google.Solutions.IapDesktop.Windows
         public void Reauthorize()
         {
             using (var dialog = this.serviceProvider
-                .GetDialog<AuthorizeView, AuthorizeViewModel>(this.themeService.DialogTheme))
+                .GetDialog<AuthorizeView, AuthorizeViewModel>(this.dialogTheme))
             {
                 dialog.ViewModel.UseExistingAuthorization(
                     this.serviceProvider.GetService<IAuthorization>());
