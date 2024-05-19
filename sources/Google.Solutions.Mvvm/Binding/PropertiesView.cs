@@ -99,7 +99,7 @@ namespace Google.Solutions.Mvvm.Binding
                     m => m.Title,
                     bindingContext);
 
-                Window<IPropertiesSheetView, PropertiesSheetViewModelBase>.Bind(
+                TopLevelWindow<IPropertiesSheetView, PropertiesSheetViewModelBase>.Bind(
                     sheet.View,
                     sheet.ViewModel,
                     this.theme,

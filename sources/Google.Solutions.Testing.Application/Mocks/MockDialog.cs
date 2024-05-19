@@ -30,7 +30,7 @@ namespace Google.Solutions.Testing.Application.Mocks
     /// <summary>
     /// Mock dialog that returns a predefined result.
     /// </summary>
-    public class MockDialog<TView, TViewModel> : IDialog<TView, TViewModel>
+    public class MockDialog<TView, TViewModel> : IDialogWindow<TView, TViewModel>
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
@@ -56,7 +56,7 @@ namespace Google.Solutions.Testing.Application.Mocks
         }
     }
 
-    public class MockDialogFactory<TView, TViewModel> : IDialogFactory<TView, TViewModel>
+    public class MockDialogFactory<TView, TViewModel> : IWindowFactory<TView, TViewModel>
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
@@ -75,15 +75,20 @@ namespace Google.Solutions.Testing.Application.Mocks
 
         public IControlTheme? Theme { get; set; }
 
-        public IDialog<TView, TViewModel> CreateDialog(TViewModel viewModel)
+        public IDialogWindow<TView, TViewModel> CreateDialog(TViewModel viewModel)
         {
             return new MockDialog<TView, TViewModel>(viewModel, this.result);
         }
 
-        public IDialog<TView, TViewModel> CreateDialog()
+        public IDialogWindow<TView, TViewModel> CreateDialog()
         {
             this.viewModel.ExpectNotNull("No view model provided");
             return new MockDialog<TView, TViewModel>(this.viewModel!, this.result);
+        }
+
+        public ITopLevelWindow<TView, TViewModel> CreateWindow()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
