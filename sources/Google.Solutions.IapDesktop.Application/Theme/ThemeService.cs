@@ -30,10 +30,25 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 {
     public class Themes
     {
-        public ISystemDialogTheme SystemDialogTheme { get; }
-        public IDialogTheme DialogTheme { get; }
-        public IToolWindowTheme ToolWindowTheme { get; }
-        public IMainWindowTheme MainWindowTheme { get; }
+        /// <summary>
+        /// Theme for system dialogs.
+        /// </summary>
+        public ISystemDialogTheme SystemDialog{ get; }
+
+        /// <summary>
+        /// Theme for dialogs.
+        /// </summary>
+        public IDialogTheme Dialog { get; }
+
+        /// <summary>
+        /// Theme for tool windows.
+        /// </summary>
+        public IToolWindowTheme ToolWindow { get; }
+
+        /// <summary>
+        /// Theme for the main window.
+        /// </summary>
+        public IMainWindowTheme MainWindow { get; }
 
         private Themes(
             ISystemDialogTheme systemDialogTheme,
@@ -41,16 +56,16 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             IToolWindowTheme toolWindowTheme,
             IMainWindowTheme mainWindowTheme)
         {
-            this.SystemDialogTheme = systemDialogTheme;
-            this.DialogTheme = dialogTheme;
-            this.ToolWindowTheme = toolWindowTheme;
-            this.MainWindowTheme = mainWindowTheme;
+            this.SystemDialog = systemDialogTheme;
+            this.Dialog = dialogTheme;
+            this.ToolWindow = toolWindowTheme;
+            this.MainWindow = mainWindowTheme;
         }
 
         /// <summary>
         /// Load themes from the respository.
         /// </summary>
-        public static Themes Load(IRepository<IThemeSettings> themeSettingsRepository) // TODO: make async
+        public static Themes Load(IRepository<IThemeSettings> themeSettingsRepository)
         {
             var settings = themeSettingsRepository.GetSettings();
             var windowsTheme = settings.Theme.Value switch
@@ -101,17 +116,17 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             }
 
             return new Themes(
-                new SystemDialogWindowTheme(systemDialogTheme),
+                new SystemDialogTheme(systemDialogTheme),
                 new DialogWindowTheme(dialogTheme),
-                new ToolWindowWindowTheme(dockWindowTheme),
-                new MainWindowWindowTheme(dockWindowTheme, vsTheme));
+                new ToolWindowTheme(dockWindowTheme),
+                new MainWindowTheme(dockWindowTheme, vsTheme));
         }
 
         //---------------------------------------------------------------------
         // Typed theme wrappers.
         //---------------------------------------------------------------------
 
-        private abstract class WindowThemeBase : IControlTheme // TODO: rename wrapper classes
+        private abstract class WindowThemeBase : IControlTheme
         {
             private readonly IControlTheme theme;
 
@@ -126,9 +141,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             }
         }
 
-        private class SystemDialogWindowTheme : WindowThemeBase, ISystemDialogTheme
+        private class SystemDialogTheme : WindowThemeBase, ISystemDialogTheme
         {
-            internal SystemDialogWindowTheme(IControlTheme theme) : base(theme)
+            internal SystemDialogTheme(IControlTheme theme) : base(theme)
             { }
         }
 
@@ -138,9 +153,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             { }
         }
 
-        private class MainWindowWindowTheme : WindowThemeBase, IMainWindowTheme
+        private class MainWindowTheme : WindowThemeBase, IMainWindowTheme
         {
-            internal MainWindowWindowTheme(
+            internal MainWindowTheme(
                 IControlTheme theme,
                 ThemeBase dockPanelTheme) : base(theme)
             {
@@ -150,9 +165,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public ThemeBase DockPanelTheme { get;}
         }
 
-        private class ToolWindowWindowTheme : WindowThemeBase, IToolWindowTheme
+        private class ToolWindowTheme : WindowThemeBase, IToolWindowTheme
         {
-            internal ToolWindowWindowTheme(IControlTheme theme) : base(theme)
+            internal ToolWindowTheme(IControlTheme theme) : base(theme)
             { }
         }
     }

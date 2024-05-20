@@ -700,7 +700,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 button.Size);
 
             this.serviceProvider
-                .GetWindow<AccessInfoFlyoutView, AccessInfoViewModel>(this.windowTheme)
+                .GetWindow<AccessInfoFlyoutView, AccessInfoViewModel, IMainWindowTheme>()
                 .Form
                 .Show(this, screenPosition, ContentAlignment.TopLeft);
         }
@@ -710,7 +710,7 @@ namespace Google.Solutions.IapDesktop.Windows
             try
             {
                 using (var dialog = this.serviceProvider
-                    .GetDialog<NewProfileView, NewProfileViewModel>(this.dialogTheme))
+                    .GetDialog<NewProfileView, NewProfileViewModel, IDialogTheme>())
                 {
                     if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
@@ -761,7 +761,7 @@ namespace Google.Solutions.IapDesktop.Windows
         public void Reauthorize()
         {
             using (var dialog = this.serviceProvider
-                .GetDialog<AuthorizeView, AuthorizeViewModel>(this.dialogTheme))
+                .GetDialog<AuthorizeView, AuthorizeViewModel, IDialogTheme>())
             {
                 dialog.ViewModel.UseExistingAuthorization(
                     this.serviceProvider.GetService<IAuthorization>());

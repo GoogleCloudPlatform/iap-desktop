@@ -53,14 +53,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         public IRdpCredentialEditor Edit(Extensions.Session.Settings.ConnectionSettings settings)
         {
-            var theme = this.serviceProvider.GetService<IDialogTheme>();
-
-            var newCredentialFactory = this.serviceProvider.GetViewFactory<NewCredentialsView, NewCredentialsViewModel>();
-            newCredentialFactory.Theme = theme;
-
-            var showCredentialFactory = this.serviceProvider.GetViewFactory<ShowCredentialsView, ShowCredentialsViewModel>();
-            showCredentialFactory.Theme = theme;
-
             return new RdpCredentialEditor(
                 this.serviceProvider.GetService<IWin32Window>(),
                 settings,
@@ -69,8 +61,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 this.serviceProvider.GetService<IWindowsCredentialGenerator>(),
                 this.serviceProvider.GetService<ITaskDialog>(),
                 this.serviceProvider.GetService<ICredentialDialog>(),
-                newCredentialFactory,
-                showCredentialFactory);
+                this.serviceProvider.GetViewFactory<NewCredentialsView, NewCredentialsViewModel, IDialogTheme>(),
+                this.serviceProvider.GetViewFactory<ShowCredentialsView, ShowCredentialsViewModel, IDialogTheme>());
         }
     }
 }

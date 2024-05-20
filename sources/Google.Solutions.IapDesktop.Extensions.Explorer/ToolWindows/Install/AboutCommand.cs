@@ -53,9 +53,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
 
         public override void Execute(IInstall _)
         {
-            using (var view = this.serviceProvider.GetDialog<AboutView, AboutViewModel>())
+            using (var view = this.serviceProvider.GetDialog<AboutView, AboutViewModel, IDialogTheme>())
             {
-                view.Theme = this.serviceProvider.GetService<IDialogTheme>();
                 view.ShowDialog(this.serviceProvider.GetService<IMainWindow>());
             }
         }

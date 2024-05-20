@@ -243,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         public async Task GenerateCredentialsAsync(bool silent)
         {
             var credentials = await CreateCredentialsAsync(
-                owner,
+                this.owner,
                 this.Instance,
                 this.Settings.RdpUsername.Value,
                 silent);

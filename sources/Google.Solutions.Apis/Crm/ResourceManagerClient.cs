@@ -260,7 +260,7 @@ namespace Google.Solutions.Apis.Crm
             }
         }
 
-        public async Task<Organization> GetOrganizationAsync(// TODO: test
+        public async Task<Organization> GetOrganizationAsync(
             OrganizationLocator organization, 
             CancellationToken cancellationToken)
         {
