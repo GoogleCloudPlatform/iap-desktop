@@ -295,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
                     .SelectCloudProjects(
                         this,
                         "Add projects",
-                        this.resourceManagerAdapter.GetInstance(),
+                        this.resourceManagerAdapter.Activate(),
                         out var projects) == DialogResult.OK)
                 {
                     await this.viewModel

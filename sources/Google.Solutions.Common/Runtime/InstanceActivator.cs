@@ -53,7 +53,7 @@ namespace Google.Solutions.Common.Runtime
                 this.createInstance = createInstance;
             }
 
-            public T GetInstance()
+            public T Activate()
             {
                 return this.createInstance();
             }

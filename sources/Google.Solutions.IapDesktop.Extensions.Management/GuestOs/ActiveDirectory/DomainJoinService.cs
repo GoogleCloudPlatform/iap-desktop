@@ -261,7 +261,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
                 using (var operation = new StartupScriptOperation(
                     instance,
                     MetadataKeys.JoinDomainGuard,
-                    this.computeClient.GetInstance()))
+                    this.computeClient.Activate()))
                 {
                     await JoinDomainAsync(
                             operation,

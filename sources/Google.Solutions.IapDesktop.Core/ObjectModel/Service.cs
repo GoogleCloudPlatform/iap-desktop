@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
             this.serviceProvider = serviceProvider.ExpectNotNull(nameof(serviceProvider));
         }
 
-        public TService GetInstance()
+        public TService Activate()
         {
             return (TService)this.serviceProvider.GetService(typeof(TService));
         }

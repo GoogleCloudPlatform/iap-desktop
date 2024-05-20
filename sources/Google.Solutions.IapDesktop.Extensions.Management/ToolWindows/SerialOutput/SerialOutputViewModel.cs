@@ -209,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
                             {
                                 return await SerialOutputModel.LoadAsync(
                                     vmNode.Instance.Name,
-                                    this.computeClient.GetInstance(),
+                                    this.computeClient.Activate(),
                                     vmNode.Instance,
                                     this.SerialPortNumber,
                                     combinedTokenSource.Token)
