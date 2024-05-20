@@ -19,12 +19,15 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Runtime;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh;
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
+using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Moq;
@@ -34,6 +37,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 {
@@ -80,12 +84,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     CreateFileItem("File", false).Object
                 });
 
-            var serviceRegistry = new ServiceRegistry();
-            serviceRegistry.AddMock<IExceptionDialog>();
-            serviceRegistry.AddTransient<DownloadFileView>();
-            serviceRegistry.AddTransient<DownloadFileViewModel>();
+            var exceptionDialog = new Mock<IExceptionDialog>();
+            var downloadWindow = new WindowActivator<DownloadFileView, DownloadFileViewModel, IDialogTheme>(
+                InstanceActivator.Create(new DownloadFileView(exceptionDialog.Object)),
+                InstanceActivator.Create<DownloadFileViewModel>(() => throw new Exception("unexpected")),
+                new Mock<IDialogTheme>().Object,
+                new Mock<IBindingContext>().Object);
 
-            var dialog = new DownloadFileDialog(serviceRegistry);
+            var dialog = new DownloadFileDialog(downloadWindow);
             dialog.SelectDownloadFiles(
                 null,
                 "Test",

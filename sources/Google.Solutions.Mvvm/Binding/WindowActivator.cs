@@ -19,48 +19,33 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
+using Google.Solutions.Common.Runtime;
 using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Google.Solutions.Mvvm.Binding
 {
     /// <summary>
-    /// Factory for creating windows using a view and a view model.
+    /// Window that can be shown as a dialog.
     /// </summary>
-    public interface IWindowFactory<TView, TViewModel>
-        where TView : Form, IView<TViewModel>
+    public interface IWindow<TViewModel>
         where TViewModel : ViewModelBase
     {
         /// <summary>
-        /// Create a dialog window using an existing view model.
+        /// View model used by the window.
         /// </summary>
-        IDialogWindow<TView, TViewModel> CreateDialog(TViewModel viewModel);
-
-        /// <summary>
-        /// Create a dialog window.
-        /// </summary>
-        IDialogWindow<TView, TViewModel> CreateDialog();
-
-        /// <summary>
-        /// Create a top-level window.
-        /// </summary>
-        ITopLevelWindow<TView, TViewModel> CreateWindow();
+        TViewModel ViewModel { get; }
     }
 
     /// <summary>
     /// Window that can be shown as a dialog.
     /// </summary>
-    public interface IDialogWindow<TView, TViewModel> : IDisposable
+    public interface IDialogWindow<TView, TViewModel> : IWindow<TViewModel>, IDisposable
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
-        /// <summary>
-        /// View model used by the dialog.
-        /// </summary>
-        TViewModel ViewModel { get; }
-
         /// <summary>
         /// Show the dialog.
         /// </summary>
@@ -70,76 +55,94 @@ namespace Google.Solutions.Mvvm.Binding
     /// <summary>
     /// Window that can be shown as a top-level window.
     /// </summary>
-    public interface ITopLevelWindow<TView, TViewModel>
+    public interface ITopLevelWindow<TView, TViewModel> : IWindow<TViewModel>
         where TView : class, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
-        /// <summary>
-        /// View model used by the dialog.
-        /// </summary>
-        TViewModel ViewModel { get; }
-
         /// <summary>
         /// Window form.
         /// </summary>
         TView Form { get; }
     }
 
-    public class WindowFactory<TView, TViewModel, TTheme> : IWindowFactory<TView, TViewModel>
+    public class WindowActivator<TView, TViewModel, TTheme> : IActivator<IWindow<TViewModel>>
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
         where TTheme : IControlTheme
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly IActivator<TView> viewActivator;
+        private readonly IActivator<TViewModel> viewModelActivator;
+        private readonly TTheme theme;
+        private readonly IBindingContext bindingContext;
 
-        private TViewModel CreateViewModel()
+        public WindowActivator(
+            IActivator<TView> viewActivator,
+            IActivator<TViewModel> viewModelActivator,
+            TTheme theme,
+            IBindingContext bindingContext)
         {
-            return (TViewModel)this.serviceProvider.GetService(typeof(TViewModel));
+            this.viewActivator = viewActivator;
+            this.viewModelActivator = viewModelActivator;
+            this.theme = theme;
+            this.bindingContext = bindingContext;
         }
 
-        /// <summary>
-        /// Get or set the theme to apply, optional.
-        /// </summary>
-        public IControlTheme? Theme { get; set; }
-
-        internal WindowFactory(IServiceProvider serviceProvider)
+        public virtual IDialogWindow<TView, TViewModel> CreateDialog(TViewModel viewModel)
         {
-            this.serviceProvider = serviceProvider.ExpectNotNull(nameof(serviceProvider));
+            return new DialogWindow<TView, TViewModel, TTheme>(
+                this.viewActivator,
+                viewModel,
+                this.theme,
+                this.bindingContext);
         }
 
-        public IDialogWindow<TView, TViewModel> CreateDialog(TViewModel viewModel)
+        public virtual IDialogWindow<TView, TViewModel> CreateDialog()
         {
-            return new Dialog<TView, TViewModel, TTheme>(this.serviceProvider, viewModel);
+            return new DialogWindow<TView, TViewModel, TTheme>(
+                this.viewActivator,
+                this.viewModelActivator.GetInstance(),
+                this.theme,
+                this.bindingContext);
         }
 
-        public IDialogWindow<TView, TViewModel> CreateDialog()
-        {
-            return CreateDialog(CreateViewModel());
-        }
-
-        public ITopLevelWindow<TView, TViewModel> CreateWindow()
+        public virtual ITopLevelWindow<TView, TViewModel> CreateWindow()
         {
             return new TopLevelWindow<TView, TViewModel, TTheme>(
-                this.serviceProvider,
-                (TViewModel)this.serviceProvider.GetService(typeof(TViewModel)));
+                this.viewActivator,
+                this.viewModelActivator.GetInstance(),
+                this.theme,
+                this.bindingContext);
+        }
+
+        public IWindow<TViewModel> GetInstance()
+        {
+            return CreateWindow();
         }
     }
 
-    public sealed class Dialog<TView, TViewModel, TTheme> : IDialogWindow<TView, TViewModel>
+    internal sealed class DialogWindow<TView, TViewModel, TTheme> : IDialogWindow<TView, TViewModel>
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
         where TTheme : IControlTheme
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly IActivator<TView> viewActivator;
+        private readonly TTheme theme;
+        private readonly IBindingContext bindingContext;
 
         private bool shown;
-
+         
         public TViewModel ViewModel { get; }
 
-        internal Dialog(IServiceProvider serviceProvider, TViewModel viewModel)
+        internal DialogWindow(
+            IActivator<TView> viewActivator,
+            TViewModel viewModel,
+            TTheme theme,
+            IBindingContext bindingContext)
         {
-            this.serviceProvider = serviceProvider;
+            this.viewActivator = viewActivator;
             this.ViewModel = viewModel;
+            this.theme = theme;
+            this.bindingContext = bindingContext;
         }
 
         /// <summary>
@@ -158,25 +161,17 @@ namespace Google.Solutions.Mvvm.Binding
                 this.shown = true;
             }
 
-            var bindingContext = (IBindingContext)
-                this.serviceProvider.GetService(typeof(IBindingContext));
-            if (bindingContext == null)
-            {
-                throw new BindingException("Binding context not available");
-            }
-
             //
             // Create view, show, and dispose it.
             //
-            using (var view = (TView)this.serviceProvider.GetService(typeof(TView)))
+            using (var view = this.viewActivator.GetInstance())
             {
                 view.SuspendLayout();
 
-                var theme = (TTheme)this.serviceProvider.GetService(typeof(TTheme));
-                theme.ApplyTo(view);
+                this.theme.ApplyTo(view);
                 if (view is IThemedView<TViewModel> themedView && themedView != null)
                 {
-                    themedView.SetTheme(theme);
+                    themedView.SetTheme(this.theme);
                 }
 
                 //
@@ -185,7 +180,7 @@ namespace Google.Solutions.Mvvm.Binding
                 this.ViewModel.Bind(view);
                 view.Bind(
                     this.ViewModel,
-                    bindingContext);
+                    this.bindingContext);
                 view.ResumeLayout();
 
                 var result = view.ShowDialog(parent);
@@ -210,16 +205,24 @@ namespace Google.Solutions.Mvvm.Binding
         where TViewModel : ViewModelBase
         where TTheme : IControlTheme
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly IActivator<TView> viewActivator;
+        private readonly TTheme theme;
+        private readonly IBindingContext bindingContext;
 
         private TView? form;
 
         public TViewModel ViewModel { get; }
 
-        internal TopLevelWindow(IServiceProvider serviceProvider, TViewModel viewModel)
+        internal TopLevelWindow(
+            IActivator<TView> viewActivator,
+            TViewModel viewModel,
+            TTheme theme,
+            IBindingContext bindingContext)
         {
-            this.serviceProvider = serviceProvider;
+            this.viewActivator = viewActivator;
             this.ViewModel = viewModel;
+            this.theme = theme;
+            this.bindingContext = bindingContext;
         }
 
         /// <summary>
@@ -275,21 +278,13 @@ namespace Google.Solutions.Mvvm.Binding
                     //
                     // Create view and bind it.
                     //
-                    var view = (TView)this.serviceProvider.GetService(typeof(TView));
+                    var view = this.viewActivator.GetInstance();
                     if (view == null)
                     {
                         throw new BindingException($"No view of type {typeof(TView)} available");
                     }
 
-                    var bindingContext = (IBindingContext)
-                        this.serviceProvider.GetService(typeof(IBindingContext));
-                    if (bindingContext == null)
-                    {
-                        throw new BindingException("Binding context not available");
-                    }
-
-                    var theme = (TTheme)this.serviceProvider.GetService(typeof(TTheme));
-                    Bind(view, this.ViewModel, theme, bindingContext);
+                    Bind(view, this.ViewModel, this.theme, this.bindingContext);
 
                     this.form = view;
                 }

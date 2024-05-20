@@ -48,12 +48,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
     [Service(typeof(IDownloadFileDialog))]
     public class DownloadFileDialog : IDownloadFileDialog
     {
-        private readonly IWindowFactory<DownloadFileView, DownloadFileViewModel> dialogFactory;
+        private readonly WindowActivator<DownloadFileView, DownloadFileViewModel, IDialogTheme> downloadWindow;
 
-        public DownloadFileDialog(IServiceProvider serviceProvider)
+        public DownloadFileDialog(
+            WindowActivator<DownloadFileView, DownloadFileViewModel, IDialogTheme> downloadWindow)
         {
-            this.dialogFactory = serviceProvider
-                .GetViewFactory<DownloadFileView, DownloadFileViewModel, IDialogTheme>();
+            this.downloadWindow = downloadWindow;
         }
 
         public DialogResult SelectDownloadFiles(
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             sourceItems = null;
             targetDirectory = null;
 
-            using (var dialog = this.dialogFactory.CreateDialog(new DownloadFileViewModel(fileSystem)))
+            using (var dialog = this.downloadWindow.CreateDialog(new DownloadFileViewModel(fileSystem)))
             {
                 dialog.ViewModel.DialogText.Value = caption;
 

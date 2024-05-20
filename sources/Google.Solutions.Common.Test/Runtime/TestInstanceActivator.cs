@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,26 +20,34 @@
 //
 
 using Google.Solutions.Common.Runtime;
-using Google.Solutions.Common.Util;
-using System;
+using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Core.ObjectModel
+namespace Google.Solutions.Common.Test.Runtime
 {
-    /// <summary>
-    /// Decorator for delaying service lookup.
-    /// </summary>
-    public class Service<TService> : IActivator<TService>
+    [TestFixture]
+    public class TestInstanceActivator
     {
-        private readonly IServiceProvider serviceProvider;
+        private class SomeClass { }
 
-        public Service(IServiceProvider serviceProvider)
+        [Test]
+        public void CreateReturnsExistingInstance()
         {
-            this.serviceProvider = serviceProvider.ExpectNotNull(nameof(serviceProvider));
+            var instance = new SomeClass();
+            var activator = InstanceActivator.Create(instance);
+
+            Assert.AreSame(
+                instance,
+                activator.GetInstance());
         }
 
-        public TService GetInstance()
+        [Test]
+        public void CreateReturnsNewInstance()
         {
-            return (TService)this.serviceProvider.GetService(typeof(TService));
+            var instance = new SomeClass();
+            var activator = InstanceActivator.Create(() => new SomeClass());
+            Assert.AreNotSame(
+                activator.GetInstance(),
+                activator.GetInstance());
         }
     }
 }

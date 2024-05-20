@@ -19,7 +19,9 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using Moq;
@@ -42,8 +44,6 @@ namespace Google.Solutions.Testing.Application.Mocks
             this.result = result;
         }
 
-        public IControlTheme? Theme { get; set; }
-
         public TViewModel ViewModel { get; }
 
         public void Dispose()
@@ -56,39 +56,46 @@ namespace Google.Solutions.Testing.Application.Mocks
         }
     }
 
-    public class MockDialogFactory<TView, TViewModel> : IWindowFactory<TView, TViewModel>
+    public class MockWindowActivator<TView, TViewModel, TTheme> : WindowActivator<TView, TViewModel, TTheme>
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
+        where TTheme : class, IControlTheme
     {
         private readonly TViewModel? viewModel;
         private readonly DialogResult result;
 
-        public MockDialogFactory(DialogResult result, TViewModel? viewModel)
+        public MockWindowActivator(DialogResult result, TViewModel? viewModel)
+            : base(
+                  new Mock<IActivator<TView>>().Object,
+                  viewModel == null
+                    ? new Mock<IActivator<TViewModel>>().Object
+                    : InstanceActivator.Create(viewModel),
+                  new Mock<TTheme>().Object,
+                  new Mock<IBindingContext>().Object)
         {
             this.viewModel = viewModel;
             this.result = result;
         }
 
-        public MockDialogFactory(DialogResult result) : this(result, null)
+        public MockWindowActivator(DialogResult result) : this(result, null)
+        {
+        }
+
+        public MockWindowActivator() : this(DialogResult.OK, null)
         {
         }
 
         public IControlTheme? Theme { get; set; }
 
-        public IDialogWindow<TView, TViewModel> CreateDialog(TViewModel viewModel)
+        public override IDialogWindow<TView, TViewModel> CreateDialog(TViewModel viewModel)
         {
             return new MockDialog<TView, TViewModel>(viewModel, this.result);
         }
 
-        public IDialogWindow<TView, TViewModel> CreateDialog()
+        public override IDialogWindow<TView, TViewModel> CreateDialog()
         {
             this.viewModel.ExpectNotNull("No view model provided");
             return new MockDialog<TView, TViewModel>(this.viewModel!, this.result);
-        }
-
-        public ITopLevelWindow<TView, TViewModel> CreateWindow()
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

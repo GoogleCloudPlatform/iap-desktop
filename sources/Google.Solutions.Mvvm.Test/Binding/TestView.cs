@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Runtime;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Testing.Apis.Mocks;
@@ -47,7 +48,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             }
         }
 
-        private class SampleForm : Form, IView<SampleViewModel>
+        private class SampleView : Form, IView<SampleViewModel>
         {
             public SampleViewModel ViewModel { get; private set; }
 
@@ -65,19 +66,16 @@ namespace Google.Solutions.Mvvm.Test.Binding
             }
         }
 
-        private IServiceProvider CreateServiceProvider(
-            SampleForm view,
+        private static WindowActivator<SampleView, SampleViewModel, IControlTheme> CreateActivator(
+            SampleView view,
             SampleViewModel viewModel,
             IControlTheme theme)
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-
-            serviceProvider.Add(view);
-            serviceProvider.Add(viewModel);
-            serviceProvider.Add(theme);
-            serviceProvider.AddMock<IBindingContext>();
-
-            return serviceProvider.Object;
+            return new WindowActivator<SampleView, SampleViewModel, IControlTheme>(
+                InstanceActivator.Create(view),
+                InstanceActivator.Create(viewModel),
+                theme,
+                new Mock<IBindingContext>().Object);
         }
 
         //---------------------------------------------------------------------
@@ -93,12 +91,12 @@ namespace Google.Solutions.Mvvm.Test.Binding
             }
 
             var theme = new Mock<IControlTheme>();
-            var serviceProvider = CreateServiceProvider(
-                new SampleForm(),
+            var activator = CreateActivator(
+                new SampleView(),
                 new SampleViewModel(),
                 theme.Object);
 
-            using (var dialog = serviceProvider.GetDialog<SampleForm, SampleViewModel, IControlTheme>())
+            using (var dialog = activator.CreateDialog())
             {
                 dialog.ShowDialog(null);
             }
@@ -114,13 +112,13 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Assert.Inconclusive("Test can only be run in an interactive session");
             }
 
-            var form = new SampleForm();
-            var serviceProvider = CreateServiceProvider(
+            var form = new SampleView();
+            var activator = CreateActivator(
                 form, 
                 new SampleViewModel(),
                 new Mock<IControlTheme>().Object);
 
-            using (var dialog = serviceProvider.GetDialog<SampleForm, SampleViewModel, IControlTheme>())
+            using (var dialog = activator.CreateDialog())
             {
                 Assert.IsNull(form.ViewModel);
 
@@ -138,12 +136,12 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Assert.Inconclusive("Test can only be run in an interactive session");
             }
 
-            var serviceProvider = CreateServiceProvider(
-                new SampleForm(), 
+            var activator = CreateActivator(
+                new SampleView(), 
                 new SampleViewModel(),
                 new Mock<IControlTheme>().Object);
 
-            using (var dialog = serviceProvider.GetDialog<SampleForm, SampleViewModel, IControlTheme>())
+            using (var dialog = activator.CreateDialog())
             {
                 dialog.ShowDialog(null);
 
@@ -159,14 +157,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Assert.Inconclusive("Test can only be run in an interactive session");
             }
 
-            var form = new SampleForm();
+            var form = new SampleView();
             var viewModel = new SampleViewModel();
-            var serviceProvider = CreateServiceProvider(
+            var activator = CreateActivator(
                 form, 
                 viewModel,
                 new Mock<IControlTheme>().Object);
 
-            using (var dialog = serviceProvider.GetDialog<SampleForm, SampleViewModel, IControlTheme>())
+            using (var dialog = activator.CreateDialog())
             {
                 Assert.IsFalse(form.IsDisposed);
                 Assert.IsFalse(viewModel.IsDisposed);
@@ -186,12 +184,12 @@ namespace Google.Solutions.Mvvm.Test.Binding
         public void WhenFormUsedAsWindow_ThenFormAppliesTheme()
         {
             var theme = new Mock<IControlTheme>();
-            var serviceProvider = CreateServiceProvider(
-                new SampleForm(), 
+            var activator = CreateActivator(
+                new SampleView(), 
                 new SampleViewModel(),
                 theme.Object);
 
-            var f = serviceProvider.GetWindow<SampleForm, SampleViewModel, IControlTheme>().Form;
+            var f = activator.CreateWindow().Form;
 
             theme.Verify(t => t.ApplyTo(It.IsAny<Control>()), Times.Once);
         }
@@ -199,14 +197,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void WhenFormUsedAsWindow_ThenFormBindsViewModel()
         {
-            var form = new SampleForm();
+            var form = new SampleView();
             var viewModel = new SampleViewModel();
-            var serviceProvider = CreateServiceProvider(
+            var activator = CreateActivator(
                 form, 
                 viewModel,
                 new Mock<IControlTheme>().Object);
 
-            var window = serviceProvider.GetWindow<SampleForm, SampleViewModel, IControlTheme>();
+            var window = activator.CreateWindow();
 
             Assert.AreSame(form, window.Form);
             Assert.AreSame(window.Form, viewModel.View);
@@ -216,14 +214,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void WhenFormUsedAsDialog_ThenCloseFormDisposesViewModel()
         {
-            var form = new SampleForm();
+            var form = new SampleView();
             var viewModel = new SampleViewModel();
-            var serviceProvider = CreateServiceProvider(
+            var activator = CreateActivator(
                 form, 
                 viewModel,
                 new Mock<IControlTheme>().Object);
 
-            var window = serviceProvider.GetWindow<SampleForm, SampleViewModel, IControlTheme>();
+            var window = activator.CreateWindow();
             Assert.IsFalse(form.IsDisposed);
             Assert.IsFalse(viewModel.IsDisposed);
 
@@ -237,14 +235,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void WhenFormDisposedTwice_ThenViewModelIsUnboundOnce()
         {
-            var form = new SampleForm();
+            var form = new SampleView();
             var viewModel = new SampleViewModel();
-            var serviceProvider = CreateServiceProvider(
+            var activator = CreateActivator(
                 form, 
                 viewModel,
                 new Mock<IControlTheme>().Object);
 
-            var window = serviceProvider.GetWindow<SampleForm, SampleViewModel, IControlTheme>();
+            var window = activator.CreateWindow();
             window.Form.Dispose();
             window.Form.Dispose();
 

@@ -25,7 +25,6 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Explorer.Windows.About;
 using Google.Solutions.Mvvm.Binding;
-using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
 {
@@ -33,12 +32,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
     [Service]
     public class AboutCommand : MenuCommandBase<IInstall>
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly IMainWindow mainWindow;
+        private readonly WindowActivator<AboutView, AboutViewModel, IDialogTheme> windowFactory;
 
-        public AboutCommand(IServiceProvider serviceProvider)
+        public AboutCommand(
+            IMainWindow mainWindow,
+            WindowActivator<AboutView, AboutViewModel, IDialogTheme> windowFactory)
             : base("&About")
         {
-            this.serviceProvider = serviceProvider;
+            this.mainWindow = mainWindow;
+            this.windowFactory = windowFactory;
         }
 
         protected override bool IsAvailable(IInstall _)
@@ -53,9 +56,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
 
         public override void Execute(IInstall _)
         {
-            using (var view = this.serviceProvider.GetDialog<AboutView, AboutViewModel, IDialogTheme>())
+            using (var view = this.windowFactory.CreateDialog())
             {
-                view.ShowDialog(this.serviceProvider.GetService<IMainWindow>());
+                view.ShowDialog(this.mainWindow);
             }
         }
     }

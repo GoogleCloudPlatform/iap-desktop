@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
@@ -115,9 +116,7 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
                 {
                     return true;
                 }
-                else if (t.IsGenericType &&
-                    typeof(IServiceDecorator).IsAssignableFrom(t.GetGenericTypeDefinition()) &&
-                    t.GetGenericArguments().All(IsServiceRegistered))
+                else if (IsDecorator(t) && t.GetGenericArguments().All(IsServiceRegistered))
                 {
                     return true;
                 }
@@ -259,16 +258,22 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
                    (this.parent != null && this.parent.IsServiceRegistered(serviceType));
         }
 
+        /// <summary>
+        /// Check if the type is derived from IActivator<>.
+        /// </summary>
+        private static bool IsDecorator(Type serviceType)
+        {
+            return serviceType.IsGenericType &&
+                (serviceType.GetGenericTypeDefinition() == typeof(IActivator<>) || 
+                 serviceType.GetInterfaces().EnsureNotNull().Any(IsDecorator));
+        }
+
         public object GetService(Type serviceType)
         {
-            if (serviceType.IsGenericType &&
-                typeof(IServiceDecorator).IsAssignableFrom(serviceType.GetGenericTypeDefinition()))
+            if (IsDecorator(serviceType))
             {
                 //
                 // This is a decorator.
-                //
-                Debug.Assert(serviceType.GetGenericArguments().Length == 1);
-
                 //
                 // Verify that the services referenced by type arguments exist
                 // so that we don't get any surprises later.
@@ -283,16 +288,27 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
                     }
                 }
 
-                //
-                // Return a factory instead of the actual service object.
-                // This doesn't make a real difference for singletons, but
-                // for transients it lets clients delay object creation
-                // (and hence, lookup of dependencies).
-                //
-                // NB. Service<> is a valid service, so we can create it using
-                // just like a normal transient.
-                //
-                return CreateInstance(serviceType);
+                if (serviceType.GetGenericTypeDefinition() == typeof(IActivator<>))
+                {
+                    //
+                    // Use Service<> as default implementation for an
+                    // IActviator<> decorator.
+                    //
+                    // This doesn't make a real difference for singletons, but
+                    // for transients it lets clients delay object creation
+                    // (and hence, lookup of dependencies).
+                    //
+                    return Activator.CreateInstance(typeof(Service<>)
+                        .MakeGenericType(serviceType.GetGenericArguments()),
+                        this);
+                }
+                else
+                {
+                    //
+                    // Custom decorator.
+                    //
+                    return CreateInstance(serviceType);
+                }
             }
             else if (this.singletons.TryGetValue(serviceType, out var singletonStub))
             {

@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Runtime;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Testing.Apis.Integration;
@@ -55,16 +56,13 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 = ObservableProperty.Build(false);
         }
 
-        private IServiceProvider CreateServiceProvider()
+        private static WindowActivator<PropertiesView, PropertiesViewModel, IControlTheme> CreateActivator()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-
-            serviceProvider.Add(new PropertiesView());
-            serviceProvider.Add(new PropertiesViewModel());
-            serviceProvider.AddMock<IBindingContext>();
-            serviceProvider.AddMock<IControlTheme>();
-
-            return serviceProvider.Object;
+            return new WindowActivator<PropertiesView, PropertiesViewModel, IControlTheme>(
+                InstanceActivator.Create(new PropertiesView()),
+                InstanceActivator.Create(new PropertiesViewModel()),
+                new Mock<IControlTheme>().Object,
+                new Mock<IBindingContext>().Object);
         }
 
         //---------------------------------------------------------------------
@@ -74,11 +72,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void SheetsAreBound()
         {
-            var serviceProvider = CreateServiceProvider();
-
             var sheetView = new SampleSheetView();
 
-            var window = serviceProvider.GetWindow<PropertiesView, PropertiesViewModel, IControlTheme>();
+            var window = CreateActivator().CreateWindow();
             window.ViewModel.AddSheet(sheetView, new SampleSheetViewModel());
             window.Form.Show();
 
@@ -91,8 +87,6 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void TestUi()
         {
-            var serviceProvider = CreateServiceProvider();
-
             var viewModel = new SampleSheetViewModel();
             var view = new SampleSheetView();
             var button = new Button()
@@ -102,7 +96,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             button.Click += (_, __) => viewModel.IsDirty.Value = true;
             view.Controls.Add(button);
 
-            var window = serviceProvider.GetDialog<PropertiesView, PropertiesViewModel, IControlTheme>();
+            var window = CreateActivator().CreateDialog();
             window.ViewModel.AddSheet(view, viewModel);
             window.ShowDialog(null);
         }

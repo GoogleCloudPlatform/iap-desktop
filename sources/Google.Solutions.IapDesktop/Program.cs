@@ -186,7 +186,8 @@ namespace Google.Solutions.IapDesktop
         private static IAuthorization AuthorizeOrExit(IServiceProvider serviceProvider)
         {
             using (var dialog = serviceProvider
-                .GetDialog<AuthorizeView, AuthorizeViewModel, IDialogTheme>())
+                .GetService<WindowActivator<AuthorizeView, AuthorizeViewModel, IDialogTheme>>()
+                .CreateDialog())
             {
                 //
                 // Initialize the view model.
@@ -217,7 +218,8 @@ namespace Google.Solutions.IapDesktop
                     // User did not grant 'cloud-platform' scope.
                     //
                     using (var scopeDialog = serviceProvider
-                        .GetDialog<OAuthScopeNotGrantedView, OAuthScopeNotGrantedViewModel, IDialogTheme>())
+                        .GetService<WindowActivator<OAuthScopeNotGrantedView, OAuthScopeNotGrantedViewModel, IDialogTheme>>()
+                        .CreateDialog())
                     {
                         retryArgs.Retry = scopeDialog.ShowDialog(dialog.ViewModel.View) == DialogResult.OK;
                     }
@@ -261,7 +263,8 @@ namespace Google.Solutions.IapDesktop
                 dialog.ViewModel.ShowOptions += (_, args) =>
                 {
                     using (var scopeDialog = serviceProvider
-                        .GetDialog<AuthorizeOptionsView, AuthorizeOptionsViewModel, IDialogTheme>())
+                        .GetService<WindowActivator<AuthorizeOptionsView, AuthorizeOptionsViewModel, IDialogTheme>>()
+                        .CreateDialog())
                     {
                         scopeDialog.ShowDialog(dialog.ViewModel.View);
                     }

@@ -19,14 +19,17 @@
 // under the License.
 //
 
-
-namespace Google.Solutions.IapDesktop.Core.ObjectModel
+namespace Google.Solutions.Common.Runtime
 {
     /// <summary>
-    /// Base interface for decorators. Decorators allow customizing
-    /// how services are looked up.
+    /// Factory for instances of type T.
     /// </summary>
-    public interface IServiceDecorator
+    public interface IActivator<T>
     {
+        /// <summary>
+        /// Activate an instance.
+        /// </summary>
+        /// <returns>existing or new instance</returns>
+        T GetInstance(); // TODO: rename to Activate
     }
 }

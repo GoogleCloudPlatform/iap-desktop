@@ -37,6 +37,7 @@ using Google.Solutions.Mvvm.Controls;
 using System.Linq;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
+using Google.Solutions.IapDesktop.Application.Theme;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
@@ -79,8 +80,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         private readonly IWindowsCredentialGenerator credentialGenerator;
         private readonly ITaskDialog taskDialog;
         private readonly ICredentialDialog credentialDialog;
-        private readonly IWindowFactory<NewCredentialsView, NewCredentialsViewModel> newCredentialFactory;
-        private readonly IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel> showCredentialFactory;
+        private readonly WindowActivator<NewCredentialsView, NewCredentialsViewModel, IDialogTheme > newCredentialFactory;
+        private readonly WindowActivator<ShowCredentialsView, ShowCredentialsViewModel, IDialogTheme> showCredentialFactory;
 
         internal RdpCredentialEditor(
             IWin32Window? owner,
@@ -90,8 +91,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             IWindowsCredentialGenerator credentialGenerator,
             ITaskDialog taskDialog,
             ICredentialDialog credentialDialog,
-            IWindowFactory<NewCredentialsView, NewCredentialsViewModel> newCredentialFactory,
-            IWindowFactory<ShowCredentialsView, ShowCredentialsViewModel> showCredentialFactory)
+            WindowActivator<NewCredentialsView, NewCredentialsViewModel, IDialogTheme> newCredentialFactory,
+            WindowActivator<ShowCredentialsView, ShowCredentialsViewModel, IDialogTheme> showCredentialFactory)
         {
             this.owner = owner;
             this.Settings = settings;
