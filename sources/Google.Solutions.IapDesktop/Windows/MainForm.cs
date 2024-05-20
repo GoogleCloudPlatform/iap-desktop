@@ -700,7 +700,8 @@ namespace Google.Solutions.IapDesktop.Windows
                 button.Size);
 
             this.serviceProvider
-                .GetWindow<AccessInfoFlyoutView, AccessInfoViewModel, IMainWindowTheme>()
+                .GetService<WindowActivator<AccessInfoFlyoutView, AccessInfoViewModel, IMainWindowTheme>>()
+                .CreateWindow()
                 .Form
                 .Show(this, screenPosition, ContentAlignment.TopLeft);
         }

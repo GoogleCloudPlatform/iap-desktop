@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using System;
-
 namespace Google.Solutions.Common.Runtime
 {
     /// <summary>

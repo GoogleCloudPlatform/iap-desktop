@@ -228,7 +228,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// <summary>
         /// Helper method to bind and initialize a view.
         /// </summary>
-        public static void Bind( // TODO: move to WIndowFactory, make class internal
+        public static void Bind(
             TView view,
             TViewModel viewModel,
             IControlTheme? theme,
