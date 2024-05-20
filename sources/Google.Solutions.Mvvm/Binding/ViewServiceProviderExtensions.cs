@@ -34,12 +34,13 @@ namespace Google.Solutions.Mvvm.Binding
         /// Returns a factory for MVVM-enabled Views. The View class
         /// and the view model are created using the service provider.
         /// </summary>
-        public static IWindowFactory<TView, TViewModel> GetViewFactory<TView, TViewModel>(
+        public static IWindowFactory<TView, TViewModel> GetViewFactory<TView, TViewModel, TTheme>(
             this IServiceProvider serviceProvider)
             where TView : Form, IView<TViewModel>
             where TViewModel : ViewModelBase
+            where TTheme : IControlTheme
         {
-            return new WindowFactory<TView, TViewModel>(serviceProvider);
+            return new WindowFactory<TView, TViewModel, TTheme>(serviceProvider);
         }
 
         //---------------------------------------------------------------------
@@ -49,26 +50,26 @@ namespace Google.Solutions.Mvvm.Binding
         /// <summary>
         /// Create an MVVM-enabled dialog and view model using the service provider.
         /// </summary>
-        public static IDialogWindow<TView, TViewModel> GetDialog<TView, TViewModel>(
+        public static IDialogWindow<TView, TViewModel> GetDialog<TView, TViewModel, TTheme>(
             this IServiceProvider serviceProvider)
             where TView : Form, IView<TViewModel>
             where TViewModel : ViewModelBase
+            where TTheme : IControlTheme
         {
-            return GetViewFactory<TView, TViewModel>(serviceProvider).CreateDialog();
+            return GetViewFactory<TView, TViewModel, TTheme>(serviceProvider).CreateDialog();
         }
 
         /// <summary>
         /// Create an MVVM-enabled dialog and view model using the service provider.
         /// </summary>
-        public static IDialogWindow<TView, TViewModel> GetDialog<TView, TViewModel>(
+        public static IDialogWindow<TView, TViewModel> GetDialog<TView, TViewModel, TTheme>(
             this IServiceProvider serviceProvider,
             IControlTheme theme)
             where TView : Form, IView<TViewModel>
             where TViewModel : ViewModelBase
+            where TTheme : IControlTheme
         {
-            var view = GetDialog<TView, TViewModel>(serviceProvider);
-            view.Theme = theme;
-            return view;
+            return GetDialog<TView, TViewModel, TTheme>(serviceProvider);
         }
 
         //---------------------------------------------------------------------
@@ -78,26 +79,13 @@ namespace Google.Solutions.Mvvm.Binding
         /// <summary>
         /// Create an MVVM-enabled window and view model using the service provider.
         /// </summary>
-        public static ITopLevelWindow<TView, TViewModel> GetWindow<TView, TViewModel>(
+        public static ITopLevelWindow<TView, TViewModel> GetWindow<TView, TViewModel, TTheme>(
             this IServiceProvider serviceProvider)
             where TView : Form, IView<TViewModel>
             where TViewModel : ViewModelBase
+            where TTheme : IControlTheme
         {
-            return GetViewFactory<TView, TViewModel>(serviceProvider).CreateWindow();
-        }
-
-        /// <summary>
-        /// Create an MVVM-enabled window and view model using the service provider.
-        /// </summary>
-        public static ITopLevelWindow<TView, TViewModel> GetWindow<TView, TViewModel>(
-            this IServiceProvider serviceProvider,
-            IControlTheme theme)
-            where TView : Form, IView<TViewModel>
-            where TViewModel : ViewModelBase
-        {
-            var view = GetWindow<TView, TViewModel>(serviceProvider);
-            view.Theme = theme;
-            return view;
+            return GetViewFactory<TView, TViewModel, TTheme>(serviceProvider).CreateWindow();
         }
     }
 }

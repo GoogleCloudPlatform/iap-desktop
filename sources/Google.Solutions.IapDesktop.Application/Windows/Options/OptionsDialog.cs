@@ -38,10 +38,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             IWin32Window parent,
             IServiceCategoryProvider serviceProvider)
         {
-            using (var dialog = serviceProvider.GetDialog<PropertiesView, PropertiesViewModel>())
+            using (var dialog = serviceProvider.GetDialog<PropertiesView, PropertiesViewModel, IDialogTheme>())
             {
-                dialog.Theme = serviceProvider.GetService<IDialogTheme>();
-
                 var appSettingsRepository = serviceProvider.GetService<IRepository<IApplicationSettings>>();
 
                 dialog.ViewModel.AddSheet(

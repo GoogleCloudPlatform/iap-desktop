@@ -52,8 +52,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
         public DownloadFileDialog(IServiceProvider serviceProvider)
         {
-            this.dialogFactory = serviceProvider.GetViewFactory<DownloadFileView, DownloadFileViewModel>();
-            this.dialogFactory.Theme = serviceProvider.GetService<IDialogTheme>();
+            this.dialogFactory = serviceProvider
+                .GetViewFactory<DownloadFileView, DownloadFileViewModel, IDialogTheme>();
         }
 
         public DialogResult SelectDownloadFiles(

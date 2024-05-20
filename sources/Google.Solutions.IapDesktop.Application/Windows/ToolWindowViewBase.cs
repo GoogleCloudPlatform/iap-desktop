@@ -496,7 +496,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                     // The caller had sufficient opportunity to initialize
                     // the view mode, so we can now bind it to the view.
                     //
-                    TopLevelWindow<TToolWindowView, TToolWindowViewModel>.Bind(
+                    TopLevelWindow<TToolWindowView, TToolWindowViewModel, IToolWindowTheme>.Bind(
                         this.view,
                         this.ViewModel,
                         this.theme,

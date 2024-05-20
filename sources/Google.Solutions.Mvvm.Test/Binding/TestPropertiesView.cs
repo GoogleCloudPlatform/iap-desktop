@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Apis.Mocks;
 using Moq;
@@ -61,6 +62,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             serviceProvider.Add(new PropertiesView());
             serviceProvider.Add(new PropertiesViewModel());
             serviceProvider.AddMock<IBindingContext>();
+            serviceProvider.AddMock<IControlTheme>();
 
             return serviceProvider.Object;
         }
@@ -76,7 +78,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             var sheetView = new SampleSheetView();
 
-            var window = serviceProvider.GetWindow<PropertiesView, PropertiesViewModel>();
+            var window = serviceProvider.GetWindow<PropertiesView, PropertiesViewModel, IControlTheme>();
             window.ViewModel.AddSheet(sheetView, new SampleSheetViewModel());
             window.Form.Show();
 
@@ -100,7 +102,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             button.Click += (_, __) => viewModel.IsDirty.Value = true;
             view.Controls.Add(button);
 
-            var window = serviceProvider.GetDialog<PropertiesView, PropertiesViewModel>();
+            var window = serviceProvider.GetDialog<PropertiesView, PropertiesViewModel, IControlTheme>();
             window.ViewModel.AddSheet(view, viewModel);
             window.ShowDialog(null);
         }

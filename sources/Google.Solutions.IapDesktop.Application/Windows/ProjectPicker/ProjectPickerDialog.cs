@@ -58,8 +58,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
 
         public ProjectPickerDialog(IServiceProvider serviceProvider)
         {
-            this.viewFactory = serviceProvider.GetViewFactory<ProjectPickerView, ProjectPickerViewModel>();
-            this.viewFactory.Theme = serviceProvider.GetService<IDialogTheme>();
+            this.viewFactory = serviceProvider
+                .GetViewFactory<ProjectPickerView, ProjectPickerViewModel, IDialogTheme>();
         }
 
         private DialogResult SelectProjects(
