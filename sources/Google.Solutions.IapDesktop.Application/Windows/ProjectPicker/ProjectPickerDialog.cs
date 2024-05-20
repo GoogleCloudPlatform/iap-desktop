@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
 
     public class ProjectPickerDialog : IProjectPickerDialog
     {
-        private readonly IWindowFactory<ProjectPickerView, ProjectPickerViewModel> viewFactory;
+        private readonly WindowFactory<ProjectPickerView, ProjectPickerViewModel, IDialogTheme> viewFactory;
 
         public ProjectPickerDialog(IServiceProvider serviceProvider)
         {

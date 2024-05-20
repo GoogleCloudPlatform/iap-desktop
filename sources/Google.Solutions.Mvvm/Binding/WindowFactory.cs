@@ -20,48 +20,32 @@
 //
 
 using Google.Solutions.Common.Runtime;
-using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Google.Solutions.Mvvm.Binding
 {
     /// <summary>
-    /// Factory for creating windows using a view and a view model.
+    /// Window that can be shown as a dialog.
     /// </summary>
-    public interface IWindowFactory<TView, TViewModel>
-        where TView : Form, IView<TViewModel>
+    public interface IWindow<TViewModel>
         where TViewModel : ViewModelBase
     {
         /// <summary>
-        /// Create a dialog window using an existing view model.
+        /// View model used by the window.
         /// </summary>
-        IDialogWindow<TView, TViewModel> CreateDialog(TViewModel viewModel);
-
-        /// <summary>
-        /// Create a dialog window.
-        /// </summary>
-        IDialogWindow<TView, TViewModel> CreateDialog();
-
-        /// <summary>
-        /// Create a top-level window.
-        /// </summary>
-        ITopLevelWindow<TView, TViewModel> CreateWindow();
+        TViewModel ViewModel { get; }
     }
 
     /// <summary>
     /// Window that can be shown as a dialog.
     /// </summary>
-    public interface IDialogWindow<TView, TViewModel> : IDisposable
+    public interface IDialogWindow<TView, TViewModel> : IWindow<TViewModel>, IDisposable
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
-        /// <summary>
-        /// View model used by the dialog.
-        /// </summary>
-        TViewModel ViewModel { get; }
-
         /// <summary>
         /// Show the dialog.
         /// </summary>
@@ -71,22 +55,17 @@ namespace Google.Solutions.Mvvm.Binding
     /// <summary>
     /// Window that can be shown as a top-level window.
     /// </summary>
-    public interface ITopLevelWindow<TView, TViewModel>
+    public interface ITopLevelWindow<TView, TViewModel> : IWindow<TViewModel>
         where TView : class, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
-        /// <summary>
-        /// View model used by the dialog.
-        /// </summary>
-        TViewModel ViewModel { get; }
-
         /// <summary>
         /// Window form.
         /// </summary>
         TView Form { get; }
     }
 
-    public class WindowFactory<TView, TViewModel, TTheme> : IWindowFactory<TView, TViewModel>
+    public class WindowFactory<TView, TViewModel, TTheme> : IActivator<IWindow<TViewModel>> // TODO: rename
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
         where TTheme : IControlTheme
@@ -96,7 +75,7 @@ namespace Google.Solutions.Mvvm.Binding
         private readonly TTheme theme;
         private readonly IBindingContext bindingContext;
 
-        internal WindowFactory(
+        public WindowFactory(
             IActivator<TView> viewActivator,
             IActivator<TViewModel> viewModelActivator,
             TTheme theme,
@@ -108,7 +87,7 @@ namespace Google.Solutions.Mvvm.Binding
             this.bindingContext = bindingContext;
         }
 
-        public IDialogWindow<TView, TViewModel> CreateDialog(TViewModel viewModel)
+        public virtual IDialogWindow<TView, TViewModel> CreateDialog(TViewModel viewModel)
         {
             return new Dialog<TView, TViewModel, TTheme>(
                 this.viewActivator,
@@ -117,7 +96,7 @@ namespace Google.Solutions.Mvvm.Binding
                 this.bindingContext);
         }
 
-        public IDialogWindow<TView, TViewModel> CreateDialog()
+        public virtual IDialogWindow<TView, TViewModel> CreateDialog()
         {
             return new Dialog<TView, TViewModel, TTheme>(
                 this.viewActivator,
@@ -126,7 +105,7 @@ namespace Google.Solutions.Mvvm.Binding
                 this.bindingContext);
         }
 
-        public ITopLevelWindow<TView, TViewModel> CreateWindow()
+        public virtual ITopLevelWindow<TView, TViewModel> CreateWindow()
         {
             return new TopLevelWindow<TView, TViewModel, TTheme>(
                 this.viewActivator,
@@ -134,9 +113,14 @@ namespace Google.Solutions.Mvvm.Binding
                 this.theme,
                 this.bindingContext);
         }
+
+        public IWindow<TViewModel> GetInstance()
+        {
+            return CreateWindow();
+        }
     }
 
-    public sealed class Dialog<TView, TViewModel, TTheme> : IDialogWindow<TView, TViewModel>
+    public sealed class Dialog<TView, TViewModel, TTheme> : IDialogWindow<TView, TViewModel> // TODO: rename DialogWindow
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
         where TTheme : IControlTheme
