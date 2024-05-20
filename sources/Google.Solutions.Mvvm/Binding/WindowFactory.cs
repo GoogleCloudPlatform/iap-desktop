@@ -89,7 +89,7 @@ namespace Google.Solutions.Mvvm.Binding
 
         public virtual IDialogWindow<TView, TViewModel> CreateDialog(TViewModel viewModel)
         {
-            return new Dialog<TView, TViewModel, TTheme>(
+            return new DialogWindow<TView, TViewModel, TTheme>(
                 this.viewActivator,
                 viewModel,
                 this.theme,
@@ -98,7 +98,7 @@ namespace Google.Solutions.Mvvm.Binding
 
         public virtual IDialogWindow<TView, TViewModel> CreateDialog()
         {
-            return new Dialog<TView, TViewModel, TTheme>(
+            return new DialogWindow<TView, TViewModel, TTheme>(
                 this.viewActivator,
                 this.viewModelActivator.GetInstance(),
                 this.theme,
@@ -120,7 +120,7 @@ namespace Google.Solutions.Mvvm.Binding
         }
     }
 
-    public sealed class Dialog<TView, TViewModel, TTheme> : IDialogWindow<TView, TViewModel> // TODO: rename DialogWindow
+    internal sealed class DialogWindow<TView, TViewModel, TTheme> : IDialogWindow<TView, TViewModel>
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
         where TTheme : IControlTheme
@@ -133,7 +133,7 @@ namespace Google.Solutions.Mvvm.Binding
          
         public TViewModel ViewModel { get; }
 
-        internal Dialog(
+        internal DialogWindow(
             IActivator<TView> viewActivator,
             TViewModel viewModel,
             TTheme theme,
@@ -228,7 +228,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// <summary>
         /// Helper method to bind and initialize a view.
         /// </summary>
-        public static void Bind(
+        public static void Bind( // TODO: move to WIndowFactory, make class internal
             TView view,
             TViewModel viewModel,
             IControlTheme? theme,
