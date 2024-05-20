@@ -76,7 +76,9 @@ NUNIT_FILTER = cat!=InteractiveTest and cat!=RdpTest and cat!=ProxyAutoconfigTes
 NUNIT_FILTER = $(NUNIT_FILTER) and cat!=CloudIntegrationTest
 !endif
 
-SIGNTOOL_FLAGS = /v /tr http://timestamp.digicert.com /n Google /a /fd sha256 /td sha256
+SIGNTOOL = ksigntool
+SIGNTOOL_FLAGS = GOOGLE_EXTERNAL /v /debug /t http://timestamp.digicert.com
+
 NUGET_PACKAGES = $(USERPROFILE)\.nuget\packages
 
 #------------------------------------------------------------------------------
@@ -166,15 +168,15 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 	@echo "========================================================"
 
 !if ( "$(CODESIGN)" != "" ) 
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\Google.*.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\libssh2.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\vtnetcore.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\WeifenLuo.WinFormsUI.Docking*.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*Interop*.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\IapDesktop.exe
+	$(SIGNTOOL) sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\Google.*.dll
+	$(SIGNTOOL) sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\libssh2.dll
+	$(SIGNTOOL) sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\vtnetcore.dll
+	$(SIGNTOOL) sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\WeifenLuo.WinFormsUI.Docking*.dll
+	$(SIGNTOOL) sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*Interop*.dll
+	$(SIGNTOOL) sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\IapDesktop.exe
 	
-	signtool verify /pa $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*.exe
-	signtool verify /pa $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*.dll
+	$(SIGNTOOL) verify /pa $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*.exe
+	$(SIGNTOOL) verify /pa $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*.dll
 !endif
 
 	light \
@@ -188,7 +190,7 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 		$(INSTALLER_PACKAGE).wixobj
 
 !if ( "$(CODESIGN)" != "" ) 
-	signtool sign $(SIGNTOOL_FLAGS) $(INSTALLER_PACKAGE)
+	$(SIGNTOOL) sign $(SIGNTOOL_FLAGS) $(INSTALLER_PACKAGE)
 !endif
 
 # NB. The installer snapshot must contain all tools necessary to build the installer.
