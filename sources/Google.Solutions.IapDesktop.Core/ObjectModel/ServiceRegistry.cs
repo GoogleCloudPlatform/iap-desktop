@@ -258,11 +258,14 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
                    (this.parent != null && this.parent.IsServiceRegistered(serviceType));
         }
 
+        /// <summary>
+        /// Check if the type is derived from IActivator<>.
+        /// </summary>
         private static bool IsDecorator(Type serviceType)
         {
             return serviceType.IsGenericType &&
-                (serviceType.GetGenericTypeDefinition() == typeof(IActivator<>) ||
-                 typeof(IServiceDecorator).IsAssignableFrom(serviceType));
+                (serviceType.GetGenericTypeDefinition() == typeof(IActivator<>) || 
+                 serviceType.GetInterfaces().EnsureNotNull().Any(IsDecorator));
         }
 
         public object GetService(Type serviceType)
