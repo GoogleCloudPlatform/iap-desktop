@@ -29,7 +29,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 {
     [Service]
-    internal class DownloadFileViewModel : ViewModelBase
+    public class DownloadFileViewModel : ViewModelBase
     {
         //
         // NB. We're not allowing:

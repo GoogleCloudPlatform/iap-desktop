@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             return credentialGenerator;
         }
 
-        private Mock<ICredentialDialog> CreateCredentialDialogMock(
+        private static Mock<ICredentialDialog> CreateCredentialDialogMock(
             DialogResult dialogResult,
             NetworkCredential? credential)
         {

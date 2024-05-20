@@ -61,8 +61,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 this.serviceProvider.GetService<IWindowsCredentialGenerator>(),
                 this.serviceProvider.GetService<ITaskDialog>(),
                 this.serviceProvider.GetService<ICredentialDialog>(),
-                this.serviceProvider.GetViewFactory<NewCredentialsView, NewCredentialsViewModel, IDialogTheme>(),
-                this.serviceProvider.GetViewFactory<ShowCredentialsView, ShowCredentialsViewModel, IDialogTheme>());
+                this.serviceProvider.GetService<WindowActivator<NewCredentialsView, NewCredentialsViewModel, IDialogTheme>>(),
+                this.serviceProvider.GetService<WindowActivator<ShowCredentialsView, ShowCredentialsViewModel, IDialogTheme>>());
         }
     }
 }

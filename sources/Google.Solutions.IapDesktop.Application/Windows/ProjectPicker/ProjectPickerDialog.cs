@@ -54,12 +54,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
 
     public class ProjectPickerDialog : IProjectPickerDialog
     {
-        private readonly WindowActivator<ProjectPickerView, ProjectPickerViewModel, IDialogTheme> viewFactory;
+        private readonly WindowActivator<ProjectPickerView, ProjectPickerViewModel, IDialogTheme> pickerWindow;
 
-        public ProjectPickerDialog(IServiceProvider serviceProvider)
+        public ProjectPickerDialog(
+            WindowActivator<ProjectPickerView, ProjectPickerViewModel, IDialogTheme> pickerWindow)
         {
-            this.viewFactory = serviceProvider
-                .GetViewFactory<ProjectPickerView, ProjectPickerViewModel, IDialogTheme>();
+            this.pickerWindow = pickerWindow;
         }
 
         private DialogResult SelectProjects(
@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
             viewModel.DialogText.Value = caption;
             viewModel.ButtonText.Value = $"&{caption}";
 
-            using (var dialog = this.viewFactory.CreateDialog(viewModel))
+            using (var dialog = this.pickerWindow.CreateDialog(viewModel))
             {
                 var result = dialog.ShowDialog(owner);
 

@@ -66,7 +66,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             }
         }
 
-        private WindowActivator<SampleView, SampleViewModel, IControlTheme> CreateActivator(
+        private static WindowActivator<SampleView, SampleViewModel, IControlTheme> CreateActivator(
             SampleView view,
             SampleViewModel viewModel,
             IControlTheme theme)

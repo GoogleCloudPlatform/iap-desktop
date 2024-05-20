@@ -56,7 +56,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 = ObservableProperty.Build(false);
         }
 
-        private WindowActivator<PropertiesView, PropertiesViewModel, IControlTheme> CreateActivator()
+        private static WindowActivator<PropertiesView, PropertiesViewModel, IControlTheme> CreateActivator()
         {
             return new WindowActivator<PropertiesView, PropertiesViewModel, IControlTheme>(
                 InstanceActivator.Create(new PropertiesView()),
