@@ -711,7 +711,8 @@ namespace Google.Solutions.IapDesktop.Windows
             try
             {
                 using (var dialog = this.serviceProvider
-                    .GetDialog<NewProfileView, NewProfileViewModel, IDialogTheme>())
+                    .GetService<WindowActivator<NewProfileView, NewProfileViewModel, IDialogTheme>>()
+                    .CreateDialog())
                 {
                     if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
@@ -762,7 +763,8 @@ namespace Google.Solutions.IapDesktop.Windows
         public void Reauthorize()
         {
             using (var dialog = this.serviceProvider
-                .GetDialog<AuthorizeView, AuthorizeViewModel, IDialogTheme>())
+                .GetService<WindowActivator<AuthorizeView, AuthorizeViewModel, IDialogTheme>>()
+                .CreateDialog())
             {
                 dialog.ViewModel.UseExistingAuthorization(
                     this.serviceProvider.GetService<IAuthorization>());

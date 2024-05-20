@@ -38,7 +38,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             IWin32Window parent,
             IServiceCategoryProvider serviceProvider)
         {
-            using (var dialog = serviceProvider.GetDialog<PropertiesView, PropertiesViewModel, IDialogTheme>())
+            using (var dialog = serviceProvider
+                .GetService<WindowActivator<PropertiesView, PropertiesViewModel, IDialogTheme>>()
+                .CreateDialog())
             {
                 var appSettingsRepository = serviceProvider.GetService<IRepository<IApplicationSettings>>();
 
