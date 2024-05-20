@@ -65,7 +65,7 @@ namespace Google.Solutions.Mvvm.Binding
         TView Form { get; }
     }
 
-    public class WindowFactory<TView, TViewModel, TTheme> : IActivator<IWindow<TViewModel>> // TODO: rename
+    public class WindowActivator<TView, TViewModel, TTheme> : IActivator<IWindow<TViewModel>>
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
         where TTheme : IControlTheme
@@ -75,7 +75,7 @@ namespace Google.Solutions.Mvvm.Binding
         private readonly TTheme theme;
         private readonly IBindingContext bindingContext;
 
-        public WindowFactory(
+        public WindowActivator(
             IActivator<TView> viewActivator,
             IActivator<TViewModel> viewModelActivator,
             TTheme theme,

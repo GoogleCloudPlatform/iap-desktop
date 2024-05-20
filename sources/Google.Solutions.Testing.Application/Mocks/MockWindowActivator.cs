@@ -56,7 +56,7 @@ namespace Google.Solutions.Testing.Application.Mocks
         }
     }
 
-    public class MockWindowFactory<TView, TViewModel, TTheme> : WindowFactory<TView, TViewModel, TTheme>
+    public class MockWindowActivator<TView, TViewModel, TTheme> : WindowActivator<TView, TViewModel, TTheme>
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
         where TTheme : class, IControlTheme
@@ -64,7 +64,7 @@ namespace Google.Solutions.Testing.Application.Mocks
         private readonly TViewModel? viewModel;
         private readonly DialogResult result;
 
-        public MockWindowFactory(DialogResult result, TViewModel? viewModel)
+        public MockWindowActivator(DialogResult result, TViewModel? viewModel)
             : base(
                   new Mock<IActivator<TView>>().Object,
                   viewModel == null
@@ -77,11 +77,11 @@ namespace Google.Solutions.Testing.Application.Mocks
             this.result = result;
         }
 
-        public MockWindowFactory(DialogResult result) : this(result, null)
+        public MockWindowActivator(DialogResult result) : this(result, null)
         {
         }
 
-        public MockWindowFactory() : this(DialogResult.OK, null)
+        public MockWindowActivator() : this(DialogResult.OK, null)
         {
         }
 

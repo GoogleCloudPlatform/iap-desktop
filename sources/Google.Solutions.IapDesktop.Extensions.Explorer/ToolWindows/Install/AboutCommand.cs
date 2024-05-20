@@ -33,11 +33,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
     public class AboutCommand : MenuCommandBase<IInstall>
     {
         private readonly IMainWindow mainWindow;
-        private readonly WindowFactory<AboutView, AboutViewModel, IDialogTheme> windowFactory;
+        private readonly WindowActivator<AboutView, AboutViewModel, IDialogTheme> windowFactory;
 
         public AboutCommand(
             IMainWindow mainWindow,
-            WindowFactory<AboutView, AboutViewModel, IDialogTheme> windowFactory)
+            WindowActivator<AboutView, AboutViewModel, IDialogTheme> windowFactory)
             : base("&About")
         {
             this.mainWindow = mainWindow;
