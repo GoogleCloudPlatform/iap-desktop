@@ -97,11 +97,6 @@ namespace Google.Solutions.Mvvm.Binding
             return (TViewModel)this.serviceProvider.GetService(typeof(TViewModel));
         }
 
-        /// <summary>
-        /// Get or set the theme to apply, optional.
-        /// </summary>
-        public IControlTheme? Theme { get; set; }
-
         internal WindowFactory(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider.ExpectNotNull(nameof(serviceProvider));
