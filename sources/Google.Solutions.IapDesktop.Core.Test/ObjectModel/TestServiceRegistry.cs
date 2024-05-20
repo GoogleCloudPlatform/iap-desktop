@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Runtime;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using NUnit.Framework;
 using System;
@@ -211,6 +212,23 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             registry.AddTransient<ServiceWithSatisfiedConstructor>();
 
             Assert.IsNotNull(registry.GetService<ServiceWithSatisfiedConstructor>());
+        }
+
+        //---------------------------------------------------------------------
+        // Decorator.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenServiceIsDecorated_ThenGetServiceReturnsFactory()
+        {
+            var registry = new ServiceRegistry();
+            registry.AddTransient<ServiceWithDefaultConstructor>();
+
+            var service = registry.GetService<IActivator<ServiceWithDefaultConstructor>>();
+            Assert.IsNotNull(service);
+            Assert.IsInstanceOf<Service<ServiceWithDefaultConstructor>>(service);
+            Assert.IsNotNull(service.GetInstance());
+            Assert.AreNotSame(service.GetInstance(), service.GetInstance());
         }
 
         //---------------------------------------------------------------------
