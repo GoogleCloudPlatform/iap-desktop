@@ -19,19 +19,35 @@
 // under the License.
 //
 
-using System;
+using Google.Solutions.Common.Runtime;
+using NUnit.Framework;
 
-namespace Google.Solutions.Common.Runtime
+namespace Google.Solutions.Common.Test.Runtime
 {
-    /// <summary>
-    /// Factory for instances of type T.
-    /// </summary>
-    public interface IActivator<T>
+    [TestFixture]
+    public class TestInstanceActivator
     {
-        /// <summary>
-        /// Activate an instance.
-        /// </summary>
-        /// <returns>existing or new instance</returns>
-        T GetInstance(); // TODO: rename to Activate
+        private class SomeClass { }
+
+        [Test]
+        public void CreateReturnsExistingInstance()
+        {
+            var instance = new SomeClass();
+            var activator = InstanceActivator.Create(instance);
+
+            Assert.AreSame(
+                instance,
+                activator.GetInstance());
+        }
+
+        [Test]
+        public void CreateReturnsNewInstance()
+        {
+            var instance = new SomeClass();
+            var activator = InstanceActivator.Create(() => new SomeClass());
+            Assert.AreNotSame(
+                activator.GetInstance(),
+                activator.GetInstance());
+        }
     }
 }

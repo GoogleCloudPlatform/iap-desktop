@@ -26,12 +26,37 @@ namespace Google.Solutions.Common.Runtime
     /// <summary>
     /// Factory for instances of type T.
     /// </summary>
-    public interface IActivator<T>
+    public static class InstanceActivator 
     {
         /// <summary>
-        /// Activate an instance.
+        /// Create activator that returns an existing instance.
         /// </summary>
-        /// <returns>existing or new instance</returns>
-        T GetInstance(); // TODO: rename to Activate
+        public static IActivator<T> Create<T>(T instance)
+        {
+            return new Activator<T>(() => instance);
+        }
+
+        /// <summary>
+        /// Create an activator that invokes a callback.
+        /// </summary>
+        public static IActivator<T> Create<T>(Func<T> createInstance)
+        {
+            return new Activator<T>(createInstance);
+        }
+
+        private class Activator<T> : IActivator<T>
+        {
+            private readonly Func<T> createInstance;
+
+            public Activator(Func<T> createInstance)
+            {
+                this.createInstance = createInstance;
+            }
+
+            public T GetInstance()
+            {
+                return this.createInstance();
+            }
+        }
     }
 }
