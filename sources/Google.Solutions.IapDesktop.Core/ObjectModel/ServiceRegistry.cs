@@ -275,9 +275,6 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
                 //
                 // This is a decorator.
                 //
-                Debug.Assert(serviceType.GetGenericArguments().Length == 1);
-
-                //
                 // Verify that the services referenced by type arguments exist
                 // so that we don't get any surprises later.
                 //
