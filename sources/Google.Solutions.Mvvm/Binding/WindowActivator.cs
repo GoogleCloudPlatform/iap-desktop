@@ -100,7 +100,7 @@ namespace Google.Solutions.Mvvm.Binding
         {
             return new DialogWindow<TView, TViewModel, TTheme>(
                 this.viewActivator,
-                this.viewModelActivator.GetInstance(),
+                this.viewModelActivator.Activate(),
                 this.theme,
                 this.bindingContext);
         }
@@ -109,12 +109,12 @@ namespace Google.Solutions.Mvvm.Binding
         {
             return new TopLevelWindow<TView, TViewModel, TTheme>(
                 this.viewActivator,
-                this.viewModelActivator.GetInstance(),
+                this.viewModelActivator.Activate(),
                 this.theme,
                 this.bindingContext);
         }
 
-        public IWindow<TViewModel> GetInstance()
+        public IWindow<TViewModel> Activate()
         {
             return CreateWindow();
         }
@@ -164,7 +164,7 @@ namespace Google.Solutions.Mvvm.Binding
             //
             // Create view, show, and dispose it.
             //
-            using (var view = this.viewActivator.GetInstance())
+            using (var view = this.viewActivator.Activate())
             {
                 view.SuspendLayout();
 
@@ -278,7 +278,7 @@ namespace Google.Solutions.Mvvm.Binding
                     //
                     // Create view and bind it.
                     //
-                    var view = this.viewActivator.GetInstance();
+                    var view = this.viewActivator.Activate();
                     if (view == null)
                     {
                         throw new BindingException($"No view of type {typeof(TView)} available");

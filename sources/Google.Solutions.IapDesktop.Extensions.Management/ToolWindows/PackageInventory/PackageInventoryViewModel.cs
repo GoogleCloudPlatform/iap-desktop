@@ -181,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
                         async jobToken =>
                         {
                             return await PackageInventoryModel.LoadAsync(
-                                    this.packageInventory.GetInstance(),
+                                    this.packageInventory.Activate(),
                                     this.InventoryType,
                                     node,
                                     jobToken)

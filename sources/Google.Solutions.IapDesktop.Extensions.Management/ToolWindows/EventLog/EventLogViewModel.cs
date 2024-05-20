@@ -281,7 +281,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
                             {
                                 var model = new EventLogModel(displayName);
                                 await this.auditLogAdapter
-                                    .GetInstance()
+                                    .Activate()
                                     .ProcessInstanceEventsAsync(
                                         new[] { projectIdFilter },
                                         zonesFilter,

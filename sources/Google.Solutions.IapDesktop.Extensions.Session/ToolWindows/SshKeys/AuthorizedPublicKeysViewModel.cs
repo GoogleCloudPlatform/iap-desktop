@@ -190,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                     if (item.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
                     {
                         await AuthorizedPublicKeysModel.DeleteFromOsLoginAsync(
-                                this.osLoginService.GetInstance(),
+                                this.osLoginService.Activate(),
                                 item,
                                 cancellationToken)
                             .ConfigureAwait(true);
@@ -198,8 +198,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                     else
                     {
                         await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
-                                this.computeClient.GetInstance(),
-                                this.resourceManagerAdapter.GetInstance(),
+                                this.computeClient.Activate(),
+                                this.resourceManagerAdapter.Activate(),
                                 this.ModelKey!,
                                 item,
                                 cancellationToken)
@@ -246,9 +246,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                         {
                             return await AuthorizedPublicKeysModel
                                 .LoadAsync(
-                                    this.computeClient.GetInstance(),
-                                    this.resourceManagerAdapter.GetInstance(),
-                                    this.osLoginService.GetInstance(),
+                                    this.computeClient.Activate(),
+                                    this.resourceManagerAdapter.Activate(),
+                                    this.osLoginService.Activate(),
                                     node,
                                     jobToken)
                                 .ConfigureAwait(false);

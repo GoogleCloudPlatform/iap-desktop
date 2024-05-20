@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             {
                 try
                 {
-                    this.theme.GetInstance().ApplyTo(dialog);
+                    this.theme.Activate().ApplyTo(dialog);
                 }
                 catch (UnknownServiceException)
                 { }

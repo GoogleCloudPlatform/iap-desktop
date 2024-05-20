@@ -114,8 +114,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
                                     return await InstancePropertiesInspectorModel
                                         .LoadAsync(
                                             vmNode.Instance,
-                                            this.computeClient.GetInstance(),
-                                            this.packageInventory.GetInstance(),
+                                            this.computeClient.Activate(),
+                                            this.packageInventory.Activate(),
                                             combinedTokenSource.Token)
                                         .ConfigureAwait(false);
                                 }

@@ -30,6 +30,6 @@ namespace Google.Solutions.Common.Runtime
         /// Activate an instance.
         /// </summary>
         /// <returns>existing or new instance</returns>
-        T GetInstance(); // TODO: rename to Activate
+        T Activate();
     }
 }
