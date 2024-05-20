@@ -452,10 +452,10 @@ namespace Google.Solutions.IapDesktop
                 // Load themes.
                 //
                 var themes = Themes.Load(themeSettingsRepository);
-                preAuthLayer.AddSingleton<ISystemDialogTheme>(themes.SystemDialogTheme);
-                preAuthLayer.AddSingleton<IDialogTheme>(themes.DialogTheme);
-                preAuthLayer.AddSingleton<IToolWindowTheme>(themes.ToolWindowTheme);
-                preAuthLayer.AddSingleton<IMainWindowTheme>(themes.MainWindowTheme);
+                preAuthLayer.AddSingleton<ISystemDialogTheme>(themes.SystemDialog);
+                preAuthLayer.AddSingleton<IDialogTheme>(themes.Dialog);
+                preAuthLayer.AddSingleton<IToolWindowTheme>(themes.ToolWindow);
+                preAuthLayer.AddSingleton<IMainWindowTheme>(themes.MainWindow);
 
                 //
                 // Configure networking settings.
