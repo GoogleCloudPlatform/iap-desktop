@@ -64,33 +64,5 @@ namespace Google.Solutions.Mvvm.Binding
             return GetViewFactory<TView, TViewModel, TTheme>(serviceProvider).CreateDialog();
         }
 
-        /// <summary>
-        /// Create an MVVM-enabled dialog and view model using the service provider.
-        /// </summary>
-        public static IDialogWindow<TView, TViewModel> GetDialog<TView, TViewModel, TTheme>(
-            this IServiceProvider serviceProvider,
-            IControlTheme theme)
-            where TView : Form, IView<TViewModel>
-            where TViewModel : ViewModelBase
-            where TTheme : IControlTheme
-        {
-            return GetDialog<TView, TViewModel, TTheme>(serviceProvider);
-        }
-
-        //---------------------------------------------------------------------
-        // Windows.
-        //---------------------------------------------------------------------
-
-        /// <summary>
-        /// Create an MVVM-enabled window and view model using the service provider.
-        /// </summary>
-        public static ITopLevelWindow<TView, TViewModel> GetWindow<TView, TViewModel, TTheme>(
-            this IServiceProvider serviceProvider)
-            where TView : Form, IView<TViewModel>
-            where TViewModel : ViewModelBase
-            where TTheme : IControlTheme
-        {
-            return GetViewFactory<TView, TViewModel, TTheme>(serviceProvider).CreateWindow();
-        }
     }
 }
