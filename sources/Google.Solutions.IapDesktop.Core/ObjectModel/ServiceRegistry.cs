@@ -116,10 +116,8 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
                     return true;
                 }
                 else if (t.IsGenericType &&
-                    t.GetGenericTypeDefinition() == typeof(Service<>) &&
-                    t.GenericTypeArguments.Length == 1 &&
-                    IsServiceRegistered(t.GenericTypeArguments[0]))
-
+                    typeof(IServiceDecorator).IsAssignableFrom(t.GetGenericTypeDefinition()) &&
+                    t.GetGenericArguments().All(IsServiceRegistered))
                 {
                     return true;
                 }
@@ -264,19 +262,25 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
         public object GetService(Type serviceType)
         {
             if (serviceType.IsGenericType &&
-                serviceType.GetGenericTypeDefinition() == typeof(Service<>))
+                typeof(IServiceDecorator).IsAssignableFrom(serviceType.GetGenericTypeDefinition()))
             {
+                //
+                // This is a decorator.
+                //
                 Debug.Assert(serviceType.GetGenericArguments().Length == 1);
-                var actualServiceType = serviceType.GetGenericArguments()[0];
 
                 //
-                // Verify that the service exists so that we don't get any
-                // surprises later.
+                // Verify that the services referenced by type arguments exist
+                // so that we don't get any surprises later.
                 //
-                if (!IsServiceRegistered(actualServiceType))
+                foreach (var referencedType in serviceType.GetGenericArguments())
                 {
-                    throw new UnknownServiceException(
-                        $"Unknown service: {actualServiceType.Name}");
+                    if (!IsServiceRegistered(referencedType))
+                    {
+                        throw new UnknownServiceException(
+                            $"The decorator {serviceType.Name} references " +
+                            $"an unknown service: {referencedType.Name}");
+                    }
                 }
 
                 //

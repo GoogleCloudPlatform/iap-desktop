@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,26 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
-using System;
 
 namespace Google.Solutions.IapDesktop.Core.ObjectModel
 {
     /// <summary>
-    /// Decorator for delaying service lookup.
+    /// Base interface for decorators. Decorators allow customizing
+    /// how services are looked up.
     /// </summary>
-    public class Service<TService> : IServiceDecorator
+    public interface IServiceDecorator
     {
-        private readonly IServiceProvider serviceProvider;
-
-        public Service(IServiceProvider serviceProvider)
-        {
-            this.serviceProvider = serviceProvider.ExpectNotNull(nameof(serviceProvider));
-        }
-
-        public TService GetInstance()
-        {
-            return (TService)this.serviceProvider.GetService(typeof(TService));
-        }
     }
 }

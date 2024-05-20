@@ -130,45 +130,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
         }
 
         //---------------------------------------------------------------------
-        // Service factory lookup.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenServiceUnknown_ThenThenGetServiceFactoryThrowsUnknownServiceException()
-        {
-            var registry = new ServiceRegistry();
-
-            Assert.Throws<UnknownServiceException>(() =>
-            {
-                registry.GetService<Service<string>>();
-            });
-        }
-
-        [Test]
-        public void WhenTransientExists_ThenGetServiceFactoryReturnsFactory()
-        {
-            var registry = new ServiceRegistry();
-            registry.AddTransient<ServiceWithDefaultConstructor>();
-
-            var service = registry.GetService<Service<ServiceWithDefaultConstructor>>();
-            Assert.IsNotNull(service);
-            Assert.IsNotNull(service.GetInstance());
-            Assert.AreNotSame(service.GetInstance(), service.GetInstance());
-        }
-
-        [Test]
-        public void WhenSingletonExists_ThenGetServiceFactoryReturnsFactory()
-        {
-            var registry = new ServiceRegistry();
-            registry.AddSingleton<ServiceWithDefaultConstructor>();
-
-            var service = registry.GetService<Service<ServiceWithDefaultConstructor>>();
-            Assert.IsNotNull(service);
-            Assert.IsNotNull(service.GetInstance());
-            Assert.AreSame(service.GetInstance(), service.GetInstance());
-        }
-
-        //---------------------------------------------------------------------
         // Custom constructor.
         //---------------------------------------------------------------------
 
