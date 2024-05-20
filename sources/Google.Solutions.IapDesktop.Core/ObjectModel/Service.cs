@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using System;
 
@@ -27,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
     /// <summary>
     /// Decorator for delaying service lookup.
     /// </summary>
-    public class Service<TService> : IServiceDecorator
+    public class Service<TService> : IServiceDecorator, IActivator<TService>
     {
         private readonly IServiceProvider serviceProvider;
 

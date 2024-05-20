@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Theme;
 using System;
@@ -90,33 +91,48 @@ namespace Google.Solutions.Mvvm.Binding
         where TViewModel : ViewModelBase
         where TTheme : IControlTheme
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly IActivator<TView> viewActivator;
+        private readonly IActivator<TViewModel> viewModelActivator;
+        private readonly TTheme theme;
+        private readonly IBindingContext bindingContext;
 
-        private TViewModel CreateViewModel()
+        internal WindowFactory(
+            IActivator<TView> viewActivator,
+            IActivator<TViewModel> viewModelActivator,
+            TTheme theme,
+            IBindingContext bindingContext)
         {
-            return (TViewModel)this.serviceProvider.GetService(typeof(TViewModel));
-        }
-
-        internal WindowFactory(IServiceProvider serviceProvider)
-        {
-            this.serviceProvider = serviceProvider.ExpectNotNull(nameof(serviceProvider));
+            this.viewActivator = viewActivator;
+            this.viewModelActivator = viewModelActivator;
+            this.theme = theme;
+            this.bindingContext = bindingContext;
         }
 
         public IDialogWindow<TView, TViewModel> CreateDialog(TViewModel viewModel)
         {
-            return new Dialog<TView, TViewModel, TTheme>(this.serviceProvider, viewModel);
+            return new Dialog<TView, TViewModel, TTheme>(
+                this.viewActivator,
+                viewModel,
+                this.theme,
+                this.bindingContext);
         }
 
         public IDialogWindow<TView, TViewModel> CreateDialog()
         {
-            return CreateDialog(CreateViewModel());
+            return new Dialog<TView, TViewModel, TTheme>(
+                this.viewActivator,
+                this.viewModelActivator.GetInstance(),
+                this.theme,
+                this.bindingContext);
         }
 
         public ITopLevelWindow<TView, TViewModel> CreateWindow()
         {
             return new TopLevelWindow<TView, TViewModel, TTheme>(
-                this.serviceProvider,
-                (TViewModel)this.serviceProvider.GetService(typeof(TViewModel)));
+                this.viewActivator,
+                this.viewModelActivator.GetInstance(),
+                this.theme,
+                this.bindingContext);
         }
     }
 
@@ -125,16 +141,24 @@ namespace Google.Solutions.Mvvm.Binding
         where TViewModel : ViewModelBase
         where TTheme : IControlTheme
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly IActivator<TView> viewActivator;
+        private readonly TTheme theme;
+        private readonly IBindingContext bindingContext;
 
         private bool shown;
-
+         
         public TViewModel ViewModel { get; }
 
-        internal Dialog(IServiceProvider serviceProvider, TViewModel viewModel)
+        internal Dialog(
+            IActivator<TView> viewActivator,
+            TViewModel viewModel,
+            TTheme theme,
+            IBindingContext bindingContext)
         {
-            this.serviceProvider = serviceProvider;
+            this.viewActivator = viewActivator;
             this.ViewModel = viewModel;
+            this.theme = theme;
+            this.bindingContext = bindingContext;
         }
 
         /// <summary>
@@ -153,25 +177,17 @@ namespace Google.Solutions.Mvvm.Binding
                 this.shown = true;
             }
 
-            var bindingContext = (IBindingContext)
-                this.serviceProvider.GetService(typeof(IBindingContext));
-            if (bindingContext == null)
-            {
-                throw new BindingException("Binding context not available");
-            }
-
             //
             // Create view, show, and dispose it.
             //
-            using (var view = (TView)this.serviceProvider.GetService(typeof(TView)))
+            using (var view = this.viewActivator.GetInstance())
             {
                 view.SuspendLayout();
 
-                var theme = (TTheme)this.serviceProvider.GetService(typeof(TTheme));
-                theme.ApplyTo(view);
+                this.theme.ApplyTo(view);
                 if (view is IThemedView<TViewModel> themedView && themedView != null)
                 {
-                    themedView.SetTheme(theme);
+                    themedView.SetTheme(this.theme);
                 }
 
                 //
@@ -180,7 +196,7 @@ namespace Google.Solutions.Mvvm.Binding
                 this.ViewModel.Bind(view);
                 view.Bind(
                     this.ViewModel,
-                    bindingContext);
+                    this.bindingContext);
                 view.ResumeLayout();
 
                 var result = view.ShowDialog(parent);
@@ -205,16 +221,24 @@ namespace Google.Solutions.Mvvm.Binding
         where TViewModel : ViewModelBase
         where TTheme : IControlTheme
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly IActivator<TView> viewActivator;
+        private readonly TTheme theme;
+        private readonly IBindingContext bindingContext;
 
         private TView? form;
 
         public TViewModel ViewModel { get; }
 
-        internal TopLevelWindow(IServiceProvider serviceProvider, TViewModel viewModel)
+        internal TopLevelWindow(
+            IActivator<TView> viewActivator,
+            TViewModel viewModel,
+            TTheme theme,
+            IBindingContext bindingContext)
         {
-            this.serviceProvider = serviceProvider;
+            this.viewActivator = viewActivator;
             this.ViewModel = viewModel;
+            this.theme = theme;
+            this.bindingContext = bindingContext;
         }
 
         /// <summary>
@@ -270,21 +294,13 @@ namespace Google.Solutions.Mvvm.Binding
                     //
                     // Create view and bind it.
                     //
-                    var view = (TView)this.serviceProvider.GetService(typeof(TView));
+                    var view = this.viewActivator.GetInstance();
                     if (view == null)
                     {
                         throw new BindingException($"No view of type {typeof(TView)} available");
                     }
 
-                    var bindingContext = (IBindingContext)
-                        this.serviceProvider.GetService(typeof(IBindingContext));
-                    if (bindingContext == null)
-                    {
-                        throw new BindingException("Binding context not available");
-                    }
-
-                    var theme = (TTheme)this.serviceProvider.GetService(typeof(TTheme));
-                    Bind(view, this.ViewModel, theme, bindingContext);
+                    Bind(view, this.ViewModel, this.theme, this.bindingContext);
 
                     this.form = view;
                 }

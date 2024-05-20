@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Runtime;
 using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Windows.Forms;
@@ -40,7 +41,11 @@ namespace Google.Solutions.Mvvm.Binding
             where TViewModel : ViewModelBase
             where TTheme : IControlTheme
         {
-            return new WindowFactory<TView, TViewModel, TTheme>(serviceProvider);
+            return new WindowFactory<TView, TViewModel, TTheme>(
+                InstanceActivator.Create(() => (TView)serviceProvider.GetService(typeof(TView))),
+                InstanceActivator.Create(() => (TViewModel)serviceProvider.GetService(typeof(TViewModel))),
+                (TTheme)serviceProvider.GetService(typeof(TTheme)),
+                (IBindingContext)serviceProvider.GetService(typeof(IBindingContext)));
         }
 
         //---------------------------------------------------------------------
