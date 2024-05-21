@@ -72,13 +72,20 @@ namespace Google.Solutions.Mvvm.Theme
         {
             get
             {
-                //
-                // Temporarily switch to SystemAware mode
-                // in case this isn't the current mode already.
-                //
-                using (DpiAwareness.EnterThreadMode(DpiAwarenessMode.SystemAware))
+                if (DpiAwareness.IsSupported)
                 {
-                    return new DeviceCapabilities();
+                    //
+                    // Temporarily switch to SystemAware mode
+                    // in case this isn't the current mode already.
+                    //
+                    using (DpiAwareness.EnterThreadMode(DpiAwarenessMode.SystemAware))
+                    {
+                        return new DeviceCapabilities();
+                    }
+                }
+                else
+                {
+                    return Current;
                 }
             }
         }

@@ -410,12 +410,12 @@ namespace Google.Solutions.IapDesktop
 
                 var dpiMode = (themeSettingsRepository.GetSettings().ScalingMode.Value) switch
                 {
-                    ScalingMode.Gdi => DpiAwarenessMode.DpiUnawareGdiScaled,
+                    ScalingMode.None => DpiAwarenessMode.DpiUnaware,
                     ScalingMode.SystemDpiAware => DpiAwarenessMode.SystemAware,
                     _ => DpiAwarenessMode.DpiUnawareGdiScaled,
                 };
 
-                if (dpiMode != DpiAwarenessMode.DpiUnaware)
+                if (DpiAwareness.IsSupported && dpiMode != DpiAwarenessMode.DpiUnaware)
                 {
                     //
                     // Set DPI mode. 

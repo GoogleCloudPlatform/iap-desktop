@@ -67,6 +67,33 @@ namespace Google.Solutions.Mvvm.Theme
         public static readonly SizeF DefaultFontSize = new SizeF(6F, 13F);
 
         /// <summary>
+        /// Check if the Windows version supports DPI awareness.
+        /// </summary>
+        public static bool IsSupported
+        {
+            get
+            {
+                //
+                // SetThreadDpiAwarenessContext requires Windows 10 1607,
+                // GDI scaling requires 1703 (= build 15063).
+                // Use that as baseline.
+                //
+                var osVersion = Environment.OSVersion.Version;
+                return osVersion.Major > 10 ||
+                       (osVersion.Major == 10 && osVersion.Build >= 15063);
+            }
+        }
+
+        private static void CheckSupported()
+        {
+            if (!IsSupported)
+            {
+                throw new PlatformNotSupportedException(
+                    "DPI awareness requires Windows 10 1703 or a later version of Windows");
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the high DPI mode of the process. 
         /// </summary>
         public static DpiAwarenessMode ProcessMode
@@ -74,6 +101,8 @@ namespace Google.Solutions.Mvvm.Theme
             get => currentMode;
             set
             {
+                CheckSupported();
+
                 //
                 // NB. When enabling High DPI mode programmatically, WinForms won't
                 // fire DpiChanged events.
@@ -93,6 +122,8 @@ namespace Google.Solutions.Mvvm.Theme
         /// </summary>
         public static IDisposable EnterThreadMode(DpiAwarenessMode mode)
         {
+            CheckSupported();
+
             var original = NativeMethods.SetThreadDpiAwarenessContext(
                 ToDpiAwarenessContext(mode));
             if (original == IntPtr.Zero)
