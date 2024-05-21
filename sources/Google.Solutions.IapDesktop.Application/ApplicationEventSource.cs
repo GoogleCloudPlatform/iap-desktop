@@ -43,13 +43,18 @@ namespace Google.Solutions.IapDesktop.Application
 
         [Event(CommandExecutedId, Level = EventLevel.Informational)]
         internal void CommandExecuted(string id)
-            => WriteEvent(CommandExecutedId, id);
+        {
+            WriteEvent(CommandExecutedId, id);
+        }
 
         [Event(CommandFailedId, Level = EventLevel.Warning)]
         internal void CommandFailed(
             string id,
             string type,
-            string error)
-            => WriteEvent(CommandFailedId, id, type, error);
+            string error,
+            string? cause)
+        {
+            WriteEvent(CommandFailedId, id, type, error, cause);
+        }
     }
 }
