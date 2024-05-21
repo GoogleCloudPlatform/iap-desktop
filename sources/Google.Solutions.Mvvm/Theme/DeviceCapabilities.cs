@@ -88,6 +88,12 @@ namespace Google.Solutions.Mvvm.Theme
             var hdc = NativeMethods.GetDC(IntPtr.Zero);
             try
             {
+                //
+                // NB. The results of GetDeviceCaps depend
+                // on the current DPI awareness mode. If the
+                // process is in "unaware" mode, we'll always
+                // get 96x96 as LOGPIXELSX/Y.
+                //
                 return new DeviceCapabilities(
                     (ushort)NativeMethods.GetDeviceCaps(
                         hdc,
