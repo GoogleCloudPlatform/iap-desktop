@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Runtime;
+using Newtonsoft.Json.Linq;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -39,6 +41,21 @@ namespace Google.Solutions.Mvvm.Theme
     {
         private static DpiAwarenessMode currentMode = DpiAwarenessMode.DpiUnaware;
 
+        private static IntPtr ToDpiAwarenessContext(DpiAwarenessMode mode)
+        {
+            var contextValue = mode switch
+            {
+                DpiAwarenessMode.DpiUnaware => NativeMethods.DPI_AWARENESS_CONTEXT.UNAWARE,
+                DpiAwarenessMode.SystemAware => NativeMethods.DPI_AWARENESS_CONTEXT.SYSTEM_AWARE,
+                DpiAwarenessMode.PerMonitor => NativeMethods.DPI_AWARENESS_CONTEXT.PER_MONITOR_AWARE,
+                DpiAwarenessMode.PerMonitorV2 => NativeMethods.DPI_AWARENESS_CONTEXT.PER_MONITOR_AWARE_V2,
+                DpiAwarenessMode.DpiUnawareGdiScaled => NativeMethods.DPI_AWARENESS_CONTEXT.UNAWARE_GDISCALED,
+                _ => throw new ArgumentException(nameof(mode)),
+            };
+
+            return new IntPtr((int)contextValue);
+        }
+
         /// <summary>
         /// Windows uses 96 DPI by default.
         /// </summary>
@@ -52,32 +69,44 @@ namespace Google.Solutions.Mvvm.Theme
         /// <summary>
         /// Gets or sets the high DPI mode of the process. 
         /// </summary>
-        public static DpiAwarenessMode Mode
+        public static DpiAwarenessMode ProcessMode
         {
             get => currentMode;
             set
             {
-                var contextValue = value switch
-                {
-                    DpiAwarenessMode.DpiUnaware => NativeMethods.DPI_AWARENESS_CONTEXT.UNAWARE,
-                    DpiAwarenessMode.SystemAware => NativeMethods.DPI_AWARENESS_CONTEXT.SYSTEM_AWARE,
-                    DpiAwarenessMode.PerMonitor => NativeMethods.DPI_AWARENESS_CONTEXT.PER_MONITOR_AWARE,
-                    DpiAwarenessMode.PerMonitorV2 => NativeMethods.DPI_AWARENESS_CONTEXT.PER_MONITOR_AWARE_V2,
-                    DpiAwarenessMode.DpiUnawareGdiScaled => NativeMethods.DPI_AWARENESS_CONTEXT.UNAWARE_GDISCALED,
-                    _ => throw new ArgumentException(nameof(value)),
-                };
-
                 //
                 // NB. When enabling High DPI mode programmatically, WinForms won't
                 // fire DpiChanged events.
                 //
-
-                if (!NativeMethods.SetProcessDpiAwarenessContext(contextValue))
+                if (!NativeMethods.SetProcessDpiAwarenessContext(ToDpiAwarenessContext(value)))
                 {
                     throw new Win32Exception();
                 }
+
                 currentMode = value;
             }
+        }
+
+        /// <summary>
+        /// Temporarily enter the given mode. Restores the original
+        /// DPI awareness mode when the returned object is disposed.
+        /// </summary>
+        public static IDisposable EnterThreadMode(DpiAwarenessMode mode)
+        {
+            var original = NativeMethods.SetThreadDpiAwarenessContext(
+                ToDpiAwarenessContext(mode));
+            if (original == IntPtr.Zero)
+            { 
+                throw new Win32Exception(); 
+            }
+
+            return Disposable.For(() =>
+            {
+                if (NativeMethods.SetThreadDpiAwarenessContext(original) == IntPtr.Zero)
+                {
+                    throw new Win32Exception();
+                }
+            });
         }
 
         //---------------------------------------------------------------------
@@ -89,7 +118,14 @@ namespace Google.Solutions.Mvvm.Theme
             [DllImport("User32", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             public static extern bool SetProcessDpiAwarenessContext(
-                [In] DPI_AWARENESS_CONTEXT context);
+                [In] IntPtr context);
+
+            [DllImport("User32", SetLastError = true)]
+            public static extern IntPtr GetThreadDpiAwarenessContext();
+
+            [DllImport("User32", SetLastError = true)]
+            public static extern IntPtr SetThreadDpiAwarenessContext(
+                [In] IntPtr dpiContext);
 
             public enum DPI_AWARENESS_CONTEXT : int
             {

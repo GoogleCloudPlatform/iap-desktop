@@ -426,7 +426,7 @@ namespace Google.Solutions.IapDesktop
                     //
                     try
                     {
-                        DpiAwareness.Mode = dpiMode;
+                        DpiAwareness.ProcessMode = dpiMode;
                     }
                     catch (Exception e)
                     {
@@ -558,7 +558,8 @@ namespace Google.Solutions.IapDesktop
                         { DefaultParameters.UserAgentArchitecture, Install.ProcessArchitecture.ToString() },
                         { DefaultParameters.UserAgentPlatformVersion, Environment.OSVersion.Version.ToString() },
                         { "osdrk", SystemTheme.ShouldAppsUseDarkMode ? "1" : "0" },
-                        { "osdpi", DeviceCapabilities.Current.SystemDpi.ToString() },
+                        { "oscdp", DeviceCapabilities.Current.Dpi.ToString() },
+                        { "ossdp", DeviceCapabilities.System.Dpi.ToString() },
                         { "apent", appSettingsRepository.IsPolicyPresent ? "1" : "0" },
                     })
                 {

@@ -83,7 +83,7 @@ namespace Google.Solutions.Mvvm.Theme
         {
             controlTheme.ExpectNotNull(nameof(controlTheme));
 
-            if (DpiAwareness.Mode == DpiAwarenessMode.DpiUnawareGdiScaled)
+            if (DpiAwareness.ProcessMode == DpiAwarenessMode.DpiUnawareGdiScaled)
             {
                 controlTheme.AddRule<Label>(DisableDoubleBufferingForLabel);
                 controlTheme.AddRule<CheckBox>(DisableDoubleBuffering);

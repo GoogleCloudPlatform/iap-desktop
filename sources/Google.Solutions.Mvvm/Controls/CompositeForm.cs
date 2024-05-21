@@ -44,7 +44,7 @@ namespace Google.Solutions.Mvvm.Controls
                 //
                 var cp = base.CreateParams;
 
-                if (DpiAwareness.Mode != DpiAwarenessMode.DpiUnawareGdiScaled)
+                if (DpiAwareness.ProcessMode != DpiAwarenessMode.DpiUnawareGdiScaled)
                 {
                     //
                     // WS_EX_COMPOSITED can break scrolling if

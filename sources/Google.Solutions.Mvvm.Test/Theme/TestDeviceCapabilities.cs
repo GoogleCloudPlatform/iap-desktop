@@ -28,10 +28,13 @@ namespace Google.Solutions.Mvvm.Test.Theme
     public class TestDeviceCapabilities
     {
         [Test]
-        public void GetScreenCapabilities()
+        public void WhenDpiUnaware_ThenDeviceCapabilitiesUseDefaultDpi()
         {
-            var caps = DeviceCapabilities.Get();
-            Assert.AreNotEqual(0, caps.SystemDpi);
+            using (DpiAwareness.EnterThreadMode(DpiAwarenessMode.DpiUnaware))
+            {
+                Assert.AreEqual(96, DeviceCapabilities.Current.Dpi);
+                Assert.IsFalse(DeviceCapabilities.Current.IsHighDpi);
+            }
         }
     }
 }

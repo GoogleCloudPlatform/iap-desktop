@@ -23,70 +23,15 @@ using System;
 using System.Runtime.InteropServices;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Runtime.CompilerServices;
 
 namespace Google.Solutions.Mvvm.Theme
 {
+    /// <summary>
+    /// Device capabilities.
+    /// </summary>
     public class DeviceCapabilities
     {
-        //---------------------------------------------------------------------
-        // DPI calculation.
-        //---------------------------------------------------------------------
-
-        public const ushort DefaultDpi = 96;
-
-        public ushort SystemDpi { get; }
-
-        public bool IsHighDpiEnabled
-        {
-            get => this.SystemDpi != DefaultDpi;
-        }
-
-        public static int MulDiv(int number, int numerator, int denominator)
-        {
-            return (int)(((long)number * numerator) / denominator);
-        }
-
-        public Size ScaleToSystemDpi(Size size)
-        {
-            return new Size(
-                MulDiv(size.Width, this.SystemDpi, DeviceCapabilities.DefaultDpi),
-                MulDiv(size.Height, this.SystemDpi, DeviceCapabilities.DefaultDpi));
-        }
-
-        public Rectangle ScaleToSystemDpi(Rectangle rect)
-        {
-            return new Rectangle(
-                rect.Location,
-                ScaleToSystemDpi(rect.Size));
-        }
-
-        public Padding ScaleToSystemDpi(Padding padding)
-        {
-            return new Padding(
-                MulDiv(padding.Left, this.SystemDpi, DeviceCapabilities.DefaultDpi),
-                MulDiv(padding.Top, this.SystemDpi, DeviceCapabilities.DefaultDpi),
-                MulDiv(padding.Right, this.SystemDpi, DeviceCapabilities.DefaultDpi),
-                MulDiv(padding.Bottom, this.SystemDpi, DeviceCapabilities.DefaultDpi));
-        }
-
-        public int ScaleToSystemDpi(int size)
-        {
-            return MulDiv(size, this.SystemDpi, DeviceCapabilities.DefaultDpi);
-        }
-
-        //---------------------------------------------------------------------
-        // Factory method.
-        //---------------------------------------------------------------------
-
-        public static DeviceCapabilities Current { get; }
-
-        private DeviceCapabilities(ushort systemDpi)
-        {
-            this.SystemDpi = systemDpi;
-        }
-
-        static DeviceCapabilities()
+        private DeviceCapabilities()
         {
             var hdc = NativeMethods.GetDC(IntPtr.Zero);
             try
@@ -97,15 +42,109 @@ namespace Google.Solutions.Mvvm.Theme
                 // process is in "unaware" mode, we'll always
                 // get 96x96 as LOGPIXELSX/Y.
                 //
-                Current = new DeviceCapabilities(
+                this.Dpi = 
                     (ushort)NativeMethods.GetDeviceCaps(
                         hdc,
-                        NativeMethods.DeviceCap.LOGPIXELSX));
+                        NativeMethods.DeviceCap.LOGPIXELSX);
             }
             finally
             {
                 NativeMethods.ReleaseDC(IntPtr.Zero, hdc);
             }
+        }
+
+        /// <summary>
+        /// Query device capabilities given the current
+        /// DPI awareness mode.
+        /// </summary>
+        public static DeviceCapabilities Current
+        {
+            get
+            {
+                return new DeviceCapabilities();
+            }
+        }
+
+        /// <summary>
+        /// Query device capabilitiesin system DPI mode.
+        /// </summary>
+        public static DeviceCapabilities System
+        {
+            get
+            {
+                //
+                // Temporarily switch to SystemAware mode
+                // in case this isn't the current mode already.
+                //
+                using (DpiAwareness.EnterThreadMode(DpiAwarenessMode.SystemAware))
+                {
+                    return new DeviceCapabilities();
+                }
+            }
+        }
+
+        private static int MulDiv(int number, int numerator, int denominator)
+        {
+            return (int)(((long)number * numerator) / denominator);
+        }
+
+        //---------------------------------------------------------------------
+        // DPI calculation.
+        //---------------------------------------------------------------------
+
+        public const ushort DefaultDpi = 96;
+
+        /// <summary>
+        /// Screen DPI.
+        /// </summary>
+        public ushort Dpi { get; }
+
+        /// <summary>
+        /// Check if the screen DPI is higher than the default 96x96.
+        /// </summary>
+        public bool IsHighDpi
+        {
+            get => this.Dpi != DefaultDpi;
+        }
+
+        /// <summary>
+        /// Scale size from default 96x96 to current DPI.
+        /// </summary>
+        public Size ScaleToDpi(Size size)
+        {
+            return new Size(
+                MulDiv(size.Width, this.Dpi, DeviceCapabilities.DefaultDpi),
+                MulDiv(size.Height, this.Dpi, DeviceCapabilities.DefaultDpi));
+        }
+
+        /// <summary>
+        /// Scale size from default 96x96 to current DPI.
+        /// </summary>
+        public Rectangle ScaleToDpi(Rectangle rect)
+        {
+            return new Rectangle(
+                rect.Location,
+                ScaleToDpi(rect.Size));
+        }
+
+        /// <summary>
+        /// Scale size from default 96x96 to current DPI.
+        /// </summary>
+        public Padding ScaleToDpi(Padding padding)
+        {
+            return new Padding(
+                MulDiv(padding.Left, this.Dpi, DeviceCapabilities.DefaultDpi),
+                MulDiv(padding.Top, this.Dpi, DeviceCapabilities.DefaultDpi),
+                MulDiv(padding.Right, this.Dpi, DeviceCapabilities.DefaultDpi),
+                MulDiv(padding.Bottom, this.Dpi, DeviceCapabilities.DefaultDpi));
+        }
+
+        /// <summary>
+        /// Scale size from default 96x96 to current DPI.
+        /// </summary>
+        public int ScaleToDpi(int size)
+        {
+            return MulDiv(size, this.Dpi, DeviceCapabilities.DefaultDpi);
         }
 
         //---------------------------------------------------------------------

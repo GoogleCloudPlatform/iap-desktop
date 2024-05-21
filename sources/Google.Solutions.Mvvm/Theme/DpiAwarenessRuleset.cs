@@ -55,7 +55,7 @@ namespace Google.Solutions.Mvvm.Theme
             // this causes the imagelist to reset the contained images.
             //
             imageList.ImageSize 
-                = DeviceCapabilities.Current.ScaleToSystemDpi(imageList.ImageSize);
+                = DeviceCapabilities.Current.ScaleToDpi(imageList.ImageSize);
 
             if (imageList.Images.Count != images.Length)
             {
@@ -138,12 +138,12 @@ namespace Google.Solutions.Mvvm.Theme
         private void StyleToolStrip(ToolStrip toolStrip)
         {
             toolStrip.ImageScalingSize 
-                = DeviceCapabilities.Current.ScaleToSystemDpi(toolStrip.ImageScalingSize);
+                = DeviceCapabilities.Current.ScaleToDpi(toolStrip.ImageScalingSize);
         }
 
         private void StyleToolStripItem(ToolStripItem item)
         {
-            item.Margin = DeviceCapabilities.Current.ScaleToSystemDpi(item.Margin);
+            item.Margin = DeviceCapabilities.Current.ScaleToDpi(item.Margin);
         }
 
         private void StyleTreeView(TreeView treeView)
@@ -163,7 +163,7 @@ namespace Google.Solutions.Mvvm.Theme
             //
             foreach (ColumnHeader column in listView.Columns)
             {
-                column.Width = DeviceCapabilities.Current.ScaleToSystemDpi(column.Width);
+                column.Width = DeviceCapabilities.Current.ScaleToDpi(column.Width);
             }
         }
 
@@ -175,7 +175,7 @@ namespace Google.Solutions.Mvvm.Theme
         {
             controlTheme.ExpectNotNull(nameof(controlTheme));
 
-            if (DeviceCapabilities.Current.IsHighDpiEnabled)
+            if (DeviceCapabilities.Current.IsHighDpi)
             {
                 //
                 // Ensure that controls are properly configured
