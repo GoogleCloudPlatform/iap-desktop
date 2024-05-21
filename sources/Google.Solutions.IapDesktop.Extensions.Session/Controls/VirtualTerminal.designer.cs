@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             // VirtualTerminalControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Name = "VirtualTerminalControl";
             this.Size = new System.Drawing.Size(495, 150);
             this.ResumeLayout(false);

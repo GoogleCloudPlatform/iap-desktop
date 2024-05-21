@@ -134,7 +134,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             // TestMarkdownViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1601, 841);
             this.Controls.Add(this.layoutPanel);
             this.Name = "TestMarkdownViewer";

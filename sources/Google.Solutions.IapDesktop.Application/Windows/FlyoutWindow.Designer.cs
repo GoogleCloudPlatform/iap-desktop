@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             // FlyoutWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(86, 56);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FlyoutWindow";

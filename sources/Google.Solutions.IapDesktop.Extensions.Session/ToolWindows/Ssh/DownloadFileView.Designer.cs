@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             // 
             this.AcceptButton = this.downloadButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(684, 441);
             this.Controls.Add(this.browseButton);

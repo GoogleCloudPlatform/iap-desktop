@@ -85,7 +85,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             // TestNotificationBarPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(476, 108);
             this.Controls.Add(this.notificationBarPanel);
             this.Name = "TestNotificationBarPanel";

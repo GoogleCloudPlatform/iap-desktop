@@ -66,7 +66,7 @@ namespace Google.Solutions.Mvvm.Controls
             // MarkdownViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.richTextBox);
             this.Name = "MarkdownViewer";
             this.ResumeLayout(false);

@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.ActiveDi
             // 
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(270, 257);

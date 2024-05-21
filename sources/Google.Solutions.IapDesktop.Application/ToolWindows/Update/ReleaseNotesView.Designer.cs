@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
             // ReleaseNotesView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(917, 450);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.headerLabel);

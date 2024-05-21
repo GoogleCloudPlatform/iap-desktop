@@ -82,28 +82,13 @@ namespace Google.Solutions.Mvvm.Theme
         private void VerifyScalingSettings(Control c)
         {
 #if DEBUG
-            if (c is ContainerControl container && (
-                container.Controls.OfType<GroupBox>().Any() ||
-                container.Controls.OfType<Button>().Any() ||
-                container.Controls.OfType<RadioButton>().Any()))
-            {
-                //
-                // GroupBoxes and certain other controls don't auto-scale
-                // properly in DPI mode, so the container must use:
-                //
-                //   AutoScaleMode = Font
-                //   CurrentAutoScaleDimensions = DpiAwareness.DefaultFont
-                //
-                Debug.Assert(container.AutoScaleMode == AutoScaleMode.Font);
-                Debug.Assert(container.CurrentAutoScaleDimensions.Width >= DpiAwareness.DefaultFontSize.Width);
-            }
-            else if (c is Form form && !(form is INestedForm))
+            if (c is Form form)
             {
                 //
                 // Forms must use:
                 //
                 //   AutoScaleMode = DPI
-                //   CurrentAutoScaleDimensions = DpiAwareness.DefaultDpi
+                //   CurrentAutoScaleDimensions = 96x96
                 //
                 // INestedForm (ToolWindows) are special and must follow
                 // the conventions for ContainerControls.
@@ -117,10 +102,26 @@ namespace Google.Solutions.Mvvm.Theme
                 {
                     //
                     // If the Control box is hidden, the size of the form isn't
-                    // adjusted correctly..
+                    // adjusted correctly.
                     //
                     Debug.Assert(form.ControlBox);
                 }
+            }
+            else if (c is UserControl userControl)
+            {
+                //
+                // UserControls must use:
+                //
+                //   AutoScaleMode = DPI
+                //   CurrentAutoScaleDimensions = 96x96
+                //
+                // INestedForm (ToolWindows) are special and must follow
+                // the conventions for ContainerControls.
+                //
+
+                Debug.Assert(userControl.AutoScaleMode == AutoScaleMode.Dpi);
+                Debug.Assert(userControl.CurrentAutoScaleDimensions.Width >= DpiAwareness.DefaultDpi.Width);
+                Debug.Assert(userControl.CurrentAutoScaleDimensions.Width == userControl.CurrentAutoScaleDimensions.Height);
             }
             else if (c is PropertyGrid)
             {

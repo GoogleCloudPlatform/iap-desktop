@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.Options
             // DebugOptionsSheet
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.dirtyCheckBox);
             this.Controls.Add(this.failToApplyChangesCheckBox);
             this.Name = "DebugOptionsSheet";

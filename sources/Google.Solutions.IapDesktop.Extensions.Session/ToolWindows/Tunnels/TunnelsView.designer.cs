@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Tunnels
             // TunnelsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(862, 364);
             this.ControlBox = false;
             this.Controls.Add(this.tunnelsList);

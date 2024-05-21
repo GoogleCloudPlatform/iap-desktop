@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             // 
             this.AcceptButton = this.closeButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.closeButton;
             this.ClientSize = new System.Drawing.Size(200, 77);
             this.Controls.Add(this.dcaLabel);

@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
             // DebugDockingWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(609, 889);
             this.Controls.Add(this.grid);
             this.Controls.Add(this.output);

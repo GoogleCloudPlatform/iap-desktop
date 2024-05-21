@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
             // AutoCloseView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.label);
             this.Name = "AutoCloseView";

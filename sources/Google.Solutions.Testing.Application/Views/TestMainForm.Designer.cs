@@ -68,7 +68,7 @@ namespace Google.Solutions.Testing.Application.Views
             // TestMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.dockPanel);
             this.IsMdiContainer = true;

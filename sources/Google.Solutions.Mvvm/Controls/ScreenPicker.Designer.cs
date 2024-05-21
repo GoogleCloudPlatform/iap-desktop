@@ -54,7 +54,7 @@ namespace Google.Solutions.Mvvm.Controls
             // ScreenSelector
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Name = "ScreenSelector";
             this.Click += new System.EventHandler(this.ScreenSelector_Click);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.ScreenSelector_Paint);

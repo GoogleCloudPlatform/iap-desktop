@@ -155,7 +155,7 @@ namespace Google.Solutions.Mvvm.Controls
             // FileBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.splitContainer);
             this.Name = "FileBrowser";
             this.Size = new System.Drawing.Size(592, 256);

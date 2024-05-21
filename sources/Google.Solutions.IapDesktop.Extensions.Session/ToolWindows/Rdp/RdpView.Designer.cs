@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             // RemoteDesktopView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(763, 431);
             this.Controls.Add(this.overlayPanel);
             this.Controls.Add(this.rdpClient);
