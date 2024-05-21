@@ -33,16 +33,6 @@ namespace Google.Solutions.Mvvm.Theme
     /// </summary>
     public class DpiAwarenessRuleset : ControlTheme.IRuleSet
     {
-        private readonly DeviceCapabilities deviceCaps;
-
-        public DpiAwarenessRuleset()
-        {
-            //
-            // Get system DPI and use this for scaling operations.
-            //
-            this.deviceCaps = DeviceCapabilities.Get();
-        }
-
         //---------------------------------------------------------------------
         // Helper methods.
         //---------------------------------------------------------------------
@@ -64,7 +54,8 @@ namespace Google.Solutions.Mvvm.Theme
             // Change the size. If the handle has been created already,
             // this causes the imagelist to reset the contained images.
             //
-            imageList.ImageSize = this.deviceCaps.ScaleToSystemDpi(imageList.ImageSize);
+            imageList.ImageSize 
+                = DeviceCapabilities.Current.ScaleToSystemDpi(imageList.ImageSize);
 
             if (imageList.Images.Count != images.Length)
             {
@@ -147,12 +138,12 @@ namespace Google.Solutions.Mvvm.Theme
         private void StyleToolStrip(ToolStrip toolStrip)
         {
             toolStrip.ImageScalingSize 
-                = this.deviceCaps.ScaleToSystemDpi(toolStrip.ImageScalingSize);
+                = DeviceCapabilities.Current.ScaleToSystemDpi(toolStrip.ImageScalingSize);
         }
 
         private void StyleToolStripItem(ToolStripItem item)
         {
-            item.Margin = this.deviceCaps.ScaleToSystemDpi(item.Margin);
+            item.Margin = DeviceCapabilities.Current.ScaleToSystemDpi(item.Margin);
         }
 
         private void StyleTreeView(TreeView treeView)
@@ -172,7 +163,7 @@ namespace Google.Solutions.Mvvm.Theme
             //
             foreach (ColumnHeader column in listView.Columns)
             {
-                column.Width = this.deviceCaps.ScaleToSystemDpi(column.Width);
+                column.Width = DeviceCapabilities.Current.ScaleToSystemDpi(column.Width);
             }
         }
 
@@ -184,7 +175,7 @@ namespace Google.Solutions.Mvvm.Theme
         {
             controlTheme.ExpectNotNull(nameof(controlTheme));
 
-            if (this.deviceCaps.IsHighDpiEnabled)
+            if (DeviceCapabilities.Current.IsHighDpiEnabled)
             {
                 //
                 // Ensure that controls are properly configured

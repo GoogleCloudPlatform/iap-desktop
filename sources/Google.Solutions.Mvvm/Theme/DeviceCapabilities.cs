@@ -23,6 +23,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Runtime.CompilerServices;
 
 namespace Google.Solutions.Mvvm.Theme
 {
@@ -78,12 +79,14 @@ namespace Google.Solutions.Mvvm.Theme
         // Factory method.
         //---------------------------------------------------------------------
 
+        public static DeviceCapabilities Current { get; }
+
         private DeviceCapabilities(ushort systemDpi)
         {
             this.SystemDpi = systemDpi;
         }
 
-        public static DeviceCapabilities Get()
+        static DeviceCapabilities()
         {
             var hdc = NativeMethods.GetDC(IntPtr.Zero);
             try
@@ -94,7 +97,7 @@ namespace Google.Solutions.Mvvm.Theme
                 // process is in "unaware" mode, we'll always
                 // get 96x96 as LOGPIXELSX/Y.
                 //
-                return new DeviceCapabilities(
+                Current = new DeviceCapabilities(
                     (ushort)NativeMethods.GetDeviceCaps(
                         hdc,
                         NativeMethods.DeviceCap.LOGPIXELSX));
