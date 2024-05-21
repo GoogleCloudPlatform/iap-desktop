@@ -73,10 +73,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             // Log exception, but don't include the full error message
             // because it might contain project names or other PII.
             //
+            var unwrappedException = exception.Unwrap();
             ApplicationEventSource.Log.CommandFailed(
                 command.Id,
                 command.GetType().FullName(),
-                exception.Unwrap().GetType().Name);
+                unwrappedException.GetType().Name,
+                unwrappedException.InnerException?.GetType().Name);
 
             this.exceptionDialog.Show(
                 parent,
