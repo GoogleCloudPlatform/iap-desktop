@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Runtime;
-using Newtonsoft.Json.Linq;
 using System;
 using System.ComponentModel;
 using System.Drawing;

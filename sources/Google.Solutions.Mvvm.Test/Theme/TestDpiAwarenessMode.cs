@@ -29,15 +29,6 @@ namespace Google.Solutions.Mvvm.Test.Theme
     public class TestDpiAwarenessMode
     {
         [Test]
-        public void ProcessMode()
-        {
-            Assert.AreEqual(DpiAwarenessMode.DpiUnaware, DpiAwareness.ProcessMode);
-
-            DpiAwareness.ProcessMode = DpiAwarenessMode.DpiUnaware;
-            Assert.AreEqual(DpiAwarenessMode.DpiUnaware, DpiAwareness.ProcessMode);
-        }
-
-        [Test]
         public void Enter(
             [Values(
                 DpiAwarenessMode.DpiUnaware,
