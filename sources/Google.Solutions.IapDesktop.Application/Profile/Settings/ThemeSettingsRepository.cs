@@ -44,6 +44,34 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     }
 
     /// <summary>
+    /// Mode to use for high-DPI scaling.
+    /// </summary>
+    public enum ScalingMode
+    {
+        /// <summary>
+        /// Default (blurry) scaling.
+        /// </summary>
+        [Display(Name = "Off")]
+        None = 0,
+
+        /// <summary>
+        /// Enable GDI scaling.
+        /// </summary>
+        [Display(Name = "System (GDI scaling)")]
+        Gdi = 1,
+
+#if DEBUG
+        /// <summary>
+        /// System DPI aware scaling.
+        /// </summary>
+        [Display(Name = "DPI-aware")]
+#endif
+        SystemDpiAware = 2,
+
+        _Default = Gdi
+    }
+
+    /// <summary>
     /// Theme-related settings.
     /// </summary>
     public interface IThemeSettings : ISettingsCollection
@@ -56,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// <summary>
         /// Enable GDI scaling for high-DPI monitors.
         /// </summary>
-        ISetting<bool> IsGdiScalingEnabled { get; }
+        ISetting<ScalingMode> ScalingMode { get; }
     }
 
     public class ThemeSettingsRepository : RepositoryBase<IThemeSettings>
@@ -80,12 +108,12 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         private class ThemeSettings : IThemeSettings
         {
             public ISetting<ApplicationTheme> Theme { get; }
-            public ISetting<bool> IsGdiScalingEnabled { get; }
+            public ISetting<ScalingMode> ScalingMode { get; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
                 this.Theme,
-                this.IsGdiScalingEnabled
+                this.ScalingMode
             };
 
             internal ThemeSettings(ISettingsStore store)
@@ -96,12 +124,12 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                     null,
                     null,
                     ApplicationTheme._Default);
-                this.IsGdiScalingEnabled = store.Read<bool>(
-                    "IsGdiScalingEnabled",
+                this.ScalingMode = store.Read<ScalingMode>(
+                    "IsGdiScalingEnabled", // Use previous setting for compatibility.
                     "IsGdiScalingEnabled",
                     null,
                     null,
-                    true);
+                    Profile.Settings.ScalingMode._Default);
             }
         }
     }

@@ -6,6 +6,7 @@
     <Description>MVVM and controls library</Description>
     
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseWindowsForms>True</UseWindowsForms>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Google.Apis.Core" Version="1.68.0" />

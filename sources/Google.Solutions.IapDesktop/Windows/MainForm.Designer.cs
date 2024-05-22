@@ -225,8 +225,8 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(984, 661);
             this.Controls.Add(this.dockPanel);
             this.Controls.Add(this.statusStrip);

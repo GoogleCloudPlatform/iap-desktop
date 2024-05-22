@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -19,21 +19,25 @@
 // under the License.
 //
 
+
 using Google.Solutions.Mvvm.Theme;
 using NUnit.Framework;
 
 namespace Google.Solutions.Mvvm.Test.Theme
 {
     [TestFixture]
-    public class TestDeviceCapabilities
+    public class TestDpiAwarenessMode
     {
         [Test]
-        public void WhenDpiUnaware_ThenDeviceCapabilitiesUseDefaultDpi()
+        public void Enter(
+            [Values(
+                DpiAwarenessMode.DpiUnaware,
+                DpiAwarenessMode.SystemAware,
+                DpiAwarenessMode.PerMonitorV2)] DpiAwarenessMode mode)
         {
-            using (DpiAwareness.EnterThreadMode(DpiAwarenessMode.DpiUnaware))
+            using (DpiAwareness.EnterThreadMode(mode))
+            using (DpiAwareness.EnterThreadMode(mode)) // Enter again.
             {
-                Assert.AreEqual(96, DeviceCapabilities.Current.Dpi);
-                Assert.IsFalse(DeviceCapabilities.Current.IsHighDpi);
             }
         }
     }

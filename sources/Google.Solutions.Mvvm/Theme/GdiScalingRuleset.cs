@@ -51,7 +51,7 @@ namespace Google.Solutions.Mvvm.Theme
             // For simple controls, it's a reasonable trade-off to sacrifice
             // double-buffering in exchange for crisp text.
             //
-            if (GdiScaling.IsEnabled && this.doubleBufferedProperty != null)
+            if (this.doubleBufferedProperty != null)
             {
                 this.doubleBufferedProperty.SetValue(control, false);
             }
@@ -83,11 +83,14 @@ namespace Google.Solutions.Mvvm.Theme
         {
             controlTheme.ExpectNotNull(nameof(controlTheme));
 
-            controlTheme.AddRule<Label>(DisableDoubleBufferingForLabel);
-            controlTheme.AddRule<CheckBox>(DisableDoubleBuffering);
-            controlTheme.AddRule<Button>(DisableDoubleBuffering);
-            controlTheme.AddRule<ToolStrip>(DisableDoubleBuffering);
-            controlTheme.AddRule<ContextMenuStrip>(DisableDoubleBuffering);
+            if (DpiAwareness.ProcessMode == DpiAwarenessMode.DpiUnawareGdiScaled)
+            {
+                controlTheme.AddRule<Label>(DisableDoubleBufferingForLabel);
+                controlTheme.AddRule<CheckBox>(DisableDoubleBuffering);
+                controlTheme.AddRule<Button>(DisableDoubleBuffering);
+                controlTheme.AddRule<ToolStrip>(DisableDoubleBuffering);
+                controlTheme.AddRule<ContextMenuStrip>(DisableDoubleBuffering);
+            }
         }
     }
 }

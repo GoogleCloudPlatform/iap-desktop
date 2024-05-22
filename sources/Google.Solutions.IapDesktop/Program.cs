@@ -356,9 +356,6 @@ namespace Google.Solutions.IapDesktop
                     "Installing SetUsernameAsHostHeaderForWssRequests patch failed: {0}", e);
             }
 
-            System.Windows.Forms.Application.EnableVisualStyles();
-            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-
             //
             // Set up layers. Services in a layer can lookup services in a lower layer,
             // but not in a higher layer.
@@ -405,6 +402,43 @@ namespace Google.Solutions.IapDesktop
                     new KeyStore(CngProvider.MicrosoftSoftwareKeyStorageProvider));
 
                 //
+                // Initialize UI, DPI mode.
+                //
+
+                var themeSettingsRepository = new ThemeSettingsRepository(
+                    profile.SettingsKey.CreateSubKey("Theme"));
+
+                var dpiMode = (themeSettingsRepository.GetSettings().ScalingMode.Value) switch
+                {
+                    ScalingMode.None => DpiAwarenessMode.DpiUnaware,
+                    ScalingMode.SystemDpiAware => DpiAwarenessMode.SystemAware,
+                    _ => DpiAwarenessMode.DpiUnawareGdiScaled,
+                };
+
+                if (DpiAwareness.IsSupported && dpiMode != DpiAwarenessMode.DpiUnaware)
+                {
+                    //
+                    // Set DPI mode. 
+                    //
+                    // NB. Setting the DPI mode programmatically (instead of using the
+                    // app manifest or app.config) does causes WinForms to *not* deliver
+                    // DPI change (WM_DPICHANGE) events, but that's ok.
+                    //
+                    try
+                    {
+                        DpiAwareness.ProcessMode = dpiMode;
+                    }
+                    catch (Exception e)
+                    {
+                        ApplicationTraceSource.Log.TraceWarning(
+                            "Setting DPI mode to {0} failed: {1}", dpiMode, e.Message);
+                    }
+                }
+
+                System.Windows.Forms.Application.EnableVisualStyles();
+                System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+
+                //
                 // Load settings.
                 //
                 var appSettingsRepository = new ApplicationSettingsRepository(profile);
@@ -417,20 +451,6 @@ namespace Google.Solutions.IapDesktop
                     // Enterprise-managed.
                     //
                     Install.UserAgent.Extensions = "Enterprise";
-                }
-
-                var themeSettingsRepository = new ThemeSettingsRepository(
-                    profile.SettingsKey.CreateSubKey("Theme"));
-
-                if (OSCapabilities.IsGdiScalingSupported)
-                {
-                    //
-                    // Enable GDI scaling unless it has been disabled by the user.
-                    //
-                    GdiScaling.IsEnabled = themeSettingsRepository
-                        .GetSettings()
-                        .IsGdiScalingEnabled
-                        .Value;
                 }
 
                 var authSettingsRepository = new AuthSettingsRepository(
@@ -538,7 +558,8 @@ namespace Google.Solutions.IapDesktop
                         { DefaultParameters.UserAgentArchitecture, Install.ProcessArchitecture.ToString() },
                         { DefaultParameters.UserAgentPlatformVersion, Environment.OSVersion.Version.ToString() },
                         { "osdrk", SystemTheme.ShouldAppsUseDarkMode ? "1" : "0" },
-                        { "osdpi", DeviceCapabilities.Get().SystemDpi.ToString() },
+                        { "oscdp", DeviceCapabilities.Current.Dpi.ToString() },
+                        { "ossdp", DeviceCapabilities.System.Dpi.ToString() },
                         { "apent", appSettingsRepository.IsPolicyPresent ? "1" : "0" },
                     })
                 {

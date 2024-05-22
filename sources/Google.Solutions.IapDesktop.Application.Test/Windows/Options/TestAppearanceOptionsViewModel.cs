@@ -65,18 +65,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         //---------------------------------------------------------------------
-        // IsGdiScalingEnabled.
+        // ScalingMode.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenGdiScalingChanged_ThenDirtyFlagIsSet()
+        public void WhenScalingModeChanged_ThenDirtyFlagIsSet()
         {
             var settingsRepository = CreateSettingsRepository();
 
             var viewModel = new AppearanceOptionsViewModel(settingsRepository);
-            Assert.IsTrue(viewModel.IsGdiScalingEnabled.Value);
+            Assert.AreNotEqual(ScalingMode.None, viewModel.ScalingMode.Value);
 
-            viewModel.IsGdiScalingEnabled.Value = false;
+            viewModel.ScalingMode.Value = ScalingMode.SystemDpiAware;
 
             Assert.IsTrue(viewModel.IsDirty.Value);
         }
@@ -99,12 +99,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             //
             var settings = settingsRepository.GetSettings();
             settings.Theme.Value = ApplicationTheme.Dark;
-            settings.IsGdiScalingEnabled.Value = false;
+            settings.ScalingMode.Value = ScalingMode.None;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AppearanceOptionsViewModel(settingsRepository);
             Assert.AreEqual(ApplicationTheme.Dark, viewModel.SelectedTheme.Value);
-            Assert.IsFalse(viewModel.IsGdiScalingEnabled.Value);
+            Assert.AreEqual(ScalingMode.None, viewModel.ScalingMode.Value);
         }
 
         [Test]
@@ -118,12 +118,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             var viewModel = new AppearanceOptionsViewModel(settingsRepository);
             viewModel.SelectedTheme.Value = ApplicationTheme.Dark;
-            viewModel.IsGdiScalingEnabled.Value = false;
+            viewModel.ScalingMode.Value = ScalingMode.None;
             await viewModel.ApplyChangesAsync();
 
             var settings = settingsRepository.GetSettings();
             Assert.AreEqual(ApplicationTheme.Dark, settings.Theme.Value);
-            Assert.IsFalse(settings.IsGdiScalingEnabled.Value);
+            Assert.AreEqual(ScalingMode.None, viewModel.ScalingMode.Value);
         }
     }
 }

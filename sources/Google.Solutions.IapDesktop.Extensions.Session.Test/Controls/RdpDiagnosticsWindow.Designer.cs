@@ -123,8 +123,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             // 
             // TestRdpClient
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1150, 684);
             this.Controls.Add(this.splitContainer);
             this.Name = "TestRdpClient";

@@ -171,8 +171,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // 
             // GeneralOptionsSheet
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.telemetryBox);
             this.Controls.Add(this.browserIntegrationBox);
             this.Controls.Add(this.updateBox);

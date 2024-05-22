@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -43,7 +44,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             this.StartPosition = FormStartPosition.CenterParent;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = SizeGripStyle.Hide;
-            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleMode = AutoScaleMode.Dpi;
+            this.AutoScaleDimensions = DpiAwareness.DefaultDpi;
 
             SuspendLayout();
 

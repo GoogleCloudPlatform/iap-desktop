@@ -99,6 +99,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 IControlTheme? theme)
                 : base(dockPanel, pane)
             {
+                this.AutoScaleMode = AutoScaleMode.Dpi;
+                this.AutoScaleDimensions = DpiAwareness.DefaultDpi;
                 this.theme = theme;
             }
 
@@ -109,6 +111,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 IControlTheme? theme)
                 : base(dockPanel, pane, bounds)
             {
+                this.AutoScaleMode = AutoScaleMode.Dpi;
+                this.AutoScaleDimensions = DpiAwareness.DefaultDpi;
                 this.theme = theme;
             }
 

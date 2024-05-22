@@ -23,6 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.Mvvm.Diagnostics;
+using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -111,6 +112,7 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
             text.Append($"Version: {GetType().Assembly.GetName().Version}\n");
             text.Append($"Runtime: {ClrVersion.Version} ({Install.ProcessArchitecture})\n");
             text.Append($"OS: {Environment.OSVersion} ({Install.CpuArchitecture})\n");
+            text.Append($"DPI: {DeviceCapabilities.Current.Dpi}/{DeviceCapabilities.System.Dpi}\n");
 
             return text.ToString();
         }

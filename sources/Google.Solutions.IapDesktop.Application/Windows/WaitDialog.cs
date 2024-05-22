@@ -66,6 +66,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
         private void WaitDialog_Shown(object sender, EventArgs e)
         {
+            //
+            // NB. Setting ControlBox to false interferes with
+            // auto-scaling, so we only set it after scaling has
+            // already taken place.
+            //
+            this.ControlBox = false;
+
             this.formShown = true;
         }
 
