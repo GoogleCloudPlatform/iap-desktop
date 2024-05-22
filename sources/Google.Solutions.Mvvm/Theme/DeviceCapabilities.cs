@@ -155,6 +155,27 @@ namespace Google.Solutions.Mvvm.Theme
         }
 
         //---------------------------------------------------------------------
+        // Derived capabilities.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Check if GDI scaling is enabled and currently active.
+        /// </summary>
+        public bool IsGdiScalingActive
+        {
+            get
+            {
+                //
+                // Ignore the current DPI awareness mode unless the current
+                // DPI is virtualized.
+                //
+                return 
+                    DpiAwareness.ProcessMode == DpiAwarenessMode.DpiUnawareGdiScaled &&
+                    this.Dpi != System.Dpi;
+            }
+        }
+
+        //---------------------------------------------------------------------
         // P/Invoke.
         //---------------------------------------------------------------------
 
