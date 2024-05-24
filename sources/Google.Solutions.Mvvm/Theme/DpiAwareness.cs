@@ -114,7 +114,8 @@ namespace Google.Solutions.Mvvm.Theme
                 // Some of the .NET 4.7+ specific High-DPI features of WinForms
                 // need to be enabled in app.config. These features include:
                 //
-                // - Control.LogicalToDeviceUnits returning proper values
+                // - Control.LogicalToDeviceUnits returning scaled values
+                // - Automatic scaling for toolbars
                 //
                 // Setting the process DPI awareness context alone isn's sufficient.
                 //
