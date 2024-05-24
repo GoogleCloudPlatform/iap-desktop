@@ -24,7 +24,7 @@ rem
 rem Change to parent directory.
 cd %~dp0\..
 
-..\..\dependencies\build.bat
+..\dependencies\build.bat
 exit
 
 rem Invoke build.
