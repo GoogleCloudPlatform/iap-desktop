@@ -20,8 +20,11 @@
 //
 
 using Google.Solutions.Common.Runtime;
+using Microsoft.Win32;
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Configuration;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
@@ -102,13 +105,32 @@ namespace Google.Solutions.Mvvm.Theme
             {
                 CheckSupported();
 
-                //
-                // NB. When enabling High DPI mode programmatically, WinForms won't
-                // fire DpiChanged events.
-                //
                 if (!NativeMethods.SetProcessDpiAwarenessContext(ToDpiAwarenessContext(value)))
                 {
                     throw new Win32Exception();
+                }
+
+                //
+                // Some of the .NET 4.7+ specific High-DPI features of WinForms
+                // need to be enabled in app.config. These features include:
+                //
+                // - Control.LogicalToDeviceUnits returning proper values
+                //
+                // Setting the process DPI awareness context alone isn's sufficient.
+                //
+                var winFormsDpiAwareness = value switch
+                {
+                    DpiAwarenessMode.SystemAware => "system",
+                    DpiAwarenessMode.PerMonitor => "permonitor",
+                    DpiAwarenessMode.PerMonitorV2 => "permonitorv2",
+                    _ => null
+                };
+
+                if (winFormsDpiAwareness != null)
+                {
+                    var winFormsConfig = (NameValueCollection)ConfigurationManager
+                        .GetSection("System.Windows.Forms.ApplicationConfigurationSection");
+                    winFormsConfig["DpiAwareness"] = winFormsDpiAwareness;
                 }
 
                 currentMode = value;

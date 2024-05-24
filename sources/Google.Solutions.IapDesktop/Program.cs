@@ -429,19 +429,6 @@ namespace Google.Solutions.IapDesktop
                     try
                     {
                         DpiAwareness.ProcessMode = dpiMode;
-
-                        // TODO: cleanup, don't need P/invoke anymore?!
-                        if (dpiMode == DpiAwarenessMode.SystemAware)
-                        {
-                            //
-                            // Set the DpiAwareness configuration to enable
-                            // .NET 4.7+ specific High-DPI support and to ensure
-                            // that LogicalToDeviceUnits works properly
-                            //
-                            var winFormsConfig = (NameValueCollection)ConfigurationManager
-                                .GetSection("System.Windows.Forms.ApplicationConfigurationSection");
-                            winFormsConfig["DpiAwareness"] = "system";
-                        }
                     }
                     catch (Exception e)
                     {
