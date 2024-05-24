@@ -1,0 +1,221 @@
+From 1eab1b483a9513927a63ae30f2f27bb06b573b83 Mon Sep 17 00:00:00 2001
+From: IAP Desktop Build <iap-desktop+build@google.com>
+Date: Fri, 24 May 2024 16:18:23 +1000
+Subject: [PATCH 4/5] Target .NET 4.7
+
+---
+ DockPanelSuite.nuspec                       | 36 ++++++---------------
+ DockSample/DockSample.csproj                |  3 +-
+ DockSample/app.config                       |  3 +-
+ Tests/Tests.csproj                          |  2 +-
+ Tests2/Tests2.csproj                        |  2 +-
+ Tests3/Tests3.csproj                        |  2 +-
+ WinFormsUI/ThemeVS2003.csproj               |  3 +-
+ WinFormsUI/ThemeVS2005Multithreading.csproj |  3 +-
+ WinFormsUI/ThemeVS2012.csproj               |  3 +-
+ WinFormsUI/ThemeVS2013.csproj               |  3 +-
+ WinFormsUI/ThemeVS2015.csproj               |  3 +-
+ WinFormsUI/WinFormsUI.csproj                |  3 +-
+ 12 files changed, 20 insertions(+), 46 deletions(-)
+
+diff --git a/DockPanelSuite.nuspec b/DockPanelSuite.nuspec
+index 60888a9..31c3a46 100644
+--- a/DockPanelSuite.nuspec
++++ b/DockPanelSuite.nuspec
+@@ -1,34 +1,16 @@
+ <?xml version="1.0"?>
+-<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
++<package>
+   <metadata>
+-    <version>3.0.6</version>
+-    <authors>Weifen Luo and other contributors</authors>
+-    <owners>Weifen Luo and other contributors</owners>
+-    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+-    <projectUrl>http://dockpanelsuite.com</projectUrl>
+-    <frameworkAssemblies>
+-      <frameworkAssembly assemblyName="System.Windows.Forms" targetFramework="" />
+-      <frameworkAssembly assemblyName="System" targetFramework="" />
+-    </frameworkAssemblies>
+-    <id>DockPanelSuite</id>
+-    <title>DockPanel Suite</title>
++    <id>Google.Solutions.ThirdParty.DockPanelSuite</id>
++    <version>3.0.6.6</version>
++    <authors>http://dockpanelsuite.com</authors>
++    <owners>http://dockpanelsuite.com</owners>
+     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+-    <description>The docking library for .Net Windows Forms development which mimics Visual Studio .Net.</description>
+-    <summary>The docking library for .Net Windows Forms development which mimics Visual Studio .Net.</summary>
+-    <releaseNotes>Release notes can be found at GitHub,
+-      https://github.com/dockpanelsuite/dockpanelsuite/releases
+-
+-      Visual Studio 2003 Theme: https://www.nuget.org/packages/DockPanelSuite.ThemeVS2003/
+-      Visual Studio 2012 Themes: https://www.nuget.org/packages/DockPanelSuite.ThemeVS2012/
+-      Visual Studio 2013 Themes: https://www.nuget.org/packages/DockPanelSuite.ThemeVS2013/
+-      Visual Studio 2015 Themes: https://www.nuget.org/packages/DockPanelSuite.ThemeVS2015/
+-    </releaseNotes>
+-    <copyright>(C) 2007-2018 Weifen Luo and other contributors</copyright>
+-    <language>en-US</language>
+-    <tags>windows forms docking dockpanel panel</tags>
++    <description>DockPanelSuite</description>
++    <tags></tags>
+   </metadata>
+   <files>
+-    <file src=".\bin\net35-client\WeifenLuo.WinFormsUI.Docking.dll" target="lib\net35-client\WeifenLuo.WinFormsUI.Docking.dll" />
+-    <file src=".\bin\net40\WeifenLuo.WinFormsUI.Docking.dll" target="lib\net40\WeifenLuo.WinFormsUI.Docking.dll" />
++    <file src="C:\dev\01-iapdesktop\iap-desktop\dependencies\sources\dockpanelsuite\obj\WinFormsUI\bin\Release\WeifenLuo.WinFormsUI.Docking.dll" target="lib\net40\WeifenLuo.WinFormsUI.Docking.dll" />
++    <file src="C:\dev\01-iapdesktop\iap-desktop\dependencies\sources\dockpanelsuite\obj\WinFormsUI\bin\Release\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" target="lib\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" />
+   </files>
+ </package>
+diff --git a/DockSample/DockSample.csproj b/DockSample/DockSample.csproj
+index 1c738ca..9a2ede0 100644
+--- a/DockSample/DockSample.csproj
++++ b/DockSample/DockSample.csproj
+@@ -10,8 +10,7 @@
+     <AppDesignerFolder>Properties</AppDesignerFolder>
+     <RootNamespace>DockSample</RootNamespace>
+     <AssemblyName>DockSample</AssemblyName>
+-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+   </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+     <DebugSymbols>true</DebugSymbols>
+diff --git a/DockSample/app.config b/DockSample/app.config
+index 99b6dc3..433b131 100644
+--- a/DockSample/app.config
++++ b/DockSample/app.config
+@@ -1,7 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <configuration>
+   <startup>
+-    <supportedRuntime version="v4.0" sku="Client"/>
+-    <supportedRuntime version="v2.0.50727" sku="Client"/>
++    <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7" />
+   </startup>
+ </configuration>
+diff --git a/Tests/Tests.csproj b/Tests/Tests.csproj
+index 4352d7a..b4fea25 100644
+--- a/Tests/Tests.csproj
++++ b/Tests/Tests.csproj
+@@ -9,7 +9,7 @@
+     <AppDesignerFolder>Properties</AppDesignerFolder>
+     <RootNamespace>Tests</RootNamespace>
+     <AssemblyName>Tests</AssemblyName>
+-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+     <FileAlignment>512</FileAlignment>
+     <TargetFrameworkProfile>
+     </TargetFrameworkProfile>
+diff --git a/Tests2/Tests2.csproj b/Tests2/Tests2.csproj
+index d4ab2ce..5077c52 100644
+--- a/Tests2/Tests2.csproj
++++ b/Tests2/Tests2.csproj
+@@ -9,7 +9,7 @@
+     <AppDesignerFolder>Properties</AppDesignerFolder>
+     <RootNamespace>Tests2</RootNamespace>
+     <AssemblyName>Tests2</AssemblyName>
+-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+     <FileAlignment>512</FileAlignment>
+     <TargetFrameworkProfile>
+     </TargetFrameworkProfile>
+diff --git a/Tests3/Tests3.csproj b/Tests3/Tests3.csproj
+index b3a2243..30e65f8 100644
+--- a/Tests3/Tests3.csproj
++++ b/Tests3/Tests3.csproj
+@@ -9,7 +9,7 @@
+     <AppDesignerFolder>Properties</AppDesignerFolder>
+     <RootNamespace>Tests3</RootNamespace>
+     <AssemblyName>Tests3</AssemblyName>
+-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+     <FileAlignment>512</FileAlignment>
+     <TargetFrameworkProfile>
+     </TargetFrameworkProfile>
+diff --git a/WinFormsUI/ThemeVS2003.csproj b/WinFormsUI/ThemeVS2003.csproj
+index 3ff240f..51c4c18 100644
+--- a/WinFormsUI/ThemeVS2003.csproj
++++ b/WinFormsUI/ThemeVS2003.csproj
+@@ -14,8 +14,7 @@
+     <AssemblyOriginatorKeyFile>dockpanelsuite.snk</AssemblyOriginatorKeyFile>
+     <DelaySign>False</DelaySign>
+     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
+-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+   </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+     <DebugSymbols>true</DebugSymbols>
+diff --git a/WinFormsUI/ThemeVS2005Multithreading.csproj b/WinFormsUI/ThemeVS2005Multithreading.csproj
+index 78f0f72..341fce4 100644
+--- a/WinFormsUI/ThemeVS2005Multithreading.csproj
++++ b/WinFormsUI/ThemeVS2005Multithreading.csproj
+@@ -14,8 +14,7 @@
+     <AssemblyOriginatorKeyFile>dockpanelsuite.snk</AssemblyOriginatorKeyFile>
+     <DelaySign>False</DelaySign>
+     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
+-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+   </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+     <DebugSymbols>true</DebugSymbols>
+diff --git a/WinFormsUI/ThemeVS2012.csproj b/WinFormsUI/ThemeVS2012.csproj
+index f48ee93..37466d7 100644
+--- a/WinFormsUI/ThemeVS2012.csproj
++++ b/WinFormsUI/ThemeVS2012.csproj
+@@ -14,8 +14,7 @@
+     <AssemblyOriginatorKeyFile>dockpanelsuite.snk</AssemblyOriginatorKeyFile>
+     <DelaySign>False</DelaySign>
+     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
+-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+   </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+     <DebugSymbols>true</DebugSymbols>
+diff --git a/WinFormsUI/ThemeVS2013.csproj b/WinFormsUI/ThemeVS2013.csproj
+index e7ddb22..c446523 100644
+--- a/WinFormsUI/ThemeVS2013.csproj
++++ b/WinFormsUI/ThemeVS2013.csproj
+@@ -14,8 +14,7 @@
+     <AssemblyOriginatorKeyFile>dockpanelsuite.snk</AssemblyOriginatorKeyFile>
+     <DelaySign>False</DelaySign>
+     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
+-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+   </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+     <DebugSymbols>true</DebugSymbols>
+diff --git a/WinFormsUI/ThemeVS2015.csproj b/WinFormsUI/ThemeVS2015.csproj
+index 79ebee7..752cdbd 100644
+--- a/WinFormsUI/ThemeVS2015.csproj
++++ b/WinFormsUI/ThemeVS2015.csproj
+@@ -14,8 +14,7 @@
+     <AssemblyOriginatorKeyFile>dockpanelsuite.snk</AssemblyOriginatorKeyFile>
+     <DelaySign>False</DelaySign>
+     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
+-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+   </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+     <DebugSymbols>true</DebugSymbols>
+diff --git a/WinFormsUI/WinFormsUI.csproj b/WinFormsUI/WinFormsUI.csproj
+index 7a9d672..70fae4d 100644
+--- a/WinFormsUI/WinFormsUI.csproj
++++ b/WinFormsUI/WinFormsUI.csproj
+@@ -14,8 +14,7 @@
+     <AssemblyOriginatorKeyFile>dockpanelsuite.snk</AssemblyOriginatorKeyFile>
+     <DelaySign>False</DelaySign>
+     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
+-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+   </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+     <DebugSymbols>true</DebugSymbols>
+-- 
+2.43.0.windows.1
+
