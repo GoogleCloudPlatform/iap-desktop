@@ -1,0 +1,40 @@
+From 9cd7e4b6e22aa640332bda4472eb37782f6bce7a Mon Sep 17 00:00:00 2001
+From: IAP Desktop Build <iap-desktop+build@google.com>
+Date: Fri, 24 May 2024 16:21:33 +1000
+Subject: [PATCH 5/5] Scale control buttons to device units
+
+---
+ DockSample/app.config                           | 3 +++
+ WinFormsUI/ThemeVS2013/VS2013DockPaneCaption.cs | 4 ++--
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/DockSample/app.config b/DockSample/app.config
+index 433b131..32aae1b 100644
+--- a/DockSample/app.config
++++ b/DockSample/app.config
+@@ -3,4 +3,7 @@
+   <startup>
+     <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7" />
+   </startup>
++  <System.Windows.Forms.ApplicationConfigurationSection>
++    <add key="DpiAwareness" value="PerMonitorV2" />
++  </System.Windows.Forms.ApplicationConfigurationSection>
+ </configuration>
+diff --git a/WinFormsUI/ThemeVS2013/VS2013DockPaneCaption.cs b/WinFormsUI/ThemeVS2013/VS2013DockPaneCaption.cs
+index 5f401db..123b5e6 100644
+--- a/WinFormsUI/ThemeVS2013/VS2013DockPaneCaption.cs
++++ b/WinFormsUI/ThemeVS2013/VS2013DockPaneCaption.cs
+@@ -310,8 +310,8 @@ private void SetButtonsPosition()
+         {
+             // set the size and location for close and auto-hide buttons
+             Rectangle rectCaption = ClientRectangle;
+-            int buttonWidth = ButtonClose.Image.Width;
+-            int buttonHeight = ButtonClose.Image.Height;
++            int buttonWidth = LogicalToDeviceUnits(ButtonClose.Image.Width);
++            int buttonHeight = LogicalToDeviceUnits(ButtonClose.Image.Height);
+ 
+             Size buttonSize = new Size(buttonWidth, buttonHeight);
+             int x = rectCaption.X + rectCaption.Width - ButtonGapRight - m_buttonClose.Width;
+-- 
+2.43.0.windows.1
+

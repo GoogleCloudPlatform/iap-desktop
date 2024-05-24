@@ -21,14 +21,14 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 6
+TAG = 8
 
 DOCKPANELSUITE_TAG = Release_3.0.6
 DOCKPANELSUITE_URL = https://github.com/dockpanelsuite/dockpanelsuite.git
 DOCKPANELSUITE_VERSION = 3.0.6.$(TAG)
 DOCKPANELSUITE_PACKAGE_ID = Google.Solutions.ThirdParty.DockPanelSuite
 
-MSBUILD_PROPERTIES=Configuration=$(CONFIGURATION);Platform=Any CPU;TargetFramework=net462;OutputPath=bin\$(CONFIGURATION);AllowUnsafeBlocks=true;TargetFrameworkProfile=;TargetFrameworkVersion=v4.6.2
+MSBUILD_PROPERTIES=Configuration=$(CONFIGURATION);Platform=Any CPU;OutputPath=bin\$(CONFIGURATION);AllowUnsafeBlocks=true
 
 default: package
 
@@ -48,6 +48,8 @@ $(MAKEDIR)\obj\WinFormsUI\WinFormsUI.csproj:
 	git am $(MAKEDIR)\patches\0001-Refresh-focus-when-active-pane-has-changed.patch
 	git am $(MAKEDIR)\patches\0002-Refactor-DockPanelColorPalette.patch
 	git am $(MAKEDIR)\patches\0003-Add-accent-color-for-tabs.patch
+    git am $(MAKEDIR)\patches\0004-Target-.NET-4.7.patch
+    git am $(MAKEDIR)\patches\0005-Scale-control-buttons-to-device-units.patch
 
 	cd $(MAKEDIR)
 
