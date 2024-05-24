@@ -30,6 +30,7 @@ TERMINAL_VERSION = 1.19.10821
 TERMINAL_TAG = 1.19.10821.0
 TERMINAL_PACKAGE_X86=https://github.com/microsoft/terminal/releases/download/v$(TERMINAL_TAG)/Microsoft.WindowsTerminal_$(TERMINAL_TAG)_x86.zip
 TERMINAL_PACKAGE_X64=https://github.com/microsoft/terminal/releases/download/v$(TERMINAL_TAG)/Microsoft.WindowsTerminal_$(TERMINAL_TAG)_x64.zip
+TERMINAL_PACKAGE_ARM64=https://github.com/microsoft/terminal/releases/download/v$(TERMINAL_TAG)/Microsoft.WindowsTerminal_$(TERMINAL_TAG)_arm64.zip
 
 TERMINAL_PACKAGE_ID = Google.Solutions.ThirdParty.Terminal
 
@@ -71,9 +72,26 @@ $(MAKEDIR)\obj\x64:
 	
 	cd $(MAKEDIR)
 
+$(MAKEDIR)\obj\arm64:
+	@echo "========================================================"
+	@echo "=== Downloading terminal (arm64)                     ==="
+	@echo "========================================================"
+
+	if not exist $(MAKEDIR)\obj \
+		md $(MAKEDIR)\obj
+	if not exist $(MAKEDIR)\obj\arm64 \
+		md $(MAKEDIR)\obj\arm64
+	cd $(MAKEDIR)\obj
+	
+	curl -L --output arm64.zip "$(TERMINAL_PACKAGE_ARM64)" 
+	$(POWERSHELL) $(SCRIPTSDIR)\expand-zip.ps1 -ZipFile arm64.zip $(MAKEDIR)\obj\arm64
+	
+	cd $(MAKEDIR)
+
 $(MAKEDIR)\obj\$(TERMINAL_PACKAGE_ID).$(TERMINAL_VERSION).nupkg: \
 		$(MAKEDIR)\obj\x86 \
-		$(MAKEDIR)\obj\x64
+		$(MAKEDIR)\obj\x64 \
+		$(MAKEDIR)\obj\arm64
 	@echo "========================================================"
 	@echo "=== Building terminal nuget package                   ==="
 	@echo "========================================================"
@@ -93,6 +111,7 @@ $(MAKEDIR)\obj\$(TERMINAL_PACKAGE_ID).$(TERMINAL_VERSION).nupkg: \
 	<!-- pretend the library is platform-neutral -->
     <file src="$(MAKEDIR)\obj\x86\terminal-$(TERMINAL_TAG)\Microsoft.Terminal.Control.dll" target="runtimes\win10-x86\native" />
     <file src="$(MAKEDIR)\obj\x64\terminal-$(TERMINAL_TAG)\Microsoft.Terminal.Control.dll" target="runtimes\win10-x64\native" />
+    <file src="$(MAKEDIR)\obj\arm64\terminal-$(TERMINAL_TAG)\Microsoft.Terminal.Control.dll" target="runtimes\win10-arm64\native" />
     <file src="$(TERMINAL_PACKAGE_ID).targets" target="build" />
   </files>
 </package>
