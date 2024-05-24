@@ -70,6 +70,8 @@ using Google.Solutions.Settings.Collection;
 using Google.Solutions.Ssh;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -427,6 +429,19 @@ namespace Google.Solutions.IapDesktop
                     try
                     {
                         DpiAwareness.ProcessMode = dpiMode;
+
+                        // TODO: cleanup, don't need P/invoke anymore?!
+                        if (dpiMode == DpiAwarenessMode.SystemAware)
+                        {
+                            //
+                            // Set the DpiAwareness configuration to enable
+                            // .NET 4.7+ specific High-DPI support and to ensure
+                            // that LogicalToDeviceUnits works properly
+                            //
+                            var winFormsConfig = (NameValueCollection)ConfigurationManager
+                                .GetSection("System.Windows.Forms.ApplicationConfigurationSection");
+                            winFormsConfig["DpiAwareness"] = "system";
+                        }
                     }
                     catch (Exception e)
                     {
