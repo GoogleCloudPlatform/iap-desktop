@@ -20,10 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Theme
@@ -33,38 +30,6 @@ namespace Google.Solutions.Mvvm.Theme
     /// </summary>
     public class DpiAwarenessRuleset : ControlTheme.IRuleSet
     {
-        //---------------------------------------------------------------------
-        // Helper methods.
-        //---------------------------------------------------------------------
-
-        private void ScaleImageList(ImageList imageList)
-        {
-            if (imageList == null)
-            {
-                return;
-            }
-
-            var images = imageList
-                .Images
-                .Cast<Image>()
-                .Select(i => (Image)i.Clone())
-                .ToArray();
-
-            //
-            // Change the size. If the handle has been created already,
-            // this causes the imagelist to reset the contained images.
-            //
-            imageList.ImageSize 
-                = DeviceCapabilities.Current.ScaleToDpi(imageList.ImageSize);
-
-            if (imageList.Images.Count != images.Length)
-            {
-                //
-                // Re-add images.
-                //
-                imageList.Images.AddRange(images);
-            }
-        }
 
         //---------------------------------------------------------------------
         // Theming rules.
@@ -135,29 +100,8 @@ namespace Google.Solutions.Mvvm.Theme
             pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
-        private void StyleToolStrip(ToolStrip toolStrip)
-        {
-            toolStrip.ImageScalingSize 
-                = DeviceCapabilities.Current.ScaleToDpi(toolStrip.ImageScalingSize);
-        }
-
-        private void StyleToolStripItem(ToolStripItem item)
-        {
-            item.Margin = DeviceCapabilities.Current.ScaleToDpi(item.Margin);
-        }
-
-        private void StyleTreeView(TreeView treeView)
-        {
-            ScaleImageList(treeView.ImageList);
-            ScaleImageList(treeView.StateImageList);
-        }
-
         private void StyleListView(ListView listView)
         {
-            ScaleImageList(listView.SmallImageList);
-            ScaleImageList(listView.LargeImageList);
-            ScaleImageList(listView.StateImageList);
-
             //
             // ListView doesn't scale columns automatically.
             //
@@ -183,13 +127,7 @@ namespace Google.Solutions.Mvvm.Theme
                 //
                 controlTheme.AddRule<Control>(VerifyScalingSettings);
                 controlTheme.AddRule<PictureBox>(StylePictureBox);
-                controlTheme.AddRule<ToolStrip>(StyleToolStrip);
-                controlTheme.AddRule<TreeView>(StyleTreeView);
                 controlTheme.AddRule<ListView>(StyleListView);
-
-                var menuTheme = new ToolStripItemTheme(true);
-                menuTheme.AddRule(i => StyleToolStripItem(i));
-                controlTheme.AddRules(menuTheme);
             }
         }
     }
