@@ -74,6 +74,8 @@ RUN `
         --add Microsoft.Net.ComponentGroup.4.8.DeveloperTools ^ `
 		--add Microsoft.VisualStudio.Component.NuGet ^ `
 		--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 ^ `
+		--add Microsoft.VisualStudio.Component.VC.Tools.ARM64 ^ `
+		--add Microsoft.VisualStudio.Component.VC.Tools.ARM64EC ^ `
 		--add Microsoft.VisualStudio.Component.Windows11SDK.22000 ^ `
 		--add Microsoft.VisualStudio.ComponentGroup.MSIX.Packaging ^ `
         --add Microsoft.VisualStudio.Workload.VCTools ^ `
