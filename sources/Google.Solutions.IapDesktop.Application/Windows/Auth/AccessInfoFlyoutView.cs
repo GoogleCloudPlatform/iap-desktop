@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Controls;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -53,7 +54,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 
             e.Graphics.DrawLine(
                 SystemPens.ControlDark,
-                new Point(0, 28), new Point(this.Width, 28));
+                this.LogicalToDeviceUnits(new Point(0, 28)),
+                this.LogicalToDeviceUnits(new Point(this.Width, 28)));
         }
     }
 }
