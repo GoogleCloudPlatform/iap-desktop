@@ -82,5 +82,25 @@ namespace Google.Solutions.Mvvm.Controls
         {
             component.Disposed += (_, __) => disposable.Dispose();
         }
+
+        /// <summary>
+        /// Converts a Logical DPI value to its equivalent DeviceUnit DPI value.
+        /// </summary>
+        public static Size LogicalToDeviceUnits(this Control c, Size s)
+        {
+            return new Size(
+                c.LogicalToDeviceUnits(s.Width),
+                c.LogicalToDeviceUnits(s.Height));
+        }
+
+        /// <summary>
+        /// Converts a Logical DPI value to its equivalent DeviceUnit DPI value.
+        /// </summary>
+        public static Point LogicalToDeviceUnits(this Control c, Point p)
+        {
+            return new Point(
+                c.LogicalToDeviceUnits(p.X),
+                c.LogicalToDeviceUnits(p.Y));
+        }
     }
 }
