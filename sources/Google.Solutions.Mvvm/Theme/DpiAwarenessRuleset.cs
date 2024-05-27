@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Controls;
 using System.Diagnostics;
 using System.Windows.Forms;
 
@@ -90,7 +91,14 @@ namespace Google.Solutions.Mvvm.Theme
                     // This is a known and unfixed bug in NetFx, see
                     // https://github.com/dotnet/winforms/issues/6381.
                     //
-                    Debug.Assert(false, "User control auto-scaling is not implemented on NetFx");
+                    if (userControl is DpiAwareUserControl dpiAware)
+                    {
+                        dpiAware.MitigateWinformsBug();
+                    }
+                    else
+                    {
+                        Debug.Assert(false, "User control auto-scaling is not implemented on NetFx");
+                    }
                 }
             }
             else if (c is PropertyGrid)

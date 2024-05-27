@@ -30,7 +30,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.Mvvm.Controls
 {
     [SkipCodeCoverage("Pure UI code")]
-    public partial class SearchableList<TModelItem> : UserControl
+    public partial class SearchableList<TModelItem> : DpiAwareUserControl
     {
         public event EventHandler? LoadingChanged;
         public event EventHandler? SearchTermChanged;
