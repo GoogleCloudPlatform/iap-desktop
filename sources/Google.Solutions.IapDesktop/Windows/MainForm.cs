@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             // Set fixed size for the left/right panels (in pixels).
             this.dockPanel.DockLeftPortion =
-                this.dockPanel.DockRightPortion = 300.0f;
+                this.dockPanel.DockRightPortion = LogicalToDeviceUnits(300);
 
             //
             // View menu.
