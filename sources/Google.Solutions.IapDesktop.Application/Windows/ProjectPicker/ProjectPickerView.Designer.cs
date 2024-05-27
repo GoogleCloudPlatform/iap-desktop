@@ -103,7 +103,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectPicker
             this.projectList.SearchTerm = "";
             this.projectList.Size = new System.Drawing.Size(450, 351);
             this.projectList.TabIndex = 1;
-            this.projectList.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             // 
             // statusLabel
             // 
