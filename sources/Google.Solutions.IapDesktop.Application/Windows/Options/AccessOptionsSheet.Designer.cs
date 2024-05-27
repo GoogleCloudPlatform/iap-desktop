@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // 
             // enablePscCheckBox
             // 
-            this.enablePscCheckBox.AutoSize = true;
+            this.enablePscCheckBox.AutoSize = false;
             this.enablePscCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.enablePscCheckBox.Location = new System.Drawing.Point(16, 24);
             this.enablePscCheckBox.Name = "enablePscCheckBox";
@@ -163,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // 
             // enableDcaCheckBox
             // 
-            this.enableDcaCheckBox.AutoSize = true;
+            this.enableDcaCheckBox.AutoSize = false;
             this.enableDcaCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.enableDcaCheckBox.Location = new System.Drawing.Point(16, 24);
             this.enableDcaCheckBox.Name = "enableDcaCheckBox";

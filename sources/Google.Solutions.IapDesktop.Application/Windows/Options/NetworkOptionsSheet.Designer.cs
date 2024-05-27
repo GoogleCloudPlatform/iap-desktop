@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // 
             // proxyAuthCheckBox
             // 
-            this.proxyAuthCheckBox.AutoSize = true;
+            this.proxyAuthCheckBox.AutoSize = false;
             this.proxyAuthCheckBox.Location = new System.Drawing.Point(20, 244);
             this.proxyAuthCheckBox.Name = "proxyAuthCheckBox";
             this.proxyAuthCheckBox.Size = new System.Drawing.Size(194, 17);

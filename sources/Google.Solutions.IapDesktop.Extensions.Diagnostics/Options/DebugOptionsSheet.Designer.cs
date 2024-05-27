@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.Options
             // 
             // failToApplyChangesCheckBox
             // 
-            this.failToApplyChangesCheckBox.AutoSize = true;
+            this.failToApplyChangesCheckBox.AutoSize = false;
             this.failToApplyChangesCheckBox.Location = new System.Drawing.Point(19, 47);
             this.failToApplyChangesCheckBox.Name = "failToApplyChangesCheckBox";
             this.failToApplyChangesCheckBox.Size = new System.Drawing.Size(126, 17);
@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.Options
             // 
             // dirtyCheckBox
             // 
-            this.dirtyCheckBox.AutoSize = true;
+            this.dirtyCheckBox.AutoSize = false;
             this.dirtyCheckBox.Location = new System.Drawing.Point(19, 24);
             this.dirtyCheckBox.Name = "dirtyCheckBox";
             this.dirtyCheckBox.Size = new System.Drawing.Size(47, 17);

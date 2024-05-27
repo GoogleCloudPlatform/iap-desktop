@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // 
             // enableBrowserIntegrationCheckBox
             // 
-            this.enableBrowserIntegrationCheckBox.AutoSize = true;
+            this.enableBrowserIntegrationCheckBox.AutoSize = false;
             this.enableBrowserIntegrationCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.enableBrowserIntegrationCheckBox.Location = new System.Drawing.Point(16, 24);
             this.enableBrowserIntegrationCheckBox.Name = "enableBrowserIntegrationCheckBox";
@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // 
             // enableTelemetryCheckBox
             // 
-            this.enableTelemetryCheckBox.AutoSize = true;
+            this.enableTelemetryCheckBox.AutoSize = false;
             this.enableTelemetryCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.enableTelemetryCheckBox.Location = new System.Drawing.Point(16, 24);
             this.enableTelemetryCheckBox.Name = "enableTelemetryCheckBox";

@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             // 
             // propagateLocaleCheckBox
             // 
-            this.propagateLocaleCheckBox.AutoSize = true;
+            this.propagateLocaleCheckBox.AutoSize = false;
             this.propagateLocaleCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.propagateLocaleCheckBox.Location = new System.Drawing.Point(18, 24);
             this.propagateLocaleCheckBox.Name = "propagateLocaleCheckBox";
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             // 
             // usePersistentKeyCheckBox
             // 
-            this.usePersistentKeyCheckBox.AutoSize = true;
+            this.usePersistentKeyCheckBox.AutoSize = false;
             this.usePersistentKeyCheckBox.Location = new System.Drawing.Point(20, 52);
             this.usePersistentKeyCheckBox.Name = "usePersistentKeyCheckBox";
             this.usePersistentKeyCheckBox.Size = new System.Drawing.Size(298, 17);
