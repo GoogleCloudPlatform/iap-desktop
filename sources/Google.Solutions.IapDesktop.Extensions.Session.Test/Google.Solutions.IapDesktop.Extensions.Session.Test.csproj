@@ -7,7 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Castle.Core" Version="5.1.1" />
-    <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.6" />
+    <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.8" />
     <PackageReference Include="Google.Apis" Version="1.68.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
     <PackageReference Include="Google.Apis.CloudOSLogin.v1" Version="1.68.0.3272" />
