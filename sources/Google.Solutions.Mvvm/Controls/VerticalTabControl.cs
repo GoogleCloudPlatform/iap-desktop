@@ -81,6 +81,12 @@ namespace Google.Solutions.Mvvm.Controls
         //
         protected int TabWidth => this.ItemSize.Height;
 
+        protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
+        {
+            base.ScaleControl(factor, specified);
+
+            this.ItemSize = this.LogicalToDeviceUnits(this.ItemSize);
+        }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
