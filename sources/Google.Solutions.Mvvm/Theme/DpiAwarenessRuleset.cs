@@ -30,14 +30,13 @@ namespace Google.Solutions.Mvvm.Theme
     /// </summary>
     public class DpiAwarenessRuleset : ControlTheme.IRuleSet
     {
-
         //---------------------------------------------------------------------
-        // Theming rules.
+        // Theming checks.
         //---------------------------------------------------------------------
 
-        private void VerifyScalingSettings(Control c)
-        {
 #if DEBUG
+        private void AssertControlStyle(Control c)
+        {
             if (c is Form form)
             {
                 //
@@ -92,8 +91,17 @@ namespace Google.Solutions.Mvvm.Theme
                 //
                 Debug.Assert(otherContainer.AutoScaleMode == AutoScaleMode.Inherit);
             }
-#endif
         }
+
+        private void AssertToolStripItemStyle(ToolStripItem item)
+        {
+            Debug.Assert(item.ImageScaling == ToolStripItemImageScaling.SizeToFit);
+        }
+#endif
+
+        //---------------------------------------------------------------------
+        // Theming rules.
+        //---------------------------------------------------------------------
 
         private void StylePictureBox(PictureBox pictureBox)
         {
@@ -121,11 +129,13 @@ namespace Google.Solutions.Mvvm.Theme
 
             if (DeviceCapabilities.Current.IsHighDpi)
             {
-                //
-                // Ensure that controls are properly configured
-                // before their handle is created.
-                //
-                controlTheme.AddRule<Control>(VerifyScalingSettings);
+#if DEBUG
+                controlTheme.AddRule<Control>(AssertControlStyle);
+                var menuTheme = new ToolStripItemTheme(true);
+                menuTheme.AddRule(i => AssertToolStripItemStyle(i));
+                controlTheme.AddRules(menuTheme);
+#endif
+
                 controlTheme.AddRule<PictureBox>(StylePictureBox);
                 controlTheme.AddRule<ListView>(StyleListView);
             }

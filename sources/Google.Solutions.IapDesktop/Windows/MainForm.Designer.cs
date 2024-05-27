@@ -180,7 +180,6 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             this.accessStateButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.accessStateButton.Image = ((System.Drawing.Image)(resources.GetObject("accessStateButton.Image")));
-            this.accessStateButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.accessStateButton.ImageTransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
             this.accessStateButton.Name = "accessStateButton";
             this.accessStateButton.ShowDropDownArrow = false;
