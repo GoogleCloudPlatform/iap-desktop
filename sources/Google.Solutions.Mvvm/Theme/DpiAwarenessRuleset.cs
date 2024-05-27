@@ -78,6 +78,20 @@ namespace Google.Solutions.Mvvm.Theme
                 Debug.Assert(userControl.AutoScaleMode == AutoScaleMode.Dpi);
                 Debug.Assert(userControl.CurrentAutoScaleDimensions.Width >= DpiAwareness.DefaultDpi.Width);
                 Debug.Assert(userControl.CurrentAutoScaleDimensions.Width == userControl.CurrentAutoScaleDimensions.Height);
+
+                if (userControl.Dock == DockStyle.Fill ||
+                    userControl.Anchor.HasFlag(AnchorStyles.Top | AnchorStyles.Bottom) ||
+                    userControl.Anchor.HasFlag(AnchorStyles.Left | AnchorStyles.Right))
+                {
+                    //
+                    // Winforms scales user controls, but doesn't rearrange
+                    // nested controls.
+                    //
+                    // This is a known and unfixed bug in NetFx, see
+                    // https://github.com/dotnet/winforms/issues/6381.
+                    //
+                    Debug.Assert(false, "User control auto-scaling is not implemented on NetFx");
+                }
             }
             else if (c is PropertyGrid)
             {
