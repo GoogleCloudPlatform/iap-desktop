@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Mvvm.Shell;
+using Google.Solutions.Mvvm.Controls;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -32,6 +33,11 @@ namespace Google.Solutions.Mvvm.Controls
     /// </summary>
     public class NotificationBarPanel : SplitContainer
     {
+        /// <summary>
+        /// Height of bar, in logical units.
+        /// </summary>
+        private const int InfoNotificationBarHeight = 25;
+
         private readonly Label infoLabel = new Label();
         private readonly PictureBox icon = new PictureBox();
 
@@ -52,8 +58,8 @@ namespace Google.Solutions.Mvvm.Controls
             this.infoLabel.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             this.infoLabel.ForeColor = SystemColors.InfoText;
 
-            this.icon.Location = new Point(5, (this.SplitterDistance - 16) / 2);
-            this.icon.Size = new Size(16, 16);
+            this.icon.Location = this.LogicalToDeviceUnits(new Point(5, (InfoNotificationBarHeight - 16) / 2));
+            this.icon.Size = this.LogicalToDeviceUnits(new Size(16, 16));
             this.icon.Image = StockIcons.GetIcon(StockIcons.IconId.Info, StockIcons.IconSize.Small);
 
             base.Panel1Collapsed = true;
@@ -75,11 +81,13 @@ namespace Google.Solutions.Mvvm.Controls
                 // InvalidOperationException. Therefore, we set the Orientation here.
                 //
                 base.SplitterWidth = 1;
-                base.SplitterDistance = 25;
+                base.SplitterDistance = this.LogicalToDeviceUnits(InfoNotificationBarHeight);
                 base.Orientation = Orientation.Horizontal;
 
-                this.infoLabel.Size = new Size(this.Width - 40, this.SplitterDistance - 10);
-                this.infoLabel.Location = new Point(30, 5);
+                this.infoLabel.Size = new Size(
+                    this.Width - this.LogicalToDeviceUnits(40), 
+                    this.LogicalToDeviceUnits(InfoNotificationBarHeight - 10));
+                this.infoLabel.Location = this.LogicalToDeviceUnits(new Point(30, 5));
             }
         }
 
