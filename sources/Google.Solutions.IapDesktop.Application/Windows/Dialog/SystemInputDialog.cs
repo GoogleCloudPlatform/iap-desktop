@@ -44,8 +44,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             this.StartPosition = FormStartPosition.CenterParent;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = SizeGripStyle.Hide;
-            this.AutoScaleMode = AutoScaleMode.Dpi;
-            this.AutoScaleDimensions = DpiAwareness.DefaultDpi;
 
             SuspendLayout();
 
@@ -58,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             {
                 Text = parameters.Title,
                 Location = new Point(24, 12),
-                AutoSize = false,
+                AutoSize = true,
                 Size = new Size(this.Width - 50, 20),
                 Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top,
             });
@@ -66,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             {
                 Text = parameters.Caption,
                 Location = new Point(24 - 2, 40),
-                AutoSize = false,
+                AutoSize = true,
                 Size = new Size(this.Width - 50, 30),
                 Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top,
             });
@@ -108,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
             {
                 Location = new Point(24, 156),
                 Size = new Size(296, 20),
-                AutoSize = false,
+                AutoSize = true,
                 ForeColor = Color.Red,
                 Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom,
             };
@@ -122,6 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 DialogResult = DialogResult.OK,
                 Location = new Point(24, 188),
                 Size = new Size(200, 30),
+                AutoSize = true,
                 Text = "OK",
                 Enabled = false,
                 TabIndex = 1,
@@ -135,6 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 DialogResult = DialogResult.Cancel,
                 Location = new Point(230, 188),
                 Size = new Size(200, 30),
+                AutoSize = true,
                 Text = "Cancel",
                 TabIndex = 2,
                 Anchor = AnchorStyles.Left | AnchorStyles.Bottom,
@@ -162,6 +162,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
                 warningLabel.Visible = !valid;
                 warningLabel.Text = warning ?? string.Empty;
             };
+
+            //
+            // NB. We must set these properties after adding the controls,
+            // otherwise the window isn't auto-scaled correctly.
+            //
+            this.AutoScaleMode = AutoScaleMode.Dpi;
+            this.AutoScaleDimensions = DpiAwareness.DefaultDpi;
 
             ResumeLayout();
 
