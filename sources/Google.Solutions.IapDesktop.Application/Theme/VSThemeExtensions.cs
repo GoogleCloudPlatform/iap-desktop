@@ -46,6 +46,12 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             {
                 this.palette = palette;
                 base.UseGlassOnMenuStrip = false;
+
+                //
+                // This logic causes the border to be clipped in high-dpi
+                // mode, and we don't need it anyway.
+                //
+                this.UseCustomMenuItemBackground = false;
             }
 
             protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
