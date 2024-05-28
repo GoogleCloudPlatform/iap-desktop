@@ -1,0 +1,1277 @@
+From f7f0013facf05b9fba92d1c6cf8760bb44ac2fed Mon Sep 17 00:00:00 2001
+From: IAP Desktop Build <iap-desktop+build@google.com>
+Date: Tue, 28 May 2024 11:32:49 +1000
+Subject: [PATCH 6/6] Disable menu item background customization
+
+---
+ ...h-focus-when-active-pane-has-changed.patch |  27 +
+ 0002-Refactor-DockPanelColorPalette.patch     | 719 ++++++++++++++++++
+ 0003-Add-accent-color-for-tabs.patch          | 192 +++++
+ 0004-Target-.NET-4.7.patch                    | 221 ++++++
+ ...cale-control-buttons-to-device-units.patch |  40 +
+ .../Docking/VisualStudioToolStripRenderer.cs  |   8 +
+ 6 files changed, 1207 insertions(+)
+ create mode 100644 0001-Refresh-focus-when-active-pane-has-changed.patch
+ create mode 100644 0002-Refactor-DockPanelColorPalette.patch
+ create mode 100644 0003-Add-accent-color-for-tabs.patch
+ create mode 100644 0004-Target-.NET-4.7.patch
+ create mode 100644 0005-Scale-control-buttons-to-device-units.patch
+
+diff --git a/0001-Refresh-focus-when-active-pane-has-changed.patch b/0001-Refresh-focus-when-active-pane-has-changed.patch
+new file mode 100644
+index 0000000..0ba6b8c
+--- /dev/null
++++ b/0001-Refresh-focus-when-active-pane-has-changed.patch
+@@ -0,0 +1,27 @@
++From a756c97a87edb67203517fe49148793cc9558ac7 Mon Sep 17 00:00:00 2001
++From: IAP Desktop Build <iap-desktop+build@google.com>
++Date: Wed, 12 Oct 2022 17:14:37 +1100
++Subject: [PATCH 1/5] Refresh focus when active pane has changed
++
++This ensures that the active pane and content is updated
++when the pane hosts an ActiveX (such as the RDP ActiveX)
++---
++ WinFormsUI/Docking/DockPanel.FocusManager.cs | 2 +-
++ 1 file changed, 1 insertion(+), 1 deletion(-)
++
++diff --git a/WinFormsUI/Docking/DockPanel.FocusManager.cs b/WinFormsUI/Docking/DockPanel.FocusManager.cs
++index 514cbea..d630d9f 100644
++--- a/WinFormsUI/Docking/DockPanel.FocusManager.cs
+++++ b/WinFormsUI/Docking/DockPanel.FocusManager.cs
++@@ -362,7 +362,7 @@ private void HookEventHandler(object sender, HookEventArgs e)
++                 {
++                     IntPtr wParam = Marshal.ReadIntPtr(e.lParam, IntPtr.Size * 2);
++                     DockPane pane = GetPaneFromHandle(wParam);
++-                    if (pane == null)
+++                    if (pane != ActivePane)
++                         RefreshActiveWindow();
++                 }
++                 else if (msg == Win32.Msgs.WM_SETFOCUS || msg == Win32.Msgs.WM_MDIACTIVATE)
++-- 
++2.43.0.windows.1
++
+diff --git a/0002-Refactor-DockPanelColorPalette.patch b/0002-Refactor-DockPanelColorPalette.patch
+new file mode 100644
+index 0000000..5b4c79c
+--- /dev/null
++++ b/0002-Refactor-DockPanelColorPalette.patch
+@@ -0,0 +1,719 @@
++From 6941e04b04fb141e67d832f584ea32e5baa7b061 Mon Sep 17 00:00:00 2001
++From: IAP Desktop Build <iap-desktop+build@google.com>
++Date: Thu, 16 Feb 2023 14:37:02 +1100
++Subject: [PATCH 2/5] Refactor DockPanelColorPalette
++
++Allow applications to derive from DockPanelColorPalette
++so that they can customize the way themes are loaded.
++---
++ WinFormsUI/Docking/DockPanelColorPalette.cs   | 349 +++++++++++++++---
++ WinFormsUI/ThemeVS2012.csproj                 |   1 -
++ .../ThemeVS2012/VS2012PaletteFactory.cs       | 203 ----------
++ WinFormsUI/ThemeVS2012/VS2012ThemeBase.cs     |   8 +-
++ WinFormsUI/ThemeVS2013.csproj                 |   1 -
++ WinFormsUI/ThemeVS2013/VS2013ThemeBase.cs     |   9 +-
++ WinFormsUI/ThemeVS2015.csproj                 |   1 -
++ WinFormsUI/ThemeVS2015/VS2015ThemeBase.cs     |   9 +-
++ 8 files changed, 322 insertions(+), 259 deletions(-)
++ delete mode 100644 WinFormsUI/ThemeVS2012/VS2012PaletteFactory.cs
++
++diff --git a/WinFormsUI/Docking/DockPanelColorPalette.cs b/WinFormsUI/Docking/DockPanelColorPalette.cs
++index 52f3a97..bd41e8a 100644
++--- a/WinFormsUI/Docking/DockPanelColorPalette.cs
+++++ b/WinFormsUI/Docking/DockPanelColorPalette.cs
++@@ -1,62 +1,317 @@
++ ﻿using System.Drawing;
++ using System.IO;
++ using System.Linq;
++-using System.Windows.Forms;
++ using System.Xml.Linq;
++ 
++ namespace WeifenLuo.WinFormsUI.Docking
++ {
++     public class DockPanelColorPalette
++     {
++-        public DockPanelColorPalette(IPaletteFactory factory)
+++        private const string Env = "Environment";
+++
+++        protected static Color ColorTranslatorFromHtml(XDocument xml, string name, bool foreground = false)
+++        {
+++            var color = xml.Root.Element("Theme")
+++                .Elements("Category").FirstOrDefault(item => item.Attribute("Name").Value == Env)?
+++                .Elements("Color").FirstOrDefault(item => item.Attribute("Name").Value == name)?
+++                .Element(foreground ? "Foreground" : "Background").Attribute("Source").Value;
+++            if (color == null)
+++            {
+++                return Color.Transparent;
+++            }
+++
+++            return ColorTranslator.FromHtml($"#{color}");
+++        }
+++
+++        public DockPanelColorPalette(byte[] resources)
+++            : this(XDocument.Load(new StreamReader(new MemoryStream(resources))))
+++        { }
+++
+++        protected DockPanelColorPalette(XDocument xml)
++         {
++-            factory.Initialize(this);
+++            this.AutoHideStripDefault = new AutoHideStripPalette() {
+++                Background = ColorTranslatorFromHtml(xml, "AutoHideTabBackgroundBegin"),
+++                Border = ColorTranslatorFromHtml(xml, "AutoHideTabBorder"),
+++                Text = ColorTranslatorFromHtml(xml, "AutoHideTabText"),
+++            };
+++            this.AutoHideStripHovered = new AutoHideStripPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "AutoHideTabMouseOverBackgroundBegin"),
+++                Border = ColorTranslatorFromHtml(xml, "AutoHideTabMouseOverBorder"),
+++                Text = ColorTranslatorFromHtml(xml, "AutoHideTabMouseOverText"),
+++            };
+++            this.OverflowButtonDefault = new ButtonPalette() {
+++                Glyph = ColorTranslatorFromHtml(xml, "DocWellOverflowButtonGlyph"),
+++            };
+++            this.OverflowButtonHovered = new HoveredButtonPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "DocWellOverflowButtonMouseOverBackground"),
+++                Border = ColorTranslatorFromHtml(xml, "DocWellOverflowButtonMouseOverBorder"),
+++                Glyph = ColorTranslatorFromHtml(xml, "DocWellOverflowButtonMouseOverGlyph"),
+++            };
+++            this.OverflowButtonPressed = new HoveredButtonPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "DocWellOverflowButtonMouseDownBackground"),
+++                Border = ColorTranslatorFromHtml(xml, "DocWellOverflowButtonMouseDownBorder"),
+++                Glyph = ColorTranslatorFromHtml(xml, "DocWellOverflowButtonMouseDownGlyph"),
+++            };
+++            this.TabSelectedActive = new TabPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "FileTabSelectedBorder"),
+++                Button = ColorTranslatorFromHtml(xml, "FileTabButtonSelectedActiveGlyph"),
+++                Text = ColorTranslatorFromHtml(xml, "FileTabSelectedText"),
+++            };
+++            this.TabSelectedInactive = new TabPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "FileTabInactiveBorder"),
+++                Button = ColorTranslatorFromHtml(xml, "FileTabButtonSelectedInactiveGlyph"),
+++                Text = ColorTranslatorFromHtml(xml, "FileTabInactiveText"),
+++            };
+++            this.TabUnselected = new UnselectedTabPalette()
+++            {
+++                Text = ColorTranslatorFromHtml(xml, "FileTabText"),
+++                Background = ColorTranslatorFromHtml(xml, "FileTabBackground"),
+++            };
+++            this.TabUnselectedHovered = new TabPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "FileTabHotBorder"),
+++                Button = ColorTranslatorFromHtml(xml, "FileTabHotGlyph"),
+++                Text = ColorTranslatorFromHtml(xml, "FileTabHotText"),
+++            };
+++            this.TabButtonSelectedActiveHovered = new HoveredButtonPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "FileTabButtonHoverSelectedActive"),
+++                Border = ColorTranslatorFromHtml(xml, "FileTabButtonHoverSelectedActiveBorder"),
+++                Glyph = ColorTranslatorFromHtml(xml, "FileTabButtonHoverSelectedActiveGlyph"),
+++            };
+++            this.TabButtonSelectedActivePressed = new HoveredButtonPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "FileTabButtonDownSelectedActive"),
+++                Border = ColorTranslatorFromHtml(xml, "FileTabButtonDownSelectedActiveBorder"),
+++                Glyph = ColorTranslatorFromHtml(xml, "FileTabButtonDownSelectedActiveGlyph"),
+++            };
+++            this.TabButtonSelectedInactiveHovered = new HoveredButtonPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "FileTabButtonHoverSelectedInactive"),
+++                Border = ColorTranslatorFromHtml(xml, "FileTabButtonHoverSelectedInactiveBorder"),
+++                Glyph = ColorTranslatorFromHtml(xml, "FileTabButtonHoverSelectedInactiveGlyph"),
+++            };
+++            this.TabButtonSelectedInactivePressed = new HoveredButtonPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "FileTabButtonDownSelectedInactive"),
+++                Border = ColorTranslatorFromHtml(xml, "FileTabButtonDownSelectedInactiveBorder"),
+++                Glyph = ColorTranslatorFromHtml(xml, "FileTabButtonDownSelectedInactiveGlyph"),
+++            };
+++            this.TabButtonUnselectedTabHoveredButtonHovered = new HoveredButtonPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "FileTabButtonHoverInactive"),
+++                Border = ColorTranslatorFromHtml(xml, "FileTabButtonHoverInactiveBorder"),
+++                Glyph = ColorTranslatorFromHtml(xml, "FileTabButtonHoverInactiveGlyph"),
+++            };
+++            this.TabButtonUnselectedTabHoveredButtonPressed = new HoveredButtonPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "FileTabButtonDownInactive"),
+++                Border = ColorTranslatorFromHtml(xml, "FileTabButtonDownInactiveBorder"),
+++                Glyph = ColorTranslatorFromHtml(xml, "FileTabButtonDownInactiveGlyph"),
+++            };
+++            this.MainWindowActive = new MainWindowPalette() {
+++                Background = ColorTranslatorFromHtml(xml, "EnvironmentBackground"),
+++            };
+++            this.MainWindowStatusBarDefault = new MainWindowStatusBarPalette() {
+++                Background = ColorTranslatorFromHtml(xml, "StatusBarDefault"),
+++                Highlight = ColorTranslatorFromHtml(xml, "StatusBarHighlight"),
+++                HighlightText = ColorTranslatorFromHtml(xml, "StatusBarHighlight", true),
+++                ResizeGrip = ColorTranslatorFromHtml(xml, "MainWindowResizeGripTexture1"),
+++                ResizeGripAccent = ColorTranslatorFromHtml(xml, "MainWindowResizeGripTexture2"),
+++                Text = ColorTranslatorFromHtml(xml, "StatusBarText"),
+++            };
+++            this.ToolWindowCaptionActive = new ToolWindowCaptionPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "TitleBarActiveBorder"),
+++                Button = ColorTranslatorFromHtml(xml, "ToolWindowButtonActiveGlyph"),
+++                Grip = ColorTranslatorFromHtml(xml, "TitleBarDragHandleActive"),
+++                Text = ColorTranslatorFromHtml(xml, "TitleBarActiveText"),
+++            };
+++            this.ToolWindowCaptionInactive = new ToolWindowCaptionPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "TitleBarInactive"),
+++                Button = ColorTranslatorFromHtml(xml, "ToolWindowButtonInactiveGlyph"),
+++                Grip = ColorTranslatorFromHtml(xml, "TitleBarDragHandle"),
+++                Text = ColorTranslatorFromHtml(xml, "TitleBarInactiveText"),
+++            };
+++            this.ToolWindowCaptionButtonActiveHovered = new HoveredButtonPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "ToolWindowButtonHoverActive"),
+++                Border = ColorTranslatorFromHtml(xml, "ToolWindowButtonHoverActiveBorder"),
+++                Glyph = ColorTranslatorFromHtml(xml, "ToolWindowButtonHoverActiveGlyph"),
+++            };
+++            this.ToolWindowCaptionButtonPressed = new HoveredButtonPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "ToolWindowButtonDown"),
+++                Border = ColorTranslatorFromHtml(xml, "ToolWindowButtonDownBorder"),
+++                Glyph = ColorTranslatorFromHtml(xml, "ToolWindowButtonDownActiveGlyph"),
+++            };
+++            this.ToolWindowCaptionButtonInactiveHovered = new HoveredButtonPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "ToolWindowButtonHoverInactive"),
+++                Border = ColorTranslatorFromHtml(xml, "ToolWindowButtonHoverInactiveBorder"),
+++                Glyph = ColorTranslatorFromHtml(xml, "ToolWindowButtonHoverInactiveGlyph"),
+++            };
+++            this.ToolWindowTabSelectedActive = new ToolWindowTabPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "ToolWindowTabSelectedTab"),
+++                Text = ColorTranslatorFromHtml(xml, "ToolWindowTabSelectedActiveText"),
+++            };
+++            this.ToolWindowTabSelectedInactive = new ToolWindowTabPalette()
+++            {
+++                Background = ToolWindowTabSelectedActive.Background,
+++                Text = ColorTranslatorFromHtml(xml, "ToolWindowTabSelectedText"),
+++            };
+++            this.ToolWindowTabUnselected = new ToolWindowUnselectedTabPalette()
+++            {
+++                Text = ColorTranslatorFromHtml(xml, "ToolWindowTabText"),
+++                Background = ColorTranslatorFromHtml(xml, "ToolWindowTabGradientBegin"),
+++            };
+++            this.ToolWindowTabUnselectedHovered = new ToolWindowTabPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "ToolWindowTabMouseOverBackgroundBegin"),
+++                Text = ColorTranslatorFromHtml(xml, "ToolWindowTabMouseOverText"),
+++            };
+++            this.ToolWindowBorder = ColorTranslatorFromHtml(xml, "ToolWindowBorder");
+++            this.ToolWindowSeparator = ColorTranslatorFromHtml(xml, "ToolWindowTabSeparator");
+++            this.DockTarget = new DockTargetPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "DockTargetBackground"),
+++                Border = ColorTranslatorFromHtml(xml, "DockTargetBorder"),
+++                ButtonBackground = ColorTranslatorFromHtml(xml, "DockTargetButtonBackgroundBegin"),
+++                ButtonBorder = ColorTranslatorFromHtml(xml, "DockTargetButtonBorder"),
+++                GlyphBackground = ColorTranslatorFromHtml(xml, "DockTargetGlyphBackgroundBegin"),
+++                GlyphArrow = ColorTranslatorFromHtml(xml, "DockTargetGlyphArrow"),
+++                GlyphBorder = ColorTranslatorFromHtml(xml, "DockTargetGlyphBorder"),
+++            };
+++            this.CommandBarMenuDefault = new CommandBarMenuPalette() {
+++                Background = ColorTranslatorFromHtml(xml, "CommandShelfHighlightGradientBegin"),
+++                Text = ColorTranslatorFromHtml(xml, "CommandBarTextActive"),
+++            };
+++            this.CommandBarMenuPopupDefault = new CommandBarMenuPopupPalette() {
+++                Arrow = ColorTranslatorFromHtml(xml, "CommandBarMenuSubmenuGlyph"),
+++                BackgroundBottom = ColorTranslatorFromHtml(xml, "CommandBarMenuBackgroundGradientEnd"),
+++                BackgroundTop = ColorTranslatorFromHtml(xml, "CommandBarMenuBackgroundGradientBegin"),
+++                Border = ColorTranslatorFromHtml(xml, "CommandBarMenuBorder"),
+++                Checkmark = ColorTranslatorFromHtml(xml, "CommandBarCheckBox"),
+++                CheckmarkBackground = ColorTranslatorFromHtml(xml, "CommandBarSelectedIcon"),
+++                IconBackground = ColorTranslatorFromHtml(xml, "CommandBarMenuIconBackground"),
+++                Separator = ColorTranslatorFromHtml(xml, "CommandBarMenuSeparator"),
+++            };
+++            this.CommandBarMenuPopupDisabled = new CommandBarMenuPopupDisabledPalette()
+++            {
+++                Checkmark = ColorTranslatorFromHtml(xml, "CommandBarCheckBoxDisabled"),
+++                CheckmarkBackground = ColorTranslatorFromHtml(xml, "CommandBarSelectedIconDisabled"),
+++                Text = ColorTranslatorFromHtml(xml, "CommandBarTextInactive"),
+++            };
+++            this.CommandBarMenuPopupHovered = new CommandBarMenuPopupHoveredPalette()
+++            {
+++                Arrow = ColorTranslatorFromHtml(xml, "CommandBarMenuMouseOverSubmenuGlyph"),
+++                Checkmark = ColorTranslatorFromHtml(xml, "CommandBarCheckBoxMouseOver"),
+++                CheckmarkBackground = ColorTranslatorFromHtml(xml, "CommandBarHoverOverSelectedIcon"),
+++                ItemBackground = ColorTranslatorFromHtml(xml, "CommandBarMenuItemMouseOver"),
+++                Text = ColorTranslatorFromHtml(xml, "CommandBarMenuItemMouseOver", true),
+++            };
+++            this.CommandBarMenuTopLevelHeaderHovered = new CommandBarMenuTopLevelHeaderPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "CommandBarMouseOverBackgroundBegin"),
+++                Border = ColorTranslatorFromHtml(xml, "CommandBarBorder"),
+++                Text = ColorTranslatorFromHtml(xml, "CommandBarTextHover"),
+++            };
+++            this.CommandBarToolbarDefault = new CommandBarToolbarPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "CommandBarGradientBegin"),
+++                Border = ColorTranslatorFromHtml(xml, "CommandBarToolBarBorder"),
+++                Grip = ColorTranslatorFromHtml(xml, "CommandBarDragHandle"),
+++                OverflowButtonBackground = ColorTranslatorFromHtml(xml, "CommandBarOptionsBackground"),
+++                OverflowButtonGlyph = ColorTranslatorFromHtml(xml, "CommandBarOptionsGlyph"),
+++                Separator = ColorTranslatorFromHtml(xml, "CommandBarToolBarSeparator"),
+++                SeparatorAccent = ColorTranslatorFromHtml(xml, "CommandBarToolBarSeparatorHighlight"),
+++                Tray = ColorTranslatorFromHtml(xml, "CommandShelfBackgroundGradientBegin"),
+++            };
+++            this.CommandBarToolbarButtonChecked = new CommandBarToolbarButtonCheckedPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "CommandBarSelected"),
+++                Border = ColorTranslatorFromHtml(xml, "CommandBarSelectedBorder"),
+++                Text = ColorTranslatorFromHtml(xml, "CommandBarTextSelected"),
+++            };
+++            this.CommandBarToolbarButtonCheckedHovered = new CommandBarToolbarButtonCheckedHoveredPalette()
+++            {
+++                Border = ColorTranslatorFromHtml(xml, "CommandBarHoverOverSelectedIconBorder"),
+++                Text = ColorTranslatorFromHtml(xml, "CommandBarTextHoverOverSelected"),
+++            };
+++            this.CommandBarToolbarButtonDefault = new CommandBarToolbarButtonPalette()
+++            {
+++                Arrow = ColorTranslatorFromHtml(xml, "DropDownGlyph"),
+++            };
+++            this.CommandBarToolbarButtonHovered = new CommandBarToolbarButtonHoveredPalette() {
+++                Arrow = ColorTranslatorFromHtml(xml, "DropDownMouseOverGlyph"),
+++                Separator = ColorTranslatorFromHtml(xml, "CommandBarSplitButtonSeparator"),
+++            };
+++            this.CommandBarToolbarButtonPressed = new CommandBarToolbarButtonPressedPalette() {
+++                Arrow = ColorTranslatorFromHtml(xml, "DropDownMouseDownGlyph"),
+++                Background = ColorTranslatorFromHtml(xml, "CommandBarMouseDownBackgroundBegin"),
+++                Text = ColorTranslatorFromHtml(xml, "CommandBarTextMouseDown"),
+++            };
+++            this.CommandBarToolbarOverflowHovered = new CommandBarToolbarOverflowButtonPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "CommandBarOptionsMouseOverBackgroundBegin"),
+++                Glyph = ColorTranslatorFromHtml(xml, "CommandBarOptionsMouseOverGlyph"),
+++            };
+++            this.CommandBarToolbarOverflowPressed = new CommandBarToolbarOverflowButtonPalette()
+++            {
+++                Background = ColorTranslatorFromHtml(xml, "CommandBarOptionsMouseDownBackgroundBegin"),
+++                Glyph = ColorTranslatorFromHtml(xml, "CommandBarOptionsMouseDownGlyph"),
+++            };
++         }
++ 
++-        public AutoHideStripPalette AutoHideStripDefault { get; } = new AutoHideStripPalette();
++-        public AutoHideStripPalette AutoHideStripHovered { get; } = new AutoHideStripPalette();
++-        public ButtonPalette OverflowButtonDefault { get; } = new ButtonPalette();
++-        public HoveredButtonPalette OverflowButtonHovered { get; } = new HoveredButtonPalette();
++-        public HoveredButtonPalette OverflowButtonPressed { get; } = new HoveredButtonPalette();
++-        public TabPalette TabSelectedActive { get; } = new TabPalette();
++-        public TabPalette TabSelectedInactive { get; } = new TabPalette();
++-        public UnselectedTabPalette TabUnselected { get; } = new UnselectedTabPalette();
++-        public TabPalette TabUnselectedHovered { get; } = new TabPalette();
++-        public HoveredButtonPalette TabButtonSelectedActiveHovered { get; } = new HoveredButtonPalette();
++-        public HoveredButtonPalette TabButtonSelectedActivePressed { get; } = new HoveredButtonPalette();
++-        public HoveredButtonPalette TabButtonSelectedInactiveHovered { get; } = new HoveredButtonPalette();
++-        public HoveredButtonPalette TabButtonSelectedInactivePressed { get; } = new HoveredButtonPalette();
++-        public HoveredButtonPalette TabButtonUnselectedTabHoveredButtonHovered { get; } = new HoveredButtonPalette();
++-        public HoveredButtonPalette TabButtonUnselectedTabHoveredButtonPressed { get; } = new HoveredButtonPalette();
++-        public MainWindowPalette MainWindowActive { get; } = new MainWindowPalette();
++-        public MainWindowStatusBarPalette MainWindowStatusBarDefault { get; } = new MainWindowStatusBarPalette();
++-        public ToolWindowCaptionPalette ToolWindowCaptionActive { get; } = new ToolWindowCaptionPalette();
++-        public ToolWindowCaptionPalette ToolWindowCaptionInactive { get; } = new ToolWindowCaptionPalette();
++-        public HoveredButtonPalette ToolWindowCaptionButtonActiveHovered { get; } = new HoveredButtonPalette();
++-        public HoveredButtonPalette ToolWindowCaptionButtonPressed { get; } = new HoveredButtonPalette();
++-        public HoveredButtonPalette ToolWindowCaptionButtonInactiveHovered { get; } = new HoveredButtonPalette();
++-        public ToolWindowTabPalette ToolWindowTabSelectedActive { get; } = new ToolWindowTabPalette();
++-        public ToolWindowTabPalette ToolWindowTabSelectedInactive { get; } = new ToolWindowTabPalette();
++-        public ToolWindowUnselectedTabPalette ToolWindowTabUnselected { get; } = new ToolWindowUnselectedTabPalette();
++-        public ToolWindowTabPalette ToolWindowTabUnselectedHovered { get; } = new ToolWindowTabPalette();
++-        public Color ToolWindowBorder { get; set; }
++-        public Color ToolWindowSeparator { get; set; }
++-        public DockTargetPalette DockTarget { get; } = new DockTargetPalette();
++-        public CommandBarMenuPalette CommandBarMenuDefault { get; } = new CommandBarMenuPalette();
++-        public CommandBarMenuPopupPalette CommandBarMenuPopupDefault { get; } = new CommandBarMenuPopupPalette();
++-        public CommandBarMenuPopupDisabledPalette CommandBarMenuPopupDisabled { get; } = new CommandBarMenuPopupDisabledPalette();
++-        public CommandBarMenuPopupHoveredPalette CommandBarMenuPopupHovered { get; } = new CommandBarMenuPopupHoveredPalette();
++-        public CommandBarMenuTopLevelHeaderPalette CommandBarMenuTopLevelHeaderHovered { get; } = new CommandBarMenuTopLevelHeaderPalette();
++-        public CommandBarToolbarPalette CommandBarToolbarDefault { get; } = new CommandBarToolbarPalette();
++-        public CommandBarToolbarButtonCheckedPalette CommandBarToolbarButtonChecked { get; } = new CommandBarToolbarButtonCheckedPalette();
++-        public CommandBarToolbarButtonCheckedHoveredPalette CommandBarToolbarButtonCheckedHovered { get; } = new CommandBarToolbarButtonCheckedHoveredPalette();
++-        public CommandBarToolbarButtonPalette CommandBarToolbarButtonDefault { get; } = new CommandBarToolbarButtonPalette();
++-        public CommandBarToolbarButtonHoveredPalette CommandBarToolbarButtonHovered { get; } = new CommandBarToolbarButtonHoveredPalette();
++-        public CommandBarToolbarButtonPressedPalette CommandBarToolbarButtonPressed { get; } = new CommandBarToolbarButtonPressedPalette();
++-        public CommandBarToolbarOverflowButtonPalette CommandBarToolbarOverflowHovered { get; } = new CommandBarToolbarOverflowButtonPalette();
++-        public CommandBarToolbarOverflowButtonPalette CommandBarToolbarOverflowPressed { get; } = new CommandBarToolbarOverflowButtonPalette();
++-
++-        public VisualStudioColorTable ColorTable { get; }
+++        public AutoHideStripPalette AutoHideStripDefault { get; }
+++        public AutoHideStripPalette AutoHideStripHovered { get; }
+++        public ButtonPalette OverflowButtonDefault { get; }
+++        public HoveredButtonPalette OverflowButtonHovered { get; }
+++        public HoveredButtonPalette OverflowButtonPressed { get; }
+++        public TabPalette TabSelectedActive { get; }
+++        public TabPalette TabSelectedInactive { get; } 
+++        public UnselectedTabPalette TabUnselected { get; } 
+++        public TabPalette TabUnselectedHovered { get; }
+++        public HoveredButtonPalette TabButtonSelectedActiveHovered { get; }
+++        public HoveredButtonPalette TabButtonSelectedActivePressed { get; }
+++        public HoveredButtonPalette TabButtonSelectedInactiveHovered { get; }
+++        public HoveredButtonPalette TabButtonSelectedInactivePressed { get; }
+++        public HoveredButtonPalette TabButtonUnselectedTabHoveredButtonHovered { get; }
+++        public HoveredButtonPalette TabButtonUnselectedTabHoveredButtonPressed { get; }
+++        public MainWindowPalette MainWindowActive { get; }
+++        public MainWindowStatusBarPalette MainWindowStatusBarDefault { get; }
+++        public ToolWindowCaptionPalette ToolWindowCaptionActive { get; }
+++        public ToolWindowCaptionPalette ToolWindowCaptionInactive { get; } 
+++        public HoveredButtonPalette ToolWindowCaptionButtonActiveHovered { get; } 
+++        public HoveredButtonPalette ToolWindowCaptionButtonPressed { get; }
+++        public HoveredButtonPalette ToolWindowCaptionButtonInactiveHovered { get; }
+++        public ToolWindowTabPalette ToolWindowTabSelectedActive { get; } 
+++        public ToolWindowTabPalette ToolWindowTabSelectedInactive { get; } 
+++        public ToolWindowUnselectedTabPalette ToolWindowTabUnselected { get; }
+++        public ToolWindowTabPalette ToolWindowTabUnselectedHovered { get; }
+++        public Color ToolWindowBorder { get;  }
+++        public Color ToolWindowSeparator { get;  }
+++        public DockTargetPalette DockTarget { get; } 
+++        public CommandBarMenuPalette CommandBarMenuDefault { get; } 
+++        public CommandBarMenuPopupPalette CommandBarMenuPopupDefault { get; }
+++        public CommandBarMenuPopupDisabledPalette CommandBarMenuPopupDisabled { get; } 
+++        public CommandBarMenuPopupHoveredPalette CommandBarMenuPopupHovered { get; } 
+++        public CommandBarMenuTopLevelHeaderPalette CommandBarMenuTopLevelHeaderHovered { get; } 
+++        public CommandBarToolbarPalette CommandBarToolbarDefault { get; } 
+++        public CommandBarToolbarButtonCheckedPalette CommandBarToolbarButtonChecked { get; }
+++        public CommandBarToolbarButtonCheckedHoveredPalette CommandBarToolbarButtonCheckedHovered { get; }
+++        public CommandBarToolbarButtonPalette CommandBarToolbarButtonDefault { get; } 
+++        public CommandBarToolbarButtonHoveredPalette CommandBarToolbarButtonHovered { get; }
+++        public CommandBarToolbarButtonPressedPalette CommandBarToolbarButtonPressed { get; }
+++        public CommandBarToolbarOverflowButtonPalette CommandBarToolbarOverflowHovered { get; }
+++        public CommandBarToolbarOverflowButtonPalette CommandBarToolbarOverflowPressed { get; }
++     }
++ 
++     public class CommandBarToolbarOverflowButtonPalette
++diff --git a/WinFormsUI/ThemeVS2012.csproj b/WinFormsUI/ThemeVS2012.csproj
++index 0b8886c..f48ee93 100644
++--- a/WinFormsUI/ThemeVS2012.csproj
+++++ b/WinFormsUI/ThemeVS2012.csproj
++@@ -53,7 +53,6 @@
++     <Compile Include="ThemeVS2012\VS2012DockPaneCaptionInertButton.cs">
++       <SubType>Component</SubType>
++     </Compile>
++-    <Compile Include="ThemeVS2012\VS2012PaletteFactory.cs" />
++     <Compile Include="ThemeVS2012\VS2012ThemeBase.cs">
++       <SubType>Component</SubType>
++     </Compile>
++diff --git a/WinFormsUI/ThemeVS2012/VS2012PaletteFactory.cs b/WinFormsUI/ThemeVS2012/VS2012PaletteFactory.cs
++deleted file mode 100644
++index 1da758e..0000000
++--- a/WinFormsUI/ThemeVS2012/VS2012PaletteFactory.cs
+++++ /dev/null
++@@ -1,203 +0,0 @@
++-﻿using System.Drawing;
++-using System.IO;
++-using System.Linq;
++-using System.Xml.Linq;
++-using WeifenLuo.WinFormsUI.Docking;
++-
++-namespace WeifenLuo.WinFormsUI.ThemeVS2012
++-{
++-    public class VS2012PaletteFactory : IPaletteFactory
++-    {
++-        private const string Env = "Environment";
++-        private XDocument _xml;
++-
++-        public VS2012PaletteFactory(byte[] file)
++-        {
++-            _xml = XDocument.Load(new StreamReader(new MemoryStream(file)));
++-        }
++-
++-        public void Initialize(DockPanelColorPalette palette)
++-        {
++-            palette.AutoHideStripDefault.Background = ColorTranslatorFromHtml("AutoHideTabBackgroundBegin");
++-            palette.AutoHideStripDefault.Border = ColorTranslatorFromHtml("AutoHideTabBorder");
++-            palette.AutoHideStripDefault.Text = ColorTranslatorFromHtml("AutoHideTabText");
++-
++-            palette.AutoHideStripHovered.Background = ColorTranslatorFromHtml("AutoHideTabMouseOverBackgroundBegin");
++-            palette.AutoHideStripHovered.Border = ColorTranslatorFromHtml("AutoHideTabMouseOverBorder");
++-            palette.AutoHideStripHovered.Text = ColorTranslatorFromHtml("AutoHideTabMouseOverText");
++-
++-            palette.CommandBarMenuDefault.Background = ColorTranslatorFromHtml("CommandShelfHighlightGradientBegin");
++-            palette.CommandBarMenuDefault.Text = ColorTranslatorFromHtml("CommandBarTextActive");
++-
++-            palette.CommandBarMenuPopupDefault.Arrow = ColorTranslatorFromHtml("CommandBarMenuSubmenuGlyph");
++-            palette.CommandBarMenuPopupDefault.BackgroundBottom = ColorTranslatorFromHtml("CommandBarMenuBackgroundGradientEnd");
++-            palette.CommandBarMenuPopupDefault.BackgroundTop = ColorTranslatorFromHtml("CommandBarMenuBackgroundGradientBegin");
++-            palette.CommandBarMenuPopupDefault.Border = ColorTranslatorFromHtml("CommandBarMenuBorder");
++-            palette.CommandBarMenuPopupDefault.Checkmark = ColorTranslatorFromHtml("CommandBarCheckBox");
++-            palette.CommandBarMenuPopupDefault.CheckmarkBackground = ColorTranslatorFromHtml("CommandBarSelectedIcon");
++-            palette.CommandBarMenuPopupDefault.IconBackground = ColorTranslatorFromHtml("CommandBarMenuIconBackground");
++-            palette.CommandBarMenuPopupDefault.Separator = ColorTranslatorFromHtml("CommandBarMenuSeparator");
++-
++-            palette.CommandBarMenuPopupDisabled.Checkmark = ColorTranslatorFromHtml("CommandBarCheckBoxDisabled");
++-            palette.CommandBarMenuPopupDisabled.CheckmarkBackground = ColorTranslatorFromHtml("CommandBarSelectedIconDisabled");
++-            palette.CommandBarMenuPopupDisabled.Text = ColorTranslatorFromHtml("CommandBarTextInactive");
++-
++-            palette.CommandBarMenuPopupHovered.Arrow = ColorTranslatorFromHtml("CommandBarMenuMouseOverSubmenuGlyph");
++-            palette.CommandBarMenuPopupHovered.Checkmark = ColorTranslatorFromHtml("CommandBarCheckBoxMouseOver");
++-            palette.CommandBarMenuPopupHovered.CheckmarkBackground = ColorTranslatorFromHtml("CommandBarHoverOverSelectedIcon");
++-            palette.CommandBarMenuPopupHovered.ItemBackground = ColorTranslatorFromHtml("CommandBarMenuItemMouseOver");
++-            palette.CommandBarMenuPopupHovered.Text = ColorTranslatorFromHtml("CommandBarMenuItemMouseOver", true);
++-
++-            palette.CommandBarMenuTopLevelHeaderHovered.Background = ColorTranslatorFromHtml("CommandBarMouseOverBackgroundBegin");
++-            palette.CommandBarMenuTopLevelHeaderHovered.Border = ColorTranslatorFromHtml("CommandBarBorder");
++-            palette.CommandBarMenuTopLevelHeaderHovered.Text = ColorTranslatorFromHtml("CommandBarTextHover");
++-
++-            palette.CommandBarToolbarDefault.Background = ColorTranslatorFromHtml("CommandBarGradientBegin");
++-            palette.CommandBarToolbarDefault.Border = ColorTranslatorFromHtml("CommandBarToolBarBorder");
++-            palette.CommandBarToolbarDefault.Grip = ColorTranslatorFromHtml("CommandBarDragHandle");
++-            palette.CommandBarToolbarDefault.OverflowButtonBackground = ColorTranslatorFromHtml("CommandBarOptionsBackground");
++-            palette.CommandBarToolbarDefault.OverflowButtonGlyph = ColorTranslatorFromHtml("CommandBarOptionsGlyph");
++-            palette.CommandBarToolbarDefault.Separator = ColorTranslatorFromHtml("CommandBarToolBarSeparator");
++-            palette.CommandBarToolbarDefault.SeparatorAccent = ColorTranslatorFromHtml("CommandBarToolBarSeparatorHighlight");
++-            palette.CommandBarToolbarDefault.Tray = ColorTranslatorFromHtml("CommandShelfBackgroundGradientBegin");
++-
++-            palette.CommandBarToolbarButtonChecked.Background = ColorTranslatorFromHtml("CommandBarSelected");
++-            palette.CommandBarToolbarButtonChecked.Border = ColorTranslatorFromHtml("CommandBarSelectedBorder");
++-            palette.CommandBarToolbarButtonChecked.Text = ColorTranslatorFromHtml("CommandBarTextSelected");
++-
++-            palette.CommandBarToolbarButtonCheckedHovered.Border = ColorTranslatorFromHtml("CommandBarHoverOverSelectedIconBorder");
++-            palette.CommandBarToolbarButtonCheckedHovered.Text = ColorTranslatorFromHtml("CommandBarTextHoverOverSelected");
++-
++-            palette.CommandBarToolbarButtonDefault.Arrow = ColorTranslatorFromHtml("DropDownGlyph");
++-
++-            palette.CommandBarToolbarButtonHovered.Arrow = ColorTranslatorFromHtml("DropDownMouseOverGlyph");
++-            palette.CommandBarToolbarButtonHovered.Separator = ColorTranslatorFromHtml("CommandBarSplitButtonSeparator");
++-
++-            palette.CommandBarToolbarButtonPressed.Arrow = ColorTranslatorFromHtml("DropDownMouseDownGlyph");
++-            palette.CommandBarToolbarButtonPressed.Background = ColorTranslatorFromHtml("CommandBarMouseDownBackgroundBegin");
++-            palette.CommandBarToolbarButtonPressed.Text = ColorTranslatorFromHtml("CommandBarTextMouseDown");
++-
++-            palette.CommandBarToolbarOverflowHovered.Background = ColorTranslatorFromHtml("CommandBarOptionsMouseOverBackgroundBegin");
++-            palette.CommandBarToolbarOverflowHovered.Glyph = ColorTranslatorFromHtml("CommandBarOptionsMouseOverGlyph");
++-
++-            palette.CommandBarToolbarOverflowPressed.Background = ColorTranslatorFromHtml("CommandBarOptionsMouseDownBackgroundBegin");
++-            palette.CommandBarToolbarOverflowPressed.Glyph = ColorTranslatorFromHtml("CommandBarOptionsMouseDownGlyph");
++-
++-            palette.OverflowButtonDefault.Glyph = ColorTranslatorFromHtml("DocWellOverflowButtonGlyph");
++-
++-            palette.OverflowButtonHovered.Background = ColorTranslatorFromHtml("DocWellOverflowButtonMouseOverBackground");
++-            palette.OverflowButtonHovered.Border = ColorTranslatorFromHtml("DocWellOverflowButtonMouseOverBorder");
++-            palette.OverflowButtonHovered.Glyph = ColorTranslatorFromHtml("DocWellOverflowButtonMouseOverGlyph");
++-
++-            palette.OverflowButtonPressed.Background = ColorTranslatorFromHtml("DocWellOverflowButtonMouseDownBackground");
++-            palette.OverflowButtonPressed.Border = ColorTranslatorFromHtml("DocWellOverflowButtonMouseDownBorder");
++-            palette.OverflowButtonPressed.Glyph = ColorTranslatorFromHtml("DocWellOverflowButtonMouseDownGlyph");
++-
++-            palette.TabSelectedActive.Background = ColorTranslatorFromHtml("FileTabSelectedBorder");
++-            palette.TabSelectedActive.Button = ColorTranslatorFromHtml("FileTabButtonSelectedActiveGlyph");
++-            palette.TabSelectedActive.Text = ColorTranslatorFromHtml("FileTabSelectedText");
++-
++-            palette.TabSelectedInactive.Background = ColorTranslatorFromHtml("FileTabInactiveBorder");
++-            palette.TabSelectedInactive.Button = ColorTranslatorFromHtml("FileTabButtonSelectedInactiveGlyph");
++-            palette.TabSelectedInactive.Text = ColorTranslatorFromHtml("FileTabInactiveText");
++-
++-            palette.TabUnselected.Text = ColorTranslatorFromHtml("FileTabText");
++-            palette.TabUnselected.Background = ColorTranslatorFromHtml("FileTabBackground");
++-
++-            palette.TabUnselectedHovered.Background = ColorTranslatorFromHtml("FileTabHotBorder");
++-            palette.TabUnselectedHovered.Button = ColorTranslatorFromHtml("FileTabHotGlyph");
++-            palette.TabUnselectedHovered.Text = ColorTranslatorFromHtml("FileTabHotText");
++-
++-            palette.TabButtonSelectedActiveHovered.Background = ColorTranslatorFromHtml("FileTabButtonHoverSelectedActive");
++-            palette.TabButtonSelectedActiveHovered.Border = ColorTranslatorFromHtml("FileTabButtonHoverSelectedActiveBorder");
++-            palette.TabButtonSelectedActiveHovered.Glyph = ColorTranslatorFromHtml("FileTabButtonHoverSelectedActiveGlyph");
++-
++-            palette.TabButtonSelectedActivePressed.Background = ColorTranslatorFromHtml("FileTabButtonDownSelectedActive");
++-            palette.TabButtonSelectedActivePressed.Border = ColorTranslatorFromHtml("FileTabButtonDownSelectedActiveBorder");
++-            palette.TabButtonSelectedActivePressed.Glyph = ColorTranslatorFromHtml("FileTabButtonDownSelectedActiveGlyph");
++-
++-            palette.TabButtonSelectedInactiveHovered.Background = ColorTranslatorFromHtml("FileTabButtonHoverSelectedInactive");
++-            palette.TabButtonSelectedInactiveHovered.Border = ColorTranslatorFromHtml("FileTabButtonHoverSelectedInactiveBorder");
++-            palette.TabButtonSelectedInactiveHovered.Glyph = ColorTranslatorFromHtml("FileTabButtonHoverSelectedInactiveGlyph");
++-
++-            palette.TabButtonSelectedInactivePressed.Background = ColorTranslatorFromHtml("FileTabButtonDownSelectedInactive");
++-            palette.TabButtonSelectedInactivePressed.Border = ColorTranslatorFromHtml("FileTabButtonDownSelectedInactiveBorder");
++-            palette.TabButtonSelectedInactivePressed.Glyph = ColorTranslatorFromHtml("FileTabButtonDownSelectedInactiveGlyph");
++-
++-            palette.TabButtonUnselectedTabHoveredButtonHovered.Background = ColorTranslatorFromHtml("FileTabButtonHoverInactive");
++-            palette.TabButtonUnselectedTabHoveredButtonHovered.Border = ColorTranslatorFromHtml("FileTabButtonHoverInactiveBorder");
++-            palette.TabButtonUnselectedTabHoveredButtonHovered.Glyph = ColorTranslatorFromHtml("FileTabButtonHoverInactiveGlyph");
++-
++-            palette.TabButtonUnselectedTabHoveredButtonPressed.Background = ColorTranslatorFromHtml("FileTabButtonDownInactive");
++-            palette.TabButtonUnselectedTabHoveredButtonPressed.Border = ColorTranslatorFromHtml("FileTabButtonDownInactiveBorder");
++-            palette.TabButtonUnselectedTabHoveredButtonPressed.Glyph = ColorTranslatorFromHtml("FileTabButtonDownInactiveGlyph");
++-
++-            palette.MainWindowActive.Background = ColorTranslatorFromHtml("EnvironmentBackground");
++-            palette.MainWindowStatusBarDefault.Background = ColorTranslatorFromHtml("StatusBarDefault");
++-            palette.MainWindowStatusBarDefault.Highlight = ColorTranslatorFromHtml("StatusBarHighlight");
++-            palette.MainWindowStatusBarDefault.HighlightText = ColorTranslatorFromHtml("StatusBarHighlight", true);
++-            palette.MainWindowStatusBarDefault.ResizeGrip = ColorTranslatorFromHtml("MainWindowResizeGripTexture1");
++-            palette.MainWindowStatusBarDefault.ResizeGripAccent = ColorTranslatorFromHtml("MainWindowResizeGripTexture2");
++-            palette.MainWindowStatusBarDefault.Text = ColorTranslatorFromHtml("StatusBarText");
++-
++-            palette.ToolWindowCaptionActive.Background = ColorTranslatorFromHtml("TitleBarActiveBorder");
++-            palette.ToolWindowCaptionActive.Button = ColorTranslatorFromHtml("ToolWindowButtonActiveGlyph");
++-            palette.ToolWindowCaptionActive.Grip = ColorTranslatorFromHtml("TitleBarDragHandleActive");
++-            palette.ToolWindowCaptionActive.Text = ColorTranslatorFromHtml("TitleBarActiveText");
++-
++-            palette.ToolWindowCaptionInactive.Background = ColorTranslatorFromHtml("TitleBarInactive");
++-            palette.ToolWindowCaptionInactive.Button = ColorTranslatorFromHtml("ToolWindowButtonInactiveGlyph");
++-            palette.ToolWindowCaptionInactive.Grip = ColorTranslatorFromHtml("TitleBarDragHandle");
++-            palette.ToolWindowCaptionInactive.Text = ColorTranslatorFromHtml("TitleBarInactiveText");
++-
++-            palette.ToolWindowCaptionButtonActiveHovered.Background = ColorTranslatorFromHtml("ToolWindowButtonHoverActive");
++-            palette.ToolWindowCaptionButtonActiveHovered.Border = ColorTranslatorFromHtml("ToolWindowButtonHoverActiveBorder");
++-            palette.ToolWindowCaptionButtonActiveHovered.Glyph = ColorTranslatorFromHtml("ToolWindowButtonHoverActiveGlyph");
++-
++-            palette.ToolWindowCaptionButtonPressed.Background = ColorTranslatorFromHtml("ToolWindowButtonDown");
++-            palette.ToolWindowCaptionButtonPressed.Border = ColorTranslatorFromHtml("ToolWindowButtonDownBorder");
++-            palette.ToolWindowCaptionButtonPressed.Glyph = ColorTranslatorFromHtml("ToolWindowButtonDownActiveGlyph");
++-
++-            palette.ToolWindowCaptionButtonInactiveHovered.Background = ColorTranslatorFromHtml("ToolWindowButtonHoverInactive");
++-            palette.ToolWindowCaptionButtonInactiveHovered.Border = ColorTranslatorFromHtml("ToolWindowButtonHoverInactiveBorder");
++-            palette.ToolWindowCaptionButtonInactiveHovered.Glyph = ColorTranslatorFromHtml("ToolWindowButtonHoverInactiveGlyph");
++-
++-            palette.ToolWindowTabSelectedActive.Background = ColorTranslatorFromHtml("ToolWindowTabSelectedTab");
++-            palette.ToolWindowTabSelectedActive.Text = ColorTranslatorFromHtml("ToolWindowTabSelectedActiveText");
++-
++-            palette.ToolWindowTabSelectedInactive.Background = palette.ToolWindowTabSelectedActive.Background;
++-            palette.ToolWindowTabSelectedInactive.Text = ColorTranslatorFromHtml("ToolWindowTabSelectedText");
++-
++-            palette.ToolWindowTabUnselected.Text = ColorTranslatorFromHtml("ToolWindowTabText");
++-            palette.ToolWindowTabUnselected.Background = ColorTranslatorFromHtml("ToolWindowTabGradientBegin");
++-
++-            palette.ToolWindowTabUnselectedHovered.Background = ColorTranslatorFromHtml("ToolWindowTabMouseOverBackgroundBegin");
++-            palette.ToolWindowTabUnselectedHovered.Text = ColorTranslatorFromHtml("ToolWindowTabMouseOverText");
++-
++-            palette.ToolWindowSeparator = ColorTranslatorFromHtml("ToolWindowTabSeparator");
++-            palette.ToolWindowBorder = ColorTranslatorFromHtml("ToolWindowBorder");
++-
++-            palette.DockTarget.Background = ColorTranslatorFromHtml("DockTargetBackground");
++-            palette.DockTarget.Border = ColorTranslatorFromHtml("DockTargetBorder");
++-            palette.DockTarget.ButtonBackground = ColorTranslatorFromHtml("DockTargetButtonBackgroundBegin");
++-            palette.DockTarget.ButtonBorder = ColorTranslatorFromHtml("DockTargetButtonBorder");
++-            palette.DockTarget.GlyphBackground = ColorTranslatorFromHtml("DockTargetGlyphBackgroundBegin");
++-            palette.DockTarget.GlyphArrow = ColorTranslatorFromHtml("DockTargetGlyphArrow");
++-            palette.DockTarget.GlyphBorder = ColorTranslatorFromHtml("DockTargetGlyphBorder");
++-        }
++-
++-        private Color ColorTranslatorFromHtml(string name, bool foreground = false)
++-        {
++-            var color = _xml.Root.Element("Theme")
++-                .Elements("Category").FirstOrDefault(item => item.Attribute("Name").Value == Env)?
++-                .Elements("Color").FirstOrDefault(item => item.Attribute("Name").Value == name)?
++-                .Element(foreground ? "Foreground" : "Background").Attribute("Source").Value;
++-            if (color == null)
++-            {
++-                return Color.Transparent;
++-            }
++-
++-            return ColorTranslator.FromHtml($"#{color}");
++-        }
++-    }
++-}
++diff --git a/WinFormsUI/ThemeVS2012/VS2012ThemeBase.cs b/WinFormsUI/ThemeVS2012/VS2012ThemeBase.cs
++index 036dba7..fc3a1c6 100644
++--- a/WinFormsUI/ThemeVS2012/VS2012ThemeBase.cs
+++++ b/WinFormsUI/ThemeVS2012/VS2012ThemeBase.cs
++@@ -8,9 +8,9 @@
++     /// </summary>
++     public abstract class VS2012ThemeBase : ThemeBase
++     {
++-        public VS2012ThemeBase(byte[] resources, IDockPaneSplitterControlFactory splitterFactory, IWindowSplitterControlFactory windowsSplitterFactory)
+++        public VS2012ThemeBase(DockPanelColorPalette palette, IDockPaneSplitterControlFactory splitterFactory, IWindowSplitterControlFactory windowsSplitterFactory)
++         {
++-            ColorPalette = new DockPanelColorPalette(new VS2012PaletteFactory(resources));
+++            ColorPalette = palette;
++             Skin = new DockPanelSkin();
++             PaintingService = new PaintingService();
++             ImageService = new ImageService(this);
++@@ -32,6 +32,10 @@ public VS2012ThemeBase(byte[] resources, IDockPaneSplitterControlFactory splitte
++             Extender.DockIndicatorFactory = new VS2012DockIndicatorFactory();
++         }
++ 
+++        public VS2012ThemeBase(byte[] resources, IDockPaneSplitterControlFactory splitterFactory, IWindowSplitterControlFactory windowsSplitterFactory)
+++            : this(new DockPanelColorPalette(resources), splitterFactory, windowsSplitterFactory)
+++        { }
+++
++         public override void CleanUp(DockPanel dockPanel)
++         {
++             PaintingService.CleanUp();
++diff --git a/WinFormsUI/ThemeVS2013.csproj b/WinFormsUI/ThemeVS2013.csproj
++index 18e1d08..e7ddb22 100644
++--- a/WinFormsUI/ThemeVS2013.csproj
+++++ b/WinFormsUI/ThemeVS2013.csproj
++@@ -57,7 +57,6 @@
++       <SubType>Component</SubType>
++     </Compile>
++     <Compile Include="ThemeVS2012\VS2012DockWindowFactory.cs" />
++-    <Compile Include="ThemeVS2012\VS2012PaletteFactory.cs" />
++     <Compile Include="ThemeVS2012\VS2012PaneIndicatorFactory.cs" />
++     <Compile Include="ThemeVS2012\VS2012PanelIndicatorFactory.cs" />
++     <Compile Include="ThemeVS2013\Resources.Designer.cs">
++diff --git a/WinFormsUI/ThemeVS2013/VS2013ThemeBase.cs b/WinFormsUI/ThemeVS2013/VS2013ThemeBase.cs
++index abf47b4..0ff52c3 100644
++--- a/WinFormsUI/ThemeVS2013/VS2013ThemeBase.cs
+++++ b/WinFormsUI/ThemeVS2013/VS2013ThemeBase.cs
++@@ -8,9 +8,9 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2013
++     /// </summary>
++     public abstract class VS2013ThemeBase : ThemeBase
++     {
++-        public VS2013ThemeBase(byte[] resources)
+++        public VS2013ThemeBase(DockPanelColorPalette palette)
++         {
++-            ColorPalette = new DockPanelColorPalette(new VS2012PaletteFactory(resources));
+++            ColorPalette = palette;
++             Skin = new DockPanelSkin();
++             PaintingService = new PaintingService();
++             ImageService = new ImageService(this);
++@@ -33,6 +33,11 @@ public VS2013ThemeBase(byte[] resources)
++             Extender.DockIndicatorFactory = new VS2012DockIndicatorFactory();
++         }
++ 
+++        public VS2013ThemeBase(byte[] resources)
+++            : this(new DockPanelColorPalette(resources))
+++        {
+++        }
+++
++         public override void CleanUp(DockPanel dockPanel)
++         {
++             PaintingService.CleanUp();
++diff --git a/WinFormsUI/ThemeVS2015.csproj b/WinFormsUI/ThemeVS2015.csproj
++index c2c96e2..79ebee7 100644
++--- a/WinFormsUI/ThemeVS2015.csproj
+++++ b/WinFormsUI/ThemeVS2015.csproj
++@@ -57,7 +57,6 @@
++       <SubType>Component</SubType>
++     </Compile>
++     <Compile Include="ThemeVS2012\VS2012DockWindowFactory.cs" />
++-    <Compile Include="ThemeVS2012\VS2012PaletteFactory.cs" />
++     <Compile Include="ThemeVS2012\VS2012PaneIndicatorFactory.cs" />
++     <Compile Include="ThemeVS2012\VS2012PanelIndicatorFactory.cs" />
++     <Compile Include="ThemeVS2013\VS2013DockPane.cs">
++diff --git a/WinFormsUI/ThemeVS2015/VS2015ThemeBase.cs b/WinFormsUI/ThemeVS2015/VS2015ThemeBase.cs
++index 9c6b830..fdab8f0 100644
++--- a/WinFormsUI/ThemeVS2015/VS2015ThemeBase.cs
+++++ b/WinFormsUI/ThemeVS2015/VS2015ThemeBase.cs
++@@ -9,9 +9,9 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2015
++     /// </summary>
++     public abstract class VS2015ThemeBase : ThemeBase
++     {
++-        public VS2015ThemeBase(byte[] resources)
+++        public VS2015ThemeBase(DockPanelColorPalette palette)
++         {
++-            ColorPalette = new DockPanelColorPalette(new VS2012PaletteFactory(resources));
+++            ColorPalette = palette;
++             Skin = new DockPanelSkin();
++             PaintingService = new PaintingService();
++             ImageService = new ImageService(this);
++@@ -37,6 +37,11 @@ public VS2015ThemeBase(byte[] resources)
++             Extender.DockIndicatorFactory = new VS2012DockIndicatorFactory();
++         }
++ 
+++        public VS2015ThemeBase(byte[] resources)
+++            : this(new DockPanelColorPalette(resources))
+++        {
+++        }
+++
++         public override void CleanUp(DockPanel dockPanel)
++         {
++             PaintingService.CleanUp();
++-- 
++2.43.0.windows.1
++
+diff --git a/0003-Add-accent-color-for-tabs.patch b/0003-Add-accent-color-for-tabs.patch
+new file mode 100644
+index 0000000..ed88c9a
+--- /dev/null
++++ b/0003-Add-accent-color-for-tabs.patch
+@@ -0,0 +1,192 @@
++From 53ae395f4872fe65fe39482a1535ae1c3fff2450 Mon Sep 17 00:00:00 2001
++From: IAP Desktop Build <iap-desktop+build@google.com>
++Date: Tue, 28 Mar 2023 15:35:27 +1100
++Subject: [PATCH 3/5] Add accent color for tabs
++
++* Extend theme to allow 4 accent colors
++* Allow tabs to (optionally) specify an accent color
++---
++ WinFormsUI/Docking/DockContentHandler.cs      | 20 +++++++++++
++ WinFormsUI/Docking/DockPanelColorPalette.cs   | 27 ++++++++++++++
++ WinFormsUI/Docking/IImageService.cs           |  4 +++
++ WinFormsUI/ThemeVS2012/ImageService.cs        | 35 +++++++++++++++++++
++ WinFormsUI/ThemeVS2013/VS2013DockPaneStrip.cs | 13 +++----
++ 5 files changed, 93 insertions(+), 6 deletions(-)
++
++diff --git a/WinFormsUI/Docking/DockContentHandler.cs b/WinFormsUI/Docking/DockContentHandler.cs
++index eb0d319..fa3c2ac 100644
++--- a/WinFormsUI/Docking/DockContentHandler.cs
+++++ b/WinFormsUI/Docking/DockContentHandler.cs
++@@ -1109,6 +1109,26 @@ public ContextMenuStrip TabPageContextMenuStrip
++             }
++         }
++ 
+++        private TabAccentColorIndex m_tabColorIndex = TabAccentColorIndex.None;
+++
+++        public TabAccentColorIndex TabAccentColor
+++        {
+++            get
+++            {
+++                return m_tabColorIndex;
+++            }
+++            set
+++            {
+++                if (value == m_tabColorIndex)
+++                    return;
+++
+++                m_tabColorIndex = value;
+++
+++                if (Pane != null)
+++                    Pane.RefreshChanges();
+++            }
+++        }
+++
++         internal void ApplyTheme()
++         {
++             if (m_tabPageContextMenuStrip != null && DockPanel != null)
++diff --git a/WinFormsUI/Docking/DockPanelColorPalette.cs b/WinFormsUI/Docking/DockPanelColorPalette.cs
++index bd41e8a..80922a2 100644
++--- a/WinFormsUI/Docking/DockPanelColorPalette.cs
+++++ b/WinFormsUI/Docking/DockPanelColorPalette.cs
++@@ -312,6 +312,33 @@ protected DockPanelColorPalette(XDocument xml)
++         public CommandBarToolbarButtonPressedPalette CommandBarToolbarButtonPressed { get; }
++         public CommandBarToolbarOverflowButtonPalette CommandBarToolbarOverflowHovered { get; }
++         public CommandBarToolbarOverflowButtonPalette CommandBarToolbarOverflowPressed { get; }
+++
+++        public TabPalette TabSelectedActiveAccent1 { get; set; }
+++        public TabPalette TabSelectedActiveAccent2 { get; set; }
+++        public TabPalette TabSelectedActiveAccent3 { get; set; }
+++        public TabPalette TabSelectedActiveAccent4 { get; set; }
+++
+++        public TabPalette GetTabSelectedActive(TabAccentColorIndex index)
+++        {
+++            var palettes = new [] {
+++                this.TabSelectedActive,
+++                this.TabSelectedActiveAccent1,
+++                this.TabSelectedActiveAccent2,
+++                this.TabSelectedActiveAccent3,
+++                this.TabSelectedActiveAccent4,
+++            };
+++            return palettes[(int)index] ?? this.TabSelectedActive;
+++        }
+++    }
+++
+++    public enum TabAccentColorIndex : int
+++    {
+++        None = 0,
+++        Hightlight1 = 1,
+++        Hightlight2 = 2,
+++        Hightlight3 = 3,
+++        Hightlight4 = 4,
+++        Max = Hightlight4
++     }
++ 
++     public class CommandBarToolbarOverflowButtonPalette
++diff --git a/WinFormsUI/Docking/IImageService.cs b/WinFormsUI/Docking/IImageService.cs
++index 30e4002..2723cce 100644
++--- a/WinFormsUI/Docking/IImageService.cs
+++++ b/WinFormsUI/Docking/IImageService.cs
++@@ -47,6 +47,10 @@ public interface IImageService
++         Image TabPressActive_Close { get; }
++         Image TabPressInactive_Close { get; }
++         Image TabPressLostFocus_Close { get; }
+++
+++        Image GetTabActive_Close(TabAccentColorIndex index);
+++        Image GetTabHoverActive_Close(TabAccentColorIndex index);
+++        Image GetTabPressActive_Close(TabAccentColorIndex index);
++     }
++ 
++     public static class ImageServiceHelper
++diff --git a/WinFormsUI/ThemeVS2012/ImageService.cs b/WinFormsUI/ThemeVS2012/ImageService.cs
++index aac259f..7f913d0 100644
++--- a/WinFormsUI/ThemeVS2012/ImageService.cs
+++++ b/WinFormsUI/ThemeVS2012/ImageService.cs
++@@ -180,6 +180,41 @@ public ImageService(ThemeBase theme)
++             DockPanePress_Dock = ImageServiceHelper.GetImage(Resources.MaskToolWindowDock, _palette.ToolWindowCaptionButtonPressed.Glyph, _palette.ToolWindowCaptionButtonPressed.Background, _palette.ToolWindowCaptionButtonPressed.Border);
++             DockPanePress_Option = ImageServiceHelper.GetImage(Resources.MaskToolWindowOption, _palette.ToolWindowCaptionButtonPressed.Glyph, _palette.ToolWindowCaptionButtonPressed.Background, _palette.ToolWindowCaptionButtonPressed.Border);
++             DockPanePress_AutoHide = ImageServiceHelper.GetImage(Resources.MaskToolWindowAutoHide, _palette.ToolWindowCaptionButtonPressed.Glyph, _palette.ToolWindowCaptionButtonPressed.Background, _palette.ToolWindowCaptionButtonPressed.Border);
+++
+++            m_tabActive = new Image[(int)TabAccentColorIndex.Max + 1];
+++            m_tabHoverActive = new Image[(int)TabAccentColorIndex.Max + 1];
+++            m_tabPressActive = new Image[(int)TabAccentColorIndex.Max + 1];
+++
+++            m_tabActive[0] = TabActive_Close;
+++            m_tabHoverActive[0] = TabHoverActive_Close;
+++            m_tabPressActive[0] = TabPressActive_Close;
+++
+++            for (var colorIndex = TabAccentColorIndex.Hightlight1; colorIndex <= TabAccentColorIndex.Max; colorIndex++)
+++            {
+++                // NB. Don't use a hover effect and use static colors for press... just like VS2022 does.
+++                m_tabActive[(int)colorIndex] = ImageServiceHelper.GetImage(Resources.MaskTabClose, _palette.GetTabSelectedActive(colorIndex).Button, _palette.GetTabSelectedActive(colorIndex).Background);
+++                m_tabHoverActive[(int)colorIndex] = ImageServiceHelper.GetImage(Resources.MaskTabClose, _palette.GetTabSelectedActive(colorIndex).Button, _palette.GetTabSelectedActive(colorIndex).Background);
+++                m_tabPressActive[(int)colorIndex] = ImageServiceHelper.GetImage(Resources.MaskTabClose, Color.White, Color.Black, Color.Black);
+++            }
+++        }
+++
+++        private readonly Image[] m_tabActive;
+++        private readonly Image[] m_tabHoverActive;
+++        private readonly Image[] m_tabPressActive;
+++
+++        public Image GetTabActive_Close(TabAccentColorIndex index)
+++        {
+++            return m_tabActive[(int)index];
+++        }
+++
+++        public Image GetTabHoverActive_Close(TabAccentColorIndex index)
+++        {
+++            return m_tabHoverActive[(int)index];
+++        }
+++
+++        public Image GetTabPressActive_Close(TabAccentColorIndex index)
+++        {
+++            return m_tabPressActive[(int)index];
++         }
++     }
++ }
++\ No newline at end of file
++diff --git a/WinFormsUI/ThemeVS2013/VS2013DockPaneStrip.cs b/WinFormsUI/ThemeVS2013/VS2013DockPaneStrip.cs
++index b169dfb..2aeea5b 100644
++--- a/WinFormsUI/ThemeVS2013/VS2013DockPaneStrip.cs
+++++ b/WinFormsUI/ThemeVS2013/VS2013DockPaneStrip.cs
++@@ -921,7 +921,7 @@ private void DrawTabStrip_Document(Graphics g)
++             {
++                 Color tabUnderLineColor;
++                 if (tabActive != null && DockPane.IsActiveDocumentPane)
++-                    tabUnderLineColor = DockPane.DockPanel.Theme.ColorPalette.TabSelectedActive.Background;
+++                    tabUnderLineColor = DockPane.DockPanel.Theme.ColorPalette.GetTabSelectedActive(tabActive.Content.DockHandler.TabAccentColor).Background;
++                 else
++                     tabUnderLineColor = DockPane.DockPanel.Theme.ColorPalette.TabSelectedInactive.Background;
++ 
++@@ -1144,12 +1144,13 @@ private void DrawTab_Document(Graphics g, TabVS2013 tab)
++             rectText = DrawHelper.RtlTransform(this, rectText);
++             rectIcon = DrawHelper.RtlTransform(this, rectIcon);
++ 
++-            Color activeColor = DockPane.DockPanel.Theme.ColorPalette.TabSelectedActive.Background;
+++            var accentColor = tab.Content.DockHandler.TabAccentColor;
+++            Color activeColor = DockPane.DockPanel.Theme.ColorPalette.GetTabSelectedActive(accentColor).Background;
++             Color lostFocusColor = DockPane.DockPanel.Theme.ColorPalette.TabSelectedInactive.Background;
++             Color inactiveColor = DockPane.DockPanel.Theme.ColorPalette.MainWindowActive.Background;
++             Color mouseHoverColor = DockPane.DockPanel.Theme.ColorPalette.TabUnselectedHovered.Background;
++ 
++-            Color activeText = DockPane.DockPanel.Theme.ColorPalette.TabSelectedActive.Text;
+++            Color activeText = DockPane.DockPanel.Theme.ColorPalette.GetTabSelectedActive(accentColor).Text;
++             Color lostFocusText = DockPane.DockPanel.Theme.ColorPalette.TabSelectedInactive.Text;
++             Color inactiveText = DockPane.DockPanel.Theme.ColorPalette.TabUnselected.Text;
++             Color mouseHoverText = DockPane.DockPanel.Theme.ColorPalette.TabUnselectedHovered.Text;
++@@ -1165,10 +1166,10 @@ private void DrawTab_Document(Graphics g, TabVS2013 tab)
++                     paint = activeColor;
++                     text = activeText;
++                     image = IsMouseDown
++-                        ? imageService.TabPressActive_Close
+++                        ? imageService.GetTabPressActive_Close(accentColor)
++                         : rectCloseButton == ActiveClose
++-                            ? imageService.TabHoverActive_Close
++-                            : imageService.TabActive_Close;
+++                            ? imageService.GetTabHoverActive_Close(accentColor)
+++                            : imageService.GetTabActive_Close(accentColor);
++                 }
++                 else
++                 {
++-- 
++2.43.0.windows.1
++
+diff --git a/0004-Target-.NET-4.7.patch b/0004-Target-.NET-4.7.patch
+new file mode 100644
+index 0000000..640c824
+--- /dev/null
++++ b/0004-Target-.NET-4.7.patch
+@@ -0,0 +1,221 @@
++From ef2a544cae5cb707b960ba47a3091e368c546cca Mon Sep 17 00:00:00 2001
++From: IAP Desktop Build <iap-desktop+build@google.com>
++Date: Fri, 24 May 2024 16:18:23 +1000
++Subject: [PATCH 4/5] Target .NET 4.7
++
++---
++ DockPanelSuite.nuspec                       | 36 ++++++---------------
++ DockSample/DockSample.csproj                |  3 +-
++ DockSample/app.config                       |  3 +-
++ Tests/Tests.csproj                          |  2 +-
++ Tests2/Tests2.csproj                        |  2 +-
++ Tests3/Tests3.csproj                        |  2 +-
++ WinFormsUI/ThemeVS2003.csproj               |  3 +-
++ WinFormsUI/ThemeVS2005Multithreading.csproj |  3 +-
++ WinFormsUI/ThemeVS2012.csproj               |  3 +-
++ WinFormsUI/ThemeVS2013.csproj               |  3 +-
++ WinFormsUI/ThemeVS2015.csproj               |  3 +-
++ WinFormsUI/WinFormsUI.csproj                |  3 +-
++ 12 files changed, 20 insertions(+), 46 deletions(-)
++
++diff --git a/DockPanelSuite.nuspec b/DockPanelSuite.nuspec
++index 60888a9..31c3a46 100644
++--- a/DockPanelSuite.nuspec
+++++ b/DockPanelSuite.nuspec
++@@ -1,34 +1,16 @@
++ <?xml version="1.0"?>
++-<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+++<package>
++   <metadata>
++-    <version>3.0.6</version>
++-    <authors>Weifen Luo and other contributors</authors>
++-    <owners>Weifen Luo and other contributors</owners>
++-    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
++-    <projectUrl>http://dockpanelsuite.com</projectUrl>
++-    <frameworkAssemblies>
++-      <frameworkAssembly assemblyName="System.Windows.Forms" targetFramework="" />
++-      <frameworkAssembly assemblyName="System" targetFramework="" />
++-    </frameworkAssemblies>
++-    <id>DockPanelSuite</id>
++-    <title>DockPanel Suite</title>
+++    <id>Google.Solutions.ThirdParty.DockPanelSuite</id>
+++    <version>3.0.6.6</version>
+++    <authors>http://dockpanelsuite.com</authors>
+++    <owners>http://dockpanelsuite.com</owners>
++     <requireLicenseAcceptance>false</requireLicenseAcceptance>
++-    <description>The docking library for .Net Windows Forms development which mimics Visual Studio .Net.</description>
++-    <summary>The docking library for .Net Windows Forms development which mimics Visual Studio .Net.</summary>
++-    <releaseNotes>Release notes can be found at GitHub,
++-      https://github.com/dockpanelsuite/dockpanelsuite/releases
++-
++-      Visual Studio 2003 Theme: https://www.nuget.org/packages/DockPanelSuite.ThemeVS2003/
++-      Visual Studio 2012 Themes: https://www.nuget.org/packages/DockPanelSuite.ThemeVS2012/
++-      Visual Studio 2013 Themes: https://www.nuget.org/packages/DockPanelSuite.ThemeVS2013/
++-      Visual Studio 2015 Themes: https://www.nuget.org/packages/DockPanelSuite.ThemeVS2015/
++-    </releaseNotes>
++-    <copyright>(C) 2007-2018 Weifen Luo and other contributors</copyright>
++-    <language>en-US</language>
++-    <tags>windows forms docking dockpanel panel</tags>
+++    <description>DockPanelSuite</description>
+++    <tags></tags>
++   </metadata>
++   <files>
++-    <file src=".\bin\net35-client\WeifenLuo.WinFormsUI.Docking.dll" target="lib\net35-client\WeifenLuo.WinFormsUI.Docking.dll" />
++-    <file src=".\bin\net40\WeifenLuo.WinFormsUI.Docking.dll" target="lib\net40\WeifenLuo.WinFormsUI.Docking.dll" />
+++    <file src="C:\dev\01-iapdesktop\iap-desktop\dependencies\sources\dockpanelsuite\obj\WinFormsUI\bin\Release\WeifenLuo.WinFormsUI.Docking.dll" target="lib\net40\WeifenLuo.WinFormsUI.Docking.dll" />
+++    <file src="C:\dev\01-iapdesktop\iap-desktop\dependencies\sources\dockpanelsuite\obj\WinFormsUI\bin\Release\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" target="lib\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" />
++   </files>
++ </package>
++diff --git a/DockSample/DockSample.csproj b/DockSample/DockSample.csproj
++index 1c738ca..9a2ede0 100644
++--- a/DockSample/DockSample.csproj
+++++ b/DockSample/DockSample.csproj
++@@ -10,8 +10,7 @@
++     <AppDesignerFolder>Properties</AppDesignerFolder>
++     <RootNamespace>DockSample</RootNamespace>
++     <AssemblyName>DockSample</AssemblyName>
++-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
++-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
++   </PropertyGroup>
++   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
++     <DebugSymbols>true</DebugSymbols>
++diff --git a/DockSample/app.config b/DockSample/app.config
++index 99b6dc3..433b131 100644
++--- a/DockSample/app.config
+++++ b/DockSample/app.config
++@@ -1,7 +1,6 @@
++ <?xml version="1.0" encoding="utf-8"?>
++ <configuration>
++   <startup>
++-    <supportedRuntime version="v4.0" sku="Client"/>
++-    <supportedRuntime version="v2.0.50727" sku="Client"/>
+++    <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7" />
++   </startup>
++ </configuration>
++diff --git a/Tests/Tests.csproj b/Tests/Tests.csproj
++index 4352d7a..b4fea25 100644
++--- a/Tests/Tests.csproj
+++++ b/Tests/Tests.csproj
++@@ -9,7 +9,7 @@
++     <AppDesignerFolder>Properties</AppDesignerFolder>
++     <RootNamespace>Tests</RootNamespace>
++     <AssemblyName>Tests</AssemblyName>
++-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
++     <FileAlignment>512</FileAlignment>
++     <TargetFrameworkProfile>
++     </TargetFrameworkProfile>
++diff --git a/Tests2/Tests2.csproj b/Tests2/Tests2.csproj
++index d4ab2ce..5077c52 100644
++--- a/Tests2/Tests2.csproj
+++++ b/Tests2/Tests2.csproj
++@@ -9,7 +9,7 @@
++     <AppDesignerFolder>Properties</AppDesignerFolder>
++     <RootNamespace>Tests2</RootNamespace>
++     <AssemblyName>Tests2</AssemblyName>
++-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
++     <FileAlignment>512</FileAlignment>
++     <TargetFrameworkProfile>
++     </TargetFrameworkProfile>
++diff --git a/Tests3/Tests3.csproj b/Tests3/Tests3.csproj
++index b3a2243..30e65f8 100644
++--- a/Tests3/Tests3.csproj
+++++ b/Tests3/Tests3.csproj
++@@ -9,7 +9,7 @@
++     <AppDesignerFolder>Properties</AppDesignerFolder>
++     <RootNamespace>Tests3</RootNamespace>
++     <AssemblyName>Tests3</AssemblyName>
++-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
++     <FileAlignment>512</FileAlignment>
++     <TargetFrameworkProfile>
++     </TargetFrameworkProfile>
++diff --git a/WinFormsUI/ThemeVS2003.csproj b/WinFormsUI/ThemeVS2003.csproj
++index 3ff240f..51c4c18 100644
++--- a/WinFormsUI/ThemeVS2003.csproj
+++++ b/WinFormsUI/ThemeVS2003.csproj
++@@ -14,8 +14,7 @@
++     <AssemblyOriginatorKeyFile>dockpanelsuite.snk</AssemblyOriginatorKeyFile>
++     <DelaySign>False</DelaySign>
++     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
++-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
++-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
++   </PropertyGroup>
++   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
++     <DebugSymbols>true</DebugSymbols>
++diff --git a/WinFormsUI/ThemeVS2005Multithreading.csproj b/WinFormsUI/ThemeVS2005Multithreading.csproj
++index 78f0f72..341fce4 100644
++--- a/WinFormsUI/ThemeVS2005Multithreading.csproj
+++++ b/WinFormsUI/ThemeVS2005Multithreading.csproj
++@@ -14,8 +14,7 @@
++     <AssemblyOriginatorKeyFile>dockpanelsuite.snk</AssemblyOriginatorKeyFile>
++     <DelaySign>False</DelaySign>
++     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
++-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
++-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
++   </PropertyGroup>
++   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
++     <DebugSymbols>true</DebugSymbols>
++diff --git a/WinFormsUI/ThemeVS2012.csproj b/WinFormsUI/ThemeVS2012.csproj
++index f48ee93..37466d7 100644
++--- a/WinFormsUI/ThemeVS2012.csproj
+++++ b/WinFormsUI/ThemeVS2012.csproj
++@@ -14,8 +14,7 @@
++     <AssemblyOriginatorKeyFile>dockpanelsuite.snk</AssemblyOriginatorKeyFile>
++     <DelaySign>False</DelaySign>
++     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
++-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
++-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
++   </PropertyGroup>
++   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
++     <DebugSymbols>true</DebugSymbols>
++diff --git a/WinFormsUI/ThemeVS2013.csproj b/WinFormsUI/ThemeVS2013.csproj
++index e7ddb22..c446523 100644
++--- a/WinFormsUI/ThemeVS2013.csproj
+++++ b/WinFormsUI/ThemeVS2013.csproj
++@@ -14,8 +14,7 @@
++     <AssemblyOriginatorKeyFile>dockpanelsuite.snk</AssemblyOriginatorKeyFile>
++     <DelaySign>False</DelaySign>
++     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
++-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
++-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
++   </PropertyGroup>
++   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
++     <DebugSymbols>true</DebugSymbols>
++diff --git a/WinFormsUI/ThemeVS2015.csproj b/WinFormsUI/ThemeVS2015.csproj
++index 79ebee7..752cdbd 100644
++--- a/WinFormsUI/ThemeVS2015.csproj
+++++ b/WinFormsUI/ThemeVS2015.csproj
++@@ -14,8 +14,7 @@
++     <AssemblyOriginatorKeyFile>dockpanelsuite.snk</AssemblyOriginatorKeyFile>
++     <DelaySign>False</DelaySign>
++     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
++-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
++-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
++   </PropertyGroup>
++   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
++     <DebugSymbols>true</DebugSymbols>
++diff --git a/WinFormsUI/WinFormsUI.csproj b/WinFormsUI/WinFormsUI.csproj
++index 7a9d672..70fae4d 100644
++--- a/WinFormsUI/WinFormsUI.csproj
+++++ b/WinFormsUI/WinFormsUI.csproj
++@@ -14,8 +14,7 @@
++     <AssemblyOriginatorKeyFile>dockpanelsuite.snk</AssemblyOriginatorKeyFile>
++     <DelaySign>False</DelaySign>
++     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
++-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
++-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+++    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
++   </PropertyGroup>
++   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
++     <DebugSymbols>true</DebugSymbols>
++-- 
++2.43.0.windows.1
++
+diff --git a/0005-Scale-control-buttons-to-device-units.patch b/0005-Scale-control-buttons-to-device-units.patch
+new file mode 100644
+index 0000000..afa3d21
+--- /dev/null
++++ b/0005-Scale-control-buttons-to-device-units.patch
+@@ -0,0 +1,40 @@
++From 42a0c17fe5a625c49bf87781857e756530f339bb Mon Sep 17 00:00:00 2001
++From: IAP Desktop Build <iap-desktop+build@google.com>
++Date: Fri, 24 May 2024 16:21:33 +1000
++Subject: [PATCH 5/5] Scale control buttons to device units
++
++---
++ DockSample/app.config                           | 3 +++
++ WinFormsUI/ThemeVS2013/VS2013DockPaneCaption.cs | 4 ++--
++ 2 files changed, 5 insertions(+), 2 deletions(-)
++
++diff --git a/DockSample/app.config b/DockSample/app.config
++index 433b131..32aae1b 100644
++--- a/DockSample/app.config
+++++ b/DockSample/app.config
++@@ -3,4 +3,7 @@
++   <startup>
++     <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7" />
++   </startup>
+++  <System.Windows.Forms.ApplicationConfigurationSection>
+++    <add key="DpiAwareness" value="PerMonitorV2" />
+++  </System.Windows.Forms.ApplicationConfigurationSection>
++ </configuration>
++diff --git a/WinFormsUI/ThemeVS2013/VS2013DockPaneCaption.cs b/WinFormsUI/ThemeVS2013/VS2013DockPaneCaption.cs
++index 5f401db..123b5e6 100644
++--- a/WinFormsUI/ThemeVS2013/VS2013DockPaneCaption.cs
+++++ b/WinFormsUI/ThemeVS2013/VS2013DockPaneCaption.cs
++@@ -310,8 +310,8 @@ private void SetButtonsPosition()
++         {
++             // set the size and location for close and auto-hide buttons
++             Rectangle rectCaption = ClientRectangle;
++-            int buttonWidth = ButtonClose.Image.Width;
++-            int buttonHeight = ButtonClose.Image.Height;
+++            int buttonWidth = LogicalToDeviceUnits(ButtonClose.Image.Width);
+++            int buttonHeight = LogicalToDeviceUnits(ButtonClose.Image.Height);
++ 
++             Size buttonSize = new Size(buttonWidth, buttonHeight);
++             int x = rectCaption.X + rectCaption.Width - ButtonGapRight - m_buttonClose.Width;
++-- 
++2.43.0.windows.1
++
+diff --git a/WinFormsUI/Docking/VisualStudioToolStripRenderer.cs b/WinFormsUI/Docking/VisualStudioToolStripRenderer.cs
+index b650230..ae1aefa 100644
+--- a/WinFormsUI/Docking/VisualStudioToolStripRenderer.cs
++++ b/WinFormsUI/Docking/VisualStudioToolStripRenderer.cs
+@@ -33,6 +33,8 @@ public class VisualStudioToolStripRenderer : ToolStripProfessionalRenderer
+ 
+         public bool UseGlassOnMenuStrip { get; set; }
+ 
++        public bool UseCustomMenuItemBackground { get; set; } = false;
++
+         public VisualStudioToolStripRenderer(DockPanelColorPalette palette)
+             : base(new VisualStudioColorTable(palette))
+         {
+@@ -53,6 +55,12 @@ public VisualStudioToolStripRenderer(DockPanelColorPalette palette)
+         //*
+         protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
+         {
++            if (!this.UseCustomMenuItemBackground)
++            {
++                base.OnRenderMenuItemBackground(e);
++                return;
++            }
++
+             // Do not draw disabled item background.
+             if (e.Item.Enabled)
+             {
+-- 
+2.43.0.windows.1
+
