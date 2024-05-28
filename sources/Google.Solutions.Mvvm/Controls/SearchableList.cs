@@ -23,6 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Mvvm.Properties;
 using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 
 #pragma warning disable IDE1006 // Naming Styles
@@ -119,6 +120,26 @@ namespace Google.Solutions.Mvvm.Controls
                 {
                     item.Selected = true;
                 }
+            }
+        }
+
+        protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
+        {
+            base.ScaleControl(factor, specified);
+
+            //
+            // NB. Scaling can produce a gap between the controls. Rearrange controls
+            // to remove this gap.
+            //
+            var gap = this.progressBar.Location.Y - 
+                this.searchTextBox.Location.Y - 
+                this.searchTextBox.Height;
+
+            if (gap > 0)
+            {
+                this.progressBar.Top -= gap;
+                this.list.Top -= gap;
+                this.list.Height += gap;
             }
         }
 
