@@ -85,7 +85,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             // 
             // convertTypographicQuotesCheckBox
             // 
-            this.convertTypographicQuotesCheckBox.AutoSize = true;
             this.convertTypographicQuotesCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.convertTypographicQuotesCheckBox.Location = new System.Drawing.Point(18, 60);
             this.convertTypographicQuotesCheckBox.Name = "convertTypographicQuotesCheckBox";
@@ -93,10 +92,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.convertTypographicQuotesCheckBox.TabIndex = 2;
             this.convertTypographicQuotesCheckBox.Text = "Convert typographic &quotes when pasting";
             this.convertTypographicQuotesCheckBox.UseVisualStyleBackColor = true;
+            this.convertTypographicQuotesCheckBox.AutoSize = false;
             // 
             // copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox
             // 
-            this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.AutoSize = true;
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.Location = new System.Drawing.Point(18, 42);
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.Name = "copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox";
@@ -104,10 +103,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.TabIndex = 1;
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.Text = "Use Ctrl+&Insert/Shift+Insert to copy/paste";
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.UseVisualStyleBackColor = true;
+            this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.AutoSize = false;
             // 
             // copyPasteUsingCtrlCAndCtrlVEnabledCheckBox
             // 
-            this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.AutoSize = true;
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.Location = new System.Drawing.Point(18, 24);
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.Name = "copyPasteUsingCtrlCAndCtrlVEnabledCheckBox";
@@ -115,6 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.TabIndex = 0;
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.Text = "Use Ctrl+C/Ctrl+&V to copy/paste";
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.UseVisualStyleBackColor = true;
+            this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.AutoSize = false;
             // 
             // textSelectionBox
             // 
@@ -130,7 +130,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             // 
             // selectUsingShiftArrrowEnabledCheckBox
             // 
-            this.selectUsingShiftArrrowEnabledCheckBox.AutoSize = true;
             this.selectUsingShiftArrrowEnabledCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.selectUsingShiftArrrowEnabledCheckBox.Location = new System.Drawing.Point(18, 24);
             this.selectUsingShiftArrrowEnabledCheckBox.Name = "selectUsingShiftArrrowEnabledCheckBox";
@@ -138,10 +137,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.selectUsingShiftArrrowEnabledCheckBox.TabIndex = 3;
             this.selectUsingShiftArrrowEnabledCheckBox.Text = "Use Shift+Arrow key to &select text";
             this.selectUsingShiftArrrowEnabledCheckBox.UseVisualStyleBackColor = true;
+            this.selectUsingShiftArrrowEnabledCheckBox.AutoSize = false;
             // 
             // navigationUsingControlArrrowEnabledCheckBox
             // 
-            this.navigationUsingControlArrrowEnabledCheckBox.AutoSize = true;
             this.navigationUsingControlArrrowEnabledCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.navigationUsingControlArrrowEnabledCheckBox.Location = new System.Drawing.Point(18, 60);
             this.navigationUsingControlArrrowEnabledCheckBox.Name = "navigationUsingControlArrrowEnabledCheckBox";
@@ -149,10 +148,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.navigationUsingControlArrrowEnabledCheckBox.TabIndex = 5;
             this.navigationUsingControlArrrowEnabledCheckBox.Text = "Use Ctrl+Left/Right to jump to previous/next &word";
             this.navigationUsingControlArrrowEnabledCheckBox.UseVisualStyleBackColor = true;
+            this.navigationUsingControlArrrowEnabledCheckBox.AutoSize = false;
             // 
             // selectAllUsingCtrlAEnabledCheckBox
             // 
-            this.selectAllUsingCtrlAEnabledCheckBox.AutoSize = true;
             this.selectAllUsingCtrlAEnabledCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.selectAllUsingCtrlAEnabledCheckBox.Location = new System.Drawing.Point(18, 42);
             this.selectAllUsingCtrlAEnabledCheckBox.Name = "selectAllUsingCtrlAEnabledCheckBox";
@@ -160,6 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.selectAllUsingCtrlAEnabledCheckBox.TabIndex = 4;
             this.selectAllUsingCtrlAEnabledCheckBox.Text = "Use Ctrl+&A to select all text";
             this.selectAllUsingCtrlAEnabledCheckBox.UseVisualStyleBackColor = true;
+            this.selectAllUsingCtrlAEnabledCheckBox.AutoSize = false;
             // 
             // scollingBox
             // 
@@ -174,7 +174,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             // 
             // scrollUsingCtrlUpDownCheckBox
             // 
-            this.scrollUsingCtrlUpDownCheckBox.AutoSize = true;
             this.scrollUsingCtrlUpDownCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.scrollUsingCtrlUpDownCheckBox.Location = new System.Drawing.Point(18, 24);
             this.scrollUsingCtrlUpDownCheckBox.Name = "scrollUsingCtrlUpDownCheckBox";
@@ -182,10 +181,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.scrollUsingCtrlUpDownCheckBox.TabIndex = 6;
             this.scrollUsingCtrlUpDownCheckBox.Text = "Use Ctrl+Up/&Down to scroll";
             this.scrollUsingCtrlUpDownCheckBox.UseVisualStyleBackColor = true;
+            this.scrollUsingCtrlUpDownCheckBox.AutoSize = false;
             // 
             // scrollUsingCtrlHomeEndcheckBox
             // 
-            this.scrollUsingCtrlHomeEndcheckBox.AutoSize = true;
             this.scrollUsingCtrlHomeEndcheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.scrollUsingCtrlHomeEndcheckBox.Location = new System.Drawing.Point(18, 42);
             this.scrollUsingCtrlHomeEndcheckBox.Name = "scrollUsingCtrlHomeEndcheckBox";
@@ -193,6 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.scrollUsingCtrlHomeEndcheckBox.TabIndex = 7;
             this.scrollUsingCtrlHomeEndcheckBox.Text = "Use Ctrl+&Home/End to scroll to top/bottom";
             this.scrollUsingCtrlHomeEndcheckBox.UseVisualStyleBackColor = true;
+            this.scrollUsingCtrlHomeEndcheckBox.AutoSize = false;
             // 
             // themeBox
             // 

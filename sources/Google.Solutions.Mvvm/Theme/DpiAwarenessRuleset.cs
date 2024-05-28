@@ -109,6 +109,13 @@ namespace Google.Solutions.Mvvm.Theme
                 //
                 Debug.Assert(otherContainer.AutoScaleMode == AutoScaleMode.Inherit);
             }
+            else if (c is CheckBox checkBox)
+            {
+                //
+                // Auto-scaling is prone to cause alignment issues.
+                //
+                Debug.Assert(!checkBox.AutoSize, $"{checkBox.Name} should use AutoScale = false");
+            }
         }
 
         private void AssertToolStripItemStyle(ToolStripItem item)
