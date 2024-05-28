@@ -22,6 +22,8 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Theme
@@ -123,6 +125,38 @@ namespace Google.Solutions.Mvvm.Theme
             Debug.Assert(item.ImageScaling == ToolStripItemImageScaling.SizeToFit);
         }
 #endif
+        //---------------------------------------------------------------------
+        // Helper methods.
+        //---------------------------------------------------------------------
+
+        private void ScaleImageList(ImageList imageList)
+        {
+            if (imageList == null)
+            {
+                return;
+            }
+
+            var images = imageList
+                .Images
+                .Cast<Image>()
+                .Select(i => (Image)i.Clone())
+                .ToArray();
+
+            //
+            // Change the size. If the handle has been created already,
+            // this causes the imagelist to reset the contained images.
+            //
+            imageList.ImageSize
+                = DeviceCapabilities.Current.ScaleToDpi(imageList.ImageSize);
+
+            if (imageList.Images.Count != images.Length)
+            {
+                //
+                // Re-add images.
+                //
+                imageList.Images.AddRange(images);
+            }
+        }
 
         //---------------------------------------------------------------------
         // Theming rules.
@@ -144,6 +178,12 @@ namespace Google.Solutions.Mvvm.Theme
             }
         }
 
+        private void StyleTreeView(TreeView treeView)
+        {
+            ScaleImageList(treeView.ImageList);
+            ScaleImageList(treeView.StateImageList);
+        }
+
         //---------------------------------------------------------------------
         // IRuleSet
         //---------------------------------------------------------------------
@@ -163,6 +203,7 @@ namespace Google.Solutions.Mvvm.Theme
 
                 controlTheme.AddRule<PictureBox>(StylePictureBox);
                 controlTheme.AddRule<ListView>(StyleListView);
+                controlTheme.AddRule<TreeView>(StyleTreeView);
             }
         }
     }
