@@ -86,14 +86,22 @@ namespace Google.Solutions.Mvvm.Theme
                     Debug.Assert(userControl.CurrentAutoScaleDimensions.Width == userControl.CurrentAutoScaleDimensions.Height);
                 }
 
+                bool isLaterallyAnchored(Control c)
+                {
+                    return 
+                        c.Dock == DockStyle.Fill ||
+                        c.Anchor.HasFlag(AnchorStyles.Top | AnchorStyles.Bottom) ||
+                        c.Anchor.HasFlag(AnchorStyles.Left | AnchorStyles.Right);
+                }
+
                 //
-                // If the UserControl is anchored, then it must
-                // use the DpiAwareUserControl mitigation.
+                // If the UserControl is anchored and contains controls
+                // that are also anchored, then it must use the
+                // DpiAwareUserControl mitigation.
                 //
                 if (!(userControl is DpiAwareUserControl) &&
-                    (userControl.Dock == DockStyle.Fill ||
-                     userControl.Anchor.HasFlag(AnchorStyles.Top | AnchorStyles.Bottom) ||
-                     userControl.Anchor.HasFlag(AnchorStyles.Left | AnchorStyles.Right)))
+                    isLaterallyAnchored(userControl) &&
+                    userControl.Controls.OfType<Control>().Any(isLaterallyAnchored)) 
                 {
                     Debug.Assert(false, "User control should be derived from " + nameof(DpiAwareUserControl));
                 }
