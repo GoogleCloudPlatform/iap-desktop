@@ -11,7 +11,7 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.8" />
+    <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.9" />
     <PackageReference Include="Google.Apis" Version="1.68.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
     <PackageReference Include="Google.Apis.Compute.v1" Version="1.68.0.3384" />
