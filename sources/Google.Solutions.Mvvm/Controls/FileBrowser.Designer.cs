@@ -104,7 +104,6 @@ namespace Google.Solutions.Mvvm.Controls
             this.directoryTree.HideSelection = false;
             this.directoryTree.ImageIndex = 0;
             this.directoryTree.ImageList = this.fileIconsList;
-            this.directoryTree.ItemHeight = 18;
             this.directoryTree.Location = new System.Drawing.Point(0, 0);
             this.directoryTree.Name = "directoryTree";
             this.directoryTree.PathSeparator = "/";
