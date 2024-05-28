@@ -1,0 +1,38 @@
+From 0dbabc78375e870735bdcd181f9e4b203a4cc75f Mon Sep 17 00:00:00 2001
+From: IAP Desktop Build <iap-desktop+build@google.com>
+Date: Tue, 28 May 2024 11:42:49 +1000
+Subject: [PATCH 6/6] Disable menu item background customization
+
+---
+ WinFormsUI/Docking/VisualStudioToolStripRenderer.cs | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/WinFormsUI/Docking/VisualStudioToolStripRenderer.cs b/WinFormsUI/Docking/VisualStudioToolStripRenderer.cs
+index b650230..ae1aefa 100644
+--- a/WinFormsUI/Docking/VisualStudioToolStripRenderer.cs
++++ b/WinFormsUI/Docking/VisualStudioToolStripRenderer.cs
+@@ -33,6 +33,8 @@ public class VisualStudioToolStripRenderer : ToolStripProfessionalRenderer
+ 
+         public bool UseGlassOnMenuStrip { get; set; }
+ 
++        public bool UseCustomMenuItemBackground { get; set; } = false;
++
+         public VisualStudioToolStripRenderer(DockPanelColorPalette palette)
+             : base(new VisualStudioColorTable(palette))
+         {
+@@ -53,6 +55,12 @@ public VisualStudioToolStripRenderer(DockPanelColorPalette palette)
+         //*
+         protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
+         {
++            if (!this.UseCustomMenuItemBackground)
++            {
++                base.OnRenderMenuItemBackground(e);
++                return;
++            }
++
+             // Do not draw disabled item background.
+             if (e.Item.Enabled)
+             {
+-- 
+2.43.0.windows.1
+
