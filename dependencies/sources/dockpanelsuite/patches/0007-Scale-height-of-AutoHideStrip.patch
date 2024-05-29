@@ -1,0 +1,25 @@
+From 6b5472754d7d0ff448ca118667f2d9360a0ef9b0 Mon Sep 17 00:00:00 2001
+From: IAP Desktop Build <iap-desktop+build@google.com>
+Date: Tue, 28 May 2024 15:49:02 +1000
+Subject: [PATCH 7/7] Scale height of AutoHideStrip
+
+---
+ WinFormsUI/ThemeVS2012/VS2012AutoHideStrip.cs | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/WinFormsUI/ThemeVS2012/VS2012AutoHideStrip.cs b/WinFormsUI/ThemeVS2012/VS2012AutoHideStrip.cs
+index 04180bc..2a9f3b5 100644
+--- a/WinFormsUI/ThemeVS2012/VS2012AutoHideStrip.cs
++++ b/WinFormsUI/ThemeVS2012/VS2012AutoHideStrip.cs
+@@ -459,7 +459,7 @@ protected override void OnMouseLeave(EventArgs e)
+ 
+         protected override int MeasureHeight()
+         {
+-            return 31;
++            return LogicalToDeviceUnits(31);
+         }
+ 
+         protected override void OnRefreshChanges()
+-- 
+2.43.0.windows.1
+

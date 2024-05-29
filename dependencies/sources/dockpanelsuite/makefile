@@ -21,7 +21,7 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 9
+TAG = 10
 
 DOCKPANELSUITE_TAG = Release_3.0.6
 DOCKPANELSUITE_URL = https://github.com/dockpanelsuite/dockpanelsuite.git
@@ -51,6 +51,7 @@ $(MAKEDIR)\obj\WinFormsUI\WinFormsUI.csproj:
     git am $(MAKEDIR)\patches\0004-Target-.NET-4.7.patch
     git am $(MAKEDIR)\patches\0005-Scale-control-buttons-to-device-units.patch
 	git am $(MAKEDIR)\patches\0006-Disable-menu-item-background-customization.patch
+	git am $(MAKEDIR)\patches\0007-Scale-height-of-AutoHideStrip.patch
 
 	cd $(MAKEDIR)
 
