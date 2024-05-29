@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             // usernameLabel
             // 
             this.usernameLabel.AutoSize = true;
-            this.usernameLabel.Location = new System.Drawing.Point(17, 71);
+            this.usernameLabel.Location = new System.Drawing.Point(17, 75);
             this.usernameLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.usernameLabel.Name = "usernameLabel";
             this.usernameLabel.Size = new System.Drawing.Size(58, 13);
@@ -122,14 +122,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             this.statusIcon.Location = new System.Drawing.Point(22, 183);
             this.statusIcon.Margin = new System.Windows.Forms.Padding(2);
             this.statusIcon.Name = "statusIcon";
-            this.statusIcon.Size = new System.Drawing.Size(23, 24);
+            this.statusIcon.Size = new System.Drawing.Size(16, 16);
             this.statusIcon.TabIndex = 8;
             this.statusIcon.TabStop = false;
             // 
             // savePwdNote
             // 
             this.savePwdNote.AutoSize = true;
-            this.savePwdNote.Location = new System.Drawing.Point(41, 185);
+            this.savePwdNote.Location = new System.Drawing.Point(41, 184);
             this.savePwdNote.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.savePwdNote.Name = "savePwdNote";
             this.savePwdNote.Size = new System.Drawing.Size(224, 13);
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             // ShowCredentialsView
             // 
             this.AcceptButton = this.closeButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.closeButton;
