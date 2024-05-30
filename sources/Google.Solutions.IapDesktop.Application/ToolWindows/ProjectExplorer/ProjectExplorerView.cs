@@ -35,6 +35,7 @@ using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -354,6 +355,25 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
         //---------------------------------------------------------------------
         // Other Windows event handlers.
         //---------------------------------------------------------------------
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+
+            if (this.searchTextBox != null)
+            {
+                //
+                // DPI scaling can produce a gap between controls.
+                // Rearrange controls to remove this gap.
+                //
+                this.searchTextBox.Top = this.toolStrip.Height;
+                this.progressBar.Top = this.searchTextBox.Bottom;
+
+                var gap = this.treeView.Top - this.progressBar.Bottom;
+                this.treeView.Top -= gap;
+                this.treeView.Height += gap;
+            }
+        }
 
         private async void ProjectExplorerWindow_Shown(object sender, EventArgs _)
         {
