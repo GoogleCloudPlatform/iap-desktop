@@ -26,6 +26,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Input;
+using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Platform.Interop;
 using MSTSCLib;
 using System;
@@ -37,6 +38,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
@@ -136,6 +138,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             this.clientAdvancedSettings.ContainerHandledFullScreen = 1;
 
             this.clientExtendedSettings = (IMsRdpExtendedSettings)this.client.GetOcx();
+
+            //
+            // Adjust DPI settings of remote session.
+            //
+            // NB. Values must be uint-typed.
+            // NB. The factors must be reapplied when the session
+            //     is resized.
+            //
+            {
+                if (this.DesktopScaleFactor is var desktopFactor &&
+                    desktopFactor != DefaultScaleFactor)
+                {
+                    this.clientExtendedSettings.set_Property(
+                        "DesktopScaleFactor",
+                        desktopFactor);
+                }
+
+                if (this.DeviceScaleFactor is var deviceFactor &&
+                    deviceFactor != DefaultScaleFactor)
+                {
+                    this.clientExtendedSettings.set_Property(
+                        "DeviceScaleFactor",
+                        deviceFactor);
+                }
+            }
 
             //
             // As a user control, we don't get a FormClosing event,
@@ -375,6 +402,63 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         }
 
         //---------------------------------------------------------------------
+        // Scaling.
+        //---------------------------------------------------------------------
+
+        private static uint DefaultScaleFactor = 100;
+
+        /// <summary>
+        /// Valid values according to MSDN.
+        /// </summary>
+        private static readonly uint[] ValidDesktopScaleFactors = 
+            new uint[] { 500, 400, 300, 250, 200, 175, 150, 125, DefaultScaleFactor };
+
+
+        /// <summary>
+        /// Valid values according to [MS-RDPBCGR].
+        /// </summary>
+        private static readonly uint[] ValidDeviceScaleFactors =
+            new uint[] { 180, 140, DefaultScaleFactor };
+
+        /// <summary>
+        /// The scale factor (as a percentage) applied to Windows Desktop
+        //  applications. See [MS-RDPBCGR] for details.
+        /// </summary>
+        internal uint DesktopScaleFactor
+        {
+            get
+            {
+                var factor = LogicalToDeviceUnits(100);
+
+                //
+                // Use the next lowest valid value.
+                //
+                return ValidDesktopScaleFactors
+                    .SkipWhile(f => f > factor)
+                    .First();
+            }
+        }
+
+        /// <summary>
+        /// The scale factor as a percentage is applied to Windows Store apps.
+        /// ee [MS-RDPBCGR] for details.
+        /// </summary>
+        internal uint DeviceScaleFactor
+        {
+            get
+            {
+                var factor = LogicalToDeviceUnits(100);
+
+                //
+                // Use the next lowest valid value.
+                //
+                return ValidDeviceScaleFactors
+                    .SkipWhile(f => f > factor)
+                    .First();
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Resizing.
         //---------------------------------------------------------------------
 
@@ -480,8 +564,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     (uint)newSize.Width,
                     (uint)newSize.Height,
                     0,  // Landscape
-                    1,  // No desktop scaling
-                    1); // No device scaling
+                    this.DesktopScaleFactor,
+                    this.DeviceScaleFactor);
             }
             catch (COMException e) when (e.HResult == (int)HRESULT.E_UNEXPECTED)
             {
