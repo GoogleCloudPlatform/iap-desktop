@@ -143,10 +143,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             this.treeView.HideSelection = false;
             this.treeView.ImageIndex = 0;
             this.treeView.ImageList = this.imageList;
-            this.treeView.Location = new System.Drawing.Point(0, 53);
+            this.treeView.Location = new System.Drawing.Point(0, 50);
             this.treeView.Name = "treeView";
             this.treeView.SelectedImageIndex = 0;
-            this.treeView.Size = new System.Drawing.Size(800, 398);
+            this.treeView.Size = new System.Drawing.Size(800, 400);
             this.treeView.TabIndex = 0;
             this.treeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseDoubleClick);
             // 
@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             this.searchTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.searchTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.searchTextBox.Location = new System.Drawing.Point(0, 28);
+            this.searchTextBox.Location = new System.Drawing.Point(0, 25);
             this.searchTextBox.Name = "searchTextBox";
             this.searchTextBox.Size = new System.Drawing.Size(800, 20);
             this.searchTextBox.TabIndex = 1;
@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar.Indeterminate = true;
-            this.progressBar.Location = new System.Drawing.Point(0, 48);
+            this.progressBar.Location = new System.Drawing.Point(0, 45);
             this.progressBar.Margin = new System.Windows.Forms.Padding(0);
             this.progressBar.Maximum = 100;
             this.progressBar.Name = "progressBar";
@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             // 
             // ProjectExplorerView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.searchTextBox);
