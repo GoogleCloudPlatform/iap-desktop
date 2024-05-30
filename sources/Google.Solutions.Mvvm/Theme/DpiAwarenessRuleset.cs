@@ -52,9 +52,14 @@ namespace Google.Solutions.Mvvm.Theme
                 // the conventions for ContainerControls.
                 //
 
-                Debug.Assert(form.AutoScaleMode == AutoScaleMode.Dpi);
-                Debug.Assert(form.CurrentAutoScaleDimensions.Width >= DpiAwareness.DefaultDpi.Width);
-                Debug.Assert(form.CurrentAutoScaleDimensions.Width == form.CurrentAutoScaleDimensions.Height);
+                Debug.Assert(
+                    form.AutoScaleMode == AutoScaleMode.Dpi ||
+                    form.AutoScaleMode == AutoScaleMode.Inherit);
+                if (form.AutoScaleMode == AutoScaleMode.Dpi)
+                {
+                    Debug.Assert(form.CurrentAutoScaleDimensions.Width >= DpiAwareness.DefaultDpi.Width);
+                    Debug.Assert(form.CurrentAutoScaleDimensions.Width == form.CurrentAutoScaleDimensions.Height);
+                }
 
                 if (form.FormBorderStyle == FormBorderStyle.FixedDialog)
                 {
