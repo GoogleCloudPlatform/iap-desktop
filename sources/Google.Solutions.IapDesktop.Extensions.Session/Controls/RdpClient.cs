@@ -140,31 +140,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             this.clientExtendedSettings = (IMsRdpExtendedSettings)this.client.GetOcx();
 
             //
-            // Adjust DPI settings of remote session.
-            //
-            // NB. Values must be uint-typed.
-            // NB. The factors must be reapplied when the session
-            //     is resized.
-            //
-            {
-                if (this.DesktopScaleFactor is var desktopFactor &&
-                    desktopFactor != DefaultScaleFactor)
-                {
-                    this.clientExtendedSettings.set_Property(
-                        "DesktopScaleFactor",
-                        desktopFactor);
-                }
-
-                if (this.DeviceScaleFactor is var deviceFactor &&
-                    deviceFactor != DefaultScaleFactor)
-                {
-                    this.clientExtendedSettings.set_Property(
-                        "DeviceScaleFactor",
-                        deviceFactor);
-                }
-            }
-
-            //
             // As a user control, we don't get a FormClosing event,
             // so attach to the parent form. The parent form might change
             // during a docking operation.
@@ -428,11 +403,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         {
             get
             {
-                var factor = LogicalToDeviceUnits(100);
+                if (!this.EnableDpiScaling)
+                {
+                    return DefaultScaleFactor;
+                }
 
                 //
-                // Use the next lowest valid value.
+                // Take local DPI scaling factor and round it
+                // to the next lowest valid value.
                 //
+                var factor = LogicalToDeviceUnits(100);
                 return ValidDesktopScaleFactors
                     .SkipWhile(f => f > factor)
                     .First();
@@ -447,11 +427,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         {
             get
             {
-                var factor = LogicalToDeviceUnits(100);
+                if (!this.EnableDpiScaling)
+                {
+                    return DefaultScaleFactor;
+                }
 
                 //
-                // Use the next lowest valid value.
+                // Take local DPI scaling factor and round it
+                // to the next lowest valid value.
                 //
+                var factor = LogicalToDeviceUnits(100);
                 return ValidDeviceScaleFactors
                     .SkipWhile(f => f > factor)
                     .First();
@@ -886,10 +871,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             if (this.EnableWebAuthnRedirection)
             {
                 //
-                // Load WebAuthn plugin. This requires at least 22H2, both client- and server-side.
+                // Load WebAuthn plugin. This requires at least 22H2, both
+                // client- and server-side.
                 //
-                // Once the plugin DLL is loaded, WebAuthn redirection is enabled automatically
-                // unless there's a client- or server-side policy that disabled WebAuthn redirection.
+                // Once the plugin DLL is loaded, WebAuthn redirection is
+                // enabled automatically unless there's a client- or server-
+                // side policy that disabled WebAuthn redirection.
                 //
                 // See also:
                 // https://interopevents.blob.core.windows.net/events/2023/RDP%20IO%20Lab/ \
@@ -912,6 +899,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                             e.Message);
                     }
                 }
+            }
+
+            //
+            // Adjust DPI settings of remote session.
+            //
+            // NB. Values must be uint-typed.
+            // NB. The factors must be reapplied when the session
+            //     is resized.
+            //
+            if (this.DesktopScaleFactor is var desktopFactor &&
+                desktopFactor != DefaultScaleFactor)
+            {
+                this.clientExtendedSettings.set_Property(
+                    "DesktopScaleFactor",
+                    desktopFactor);
+            }
+
+            if (this.DeviceScaleFactor is var deviceFactor &&
+                deviceFactor != DefaultScaleFactor)
+            {
+                this.clientExtendedSettings.set_Property(
+                    "DeviceScaleFactor",
+                    deviceFactor);
             }
 
             //

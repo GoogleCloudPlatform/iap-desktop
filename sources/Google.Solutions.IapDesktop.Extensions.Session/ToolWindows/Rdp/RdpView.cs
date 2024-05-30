@@ -311,6 +311,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 //
                 // Display settings.
                 //
+                this.rdpClient.EnableDpiScaling = 
+                    viewModel.Parameters.DpiScaling == RdpDpiScaling.Enabled;
+
                 switch (viewModel.Parameters.ColorDepth)
                 {
                     case RdpColorDepth.HighColor:
