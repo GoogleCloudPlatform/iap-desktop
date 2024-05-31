@@ -47,6 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         public RdpHookWindowsKeys HookWindowsKeys { get; set; } = RdpHookWindowsKeys._Default;
         public RdpRestrictedAdminMode RestrictedAdminMode { get; set; } = RdpRestrictedAdminMode._Default;
         public RdpSessionType SessionType { get; set; } = RdpSessionType._Default;
+        public RdpDpiScaling DpiScaling { get; set; } = RdpDpiScaling._Default;
 
         /// <summary>
         /// Sources where these parameters were obtained from.
@@ -255,5 +256,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
         [Browsable(false)]
         _Default = User
+    }
+
+    public enum RdpDpiScaling
+    {
+        Disabled = 0,
+        Enabled = 1,
+
+        [Browsable(false)]
+        _Default = Enabled
     }
 }

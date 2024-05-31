@@ -516,7 +516,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         }
 
         /// <summary>
-        /// Color depth, in bits
+        /// Color depth, in bits.
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -529,5 +529,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 this.client.ColorDepth = value;
             }
         }
+
+        /// <summary>
+        /// Scale DPI setting of remote session to match local DPI settings.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool EnableDpiScaling { get; set; }
     }
 }

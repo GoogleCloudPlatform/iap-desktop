@@ -206,6 +206,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                     "consuming a CAL, otherwise use a User session.",
                 Categories.RdpSecurity,
                 Protocol.Rdp.RdpSessionType._Default);
+            this.RdpDpiScaling = store.Read<RdpDpiScaling>(
+                "RdpDpiScaling",
+                "Display scaling",
+                "Scale remote display to match local scaling settings.",
+                Categories.RdpDisplay,
+                Protocol.Rdp.RdpDpiScaling._Default);
 
             //
             // SSH Settings.
@@ -300,6 +306,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         public ISetting<RdpHookWindowsKeys> RdpHookWindowsKeys { get; }
         public ISetting<RdpRestrictedAdminMode> RdpRestrictedAdminMode { get; }
         public ISetting<RdpSessionType> RdpSessionType { get; }
+        public ISetting<RdpDpiScaling> RdpDpiScaling { get; }
 
         internal IEnumerable<ISetting> RdpSettings => new ISetting[]
         {
@@ -317,6 +324,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
             this.RdpColorDepth,
             this.RdpConnectionBar,
+            this.RdpDpiScaling,
 
             this.RdpAudioMode,
             this.RdpHookWindowsKeys,
