@@ -145,19 +145,10 @@
     <None Include="Resources\Copy_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Spinner.gif" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Fullscreen_16.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Key_36.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\SshKey_16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SshKey_32.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Password_16.png" />

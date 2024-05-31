@@ -91,12 +91,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Report_32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Report_16.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Reset_16.png" />
   </ItemGroup>
   <ItemGroup>

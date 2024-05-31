@@ -121,17 +121,11 @@
   <data name="Search_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Search_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Project_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Project_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\logo.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Computer_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Computer_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ComputerTerminal_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ComputerTerminal_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Copy_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Copy_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -243,5 +237,8 @@
   </data>
   <data name="LogoWatermark_180" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\LogoWatermark_180.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Project_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Project_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
