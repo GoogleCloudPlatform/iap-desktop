@@ -202,9 +202,6 @@
     <None Include="Resources\Copy_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Password_16.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Settings_16.png" />
   </ItemGroup>
   <ItemGroup>

@@ -172,9 +172,6 @@
     <None Include="Resources\Duplicate.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Delete_16.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\DeleteKey_16.png" />
   </ItemGroup>
   <ItemGroup>
