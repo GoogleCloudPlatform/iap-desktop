@@ -70,11 +70,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             // 
             // toolStrip
             // 
-            this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.refreshButton,
-            this.addButton,
-            this.osDropDownButton,
-            this.vmToolStripSeparator});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(800, 25);
@@ -161,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             this.imageList.TransparentColor = System.Drawing.Color.Transparent;
             this.imageList.Images.SetKeyName(0, "Cloud_16.png");
             this.imageList.Images.SetKeyName(1, "Project_16.png");
-            this.imageList.Images.SetKeyName(2, "Region.ico");
+            this.imageList.Images.SetKeyName(2, "Zone_16.png");
             this.imageList.Images.SetKeyName(3, "Zone_16.png");
             this.imageList.Images.SetKeyName(4, "Computer_16.png");
             this.imageList.Images.SetKeyName(5, "ComputerBlue_16.png");
