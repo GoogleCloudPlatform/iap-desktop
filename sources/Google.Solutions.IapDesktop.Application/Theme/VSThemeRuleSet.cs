@@ -54,8 +54,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 // no science behind them.
                 //
                 InvertGray = true,
-                GrayFactor = .63f,
-                ColorFactor = .95f,
+                GrayFactor = .9f,
+                ColorFactor = 1.0f,
 #if DEBUG
                 MarkerPixel = true
 #endif
