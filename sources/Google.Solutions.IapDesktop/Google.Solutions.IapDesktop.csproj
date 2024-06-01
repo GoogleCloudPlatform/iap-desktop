@@ -93,15 +93,8 @@
     <Content Include="icon.ico" />
     <Content Include="ProductIcon.ico" />
     <None Include="Resources\ProjectExplorer_16.png" />
-    <None Include="Resources\LogoWatermark_180.png" />
-    <None Include="Resources\GoogleSignIn_24.png" />
-    <None Include="Resources\AccentGradient_450.png" />
-    <None Include="Resources\EndpointVerificationWhite_16.png" />
     <None Include="Resources\UserWhite_16.png" />
     <None Include="Resources\AddUser_16.png" />
-    <None Include="Resources\ConsentScreen.png" />
-    <None Include="Resources\Documentation_16.png" />
-    <None Include="Resources\Splash.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="obj\x86\Release\.NETFramework,Version=v4.6.2.AssemblyAttributes.cs" />
