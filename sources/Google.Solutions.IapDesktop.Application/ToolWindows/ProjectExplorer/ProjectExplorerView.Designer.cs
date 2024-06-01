@@ -65,11 +65,15 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.searchTextBox = new System.Windows.Forms.TextBox();
             this.progressBar = new Google.Solutions.Mvvm.Controls.LinearProgressBar();
-            this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip
             // 
+            this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.refreshButton,
+            this.addButton,
+            this.osDropDownButton,
+            this.vmToolStripSeparator});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(800, 25);
@@ -79,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             // refreshButton
             // 
             this.refreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.refreshButton.Image = ((System.Drawing.Image)(resources.GetObject("refreshButton.Image")));
+            this.refreshButton.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Refresh_16;
             this.refreshButton.ImageTransparentColor = System.Drawing.Color.White;
             this.refreshButton.Name = "refreshButton";
             this.refreshButton.Size = new System.Drawing.Size(23, 22);
@@ -201,8 +205,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             this.Text = "Project Explorer";
             this.Shown += new System.EventHandler(this.ProjectExplorerWindow_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ProjectExplorerWindow_KeyDown);
-            this.toolStrip.ResumeLayout(false);
-            this.toolStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
