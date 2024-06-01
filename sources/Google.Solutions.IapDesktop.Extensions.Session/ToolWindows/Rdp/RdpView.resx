@@ -117,9 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="reconnectToResizeTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="reconnectToResizeTimer.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>17, 17</value>
-  </metadata>
+  </data>
   <data name="rdpClient.OcxState" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
@@ -128,15 +129,14 @@
         AAAAAQAAAAAAAAAAAAAAABQAAAAACAAACAACAAAAAAALAAAACwAAAAs=
 </value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        AAD0hUIA5eXlAOnp6QDv7+8A8vLyAPT09AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        AAAAAAAAZmZmZmZmZmZmZmZmZmZmZmZmYAAABmZmZmZmYAZmZmZmZmZgBmZmZmAAAAAAAAAGYFVDIRER
-        EQZgVUMhERERBmBVQyEREREGYFVDIREREQZgVUMhERERBmBVQyEREREGYFVDIREREQZgAAAAAAAABmZm
-        ZmZmZmZmZmZmZmZmZmb//wAA//8AAPgfAAD+fwAA/n8AAIABAACAAQAAgAEAAIABAACAAQAAgAEAAIAB
-        AACAAQAAgAEAAP//AAD//wAA
+        AAABAAEAEBAQAAAABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAABAA
+        AAD0hUIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAEREREREREREREREREREREREREAAAAREREREREAEREREREREQARERERAAAAAAAAABEBERERER
+        EQEQERERERERARAREREREREBEBEREREREQEQERERERERARAREREREREBEBEREREREQEQAAAAAAAAARER
+        ERERERERERERERERERH//wAA//8AAPgfAAD+fwAA/n8AAIABAAC//QAAv/0AAL/9AAC//QAAv/0AAL/9
+        AAC//QAAgAEAAP//AAD//wAA
 </value>
   </data>
 </root>
