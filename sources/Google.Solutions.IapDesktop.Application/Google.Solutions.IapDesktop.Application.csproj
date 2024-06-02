@@ -202,19 +202,7 @@
     <None Include="Resources\Copy_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Settings_16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ComputerTerminal_161.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Project_16.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Computer_16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ComputerTerminal_16.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\logo.ico" />

@@ -77,7 +77,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
             // 
             // darkPanel
             // 
-            this.darkPanel.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.darkPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.darkPanel.Controls.Add(this.largeDarkIcon);
             this.darkPanel.Controls.Add(this.mediumDarkIcon);
             this.darkPanel.Controls.Add(this.smallDarkIcon);
@@ -214,7 +214,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
             // 
             // TestIconInverter
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(185, 336);
             this.Controls.Add(this.colorFactorValue);
