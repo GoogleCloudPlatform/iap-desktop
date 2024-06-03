@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.panel1 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.headlineLabel = new HeaderLabel();
+            this.headlineLabel = new Google.Solutions.Mvvm.Controls.HeaderLabel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.cancelButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
@@ -65,7 +65,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             // 
             // panel1
             // 
-            this.panel1.BackColor = System.Drawing.Color.White;
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.headlineLabel);
@@ -133,19 +132,19 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
             // 
-            // OAuthScopeNotGrantedErrorDialog
+            // OAuthScopeNotGrantedView
             // 
             this.AcceptButton = this.okButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(382, 490);
+            this.ClientSize = new System.Drawing.Size(378, 486);
             this.ControlBox = false;
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Name = "OAuthScopeNotGrantedErrorDialog";
+            this.Name = "OAuthScopeNotGrantedView";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
