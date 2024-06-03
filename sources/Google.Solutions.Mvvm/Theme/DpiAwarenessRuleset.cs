@@ -149,25 +149,41 @@ namespace Google.Solutions.Mvvm.Theme
                 return;
             }
 
-            var images = imageList
+            var originalImages = imageList
                 .Images
-                .Cast<Image>()
-                .Select(i => (Image)i.Clone())
-                .ToArray();
+                .Cast<Image>();
 
-            //
-            // Change the size. If the handle has been created already,
-            // this causes the imagelist to reset the contained images.
-            //
-            imageList.ImageSize
-                = DeviceCapabilities.Current.ScaleToDpi(imageList.ImageSize);
-
-            if (imageList.Images.Count != images.Length)
+            try
             {
+                var images = originalImages
+                    .Select(i => (Image)i.Clone())
+                    .ToArray();
+
                 //
-                // Re-add images.
+                // Change the size.
                 //
-                imageList.Images.AddRange(images);
+                // If the handle has been created already, this causes the
+                // imagelist to reset the contained images. If this happens,
+                // we need to re-add them.
+                //
+                imageList.ColorDepth = ColorDepth.Depth32Bit;
+                imageList.ImageSize
+                    = DeviceCapabilities.Current.ScaleToDpi(imageList.ImageSize);
+
+                if (imageList.Images.Count != images.Length)
+                {
+                    //
+                    // Re-add images.
+                    //
+                    imageList.Images.AddRange(images);
+                }
+            }
+            finally
+            {
+                foreach (var image in originalImages)
+                {
+                    image.Dispose();
+                }
             }
         }
 
