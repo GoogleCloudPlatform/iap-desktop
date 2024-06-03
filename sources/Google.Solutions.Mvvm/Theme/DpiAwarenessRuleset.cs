@@ -21,8 +21,9 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -33,6 +34,9 @@ namespace Google.Solutions.Mvvm.Theme
     /// </summary>
     public class DpiAwarenessRuleset : ControlTheme.IRuleSet
     {
+        private static readonly LinkedList<WeakReference> rescaledControls 
+            = new LinkedList<WeakReference>();
+
         //---------------------------------------------------------------------
         // Theming checks.
         //---------------------------------------------------------------------
@@ -138,50 +142,43 @@ namespace Google.Solutions.Mvvm.Theme
             Debug.Assert(item.ImageScaling == ToolStripItemImageScaling.SizeToFit);
         }
 #endif
-        //---------------------------------------------------------------------
-        // Helper methods.
-        //---------------------------------------------------------------------
-
-        private void ScaleImageList(ImageList imageList)
-        {
-            if (imageList == null)
-            {
-                return;
-            }
-
-            var images = imageList
-                .Images
-                .Cast<Image>()
-                .Select(i => (Image)i.Clone())
-                .ToArray();
-
-            //
-            // Change the size. If the handle has been created already,
-            // this causes the imagelist to reset the contained images.
-            //
-            imageList.ImageSize
-                = DeviceCapabilities.Current.ScaleToDpi(imageList.ImageSize);
-
-            if (imageList.Images.Count != images.Length)
-            {
-                //
-                // Re-add images.
-                //
-                imageList.Images.AddRange(images);
-            }
-        }
 
         //---------------------------------------------------------------------
         // Theming rules.
         //---------------------------------------------------------------------
 
-        private void StylePictureBox(PictureBox pictureBox)
+        private static bool NeedsScaling(Control control)
+        {
+            //
+            // NB. The number of controls for which this check applies
+            // is typically very small, so a plain list is fine performance-
+            // wise.
+            //
+
+            if (rescaledControls.Any(c => c.Target == control))
+            {
+                return false;
+            }
+            else
+            {
+                rescaledControls.AddLast(new WeakReference(control));
+                return true;
+            }
+        }
+
+
+        private void ScalePictureBox(PictureBox pictureBox)
         {
             pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
-        private void StyleListView(ListView listView)
+        private void ScaleListView(ListView listView)
         {
+            if (!NeedsScaling(listView))
+            {
+                return;
+            }
+
             //
             // ListView doesn't scale columns automatically.
             //
@@ -189,12 +186,20 @@ namespace Google.Solutions.Mvvm.Theme
             {
                 column.Width = DeviceCapabilities.Current.ScaleToDpi(column.Width);
             }
+
+            listView.SmallImageList?.ScaleToDpi();
+            listView.LargeImageList?.ScaleToDpi();
         }
 
-        private void StyleTreeView(TreeView treeView)
+        private void ScaleTreeView(TreeView treeView)
         {
-            ScaleImageList(treeView.ImageList);
-            ScaleImageList(treeView.StateImageList);
+            if (!NeedsScaling(treeView))
+            {
+                return;
+            }
+
+            treeView.ImageList?.ScaleToDpi();
+            treeView.StateImageList?.ScaleToDpi();
         }
 
         //---------------------------------------------------------------------
@@ -214,9 +219,9 @@ namespace Google.Solutions.Mvvm.Theme
                 controlTheme.AddRules(menuTheme);
 #endif
 
-                controlTheme.AddRule<PictureBox>(StylePictureBox);
-                controlTheme.AddRule<ListView>(StyleListView);
-                controlTheme.AddRule<TreeView>(StyleTreeView);
+                controlTheme.AddRule<PictureBox>(ScalePictureBox);
+                controlTheme.AddRule<ListView>(ScaleListView);
+                controlTheme.AddRule<TreeView>(ScaleTreeView);
             }
         }
     }
