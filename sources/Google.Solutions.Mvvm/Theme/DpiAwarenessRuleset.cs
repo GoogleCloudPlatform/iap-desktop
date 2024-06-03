@@ -138,54 +138,6 @@ namespace Google.Solutions.Mvvm.Theme
             Debug.Assert(item.ImageScaling == ToolStripItemImageScaling.SizeToFit);
         }
 #endif
-        //---------------------------------------------------------------------
-        // Helper methods.
-        //---------------------------------------------------------------------
-
-        private void ScaleImageList(ImageList imageList)
-        {
-            if (imageList == null)
-            {
-                return;
-            }
-
-            var originalImages = imageList
-                .Images
-                .Cast<Image>();
-
-            try
-            {
-                var images = originalImages
-                    .Select(i => (Image)i.Clone())
-                    .ToArray();
-
-                //
-                // Change the size.
-                //
-                // If the handle has been created already, this causes the
-                // imagelist to reset the contained images. If this happens,
-                // we need to re-add them.
-                //
-                imageList.ColorDepth = ColorDepth.Depth32Bit;
-                imageList.ImageSize
-                    = DeviceCapabilities.Current.ScaleToDpi(imageList.ImageSize);
-
-                if (imageList.Images.Count != images.Length)
-                {
-                    //
-                    // Re-add images.
-                    //
-                    imageList.Images.AddRange(images);
-                }
-            }
-            finally
-            {
-                foreach (var image in originalImages)
-                {
-                    image.Dispose();
-                }
-            }
-        }
 
         //---------------------------------------------------------------------
         // Theming rules.
@@ -205,12 +157,15 @@ namespace Google.Solutions.Mvvm.Theme
             {
                 column.Width = DeviceCapabilities.Current.ScaleToDpi(column.Width);
             }
+
+            listView.SmallImageList?.ScaleToDpi();
+            listView.LargeImageList?.ScaleToDpi();
         }
 
         private void StyleTreeView(TreeView treeView)
         {
-            ScaleImageList(treeView.ImageList);
-            ScaleImageList(treeView.StateImageList);
+            treeView.ImageList?.ScaleToDpi();
+            treeView.StateImageList?.ScaleToDpi();
         }
 
         //---------------------------------------------------------------------
