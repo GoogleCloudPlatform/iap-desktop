@@ -56,8 +56,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.themeLabel = new System.Windows.Forms.Label();
             this.theme = new Google.Solutions.Mvvm.Controls.BindableComboBox();
             this.scalingBox = new System.Windows.Forms.GroupBox();
-            this.scalingMode = new Google.Solutions.Mvvm.Controls.BindableComboBox();
             this.scalingModeLabel = new System.Windows.Forms.Label();
+            this.scalingMode = new Google.Solutions.Mvvm.Controls.BindableComboBox();
             this.themeBox.SuspendLayout();
             this.scalingBox.SuspendLayout();
             this.SuspendLayout();
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // themeLabel
             // 
             this.themeLabel.AutoSize = true;
-            this.themeLabel.Location = new System.Drawing.Point(18, 24);
+            this.themeLabel.Location = new System.Drawing.Point(18, 22);
             this.themeLabel.Name = "themeLabel";
             this.themeLabel.Size = new System.Drawing.Size(43, 13);
             this.themeLabel.TabIndex = 2;
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // 
             this.theme.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.theme.FormattingEnabled = true;
-            this.theme.Location = new System.Drawing.Point(84, 20);
+            this.theme.Location = new System.Drawing.Point(84, 19);
             this.theme.Name = "theme";
             this.theme.Size = new System.Drawing.Size(154, 21);
             this.theme.TabIndex = 3;
@@ -112,15 +112,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.scalingBox.TabStop = false;
             this.scalingBox.Text = "High DPI scaling:";
             // 
-            // scalingMode
-            // 
-            this.scalingMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.scalingMode.FormattingEnabled = true;
-            this.scalingMode.Location = new System.Drawing.Point(84, 20);
-            this.scalingMode.Name = "scalingMode";
-            this.scalingMode.Size = new System.Drawing.Size(154, 21);
-            this.scalingMode.TabIndex = 4;
-            // 
             // scalingModeLabel
             // 
             this.scalingModeLabel.AutoSize = true;
@@ -130,9 +121,18 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.scalingModeLabel.TabIndex = 5;
             this.scalingModeLabel.Text = "Scaling:";
             // 
+            // scalingMode
+            // 
+            this.scalingMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.scalingMode.FormattingEnabled = true;
+            this.scalingMode.Location = new System.Drawing.Point(84, 21);
+            this.scalingMode.Name = "scalingMode";
+            this.scalingMode.Size = new System.Drawing.Size(154, 21);
+            this.scalingMode.TabIndex = 4;
+            // 
             // AppearanceOptionsSheet
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.scalingBox);
             this.Controls.Add(this.themeBox);
