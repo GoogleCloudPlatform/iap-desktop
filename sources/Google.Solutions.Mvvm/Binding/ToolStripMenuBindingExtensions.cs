@@ -35,7 +35,7 @@ namespace Google.Solutions.Mvvm.Binding
     public static class ToolStripMenuBindingExtensions
     {
         public static void BindItem<TModel>(
-            this ToolStripMenuItem item,
+            this ToolStripItem item,
             TModel model,
             Func<TModel, bool> isSeparator,
             Expression<Func<TModel, string?>> getText,
@@ -66,11 +66,6 @@ namespace Google.Solutions.Mvvm.Binding
                 getImage,
                 bindingContext);
             item.BindReadonlyProperty(
-                c => c.ShortcutKeys,
-                model,
-                getShortcuts,
-                bindingContext);
-            item.BindReadonlyProperty(
                 c => c.Visible,
                 model,
                 isVisible,
@@ -86,7 +81,6 @@ namespace Google.Solutions.Mvvm.Binding
                 getStyle,
                 bindingContext);
 
-
             void OnClick(object sender, EventArgs args)
                 => click(model);
 
@@ -95,22 +89,31 @@ namespace Google.Solutions.Mvvm.Binding
                 item,
                 Disposable.For(() => item.Click -= OnClick));
 
-            var subCommands = getChildren(model);
-            if (subCommands != null)
+            if (item is ToolStripMenuItem toolStripMenuItem)
             {
-                item.DropDownItems.BindCollection(
-                    subCommands,
-                    isSeparator,
-                    getText,
-                    getToolTip,
-                    getImage,
+                toolStripMenuItem.BindReadonlyProperty(
+                    c => c.ShortcutKeys,
+                    model,
                     getShortcuts,
-                    isVisible,
-                    isEnabled,
-                    getStyle,
-                    getChildren,
-                    click,
                     bindingContext);
+
+                var subCommands = getChildren(model);
+                if (subCommands != null)
+                {
+                    toolStripMenuItem.DropDownItems.BindCollection(
+                        subCommands,
+                        isSeparator,
+                        getText,
+                        getToolTip,
+                        getImage,
+                        getShortcuts,
+                        isVisible,
+                        isEnabled,
+                        getStyle,
+                        getChildren,
+                        click,
+                        bindingContext);
+                }
             }
         }
 
@@ -141,10 +144,18 @@ namespace Google.Solutions.Mvvm.Binding
                 }
                 else
                 {
-                    var item = new ToolStripMenuItem()
-                    {
-                        Tag = model
-                    };
+                    //
+                    // NB. If the display style is Image, then this must be 
+                    // a toolbar. For toolbars, using ToolStripButton ensures
+                    // that the button and its hottracking rectangle is sized
+                    // correctly.
+                    //
+                    var item = 
+                        getStyle.Compile()(model) == ToolStripItemDisplayStyle.Image
+                            ? (ToolStripItem)new ToolStripButton()
+                            : (ToolStripItem)new ToolStripMenuItem();
+
+                    item.Tag = model;   
 
                     item.BindItem(
                         model,
