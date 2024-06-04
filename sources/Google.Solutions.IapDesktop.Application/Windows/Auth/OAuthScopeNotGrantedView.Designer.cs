@@ -54,10 +54,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OAuthScopeNotGrantedView));
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.headlineLabel = new Google.Solutions.Mvvm.Controls.HeaderLabel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.cancelButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
+            this.headlineLabel = new Google.Solutions.Mvvm.Controls.HeaderLabel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -80,19 +80,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.label1.TabIndex = 18;
             this.label1.Text = resources.GetString("label1.Text");
             // 
-            // headlineLabel
-            // 
-            this.headlineLabel.AutoSize = true;
-            this.headlineLabel.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.headlineLabel.Location = new System.Drawing.Point(19, 15);
-            this.headlineLabel.Name = "headlineLabel";
-            this.headlineLabel.Size = new System.Drawing.Size(201, 30);
-            this.headlineLabel.TabIndex = 17;
-            this.headlineLabel.Text = "Authorization failed";
-            // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.OAuthScopeNotGranted;
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(20, 132);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(360, 279);
@@ -119,13 +109,23 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
             // 
+            // headlineLabel
+            // 
+            this.headlineLabel.AutoSize = true;
+            this.headlineLabel.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.headlineLabel.Location = new System.Drawing.Point(19, 15);
+            this.headlineLabel.Name = "headlineLabel";
+            this.headlineLabel.Size = new System.Drawing.Size(201, 30);
+            this.headlineLabel.TabIndex = 17;
+            this.headlineLabel.Text = "Authorization failed";
+            // 
             // OAuthScopeNotGrantedView
             // 
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(400, 497);
+            this.ClientSize = new System.Drawing.Size(400, 501);
             this.ControlBox = false;
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.cancelButton);
