@@ -33,7 +33,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Controls
 {
-    public partial class FileBrowser : UserControl
+    public partial class FileBrowser : DpiAwareUserControl
     {
         private readonly FileTypeCache fileTypeCache = new FileTypeCache();
 

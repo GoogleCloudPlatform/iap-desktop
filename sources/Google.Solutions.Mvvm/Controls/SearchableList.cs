@@ -78,7 +78,7 @@ namespace Google.Solutions.Mvvm.Controls
 
         public void AddColumn(string text, int width)
         {
-            this.list.Columns.Add(text, width);
+            this.list.Columns.Add(text, LogicalToDeviceUnits(width));
         }
 
         public void SetFocusOnSearchBox()
