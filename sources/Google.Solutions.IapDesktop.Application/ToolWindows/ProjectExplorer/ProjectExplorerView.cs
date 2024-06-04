@@ -295,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
                 if (this.projectPickerDialog
                     .SelectCloudProjects(
                         this,
-                        "Add projects",
+                        "Add",
                         this.resourceManagerAdapter.Activate(),
                         out var projects) == DialogResult.OK)
                 {
@@ -329,7 +329,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
         {
             if (this.projectPickerDialog.SelectLocalProjects(
                 this,
-                "Unload projects",
+                "Unload",
                 this.viewModel.Value.Projects,
                 out var projects) == DialogResult.OK)
             {
