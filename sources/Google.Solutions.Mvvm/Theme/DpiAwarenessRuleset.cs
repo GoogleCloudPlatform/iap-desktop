@@ -52,9 +52,6 @@ namespace Google.Solutions.Mvvm.Theme
                 //   AutoScaleMode = DPI
                 //   CurrentAutoScaleDimensions = 96x96
                 //
-                // INestedForm (ToolWindows) are special and must follow
-                // the conventions for ContainerControls.
-                //
 
                 Debug.Assert(
                     form.AutoScaleMode == AutoScaleMode.Dpi ||
@@ -65,7 +62,8 @@ namespace Google.Solutions.Mvvm.Theme
                     Debug.Assert(form.CurrentAutoScaleDimensions.Width == form.CurrentAutoScaleDimensions.Height);
                 }
 
-                if (form.FormBorderStyle == FormBorderStyle.FixedDialog)
+                if (form.FormBorderStyle == FormBorderStyle.FixedDialog ||
+                    form.FormBorderStyle == FormBorderStyle.FixedToolWindow)
                 {
                     //
                     // If the Control box is hidden, the size of the form isn't
@@ -81,9 +79,6 @@ namespace Google.Solutions.Mvvm.Theme
                 //
                 //   AutoScaleMode = DPI
                 //   CurrentAutoScaleDimensions = 96x96
-                //
-                // INestedForm (ToolWindows) are special and must follow
-                // the conventions for ContainerControls.
                 //
 
                 Debug.Assert(userControl.AutoScaleMode == AutoScaleMode.Dpi ||
