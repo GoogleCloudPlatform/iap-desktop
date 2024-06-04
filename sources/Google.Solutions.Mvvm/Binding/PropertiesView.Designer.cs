@@ -126,6 +126,7 @@ namespace Google.Solutions.Mvvm.Binding
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "PropertiesDialog";
+            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "PropertiesDialog";

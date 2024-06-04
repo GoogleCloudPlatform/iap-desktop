@@ -63,13 +63,16 @@ namespace Google.Solutions.Mvvm.Theme
                 }
 
                 if (form.FormBorderStyle == FormBorderStyle.FixedDialog ||
-                    form.FormBorderStyle == FormBorderStyle.FixedToolWindow)
+                    form.FormBorderStyle == FormBorderStyle.FixedToolWindow ||
+                    form.FormBorderStyle == FormBorderStyle.FixedSingle)
                 {
                     //
                     // If the Control box is hidden, the size of the form isn't
                     // adjusted correctly.
                     //
                     Debug.Assert(form.ControlBox);
+                    Debug.Assert(!form.ShowIcon);
+                    Debug.Assert(!form.ShowInTaskbar);
                 }
             }
             else if (c is UserControl userControl)
