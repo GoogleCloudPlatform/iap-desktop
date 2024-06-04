@@ -150,6 +150,16 @@ namespace Google.Solutions.IapDesktop.Application.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap OAuthScopeNotGranted {
+            get {
+                object obj = ResourceManager.GetObject("OAuthScopeNotGranted", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Project_16 {
             get {
                 object obj = ResourceManager.GetObject("Project_16", resourceCulture);
