@@ -142,9 +142,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             // 
             this.introLabel.BackColor = System.Drawing.Color.Transparent;
             this.introLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.introLabel.Location = new System.Drawing.Point(92, 116);
+            this.introLabel.Location = new System.Drawing.Point(92, 112);
             this.introLabel.Name = "introLabel";
-            this.introLabel.Size = new System.Drawing.Size(151, 34);
+            this.introLabel.Size = new System.Drawing.Size(151, 52);
             this.introLabel.TabIndex = 5;
             this.introLabel.Text = "Sign in...";
             this.introLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             // 
             // AuthorizeView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(334, 451);
             this.Controls.Add(this.helpLink);
