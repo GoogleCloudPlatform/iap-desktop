@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
                 settingsService,
                 rdpCredentialEditor)
             {
-                CommandType = MenuCommandType.MenuCommand
+                CommandType = MenuCommandType.ToolbarCommand
             };
         }
 
