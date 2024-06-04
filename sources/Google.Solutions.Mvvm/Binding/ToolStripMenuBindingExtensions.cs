@@ -71,14 +71,14 @@ namespace Google.Solutions.Mvvm.Binding
                 isVisible,
                 bindingContext);
             item.BindReadonlyProperty(
-                c => c.DisplayStyle,
-                model,
-                getStyle,
-                bindingContext);
-            item.BindReadonlyProperty(
                 c => c.Enabled,
                 model,
                 isEnabled,
+                bindingContext);
+            item.BindReadonlyProperty(
+                c => c.DisplayStyle,
+                model,
+                getStyle,
                 bindingContext);
 
             void OnClick(object sender, EventArgs args)
