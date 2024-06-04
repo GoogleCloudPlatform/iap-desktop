@@ -56,11 +56,6 @@ namespace Google.Solutions.Mvvm.Binding
                 getText,
                 bindingContext);
             item.BindReadonlyProperty(
-                c => c.DisplayStyle,
-                model,
-                getStyle,
-                bindingContext);
-            item.BindReadonlyProperty(
                 c => c.ToolTipText,
                 model,
                 getToolTip,
@@ -74,6 +69,11 @@ namespace Google.Solutions.Mvvm.Binding
                 c => c.Visible,
                 model,
                 isVisible,
+                bindingContext);
+            item.BindReadonlyProperty(
+                c => c.DisplayStyle,
+                model,
+                getStyle,
                 bindingContext);
             item.BindReadonlyProperty(
                 c => c.Enabled,
@@ -144,6 +144,12 @@ namespace Google.Solutions.Mvvm.Binding
                 }
                 else
                 {
+                    //
+                    // NB. If the display style is Image, then this must be 
+                    // a toolbar. For toolbars, using ToolStripButton ensures
+                    // that the button and its hottracking rectangle is sized
+                    // correctly.
+                    //
                     var item = 
                         getStyle.Compile()(model) == ToolStripItemDisplayStyle.Image
                             ? (ToolStripItem)new ToolStripButton()
