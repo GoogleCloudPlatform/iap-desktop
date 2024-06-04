@@ -44,7 +44,7 @@ namespace Google.Solutions.Mvvm.Controls
                 //
                 var cp = base.CreateParams;
 
-                if (!DeviceCapabilities.Current.IsGdiScalingActive)
+                if (!DeviceCapabilities.Current.IsGdiScalingActive && !this.DesignMode)
                 {
                     //
                     // WS_EX_COMPOSITED can break scrolling if

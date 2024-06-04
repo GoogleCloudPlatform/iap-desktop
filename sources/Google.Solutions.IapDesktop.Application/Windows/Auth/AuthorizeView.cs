@@ -48,8 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             //
             this.Icon = Resources.logo;
 
-            this.introLabel.Location = new System.Drawing.Point(0, 116);
-            this.introLabel.Size = new System.Drawing.Size(this.Width, 48);
+            this.introLabel.CenterHorizontally(this);
             this.signInButton.CenterHorizontally(this);
         }
 
