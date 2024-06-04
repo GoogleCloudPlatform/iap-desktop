@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             var settings = repository.GetSettings();
 
             Assert.AreEqual(ApplicationTheme._Default, settings.Theme.Value);
-            Assert.AreEqual(ScalingMode.Gdi, settings.ScalingMode.Value);
+            Assert.AreEqual(ScalingMode.SystemDpiAware, settings.ScalingMode.Value);
         }
     }
 }
