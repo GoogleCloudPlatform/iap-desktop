@@ -31,10 +31,20 @@ namespace Google.Solutions.Mvvm.Controls
         /// <summary>
         /// Scale images in an ImageList.
         /// </summary>
-        public static void ScaleToDpi(this ImageList imageList)
+        public static void ScaleToDpi(this ImageList imageList, int logicalSize)
         {
             if (imageList == null)
             {
+                return;
+            }
+
+            var scaledSize = DeviceCapabilities.Current.ScaleToDpi(logicalSize);
+            if (imageList.ImageSize.Height == scaledSize)
+            {
+                //
+                // Image list has the right size, probably because it
+                // has been scaled already.
+                //
                 return;
             }
 

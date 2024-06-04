@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -102,6 +103,7 @@ namespace Google.Solutions.Mvvm.Controls
             //
             this.DoubleBuffered = true;
         }
+
 
         //---------------------------------------------------------------------
         // Selection properties.
