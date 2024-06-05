@@ -104,6 +104,23 @@ namespace Google.Solutions.Mvvm.Controls
             this.DoubleBuffered = true;
         }
 
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
+
+        protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
+        {
+            base.ScaleControl(factor, specified);
+
+            //
+            // Rescale existing columns. Columns that are added 
+            // later need to be rescaled explicitly.
+            //
+            foreach (ColumnHeader column in this.Columns)
+            {
+                column.Width = LogicalToDeviceUnits(column.Width);
+            }
+        }
 
         //---------------------------------------------------------------------
         // Selection properties.
