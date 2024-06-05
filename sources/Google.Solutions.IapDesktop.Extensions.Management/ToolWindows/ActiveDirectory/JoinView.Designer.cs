@@ -164,7 +164,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.ActiveDi
             this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(270, 257);
-            this.ControlBox = false;
             this.Controls.Add(this.domainWarning);
             this.Controls.Add(this.computerNameWarning);
             this.Controls.Add(this.computerNameLabel);
@@ -178,6 +177,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.ActiveDi
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "JoinView";
+            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
