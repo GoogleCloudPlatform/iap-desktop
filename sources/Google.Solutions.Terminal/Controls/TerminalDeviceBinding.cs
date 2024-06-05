@@ -46,6 +46,7 @@ namespace Google.Solutions.Terminal.Controls
             this.terminal.Disposed += OnTerminalDisposed;
             this.Device.OutputAvailable += OnDeviceOutput;
             this.Device.FatalError += OnDeviceError;
+            this.Device.Disconnected += OnDeviceDisconnected;
         }
 
         //---------------------------------------------------------------------
@@ -131,6 +132,19 @@ namespace Google.Solutions.Terminal.Controls
                 {
                     this.terminal.ReceiveOutput(args.Data);
                 }
+            }
+            catch (Exception e)
+            {
+                this.terminal.ReceiveError(e);
+            }
+        }
+
+
+        private void OnDeviceDisconnected(object sender, EventArgs args)
+        {
+            try
+            {
+                this.terminal.ReceiveClose();
             }
             catch (Exception e)
             {
