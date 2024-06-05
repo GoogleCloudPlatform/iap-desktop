@@ -94,10 +94,6 @@ namespace Google.Solutions.Mvvm.Interop
             {
                 throw new ArgumentException("Control has no handle");
             }
-            else if (wndProc == null)
-            {
-                throw new ArgumentException("Wndproc is null", nameof(wndProc));
-            }
 
             this.WindowHandle = windowHandle;
             this.wndProc = wndProc.ExpectNotNull(nameof(wndProc));

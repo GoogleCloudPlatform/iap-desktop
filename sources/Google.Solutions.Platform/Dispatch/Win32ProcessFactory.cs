@@ -224,7 +224,7 @@ namespace Google.Solutions.Platform.Dispatch
 
                         if (!NativeMethods.CreateProcess(
                             null,
-                            executable, // TODO: $"{Quote(executable)} {arguments}",
+                            $"{Quote(executable)} {arguments}",
                             ref processSecurityAttributes,
                             ref threadSecurityAttributes,
                             false,
