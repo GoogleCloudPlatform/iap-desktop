@@ -1,5 +1,5 @@
 ﻿using Google.Solutions.Common.Runtime;
-using Google.Solutions.Common.Threading;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Interop;
 using Google.Solutions.Platform.IO;
 using System;
@@ -9,7 +9,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace Google.Solutions.Terminal.Controls // TODO: rename to Google.Solutions.IapDesktop.Terminal?
+namespace Google.Solutions.Terminal.Controls
 {
     /// <summary>
     /// Windows Terminal.
@@ -369,7 +369,9 @@ namespace Google.Solutions.Terminal.Controls // TODO: rename to Google.Solutions
                 return;
             }
 
-            NativeMethods.TerminalUserScroll(this.terminal, e.NewValue);
+            var terminalHandle = Invariant.ExpectNotNull(this.terminal, "Terminal");
+
+            NativeMethods.TerminalUserScroll(terminalHandle, e.NewValue);
         }
 
         protected override bool ProcessDialogKey(Keys keyData)
@@ -510,7 +512,7 @@ namespace Google.Solutions.Terminal.Controls // TODO: rename to Google.Solutions
 
         protected override void DestroyHandle()
         {
-            //TODO: not necessary? this.terminalSubclass?.Dispose();
+            this.terminalSubclass?.Dispose();
             this.terminal?.Dispose();
             base.DestroyHandle();
         }
@@ -526,7 +528,7 @@ namespace Google.Solutions.Terminal.Controls // TODO: rename to Google.Solutions
             Debug.Assert(this.terminal != null);
 
             Debug.Assert(this.terminalSubclass != null);
-            NativeMethods.SetFocus(this.terminalSubclass.WindowHandle);
+            NativeMethods.SetFocus(this.terminalSubclass!.WindowHandle);
 
             base.OnGotFocus(e);
         }
@@ -549,33 +551,36 @@ namespace Google.Solutions.Terminal.Controls // TODO: rename to Google.Solutions
 
         private ushort lastKeyUpVirtualKey = 0;
         private string? selectionToClearOnEnter = null;
+
         private void TerminalSubclassWndProc(ref Message m)
         {
             Debug.Assert(!this.DesignMode);
+
+            var terminalHandle = Invariant.ExpectNotNull(this.terminal, "Terminal");
 
             var msgId = (WindowMessage)m.Msg;
             switch (msgId)
             {
                 case WindowMessage.WM_SETFOCUS:
                     {
-                        NativeMethods.TerminalSetFocus(this.terminal);
+                        NativeMethods.TerminalSetFocus(terminalHandle);
                         this.caretBlinkTimer.Start();
                         break;
                     }
 
                 case WindowMessage.WM_KILLFOCUS:
                     {
-                        NativeMethods.TerminalKillFocus(this.terminal);
+                        NativeMethods.TerminalKillFocus(terminalHandle);
 
                         this.caretBlinkTimer.Stop();
-                        NativeMethods.TerminalSetCursorVisible(this.terminal, false);
+                        NativeMethods.TerminalSetCursorVisible(terminalHandle, false);
                         break;
                     }
 
                 case WindowMessage.WM_MOUSEACTIVATE:
                     {
                         Focus();
-                        NativeMethods.TerminalSetFocus(this.terminal);
+                        NativeMethods.TerminalSetFocus(terminalHandle);
 
                         break;
                     }
@@ -585,10 +590,10 @@ namespace Google.Solutions.Terminal.Controls // TODO: rename to Google.Solutions
                     {
                         var keyParams = new WmKeyUpDownParams(m);
 
-                        NativeMethods.TerminalSetCursorVisible(this.terminal, true);
+                        NativeMethods.TerminalSetCursorVisible(terminalHandle, true);
                         this.caretBlinkTimer.Start();
 
-                        if (keyParams.VirtualKey == (ushort)Keys.Enter && NativeMethods.TerminalIsSelectionActive(this.terminal))
+                        if (keyParams.VirtualKey == (ushort)Keys.Enter && NativeMethods.TerminalIsSelectionActive(terminalHandle))
                         {
                             //
                             // User pressed enter while a selection was active. Consistent with the classic
@@ -598,12 +603,12 @@ namespace Google.Solutions.Terminal.Controls // TODO: rename to Google.Solutions
                             //
                             // NB. We must not pass this key event to the terminal.
                             //
-                            this.selectionToClearOnEnter = NativeMethods.TerminalGetSelection(this.terminal);
+                            this.selectionToClearOnEnter = NativeMethods.TerminalGetSelection(terminalHandle);
                         }
                         else
                         {
                             NativeMethods.TerminalSendKeyEvent(
-                                this.terminal,
+                                terminalHandle,
                                 keyParams.VirtualKey,
                                 keyParams.ScanCode,
                                 keyParams.Flags,
@@ -645,7 +650,7 @@ namespace Google.Solutions.Terminal.Controls // TODO: rename to Google.Solutions
                                 //
                             }
 
-                            NativeMethods.TerminalClearSelection(this.terminal);
+                            NativeMethods.TerminalClearSelection(terminalHandle);
                             this.selectionToClearOnEnter = null;
                         }
                         else
@@ -662,9 +667,9 @@ namespace Google.Solutions.Terminal.Controls // TODO: rename to Google.Solutions
                                 //
                                 // NB. We don't know how many WM_KEYDOWNs we actually missed.
                                 //
-                                NativeMethods.TerminalSetCursorVisible(this.terminal, true);
+                                NativeMethods.TerminalSetCursorVisible(terminalHandle, true);
                                 NativeMethods.TerminalSendKeyEvent(
-                                    this.terminal,
+                                    terminalHandle,
                                     keyParams.VirtualKey,
                                     keyParams.ScanCode,
                                     keyParams.Flags,
@@ -673,7 +678,7 @@ namespace Google.Solutions.Terminal.Controls // TODO: rename to Google.Solutions
                             }
 
                             NativeMethods.TerminalSendKeyEvent(
-                                this.terminal,
+                                terminalHandle,
                                 keyParams.VirtualKey,
                                 keyParams.ScanCode,
                                 keyParams.Flags,
@@ -695,7 +700,7 @@ namespace Google.Solutions.Terminal.Controls // TODO: rename to Google.Solutions
                         { 
                             var charParams = new WmCharParams(m);
                             NativeMethods.TerminalSendCharEvent(
-                                this.terminal,
+                                terminalHandle,
                                 charParams.Character,
                                 charParams.ScanCode,
                                 charParams.Flags);
@@ -757,7 +762,7 @@ namespace Google.Solutions.Terminal.Controls // TODO: rename to Google.Solutions
                                 this.scrollBar.Value = Math.Min(this.scrollBar.Maximum, currentValue - linesDelta);
                             }
 
-                            NativeMethods.TerminalUserScroll(this.terminal, this.scrollBar.Value);
+                            NativeMethods.TerminalUserScroll(terminalHandle, this.scrollBar.Value);
                         }
                             
                         break;
@@ -777,7 +782,9 @@ namespace Google.Solutions.Terminal.Controls // TODO: rename to Google.Solutions
         {
             Debug.Assert(!this.InvokeRequired, "Must be called on GUI thread");
 
-            foreach (var message in KeyboardUtil.ToMessageSequence(this.terminalSubclass.WindowHandle, keyCode))
+            var subclass = Invariant.ExpectNotNull(this.terminalSubclass, "Subclass");
+
+            foreach (var message in KeyboardUtil.ToMessageSequence(subclass.WindowHandle, keyCode))
             {
                 var m = message;
                 TerminalSubclassWndProc(ref m);
