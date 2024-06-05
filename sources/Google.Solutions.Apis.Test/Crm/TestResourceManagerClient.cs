@@ -261,7 +261,7 @@ namespace Google.Solutions.Apis.Test.Crm
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => client.GetOrganizationAsync(
-                    new OrganizationLocator(0),    
+                    new OrganizationLocator(0),
                     CancellationToken.None).Wait());
         }
 

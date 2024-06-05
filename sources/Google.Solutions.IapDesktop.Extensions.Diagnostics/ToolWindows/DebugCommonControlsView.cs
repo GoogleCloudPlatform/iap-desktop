@@ -23,7 +23,6 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
-using System;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
@@ -35,8 +34,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
             IMainWindow mainWindow,
             ToolWindowStateRepository stateRepository)
             : base(
-                  mainWindow, 
-                  stateRepository, 
+                  mainWindow,
+                  stateRepository,
                   WeifenLuo.WinFormsUI.Docking.DockState.DockLeft)
         {
             InitializeComponent();

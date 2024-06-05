@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Util;
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
 
 namespace Google.Solutions.Settings.ComponentModel
 {

@@ -22,14 +22,11 @@
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
-using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Testing.Apis.Integration;
-using Google.Solutions.Testing.Application.ObjectModel;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -37,7 +34,6 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Threading;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 {

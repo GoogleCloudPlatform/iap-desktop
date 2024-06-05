@@ -23,7 +23,6 @@ using Google.Solutions.Common.Runtime;
 using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Google.Solutions.Mvvm.Binding
 {
@@ -130,7 +129,7 @@ namespace Google.Solutions.Mvvm.Binding
         private readonly IBindingContext bindingContext;
 
         private bool shown;
-         
+
         public TViewModel ViewModel { get; }
 
         internal DialogWindow(

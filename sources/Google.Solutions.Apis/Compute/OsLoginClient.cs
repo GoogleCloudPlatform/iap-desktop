@@ -342,7 +342,7 @@ namespace Google.Solutions.Apis.Compute
                         .ConfigureAwait(false);
 
                     Invariant.ExpectNotNull(
-                        response.SignedSshPublicKey, 
+                        response.SignedSshPublicKey,
                         "SignedSshPublicKey");
 
                     return response.SignedSshPublicKey!;

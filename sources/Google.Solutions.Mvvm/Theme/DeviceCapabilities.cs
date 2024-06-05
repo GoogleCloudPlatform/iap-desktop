@@ -20,8 +20,8 @@
 //
 
 using System;
-using System.Runtime.InteropServices;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Theme
@@ -42,7 +42,7 @@ namespace Google.Solutions.Mvvm.Theme
                 // process is in "unaware" mode, we'll always
                 // get 96x96 as LOGPIXELSX/Y.
                 //
-                this.Dpi = 
+                this.Dpi =
                     (ushort)NativeMethods.GetDeviceCaps(
                         hdc,
                         NativeMethods.DeviceCap.LOGPIXELSX);
@@ -169,7 +169,7 @@ namespace Google.Solutions.Mvvm.Theme
                 // Ignore the current DPI awareness mode unless the current
                 // DPI is virtualized.
                 //
-                return 
+                return
                     DpiAwareness.ProcessMode == DpiAwarenessMode.DpiUnawareGdiScaled &&
                     this.Dpi != System.Dpi;
             }

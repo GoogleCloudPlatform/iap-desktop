@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Runtime;
-using Microsoft.Win32;
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -149,8 +148,8 @@ namespace Google.Solutions.Mvvm.Theme
             var original = NativeMethods.SetThreadDpiAwarenessContext(
                 ToDpiAwarenessContext(mode));
             if (original == IntPtr.Zero)
-            { 
-                throw new Win32Exception(); 
+            {
+                throw new Win32Exception();
             }
 
             return Disposable.For(() =>

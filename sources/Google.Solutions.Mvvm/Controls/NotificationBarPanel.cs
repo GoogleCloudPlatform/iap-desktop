@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Mvvm.Shell;
-using Google.Solutions.Mvvm.Controls;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -81,12 +80,12 @@ namespace Google.Solutions.Mvvm.Controls
                 // InvalidOperationException. Therefore, we set the Orientation here.
                 //
                 base.SplitterWidth = 1;
-                base.SplitterDistance = this.LogicalToDeviceUnits(InfoNotificationBarHeight);
+                base.SplitterDistance = LogicalToDeviceUnits(InfoNotificationBarHeight);
                 base.Orientation = Orientation.Horizontal;
 
                 this.infoLabel.Size = new Size(
-                    this.Width - this.LogicalToDeviceUnits(40), 
-                    this.LogicalToDeviceUnits(InfoNotificationBarHeight - 10));
+                    this.Width - LogicalToDeviceUnits(40),
+                    LogicalToDeviceUnits(InfoNotificationBarHeight - 10));
                 this.infoLabel.Location = this.LogicalToDeviceUnits(new Point(30, 5));
             }
         }

@@ -19,25 +19,25 @@
 // under the License.
 //
 
+using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
+using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
-using Google.Solutions.Settings;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Apis;
+using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Settings;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.Mvvm.Controls;
-using System.Linq;
-using Google.Solutions.IapDesktop.Application.Windows.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Session.Settings;
-using Google.Solutions.IapDesktop.Application.Theme;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         private readonly IWindowsCredentialGenerator credentialGenerator;
         private readonly ITaskDialog taskDialog;
         private readonly ICredentialDialog credentialDialog;
-        private readonly WindowActivator<NewCredentialsView, NewCredentialsViewModel, IDialogTheme > newCredentialFactory;
+        private readonly WindowActivator<NewCredentialsView, NewCredentialsViewModel, IDialogTheme> newCredentialFactory;
         private readonly WindowActivator<ShowCredentialsView, ShowCredentialsViewModel, IDialogTheme> showCredentialFactory;
 
         internal RdpCredentialEditor(
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         internal bool AreCredentialsComplete
         {
-            get => 
+            get =>
                 !string.IsNullOrEmpty(this.Settings.RdpUsername.Value) &&
                 !string.IsNullOrEmpty(this.Settings.RdpPassword.GetClearTextValue());
         }
@@ -263,8 +263,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         public async Task AmendCredentialsAsync(
             RdpCredentialGenerationBehavior allowedBehavior)
-        { 
-            if (this.Settings.RdpNetworkLevelAuthentication.Value 
+        {
+            if (this.Settings.RdpNetworkLevelAuthentication.Value
                 == RdpNetworkLevelAuthentication.Disabled)
             {
                 //
@@ -272,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 //
                 return;
             }
-            else if (allowedBehavior == RdpCredentialGenerationBehavior.Force && 
+            else if (allowedBehavior == RdpCredentialGenerationBehavior.Force &&
                 await IsGrantedPermissionToCreateWindowsCredentialsAsync()
                     .ConfigureAwait(true))
             {
@@ -299,7 +299,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             dialogParameters.Buttons.Add(TaskDialogStandardButton.Cancel);
 
             if ((allowedBehavior == RdpCredentialGenerationBehavior.Allow ||
-                (allowedBehavior == RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound 
+                (allowedBehavior == RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound
                     && !this.AreCredentialsComplete)) &&
                await IsGrantedPermissionToCreateWindowsCredentialsAsync().ConfigureAwait(true))
             {

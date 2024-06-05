@@ -133,7 +133,7 @@ namespace Google.Solutions.Apis.Test.Client
                 SampleEndpoint);
 
             var authorization = CreateAuthorization(
-                DeviceEnrollmentState.Enrolled, 
+                DeviceEnrollmentState.Enrolled,
                 new X509Certificate2());
 
             var client = new SampleClient(

@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Interop;
 using Google.Solutions.Platform.Interop;
 using System;
 using System.ComponentModel;

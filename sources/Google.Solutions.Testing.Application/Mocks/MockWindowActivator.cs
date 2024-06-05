@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using Moq;

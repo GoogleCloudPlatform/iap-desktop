@@ -46,7 +46,7 @@ namespace Google.Solutions.Apis.Locator
         public static OrganizationLocator Parse(string s)
         {
             var match = new Regex("^organizations/(\\d*)$").Match(s);
-            if (match.Success && 
+            if (match.Success &&
                 long.TryParse(match.Groups[1].Value, out var organizationId))
             {
                 return new OrganizationLocator(organizationId);

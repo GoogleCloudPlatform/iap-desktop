@@ -29,7 +29,6 @@ using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
 {

@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
@@ -35,7 +34,7 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             return new AccessLevelLocator("policy-1", "level-1");
         }
-    
+
         //---------------------------------------------------------------------
         // Parse.
         //---------------------------------------------------------------------

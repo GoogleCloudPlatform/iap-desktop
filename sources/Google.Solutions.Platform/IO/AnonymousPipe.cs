@@ -55,7 +55,7 @@ namespace Google.Solutions.Platform.IO
                 out var writeSideHandle,
                 ref securityAttributes,
                 0) ||
-                readSideHandle == null || 
+                readSideHandle == null ||
                 writeSideHandle == null)
             {
                 throw new Win32Exception(Marshal.GetLastWin32Error(), "failed to create pipe");

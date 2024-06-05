@@ -21,13 +21,13 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Windows.Dialog;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
-using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Windows.Forms;
 

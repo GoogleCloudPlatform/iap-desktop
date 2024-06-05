@@ -27,7 +27,7 @@ using System;
 namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
-    public class TestOrganizationLocator 
+    public class TestOrganizationLocator
         : EquatableFixtureBase<OrganizationLocator, OrganizationLocator>
     {
         protected override OrganizationLocator CreateInstance()

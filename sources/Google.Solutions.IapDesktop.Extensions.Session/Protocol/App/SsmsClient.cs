@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
 
         public string Executable
         {
-            get => this.ssms?.ExecutablePath 
+            get => this.ssms?.ExecutablePath
                 ?? throw new InvalidOperationException("SSMS is not available");
         }
 

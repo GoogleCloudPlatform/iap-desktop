@@ -23,7 +23,6 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
-using System;
 using System.Diagnostics.CodeAnalysis;
 using WeifenLuo.WinFormsUI.Docking;
 

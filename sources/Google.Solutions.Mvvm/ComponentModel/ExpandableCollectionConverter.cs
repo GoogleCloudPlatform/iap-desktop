@@ -45,7 +45,7 @@ namespace Google.Solutions.Mvvm.ComponentModel
                 foreach (DictionaryEntry item in dictionary)
                 {
                     properties.Add(new ItemDescriptor<IDictionary>(
-                        item.Key.ToString(), 
+                        item.Key.ToString(),
                         item.Value));
                 }
 

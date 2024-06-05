@@ -46,7 +46,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             {
                 Assert.IsNotNull(process.PseudoConsole);
                 var pty = process.PseudoConsole!;
-                
+
                 var output = new StringBuilder();
                 pty.OutputAvailable += (_, args) =>
                 {

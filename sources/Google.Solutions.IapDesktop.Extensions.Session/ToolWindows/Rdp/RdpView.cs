@@ -34,7 +34,6 @@ using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
-using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Settings.Collection;
 using System;
@@ -149,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 if (IsRdsSessionHostRedirectionError(e))
                 {
                     this.exceptionDialog.Show(
-                        this, 
+                        this,
                         caption,
                         new RdsRedirectException(
                             "The server initiated a redirect to a different " +
@@ -311,7 +310,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 //
                 // Display settings.
                 //
-                this.rdpClient.EnableDpiScaling = 
+                this.rdpClient.EnableDpiScaling =
                     viewModel.Parameters.DpiScaling == RdpDpiScaling.Enabled;
 
                 switch (viewModel.Parameters.ColorDepth)
@@ -632,7 +631,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         private class RdsRedirectException : RdpException
         {
-            public RdsRedirectException(string message, Exception inner) 
+            public RdsRedirectException(string message, Exception inner)
                 : base(message, inner)
             {
             }

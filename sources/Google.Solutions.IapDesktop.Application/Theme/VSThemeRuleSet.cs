@@ -338,7 +338,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     ? this.theme.Palette.TextBox.BackgroundDisabled
                     : this.theme.Palette.TextBox.Background;
             }
-            
+
             if (!DeviceCapabilities.Current.IsGdiScalingActive)
             {
                 //

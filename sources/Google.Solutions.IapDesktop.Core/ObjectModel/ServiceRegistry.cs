@@ -264,7 +264,7 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
         private static bool IsDecorator(Type serviceType)
         {
             return serviceType.IsGenericType &&
-                (serviceType.GetGenericTypeDefinition() == typeof(IActivator<>) || 
+                (serviceType.GetGenericTypeDefinition() == typeof(IActivator<>) ||
                  serviceType.GetInterfaces().EnsureNotNull().Any(IsDecorator));
         }
 

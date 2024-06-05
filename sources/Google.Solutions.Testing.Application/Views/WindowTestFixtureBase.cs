@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Compute;
-using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
@@ -28,12 +26,10 @@ using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Settings.Collection;
-using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;

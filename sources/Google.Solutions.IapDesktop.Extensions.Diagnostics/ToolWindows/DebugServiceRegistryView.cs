@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
-using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Diagnostics.ToolWindows
 {

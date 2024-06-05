@@ -25,7 +25,6 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp

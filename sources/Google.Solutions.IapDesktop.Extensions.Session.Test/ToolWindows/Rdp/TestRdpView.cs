@@ -23,7 +23,6 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Security;
-using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
@@ -189,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         {
             var serviceProvider = CreateServiceProvider(await auth);
             var instance = await testInstance;
-            var rdpCredential = await 
+            var rdpCredential = await
                 GenerateRdpCredentialAsync(instance)
                 .ConfigureAwait(true);
 

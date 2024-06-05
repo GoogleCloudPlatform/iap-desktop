@@ -356,7 +356,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                     }
 
                     return new UserProfile(
-                        UserProfile.DefaultName, 
+                        UserProfile.DefaultName,
                         profileKey,
                         hklm.OpenSubKey(PoliciesKeyPath),
                         hkcu.OpenSubKey(PoliciesKeyPath),
@@ -374,7 +374,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                     }
 
                     return new UserProfile(
-                        name, 
+                        name,
                         profileKey,
                         hklm.OpenSubKey(PoliciesKeyPath),
                         hkcu.OpenSubKey(PoliciesKeyPath),

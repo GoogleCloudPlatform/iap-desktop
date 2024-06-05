@@ -27,8 +27,8 @@ namespace Google.Solutions.Apis
     /// <summary>
     /// ETW event source.
     /// </summary>
-    [SuppressMessage("Style", 
-        "IDE0060:Remove unused parameter", 
+    [SuppressMessage("Style",
+        "IDE0060:Remove unused parameter",
         Justification = "ETW parameters")]
     [EventSource(Name = ProviderName, Guid = ProviderGuid)]
     public sealed class ApiEventSource : EventSource
