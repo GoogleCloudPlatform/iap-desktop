@@ -32,6 +32,10 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
+#if !DEBUG
+using Google.Solutions.IapDesktop.Application;
+#endif
+
 #nullable disable
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
