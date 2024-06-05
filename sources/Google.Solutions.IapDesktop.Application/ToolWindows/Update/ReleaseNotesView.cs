@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
     public partial class ReleaseNotesView : DocumentWindow, IView<ReleaseNotesViewModel>
     {
         public ReleaseNotesView(
-            IMainWindow mainWindow, 
+            IMainWindow mainWindow,
             ToolWindowStateRepository stateRepository)
             : base(mainWindow, stateRepository)
         {

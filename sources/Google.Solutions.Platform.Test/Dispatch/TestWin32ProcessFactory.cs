@@ -112,7 +112,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             var factory = new Win32ProcessFactory();
 
             using (var process = factory.CreateProcessWithPseudoConsole(
-                CmdExe, 
+                CmdExe,
                 null,
                 PseudoConsoleSize.Default))
             {

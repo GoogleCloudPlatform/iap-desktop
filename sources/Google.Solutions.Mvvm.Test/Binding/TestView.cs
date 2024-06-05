@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
-using Google.Solutions.Testing.Apis.Mocks;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -114,7 +113,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             var form = new SampleView();
             var activator = CreateActivator(
-                form, 
+                form,
                 new SampleViewModel(),
                 new Mock<IControlTheme>().Object);
 
@@ -137,7 +136,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             }
 
             var activator = CreateActivator(
-                new SampleView(), 
+                new SampleView(),
                 new SampleViewModel(),
                 new Mock<IControlTheme>().Object);
 
@@ -160,7 +159,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var form = new SampleView();
             var viewModel = new SampleViewModel();
             var activator = CreateActivator(
-                form, 
+                form,
                 viewModel,
                 new Mock<IControlTheme>().Object);
 
@@ -185,7 +184,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         {
             var theme = new Mock<IControlTheme>();
             var activator = CreateActivator(
-                new SampleView(), 
+                new SampleView(),
                 new SampleViewModel(),
                 theme.Object);
 
@@ -200,7 +199,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var form = new SampleView();
             var viewModel = new SampleViewModel();
             var activator = CreateActivator(
-                form, 
+                form,
                 viewModel,
                 new Mock<IControlTheme>().Object);
 
@@ -217,7 +216,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var form = new SampleView();
             var viewModel = new SampleViewModel();
             var activator = CreateActivator(
-                form, 
+                form,
                 viewModel,
                 new Mock<IControlTheme>().Object);
 
@@ -238,7 +237,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var form = new SampleView();
             var viewModel = new SampleViewModel();
             var activator = CreateActivator(
-                form, 
+                form,
                 viewModel,
                 new Mock<IControlTheme>().Object);
 

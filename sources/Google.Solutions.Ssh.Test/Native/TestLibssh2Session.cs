@@ -57,7 +57,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
         [Test]
         public void WhenBannerInvalid_ThenSetBannerThrowsException(
-            [Values("-1", "a b")]string banner)
+            [Values("-1", "a b")] string banner)
         {
             using (var session = CreateSession())
             {

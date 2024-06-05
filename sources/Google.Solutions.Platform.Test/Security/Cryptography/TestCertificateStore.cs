@@ -145,7 +145,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         public void ListComputerCertificatesDoesNotReturnUserCertificate()
         {
             CertificateStore.AddUserCertitficate(ExampleCertificate);
-            
+
             var store = new CertificateStore();
             var certificates = store.ListMachineCertificates(
                 cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
@@ -158,7 +158,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         public void WhenPredicateDoesNotMatch_ThenListComputerCertificatesReturnsEmpty()
         {
             CertificateStore.AddUserCertitficate(ExampleCertificate);
-            
+
             var store = new CertificateStore();
             var certificates = store.ListMachineCertificates(cert => false);
 

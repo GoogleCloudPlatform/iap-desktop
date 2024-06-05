@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         /// <summary>
         /// Theme for system dialogs.
         /// </summary>
-        public ISystemDialogTheme SystemDialog{ get; }
+        public ISystemDialogTheme SystemDialog { get; }
 
         /// <summary>
         /// Theme for dialogs.
@@ -191,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 this.DockPanelTheme = dockPanelTheme;
             }
 
-            public ThemeBase DockPanelTheme { get;}
+            public ThemeBase DockPanelTheme { get; }
         }
 
         private class ToolWindowTheme : WindowThemeBase, IToolWindowTheme

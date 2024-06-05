@@ -21,7 +21,6 @@
 
 using Google.Solutions.Ssh.Cryptography;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {

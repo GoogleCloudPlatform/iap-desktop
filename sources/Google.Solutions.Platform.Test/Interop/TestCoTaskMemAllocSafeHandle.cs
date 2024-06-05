@@ -25,7 +25,7 @@ using NUnit.Framework;
 namespace Google.Solutions.Platform.Test.Interop
 {
     [TestFixture]
-    public class TestCoTaskMemAllocSafeHandle 
+    public class TestCoTaskMemAllocSafeHandle
     {
         [Test]
         public void WhenMemoryFreed_ThenHandleIsInvalid()

@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             this.viewModel.AuthenticationPrompt += OnAuthenticationPrompt;
 
             this.AllowDrop = true;
-            this.DragEnter += (sender, args) => 
+            this.DragEnter += (sender, args) =>
                 new DelegateCommand<DragEventHandler, DragEventArgs>(
                     "File upload",
                     args =>
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                     },
                     bindingContext)
                 .Execute(sender, args);
-            this.DragDrop += (sender, args) => 
+            this.DragDrop += (sender, args) =>
                 new DelegateCommand<DragEventHandler, DragEventArgs>(
                     "File upload",
                     args =>

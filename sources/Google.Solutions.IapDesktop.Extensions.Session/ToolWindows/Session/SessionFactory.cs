@@ -159,13 +159,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                         await Task.WhenAll(credentialTask, transportTask)
                             .ConfigureAwait(true);
 
-                        #pragma warning disable VSTHRD103
+#pragma warning disable VSTHRD103
                         return new AuthorizationResult<TCredential>
                         {
                             Credential = credentialTask.Result,
                             Transport = transportTask.Result
                         };
-                        #pragma warning restore VSTHRD103 
+#pragma warning restore VSTHRD103
                     }
                     catch
                     {

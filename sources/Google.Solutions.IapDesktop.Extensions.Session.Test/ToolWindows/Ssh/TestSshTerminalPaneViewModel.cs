@@ -36,7 +36,6 @@ using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.Mocks;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Internal.Execution;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

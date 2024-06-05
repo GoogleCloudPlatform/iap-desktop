@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis;
-using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Util;
 using System;
 using System.ComponentModel;

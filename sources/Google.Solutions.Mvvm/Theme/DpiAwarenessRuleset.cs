@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
-using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
@@ -93,7 +92,7 @@ namespace Google.Solutions.Mvvm.Theme
 
                 bool isLaterallyAnchored(Control c)
                 {
-                    return 
+                    return
                         c.Dock == DockStyle.Fill ||
                         c.Anchor.HasFlag(AnchorStyles.Top | AnchorStyles.Bottom) ||
                         c.Anchor.HasFlag(AnchorStyles.Left | AnchorStyles.Right);
@@ -106,7 +105,7 @@ namespace Google.Solutions.Mvvm.Theme
                 //
                 if (!(userControl is DpiAwareUserControl) &&
                     isLaterallyAnchored(userControl) &&
-                    userControl.Controls.OfType<Control>().Any(isLaterallyAnchored)) 
+                    userControl.Controls.OfType<Control>().Any(isLaterallyAnchored))
                 {
                     Debug.Assert(false, "User control should be derived from " + nameof(DpiAwareUserControl));
                 }
@@ -118,7 +117,7 @@ namespace Google.Solutions.Mvvm.Theme
                 //
             }
             else if (c is ContainerControl otherContainer)
-            { 
+            {
                 //
                 // Other containers should use Mode = Inherit.
                 //

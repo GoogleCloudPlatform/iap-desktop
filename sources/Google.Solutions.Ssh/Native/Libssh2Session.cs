@@ -49,7 +49,7 @@ namespace Google.Solutions.Ssh.Native
         private TimeSpan timeout = TimeSpan.Zero;
         private NativeMethods.TraceHandler? traceHandlerDelegate;
         private LIBSSH2_TRACE traceMask = (LIBSSH2_TRACE)0;
-        private readonly Dictionary<LIBSSH2_METHOD, string[]> preferredMethods 
+        private readonly Dictionary<LIBSSH2_METHOD, string[]> preferredMethods
             = new Dictionary<LIBSSH2_METHOD, string[]>();
 
         internal static readonly NativeMethods.Alloc Alloc;
@@ -174,7 +174,7 @@ namespace Google.Solutions.Ssh.Native
 
         internal Libssh2SessionHandle Handle
         {
-            get => this.sessionHandle ?? 
+            get => this.sessionHandle ??
                 throw new InvalidOperationException("The session has not been initialized");
         }
 
@@ -362,7 +362,7 @@ namespace Google.Solutions.Ssh.Native
         {
             using (SshTraceSource.Log.TraceMethod().WithParameters(remoteEndpoint))
             {
-                for (int kexAttempt = 0; ; kexAttempt++)
+                for (var kexAttempt = 0; ; kexAttempt++)
                 {
                     var socket = new Socket(
                         AddressFamily.InterNetwork,

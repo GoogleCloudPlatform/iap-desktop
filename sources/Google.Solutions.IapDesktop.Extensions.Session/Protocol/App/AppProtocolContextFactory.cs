@@ -26,7 +26,6 @@ using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Platform.Dispatch;
 using System;
-using System.Diagnostics;
 using System.Net;
 using System.Security;
 using System.Threading;

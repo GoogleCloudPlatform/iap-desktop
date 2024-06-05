@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Auth.OAuth2.Responses;
-using Google.Solutions.Apis.Auth;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.Test;

@@ -133,8 +133,8 @@ namespace Google.Solutions.Mvvm.Controls
                         MainIcon = parameters.Icon?.Handle ?? IntPtr.Zero,
                         pszMainInstruction = parameters.Heading,
                         pszContent = parameters.Text,
-                        pButtons = commandButtons.Count != 0 
-                            ? commandButtonsHandle.DangerousGetHandle() 
+                        pButtons = commandButtons.Count != 0
+                            ? commandButtonsHandle.DangerousGetHandle()
                             : IntPtr.Zero,
                         cButtons = (uint)commandButtons.Count,
                         pszExpandedInformation = parameters.Footnote,

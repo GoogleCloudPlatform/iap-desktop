@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
             var projectRepository = new ProjectRepository(hkcu.CreateSubKey(TestKeyPath));
             var settingsRepository = new ConnectionSettingsRepository(projectRepository);
-            
+
             // Set some initial project settings.
             projectRepository.AddProject(SampleProject);
 

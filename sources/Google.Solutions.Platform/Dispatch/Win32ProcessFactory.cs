@@ -174,13 +174,13 @@ namespace Google.Solutions.Platform.Dispatch
                         "thread attribute list failed");
                 }
 
-                using (var attributeListHandle = 
+                using (var attributeListHandle =
                     GlobalAllocSafeHandle.GlobalAlloc((uint)size.ToInt32()))
                 {
                     var startupInfo = new NativeMethods.STARTUPINFOEX();
-                    startupInfo.StartupInfo.cb = 
+                    startupInfo.StartupInfo.cb =
                         Marshal.SizeOf<NativeMethods.STARTUPINFOEX>();
-                    startupInfo.lpAttributeList = 
+                    startupInfo.lpAttributeList =
                         attributeListHandle.DangerousGetHandle();
 
                     if (!NativeMethods.InitializeProcThreadAttributeList(
@@ -211,16 +211,16 @@ namespace Google.Solutions.Platform.Dispatch
 
                         var processSecurityAttributes =
                             new NativeMethods.SECURITY_ATTRIBUTES
-                        {
-                            nLength = Marshal
+                            {
+                                nLength = Marshal
                                 .SizeOf<NativeMethods.SECURITY_ATTRIBUTES>()
-                        };
-                        var threadSecurityAttributes = 
+                            };
+                        var threadSecurityAttributes =
                             new NativeMethods.SECURITY_ATTRIBUTES
-                        {
-                            nLength = Marshal
+                            {
+                                nLength = Marshal
                                 .SizeOf<NativeMethods.SECURITY_ATTRIBUTES>()
-                        };
+                            };
 
                         if (!NativeMethods.CreateProcess(
                             null,

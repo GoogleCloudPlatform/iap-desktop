@@ -150,12 +150,12 @@ namespace Google.Solutions.Mvvm.Binding
                     // that the button and its hottracking rectangle is sized
                     // correctly.
                     //
-                    var item = 
+                    var item =
                         getStyle.Compile()(model) == ToolStripItemDisplayStyle.Image
                             ? (ToolStripItem)new ToolStripButton()
                             : (ToolStripItem)new ToolStripMenuItem();
 
-                    item.Tag = model;   
+                    item.Tag = model;
 
                     item.BindItem(
                         model,

@@ -131,8 +131,8 @@ namespace Google.Solutions.Mvvm.Controls
             // NB. Scaling can produce a gap between the controls. Rearrange controls
             // to remove this gap.
             //
-            var gap = this.progressBar.Location.Y - 
-                this.searchTextBox.Location.Y - 
+            var gap = this.progressBar.Location.Y -
+                this.searchTextBox.Location.Y -
                 this.searchTextBox.Height;
 
             if (gap > 0)

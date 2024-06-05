@@ -33,10 +33,8 @@ using Google.Solutions.Testing.Apis.Auth;
 using Newtonsoft.Json;
 using System;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.Testing.Apis.Integration
 {

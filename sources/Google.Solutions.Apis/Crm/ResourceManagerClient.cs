@@ -80,7 +80,7 @@ namespace Google.Solutions.Apis.Crm
         /// </summary>
         /// <exception cref="ResourceAccessDeniedException">when access denied</exception>
         Task<Organization> GetOrganizationAsync(
-            OrganizationLocator organization, 
+            OrganizationLocator organization,
             CancellationToken cancellationToken);
     }
 
@@ -211,7 +211,7 @@ namespace Google.Solutions.Apis.Crm
         }
 
         public async Task<OrganizationLocator?> FindOrganizationAsync(
-            ProjectLocator project, 
+            ProjectLocator project,
             CancellationToken cancellationToken)
         {
             using (ApiTraceSource.Log.TraceMethod().WithParameters(project))
@@ -261,7 +261,7 @@ namespace Google.Solutions.Apis.Crm
         }
 
         public async Task<Organization> GetOrganizationAsync(
-            OrganizationLocator organization, 
+            OrganizationLocator organization,
             CancellationToken cancellationToken)
         {
             using (ApiTraceSource.Log.TraceMethod().WithParameters(organization))

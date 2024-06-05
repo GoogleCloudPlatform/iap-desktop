@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Binding.Commands;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -60,7 +60,8 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         [Test]
         public void WhenSynchronousExecutionThrowsException_ThenContextIsNotified()
         {
-            void handler(EventArgs args) {
+            void handler(EventArgs args)
+            {
                 throw new ArgumentException();
             }
 
@@ -123,7 +124,8 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         [Test]
         public void WhenAsynchronousExecutionSucceeds_ThenContextIsNotified()
         {
-            Task handler(EventArgs args) { 
+            Task handler(EventArgs args)
+            {
                 return Task.CompletedTask;
             }
 

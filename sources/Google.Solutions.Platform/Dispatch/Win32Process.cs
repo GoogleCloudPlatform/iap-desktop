@@ -168,7 +168,7 @@ namespace Google.Solutions.Platform.Dispatch
                 await waitHandle
                     .WaitAsync(cancellationToken)
                     .ConfigureAwait(false);
-                
+
                 //
                 // Process terminated.
                 //

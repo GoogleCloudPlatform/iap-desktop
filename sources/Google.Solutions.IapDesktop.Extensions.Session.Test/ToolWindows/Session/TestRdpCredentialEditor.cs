@@ -31,7 +31,6 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
-using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Settings;
 using Google.Solutions.Testing.Apis;
@@ -89,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             NetworkCredential? credential)
         {
             var credentialDialog = new Mock<ICredentialDialog>();
-            bool allowSave = true;
+            var allowSave = true;
             credentialDialog
                 .Setup(d => d.PromptForWindowsCredentials(
                     It.IsAny<IWin32Window>(),
@@ -146,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             bool prefilled)
         {
             var credentialDialog = new Mock<ICredentialDialog>();
-            bool save = false;
+            var save = false;
             var credential = new NetworkCredential("username", "password");
 
             credentialDialog
@@ -255,7 +254,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         public void WhenUsernameProvided_ThenCreateCredentialsShowsUsername()
         {
             var newCredentialViewModel = new NewCredentialsViewModel();
-            var newCredentialDialogFactory = 
+            var newCredentialDialogFactory =
                 new MockWindowActivator<NewCredentialsView, NewCredentialsViewModel, IDialogTheme>(
                     DialogResult.Cancel, // Cancel dialog.
                     newCredentialViewModel);
@@ -287,7 +286,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             [Values("", null)] string username)
         {
             var newCredentialViewModel = new NewCredentialsViewModel();
-            var newCredentialDialogFactory = 
+            var newCredentialDialogFactory =
                 new MockWindowActivator<NewCredentialsView, NewCredentialsViewModel, IDialogTheme>(
                     DialogResult.Cancel, // Cancel dialog.
                     newCredentialViewModel);
@@ -317,12 +316,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         public async Task WhenDialogConfirmed_ThenCreateCredentialsReturnsCredentials()
         {
             var newCredentialViewModel = new NewCredentialsViewModel();
-            var newCredentialDialogFactory = 
+            var newCredentialDialogFactory =
                 new MockWindowActivator<NewCredentialsView, NewCredentialsViewModel, IDialogTheme>(
                     DialogResult.OK,
                     newCredentialViewModel);
 
-            var showCredentialDialogFactory = 
+            var showCredentialDialogFactory =
                 new MockWindowActivator<ShowCredentialsView, ShowCredentialsViewModel, IDialogTheme>(
                     DialogResult.OK);
 

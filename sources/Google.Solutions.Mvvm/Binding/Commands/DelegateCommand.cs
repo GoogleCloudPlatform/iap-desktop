@@ -49,7 +49,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 try
                 {
                     execute(args);
-                    
+
                     bindingContext.OnCommandExecuted(this);
                 }
                 catch (Exception e) when (e.IsCancellation())

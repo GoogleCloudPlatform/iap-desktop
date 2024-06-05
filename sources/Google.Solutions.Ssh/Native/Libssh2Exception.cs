@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using System;
 using System.Diagnostics;
 
 namespace Google.Solutions.Ssh.Native

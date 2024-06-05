@@ -26,7 +26,7 @@ namespace Google.Solutions.Common.Runtime
     /// <summary>
     /// Factory for instances of type T.
     /// </summary>
-    public static class InstanceActivator 
+    public static class InstanceActivator
     {
         /// <summary>
         /// Create activator that returns an existing instance.

@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Interop;
-using Google.Solutions.Common.Threading;
 using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;

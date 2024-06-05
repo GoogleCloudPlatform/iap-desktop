@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 

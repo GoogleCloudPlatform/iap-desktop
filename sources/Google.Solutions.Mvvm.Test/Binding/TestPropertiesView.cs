@@ -23,7 +23,6 @@ using Google.Solutions.Common.Runtime;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Testing.Apis.Integration;
-using Google.Solutions.Testing.Apis.Mocks;
 using Moq;
 using NUnit.Framework;
 using System;

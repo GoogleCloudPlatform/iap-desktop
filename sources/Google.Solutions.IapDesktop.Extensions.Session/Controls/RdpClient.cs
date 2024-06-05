@@ -21,12 +21,10 @@
 
 using AxMSTSCLib;
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Input;
-using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Platform.Interop;
 using MSTSCLib;
 using System;
@@ -38,7 +36,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
@@ -380,12 +377,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         // Scaling.
         //---------------------------------------------------------------------
 
-        private static uint DefaultScaleFactor = 100;
+        private static readonly uint DefaultScaleFactor = 100;
 
         /// <summary>
         /// Valid values according to MSDN.
         /// </summary>
-        private static readonly uint[] ValidDesktopScaleFactors = 
+        private static readonly uint[] ValidDesktopScaleFactors =
             new uint[] { 500, 400, 300, 250, 200, 175, 150, 125, DefaultScaleFactor };
 
 
@@ -1014,7 +1011,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 keyUp = new short[scanCodes.Length * 2];
                 keyData = new int[scanCodes.Length * 2];
 
-                for (int i = 0; i < scanCodes.Length; i++)
+                for (var i = 0; i < scanCodes.Length; i++)
                 {
                     //
                     // Generate DOWN key presses.
@@ -1054,7 +1051,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 // The RDP control sometimes swallows the first key combination
                 // that is sent. So start by a harmless ESC.
                 //
-                SendVirtualKey(Keys.Control | Keys.Alt | Keys.Delete );
+                SendVirtualKey(Keys.Control | Keys.Alt | Keys.Delete);
             }
         }
 
@@ -1083,7 +1080,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
             var keyboardLayout = KeyboardLayout.Current;
 
-            for (int i = 0; i < text.Length && i < MaxSendStringLength; i++)
+            for (var i = 0; i < text.Length && i < MaxSendStringLength; i++)
             {
                 var ch = text[i];
                 if (ch == '\r' && i < text.Length - 2 && text[i + 1] == '\n')
