@@ -29,7 +29,7 @@ using System.Threading;
 namespace Google.Solutions.Terminal.Test.Controls
 {
     [TestFixture]
-    public class TerminalDeviceBinding
+    public class TestTerminalDeviceBinding
     {
         //---------------------------------------------------------------------
         // OnTerminalDisposed.
@@ -196,13 +196,35 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Device = device.Object,
             })
             {
-                Exception exception = null;
+                Exception? exception = null;
                 virtualTerminal.DeviceError += (_, args) => exception = args.Exception;
 
                 device.Raise(d => d.FatalError += null, new PseudoConsoleErrorEventArgs(new ArgumentException()));
 
                 Assert.IsNotNull(exception);
                 Assert.IsInstanceOf<ArgumentException>(exception);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // OnDeviceDisconnected.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenDeviceDisconnects_ThenTerminalIsClosed()
+        {
+            var device = new Mock<IPseudoConsole>();
+            using (var virtualTerminal = new VirtualTerminal()
+            {
+                Device = device.Object,
+            })
+            {
+                bool deviceClosedEventRaised = false;
+                virtualTerminal.DeviceClosed += (_, args) => deviceClosedEventRaised = true;
+
+                device.Raise(d => d.Disconnected += null, EventArgs.Empty);
+
+                Assert.IsTrue(deviceClosedEventRaised);
             }
         }
 
