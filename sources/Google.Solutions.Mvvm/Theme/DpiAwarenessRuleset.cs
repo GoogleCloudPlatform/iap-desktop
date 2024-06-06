@@ -68,8 +68,11 @@ namespace Google.Solutions.Mvvm.Theme
                     // adjusted correctly.
                     //
                     Debug.Assert(form.ControlBox);
-                    Debug.Assert(!form.ShowIcon);
-                    Debug.Assert(!form.ShowInTaskbar);
+                    if (form.Parent != null)
+                    {
+                        Debug.Assert(!form.ShowIcon);
+                        Debug.Assert(!form.ShowInTaskbar);
+                    }
                 }
             }
             else if (c is UserControl userControl)
