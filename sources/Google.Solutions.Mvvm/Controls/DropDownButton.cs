@@ -61,10 +61,11 @@ namespace Google.Solutions.Mvvm.Controls
 
         protected override void OnMouseDown(MouseEventArgs args)
         {
+            var scaledSplitWidth = LogicalToDeviceUnits(this.SplitWidth);
             var splitRect = new Rectangle(
-                this.Width - this.SplitWidth,
+                this.Width - scaledSplitWidth,
                 0,
-                this.SplitWidth,
+                scaledSplitWidth,
                 this.Height);
 
             if (this.Menu != null &&
@@ -94,14 +95,21 @@ namespace Google.Solutions.Mvvm.Controls
                 //
                 // Draw arrow.
                 //
-                var arrowX = this.ClientRectangle.Width - 14;
+                // Use an odd number of pixels as width.
+                //
+                var arrowWidth = LogicalToDeviceUnits(7);
+                arrowWidth |= 0x1;
+
+                var arrowHeight = arrowWidth / 2 + 1;
+
+                var arrowX = this.ClientRectangle.Width - 2 * arrowWidth;
                 var arrowY = this.ClientRectangle.Height / 2 - 1;
 
                 var arrowPoints = new[]
                 {
                     new Point(arrowX, arrowY),
-                    new Point(arrowX + 7, arrowY),
-                    new Point(arrowX + 3, arrowY + 4)
+                    new Point(arrowX + arrowWidth, arrowY),
+                    new Point(arrowX + arrowWidth / 2, arrowY + arrowHeight)
                 };
 
                 using (var arrowBrush = new SolidBrush(this.Enabled
@@ -113,9 +121,9 @@ namespace Google.Solutions.Mvvm.Controls
                     //
                     // Draw a dashed separator.
                     //
-                    var lineX = this.ClientRectangle.Width - this.SplitWidth;
-                    var lineYFrom = arrowY - 4;
-                    var lineYTo = arrowY + 8;
+                    var lineX = this.ClientRectangle.Width - LogicalToDeviceUnits(this.SplitWidth);
+                    var lineYFrom = arrowY - arrowHeight;
+                    var lineYTo = arrowY + 2 * arrowHeight;
                     using (var separatorPen = new Pen(arrowBrush)
                     {
                         DashStyle = DashStyle.Dot
