@@ -93,8 +93,6 @@ namespace Google.Solutions.Terminal.Controls
             private const string TerminalCore = "Microsoft.Terminal.Control.dll";
             private const string User32 = "user32.dll";
 
-            public const int USER_DEFAULT_SCREEN_DPI = 96;
-
             [UnmanagedFunctionPointer(CallingConvention.StdCall)]
             public delegate void ScrollCallback(int viewTop, int viewHeight, int bufferSize);
 

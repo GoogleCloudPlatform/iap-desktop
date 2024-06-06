@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Interop;
+using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Platform.IO;
 using System;
 using System.Diagnostics;
@@ -298,7 +299,7 @@ namespace Google.Solutions.Terminal.Controls
                 theme,
                 this.Font.FontFamily.Name,
                 (short)this.Font.Size,
-                NativeMethods.USER_DEFAULT_SCREEN_DPI); // TODO: Use system DPI
+                DeviceCapabilities.Current.Dpi);
 
             this.ThemeChanged?.Invoke(this, EventArgs.Empty);
 
