@@ -56,8 +56,6 @@ namespace Google.Solutions.Terminal.TestApp
 
                     control.Device = process.PseudoConsole;
 
-                    //TODO: close pty, process?
-
                     process.Resume();
                 };
 
@@ -72,6 +70,8 @@ namespace Google.Solutions.Terminal.TestApp
 
 
                 Application.Run(f);
+
+                process?.Dispose();
             }
         }
     }
