@@ -152,7 +152,8 @@ namespace Google.Solutions.Terminal.Controls
         //---------------------------------------------------------------------
 
         /// <summary>
-        /// Receive data to display. The data can contain xterm control characters. 
+        /// Receive data to display. The data can contain xterm control 
+        /// characters. 
         /// </summary>
         internal void ReceiveOutput(string data)
         {
@@ -238,7 +239,10 @@ namespace Google.Solutions.Terminal.Controls
             this.UserInput?.Invoke(this, new TerminalInputEventArgs(data));
         }
 
-        protected virtual void OnTerminalScrolled(int viewTop, int viewHeight, int bufferSize)
+        protected virtual void OnTerminalScrolled(
+            int viewTop,
+            int viewHeight,
+            int bufferSize)
         {
             //
             // Adjust the scrollbar maximum based on the unseen part, and set the
@@ -376,7 +380,8 @@ namespace Google.Solutions.Terminal.Controls
             
             if (this.terminal != null || this.terminalSubclass != null)
             {
-                throw new InvalidOperationException("Handle has been created already");
+                throw new InvalidOperationException(
+                    "Handle has been created already");
             }
 
             //
@@ -388,7 +393,9 @@ namespace Google.Solutions.Terminal.Controls
                 out this.terminal);
             if (hr != 0)
             {
-                throw TerminalException.FromHresult(hr, "Allocating a terminal failed");
+                throw TerminalException.FromHresult(
+                    hr, 
+                    "Allocating a terminal failed");
             }
 
             NativeMethods.TerminalRegisterWriteCallback(
@@ -404,8 +411,12 @@ namespace Google.Solutions.Terminal.Controls
             // Install a subclassing hook so that we can handle some of the
             // terminal HWND's messages.
             //
-            this.terminalSubclass = new SubclassCallback(terminalHwnd, this, TerminalSubclassWndProc);
-            this.terminalSubclass.UnhandledException += (_, ex) => Application.OnThreadException(ex);
+            this.terminalSubclass = new SubclassCallback(
+                terminalHwnd, 
+                this, 
+                TerminalSubclassWndProc);
+            this.terminalSubclass.UnhandledException += (_, ex) 
+                => Application.OnThreadException(ex);
             this.components.Add(this.terminalSubclass.AsComponent());
 
             //
@@ -446,7 +457,9 @@ namespace Google.Solutions.Terminal.Controls
                     out var dimensions);
                 if (hr != 0)
                 {
-                    throw TerminalException.FromHresult(hr, "Adjusting terminal size failed");
+                    throw TerminalException.FromHresult(
+                        hr, 
+                        "Adjusting terminal size failed");
                 }
 
                 Debug.Assert(dimensions.X <= ushort.MaxValue);
@@ -546,17 +559,21 @@ namespace Google.Solutions.Terminal.Controls
                         NativeMethods.TerminalSetCursorVisible(terminalHandle, true);
                         this.caretBlinkTimer.Start();
 
-                        if (keyParams.VirtualKey == (ushort)Keys.Enter && NativeMethods.TerminalIsSelectionActive(terminalHandle))
+                        if (keyParams.VirtualKey == (ushort)Keys.Enter && 
+                            NativeMethods.TerminalIsSelectionActive(terminalHandle))
                         {
                             //
-                            // User pressed enter while a selection was active. Consistent with the classic
-                            // Windows console, we treat that as a "copy" command.
+                            // User pressed enter while a selection was active.
+                            // Consistent with the classic Windows console, treat
+                            // that as a "copy" command.
                             //
-                            // Cache the selected text so that we can process it in WM_KEYUP.
+                            // Cache the selected text so that we can process it
+                            // in WM_KEYUP.
                             //
                             // NB. We must not pass this key event to the terminal.
                             //
-                            this.selectionToClearOnEnter = NativeMethods.TerminalGetSelection(terminalHandle);
+                            this.selectionToClearOnEnter = 
+                                NativeMethods.TerminalGetSelection(terminalHandle);
                         }
                         else
                         {
@@ -581,13 +598,16 @@ namespace Google.Solutions.Terminal.Controls
                     {
                         var keyParams = new WmKeyUpDownParams(m);
 
-                        if (keyParams.VirtualKey == (ushort)Keys.Enter && this.selectionToClearOnEnter != null)
+                        if (keyParams.VirtualKey == (ushort)Keys.Enter && 
+                            this.selectionToClearOnEnter != null)
                         {
                             //
-                            // User pressed enter while a selection was active. Continue the "copy"
-                            // behavior begun in WM_KEYDOWN.
+                            // User pressed enter while a selection was
+                            // active. Continue the "copy" behavior begun in
+                            // WM_KEYDOWN.
                             //
-                            // NB. We must not pass this key event to the terminal.
+                            // NB. We must not pass this key event to the
+                            // terminal.
                             //
                             try
                             {
@@ -611,16 +631,21 @@ namespace Google.Solutions.Terminal.Controls
                             if (this.lastKeyUpVirtualKey != keyParams.VirtualKey)
                             {
                                 //
-                                // For some keys (in particular, TAB and the arrow keys), we
-                                // only get a WM_KEYUP and no preceeding WM_KEYDOWN.
+                                // For some keys (in particular, TAB and the
+                                // arrow keys), we only get a WM_KEYUP and no
+                                // preceeding WM_KEYDOWN.
                                 // 
-                                // When that happens, inject an extrac TerminalSendKeyEvent
-                                // call so that the subsequent WM_KEYDOWN isn't ignored by the
+                                // When that happens, inject an extra
+                                // TerminalSendKeyEvent call so that the
+                                // subsequent WM_KEYDOWN isn't ignored by the
                                 // terminal.
                                 //
-                                // NB. We don't know how many WM_KEYDOWNs we actually missed.
+                                // NB. We don't know how many WM_KEYDOWNs we
+                                // actually missed.
                                 //
-                                NativeMethods.TerminalSetCursorVisible(terminalHandle, true);
+                                NativeMethods.TerminalSetCursorVisible(
+                                    terminalHandle, 
+                                    true);
                                 NativeMethods.TerminalSendKeyEvent(
                                     terminalHandle,
                                     keyParams.VirtualKey,
@@ -675,8 +700,8 @@ namespace Google.Solutions.Terminal.Controls
                             //
                             // Control key pressed -> Zoom.
                             //
-                            // We only need the sign of the delta to know whether to zoom in
-                            // or out.
+                            // We only need the sign of the delta to know
+                            // whether to zoom in or out.
                             //
 
                             var oldFont = this.Font;
@@ -697,7 +722,8 @@ namespace Google.Solutions.Terminal.Controls
                             //
                             // Translate delta to the number of lines (+/-) to scroll.
                             //
-                            var linesDelta = delta / 120 * SystemInformation.MouseWheelScrollLines;
+                            var linesDelta = 
+                                delta / 120 * SystemInformation.MouseWheelScrollLines;
 
                             var currentValue = this.scrollBar.Value;
                             if (linesDelta > 0)
@@ -705,17 +731,23 @@ namespace Google.Solutions.Terminal.Controls
                                 //
                                 // Scrolling up.
                                 //
-                                this.scrollBar.Value = Math.Max(this.scrollBar.Minimum, currentValue - linesDelta);
+                                this.scrollBar.Value = Math.Max(
+                                    this.scrollBar.Minimum, 
+                                    currentValue - linesDelta);
                             }
                             else
                             {
                                 //
                                 // Scrolling down.
                                 //
-                                this.scrollBar.Value = Math.Min(this.scrollBar.Maximum, currentValue - linesDelta);
+                                this.scrollBar.Value = Math.Min(
+                                    this.scrollBar.Maximum, 
+                                    currentValue - linesDelta);
                             }
 
-                            NativeMethods.TerminalUserScroll(terminalHandle, this.scrollBar.Value);
+                            NativeMethods.TerminalUserScroll(
+                                terminalHandle, 
+                                this.scrollBar.Value);
                         }
                             
                         break;
@@ -735,9 +767,13 @@ namespace Google.Solutions.Terminal.Controls
         {
             Debug.Assert(!this.InvokeRequired, "Must be called on GUI thread");
 
-            var subclass = Invariant.ExpectNotNull(this.terminalSubclass, "Subclass");
+            var subclass = Invariant.ExpectNotNull(
+                this.terminalSubclass, 
+                "Subclass");
 
-            foreach (var message in KeyboardUtil.ToMessageSequence(subclass.WindowHandle, keyCode))
+            foreach (var message in KeyboardUtil.ToMessageSequence(
+                subclass.WindowHandle, 
+                keyCode))
             {
                 var m = message;
                 TerminalSubclassWndProc(ref m);
