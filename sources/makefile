@@ -311,14 +311,14 @@ policies: $(POLICIES_PACKAGE)
 
 # NB. Run integration tests for single platform only to save time
 kokoro-continuous-integration:
-    $(MAKE) $(MAKEFLAGS) PLATFORM=x64 SKIP_INTEGRATION_TESTS=1 \
+    $(MAKE) $(MAKEFLAGS) PLATFORM=x86 SKIP_INTEGRATION_TESTS=1 \
         installer \
         installer-snapshot \
         symbols \
         policies \
         test
 
-    $(MAKE) $(MAKEFLAGS) PLATFORM=x86 \
+    $(MAKE) $(MAKEFLAGS) PLATFORM=x64 \
         installer \
         installer-snapshot \
         symbols \
