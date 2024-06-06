@@ -520,6 +520,29 @@ namespace Google.Solutions.Terminal.Controls
 
         private void TerminalSubclassWndProc(ref Message m)
         {
+            bool IsKeyForCopyingCurrentSelection(Keys key)
+            {
+                //
+                // NB. Ctrl+C is handled by ther terminal itself.
+                //
+                if (ModifierKeys == Keys.None && key == Keys.Enter)
+                {
+                    //
+                    // Consistent with the classic Windows console, treat
+                    // Enter as a "copy" command.
+                    //
+                    return true;
+                }
+                else if (ModifierKeys == Keys.Control && key == Keys.Insert)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                };
+            }
+
             Debug.Assert(!this.DesignMode);
 
             var terminalHandle = Invariant.ExpectNotNull(this.terminal, "Terminal");
@@ -559,13 +582,11 @@ namespace Google.Solutions.Terminal.Controls
                         NativeMethods.TerminalSetCursorVisible(terminalHandle, true);
                         this.caretBlinkTimer.Start();
 
-                        if (keyParams.VirtualKey == (ushort)Keys.Enter && 
+                        if (IsKeyForCopyingCurrentSelection((Keys)keyParams.VirtualKey) && 
                             NativeMethods.TerminalIsSelectionActive(terminalHandle))
                         {
                             //
-                            // User pressed enter while a selection was active.
-                            // Consistent with the classic Windows console, treat
-                            // that as a "copy" command.
+                            // Begin "copy" operation.
                             //
                             // Cache the selected text so that we can process it
                             // in WM_KEYUP.
@@ -585,10 +606,6 @@ namespace Google.Solutions.Terminal.Controls
                                 true);
                         }
 
-                        // TODO: Shift to select (conditional?)
-                        // TODO: Ctrl+C/V (conditional)
-                        // TODO: Shift/Ctrl+INS (conditional)
-
                         this.lastKeyUpVirtualKey = keyParams.VirtualKey;
                         break;
                     }
@@ -598,13 +615,11 @@ namespace Google.Solutions.Terminal.Controls
                     {
                         var keyParams = new WmKeyUpDownParams(m);
 
-                        if (keyParams.VirtualKey == (ushort)Keys.Enter && 
+                        if (IsKeyForCopyingCurrentSelection((Keys)keyParams.VirtualKey) &&
                             this.selectionToClearOnEnter != null)
                         {
                             //
-                            // User pressed enter while a selection was
-                            // active. Continue the "copy" behavior begun in
-                            // WM_KEYDOWN.
+                            // Continue the "copy" operation begun in WM_KEYDOWN.
                             //
                             // NB. We must not pass this key event to the
                             // terminal.
