@@ -1,9 +1,29 @@
-﻿using Google.Solutions.Common.Runtime;
+﻿//
+// Copyright 2024 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Interop;
 using Google.Solutions.Platform.IO;
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -76,71 +96,6 @@ namespace Google.Solutions.Terminal.Controls
         //---------------------------------------------------------------------
         // Publics.
         //---------------------------------------------------------------------
-
-        private Color selectionBackColor = SystemColors.HighlightText;
-        private float selectionBackgroundAlpha = .5f;
-        private CaretStyle caretStyle = CaretStyle.BlinkingBlockDefault;
-        private Font font = new Font(new FontFamily(DefaultFontFamily), DefaultFontSize);
-
-        [Category("Appearance")]
-        public Color SelectionBackColor
-        {
-            get => this.selectionBackColor;
-            set
-            {
-                Debug.Assert(!this.InvokeRequired, "Must be called on GUI thread");
-
-                this.selectionBackColor = value;
-                OnThemeChanged();
-            }
-        }
-
-        [Category("Appearance")]
-        public float SelectionBackgroundAlpha
-        {
-            get => this.selectionBackgroundAlpha;
-            set
-            {
-                Debug.Assert(!this.InvokeRequired, "Must be called on GUI thread");
-
-                if (value < 0 || value > 1)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(value));
-                }
-
-                this.selectionBackgroundAlpha = value;
-                OnThemeChanged();
-            }
-        }
-
-        [Category("Appearance")]
-        public CaretStyle Caret
-        {
-            get => this.caretStyle;
-            set
-            {
-                Debug.Assert(!this.InvokeRequired, "Must be called on GUI thread");
-
-                this.caretStyle = value;
-                OnThemeChanged();
-            }
-        }
-
-        [Category("Appearance")]
-        public new Font Font
-        {
-            //
-            // NB. Control.Font has side-effects, so we don't use that.
-            //
-            get => this.font;
-            set
-            {
-                Debug.Assert(!this.InvokeRequired, "Must be called on GUI thread");
-
-                this.font = value;
-                OnThemeChanged();
-            }
-        }
 
         /// <summary>
         /// Clear the screen.
@@ -328,9 +283,6 @@ namespace Google.Solutions.Terminal.Controls
                 return;
             }
 
-            // TODO: Configure color table
-            var colorTable = new uint[] { 0x0C0C0C, 0x1F0FC5, 0x0EA113, 0x009CC1, 0xDA3700, 0x981788, 0xDD963A, 0xCCCCCC, 0x767676, 0x5648E7, 0x0CC616, 0xA5F1F9, 0xFF783B, 0x9E00B4, 0xD6D661, 0xF2F2F2 };
-
             var theme = new TerminalTheme()
             {
                 DefaultBackground = (uint)ColorTranslator.ToWin32(this.BackColor),
@@ -338,7 +290,7 @@ namespace Google.Solutions.Terminal.Controls
                 DefaultSelectionBackground = (uint)ColorTranslator.ToWin32(this.SelectionBackColor),
                 SelectionBackgroundAlpha = this.SelectionBackgroundAlpha,
                 CursorStyle = this.caretStyle,
-                ColorTable = colorTable
+                ColorTable = this.terminalColors.ToNative()
             };
 
             NativeMethods.TerminalSetTheme(
@@ -346,7 +298,7 @@ namespace Google.Solutions.Terminal.Controls
                 theme,
                 this.Font.FontFamily.Name,
                 (short)this.Font.Size,
-                NativeMethods.USER_DEFAULT_SCREEN_DPI);
+                NativeMethods.USER_DEFAULT_SCREEN_DPI); // TODO: Use system DPI
 
             this.ThemeChanged?.Invoke(this, EventArgs.Empty);
 
