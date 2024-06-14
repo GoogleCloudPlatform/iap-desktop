@@ -36,6 +36,8 @@ namespace Google.Solutions.Platform.Dispatch
 {
     /// <summary>
     /// A Win32 pseudo-console for interacting with a process.
+    /// 
+    /// Note: Pseudo consoles don't work properly in NUnit tests!
     /// </summary>
     public class Win32PseudoConsole : DisposableBase, IPseudoConsole
     {
