@@ -114,6 +114,7 @@ compile: $(MAKEDIR)\obj\$(CMAKE_BUILDDIR)\src\$(CMAKE_CONFIGURATION)\libssh2.dll
 $(MAKEDIR)\obj\$(LIBSSH2_PACKAGE_ID).$(LIBSSH2_VERSION).nupkg:
 	$(MAKE) PLATFORM=x86 CONFIGURATION=$(CONFIGURATION) compile
 	$(MAKE) PLATFORM=x64 CONFIGURATION=$(CONFIGURATION) compile
+	$(MAKE) PLATFORM=arm64 CONFIGURATION=$(CONFIGURATION) compile
 
 	@echo "========================================================"
 	@echo "=== Building libssh2 nuget package                   ==="
@@ -134,8 +135,12 @@ $(MAKEDIR)\obj\$(LIBSSH2_PACKAGE_ID).$(LIBSSH2_VERSION).nupkg:
 	<!-- pretend the library is platform-neutral -->
     <file src="obj\build\x86\src\$(CMAKE_CONFIGURATION)\libssh2.dll" target="runtimes\win10-x86\native" />
     <file src="obj\build\x86\src\$(CMAKE_CONFIGURATION)\libssh2.pdb" target="runtimes\win10-x86\native" />
+
     <file src="obj\build\x64\src\$(CMAKE_CONFIGURATION)\libssh2.dll" target="runtimes\win10-x64\native" />
     <file src="obj\build\x64\src\$(CMAKE_CONFIGURATION)\libssh2.pdb" target="runtimes\win10-x64\native" />
+
+    <file src="obj\build\arm64\src\$(CMAKE_CONFIGURATION)\libssh2.dll" target="runtimes\win10-arm64\native" />
+    <file src="obj\build\arm64\src\$(CMAKE_CONFIGURATION)\libssh2.pdb" target="runtimes\win10-arm64\native" />
     <file src="$(LIBSSH2_PACKAGE_ID).targets" target="build" />
   </files>
 </package>
@@ -153,6 +158,7 @@ clean:
 	-del *.nupkg
 	$(CMAKE) --build build\x86 --target clean
 	$(CMAKE) --build build\x64 --target clean
+	$(CMAKE) --build build\arm64 --target clean
 
 distclean:
     -rd /S /Q $(MAKEDIR)\obj
