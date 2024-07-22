@@ -11,12 +11,12 @@
     <PackageReference Include="Google.Apis" Version="1.68.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
     <PackageReference Include="Google.Apis.CloudOSLogin.v1" Version="1.68.0.3272" />
-    <PackageReference Include="Google.Apis.Compute.v1" Version="1.68.0.3384" />
+    <PackageReference Include="Google.Apis.Compute.v1" Version="1.68.0.3470" />
     <PackageReference Include="Google.Apis.Core" Version="1.68.0" />
-    <PackageReference Include="Google.Apis.Logging.v2" Version="1.68.0.3389" />
+    <PackageReference Include="Google.Apis.Logging.v2" Version="1.68.0.3473" />
     <PackageReference Include="Moq" Version="4.20.70" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit" Version="3.14.0" />
     <PackageReference Include="NUnit.Extension.VSProjectLoader" Version="3.9.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0">
       <PrivateAssets>all</PrivateAssets>
