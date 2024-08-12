@@ -84,7 +84,7 @@
         - Libssh2 CNG/ECDSA support requires Windows 10 or later.
         - .NET 4.7 requires requires Windows 10 1607 (which excludes 1507, 1511).
         
-        This makes Windows 10 "Anniversary Update" 1611 (build 14393) the minium supported version.
+        This makes Windows 10 "Anniversary Update" 1607 (build 14393) the minium supported version.
 
         NB. Windows 10 still uses VersionNT=603 and WindowsBuild=9600, so 
             we need to check the build number from the registry.
