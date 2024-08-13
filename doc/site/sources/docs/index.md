@@ -12,7 +12,7 @@ IAP Desktop is an open-source Remote Desktop and SSH client that lets you connec
 <sub>
 [x86 (32-bit)](https://github.com/GoogleCloudPlatform/iap-desktop/releases/latest/download/IapDesktopX86.msi) | 
 [x64 (64-bit)](https://github.com/GoogleCloudPlatform/iap-desktop/releases/latest/download/IapDesktopX64.msi). 
-For Windows 11/10/8.1. No admin rights required.
+For Windows 10 and 11. No admin rights required.
 </sub>
 
 ## Access Linux and Windows VMs from anywhere
