@@ -21,7 +21,7 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 10
+TAG = 11
 
 DOCKPANELSUITE_TAG = Release_3.0.6
 DOCKPANELSUITE_URL = https://github.com/dockpanelsuite/dockpanelsuite.git
@@ -61,6 +61,10 @@ $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\$(DOCKPANELSUITE_PACKAGE_ID).$(DO
 	@echo "=== Building dockpanelsuite                          ==="
 	@echo "========================================================"
 	cd $(MAKEDIR)\obj
+    
+	powershell -Command "(Get-Content $(MAKEDIR)\obj\WinFormsUI\Properties\AssemblyInfo.cs) \
+		-replace 'Version\(.*\)', 'Version(""$(DOCKPANELSUITE_VERSION)"""")' | \
+		Out-File $(MAKEDIR)\obj\WinFormsUI\Properties\AssemblyInfo.cs -Encoding ascii"
 
 	msbuild \
 		/t:Restore;Build \
