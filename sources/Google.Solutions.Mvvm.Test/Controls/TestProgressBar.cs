@@ -99,7 +99,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenVisibilityChanged_ThenTimerIsStoppedOrStarted()
+        public void Visible_WhenVisibilityChanged_ThenTimerIsStoppedOrStarted()
         {
             using (var form = new Form())
             using (var progressBar = new LinearProgressBar()

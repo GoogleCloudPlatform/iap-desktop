@@ -29,7 +29,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
     {
 
         [Test]
-        public void WhenFuncDependsOnOneSource_ThenFuncIsCalledWithParameters()
+        public void Value_WhenFuncDependsOnOneSource_ThenFuncIsCalledWithParameters()
         {
             var source = ObservableProperty.Build("One");
             var dependent1 = ObservableProperty.Build(
@@ -40,7 +40,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenFuncDependsOnTwoSources_ThenFuncIsCalledWithParameters()
+        public void Value_WhenFuncDependsOnTwoSources_ThenFuncIsCalledWithParameters()
         {
             var source1 = ObservableProperty.Build("One");
             var source2 = ObservableProperty.Build("Two");

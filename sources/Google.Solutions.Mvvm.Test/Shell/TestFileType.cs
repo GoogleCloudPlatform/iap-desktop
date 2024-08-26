@@ -35,7 +35,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenFileExtensionKnown_ThenLookupReturnsIcon(
+        public void Lookup_WhenFileExtensionKnown_ThenLookupReturnsIcon(
             [Values(
                 FileType.IconFlags.None,
                 FileType.IconFlags.Open)] FileType.IconFlags size,
@@ -56,7 +56,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
         }
 
         [Test]
-        public void WhenFileExtensionUnknown_ThenLookupReturnsIcon(
+        public void Lookup_WhenFileExtensionUnknown_ThenLookupReturnsIcon(
             [Values(
                 FileType.IconFlags.None,
                 FileType.IconFlags.Open)] FileType.IconFlags size,
@@ -80,7 +80,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenFileHasDirectoryAttribute_ThenIsFileIsFalse()
+        public void IsFile_WhenFileHasDirectoryAttribute_ThenIsFileIsFalse()
         {
             using (var type = FileType.Lookup(
                 "folder",
@@ -92,7 +92,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
         }
 
         [Test]
-        public void WhenFileDoesNotHaveDirectoryAttribute_ThenIsFileIsTrue()
+        public void IsFile_WhenFileDoesNotHaveDirectoryAttribute_ThenIsFileIsTrue()
         {
             using (var type = FileType.Lookup(
                 "folder",

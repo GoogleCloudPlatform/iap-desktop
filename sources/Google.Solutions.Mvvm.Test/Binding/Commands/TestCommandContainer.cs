@@ -46,7 +46,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenObservableContextChanged_ThenQueryStateIsCalledOnTopLevelCommands()
+        public void Context_WhenObservableContextChanged_ThenQueryStateIsCalledOnTopLevelCommands()
         {
             var source = new ContextSource<string>()
             {
@@ -78,7 +78,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenObservableContextChanged_ThenQueryStateIsCalledOnChildCommands()
+        public void Context_WhenObservableContextChanged_ThenQueryStateIsCalledOnChildCommands()
         {
             var source = new ContextSource<string>()
             {
@@ -117,7 +117,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenObservableContextChanged_ThenExecuteUsesLatestContext()
+        public void Context_WhenObservableContextChanged_ThenExecuteUsesLatestContext()
         {
             var source = new ContextSource<string>()
             {
@@ -140,7 +140,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenNonObservableContextChanged_ThenExecuteUsesOldContext()
+        public void Context_WhenNonObservableContextChanged_ThenExecuteUsesOldContext()
         {
             var source = new NonObservableCommandContextSource<string>()
             {
@@ -167,7 +167,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenAddingCommand_ThenCollectionChangedEventIsRaised()
+        public void AddCommand_WhenAddingCommand_ThenCollectionChangedEventIsRaised()
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
@@ -186,7 +186,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenAddingSeparator_ThenCollectionChangedEventIsRaised()
+        public void AddCommand_WhenAddingSeparator_ThenCollectionChangedEventIsRaised()
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
@@ -205,7 +205,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenKeyIsUnknown_ThenExecuteCommandByKeyDoesNothing()
+        public void ExecuteCommandByKey_WhenKeyIsUnknown_ThenExecuteCommandByKeyDoesNothing()
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
@@ -217,7 +217,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenKeyIsMappedAndCommandIsEnabled_ThenExecuteCommandInvokesHandler()
+        public void ExecuteCommandByKey_WhenKeyIsMappedAndCommandIsEnabled_ThenExecuteCommandInvokesHandler()
         {
             var source = new ContextSource<string>()
             {
@@ -249,7 +249,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenKeyIsMappedAndCommandIsDisabled_ThenExecuteCommandByKeyDoesNothing()
+        public void ExecuteCommandByKey_WhenKeyIsMappedAndCommandIsDisabled_ThenExecuteCommandByKeyDoesNothing()
         {
             var source = new ContextSource<string>()
             {
@@ -282,7 +282,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenContainerDoesNotHaveDefaultCommand_ThenExecuteDefaultCommandDoesNothing()
+        public void ExecuteDefaultCommand_WhenContainerDoesNotHaveDefaultCommand_ThenExecuteDefaultCommandDoesNothing()
         {
             var source = new ContextSource<string>()
             {
@@ -307,7 +307,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenDefaultCommandIsDisabled_ThenExecuteDefaultCommandDoesNothing()
+        public void ExecuteDefaultCommand_WhenDefaultCommandIsDisabled_ThenExecuteDefaultCommandDoesNothing()
         {
             var source = new ContextSource<string>()
             {
@@ -333,7 +333,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenDefaultCommandIsEnabled_ThenExecuteDefaultExecutesCommand()
+        public void ExecuteDefaultCommand_WhenDefaultCommandIsEnabled_ThenExecuteDefaultExecutesCommand()
         {
             var source = new ContextSource<string>()
             {
@@ -368,7 +368,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenContextIsNull_ThenCommandIsNotExecuted()
+        public void Invoke_WhenContextIsNull_ThenCommandIsNotExecuted()
         {
             var bindingContext = new Mock<IBindingContext>();
             using (var container = new CommandContainer<string>(
@@ -394,7 +394,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenInvokeSucceeds_ThenContextIsNotified()
+        public void Invoke_WhenInvokeSucceeds_ThenContextIsNotified()
         {
             var bindingContext = new Mock<IBindingContext>();
             using (var container = new CommandContainer<string>(
@@ -423,7 +423,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenInvokeSynchronouslyThrowsException_ThenContextIsNotified()
+        public void Invoke_WhenInvokeSynchronouslyThrowsException_ThenContextIsNotified()
         {
             var bindingContext = new Mock<IBindingContext>();
             using (var container = new CommandContainer<string>(
@@ -455,7 +455,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenInvokeSynchronouslyThrowsCancellationException_ThenExceptionIsSwallowed()
+        public void Invoke_WhenInvokeSynchronouslyThrowsCancellationException_ThenExceptionIsSwallowed()
         {
             var bindingContext = new Mock<IBindingContext>();
             using (var container = new CommandContainer<string>(
@@ -487,7 +487,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public async Task WhenInvokeAsynchronouslyThrowsException_ThenEventIsFired()
+        public async Task Invoke_WhenInvokeAsynchronouslyThrowsException_ThenEventIsFired()
         {
             var bindingContext = new Mock<IBindingContext>();
             using (var container = new CommandContainer<string>(
@@ -532,7 +532,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenInvokeAsynchronouslyThrowsCancellationException_ThenExceptionIsSwallowed()
+        public void Invoke_WhenInvokeAsynchronouslyThrowsCancellationException_ThenExceptionIsSwallowed()
         {
             var bindingContext = new Mock<IBindingContext>();
             using (var container = new CommandContainer<string>(

@@ -31,7 +31,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
     public class TestStockIcons
     {
         [Test]
-        public void WhenIdInvalid_ThenGetIconThrowsException()
+        public void GetIcon_WhenIdInvalid_ThenGetIconThrowsException()
         {
             Assert.Throws<COMException>(
                 () => StockIcons.GetIcon(
@@ -40,7 +40,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
         }
 
         [Test]
-        public void WhenIdValid_ThenGetLargeIconSucceeds()
+        public void GetIcon_WhenIdValid_ThenGetLargeIconSucceeds()
         {
             using (var icon = StockIcons.GetIcon(
                 StockIcons.IconId.Server,
@@ -52,7 +52,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
         }
 
         [Test]
-        public void WhenIdValid_ThenGetSmallIconSucceeds()
+        public void GetIcon_WhenIdValid_ThenGetSmallIconSucceeds()
         {
             using (var icon = StockIcons.GetIcon(
                 StockIcons.IconId.Server,

@@ -63,7 +63,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSheetChangesDirtyState_ThenIsDirtyIsUpdated()
+        public void IsDirty_WhenSheetChangesDirtyState_ThenIsDirtyIsUpdated()
         {
             using (var viewModel = new PropertiesViewModel())
             {
@@ -95,7 +95,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSheetDirty_ThenApplyCommandCanBeExecuted()
+        public void ApplyCommand_WhenSheetDirty_ThenApplyCommandCanBeExecuted()
         {
             using (var viewModel = new PropertiesViewModel())
             {
@@ -109,7 +109,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenNoSheetDirty_ThenApplyCommandCannotBeExecuted()
+        public void ApplyCommand_WhenNoSheetDirty_ThenApplyCommandCannotBeExecuted()
         {
             using (var viewModel = new PropertiesViewModel())
             {
@@ -121,7 +121,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
 
         [Test]
-        public void WhenSomeSheetsDirty_ThenApplyCommandOnlyAppliesDirtySheets()
+        public void ApplyCommand_WhenSomeSheetsDirty_ThenApplyCommandOnlyAppliesDirtySheets()
         {
             using (var viewModel = new PropertiesViewModel())
             {

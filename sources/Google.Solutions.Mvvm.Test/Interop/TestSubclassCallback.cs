@@ -36,7 +36,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenArgumentInvalid_ThenConstructorThrowsException()
+        public void Ctor_WhenArgumentInvalid_ThenConstructorThrowsException()
         {
             Assert.Throws<ArgumentException>(
                 () => new SubclassCallback(null, SubclassCallback.DefaultWndProc));
@@ -45,7 +45,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
         }
 
         [Test]
-        public void WhenHandleCreated_ThenHandleIsSet()
+        public void Ctor_WhenHandleCreated_ThenHandleIsSet()
         {
             using (var form = new Form())
             {
@@ -66,7 +66,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSubclassInstalled_ThenCallbackReceivesMessages()
+        public void Callback_WhenSubclassInstalled_ThenCallbackReceivesMessages()
         {
             using (var form = new Form())
             {
@@ -88,7 +88,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
         }
 
         [Test]
-        public void WhenCallbackFails_ThenUnhandledExceptionEventIsRaised()
+        public void Callback_WhenCallbackFails_ThenUnhandledExceptionEventIsRaised()
         {
             using (var form = new Form())
             {
@@ -115,7 +115,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenControlIsDisposed_ThenSublassIsDisposed()
+        public void Dispose_WhenControlIsDisposed_ThenSublassIsDisposed()
         {
             var form = new Form();
 

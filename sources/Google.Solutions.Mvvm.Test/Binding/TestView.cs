@@ -82,7 +82,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenFormUsedAsDialog_ThenShowDialogAppliesTheme()
+        public void ShowDialog_WhenFormUsedAsDialog_ThenShowDialogAppliesTheme()
         {
             if (!Environment.UserInteractive)
             {
@@ -104,7 +104,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenFormUsedAsDialog_ThenShowDialogBindsViewModel()
+        public void ShowDialog_WhenFormUsedAsDialog_ThenShowDialogBindsViewModel()
         {
             if (!Environment.UserInteractive)
             {
@@ -128,7 +128,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenFormUsedAsDialog_ThenShowDialogCanOnlyBeCalledOnce()
+        public void ShowDialog_WhenFormUsedAsDialog_ThenShowDialogCanOnlyBeCalledOnce()
         {
             if (!Environment.UserInteractive)
             {
@@ -149,7 +149,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenFormUsedAsDialog_ThenDialogDisposesViewModel()
+        public void ShowDialog_WhenFormUsedAsDialog_ThenDialogDisposesViewModel()
         {
             if (!Environment.UserInteractive)
             {
@@ -180,7 +180,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenFormUsedAsWindow_ThenFormAppliesTheme()
+        public void CreateWindow_WhenFormUsedAsWindow_ThenFormAppliesTheme()
         {
             var theme = new Mock<IControlTheme>();
             var activator = CreateActivator(
@@ -194,7 +194,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenFormUsedAsWindow_ThenFormBindsViewModel()
+        public void CreateWindow_WhenFormUsedAsWindow_ThenFormBindsViewModel()
         {
             var form = new SampleView();
             var viewModel = new SampleViewModel();
@@ -211,7 +211,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenFormUsedAsDialog_ThenCloseFormDisposesViewModel()
+        public void CreateWindow_WhenFormUsedAsDialog_ThenCloseFormDisposesViewModel()
         {
             var form = new SampleView();
             var viewModel = new SampleViewModel();
@@ -232,7 +232,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenFormDisposedTwice_ThenViewModelIsUnboundOnce()
+        public void CreateWindow_WhenFormDisposedTwice_ThenViewModelIsUnboundOnce()
         {
             var form = new SampleView();
             var viewModel = new SampleViewModel();

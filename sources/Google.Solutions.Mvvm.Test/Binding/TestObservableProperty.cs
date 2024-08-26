@@ -44,7 +44,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void RaisePropertyChangeNotifiesDependents()
+        public void RaisePropertyChange_NotifiesDependents()
         {
             var property = ObservableProperty.Build(string.Empty);
             var dependent1 = ObservableProperty.Build(
@@ -65,7 +65,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenValueSet_ThenEventIsRaised()
+        public void Value_WhenValueSet_ThenEventIsRaised()
         {
             var property = ObservableProperty.Build(string.Empty);
 
@@ -76,7 +76,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenValueSet_ThenEventIsRaisedForDependents()
+        public void Value_WhenValueSet_ThenEventIsRaisedForDependents()
         {
             var property = ObservableProperty.Build(string.Empty);
             var dependent1 = ObservableProperty.Build(

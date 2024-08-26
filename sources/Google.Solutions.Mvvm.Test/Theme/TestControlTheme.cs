@@ -42,7 +42,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenControlContainsChildren_ThenApplyToAppliesRulesToAllChildren()
+        public void ApplyTo_WhenControlContainsChildren_ThenApplyToAppliesRulesToAllChildren()
         {
             using (var form = new Form())
             {
@@ -71,7 +71,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         }
 
         [Test]
-        public void WhenControlHasContextMenu_ThenApplyToAppliesRulesToContextMenu()
+        public void ApplyTo_WhenControlHasContextMenu_ThenApplyToAppliesRulesToContextMenu()
         {
             using (var form = new Form()
             {
@@ -98,7 +98,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoOptionSet_ThenRuleAppliesToDerivedControls()
+        public void ApplyTo_WhenNoOptionSet_ThenRuleAppliesToDerivedControls()
         {
             using (var form = new Form())
             {
@@ -124,7 +124,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         }
 
         [Test]
-        public void WhenIgnoreDerivedTypesOptionSet_ThenRuleIgnoresDerivedControls()
+        public void ApplyTo_WhenIgnoreDerivedTypesOptionSet_ThenRuleIgnoresDerivedControls()
         {
             using (var form = new Form())
             {
@@ -158,7 +158,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoOptionSetAndHandleNotCreatedYet_ThenRuleIsAppliedImmediately()
+        public void ApplyTo_WhenNoOptionSetAndHandleNotCreatedYet_ThenRuleIsAppliedImmediately()
         {
             using (var form = new Form())
             {
@@ -174,7 +174,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         }
 
         [Test]
-        public void WhenDelayOptionSetAndHandleNotCreatedYet_ThenRuleIsAppliedDelayed()
+        public void ApplyTo_WhenDelayOptionSetAndHandleNotCreatedYet_ThenRuleIsAppliedDelayed()
         {
             using (var form = new Form())
             {

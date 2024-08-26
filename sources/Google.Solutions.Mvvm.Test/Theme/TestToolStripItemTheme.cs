@@ -50,7 +50,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         //---------------------------------------------------------------------
 
         [Test]
-        public void ApplyToConsidersCurrentTopLevelItems()
+        public void ApplyTo_ConsidersCurrentTopLevelItems()
         {
             var menu = new MenuStrip();
 
@@ -71,7 +71,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         }
 
         [Test]
-        public void ApplyToConsidersTopLevelItemsAddedLater()
+        public void ApplyTo_ConsidersTopLevelItemsAddedLater()
         {
             var menu = new MenuStrip();
 
@@ -96,7 +96,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         //---------------------------------------------------------------------
 
         [Test]
-        public void ApplyToConsidersCurrentLowerLevelItems()
+        public void ApplyTo_ConsidersCurrentLowerLevelItems()
         {
             var menu = new MenuStrip();
 
@@ -118,7 +118,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         }
 
         [Test]
-        public void ApplyToConsidersSecondLevelItemsAddedLater()
+        public void ApplyTo_ConsidersSecondLevelItemsAddedLater()
         {
             var menu = new MenuStrip();
 
@@ -137,7 +137,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         }
 
         [Test]
-        public void ApplyToConsidersThirdLevelItemsAddedLater()
+        public void ApplyTo_ConsidersThirdLevelItemsAddedLater()
         {
             var menu = new MenuStrip();
 

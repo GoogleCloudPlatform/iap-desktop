@@ -60,7 +60,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenModelHasScreensWithNegativeBounds_ThenShowDialogSucceeds()
+        public void ShowDialog_WhenModelHasScreensWithNegativeBounds_ThenShowDialogSucceeds()
         {
             var model = new ObservableCollection<ScreenSelectorItem>
             {

@@ -71,7 +71,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenListPopulated_ThenToTabSeparatedTextSucceeds()
+        public void ToTabSeparatedText_WhenListPopulated_ThenToTabSeparatedTextSucceeds()
         {
             var tsv = this.listView.ToTabSeparatedText(false);
 
@@ -82,7 +82,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenListPopulated_ThenToHtmlSucceeds()
+        public void ToHtml_WhenListPopulated_ThenToHtmlSucceeds()
         {
             var html = this.listView.ToHtml(false);
 

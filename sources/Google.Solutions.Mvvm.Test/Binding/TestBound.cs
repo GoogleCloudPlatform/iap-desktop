@@ -34,7 +34,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //-----------------------------------------------------------
 
         [Test]
-        public void WhenInitialized_ThenHasValueIsTrue()
+        public void HasValue_WhenInitialized_ThenHasValueIsTrue()
         {
             var bound = new Bound<string>();
 
@@ -48,14 +48,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //-----------------------------------------------------------
 
         [Test]
-        public void WhenNotInitialized_ThenGetValueThrowsException()
+        public void Value_WhenNotInitialized_ThenGetValueThrowsException()
         {
             var bound = new Bound<string>();
             Assert.Throws<InvalidOperationException>(() => bound.Value.ToString());
         }
 
         [Test]
-        public void WhenInitialized_ThenGetValueReturns()
+        public void Value_WhenInitialized_ThenGetValueReturns()
         {
             var bound = new Bound<string>
             {
@@ -66,7 +66,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenInitialized_ThenSetValueThrowsException()
+        public void Value_WhenInitialized_ThenSetValueThrowsException()
         {
             var bound = new Bound<string>
             {
@@ -81,14 +81,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //-----------------------------------------------------------
 
         [Test]
-        public void WhenNotInitialized_ThenGetConversionThrowsException()
+        public void ConversionOp_WhenNotInitialized_ThenGetConversionThrowsException()
         {
             var bound = new Bound<string>();
             Assert.Throws<InvalidOperationException>(() => ((string)bound).ToString());
         }
 
         [Test]
-        public void WhenInitialized_ThenGetConversionReturns()
+        public void ConversionOp_WhenInitialized_ThenGetConversionReturns()
         {
             var bound = new Bound<string>
             {
@@ -100,18 +100,18 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         //-----------------------------------------------------------
-        // ToString operator.
+        // ToString.
         //-----------------------------------------------------------
 
         [Test]
-        public void WhenNotInitialized_ThenToStringReturnsEmpty()
+        public void ToString_WhenNotInitialized_ThenToStringReturnsEmpty()
         {
             var bound = new Bound<string>();
             Assert.AreEqual("", bound.ToString());
         }
 
         [Test]
-        public void WhenInitialized_ThenToStringReturnsValue()
+        public void ToString_WhenInitialized_ThenToStringReturnsValue()
         {
             var bound = new Bound<string>
             {

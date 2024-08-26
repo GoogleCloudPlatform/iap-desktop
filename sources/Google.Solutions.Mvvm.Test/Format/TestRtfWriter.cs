@@ -36,7 +36,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         //---------------------------------------------------------------------
 
         [Test]
-        public void TextEscapesSpecialCharacters()
+        public void Text_EscapesSpecialCharacters()
         {
             var buffer = new StringBuilder();
             using (var writer = new RtfWriter(new StringWriter(buffer)))
@@ -51,7 +51,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         }
 
         [Test]
-        public void TextEscapesNewlines()
+        public void Text_EscapesNewlines()
         {
             var buffer = new StringBuilder();
             using (var writer = new RtfWriter(new StringWriter(buffer)))
@@ -66,7 +66,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         }
 
         [Test]
-        public void TextEscapesNonAsciiChars()
+        public void Text_EscapesNonAsciiChars()
         {
             var buffer = new StringBuilder();
             using (var writer = new RtfWriter(new StringWriter(buffer)))
@@ -81,7 +81,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         }
 
         [Test]
-        public void TextDoesNotEscapeAsciiChars()
+        public void Text_DoesNotEscapeAsciiChars()
         {
             var buffer = new StringBuilder();
             using (var writer = new RtfWriter(new StringWriter(buffer)))
@@ -100,7 +100,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         //---------------------------------------------------------------------
 
         [Test]
-        public void EmptyFontTable()
+        public void FontTable_WhenEmpty()
         {
             var buffer = new StringBuilder();
             using (var writer = new RtfWriter(new StringWriter(buffer)))
@@ -142,7 +142,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         //---------------------------------------------------------------------
 
         [Test]
-        public void EmptyColorTable()
+        public void ColorTable_WhenEmpty()
         {
             var buffer = new StringBuilder();
             using (var writer = new RtfWriter(new StringWriter(buffer)))

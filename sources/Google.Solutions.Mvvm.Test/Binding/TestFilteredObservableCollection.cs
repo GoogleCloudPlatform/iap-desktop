@@ -147,7 +147,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenPredicateChanged_ThenResetEventIsRaised()
+        public void Predicate_WhenPredicateChanged_ThenResetEventIsRaised()
         {
             var collection = new ObservableCollection<string>
             {
@@ -174,7 +174,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenAddingMatchedItem_ThenNoAddEventIsRaised()
+        public void Add_WhenAddingMatchedItem_ThenNoAddEventIsRaised()
         {
             var collection = new ObservableCollection<string>();
 
@@ -200,7 +200,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenAddingUnmatchedItem_ThenNoAddEventIsRaised()
+        public void Add_WhenAddingUnmatchedItem_ThenNoAddEventIsRaised()
         {
             var collection = new ObservableCollection<string>();
 
@@ -222,7 +222,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
 
         [Test]
-        public void WhenRemovingMatchedItem_ThenNoAddEventIsRaised()
+        public void Remove_WhenRemovingMatchedItem_ThenNoAddEventIsRaised()
         {
             var collection = new ObservableCollection<string>
             {
@@ -252,7 +252,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenRemovingUnmatchedItem_ThenNoAddEventIsRaised()
+        public void Remove_WhenRemovingUnmatchedItem_ThenNoAddEventIsRaised()
         {
             var collection = new ObservableCollection<string>
             {
@@ -276,7 +276,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenClearingCollection_ThenResetIsRaised()
+        public void Clear_WhenClearingCollection_ThenResetIsRaised()
         {
             var collection = new ObservableCollection<string>
             {

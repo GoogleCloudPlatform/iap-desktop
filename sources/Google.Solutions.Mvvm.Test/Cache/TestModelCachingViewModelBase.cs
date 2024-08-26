@@ -74,11 +74,11 @@ namespace Google.Solutions.Mvvm.Test.Cache
         }
 
         //---------------------------------------------------------------------
-        // Model switching.
+        // SwitchToModel.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSwitchToModelFirstTime_ThenPreviousSwitchIsCanceled()
+        public async Task SwitchToModel_WhenSwitchToModelFirstTime_ThenPreviousSwitchIsCanceled()
         {
             var viewModel = new SlowViewModel();
             var t = viewModel.SwitchToModelAsync("one");
@@ -93,7 +93,7 @@ namespace Google.Solutions.Mvvm.Test.Cache
         }
 
         [Test]
-        public async Task WhenSwitchToModelFirstTime_ThenLoadModelAsyncAndApplyModelCalled()
+        public async Task SwitchToModel_WhenSwitchToModelFirstTime_ThenLoadModelAsyncAndApplyModelCalled()
         {
             var viewModel = new SampleViewModel();
             await viewModel.SwitchToModelAsync("one")
@@ -104,7 +104,7 @@ namespace Google.Solutions.Mvvm.Test.Cache
         }
 
         [Test]
-        public async Task WhenSwitchToModelSecondTime_ThenOnlyApplyModelCalled()
+        public async Task SwitchToModel_WhenSwitchToModelSecondTime_ThenOnlyApplyModelCalled()
         {
             var viewModel = new SampleViewModel();
             await viewModel.SwitchToModelAsync("one")
@@ -127,7 +127,7 @@ namespace Google.Solutions.Mvvm.Test.Cache
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenInvalidated_ThenLoadModelAsyncAndApplyModelCalled()
+        public async Task Reload_WhenInvalidated_ThenLoadModelAsyncAndApplyModelCalled()
         {
             var viewModel = new SampleViewModel();
             await viewModel.SwitchToModelAsync("one")

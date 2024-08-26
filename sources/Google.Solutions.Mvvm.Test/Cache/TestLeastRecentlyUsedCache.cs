@@ -29,20 +29,20 @@ namespace Google.Solutions.Mvvm.Test.Cache
     public class TestLeastRecentlyUsedCache
     {
         [Test]
-        public void WhenCapacityTooSmall_ThenArgumentExceptionIsThrown()
+        public void Ctor_WhenCapacityTooSmall_ThenArgumentExceptionIsThrown()
         {
             Assert.Throws<ArgumentException>(() => new LeastRecentlyUsedCache<string, string>(0));
         }
 
         [Test]
-        public void WhenLookupNonexistingItem_ThenNullIsReturned()
+        public void Lookup_WhenLookupNonexistingItem_ThenNullIsReturned()
         {
             var cache = new LeastRecentlyUsedCache<string, string>(2);
             Assert.IsNull(cache.Lookup("key"));
         }
 
         [Test]
-        public void WhenLookupCachedItem_ThenItemIsReturned()
+        public void Lookup_WhenLookupCachedItem_ThenItemIsReturned()
         {
             var cache = new LeastRecentlyUsedCache<string, string>(2);
             cache.Add("one", "ONE");
@@ -53,7 +53,7 @@ namespace Google.Solutions.Mvvm.Test.Cache
         }
 
         [Test]
-        public void WhenAddingItemsBeyondCapacity_ThenLeastReentlyUsedItemIsPurged()
+        public void Lookup_WhenAddingItemsBeyondCapacity_ThenLeastReentlyUsedItemIsPurged()
         {
             var cache = new LeastRecentlyUsedCache<string, string>(2);
             cache.Add("one", "ONE");
@@ -66,7 +66,7 @@ namespace Google.Solutions.Mvvm.Test.Cache
         }
 
         [Test]
-        public void WhenLookingUpItem_ThenItemIsMarkedAsUsed()
+        public void Lookup_WhenLookingUpItem_ThenItemIsMarkedAsUsed()
         {
             var cache = new LeastRecentlyUsedCache<string, string>(2);
             cache.Add("one", "ONE");
@@ -80,7 +80,7 @@ namespace Google.Solutions.Mvvm.Test.Cache
         }
 
         [Test]
-        public void WhenItemAddedTwice_ThenSecondCallIsIgnored()
+        public void Lookup_WhenItemAddedTwice_ThenSecondCallIsIgnored()
         {
             var cache = new LeastRecentlyUsedCache<string, string>(2);
             cache.Add("one", "ONE");
@@ -92,7 +92,7 @@ namespace Google.Solutions.Mvvm.Test.Cache
         }
 
         [Test]
-        public void WhenItemExists_ThenRemoveSucceeds()
+        public void Lookup_WhenItemExists_ThenRemoveSucceeds()
         {
             var cache = new LeastRecentlyUsedCache<string, string>(2);
             cache.Add("one", "ONE");

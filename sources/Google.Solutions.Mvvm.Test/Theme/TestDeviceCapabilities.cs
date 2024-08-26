@@ -28,7 +28,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
     public class TestDeviceCapabilities
     {
         [Test]
-        public void WhenDpiUnaware_ThenDeviceCapabilitiesUseDefaultDpi()
+        public void Current_WhenDpiUnaware_ThenDeviceCapabilitiesUseDefaultDpi()
         {
             using (DpiAwareness.EnterThreadMode(DpiAwarenessMode.DpiUnaware))
             {

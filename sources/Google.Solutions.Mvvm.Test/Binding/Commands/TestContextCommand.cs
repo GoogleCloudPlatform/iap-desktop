@@ -32,7 +32,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenActivityTextNotSet_ThenActivityTextReturnsText()
+        public void ActivityText_WhenActivityTextNotSet_ThenActivityTextReturnsText()
         {
             var command = new ContextCommand<string>(
                 "&Sample",
@@ -42,7 +42,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
             Assert.AreEqual("Sample", command.ActivityText);
         }
         [Test]
-        public void WhenActivityTextSet_ThenActivityTextReturnsActivityText()
+        public void ActivityText_WhenActivityTextSet_ThenActivityTextReturnsActivityText()
         {
             var command = new ContextCommand<string>(
                 "&Sample",

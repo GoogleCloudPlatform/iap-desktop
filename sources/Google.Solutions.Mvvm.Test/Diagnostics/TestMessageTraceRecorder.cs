@@ -41,7 +41,7 @@ namespace Google.Solutions.Mvvm.Test.Diagnostics
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenBufferHasNotWrappedAround_ThenHistoryStartsWithEmptyEntries()
+        public void History_WhenBufferHasNotWrappedAround_ThenHistoryStartsWithEmptyEntries()
         {
             var recorder = new MessageTraceRecorder(3);
             RecordMessage(recorder, 1);
@@ -56,7 +56,7 @@ namespace Google.Solutions.Mvvm.Test.Diagnostics
         }
 
         [Test]
-        public void WhenBufferHasWrappedAround_ThenHistoryStartsWithEmptyEntries()
+        public void History_WhenBufferHasWrappedAround_ThenHistoryStartsWithEmptyEntries()
         {
             var recorder = new MessageTraceRecorder(3);
             RecordMessage(recorder, 1);

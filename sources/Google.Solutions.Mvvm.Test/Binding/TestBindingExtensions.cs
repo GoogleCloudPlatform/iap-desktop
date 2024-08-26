@@ -63,7 +63,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         //---------------------------------------------------------------------
-        // OnPropertyChange tests.
+        // OnPropertyChange.
         //---------------------------------------------------------------------
 
         private class DummyBinding : BindingExtensions.Binding
@@ -74,7 +74,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenObservedPropertyChanges_ThenOnPropertyChangeTriggersCallback()
+        public void OnPropertyChange_WhenObservedPropertyChanges_ThenOnPropertyChangeTriggersCallback()
         {
             var callbacks = 0;
             var observed = new ViewModelWithBareProperties();
@@ -93,7 +93,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenNonObservedPropertyChanges_ThenOnPropertyChangeIgnoresUpdate()
+        public void OnPropertyChange_WhenNonObservedPropertyChanges_ThenOnPropertyChangeIgnoresUpdate()
         {
             var callbacks = 0;
             var observed = new ViewModelWithBareProperties();
@@ -109,7 +109,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenObservedPropertyChangesButPeerIsBusy_ThenOnPropertyChangeIgnoresUpdate()
+        public void OnPropertyChange_WhenObservedPropertyChangesButPeerIsBusy_ThenOnPropertyChangeIgnoresUpdate()
         {
             var callbacks = 0;
             var observed = new ViewModelWithBareProperties();
@@ -130,11 +130,11 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         //---------------------------------------------------------------------
-        // OnControlPropertyChange tests.
+        // OnControlPropertyChange.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenObservedControlPropertyChanges_ThenOnControlPropertyChangeTriggersCallback()
+        public void OnControlPropertyChange_WhenObservedControlPropertyChanges_ThenOnControlPropertyChangeTriggersCallback()
         {
             var callbacks = 0;
             var observed = new TextBox();
@@ -153,7 +153,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenNonObservedControlPropertyChanges_ThenOnControlPropertyChangeIgnoresThis()
+        public void OnControlPropertyChange_WhenNonObservedControlPropertyChanges_ThenOnControlPropertyChangeIgnoresThis()
         {
             var callbacks = 0;
             var observed = new TextBox();
@@ -169,7 +169,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenNonObservedControlPropertyChangesButPeerIsBusy_ThenOnPropertyChangeIgnoresUpdate()
+        public void OnControlPropertyChange_WhenNonObservedControlPropertyChangesButPeerIsBusy_ThenOnPropertyChangeIgnoresUpdate()
         {
             var callbacks = 0;
             var observed = new TextBox();
@@ -190,7 +190,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenControlHasNoAppropriateEvent_ThenOnControlPropertyChangeThrowsArgumentException()
+        public void OnControlPropertyChange_WhenControlHasNoAppropriateEvent_ThenOnControlPropertyChangeThrowsArgumentException()
         {
             var observed = new TextBox();
 
@@ -205,7 +205,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void BindPropertyNotifiesContext()
+        public void BindProperty_NotifiesContext()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties
@@ -228,7 +228,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void BindPropertyAppliesInitialValue()
+        public void BindProperty_AppliesInitialValue()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties
@@ -246,7 +246,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void BindPropertyPropagatesControlChanges()
+        public void BindProperty_PropagatesControlChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties();
@@ -263,7 +263,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void BindPropertyPropagatesModelChanges()
+        public void BindProperty_PropagatesModelChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties();
@@ -285,7 +285,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void BindReadonlyPropertyNotifiesContext()
+        public void BindReadonlyProperty_NotifiesContext()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties
@@ -308,7 +308,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void BindReadonlyPropertyAppliesInitialValue()
+        public void BindReadonlyProperty_AppliesInitialValue()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties
@@ -326,7 +326,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void BindReadonlyPropertyPropagatesControlChanges()
+        public void BindReadonlyProperty_PropagatesControlChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties();
@@ -343,7 +343,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void BindReadonlyPropertyPropagatesModelChanges()
+        public void BindReadonlyProperty_PropagatesModelChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties();
@@ -364,7 +364,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void BindObservablePropertyNotifiesContext()
+        public void BindObservableProperty_NotifiesContext()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
@@ -385,7 +385,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void BindObservablePropertyAppliesInitialValue()
+        public void BindObservableProperty_AppliesInitialValue()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
@@ -401,7 +401,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void BindObservablePropertyPropagatesControlChanges()
+        public void BindObservableProperty_PropagatesControlChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
@@ -418,7 +418,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void BindObservablePropertyPropagatesModelChanges()
+        public void BindObservableProperty_PropagatesModelChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
@@ -460,7 +460,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void BindReadonlyObservablePropertyAppliesInitialValue()
+        public void BindReadonlyObservableProperty_AppliesInitialValue()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
@@ -476,7 +476,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void BindReadonlyObservablePropertyPropagatesControlChanges()
+        public void BindReadonlyObservableProperty_PropagatesControlChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
@@ -493,7 +493,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void BindReadonlyObservablePropertyPropagatesModelChanges()
+        public void BindReadonlyObservableProperty_PropagatesModelChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();

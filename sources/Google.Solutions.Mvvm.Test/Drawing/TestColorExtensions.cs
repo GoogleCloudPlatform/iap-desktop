@@ -32,7 +32,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenConvertedFromCOLORREF_ThenToCOLORREFReturnsSameValue(
+        public void FromCOLORREF_WhenConvertedFromCOLORREF_ThenToCOLORREFReturnsSameValue(
             [Values(
                 0x00000000,
                 0x00FF0000,
@@ -44,7 +44,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         }
 
         [Test]
-        public void WhenHighByteIsNonZero_ThenFromCOLORREFSucceeds()
+        public void FromCOLORREF_WhenHighByteIsNonZero_ThenFromCOLORREFSucceeds()
         {
             var color = ColorExtensions.FromCOLORREF(0xAABBCCDD);
             Assert.AreEqual(0xBBCCDD, color.ToCOLORREF());
