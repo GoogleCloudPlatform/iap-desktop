@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
     public static class EventFactory
     {
 
-        private static readonly IDictionary<string, Func<LogRecord, EventBase>> lifecycleEvents
+        private static readonly Dictionary<string, Func<LogRecord, EventBase>> lifecycleEvents
             = new Dictionary<string, Func<LogRecord, EventBase>>()
             {
                 { DeleteInstanceEvent.Method, rec => new DeleteInstanceEvent(rec) },
@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
                 // Some lifecyce-related beta events omitted (based on audit_log_services.ts),
             };
 
-        private static readonly IDictionary<string, Func<LogRecord, EventBase>> systemEvents
+        private static readonly Dictionary<string, Func<LogRecord, EventBase>> systemEvents
             = new Dictionary<string, Func<LogRecord, EventBase>>()
             {
                 { AutomaticRestartEvent.Method, rec => new AutomaticRestartEvent(rec) },
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
                 // Some more esoteric event types omitted (based on InstanceEventInfo.java).
             };
 
-        private static readonly IDictionary<string, Func<LogRecord, EventBase>> accessEvents
+        private static readonly Dictionary<string, Func<LogRecord, EventBase>> accessEvents
             = new Dictionary<string, Func<LogRecord, EventBase>>()
             {
                 { AuthorizeUserTunnelEvent.Method, rec => new AuthorizeUserTunnelEvent(rec) },

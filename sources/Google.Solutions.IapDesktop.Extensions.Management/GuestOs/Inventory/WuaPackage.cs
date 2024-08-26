@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 
     internal class WuaPackageType
     {
-        private static readonly IDictionary<Guid, WuaPackageType> Types
+        private static readonly Dictionary<Guid, WuaPackageType> Types
             = new Dictionary<Guid, WuaPackageType>()
             {
                 // https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ff357803(v=vs.85)
@@ -161,7 +161,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
             return ids
                 .EnsureNotNull()
                 .Select(id => FromCategoryId(id))
-                .Where(type => type != null);
+                .Where(type => type != null)
+                .Select(type => type!);
         }
 
         public static PackageCriticality MaxCriticality(IEnumerable<string> ids)

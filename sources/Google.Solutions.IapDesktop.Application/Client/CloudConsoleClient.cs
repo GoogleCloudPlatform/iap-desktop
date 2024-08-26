@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
         /// <summary>
         /// Open log entry.
         /// </summary>
-        void OpenVmInstanceLogDetails(string projectId, string insertId, DateTime timestamp);
+        void OpenVmInstanceLogDetails(string projectId, string insertId, DateTime? timestamp);
     }
 
     public class CloudConsoleClient : ICloudConsoleClient
@@ -168,8 +168,13 @@ namespace Google.Solutions.IapDesktop.Application.Client
             }
         }
 
-        public void OpenVmInstanceLogDetails(string projectId, string insertId, DateTime timestamp)
+        public void OpenVmInstanceLogDetails(string projectId, string insertId, DateTime? timestamp)
         {
+            if (timestamp  == null)
+            {
+                timestamp = DateTime.UtcNow;
+            }
+
             OpenLogs(
                 projectId,
                 "resource.type=\"gce_instance\"\n" +

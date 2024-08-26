@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
         /// List of metadata items that have been temporarily replaced
         /// and must be restored in the end.
         /// </summary>
-        private List<Metadata.ItemsData> itemsToRestore;
+        private List<Metadata.ItemsData>? itemsToRestore;
 
         /// <summary>
         /// List of metadata keys that have been added and must be
@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
                     .ConfigureAwait(false);
 
                 Debug.Assert(oldItems != null);
-                return oldItems;
+                return oldItems!;
             }
         }
 

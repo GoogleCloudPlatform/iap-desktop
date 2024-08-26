@@ -208,7 +208,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
 
         public void OpenSelectedEventInCloudConsole()
         {
-            if (this.SelectedEvent != null)
+            if (this.SelectedEvent != null &&
+                this.SelectedEvent.LogRecord.InsertId != null)
             {
                 this.cloudConsoleAdapter.OpenVmInstanceLogDetails(
                     this.SelectedEvent.LogRecord.ProjectId,
