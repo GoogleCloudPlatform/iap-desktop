@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
         private readonly IJobService jobService;
         private readonly Service<IGuestOsInventory> packageInventory;
 
-        private string filter;
+        private string filter = string.Empty;
 
         private string WindowTitlePrefix =>
                 this.InventoryType == PackageInventoryType.AvailablePackages
@@ -65,8 +65,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
 
             this.IsPackageListEnabled = ObservableProperty.Build(false);
             this.IsLoading = ObservableProperty.Build(false);
-            this.WindowTitle = ObservableProperty.Build<string>(null);
-            this.InformationText = ObservableProperty.Build<string>(null);
+            this.WindowTitle = ObservableProperty.Build<string?>(null);
+            this.InformationText = ObservableProperty.Build<string?>(null);
         }
 
         public void ResetWindowTitle()
@@ -110,8 +110,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
 
         public ObservableProperty<bool> IsPackageListEnabled { get; }
         public ObservableProperty<bool> IsLoading { get; }
-        public ObservableProperty<string> WindowTitle { get; }
-        public ObservableProperty<string> InformationText { get; }
+        public ObservableProperty<string?> WindowTitle { get; }
+        public ObservableProperty<string?> InformationText { get; }
 
         //---------------------------------------------------------------------
         // "Input" properties.

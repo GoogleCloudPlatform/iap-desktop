@@ -58,8 +58,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             this.packageInventory = serviceProvider.GetService<Service<IGuestOsInventory>>();
             this.computeClient = serviceProvider.GetService<Service<IComputeEngineClient>>();
 
-            this.informationText = ObservableProperty.Build<string>(null);
-            this.inspectedObject = ObservableProperty.Build<object>(null);
+            this.informationText = ObservableProperty.Build<string?>(null);
+            this.inspectedObject = ObservableProperty.Build<object?>(null);
             this.windowTitle = ObservableProperty.Build(DefaultWindowTitle);
         }
 
@@ -67,12 +67,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         // Observable properties.
         //---------------------------------------------------------------------
 
-        private readonly ObservableProperty<string> informationText;
-        private readonly ObservableProperty<object> inspectedObject;
+        private readonly ObservableProperty<string?> informationText;
+        private readonly ObservableProperty<object?> inspectedObject;
         private readonly ObservableProperty<string> windowTitle;
 
-        public IObservableProperty<string> InformationText => this.informationText;
-        public IObservableProperty<object> InspectedObject => this.inspectedObject;
+        public IObservableProperty<string?> InformationText => this.informationText;
+        public IObservableProperty<object?> InspectedObject => this.inspectedObject;
         public IObservableProperty<string> WindowTitle => this.windowTitle;
 
         //---------------------------------------------------------------------
