@@ -25,6 +25,8 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 
+#pragma warning disable CA1854 // Prefer the 'IDictionary.TryGetValue(TKey, out TValue)' method
+
 namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.System
 {
     public class NotifyInstanceLocationEvent : SystemEventBase
@@ -33,12 +35,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Syst
 
         public string? ServerId => base.LogRecord.ProtoPayload?.Metadata?["serverId"]?.Value<string>();
 
-        public NodeTypeLocator NodeType
+        public NodeTypeLocator? NodeType
         {
             get
             {
+                //
                 // The node type is unqualified, e.g. "n1-node-96-624".
-
+                //
                 if (base.LogRecord.ProtoPayload?.Metadata != null && 
                     base.LogRecord.ProtoPayload.Metadata.ContainsKey("nodeType") &&
                     base.LogRecord.Resource?.Labels != null &&

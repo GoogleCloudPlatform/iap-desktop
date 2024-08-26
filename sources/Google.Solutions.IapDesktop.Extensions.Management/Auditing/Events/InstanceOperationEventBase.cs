@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
         protected abstract string ErrorMessage { get; }
 
         public override string Message => this.IsError
-            ? $"{this.ErrorMessage} [{this.Status.Message}]" + this.OperationSuffix
+            ? $"{this.ErrorMessage} [{this.Status?.Message}]" + this.OperationSuffix
             : this.SuccessMessage + this.OperationSuffix;
 
         protected string OperationSuffix

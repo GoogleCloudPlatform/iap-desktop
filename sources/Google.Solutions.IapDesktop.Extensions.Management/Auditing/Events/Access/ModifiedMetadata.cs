@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Acce
             // - modifiedMetadataKeys 
             // - addedMetadataKeys
             // in both cases, the value is an array of metadata keys.
-            var delta = record.ProtoPayload.Metadata?[fieldName];
+            var delta = record.ProtoPayload?.Metadata?[fieldName];
             var modifiedMetadataKeys = delta?["modifiedMetadataKeys"];
             if (modifiedMetadataKeys != null)
             {

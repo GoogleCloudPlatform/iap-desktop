@@ -27,6 +27,7 @@ using System.Linq;
 
 #pragma warning disable CA1056 // Uri properties should not be strings
 #pragma warning disable CA1054 // Uri parameters should not be strings
+#pragma warning disable CA1507 // Use nameof to express symbol names
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 {
@@ -142,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
             this.Criticality = criticality;
         }
 
-        public static WuaPackageType FromCategoryId(string categoryId)
+        public static WuaPackageType? FromCategoryId(string categoryId)
         {
             if (Guid.TryParse(categoryId, out var guid) &&
                 Types.TryGetValue(guid, out var type))

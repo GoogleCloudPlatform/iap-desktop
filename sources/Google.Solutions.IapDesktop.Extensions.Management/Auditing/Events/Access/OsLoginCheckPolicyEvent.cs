@@ -47,12 +47,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Acce
                  record.ProtoPayload?.MethodName == BetaMethod);
         }
 
-        public bool IsSuccess => this.LogRecord.ProtoPayload.Response?.Value<bool?>("success") == true;
+        public bool IsSuccess => this.LogRecord.ProtoPayload?.Response?.Value<bool?>("success") == true;
 
         public override string Message =>
             string.Format("OS Login access for {0} and policy {1} {2}",
-                this.LogRecord.ProtoPayload.AuthenticationInfo.PrincipalEmail,
-                this.LogRecord.ProtoPayload.Request.Value<string>("policy"),
+                this.LogRecord.ProtoPayload?.AuthenticationInfo?.PrincipalEmail,
+                this.LogRecord.ProtoPayload?.Request?.Value<string>("policy"),
                 this.IsSuccess ? "granted" : "denied");
     }
 }

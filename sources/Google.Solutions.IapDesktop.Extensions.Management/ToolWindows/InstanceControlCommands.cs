@@ -226,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows
                 var mainWindow = this.serviceProvider.GetService<IMainWindow>();
 
                 string domainName;
-                string newComputerName;
+                string? newComputerName;
 
                 using (var dialog = this.serviceProvider
                     .GetService<WindowActivator<JoinView, JoinViewModel, IDialogTheme>>()
@@ -288,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows
                                     instance.Instance,
                                     domainName,
                                     newComputerName,
-                                    credential,
+                                    credential!,
                                     jobToken)
                             .ConfigureAwait(false);
                         })

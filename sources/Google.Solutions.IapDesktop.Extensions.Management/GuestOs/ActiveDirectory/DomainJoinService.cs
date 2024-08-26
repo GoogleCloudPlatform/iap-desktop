@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
         Task JoinDomainAsync(
             InstanceLocator instance,
             string domain,
-            string newComputerName,
+            string? newComputerName,
             NetworkCredential domainCredential,
             CancellationToken cancellationToken);
     }
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
         internal async Task JoinDomainAsync(
             IStartupScriptOperation operation,
             string domain,
-            string newComputerName,
+            string? newComputerName,
             NetworkCredential domainCredential,
             CancellationToken cancellationToken)
         {

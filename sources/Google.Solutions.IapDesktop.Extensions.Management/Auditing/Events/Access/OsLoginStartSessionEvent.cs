@@ -49,11 +49,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Acce
                  record.ProtoPayload?.MethodName == BetaMethod);
         }
 
-        public string ChallengeStatus => this.LogRecord.ProtoPayload.Response?.Value<string>("status");
+        public string? ChallengeStatus => this.LogRecord.ProtoPayload?.Response?.Value<string>("status");
 
         public override string Message =>
             string.Format("Start OS Login 2FA session for {0}: {1}",
-                this.LogRecord.ProtoPayload.AuthenticationInfo.PrincipalEmail,
+                this.LogRecord.ProtoPayload?.AuthenticationInfo?.PrincipalEmail,
                 this.ChallengeStatus);
     }
 }

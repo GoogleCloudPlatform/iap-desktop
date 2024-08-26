@@ -22,6 +22,8 @@
 using Newtonsoft.Json;
 using System;
 
+#pragma warning disable CA1507 // Use nameof to express symbol names
+
 namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 {
     public class QfePackage : IPackage
