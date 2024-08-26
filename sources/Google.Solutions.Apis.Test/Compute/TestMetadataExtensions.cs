@@ -36,7 +36,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenMetadataIsEmpty_ThenAddKeyInsertsItem()
+        public void Add_WhenMetadataIsEmpty_ThenInsertsItem()
         {
             var metadata = new Metadata();
             metadata.Add("key", "value");
@@ -46,7 +46,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void WhenMetadataContainsEntry_ThenAddKeyUpdatesItem()
+        public void Add_WhenMetadataContainsEntry_ThenUpdatesItem()
         {
             var metadata = new Metadata()
             {
@@ -66,7 +66,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void WhenMetadataContainsOtherEntry_ThenAddKeyInsertsItem()
+        public void Add_WhenMetadataContainsOtherEntry_ThenInsertsItem()
         {
             var metadata = new Metadata()
             {
@@ -91,7 +91,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenMetadataIsEmpty_ThenAddMetadataInsertsItems()
+        public void AddMetadata_WhenMetadataIsEmpty_ThenInsertsItems()
         {
             var metadata = new Metadata();
 
@@ -112,7 +112,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void WhenMetadataContainsOtherEntry_ThenAddMetadataInsertsItems()
+        public void AddMetadata_WhenMetadataContainsOtherEntry_ThenInsertsItems()
         {
             var metadata = new Metadata()
             {
@@ -144,7 +144,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void WhenMetadataContainsEntry_ThenAddMetadataUpdatesItems()
+        public void AddMetadata_WhenMetadataContainsEntry_ThenUpdatesItems()
         {
             var metadata = new Metadata()
             {
@@ -180,14 +180,14 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenMetadataIsNull_ThenGetValueReturnsNull()
+        public void GetValue_WhenMetadataIsNull_ThenReturnsNull()
         {
             var metadata = new Metadata();
             Assert.IsNull(metadata.GetValue("key"));
         }
 
         [Test]
-        public void WhenItemNotPresent_ThenGetValueReturnsNull()
+        public void GetValue_WhenItemNotPresent_ThenReturnsNull()
         {
             var metadata = new Metadata()
             {
@@ -204,7 +204,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void WhenItemPresent_ThenGetValueReturnsValue()
+        public void GetValue_WhenItemPresent_ThenReturnsValue()
         {
 
             var metadata = new Metadata()
@@ -227,19 +227,19 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenMetadataIsNull_ThenGetFlagReturnsNull()
+        public void GetFlag_WhenMetadataIsNull_ThenReturnsNull()
         {
             Assert.IsNull(MetadataExtensions.GetFlag((Metadata?)null, "flag"));
         }
 
         [Test]
-        public void WhenMetadataItemsIsNull_ThenGetFlagReturnsNull()
+        public void GetFlag_WhenMetadataItemsIsNull_ThenReturnsNull()
         {
             Assert.IsNull(new Metadata().GetFlag("flag"));
         }
 
         [Test]
-        public void WhenValueNull_ThenGetFlagReturnsNull()
+        public void GetFlag_WhenValueNull_ThenReturnsNull()
         {
             var metadata = new Metadata()
             {
@@ -257,7 +257,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void WhenValueIsTruthy_ThenGetFlagReturnsTrue(
+        public void GetFlag_WhenValueIsTruthy_ThenReturnsTrue(
             [Values("Y", "y\n", "True ", " 1 ")] string truthyValue)
         {
             var metadata = new Metadata()
@@ -276,7 +276,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void WhenValueIsNotTruthy_ThenGetFlagReturnsFalse(
+        public void GetFlag_WhenValueIsNotTruthy_ThenReturnsFalse(
             [Values("N", " no\n", "FALSE", " 0 ")] string untruthyValue)
         {
 
@@ -296,7 +296,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void WhenValueIsJunk_ThenGetFlagReturnsNull(
+        public void GetFlag_WhenValueIsJunk_ThenReturnsNull(
             [Values(null, "", "junk")] string untruthyValue)
         {
 
@@ -320,7 +320,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenMetadataIsEmpty_ThenAsStringReturnsEmptyList()
+        public void AsString_WhenMetadataIsEmpty_ThenReturnsEmptyList()
         {
             var metadata = new Metadata();
 
@@ -328,7 +328,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void WhenMetadataContainsEntries_ThenAsStringReturnsList()
+        public void AsString_WhenMetadataContainsEntries_ThenReturnsList()
         {
             var metadata = new Metadata()
             {

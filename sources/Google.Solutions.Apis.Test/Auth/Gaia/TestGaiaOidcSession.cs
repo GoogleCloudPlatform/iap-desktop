@@ -81,7 +81,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNewSessionNotCompatible_ThenSpliceThrowsException()
+        public void Splice_WhenNewSessionNotCompatible_ThenThrowsException()
         {
             var idToken = new UnverifiedGaiaJsonWebToken(
                 new GoogleJsonWebSignature.Header(),
@@ -98,7 +98,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void WhenNewSessionCompatible_ThenSpliceReplacesTokens()
+        public void Splice_WhenNewSessionCompatible_ThenReplacesTokens()
         {
             var idToken = new UnverifiedGaiaJsonWebToken(
                 new GoogleJsonWebSignature.Header(),
@@ -134,7 +134,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         //---------------------------------------------------------------------
 
         [Test]
-        public void TerminateRaisesEvent()
+        public void Terminate()
         {
             var idToken = new UnverifiedGaiaJsonWebToken(
                 new GoogleJsonWebSignature.Header(),
@@ -159,7 +159,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task RevokeGrantRevokesRefreshToken()
+        public async Task RevokeGrant_RevokesRefreshToken()
         {
             var flow = new Mock<IAuthorizationCodeFlow>();
 
@@ -199,7 +199,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenHdSet_ThenCreateDomainSpecificServiceUriReturnsUri()
+        public void CreateDomainSpecificServiceUri_WhenHdSet()
         {
             var idToken = new UnverifiedGaiaJsonWebToken(
                 new GoogleJsonWebSignature.Header(),
@@ -219,7 +219,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void WhenHdNotSet_ThenCreateDomainSpecificServiceUriReturnsUri()
+        public void CreateDomainSpecificServiceUri_WhenHdNotSet()
         {
             var idToken = new UnverifiedGaiaJsonWebToken(
                 new GoogleJsonWebSignature.Header(),

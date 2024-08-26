@@ -77,7 +77,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public void WhenNotEnrolled_ThenFlowUsesTls(
+        public void AuthorizationUrl_WhenNotEnrolled_ThenUsesTls(
             [Values(
                 DeviceEnrollmentState.NotEnrolled,
                 DeviceEnrollmentState.Disabled)] DeviceEnrollmentState state)
@@ -97,7 +97,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public void WhenEnrolled_ThenFlowUsesMtls()
+        public void AuthorizationUrl_WhenEnrolled_ThenUsesMtls()
         {
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Enrolled);

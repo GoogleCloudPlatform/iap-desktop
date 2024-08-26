@@ -101,11 +101,11 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         //---------------------------------------------------------------------
-        // CreateServiceInitializer.
+        // Initializer.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNotEnrolled_ThenClientUsesTls(
+        public void Initializer_WhenNotEnrolled_ThenClientUsesTls(
             [Values(
                 DeviceEnrollmentState.NotEnrolled,
                 DeviceEnrollmentState.Disabled)] DeviceEnrollmentState state)
@@ -126,7 +126,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         [Test]
-        public void WhenEnrolled_ThenCreateServiceInitializerUsesTlsUsesMtls()
+        public void Initializer_WhenEnrolled_ThenCreateServiceInitializerUsesTlsUsesMtls()
         {
             var endpoint = new ServiceEndpoint<SampleClient>(
                 ServiceRoute.Public,
@@ -146,7 +146,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         [Test]
-        public void WhenPscOverrideFound_ThenCreateServiceInitializerUsesPsc()
+        public void Initializer_WhenPscOverrideFound_ThenCreateServiceInitializerUsesPsc()
         {
             var authorization = CreateAuthorization(DeviceEnrollmentState.Disabled, null);
 

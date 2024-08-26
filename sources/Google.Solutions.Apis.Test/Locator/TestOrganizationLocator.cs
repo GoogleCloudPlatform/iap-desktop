@@ -40,7 +40,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPathIsValid_ParseReturnsObject()
+        public void Parse_WhenPathIsValid_ParseReturnsObject()
         {
             var ref1 = OrganizationLocator.Parse(
                 "organizations/12345678900001");
@@ -50,13 +50,13 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenPathLacksOrganization_ParseThrowsArgumentException()
+        public void Parse_WhenPathLacksOrganization_ParseThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => OrganizationLocator.Parse("/1"));
         }
 
         [Test]
-        public void WhenPathInvalid_ParseThrowsArgumentException(
+        public void Parse_WhenPathInvalid_ParseThrowsArgumentException(
             [Values("x/1", "organizations/", "organizations/0xxx")] string path)
         {
             Assert.Throws<ArgumentException>(() => OrganizationLocator.Parse(path));
@@ -67,7 +67,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCreatedFromPath_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
         {
             var path = "organizations/12345678900001";
 

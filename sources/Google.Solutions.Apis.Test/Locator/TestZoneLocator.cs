@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPathIsValid_ParseReturnsObject()
+        public void Parse_WhenPathIsValid_ParseReturnsObject()
         {
             var ref1 = ZoneLocator.Parse(
                 "projects/project-1/zones/us-central1-a");
@@ -58,7 +58,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
         {
             var ref1 = ZoneLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a");
@@ -69,7 +69,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByGoogleapisHost_ParseReturnsObject()
         {
             var ref1 = ZoneLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a");
@@ -80,14 +80,14 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenPathLacksProject_ParseThrowsArgumentException()
+        public void Parse_WhenPathLacksProject_ParseThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => ZoneLocator.Parse(
                 "/project-1/project-1/zones/us-central1-a"));
         }
 
         [Test]
-        public void WhenPathInvalid_ParseThrowsArgumentException()
+        public void Parse_WhenPathInvalid_ParseThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => ZoneLocator.Parse(
                 "projects/project-1/zone/us-central1-a"));
@@ -100,7 +100,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
+        public void Equals_WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
         {
             var ref1 = new ZoneLocator("proj-1", "us-central1-a");
             var ref2 = new ZoneLocator("proj-2", "us-central1-a");
@@ -116,7 +116,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCreatedFromPath_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
         {
             var path = "projects/project-1/zones/us-central1-a";
 
@@ -126,7 +126,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenCreatedFromUrl_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromUrl_ThenToStringReturnsPath()
         {
             var path = "projects/project-1/zones/us-central1-a";
 

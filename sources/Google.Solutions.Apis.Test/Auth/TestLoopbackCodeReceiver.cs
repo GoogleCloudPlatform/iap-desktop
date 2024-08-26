@@ -62,7 +62,7 @@ namespace Google.Solutions.Apis.Test.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCancelledBeforeListen_ThenReceiveCodeThrowsException()
+        public void ReceiveCode_WhenCancelledBeforeListen_ThenThrowsException()
         {
             using (var tokenSource = new CancellationTokenSource())
             {
@@ -79,7 +79,7 @@ namespace Google.Solutions.Apis.Test.Auth
         }
 
         [Test]
-        public void WhenCancelledAfterListen_ThenReceiveCodeThrowsException()
+        public void ReceiveCode_WhenCancelledAfterListen_ThenThrowsException()
         {
             using (var tokenSource = new CancellationTokenSource())
             {
@@ -96,7 +96,7 @@ namespace Google.Solutions.Apis.Test.Auth
         }
 
         [Test]
-        public async Task WhenCodeReceived_ThenReceiveCodeReturns()
+        public async Task ReceiveCode_WhenCodeReceived_ThenReturns()
         {
             using (var tokenSource = new CancellationTokenSource())
             {
@@ -125,7 +125,7 @@ namespace Google.Solutions.Apis.Test.Auth
         }
 
         [Test]
-        public async Task WhenErrorReceived_ThenReceiveCodeReturns()
+        public async Task ReceiveCode_WhenErrorReceived_ThenReturns()
         {
             using (var tokenSource = new CancellationTokenSource())
             {
@@ -154,7 +154,7 @@ namespace Google.Solutions.Apis.Test.Auth
         }
 
         [Test]
-        public async Task WhenReceivingIrrelevantRequests_ThenReceiveCodeKeepsListening(
+        public async Task ReceiveCode_WhenReceivingIrrelevantRequests_ThenKeepsListening(
             [Values("/", "/auth/")] string path)
         {
             using (var tokenSource = new CancellationTokenSource())

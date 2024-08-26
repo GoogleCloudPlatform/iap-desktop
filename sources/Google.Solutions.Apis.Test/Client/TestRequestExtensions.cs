@@ -41,7 +41,7 @@ namespace Google.Solutions.Apis.Test.Client
     public class TestExecuteAsStreamExtensions : CommonFixtureBase
     {
         [Test]
-        public async Task WhenApiReturns404_ThenExecuteAsStreamOrThrowAsyncThrowsException(
+        public async Task ExecuteAsStreamOrThrow_WhenApiReturns404_ThenThrowsException(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential
             )
         {
@@ -56,7 +56,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         [Test]
-        public async Task WhenOperationFailsWithoutErrorDetails_ThenExecuteAndAwaitOperationThrowsException()
+        public async Task ExecuteAndAwaitOperation_WhenOperationFailsWithoutErrorDetails_ThenThrowsException()
         {
             var request = new Mock<IClientServiceRequest<Operation>>();
             request
@@ -85,7 +85,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         [Test]
-        public async Task WhenOperationFailsWithErrorDetails_ThenExecuteAndAwaitOperationThrowsExceptionWithReason()
+        public async Task ExecuteAndAwaitOperation_WhenOperationFailsWithErrorDetails_ThenThrowsExceptionWithReason()
         {
             var request = new Mock<IClientServiceRequest<Operation>>();
             request

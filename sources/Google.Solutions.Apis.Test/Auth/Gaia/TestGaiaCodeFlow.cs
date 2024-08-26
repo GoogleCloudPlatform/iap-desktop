@@ -31,7 +31,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
     public class TestGaiaCodeFlow
     {
         [Test]
-        public void WhenNotEnrolled_ThenFlowUsesTls(
+        public void Initializer_WhenNotEnrolled_ThenFlowUsesTls(
             [Values(
                 DeviceEnrollmentState.NotEnrolled,
                 DeviceEnrollmentState.Disabled)] DeviceEnrollmentState state)
@@ -50,7 +50,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void WhenEnrolled_ThenFlowUsesMtls()
+        public void Initializer_WhenEnrolled_ThenFlowUsesMtls()
         {
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Enrolled);

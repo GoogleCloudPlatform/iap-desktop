@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPathIsValid_ParseReturnsObject()
+        public void Parse_WhenPathIsValid_ParseReturnsObject()
         {
             var ref1 = ProjectLocator.Parse(
                 "projects/project-1");
@@ -58,7 +58,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
         {
             var ref1 = ProjectLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/project-1");
@@ -69,7 +69,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByGoogleapisHost_ParseReturnsObject()
         {
             var ref1 = ProjectLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/project-1");
@@ -80,14 +80,14 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenPathLacksProject_ParseThrowsArgumentException()
+        public void Parse_WhenPathLacksProject_ParseThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => ProjectLocator.Parse(
                 "/project-1"));
         }
 
         [Test]
-        public void WhenPathInvalid_ParseThrowsArgumentException()
+        public void Parse_WhenPathInvalid_ParseThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => ProjectLocator.Parse(
                 "projects/project-1/zone"));
@@ -99,7 +99,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
+        public void Equals_WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
         {
             var ref1 = new ProjectLocator("proj-1");
             var ref2 = new ProjectLocator("proj-2");
@@ -115,7 +115,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCreatedFromPath_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
         {
             var path = "projects/project-1";
 
@@ -125,7 +125,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenCreatedFromUrl_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromUrl_ThenToStringReturnsPath()
         {
             var path = "projects/project-1";
 

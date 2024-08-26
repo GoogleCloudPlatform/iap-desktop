@@ -37,7 +37,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTokenMissesPart_ThenDecodeThrowsException()
+        public void Decode_WhenTokenMissesPart()
         {
             Assert.Throws<InvalidJwtException>(
                 () => UnverifiedGaiaJsonWebToken.Decode("a"));
@@ -46,7 +46,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void WhenJsonIsMalformed_ThenDecodeThrowsException()
+        public void Decode_WhenJsonIsMalformed()
         {
             Assert.Throws<InvalidJwtException>(
                 () => UnverifiedGaiaJsonWebToken.Decode("YQ.YQ.YQ"));
@@ -65,7 +65,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenJsonIsMalformed_ThenTryDecodeReturnsFalse()
+        public void TryDecode_WhenJsonIsMalformed()
         {
             Assert.IsFalse(UnverifiedGaiaJsonWebToken.TryDecode("YQ.YQ.YQ", out var _));
         }
@@ -85,7 +85,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToStringReturnsEncodedToken()
+        public void ToString_ReturnsEncodedToken()
         {
             var jwt = UnverifiedGaiaJsonWebToken.Decode(SampleJwtWithInvalidSignature);
             Assert.AreEqual(SampleJwtWithInvalidSignature, jwt.ToString());

@@ -31,7 +31,7 @@ namespace Google.Solutions.Apis.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenVpcScError_ThenVpcServiceControlTroubleshootingIdContainsId()
+        public void VpcServiceControlTroubleshootingId_WhenVpcScError()
         {
             var e = new GoogleApiException("test")
             {
@@ -79,7 +79,7 @@ namespace Google.Solutions.Apis.Test
         }
 
         [Test]
-        public void WhenAccessDeniedError_ThenVpcServiceControlTroubleshootingIdContainsIdIsNull()
+        public void VpcServiceControlTroubleshootingId_WhenAccessDeniedError()
         {
             var e = new GoogleApiException("test")
             {

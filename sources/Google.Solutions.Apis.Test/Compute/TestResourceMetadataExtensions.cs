@@ -55,7 +55,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUsingNewKey_ThenAddInstanceMetadataSucceeds(
+        public async Task AddMetadata_WhenUsingNewKey_ThenAddInstanceMetadataSucceeds(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
             var locator = await testInstance;
@@ -83,7 +83,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUsingExistingKey_ThenAddInstanceMetadataSucceeds(
+        public async Task AddMetadata_WhenUsingExistingKey_ThenAddInstanceMetadataSucceeds(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
             var locator = await testInstance;
@@ -118,7 +118,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUpdateConflictingOnFirstAttempt_ThenUpdateInstanceMetadataRetriesAndSucceeds(
+        public async Task UpdateMetadata_WhenUpdateConflictingOnFirstAttempt(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
             var locator = await testInstance;
@@ -159,7 +159,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUpdateKeepsConflicting_ThenUpdateInstanceMetadataThrowsException(
+        public async Task UpdateMetadata_WhenUpdateKeepsConflicting(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
             var locator = await testInstance;
@@ -190,7 +190,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUsingNewKey_ThenAddProjectMetadataSucceeds()
+        public async Task AddMetadata_WhenUsingNewKey_ThenAddProjectMetadataSucceeds()
         {
             var key = Guid.NewGuid().ToString();
             var value = "metadata value";
@@ -212,7 +212,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUsingExistingKey_ThenAddProjectMetadataSucceeds()
+        public async Task AddMetadata_WhenUsingExistingKey_ThenAddProjectMetadataSucceeds()
         {
             var key = Guid.NewGuid().ToString();
 
@@ -241,7 +241,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUpdateConflictingOnFirstAttempt_ThenUpdateProjectMetadataRetriesAndSucceeds()
+        public async Task AddMetadata_WhenUpdateConflictingOnFirstAttempt_ThenUpdateProjectMetadataRetriesAndSucceeds()
         {
             var key = Guid.NewGuid().ToString();
 
@@ -276,7 +276,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void WhenUpdateKeepsConflicting_ThenUpdateProjectMetadataThrowsException()
+        public void AddMetadata_WhenUpdateKeepsConflicting_ThenUpdateProjectMetadataThrowsException()
         {
             var key = Guid.NewGuid().ToString();
 
@@ -300,27 +300,27 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         //---------------------------------------------------------------------
-        // GetValue (project).
+        // GetFlag (project).
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProjectMetadataIsNull_ThenGetFlagReturnsNull()
+        public void GetFlag_WhenProjectMetadataIsNull_ThenGetFlagReturnsNull()
         {
             Assert.IsNull(new Project().GetFlag("flag"));
         }
 
         //---------------------------------------------------------------------
-        // GetValue (instance).
+        // GetFlag (instance).
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInstanceMetadataIsNull_ThenGetFlagReturnsNull()
+        public void GetFlag_WhenInstanceMetadataIsNull_ThenGetFlagReturnsNull()
         {
             Assert.IsNull(new Instance().GetFlag(new Project(), "flag"));
         }
 
         [Test]
-        public void WhenInstanceFlagTrue_ThenGetFlagReturnsTrue()
+        public void GetFlag_WhenInstanceFlagTrue_ThenGetFlagReturnsTrue()
         {
             var project = new Project();
             var instance = new Instance()
@@ -342,7 +342,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void WhenProjectFlagTrueAndInstanceFlagNull_ThenGetFlagReturnsTrue()
+        public void GetFlag_WhenProjectFlagTrueAndInstanceFlagNull_ThenGetFlagReturnsTrue()
         {
             var project = new Project()
             {
@@ -364,7 +364,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void WhenProjectFlagTrueAndInstanceFlagFalse_ThenGetFlagReturnsFalse()
+        public void GetFlag_WhenProjectFlagTrueAndInstanceFlagFalse_ThenGetFlagReturnsFalse()
         {
             var project = new Project()
             {
@@ -399,7 +399,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void WhenProjectFlagFalseAndInstanceFlagTrue_ThenGetFlagReturnsTrue()
+        public void GetFlag_WhenProjectFlagFalseAndInstanceFlagTrue_ThenGetFlagReturnsTrue()
         {
             var project = new Project()
             {

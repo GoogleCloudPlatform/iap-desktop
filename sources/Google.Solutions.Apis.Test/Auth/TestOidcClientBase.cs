@@ -91,7 +91,7 @@ namespace Google.Solutions.Apis.Test.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenOfflineCredentialNotFound_ThenTryAuthorizeSilentlyReturnsNull()
+        public async Task TryAuthorizeSilently_WhenOfflineCredentialNotFound_ThenReturnsNull()
         {
             // Empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
@@ -107,7 +107,7 @@ namespace Google.Solutions.Apis.Test.Auth
         }
 
         [Test]
-        public async Task WhenOfflineCredentialFromWrongIssuer_ThenTryAuthorizeSilentlyRetainsStore()
+        public async Task TryAuthorizeSilently_WhenOfflineCredentialFromWrongIssuer_ThenRetainsStore()
         {
             // Non-empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
@@ -124,7 +124,7 @@ namespace Google.Solutions.Apis.Test.Auth
         }
 
         [Test]
-        public async Task WhenActivatingOfflineCredentialFails_ThenTryAuthorizeSilentlyRetainsStore()
+        public async Task TryAuthorizeSilently_WhenActivatingOfflineCredentialFails_ThenRetainsStore()
         {
             // Non-empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
@@ -146,7 +146,7 @@ namespace Google.Solutions.Apis.Test.Auth
         }
 
         [Test]
-        public async Task WhenActivatingOfflineCredentialSucceeds_ThenTryAuthorizeSilentlySavesOfflineCredential()
+        public async Task TryAuthorizeSilently_WhenActivatingOfflineCredentialSucceeds_ThenSavesOfflineCredential()
         {
             // Non-empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
@@ -172,7 +172,7 @@ namespace Google.Solutions.Apis.Test.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenAuthorizationSucceeds_ThenAuthorizeSavesOfflineCredential()
+        public async Task Authorize_WhenAuthorizationSucceeds_ThenSavesOfflineCredential()
         {
             // Empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();
@@ -195,7 +195,7 @@ namespace Google.Solutions.Apis.Test.Auth
         }
 
         [Test]
-        public async Task WhenOfflineCredentialFromDifferentIssuer_ThenAuthorizationIgnoresOfflineCredential()
+        public async Task Authorize_WhenOfflineCredentialFromDifferentIssuer_ThenIgnoresOfflineCredential()
         {
             // Wrong offline credential.
             var store = new Mock<IOidcOfflineCredentialStore>();

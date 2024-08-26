@@ -33,7 +33,7 @@ namespace Google.Solutions.Apis.Test.Analytics
         //---------------------------------------------------------------------
 
         [Test]
-        public void GenerateParametersSetsDebugMode()
+        public void GenerateParameters_SetsDebugMode()
         {
             var session = new MeasurementSession("client-id")
             {
@@ -48,7 +48,7 @@ namespace Google.Solutions.Apis.Test.Analytics
         }
 
         [Test]
-        public void GenerateParametersSetsSessionId()
+        public void GenerateParameters_SetsSessionId()
         {
             var session = new MeasurementSession("client-id");
 
@@ -60,7 +60,7 @@ namespace Google.Solutions.Apis.Test.Analytics
         }
 
         [Test]
-        public void GenerateParametersSetsEngagementTime()
+        public void GenerateParameters_SetsEngagementTime()
         {
             var session = new MeasurementSession("client-id");
 

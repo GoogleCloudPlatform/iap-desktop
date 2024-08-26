@@ -33,14 +33,14 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPrincipalIdentifierIsNullOrEmpty_ThenFromPrincipalIdentifierThrowsException()
+        public void FromPrincipalIdentifier_WhenPrincipalIdentifierIsNullOrEmpty()
         {
             Assert.Throws<ArgumentNullException>(() => WorkforcePoolIdentity.FromPrincipalIdentifier(null!));
             Assert.Throws<ArgumentException>(() => WorkforcePoolIdentity.FromPrincipalIdentifier(string.Empty));
         }
 
         [Test]
-        public void WhenPrincipalIdentifierIsMalformed_ThenFromPrincipalIdentifierThrowsException(
+        public void FromPrincipalIdentifier_WhenPrincipalIdentifierIsMalformed(
             [Values("x", "principal://", " ")] string id)
         {
             Assert.Throws<ArgumentException>(
@@ -48,7 +48,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public void WhenPrincipalIdentifierComponentIsEmpty_ThenFromPrincipalIdentifierThrowsException(
+        public void FromPrincipalIdentifier_WhenPrincipalIdentifierComponentIsEmpty(
             [Values(
                 "principal://iam.googleapis.com/locations//workforcePools/POOL/subject/SUBJECT",
                 "principal://iam.googleapis.com/locations/LOCATION/workforcePools//subject/SUBJECT",
@@ -60,7 +60,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public void WhenPrincipalIdentifierValid_ThenFromPrincipalIdentifierSucceeds()
+        public void FromPrincipalIdentifier_WhenPrincipalIdentifierValid()
         {
             var subject = WorkforcePoolIdentity.FromPrincipalIdentifier(
                 "principal://iam.googleapis.com/locations/LOCATION/workforcePools/POOL/subject/SUBJECT");
@@ -75,7 +75,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToStringReturnsPrincipalIdentifier()
+        public void ToString_ReturnsPrincipalIdentifier()
         {
             var id = "principal://iam.googleapis.com/locations/LOCATION/workforcePools/POOL/subject/SUBJECT";
             var subject = WorkforcePoolIdentity.FromPrincipalIdentifier(id);

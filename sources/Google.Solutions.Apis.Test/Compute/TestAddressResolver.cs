@@ -38,11 +38,11 @@ namespace Google.Solutions.Apis.Test.Compute
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
         //---------------------------------------------------------------------
-        // GetAddressAsync.
+        // GetAddress.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInstanceLookupFails_ThenGetPrimaryInternalAddressThrowsException()
+        public void GetAddress_WhenInstanceLookupFails()
         {
             var computeClient = new Mock<IComputeEngineClient>();
             computeClient
@@ -59,11 +59,11 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         //---------------------------------------------------------------------
-        // GetAddressAsync - PrimaryInternal.
+        // GetAddress - PrimaryInternal.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInstanceLacksInternalIp_ThenGetPrimaryInternalAddressThrowsException()
+        public void GetAddress_WhenInstanceLacksInternalIp()
         {
             var computeClient = new Mock<IComputeEngineClient>();
             computeClient
@@ -80,7 +80,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenInstanceHasMultipleNics_ThenGetPrimaryInternalAddressReturnsEndpointForNic0()
+        public async Task GetAddress_WhenInstanceHasMultipleNics()
         {
             var instance = new Instance()
             {
@@ -118,7 +118,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenInstanceHasDualStackNic_ThenGetPrimaryInternalAddressReturnsIpv4()
+        public async Task GetAddress_WhenInstanceHasDualStackNic()
         {
             var instance = new Instance()
             {
@@ -161,11 +161,11 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         //---------------------------------------------------------------------
-        // GetAddressAsync - External.
+        // GetAddress - External.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInstanceHasNoExternalAddress_ThenGeExternalAddressThrowsException()
+        public void GetAddress_WhenInstanceHasNoExternalAddress()
         {
             var instance = new Instance()
             {
@@ -195,7 +195,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenInstanceHasExternalAddress_ThenGetExternalAddressReturnsIpv4()
+        public async Task GetAddress_WhenInstanceHasExternalAddress()
         {
             var instance = new Instance()
             {

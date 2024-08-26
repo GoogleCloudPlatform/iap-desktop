@@ -43,7 +43,7 @@ namespace Google.Solutions.Apis.Test.Crm
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenPscEnabled_ThenRequestSucceeds(
+        public async Task GetProject_WhenPscEnabled_ThenRequestSucceeds(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var address = await Dns
@@ -76,7 +76,7 @@ namespace Google.Solutions.Apis.Test.Crm
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUserHasPermission_ThenIsAccessGrantedReturnsTrue(
+        public async Task IsAccessGranted_WhenUserHasPermission_ThenIsAccessGrantedReturnsTrue(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
@@ -94,7 +94,7 @@ namespace Google.Solutions.Apis.Test.Crm
         }
 
         [Test]
-        public async Task WhenUserLacksOnePermission_ThenIsAccessGrantedReturnsFalse(
+        public async Task IsAccessGranted_WhenUserLacksOnePermission_ThenIsAccessGrantedReturnsFalse(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
@@ -116,7 +116,7 @@ namespace Google.Solutions.Apis.Test.Crm
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUserInViewerRole_ThenGetProjectReturnsProject(
+        public async Task GetProject_WhenUserInViewerRole_ThenGetProjectReturnsProject(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
@@ -134,7 +134,7 @@ namespace Google.Solutions.Apis.Test.Crm
         }
 
         [Test]
-        public async Task WhenUserNotInRole_ThenGetProjectThrowsResourceAccessDeniedException(
+        public async Task GetProject_WhenUserNotInRole_ThenGetProjectThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
@@ -148,7 +148,7 @@ namespace Google.Solutions.Apis.Test.Crm
         }
 
         [Test]
-        public async Task WhenProjectIdInvalid_ThenGetProjectThrowsResourceAccessDeniedException(
+        public async Task GetProject_WhenProjectIdInvalid_ThenGetProjectThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
@@ -162,11 +162,11 @@ namespace Google.Solutions.Apis.Test.Crm
         }
 
         //---------------------------------------------------------------------
-        // ListProjectsAsync.
+        // ListProjects.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenProjectIdExists_ThenQueryProjectsByIdReturnsProject(
+        public async Task ListProjects_WhenProjectIdExists_ThenQueryProjectsByIdReturnsProject(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
@@ -186,7 +186,7 @@ namespace Google.Solutions.Apis.Test.Crm
         }
 
         [Test]
-        public async Task WhenProjectIdExists_ThenQueryProjectsByPrefixReturnsProject(
+        public async Task ListProjects_WhenProjectIdExists_ThenQueryProjectsByPrefixReturnsProject(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
@@ -215,7 +215,7 @@ namespace Google.Solutions.Apis.Test.Crm
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenProjectIdInvalid_ThenFindOrganizationThrowsResourceAccessDeniedException(
+        public async Task FindOrganization_WhenProjectIdInvalid_ThenFindOrganizationThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.ServiceUsageConsumer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
@@ -229,7 +229,7 @@ namespace Google.Solutions.Apis.Test.Crm
         }
 
         [Test]
-        public async Task WhenUserInRole_ThenFindOrganizationReturnsId(
+        public async Task FindOrganization_WhenUserInRole_ThenFindOrganizationReturnsId(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
@@ -251,7 +251,7 @@ namespace Google.Solutions.Apis.Test.Crm
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenOrganizationIdInvalid_ThenGetOrganizationThrowsResourceAccessDeniedException(
+        public async Task GetOrganization_WhenOrganizationIdInvalid_ThenGetOrganizationThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
@@ -266,7 +266,7 @@ namespace Google.Solutions.Apis.Test.Crm
         }
 
         [Test]
-        public async Task WhenUserNotInRole_ThenGetOrganizationThrowsResourceAccessDeniedException(
+        public async Task GetOrganization_WhenUserNotInRole_ThenGetOrganizationThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ResourceManagerClient(
@@ -291,7 +291,7 @@ namespace Google.Solutions.Apis.Test.Crm
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTermContainsSpecialCharacters_ThenByProjectIdReturnsFilter()
+        public void ProjectFilter_WhenTermContainsSpecialCharacters_ThenByProjectIdReturnsFilter()
         {
             Assert.AreEqual(
                 "id:\"foo-bar\"",
@@ -299,7 +299,7 @@ namespace Google.Solutions.Apis.Test.Crm
         }
 
         [Test]
-        public void WhenTermContainsSpecialCharacters_ThenByTermReturnsFilter()
+        public void ProjectFilter_WhenTermContainsSpecialCharacters_ThenByTermReturnsFilter()
         {
             Assert.AreEqual(
                 "name:\"*foo-bar*\" OR id:\"*foo-bar*\"",
@@ -307,7 +307,7 @@ namespace Google.Solutions.Apis.Test.Crm
         }
 
         [Test]
-        public void WhenTermEmpty_ThenByTermReturnsFilter()
+        public void ProjectFilter_WhenTermEmpty_ThenByTermReturnsFilter()
         {
             Assert.AreEqual(
                 "name:\"**\" OR id:\"**\"",

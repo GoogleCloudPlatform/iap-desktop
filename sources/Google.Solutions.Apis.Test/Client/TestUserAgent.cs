@@ -61,7 +61,7 @@ namespace Google.Solutions.Apis.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToStringIncludesPlatform()
+        public void ToString_IncludesPlatform()
         {
             var ua = new UserAgent("WidgetTool", new Version(1, 0), "Windows 95");
 
@@ -72,7 +72,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         [Test]
-        public void ToStringIncludesExtension()
+        public void ToString_IncludesExtension()
         {
             var ua = new UserAgent("WidgetTool", new Version(1, 0), "Windows 95")
             {
@@ -90,7 +90,7 @@ namespace Google.Solutions.Apis.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToApplicationNameDoesNotIncludeExtensionsOrClrVersion()
+        public void ToApplicationName_DoesNotIncludeExtensionsOrClrVersion()
         {
             var ua = new UserAgent("WidgetTool", new Version(1, 0), "Windows 95")
             {

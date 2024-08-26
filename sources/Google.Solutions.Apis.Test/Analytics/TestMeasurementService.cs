@@ -35,7 +35,7 @@ namespace Google.Solutions.Apis.Test.Analytics
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenClientIdMissingAndDebugModeIsOff_ThenCollectSucceeds()
+        public async Task Collect_WhenClientIdMissingAndDebugModeIsOff()
         {
             var service = new MeasurementService(new MeasurementService.Initializer()
             {
@@ -62,7 +62,7 @@ namespace Google.Solutions.Apis.Test.Analytics
         }
 
         [Test]
-        public void WhenClientIdMissingAndDebugModeIsOn_ThenCollectThrowsException()
+        public void Collect_WhenClientIdMissingAndDebugModeIsOn()
         {
             var service = new MeasurementService(new MeasurementService.Initializer()
             {

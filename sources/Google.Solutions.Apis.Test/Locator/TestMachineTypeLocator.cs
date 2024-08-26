@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPathIsValid_ParseReturnsObject()
+        public void Parse_WhenPathIsValid_ParseReturnsObject()
         {
             var ref1 = MachineTypeLocator.Parse(
                 "projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64");
@@ -59,7 +59,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
         {
             var ref1 = MachineTypeLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64");
@@ -71,7 +71,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByGoogleapisHost_ParseReturnsObject()
         {
             var ref1 = MachineTypeLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64");
@@ -83,7 +83,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenUsingBetaApi_ParseReturnsObject()
+        public void Parse_WhenUsingBetaApi_ParseReturnsObject()
         {
             var ref1 = MachineTypeLocator.Parse(
                  "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64");
@@ -94,14 +94,14 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenPathLacksProject_ParseThrowsArgumentException()
+        public void Parse_WhenPathLacksProject_ParseThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => MachineTypeLocator.Parse(
                 "project-1/zones/us-central1-a/machineTypes/n2d-standard-64"));
         }
 
         [Test]
-        public void WhenPathInvalid_ParseThrowsArgumentException()
+        public void Parse_WhenPathInvalid_ParseThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => MachineTypeLocator.Parse(
                 "project-1/zones/us-central1-a/machineTypes/"));
@@ -116,7 +116,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
+        public void Equals_WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
         {
             var ref1 = new MachineTypeLocator("proj", "zone1", "n2d-standard-64");
             var ref2 = new MachineTypeLocator("proj", "zone2", "n2d-standard-64");
@@ -132,7 +132,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCreatedFromPath_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
         {
             var path = "projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64";
 
@@ -142,7 +142,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenCreatedFromUrl_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromUrl_ThenToStringReturnsPath()
         {
             var path = "projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64";
 

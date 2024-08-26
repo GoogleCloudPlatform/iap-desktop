@@ -77,7 +77,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         //---------------------------------------------------------------------
-        // AuthorizeWithBrowser.
+        // Authorize.
         //---------------------------------------------------------------------
 
         private class WorkforcePoolClientWithMockFlow : WorkforcePoolClient
@@ -118,7 +118,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public void WhenBrowserFlowFails_ThenAuthorizeWithBrowserThrowsException()
+        public void Authorize_WhenBrowserFlowFails_ThenThrowsException()
         {
             var store = new OfflineStore();
             var client = new WorkforcePoolClientWithMockFlow(
@@ -145,7 +145,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public void WhenTokenExchangeFails_ThenAuthorizeWithBrowserThrowsException()
+        public void Authorize_WhenTokenExchangeFails_ThenThrowsException()
         {
             var store = new OfflineStore();
             var client = new WorkforcePoolClientWithMockFlow(
@@ -182,7 +182,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public async Task WhenTokenExchangeSucceeds_ThenAuthorizeWithBrowserReturnsSession()
+        public async Task Authorize_WhenTokenExchangeSucceeds_ThenReturnsSession()
         {
             var store = new OfflineStore();
             var client = new WorkforcePoolClientWithMockFlow(
@@ -236,7 +236,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenTokenExchangeFails_ThenTryAuthorizeSilentlyReturnsNull()
+        public async Task TryAuthorizeSilently_WhenTokenExchangeFails_ThenReturnsNull()
         {
             var store = new OfflineStore()
             {
@@ -271,7 +271,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public async Task WhenTokenExchangeSucceeds_ThenTryAuthorizeSilentlyReturnsSession()
+        public async Task TryAuthorizeSilently_WhenTokenExchangeSucceeds_ThenReturnsSession()
         {
             var store = new OfflineStore()
             {

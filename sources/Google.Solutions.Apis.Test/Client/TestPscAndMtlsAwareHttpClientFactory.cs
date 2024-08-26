@@ -72,7 +72,7 @@ namespace Google.Solutions.Apis.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPscDisabled_ThenProxyIsEnabled()
+        public void UseProxy_WhenPscDisabled_ThenProxyIsEnabled()
         {
             var endpoint = new ServiceEndpoint<SampleClient>(
                 ServiceRoute.Public,
@@ -92,7 +92,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         [Test]
-        public void WhenPscEnabled_ThenProxyIsBypassed()
+        public void UseProxy_WhenPscEnabled_ThenProxyIsBypassed()
         {
             var endpoint = new ServiceEndpoint<SampleClient>(
                 new ServiceRoute("psc-endpoint"),
@@ -116,7 +116,7 @@ namespace Google.Solutions.Apis.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNotEnrolled_ThenClientDoesNotUseCertificate()
+        public void ClientCertificates_WhenNotEnrolled_ThenClientDoesNotUseCertificate()
         {
             var endpoint = new ServiceEndpoint<SampleClient>(
                 ServiceRoute.Public,
@@ -136,7 +136,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         [Test]
-        public void WhenEnrolled_ThenClientUsesCertificate()
+        public void ClientCertificates_WhenEnrolled_ThenClientUsesCertificate()
         {
             var endpoint = new ServiceEndpoint<SampleClient>(
                 ServiceRoute.Public,

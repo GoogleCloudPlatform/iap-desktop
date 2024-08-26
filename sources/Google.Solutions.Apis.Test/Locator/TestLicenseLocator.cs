@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPathIsValid_ParseReturnsObject()
+        public void Parse_WhenPathIsValid_ParseReturnsObject()
         {
             var ref1 = LicenseLocator.Parse(
                 "projects/project-1/global/licenses/windows-10-enterprise-byol");
@@ -58,7 +58,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
         {
             var ref1 = LicenseLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol");
@@ -69,7 +69,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByGoogleapisHost_ParseReturnsObject()
         {
             var ref1 = LicenseLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol");
@@ -80,14 +80,14 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenPathLacksProject_ParseThrowsArgumentException()
+        public void Parse_WhenPathLacksProject_ParseThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => LicenseLocator.Parse(
                 "/project-1/project-1/global/licenses/windows-10-enterprise-byol"));
         }
 
         [Test]
-        public void WhenPathInvalid_ParseThrowsArgumentException()
+        public void Parse_WhenPathInvalid_ParseThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => LicenseLocator.Parse(
                 "projects/project-1/notglobal/licenses/windows-10-enterprise-byol"));
@@ -102,7 +102,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
+        public void Equals_WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
         {
             var ref1 = new LicenseLocator("proj-1", "windows-10-enterprise-byol");
             var ref2 = new LicenseLocator("proj-2", "windows-10-enterprise-byol");
@@ -118,7 +118,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCreatedFromPath_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
         {
             var path = "projects/project-1/global/licenses/windows-10-enterprise-byol";
 
@@ -128,7 +128,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenCreatedFromUrl_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromUrl_ThenToStringReturnsPath()
         {
             var path = "projects/project-1/global/licenses/windows-10-enterprise-byol";
 
@@ -143,7 +143,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenLicenseIsFromWindowsCloud_ThenIsWindowsLicenseReturnsTrue()
+        public void IsWindowsLicense_WhenLicenseIsFromWindowsCloud_ThenIsWindowsLicenseReturnsTrue()
         {
             var locator = LicenseLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol");
@@ -151,7 +151,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenLicenseIsNotFromWindowsCloud_ThenIsWindowsLicenseReturnsFalse()
+        public void IsWindowsLicense_WhenLicenseIsNotFromWindowsCloud_ThenIsWindowsLicenseReturnsFalse()
         {
             var locator = LicenseLocator.Parse(
                 "projects/my-project/global/licenses/windows-10-enterprise-byol");
@@ -159,7 +159,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenLicenseHasByolSuffix_ThenIsWindowsByolLicenseReturnsTrue()
+        public void IsWindowsLicense_WhenLicenseHasByolSuffix_ThenIsWindowsByolLicenseReturnsTrue()
         {
             var locator = LicenseLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol");
@@ -167,7 +167,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenLicenseHasNoByolSuffix_ThenIsWindowsByolLicenseReturnsFalse()
+        public void IsWindowsLicense_WhenLicenseHasNoByolSuffix_ThenIsWindowsByolLicenseReturnsFalse()
         {
             var locator = LicenseLocator.Parse(
                 "projects/windows-cloud/global/licenses/windows-2016");

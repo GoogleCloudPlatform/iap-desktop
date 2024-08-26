@@ -51,7 +51,7 @@ namespace Google.Solutions.Apis.Test.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToStringReturnsClientId()
+        public void ToString_ReturnsClientId()
         {
             var registration = new OidcClientRegistration(
                 OidcIssuer.Sts,

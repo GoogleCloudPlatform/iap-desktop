@@ -38,7 +38,7 @@ namespace Google.Solutions.Apis.Test.Logging
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUserNotInRole_ThenReadLogsThrowsException(
+        public async Task ReadLogs_WhenUserNotInRole_ThenReadLogsThrowsException(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var adapter = new LoggingClient(
@@ -55,7 +55,7 @@ namespace Google.Solutions.Apis.Test.Logging
         }
 
         [Test]
-        public async Task WhenProjectIdInvalid_ThenReadLogsThrowsException(
+        public async Task ReadLogs_WhenProjectIdInvalid_ThenReadLogsThrowsException(
             [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<IAuthorization> auth)
         {
             var adapter = new LoggingClient(
@@ -72,7 +72,7 @@ namespace Google.Solutions.Apis.Test.Logging
         }
 
         [Test]
-        public async Task WhenUserInViewerRole_ThenReadLogsInvokesCallback(
+        public async Task ReadLogs_WhenUserInViewerRole_ThenReadLogsInvokesCallback(
             [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<IAuthorization> auth)
         {
             var adapter = new LoggingClient(
