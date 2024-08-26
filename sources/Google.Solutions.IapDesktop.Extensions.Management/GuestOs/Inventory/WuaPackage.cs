@@ -65,11 +65,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 
         string IPackage.PackageId => this.Title;
 
-        string IPackage.Architecture => null;
+        string? IPackage.Architecture => null;
 
         string IPackage.Version => this.RevisionNumber.ToString();
 
-        Uri IPackage.Weblink => !string.IsNullOrEmpty(this.SupportURL)
+        Uri? IPackage.Weblink => !string.IsNullOrEmpty(this.SupportURL)
             ? new Uri(this.SupportURL)
             : null;
 

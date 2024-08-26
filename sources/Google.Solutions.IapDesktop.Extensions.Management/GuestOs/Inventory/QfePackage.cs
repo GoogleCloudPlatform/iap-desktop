@@ -44,11 +44,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 
         string IPackage.PackageId => this.HotFixID;
 
-        string IPackage.Architecture => null;
+        string? IPackage.Architecture => null;
 
-        string IPackage.Version => null;
+        string? IPackage.Version => null;
 
-        Uri IPackage.Weblink
+        Uri? IPackage.Weblink
         {
             get
             {
