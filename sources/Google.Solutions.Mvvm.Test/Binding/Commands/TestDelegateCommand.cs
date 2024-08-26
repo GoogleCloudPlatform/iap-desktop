@@ -33,11 +33,11 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
     public class TestDelegateCommand
     {
         //---------------------------------------------------------------------
-        // Synchronous.
+        // Execute - Synchronous.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSynchronousExecutionSucceeds_ThenContextIsNotified()
+        public void Execute_WhenSynchronousExecutionSucceeds_ThenContextIsNotified()
         {
             void handler(EventArgs args) { }
 
@@ -58,7 +58,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenSynchronousExecutionThrowsException_ThenContextIsNotified()
+        public void Execute_WhenSynchronousExecutionThrowsException_ThenContextIsNotified()
         {
             void handler(EventArgs args)
             {
@@ -88,7 +88,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenSynchronousExecutionThrowsTaskCancelledException_ThenContextIsNotNotified()
+        public void Execute_WhenSynchronousExecutionThrowsTaskCancelledException_ThenContextIsNotNotified()
         {
             void handler(EventArgs args)
             {
@@ -118,11 +118,11 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         //---------------------------------------------------------------------
-        // Asynchronous.
+        // Execute - Asynchronous.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenAsynchronousExecutionSucceeds_ThenContextIsNotified()
+        public void Execute_WhenAsynchronousExecutionSucceeds_ThenContextIsNotified()
         {
             Task handler(EventArgs args)
             {

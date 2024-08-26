@@ -48,7 +48,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenEnumHasValuesWithoutDisplayAttribute_ThenValuesAreIgnored()
+        public void Options_WhenEnumHasValuesWithoutDisplayAttribute_ThenValuesAreIgnored()
         {
             var prop = ObservableProperty.Build<Dish>(Dish.Pizza);
             var adapter = new BindableComboBox.SelectionAdapter<Dish>(prop);
@@ -59,7 +59,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenPropertyChanges_ThenSelectedIndexIsUpdated()
+        public void Value_WhenPropertyChanges_ThenSelectedIndexIsUpdated()
         {
             var prop = ObservableProperty.Build<Dish>(Dish.Dumplings);
             var adapter = new BindableComboBox.SelectionAdapter<Dish>(prop);
@@ -72,7 +72,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenSelectedIndexChanges_ThenPropertyIsUpdated()
+        public void SelectedIndex_WhenSelectedIndexChanges_ThenPropertyIsUpdated()
         {
             var prop = ObservableProperty.Build<Dish>(Dish.Dumplings);
             var adapter = new BindableComboBox.SelectionAdapter<Dish>(prop)

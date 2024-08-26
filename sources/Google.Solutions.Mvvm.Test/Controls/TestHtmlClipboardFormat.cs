@@ -28,7 +28,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
     public class TestHtmlClipboardFormat
     {
         [Test]
-        public void FormatAddsHeader()
+        public void Format_AddsHeader()
         {
             var html = "<b>some html</b>";
             var formatted = HtmlClipboardFormat.Format(html);

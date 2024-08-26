@@ -60,7 +60,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenItemBound_ThenMenuPropertiesAreUpdated()
+        public void BindItem_WhenItemBound_ThenMenuPropertiesAreUpdated()
         {
             var menuItem = new ToolStripMenuItem();
             this.contextMenu.Items.Add(menuItem);
@@ -97,7 +97,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenItemBoundAndPropertiesChange_ThenMenuPropertiesAreUpdated()
+        public void BindItem_WhenItemBoundAndPropertiesChange_ThenMenuPropertiesAreUpdated()
         {
             var menuItem = new ToolStripMenuItem();
             this.contextMenu.Items.Add(menuItem);
@@ -145,7 +145,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCollectionBound_ThenMenuItemsAreUpdated()
+        public void BindCollection_WhenCollectionBound_ThenMenuItemsAreUpdated()
         {
             var menuItem = new ToolStripMenuItem("do not touch me");
             this.contextMenu.Items.Add(menuItem);
@@ -177,7 +177,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenCollectionWithSeparatorBound_ThenMenuItemsAreUpdated()
+        public void BindCollection_WhenCollectionWithSeparatorBound_ThenMenuItemsAreUpdated()
         {
             var model = new ObservableCollection<Observable>
             {
@@ -206,7 +206,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenCollectionBoundAndItemInserted_ThenMenuItemsAreUpdated()
+        public void BindCollection_WhenCollectionBoundAndItemInserted_ThenMenuItemsAreUpdated()
         {
             var menuItem = new ToolStripMenuItem("do not touch me");
 
@@ -253,7 +253,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenCollectionBoundAndItemRemoved_ThenMenuItemsAreUpdated()
+        public void BindCollection_WhenCollectionBoundAndItemRemoved_ThenMenuItemsAreUpdated()
         {
             var menuItem = new ToolStripMenuItem("do not touch me");
 

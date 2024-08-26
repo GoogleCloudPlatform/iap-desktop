@@ -30,14 +30,14 @@ namespace Google.Solutions.Mvvm.Test.Drawing
     public class TestBadgeIcon
     {
         [Test]
-        public void WhenTextIsNullOrEmpty_ThenForTextInitialThrowsException()
+        public void ForTextInitial_WhenTextIsNullOrEmpty_ThenForTextInitialThrowsException()
         {
             Assert.Throws<ArgumentException>(() => BadgeIcon.ForTextInitial(null));
             Assert.Throws<ArgumentException>(() => BadgeIcon.ForTextInitial(string.Empty));
         }
 
         [Test]
-        public void WhenTextValid_ThenIconHasBackColor()
+        public void ForTextInitial_WhenTextValid_ThenIconHasBackColor()
         {
             using (var icon = BadgeIcon.ForTextInitial("Test"))
             {

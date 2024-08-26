@@ -36,7 +36,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSubCommandsIsNull_ThenAddCommandGroupAddsSingleCommand()
+        public void AddCommandGroup_WhenSubCommandsIsNull_ThenAddCommandGroupAddsSingleCommand()
         {
             var emptyGroup = new Mock<IContextCommandGroup<string>>();
 
@@ -54,7 +54,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenSubCommandsIsEmpty_ThenAddCommandGroupAddsSingleCommand()
+        public void AddCommandGroup_WhenSubCommandsIsEmpty_ThenAddCommandGroupAddsSingleCommand()
         {
             var emptyGroup = new Mock<IContextCommandGroup<string>>();
             emptyGroup
@@ -75,7 +75,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenSubCommandsNotEmpty_ThenAddCommandGroupAddsSingleCommand()
+        public void AddCommandGroup_WhenSubCommandsNotEmpty_ThenAddCommandGroupAddsSingleCommand()
         {
             var subCommand1 = new Mock<IContextCommand<string>>();
             var subCommand2 = new Mock<IContextCommand<string>>();

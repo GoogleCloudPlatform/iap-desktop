@@ -124,7 +124,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoOtherPropertiesBound_ThenBindCollectionSucceeds()
+        public void BindCollection_WhenNoOtherPropertiesBound_ThenBindCollectionSucceeds()
         {
             var items = new ObservableCollection<ViewModelItem>
             {
@@ -141,7 +141,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenModelPropertyIsUpdated_ThenColumnIsUpdated()
+        public void BindCollection_WhenModelPropertyIsUpdated_ThenColumnIsUpdated()
         {
             var item = new ViewModelItem()
             {
@@ -164,7 +164,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenModelAddsItems_ThenListViewIsUpdated()
+        public void BindCollection_WhenModelAddsItems_ThenListViewIsUpdated()
         {
             var items = new ObservableCollection<ViewModelItem>
             {
@@ -188,7 +188,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenModelRemovesItems_ThenListViewIsUpdated()
+        public void BindCollection_WhenModelRemovesItems_ThenListViewIsUpdated()
         {
             var items = new ObservableCollection<ViewModelItem>
             {
@@ -213,7 +213,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenModelReplacesItem_ThenListViewIsUpdated()
+        public void BindCollection_WhenModelReplacesItem_ThenListViewIsUpdated()
         {
             var items = new ObservableCollection<ViewModelItem>
             {
@@ -243,7 +243,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenModelRemovesItem_ThenEventListenersAreRemoved()
+        public void BindCollection_WhenModelRemovesItem_ThenEventListenersAreRemoved()
         {
             var item = new ViewModelItem()
             {
@@ -266,7 +266,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenModelCleared_ThenEventListenersAreRemoved()
+        public void BindCollection_WhenModelCleared_ThenEventListenersAreRemoved()
         {
             var item = new ViewModelItem()
             {
@@ -289,7 +289,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenModelIsRebound_ThenEventListenersAreRemoved()
+        public void BindCollection_WhenModelIsRebound_ThenEventListenersAreRemoved()
         {
             var item = new ViewModelItem()
             {
@@ -312,7 +312,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenModelChangesImageIndex_ThenControlIsUpdated()
+        public void BindCollection_WhenModelChangesImageIndex_ThenControlIsUpdated()
         {
             var item1 = new ViewModelItem()
             {
@@ -348,7 +348,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenControlChangesSelectedItem_ThenModelIsUpdated()
+        public void SelectedModelItem_WhenControlChangesSelectedItem_ThenModelIsUpdated()
         {
             var viewModel = new ViewModel()
             {
@@ -383,7 +383,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenModelChangesSelectedItem_ThenControlIsUpdated()
+        public void SelectedModelItem_WhenModelChangesSelectedItem_ThenControlIsUpdated()
         {
             var viewModel = new ViewModel()
             {
@@ -419,13 +419,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
             Assert.IsFalse(this.listView.Items[1].Selected);
         }
 
-
         //---------------------------------------------------------------------
         // SelectedModelItems.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenControlChangesSelectedItems_ThenModelIsUpdated()
+        public void SelectedModelItems_WhenControlChangesSelectedItems_ThenModelIsUpdated()
         {
             var viewModel = new ViewModel()
             {
@@ -461,7 +460,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenModelChangesSelectedItems_ThenControlIsUpdated()
+        public void SelectedModelItems_WhenModelChangesSelectedItems_ThenControlIsUpdated()
         {
             var viewModel = new ViewModel()
             {

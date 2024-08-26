@@ -35,7 +35,7 @@ namespace Google.Solutions.Mvvm.Test.Diagnostics
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToStringFormatsTrace()
+        public void ToString_FormatsTrace()
         {
             var trace = new MessageTrace(new[]
             {

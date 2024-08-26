@@ -29,7 +29,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
     public class TestRangeObservableCollection
     {
         [Test]
-        public void WhenAddUsed_ThenIndividualEventsAreFired()
+        public void Add_ThenIndividualEventsAreFired()
         {
             var callbacks = 0;
             var collection = new RangeObservableCollection<string>();
@@ -42,7 +42,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenAddRangeUsed_ThenSingleEventIsFired()
+        public void AddRange_ThenSingleEventIsFired()
         {
             var callbacks = 0;
             var collection = new RangeObservableCollection<string>();

@@ -36,7 +36,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void InitialValue()
+        public void Value_InitialValue()
         {
             using (var viewModel = new SampleViewModel())
             using (var form = new Form())
@@ -75,7 +75,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public async Task RaisePropertyChangeNotifiesDependents()
+        public async Task RaisePropertyChange_NotifiesDependents()
         {
             using (var viewModel = new SampleViewModel())
             using (var form = new Form())

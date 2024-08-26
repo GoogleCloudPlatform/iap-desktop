@@ -104,7 +104,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenBoundAlready_ThenBindThrowsException()
+        public void Bind_WhenBoundAlready_ThenBindThrowsException()
         {
             using (var form = new Form()
             {
@@ -128,7 +128,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenListingFilesFails_ThenBindRaisesNavigationFailedEvent()
+        public void Bind_WhenListingFilesFails_ThenBindRaisesNavigationFailedEvent()
         {
             var root = new Mock<IFileItem>();
             root.SetupGet(i => i.Name).Returns("Item");
@@ -176,7 +176,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDirectoryAdded_ThenDirectoryTreeIsUpdated()
+        public void Bind_WhenDirectoryAdded_ThenDirectoryTreeIsUpdated()
         {
             var root = CreateDirectory();
             root.SetupGet(f => f.IsExpanded).Returns(true);
@@ -221,7 +221,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public async Task WhenDirectoryAdded_ThenFileListIsUpdated()
+        public async Task Bind_WhenDirectoryAdded_ThenFileListIsUpdated()
         {
             var root = CreateDirectory();
             root.SetupGet(f => f.IsExpanded).Returns(true);
@@ -273,7 +273,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenBound_ThenCurrentDirectorySetToRoot()
+        public void CurrentDirectory_WhenBound_ThenCurrentDirectorySetToRoot()
         {
             using (var form = new Form()
             {
@@ -298,7 +298,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public async Task WhenPathInvalid_ThenNavigateRaisesNavigationFailedEvent()
+        public async Task CurrentDirectory_WhenPathInvalid_ThenNavigateRaisesNavigationFailedEvent()
         {
             using (var form = new Form()
             {
@@ -338,7 +338,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public async Task WhenBrowsedToSubfolder_ThenCurrentDirectoryAndPathIsUpdated()
+        public async Task CurrentDirectory_WhenBrowsedToSubfolder_ThenCurrentDirectoryAndPathIsUpdated()
         {
             using (var form = new Form()
             {
@@ -376,7 +376,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public async Task WhenNavigatedToSubfolder_ThenNavigateUpGoesBackToRoot()
+        public async Task CurrentDirectory_WhenNavigatedToSubfolder_ThenNavigateUpGoesBackToRoot()
         {
             using (var form = new Form()
             {
@@ -414,7 +414,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public async Task WhenNavigatedToSubfolder_ThenNavigateNullGoesBackToRoot()
+        public async Task CurrentDirectory_WhenNavigatedToSubfolder_ThenNavigateNullGoesBackToRoot()
         {
             using (var form = new Form()
             {
@@ -453,7 +453,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenFilesSelectedOneByOne_ThenSelectedFileIsSet()
+        public void SelectedFiles_WhenFilesSelectedOneByOne_ThenSelectedFileIsSet()
         {
             using (var form = new Form()
             {
@@ -500,7 +500,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenFilesSelected_ThenSelectedFileIsSet()
+        public void SelectedFiles_WhenFilesSelected_ThenSelectedFileIsSet()
         {
             using (var form = new Form()
             {

@@ -31,7 +31,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
     public class TestFontExtensions
     {
         [Test]
-        public void WhenFontIsVariableSpaced_ThenIsMonospacedIsFalce()
+        public void IsMonospaced_WhenFontIsVariableSpaced_ThenIsMonospacedIsFalce()
         {
             using (var font = new Font(FontFamily.GenericSansSerif, 10))
             {
@@ -40,7 +40,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         }
 
         [Test]
-        public void WhenFontIsMonospaced_ThenIsMonospacedIsFalce()
+        public void IsMonospaced_WhenFontIsMonospaced_ThenIsMonospacedIsFalce()
         {
             using (var font = new Font(FontFamily.GenericMonospace, 10))
             {

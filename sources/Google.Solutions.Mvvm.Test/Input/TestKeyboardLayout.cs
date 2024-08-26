@@ -34,13 +34,13 @@ namespace Google.Solutions.Mvvm.Test.Input
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCharUnmapped_ThenTryMapVirtualKeyReturnsFalse()
+        public void TryMapVirtualKey_WhenCharUnmapped_ThenTryMapVirtualKeyReturnsFalse()
         {
             Assert.IsFalse(KeyboardLayout.Current.TryMapVirtualKey('Ä', out var _));
         }
 
         [Test]
-        public void WhenCharMapped_ThenTryMapVirtualKeyReturnsTrue()
+        public void TryMapVirtualKey_WhenCharMapped_ThenTryMapVirtualKeyReturnsTrue()
         {
             Assert.IsTrue(KeyboardLayout.Current.TryMapVirtualKey('A', out var vk));
             Assert.AreEqual(Keys.A | Keys.Shift, vk);

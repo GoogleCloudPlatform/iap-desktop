@@ -120,7 +120,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoOtherPropertiesBound_ThenBindSucceeds()
+        public void Bind_WhenNoOtherPropertiesBound_ThenBindSucceeds()
         {
             this.tree.Bind(
                 new ModelNode(),
@@ -130,7 +130,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenIsExpandedIsTrueInModel_ThenTreeAutoExpands()
+        public void Bind_WhenIsExpandedIsTrueInModel_ThenTreeAutoExpands()
         {
             var root = new ModelNode()
             {
@@ -158,7 +158,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenIsExpandedIsFalseInModel_ThenTreeHasHiddenLoadingNode()
+        public void Bind_WhenIsExpandedIsFalseInModel_ThenTreeHasHiddenLoadingNode()
         {
             var root = new ModelNode()
             {
@@ -186,7 +186,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenLoadingChildrenFails_ThenEventIsFiredAndExpandCanBeRetried()
+        public void Bind_WhenLoadingChildrenFails_ThenEventIsFiredAndExpandCanBeRetried()
         {
             var root = new ModelNode()
             {
@@ -232,7 +232,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenModelTextIsUpdated_ThenTreeViewIsUpdated()
+        public void Bind_WhenModelTextIsUpdated_ThenTreeViewIsUpdated()
         {
             var root = new ModelNode()
             {
@@ -253,7 +253,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenModelImageIndexIsUpdated_ThenTreeViewIsUpdated()
+        public void Bind_WhenModelImageIndexIsUpdated_ThenTreeViewIsUpdated()
         {
             var root = new ModelNode()
             {
@@ -275,7 +275,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenModelAddsChildren_ThenTreeViewIsUpdated()
+        public void Bind_WhenModelAddsChildren_ThenTreeViewIsUpdated()
         {
             var root = new ModelNode()
             {
@@ -308,7 +308,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenModelRemovesChildren_ThenTreeViewIsUpdated()
+        public void Bind_WhenModelRemovesChildren_ThenTreeViewIsUpdated()
         {
             var root = new ModelNode()
             {
@@ -338,7 +338,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenModelReplacesChildren_ThenTreeViewIsUpdated()
+        public void Bind_WhenModelReplacesChildren_ThenTreeViewIsUpdated()
         {
             var root = new ModelNode()
             {
@@ -372,7 +372,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenModelRemovesChild_ThenEventListenersAreRemoved()
+        public void Bind_WhenModelRemovesChild_ThenEventListenersAreRemoved()
         {
             var root = new ModelNode()
             {
@@ -399,7 +399,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenModelIsRebound_ThenEventListenersAreRemoved()
+        public void Bind_WhenModelIsRebound_ThenEventListenersAreRemoved()
         {
             var root = new ModelNode()
             {

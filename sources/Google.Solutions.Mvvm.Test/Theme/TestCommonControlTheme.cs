@@ -31,7 +31,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
     public class TestCommonControlTheme
     {
         [Test]
-        public void WhenListWiderThanColumns_ThenLastColumnIsEnlarged()
+        public void Columns_WhenListWiderThanColumns_ThenLastColumnIsEnlarged()
         {
             using (var form = new Form()
             {
@@ -71,7 +71,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         }
 
         [Test]
-        public void WhenColumnResized_ThenLastColumnIsResizedToFit()
+        public void Columns_WhenColumnResized_ThenLastColumnIsResizedToFit()
         {
             using (var form = new Form()
             {
@@ -113,7 +113,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         }
 
         [Test]
-        public void WhenListNarrowerThanColumns_ThenLastColumnIsShrunk()
+        public void Columns_WhenListNarrowerThanColumns_ThenLastColumnIsShrunk()
         {
             using (var form = new Form()
             {

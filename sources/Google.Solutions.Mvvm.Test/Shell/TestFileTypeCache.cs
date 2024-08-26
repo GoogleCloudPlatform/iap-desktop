@@ -37,7 +37,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDirectory_ThenLookupUsesCache()
+        public void Lookup_WhenDirectory_ThenLookupUsesCache()
         {
             using (var cache = new FileTypeCache())
             {
@@ -50,7 +50,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
         }
 
         [Test]
-        public void WhenFilesHaveSameExtension_ThenLookupUsesCache()
+        public void Lookup_WhenFilesHaveSameExtension_ThenLookupUsesCache()
         {
             using (var cache = new FileTypeCache())
             {
@@ -63,7 +63,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
         }
 
         [Test]
-        public void WhenFilesDifferBySize_ThenLookupSkipsCache()
+        public void Lookup_WhenFilesDifferBySize_ThenLookupSkipsCache()
         {
             using (var cache = new FileTypeCache())
             {
@@ -76,7 +76,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
         }
 
         [Test]
-        public void WhenFilesDifferByAttribute_ThenLookupSkipsCache()
+        public void Lookup_WhenFilesDifferByAttribute_ThenLookupSkipsCache()
         {
             using (var cache = new FileTypeCache())
             {
@@ -93,7 +93,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDisposed_FileTypesAndIconsAreDisposed()
+        public void Dispose_WhenDisposed_FileTypesAndIconsAreDisposed()
         {
             var cache = new FileTypeCache();
             var type = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.None);

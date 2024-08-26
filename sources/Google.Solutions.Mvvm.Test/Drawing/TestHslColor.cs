@@ -32,7 +32,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenConvertedFromRgb_ThenToRgbReturnsSameValue(
+        public void ToHsl_WhenConvertedFromRgb_ThenReturnsSameValue(
             [Values(
                 0x00000000,
                 0x00FF0000,
@@ -49,7 +49,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         //---------------------------------------------------------------------
 
         [Test]
-        public void GetHashCodeEncodesHslValues()
+        public void GetHashCode_EncodesHslValues()
         {
             Assert.AreEqual(0, new HslColor(0.0f, 0.0f, 0.0f).GetHashCode());
             Assert.AreEqual(0xFFFFFF, new HslColor(1.0f, 1.0f, 1.0f).GetHashCode());
@@ -61,7 +61,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValuesSame_ThenEqualsReturnTrue()
+        public void Equals_WhenValuesSame_ThenEqualsReturnTrue()
         {
             var c = new HslColor(1.0f, 1.0f, 1.0f);
 
@@ -76,7 +76,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToStringReturnsHslValues()
+        public void ToString_ReturnsHslValues()
         {
             var c = new HslColor(.1f, .2f, .3f);
             Assert.AreEqual("H=25, S=51, L=76", c.ToString());

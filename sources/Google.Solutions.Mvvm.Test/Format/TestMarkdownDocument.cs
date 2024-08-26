@@ -504,18 +504,18 @@ namespace Google.Solutions.Mvvm.Test.Format
         }
 
         //---------------------------------------------------------------------
-        // Token.
+        // Tokenize.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTextEmpty_ThenTokenizeReturnsNoTokens()
+        public void Tokenize_WhenTextEmpty_ThenTokenizeReturnsNoTokens()
         {
             var tokens = MarkdownDocument.Token.Tokenize(string.Empty);
             CollectionAssert.IsEmpty(tokens);
         }
 
         [Test]
-        public void WhenTextHasNoDelimeter_ThenTokenizeReturnsSingleToken()
+        public void Tokenize_WhenTextHasNoDelimeter_ThenTokenizeReturnsSingleToken()
         {
             var tokens = MarkdownDocument.Token.Tokenize("t");
             CollectionAssert.AreEqual(
@@ -527,7 +527,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         }
 
         [Test]
-        public void WhenTextHasDelimeters_ThenTokenizeReturnsTokens()
+        public void Tokenize_WhenTextHasDelimeters_ThenTokenizeReturnsTokens()
         {
             var tokens = MarkdownDocument.Token.Tokenize("t[a]()* *_ text");
             CollectionAssert.AreEqual(
@@ -549,7 +549,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         }
 
         [Test]
-        public void WhenTokensEquivalent_ThenEqualsReturnsTrue()
+        public void Tokenize_WhenTokensEquivalent_ThenEqualsReturnsTrue()
         {
             var token1 = new MarkdownDocument.Token(MarkdownDocument.TokenType.Text, "text");
             var token2 = new MarkdownDocument.Token(MarkdownDocument.TokenType.Text, "text");
@@ -559,7 +559,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         }
 
         [Test]
-        public void WhenTokensNotEquivalent_ThenEqualsReturnsFalse()
+        public void Tokenize_WhenTokensNotEquivalent_ThenEqualsReturnsFalse()
         {
             var token1 = new MarkdownDocument.Token(MarkdownDocument.TokenType.Text, "text");
             var token2 = new MarkdownDocument.Token(MarkdownDocument.TokenType.Delimiter, ")");
