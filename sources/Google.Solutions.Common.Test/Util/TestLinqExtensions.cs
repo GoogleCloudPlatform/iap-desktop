@@ -29,16 +29,24 @@ namespace Google.Solutions.Common.Test.Util
     [TestFixture]
     public class TestLinqExtensions : CommonFixtureBase
     {
+        //---------------------------------------------------------------------
+        // EnsureNotNull.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenEnumIsNull_EnsureNotNullReturnsEmpty()
+        public void EnsureNotNull_WhenEnumIsNull_EnsureNotNullReturnsEmpty()
         {
             IEnumerable<string>? e = null;
             Assert.IsNotNull(e.EnsureNotNull());
             Assert.AreEqual(0, e.EnsureNotNull().Count());
         }
 
+        //---------------------------------------------------------------------
+        // ContainsAll.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenListsDontIntersect_ContainsAllIsFalse()
+        public void ContainsAll_WhenListsDontIntersect_ContainsAllIsFalse()
         {
             var list = new[] { "a", "b" };
             var lookup = new[] { "c", "d" };
@@ -47,7 +55,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void WhenListsPartiallyIntersect_ContainsAllIsFalse()
+        public void ContainsAll_WhenListsPartiallyIntersect_ContainsAllIsFalse()
         {
             var list = new[] { "a", "b" };
             var lookup = new[] { "b", "c" };
@@ -56,7 +64,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void WhenListsOverlap_ContainsAllIsTrue()
+        public void ContainsAll_WhenListsOverlap_ContainsAllIsTrue()
         {
             var list = new[] { "a", "b", "c", "d" };
             var lookup = new[] { "c", "d" };
@@ -64,8 +72,12 @@ namespace Google.Solutions.Common.Test.Util
             Assert.IsTrue(list.ContainsAll(lookup));
         }
 
+        //---------------------------------------------------------------------
+        // Chunk.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenListSmallerThanChunk_ThenChunkReturnsSingleList()
+        public void Chunk_WhenListSmallerThanChunk_ThenChunkReturnsSingleList()
         {
             var list = new[] { "a", "b", "c" };
             var chunks = list.Chunk(4);
@@ -75,7 +87,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void WhenListFillsTwoChunks_ThenChunkReturnsTwoLists()
+        public void Chunk_WhenListFillsTwoChunks_ThenChunkReturnsTwoLists()
         {
             var list = new[] { "a", "b", "c", "d" };
             var chunks = list.Chunk(2);
@@ -86,7 +98,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void WhenListLargerThanSingleChunk_ThenChunkReturnsTwoLists()
+        public void Chunk_WhenListLargerThanSingleChunk_ThenChunkReturnsTwoLists()
         {
             var list = new[] { "a", "b", "c" };
             var chunks = list.Chunk(2);
@@ -96,8 +108,12 @@ namespace Google.Solutions.Common.Test.Util
             CollectionAssert.AreEqual(new[] { "c" }, chunks.Skip(1).First());
         }
 
+        //---------------------------------------------------------------------
+        // ConcatItem.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenEnumEmpty_ThenConcatItemReturnsSingleItem()
+        public void ConcatItem_WhenEnumEmpty_ThenConcatItemReturnsSingleItem()
         {
             var e = Enumerable.Empty<string>()
                 .ConcatItem("test");
@@ -107,7 +123,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void WhenEnumNotEmpty_ThenConcatItemAppendsItem()
+        public void ConcatItem_WhenEnumNotEmpty_ThenConcatItemAppendsItem()
         {
             var e = new[] { "foo", "bar" }
                 .ConcatItem("test");

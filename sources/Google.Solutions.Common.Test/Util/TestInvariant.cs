@@ -33,14 +33,14 @@ namespace Google.Solutions.Common.Test.Util
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNull_ThenExpectNotNullThrowsException()
+        public void ExpectNotNull_WhenNull_ThenExpectNotNullThrowsException()
         {
             Assert.Throws<ArgumentNullException>(
                 () => Invariant.ExpectNotNull<string>(null, "variable"));
         }
 
         [Test]
-        public void WhenNotNull_ThenExpectNotNullReturnsValue()
+        public void ExpectNotNull_WhenNotNull_ThenExpectNotNullReturnsValue()
         {
             Assert.AreEqual("value", Invariant.ExpectNotNull("value", "test"));
 

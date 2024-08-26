@@ -62,11 +62,11 @@ namespace Google.Solutions.Common.Test.Threading
         }
 
         //---------------------------------------------------------------------
-        // InvokeAsync.
+        // Invoke.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInvokeNotRequired_ThenInvokeAsyncWorksSynchronously()
+        public void Invoke_WhenInvokeNotRequired_ThenInvokeAsyncWorksSynchronously()
         {
             var invoker = new Invoker()
             {
@@ -84,7 +84,7 @@ namespace Google.Solutions.Common.Test.Threading
         }
 
         [Test]
-        public async Task WhenInvokeRequired_ThenInvokeAsyncWorksAsynchronouslyAndPropagatesResult()
+        public async Task Invoke_WhenInvokeRequired_ThenInvokeAsyncWorksAsynchronouslyAndPropagatesResult()
         {
             var invoker = new Invoker()
             {
@@ -108,7 +108,7 @@ namespace Google.Solutions.Common.Test.Threading
         }
 
         [Test]
-        public void WhenInvokeRequired_ThenInvokeAsyncWorksAsynchronouslyAndPropagatesException()
+        public void Invoke_WhenInvokeRequired_ThenInvokeAsyncWorksAsynchronouslyAndPropagatesException()
         {
             var invoker = new Invoker()
             {

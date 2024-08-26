@@ -47,7 +47,7 @@ namespace Google.Solutions.Common.Test.Util
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenRegularException_ThenUnwrapDoesNothing()
+        public void Unwrap_WhenRegularException_ThenUnwrapDoesNothing()
         {
             var ex = new ApplicationException();
 
@@ -57,7 +57,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void WhenAggregateException_ThenUnwrapReturnsFirstInnerException()
+        public void Unwrap_WhenAggregateException_ThenUnwrapReturnsFirstInnerException()
         {
             var inner1 = new ApplicationException();
             var inner2 = new ApplicationException();
@@ -69,7 +69,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void WhenAggregateExceptionContainsAggregateException_ThenUnwrapReturnsFirstInnerException()
+        public void Unwrap_WhenAggregateExceptionContainsAggregateException_ThenUnwrapReturnsFirstInnerException()
         {
             var inner1 = new ApplicationException();
             var inner2 = new ApplicationException();
@@ -83,7 +83,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void WhenAggregateExceptionWithoutInnerException_ThenUnwrapDoesNothing()
+        public void Unwrap_WhenAggregateExceptionWithoutInnerException_ThenUnwrapDoesNothing()
         {
             var aggregate = new AggregateException();
             var unwrapped = aggregate.Unwrap();
@@ -92,7 +92,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void WhenTargetInvocationException_ThenUnwrapReturnsInnerException()
+        public void Unwrap_WhenTargetInvocationException_ThenUnwrapReturnsInnerException()
         {
             var inner = new ApplicationException();
             var target = new TargetInvocationException("", inner);
@@ -103,18 +103,18 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         //---------------------------------------------------------------------
-        // FillMessage.
+        // FullMessage.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenExceptionHasNoInnerException_ThenFullMessageIsSameAsMessage()
+        public void FullMessage_WhenExceptionHasNoInnerException_ThenFullMessageIsSameAsMessage()
         {
             var ex = new ArgumentException("something went wrong!");
             Assert.AreEqual(ex.Message, ex.FullMessage());
         }
 
         [Test]
-        public void WhenExceptionHasInnerException_ThenFullMessageContainsAllMessages()
+        public void FullMessage_WhenExceptionHasInnerException_ThenFullMessageContainsAllMessages()
         {
             var ex = new ArgumentException("One",
                 new InvalidOperationException("two",
@@ -127,14 +127,14 @@ namespace Google.Solutions.Common.Test.Util
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoOptionsSet_ThenToStringReturnsStandardTrace()
+        public void ToString_WhenNoOptionsSet_ThenToStringReturnsStandardTrace()
         {
             var ex = CreateException();
             Assert.AreEqual(ex.ToString(), ex.ToString(ExceptionFormatOptions.None));
         }
 
         [Test]
-        public void WhenIncludeOffsetOptionsSet_ThenToStringIncludesOffsets()
+        public void ToString_WhenIncludeOffsetOptionsSet_ThenToStringIncludesOffsets()
         {
             var ex = CreateException();
             var s = ex.ToString(ExceptionFormatOptions.IncludeOffsets);

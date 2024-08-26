@@ -29,21 +29,21 @@ namespace Google.Solutions.Common.Test.Util
     public class TestDateTimeOffsetExtensions : CommonFixtureBase
     {
         [Test]
-        public void WhenTimestampIsEpoch_ThenToUnixTimeMicrosecondsReturnsZero()
+        public void ToUnixTimeMicroseconds_WhenTimestampIsEpoch_ThenToUnixTimeMicrosecondsReturnsZero()
         {
             var epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
             Assert.AreEqual(0, epoch.ToUnixTimeMicroseconds());
         }
 
         [Test]
-        public void WhenTimestampIsZero_ThenFromUnixTimeMicrosecondsReturnsEpoch()
+        public void ToUnixTimeMicroseconds_WhenTimestampIsZero_ThenFromUnixTimeMicrosecondsReturnsEpoch()
         {
             var epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
             Assert.AreEqual(epoch, DateTimeOffsetExtensions.FromUnixTimeMicroseconds(0));
         }
 
         [Test]
-        public void WhenTimestampIsValid_ThenToUnixTimeMicrosecondsReturnsValue()
+        public void ToUnixTimeMicroseconds_WhenTimestampIsValid_ThenToUnixTimeMicrosecondsReturnsValue()
         {
             var firstOfJan = new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero);
 

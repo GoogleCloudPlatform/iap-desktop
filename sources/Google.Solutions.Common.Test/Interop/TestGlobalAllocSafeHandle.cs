@@ -28,7 +28,7 @@ namespace Google.Solutions.Common.Test.Interop
     public class TestGlobalAllocSafeHandle : CommonFixtureBase
     {
         [Test]
-        public void WhenFreed_ThenHandleIsInvalid()
+        public void IsInvalid_WhenFreed()
         {
             var handle = GlobalAllocSafeHandle.GlobalAlloc(8);
             Assert.IsFalse(handle.IsClosed);

@@ -36,8 +36,12 @@ namespace Google.Solutions.Common.Test.Runtime
             }
         }
 
+        //---------------------------------------------------------------------
+        // IsDisposed.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenNotDisposed_ThenIsDisposedIsFalse()
+        public void IsDisposed_WhenNotDisposed_ThenIsDisposedIsFalse()
         {
             using (var d = new SampleDisposable())
             {
@@ -46,15 +50,19 @@ namespace Google.Solutions.Common.Test.Runtime
         }
 
         [Test]
-        public void WhenDisposedOnce_ThenIsDisposedIsTrue()
+        public void IsDisposed_WhenDisposedOnce_ThenIsDisposedIsTrue()
         {
             var d = new SampleDisposable();
             d.Dispose();
             Assert.IsTrue(d.IsDisposed);
         }
 
+        //---------------------------------------------------------------------
+        // Dispose.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenDisposedTwice_ThenDisposeThrowsException()
+        public void Dispose_WhenDisposedTwice_ThenDisposeThrowsException()
         {
             var d = new SampleDisposable();
             d.Dispose();
@@ -62,7 +70,7 @@ namespace Google.Solutions.Common.Test.Runtime
         }
 
         [Test]
-        public void WhenRefCountAboveOne_ThenDisposeDoesNothingUntilRefCountDropsToZero()
+        public void Dispose_WhenRefCountAboveOne_ThenDisposeDoesNothingUntilRefCountDropsToZero()
         {
             var d = new SampleDisposable();
             for (var i = 0; i < 100; i++)

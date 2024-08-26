@@ -30,7 +30,7 @@ namespace Google.Solutions.Common.Test.Runtime
         private class SomeClass { }
 
         [Test]
-        public void CreateReturnsExistingInstance()
+        public void Create_ReturnsExistingInstance()
         {
             var instance = new SomeClass();
             var activator = InstanceActivator.Create(instance);
@@ -41,7 +41,7 @@ namespace Google.Solutions.Common.Test.Runtime
         }
 
         [Test]
-        public void CreateReturnsNewInstance()
+        public void Create_ReturnsNewInstance()
         {
             var instance = new SomeClass();
             var activator = InstanceActivator.Create(() => new SomeClass());

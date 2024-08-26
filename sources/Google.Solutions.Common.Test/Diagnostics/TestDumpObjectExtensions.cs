@@ -28,13 +28,13 @@ namespace Google.Solutions.Common.Test.Diagnostics
     public class TestDumpObjectExtensions
     {
         [Test]
-        public void WhenObjectIsNull_ThenDumpPropertiesReturnsEmptyString()
+        public void DumpProperties_WhenObjectIsNull_ThenReturnsEmptyString()
         {
             Assert.AreEqual(string.Empty, ((object?)null).DumpProperties());
         }
 
         [Test]
-        public void WhenObjectIsNotNull_ThenDumpPropertiesReturnsString()
+        public void DumpProperties_WhenObjectIsNotNull_ThenReturnsString()
         {
             Assert.AreEqual(
                 "Foo: 1\nBar: test\nQuux: System.Object\n",

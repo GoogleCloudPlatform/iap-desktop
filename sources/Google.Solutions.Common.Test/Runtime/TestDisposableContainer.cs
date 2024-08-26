@@ -41,7 +41,7 @@ namespace Google.Solutions.Common.Test.Runtime
         //---------------------------------------------------------------------
 
         [Test]
-        public void AddNull()
+        public void Add_WhenNull()
         {
             using (var container = new DisposableContainer())
             {
@@ -54,7 +54,7 @@ namespace Google.Solutions.Common.Test.Runtime
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNotEmpty_ThenDisposeDisposesAllObjects()
+        public void Dispose_WhenNotEmpty_ThenDisposeDisposesAllObjects()
         {
             var disposable1 = new Mock<IDisposable>();
             var disposable2 = new Mock<IDisposable>();

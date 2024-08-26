@@ -34,7 +34,7 @@ namespace Google.Solutions.Common.Test.Util
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTypeNotGeneric_ThenFullNameReturnsName()
+        public void FullName_WhenTypeNotGeneric_ThenFullNameReturnsName()
         {
             Assert.AreEqual(
                 typeof(TestTypeExtensions).Name,
@@ -42,7 +42,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void WhenTypeIsGeneric_ThenFullNameReturnsName()
+        public void FullName_WhenTypeIsGeneric_ThenFullNameReturnsName()
         {
             Assert.AreEqual(
                 "KeyValuePair<String,Int32>",
@@ -50,7 +50,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void WhenTypeIsNestedGeneric_ThenFullNameReturnsName()
+        public void FullName_WhenTypeIsNestedGeneric_ThenFullNameReturnsName()
         {
             Assert.AreEqual(
                 "KeyValuePair<String,Tuple<String,Int32>>",
