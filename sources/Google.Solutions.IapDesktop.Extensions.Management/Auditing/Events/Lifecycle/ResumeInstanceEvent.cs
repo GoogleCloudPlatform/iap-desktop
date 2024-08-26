@@ -42,9 +42,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Life
         public static bool IsResumeInstanceEvent(LogRecord record)
         {
             return record.IsActivityEvent &&
-                (record.ProtoPayload.MethodName == Method ||
-                 record.ProtoPayload.MethodName == BetaMethod ||
-                 record.ProtoPayload.MethodName == AlphaMethod);
+                (record.ProtoPayload?.MethodName == Method ||
+                 record.ProtoPayload?.MethodName == BetaMethod ||
+                 record.ProtoPayload?.MethodName == AlphaMethod);
         }
     }
 }

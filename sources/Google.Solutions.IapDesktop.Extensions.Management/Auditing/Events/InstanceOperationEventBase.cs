@@ -41,11 +41,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
                 {
                     return string.Empty;
                 }
-                else if (this.LogRecord.Operation.IsLast)
+                else if (this.LogRecord.Operation.IsLast == true)
                 {
                     return " (operation completed)";
                 }
-                else if (this.LogRecord.Operation.IsFirst)
+                else if (this.LogRecord.Operation.IsFirst == true)
                 {
                     return " (operation started)";
                 }

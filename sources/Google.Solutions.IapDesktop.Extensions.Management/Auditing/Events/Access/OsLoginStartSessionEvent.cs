@@ -45,8 +45,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Acce
         public static bool IsStartOsLoginStartSessionEvent(LogRecord record)
         {
             return record.IsDataAccessEvent &&
-                (record.ProtoPayload.MethodName == Method ||
-                 record.ProtoPayload.MethodName == BetaMethod);
+                (record.ProtoPayload?.MethodName == Method ||
+                 record.ProtoPayload?.MethodName == BetaMethod);
         }
 
         public string ChallengeStatus => this.LogRecord.ProtoPayload.Response?.Value<string>("status");

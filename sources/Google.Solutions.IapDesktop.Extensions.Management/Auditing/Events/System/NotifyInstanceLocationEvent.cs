@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Syst
         public static bool IsInstanceScheduledEvent(LogRecord record)
         {
             return record.IsSystemEvent &&
-                record.ProtoPayload.MethodName == Method;
+                record.ProtoPayload?.MethodName == Method;
         }
     }
 }

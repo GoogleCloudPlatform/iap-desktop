@@ -39,14 +39,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Acce
         public static bool IsAuthorizeUserEvent(LogRecord record)
         {
             return record.IsDataAccessEvent &&
-                record.ProtoPayload.MethodName == Method &&
-                record.Resource.Type == "gce_instance"; // Distinguish from IAP-Web events.
+                record.ProtoPayload?.MethodName == Method &&
+                record.Resource?.Type == "gce_instance"; // Distinguish from IAP-Web events.
         }
 
         public bool IsError => this.Severity == "ERROR";
 
         public override string Message => this.IsError
-            ? $"{this.TunnelDescription} [{this.Status.Message}]"
+            ? $"{this.TunnelDescription} [{this.Status?.Message}]"
             : this.TunnelDescription;
 
         private string TunnelDescription

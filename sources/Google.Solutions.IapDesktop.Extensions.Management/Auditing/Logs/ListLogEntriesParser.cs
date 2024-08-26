@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs
                 }
                 else if (reader.TokenType == JsonToken.String && reader.Path == "nextPageToken")
                 {
-                    return (string)reader.Value;
+                    return (string)reader.Value!;
                 }
             }
 

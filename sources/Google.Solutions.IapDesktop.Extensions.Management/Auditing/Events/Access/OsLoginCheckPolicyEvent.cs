@@ -43,8 +43,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Acce
         public static bool IsStartOsLoginCheckPolicyEvent(LogRecord record)
         {
             return record.IsDataAccessEvent &&
-                (record.ProtoPayload.MethodName == Method ||
-                 record.ProtoPayload.MethodName == BetaMethod);
+                (record.ProtoPayload?.MethodName == Method ||
+                 record.ProtoPayload?.MethodName == BetaMethod);
         }
 
         public bool IsSuccess => this.LogRecord.ProtoPayload.Response?.Value<bool?>("success") == true;

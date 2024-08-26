@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Syst
         public static bool IsMigrateOnHostMaintenanceEvent(LogRecord logRecord)
         {
             return logRecord.IsSystemEvent &&
-                logRecord.ProtoPayload.MethodName == Method;
+                logRecord.ProtoPayload?.MethodName == Method;
         }
     }
 }

@@ -72,11 +72,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             Instance instanceDetails,
             GuestOsInfo guestOsInfo)
         {
-            Debug.Assert(projectDetails != null);
-            Debug.Assert(instanceDetails != null);
-
-            this.projectDetails = projectDetails;
-            this.instanceDetails = instanceDetails;
+            this.projectDetails = projectDetails.ExpectNotNull(nameof(projectDetails));
+            this.instanceDetails = instanceDetails.ExpectNotNull(nameof(instanceDetails));
             this.guestOsInfo = guestOsInfo;
 
             //
@@ -103,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             //
             var serviceAccount = this.instanceDetails.ServiceAccounts?.FirstOrDefault();
             this.ServiceAccount = serviceAccount?.Email;
-            this.ServiceAccountScopes = serviceAccount?.Scopes;
+            this.ServiceAccountScopes = serviceAccount?.Scopes ?? Array.Empty<string>();
             this.VtpmEnabled = this.instanceDetails.ShieldedInstanceConfig?.EnableVtpm == true
                 ? FeatureFlag.Enabled
                 : FeatureFlag.Disabled;
@@ -117,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             //
             // Network.
             //
-            this.Tags = this.instanceDetails.Tags?.Items;
+            this.Tags = this.instanceDetails.Tags?.Items ?? Array.Empty<string>();
             this.InternalIp = this.instanceDetails.PrimaryInternalAddress()?.ToString();
             this.ExternalIp = this.instanceDetails.PublicAddress()?.ToString();
             this.InternalZonalDnsName = new InternalDnsName.ZonalName(instance).Name;
@@ -203,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [DisplayName("Machine type")]
         [Description("The type and size of VM, see " +
                      "https://cloud.google.com/compute/docs/machine-types")]
-        public string MachineType { get; }
+        public string? MachineType { get; }
 
         [Browsable(true)]
         [Category(Categories.Instance)]
@@ -236,7 +233,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Category(Categories.Security)]
         [DisplayName("Service account")]
         [Description("The service account that is attached to this instance")]
-        public string ServiceAccount { get; }
+        public string? ServiceAccount { get; }
 
         [Browsable(true)]
         [Category(Categories.Security)]
@@ -280,14 +277,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [DisplayName("IP address (internal)")]
         [Description("The VM's primary internal IP address, see " +
                      "https://cloud.google.com/compute/docs/ip-addresses#networkaddresses")]
-        public string InternalIp { get; }
+        public string? InternalIp { get; }
 
         [Browsable(true)]
         [Category(Categories.Network)]
         [DisplayName("IP address (external)")]
         [Description("The VM's external IP address, see " +
                      "https://cloud.google.com/compute/docs/ip-addresses#externaladdresses")]
-        public string ExternalIp { get; }
+        public string? ExternalIp { get; }
 
         [Browsable(true)]
         [Category(Categories.Network)]
@@ -325,25 +322,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         [Category(Categories.Os)]
         [DisplayName("Architecture")]
         [Description("The VM's CPU architecture")]
-        public string Architecture { get; }
+        public string? Architecture { get; }
 
         [Browsable(true)]
         [Category(Categories.Os)]
         [DisplayName("Kernel")]
         [Description("The guest operating system's kernel version")]
-        public string KernelVersion { get; }
+        public string? KernelVersion { get; }
 
         [Browsable(true)]
         [Category(Categories.Os)]
         [DisplayName("Name")]
         [Description("The name of the guest operating system")]
-        public string OperatingSystemFullName { get; }
+        public string? OperatingSystemFullName { get; }
 
         [Browsable(true)]
         [Category(Categories.Os)]
         [DisplayName("Version")]
         [Description("The version of the guest operating system")]
-        public string OperatingSystemVersion { get; }
+        public string? OperatingSystemVersion { get; }
 
         //---------------------------------------------------------------------
         // Guest agent configuration.
