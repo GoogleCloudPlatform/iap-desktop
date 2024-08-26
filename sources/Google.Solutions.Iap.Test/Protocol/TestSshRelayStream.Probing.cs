@@ -27,6 +27,7 @@ using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System;
+using System.Net.WebSockets;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Iap.Test.Protocol
@@ -36,7 +37,7 @@ namespace Google.Solutions.Iap.Test.Protocol
     public class TestSshRelayStreamProbing : IapFixtureBase
     {
         [Test]
-        public async Task WhenProjectDoesntExist_ThenProbeThrowsException(
+        public async Task ProbeConnection_WhenProjectDoesntExist_ThenProbeThrowsException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new IapClient(
@@ -56,7 +57,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenZoneDoesntExist_ThenProbeThrowsException(
+        public async Task ProbeConnection_WhenZoneDoesntExist_ThenProbeThrowsException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new IapClient(
@@ -79,7 +80,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenInstanceDoesntExist_ThenProbeThrowsException(
+        public async Task ProbeConnection_WhenInstanceDoesntExist_ThenProbeThrowsException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new IapClient(
@@ -102,7 +103,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenInstanceExistsAndIsListening_ThenProbeSucceeds(
+        public async Task ProbeConnection_WhenInstanceExistsAndIsListening_ThenProbeSucceeds(
              [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
              [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
@@ -124,7 +125,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenInstanceExistsButNotListening_ThenProbeThrowsException(
+        public async Task ProbeConnection_WhenInstanceExistsButNotListening_ThenProbeThrowsException(
              [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
              [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
@@ -142,6 +143,25 @@ namespace Google.Solutions.Iap.Test.Protocol
                 ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(() =>
                     stream.ProbeConnectionAsync(TimeSpan.FromSeconds(5)).Wait());
             }
+        }
+
+        [Test]
+        public void ProbeConnection_WhenServerClosesConnectionWithNotAuthorized_ThenTestConnectionAsyncThrowsUnauthorizedException()
+        {
+            var stream = new MockStream()
+            {
+                ExpectServerCloseCodeOnRead = (WebSocketCloseStatus)SshRelayCloseCode.NOT_AUTHORIZED
+            };
+            var endpoint = new MockSshRelayEndpoint()
+            {
+                ExpectedStream = stream
+            };
+            var relay = new SshRelayStream(endpoint);
+
+            ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(
+                () => relay
+                    .ProbeConnectionAsync(TimeSpan.FromSeconds(2))
+                    .Wait());
         }
     }
 }

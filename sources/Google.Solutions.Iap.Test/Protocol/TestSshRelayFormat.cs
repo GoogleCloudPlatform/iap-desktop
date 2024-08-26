@@ -35,7 +35,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         public class Tag : IapFixtureBase
         {
             [Test]
-            public void WhenBufferSufficient_ThenEncodeSucceeds()
+            public void Encode_WhenBufferSufficient_ThenEncodeSucceeds()
             {
                 var message = new byte[2];
 
@@ -51,7 +51,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenBufferTooSmall_ThenEncodeThrowsException()
+            public void Encode_WhenBufferTooSmall_ThenEncodeThrowsException()
             {
                 var message = new byte[1];
 
@@ -60,7 +60,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenMessageComplete_ThenDecodeSucceeds()
+            public void Decode_WhenMessageComplete_ThenDecodeSucceeds()
             {
                 var message = new byte[] { 0, 4, 99, 99, 99, 99, 99 };
 
@@ -71,7 +71,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenMessageTruncated_ThenDecodeThrowsException()
+            public void Decode_WhenMessageTruncated_ThenDecodeThrowsException()
             {
                 var message = new byte[] { 0 };
 
@@ -88,7 +88,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         public class ConnectSuccessSid : IapFixtureBase
         {
             [Test]
-            public void WhenBufferSufficient_ThenEncodeSucceeds()
+            public void Encode_WhenBufferSufficient_ThenEncodeSucceeds()
             {
                 var message = new byte[9];
 
@@ -109,7 +109,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenBufferTooSmall_ThenEncodeThrowsException()
+            public void Encode_WhenBufferTooSmall_ThenEncodeThrowsException()
             {
                 var message = new byte[8];
 
@@ -118,7 +118,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenMessageComplete_ThenDecodeReturnsSid()
+            public void Decode_WhenMessageComplete_ThenDecodeReturnsSid()
             {
                 var message = new byte[] {
                     0, 1,
@@ -133,7 +133,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenMessageTruncated_ThenDecodeThrowsException()
+            public void Decode_WhenMessageTruncated_ThenDecodeThrowsException()
             {
                 var message = new byte[] {
                     0, 1,
@@ -154,7 +154,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         public class ReconnectAck : IapFixtureBase
         {
             [Test]
-            public void WhenBufferSufficient_ThenEncodeSucceeds()
+            public void Encode_WhenBufferSufficient_ThenEncodeSucceeds()
             {
                 var message = new byte[10];
 
@@ -174,7 +174,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenBufferTooSmall_ThenEncodeThrowsException()
+            public void Encode_WhenBufferTooSmall_ThenEncodeThrowsException()
             {
                 var message = new byte[9];
 
@@ -183,7 +183,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenMessageComplete_ThenDecodeReturnsAck()
+            public void Decode_WhenMessageComplete_ThenDecodeReturnsAck()
             {
                 var message = new byte[] {
                     0, 2,
@@ -197,7 +197,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenMessageTruncated_ThenDecodeThrowsException()
+            public void Decode_WhenMessageTruncated_ThenDecodeThrowsException()
             {
                 var message = new byte[] {
                     0, 1,
@@ -217,7 +217,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         public class Ack : IapFixtureBase
         {
             [Test]
-            public void WhenBufferSufficient_ThenEncodeSucceeds()
+            public void Encode_WhenBufferSufficient_ThenEncodeSucceeds()
             {
                 var message = new byte[10];
 
@@ -234,7 +234,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenBufferTooSmall_ThenEncodeThrowsException()
+            public void Encode_WhenBufferTooSmall_ThenEncodeThrowsException()
             {
                 var message = new byte[9];
 
@@ -243,7 +243,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenMessageComplete_ThenDecodeReturnsAck()
+            public void Decode_WhenMessageComplete_ThenDecodeReturnsAck()
             {
                 var message = new byte[] {
                     0, 7,
@@ -257,7 +257,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenMessageTruncated_ThenDecodeThrowsException()
+            public void Decode_WhenMessageTruncated_ThenDecodeThrowsException()
             {
                 var message = new byte[] {
                     0, 7,
@@ -278,7 +278,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         {
 
             [Test]
-            public void WhenDataIsEmpty_ThenEncodeThrowsException()
+            public void Encode_WhenDataIsEmpty_ThenEncodeThrowsException()
             {
                 var message = new byte[SshRelayFormat.Data.MaxPayloadLength];
                 var data = Array.Empty<byte>();
@@ -288,7 +288,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenDataTooLarge_ThenEncodeThrowsException()
+            public void Encode_WhenDataTooLarge_ThenEncodeThrowsException()
             {
                 var message = new byte[SshRelayFormat.Data.MaxPayloadLength + 1];
                 var data = new byte[SshRelayFormat.Data.MaxPayloadLength + 1];
@@ -298,7 +298,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenBufferTooSmall_ThenEncodeThrowsException()
+            public void Encode_WhenBufferTooSmall_ThenEncodeThrowsException()
             {
                 var message = new byte[SshRelayFormat.MaxMessageSize - 1];
                 var data = new byte[SshRelayFormat.Data.MaxPayloadLength];
@@ -308,7 +308,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenDataIsMaxSize_ThenEncodeSucceeds()
+            public void Encode_WhenDataIsMaxSize_ThenEncodeSucceeds()
             {
                 var message = new byte[SshRelayFormat.MaxMessageSize];
                 var data = new byte[SshRelayFormat.Data.MaxPayloadLength];
@@ -327,7 +327,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenIndexNotZero_ThenEncodeSucceeds()
+            public void Encode_WhenIndexNotZero_ThenEncodeSucceeds()
             {
                 var message = new byte[7];
                 var data = new byte[SshRelayFormat.Data.MaxPayloadLength + 1];
@@ -351,7 +351,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenMessageComplete_ThenDecodeReturnsData()
+            public void Decode_WhenMessageComplete_ThenDecodeReturnsData()
             {
                 var message = new byte[] {
                     0, 4,
@@ -373,7 +373,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenTargetIndexNotNull_ThenDecodeReturnsData()
+            public void Decode_WhenTargetIndexNotNull_ThenDecodeReturnsData()
             {
                 var message = new byte[] {
                     0, 4,
@@ -395,7 +395,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenBufferTooSmall_ThenDecodeThrowsException()
+            public void Decode_WhenBufferTooSmall_ThenDecodeThrowsException()
             {
                 var message = new byte[] {
                     0, 4,
@@ -415,7 +415,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenBufferTooSmallForData_ThenDecodeThrowsException()
+            public void Decode_WhenBufferTooSmallForData_ThenDecodeThrowsException()
             {
                 var message = new byte[] {
                     0, 4,
@@ -435,17 +435,15 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
         }
 
-
-
         //---------------------------------------------------------------------
-        // ´LongClose.
+        // LongClose.
         //---------------------------------------------------------------------
 
         [TestFixture]
         public class LongClose : IapFixtureBase
         {
             [Test]
-            public void WhenBufferTooSmall_ThenEncodeThrowsException()
+            public void Encode_WhenBufferTooSmall_ThenEncodeThrowsException()
             {
                 var message = new byte[SshRelayFormat.LongClose.MinMessageLength - 1];
 
@@ -457,7 +455,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenReasonEmpty_ThenEncodeSucceeds()
+            public void Encode_WhenReasonEmpty_ThenEncodeSucceeds()
             {
                 var message = new byte[SshRelayFormat.LongClose.MinMessageLength];
 
@@ -470,7 +468,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenMessageComplete_ThenDecodeReturnsData()
+            public void Decode_WhenMessageComplete_ThenDecodeReturnsData()
             {
                 var message = new byte[] {
                     0, 10,
@@ -490,7 +488,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void WhenBufferTooSmall_ThenDecodeThrowsException()
+            public void Decode_WhenBufferTooSmall_ThenDecodeThrowsException()
             {
                 var message = new byte[] {
                     0, 10,

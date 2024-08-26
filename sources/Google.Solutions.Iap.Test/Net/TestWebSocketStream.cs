@@ -67,7 +67,7 @@ namespace Google.Solutions.Iap.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenServerClosesConnectionWithError_ThenReadThrowsException()
+        public async Task Read_WhenServerClosesConnectionWithError_ThenReadThrowsException()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -106,7 +106,7 @@ namespace Google.Solutions.Iap.Test.Net
         }
 
         [Test]
-        public async Task WhenConnectionClosedByClient_ThenReadThrowsException()
+        public async Task Read_WhenConnectionClosedByClient_ThenReadThrowsException()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -126,7 +126,7 @@ namespace Google.Solutions.Iap.Test.Net
         }
 
         [Test]
-        public async Task WhenServerClosesConnectionNormally_ThenReadReturnsZero()
+        public async Task Read_WhenServerClosesConnectionNormally_ThenReadReturnsZero()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -148,7 +148,7 @@ namespace Google.Solutions.Iap.Test.Net
         }
 
         [Test]
-        public async Task WhenServerClosesConnectionAndReadSizeZero_ThenReadSucceeds()
+        public async Task Read_WhenServerClosesConnectionAndReadSizeZero_ThenReadSucceeds()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -172,7 +172,7 @@ namespace Google.Solutions.Iap.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenFrameSizeEqualsReadSize_ThenReadSucceeds()
+        public async Task Read_WhenFrameSizeEqualsReadSize_ThenReadSucceeds()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -195,7 +195,7 @@ namespace Google.Solutions.Iap.Test.Net
         }
 
         [Test]
-        public async Task WhenFrameSizeEqualToTwiceReadSize_ThenReadSucceeds()
+        public async Task Read_WhenFrameSizeEqualToTwiceReadSize_ThenReadSucceeds()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -225,7 +225,7 @@ namespace Google.Solutions.Iap.Test.Net
         }
 
         [Test]
-        public async Task WhenFrameLessThanSizeTwiceReadSize_ThenReadSucceeds()
+        public async Task Read_WhenFrameLessThanSizeTwiceReadSize_ThenReadSucceeds()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -258,7 +258,7 @@ namespace Google.Solutions.Iap.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenFrameLessThanReadSize_ThenReadSucceeds()
+        public async Task Read_WhenFrameLessThanReadSize_ThenReadSucceeds()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -297,7 +297,7 @@ namespace Google.Solutions.Iap.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenServerClosedConnection_ThenWriteSucceeds()
+        public async Task Write_WhenServerClosedConnection_ThenWriteSucceeds()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -323,7 +323,7 @@ namespace Google.Solutions.Iap.Test.Net
         }
 
         [Test]
-        public async Task WhenConnectionClosedByClient_ThenWriteThrowsException()
+        public async Task Write_WhenConnectionClosedByClient_ThenWriteThrowsException()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -347,7 +347,7 @@ namespace Google.Solutions.Iap.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenConnectionClosedByClient_TheCloseThrowsException()
+        public async Task Write_WhenConnectionClosedByClient_TheCloseThrowsException()
         {
             using (var connection = await this.Server.ConnectAsync())
             {

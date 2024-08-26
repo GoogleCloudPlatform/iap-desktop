@@ -129,7 +129,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenReadFailsWithDeniedCloseCode_ThenProbeConnectionThrowsException(
+        public async Task ProbeConnection_WhenReadFailsWithDeniedCloseCode_ThenProbeConnectionThrowsException(
             [Values(
                 SshRelayCloseCode.NOT_AUTHORIZED)] SshRelayCloseCode code)
         {
@@ -150,7 +150,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenReadFailsWithNotFoundCloseCode_ThenProbeConnectionThrowsException(
+        public async Task ProbeConnection_WhenReadFailsWithNotFoundCloseCode_ThenProbeConnectionThrowsException(
             [Values(
                 SshRelayCloseCode.LOOKUP_FAILED,
                 SshRelayCloseCode.LOOKUP_FAILED_RECONNECT)] SshRelayCloseCode code)
@@ -176,7 +176,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenBufferSizeTooSmall_ThenReadThrowsException()
+        public async Task Read_WhenBufferSizeTooSmall_ThenReadThrowsException()
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -194,7 +194,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenServerClosesConnectionNormally_ThenReadReturnsZeroAndDoesNotReconnect(
+        public async Task Read_WhenServerClosesConnectionNormally_ThenReadReturnsZeroAndDoesNotReconnect(
              [Values(
                 SshRelayCloseCode.DESTINATION_READ_FAILED,
                 SshRelayCloseCode.DESTINATION_WRITE_FAILED,
@@ -224,7 +224,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenServerClosesConnectionWithNotAuthorizedError_ThenReadReturnsZeroAndDoesNotReconnect(
+        public async Task Read_WhenServerClosesConnectionWithNotAuthorizedError_ThenReadReturnsZeroAndDoesNotReconnect(
              [Values(
                 SshRelayCloseCode.NOT_AUTHORIZED)] SshRelayCloseCode code)
         {
@@ -248,7 +248,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
 
         [Test]
-        public async Task WhenServerClosesConnectionWithConnectError_ThenReadReturnsZeroAndDoesNotReconnect(
+        public async Task Read_WhenServerClosesConnectionWithConnectError_ThenReadReturnsZeroAndDoesNotReconnect(
              [Values(
                 SshRelayCloseCode.FAILED_TO_CONNECT_TO_BACKEND)] SshRelayCloseCode code)
         {
@@ -271,7 +271,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenServerClosesConnectionWithReconnectError_ThenReadReturnsZeroAndDoesNotReconnect(
+        public async Task Read_WhenServerClosesConnectionWithReconnectError_ThenReadReturnsZeroAndDoesNotReconnect(
              [Values(
                 SshRelayCloseCode.SID_UNKNOWN,
                 SshRelayCloseCode.SID_IN_USE)] SshRelayCloseCode code)
@@ -295,7 +295,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenConnectionClosedByClient_ThenReadThrowsException()
+        public async Task Read_WhenConnectionClosedByClient_ThenReadThrowsException()
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -316,7 +316,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenServerTruncatedMessage_ThenReadThrowsException()
+        public async Task Read_WhenServerTruncatedMessage_ThenReadThrowsException()
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -340,7 +340,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenBufferSizeSufficient_ThenReadSucceeds()
+        public async Task Read_WhenBufferSizeSufficient_ThenReadSucceeds()
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -375,7 +375,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenServerClosesConnectionWithUnknownErrorBeforeAck_ThenReadConnectsAgain(
+        public async Task Read_WhenServerClosesConnectionWithUnknownErrorBeforeAck_ThenReadConnectsAgain(
              [Values(
                 SshRelayCloseCode.INVALID_WEBSOCKET_OPCODE)] SshRelayCloseCode code)
         {
@@ -413,7 +413,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenServerClosesConnectionWithUnknownErrorAfterAck_ThenReadTriggersReconnect(
+        public async Task Read_WhenServerClosesConnectionWithUnknownErrorAfterAck_ThenReadTriggersReconnect(
              [Values(
                 SshRelayCloseCode.INVALID_WEBSOCKET_OPCODE)] SshRelayCloseCode code)
         {
@@ -462,7 +462,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenBufferSizeTooBig_ThenWriteThrowsException()
+        public async Task Write_WhenBufferSizeTooBig_ThenWriteThrowsException()
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -484,7 +484,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenDataRead_ThenWriteSendsAck()
+        public async Task Write_WhenDataRead_ThenWriteSendsAck()
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -548,7 +548,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenReconnecting_ThenWriteResendsUnackedData()
+        public async Task Write_WhenReconnecting_ThenWriteResendsUnackedData()
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {

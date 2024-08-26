@@ -33,7 +33,7 @@ namespace Google.Solutions.Iap.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoSeedProvided_ThenFindPortReturnsRandomPort()
+        public void FindPort_WhenNoSeedProvided_ThenFindPortReturnsRandomPort()
         {
             var port1 = new PortFinder().FindPort(out var preferred);
             Assert.IsFalse(preferred);
@@ -49,7 +49,7 @@ namespace Google.Solutions.Iap.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSeedProvided_ThenFindPortReturnsSamePort()
+        public void FindPort_WhenSeedProvided_ThenFindPortReturnsSamePort()
         {
             var seed = Encoding.ASCII.GetBytes("some seed");
 
