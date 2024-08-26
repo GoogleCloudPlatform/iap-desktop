@@ -138,9 +138,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs
         public string? Id { get; set; }
 
         [JsonProperty("last")]
-        public bool? IsLast { get; set; }
+        public bool IsLast { get; set; }
 
         [JsonProperty("first")]
-        public bool? IsFirst { get; set; }
+        public bool IsFirst { get; set; }
     }
 }

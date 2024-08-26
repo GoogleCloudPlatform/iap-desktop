@@ -120,18 +120,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
         }
 
         public string? DeviceState
-            => this.LogRecord
+        {
+            get => this.LogRecord
                 .ProtoPayload?
                 .Metadata?
                 .Value<string>("device_state")
                 .NullIfEmpty();
+        }
 
         public string? DeviceId
-            => this.LogRecord
+        {
+            get => this.LogRecord
                 .ProtoPayload?
                 .Metadata?
                 .Value<string>("device_id")
                 .NullIfEmpty();
+        }
 
         public abstract string Message { get; }
 
@@ -148,8 +152,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
 
     public enum EventCategory
     {
+        //
         // NB. Categories are contextual and do not map 1:1 to admin 
         // activity/system/data access events!
+        //
 
         Unknown,
 
