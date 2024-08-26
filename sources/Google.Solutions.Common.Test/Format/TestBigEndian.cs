@@ -28,7 +28,7 @@ namespace Google.Solutions.Common.Test.Format
     public class TestBigEndian : CommonFixtureBase
     {
         [Test]
-        public void EncodeDecodeInt16()
+        public void EncodeDecode_Int16()
         {
             var buffer = new byte[2];
             BigEndian.EncodeUInt16(ushort.MaxValue, buffer, 0);
@@ -39,7 +39,7 @@ namespace Google.Solutions.Common.Test.Format
         }
 
         [Test]
-        public void EncodeDecodeInt16WithOffset()
+        public void EncodeDecode_Int16WithOffset()
         {
             var buffer = new byte[4];
             BigEndian.EncodeUInt16(ushort.MaxValue, buffer, 2);
@@ -49,7 +49,7 @@ namespace Google.Solutions.Common.Test.Format
         }
 
         [Test]
-        public void EncodeDecodeInt32()
+        public void EncodeDecode_Int32()
         {
             var buffer = new byte[4];
             BigEndian.EncodeUInt32(uint.MaxValue, buffer, 0);
@@ -60,7 +60,7 @@ namespace Google.Solutions.Common.Test.Format
         }
 
         [Test]
-        public void EncodeDecodeInt64()
+        public void EncodeDecode_Int64()
         {
             var buffer = new byte[8];
             BigEndian.EncodeUInt64(ulong.MaxValue, buffer, 0);

@@ -67,7 +67,7 @@ namespace Google.Solutions.Common.Test.Threading
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCalledOnWrongThread_ThenPumpThrowsException()
+        public void Pump_WhenCalledOnWrongThread_ThenPumpThrowsException()
         {
             using (var tokenSource = new CancellationTokenSource())
             {
@@ -88,7 +88,7 @@ namespace Google.Solutions.Common.Test.Threading
         }
 
         [Test]
-        public void WhenCallbackThrowsException_ThenPumpThrowsException()
+        public void Pump_WhenCallbackThrowsException_ThenPumpThrowsException()
         {
             using (var tokenSource = new CancellationTokenSource())
             {
@@ -108,11 +108,11 @@ namespace Google.Solutions.Common.Test.Threading
         }
 
         //---------------------------------------------------------------------
-        // RunAsync.
+        // Run.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenPostingCallbackUsingRunAsync_ThenCallbackIsInvokedOnDesignatedThread(
+        public async Task Run_WhenPostingCallbackUsingRunAsync_ThenCallbackIsInvokedOnDesignatedThread(
             [Values(true, false)] bool continueOnCapturedContext)
         {
             using (var tokenSource = new CancellationTokenSource())

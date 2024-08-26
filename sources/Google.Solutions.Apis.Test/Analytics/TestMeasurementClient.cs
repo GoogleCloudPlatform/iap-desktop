@@ -35,7 +35,7 @@ namespace Google.Solutions.Apis.Test.Analytics
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenParametersNull_ThenCollectEventSucceeds()
+        public async Task CollectEvent_WhenParametersNull()
         {
             var session = new MeasurementSession("invalid-client")
             {

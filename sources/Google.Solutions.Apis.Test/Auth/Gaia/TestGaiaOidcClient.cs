@@ -86,7 +86,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTokenResponseContainsIdToken_ThenCreateSessionUsesFreshIdToken()
+        public void CreateSession_WhenTokenResponseContainsIdToken_ThenUsesFreshIdToken()
         {
             var freshIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
@@ -118,7 +118,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void WhenTokenResponseContainsIdTokenAndOfflineCredentialContainsOldIdToken_ThenCreateSessionUsesFreshIdToken()
+        public void CreateSession_WhenTokenResponseContainsIdTokenAndOfflineCredentialContainsOldIdToken_ThenUsesFreshIdToken()
         {
             var freshIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
@@ -163,7 +163,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void WhenTokenResponseLacksIdTokenButOfflineCredentialContainsOldIdToken_ThenCreateSessionUsesOldIdToken()
+        public void CreateSession_WhenTokenResponseLacksIdTokenButOfflineCredentialContainsOldIdToken_ThenUsesOldIdToken()
         {
             var oldIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
@@ -201,7 +201,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void WhenTokenResponseLacksIdTokenAndOfflineCredentialIsNull_ThenCreateSessionThrowsException()
+        public void CreateSession_WhenTokenResponseLacksIdTokenAndOfflineCredentialIsNull_ThenThrowsException()
         {
             var oldIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
@@ -227,7 +227,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void WhenTokenResponseLacksIdTokenAndOfflineCredentialContainsUnusableIdToken_ThenCreateSessionThrowsException()
+        public void CreateSession_WhenTokenResponseLacksIdTokenAndOfflineCredentialContainsUnusableIdToken_ThenThrowsException()
         {
             var oldIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
@@ -259,7 +259,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void WhenTokenResponseLacksIdTokenAndOfflineCredentialLacksIdToken_ThenCreateSessionThrowsException()
+        public void CreateSession_WhenTokenResponseLacksIdTokenAndOfflineCredentialLacksIdToken_ThenThrowsException()
         {
             var tokenResponse = new TokenResponse()
             {
@@ -330,7 +330,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void WhenOfflineCredentialPresent_ThenAuthorizeWithBrowserUsesMinimalFlow()
+        public void AuthorizeWithBrowser_WhenOfflineCredentialPresent_ThenUsesMinimalFlow()
         {
             var oldIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
@@ -370,7 +370,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void WhenOfflineCredentialLacksEmail_ThenAuthorizeWithBrowserUsesMinimalFlow()
+        public void AuthorizeWithBrowser_WhenOfflineCredentialLacksEmail_ThenUsesMinimalFlow()
         {
             var oldIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
@@ -407,7 +407,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void WhenOfflineCredentialIsInvalid_ThenAuthorizeWithBrowserUsesFullFlow()
+        public void AuthorizeWithBrowser_WhenOfflineCredentialIsInvalid_ThenUsesFullFlow()
         {
             // Non-empty store.
             var store = new OfflineStore()
@@ -436,7 +436,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void WhenNoOfflineCredentialFound_ThenAuthorizeWithBrowserUsesFullFlow()
+        public void AuthorizeWithBrowser_WhenNoOfflineCredentialFound_ThenUsesFullFlow()
         {
             // Empty store.
             var store = new OfflineStore();
@@ -461,7 +461,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void WhenBrowserFlowFails_ThenAuthorizeWithBrowserThrowsException()
+        public void AuthorizeWithBrowser_WhenBrowserFlowFails_ThenThrowsException()
         {
             var store = new OfflineStore();
             var client = new GaiaOidcClientWithMockFlow(
@@ -487,7 +487,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void WhenTokenExchangeFails_ThenAuthorizeWithBrowserThrowsException()
+        public void AuthorizeWithBrowser_WhenTokenExchangeFails_ThenThrowsException()
         {
             var store = new OfflineStore();
             var client = new GaiaOidcClientWithMockFlow(
@@ -523,7 +523,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void WhenScopeNotGranted_ThenAuthorizeWithBrowserReturnsSession()
+        public void AuthorizeWithBrowser_WhenScopeNotGranted_ThenReturnsSession()
         {
             var store = new OfflineStore();
             var client = new GaiaOidcClientWithMockFlow(
@@ -563,7 +563,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public async Task WhenTokenExchangeSucceeds_ThenAuthorizeWithBrowserReturnsSession()
+        public async Task AuthorizeWithBrowser_WhenTokenExchangeSucceeds_ThenReturnsSession()
         {
             var store = new OfflineStore();
             var client = new GaiaOidcClientWithMockFlow(
@@ -607,11 +607,11 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         //---------------------------------------------------------------------
-        // ActivateOfflineCredential.
+        // TryAuthorizeSilently.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenTokenExchangeFails_ThenTryAuthorizeSilentlyReturnsNull()
+        public async Task TryAuthorizeSilently_WhenTokenExchangeFails_ThenReturnsNull()
         {
             var store = new OfflineStore()
             {
@@ -645,7 +645,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public async Task WhenTokenExchangeSucceeds_ThenTryAuthorizeSilentlyReturnsSession()
+        public async Task TryAuthorizeSilently_WhenTokenExchangeSucceeds_ThenReturnsSession()
         {
             var store = new OfflineStore()
             {

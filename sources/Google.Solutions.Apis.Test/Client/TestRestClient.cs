@@ -49,7 +49,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         [Test]
-        public async Task WhenUrlPointsToJson_ThenGetAsyncReturnsObject()
+        public async Task Get_WhenUrlPointsToJson()
         {
             var client = new RestClient(userAgent);
             var result = await client.GetAsync<SampleResource>(
@@ -61,7 +61,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         [Test]
-        public async Task WhenUrlPointsToNoContent_ThenGetAsyncReturnsNull()
+        public async Task Get_WhenUrlPointsToNoContent()
         {
             var client = new RestClient(userAgent);
             var result = await client.GetAsync<SampleResource>(
@@ -74,7 +74,7 @@ namespace Google.Solutions.Apis.Test.Client
 
         [Test]
         [Ignore("Unreliable in CI")]
-        public void WhenUrlReturns404_ThenHttpExceptionIsThrown()
+        public void Get_WhenUrlReturns404()
         {
             var client = new RestClient(userAgent);
 

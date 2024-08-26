@@ -86,7 +86,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNewSessionNotCompatible_ThenSpliceThrowsException()
+        public void Splice_WhenNewSessionNotCompatible_ThenThrowsException()
         {
             var session = new WorkforcePoolSession(
                 CreateUserCredential("rt", "at"),
@@ -98,7 +98,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public void WhenNewSessionCompatible_ThenSpliceReplacesTokens()
+        public void Splice_WhenNewSessionCompatible_ThenReplacesTokens()
         {
             var session = new WorkforcePoolSession(
                 CreateUserCredential("old-rt", "old-at"),
@@ -125,7 +125,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         //---------------------------------------------------------------------
 
         [Test]
-        public void TerminateRaisesEvent()
+        public void Terminate()
         {
             var session = new WorkforcePoolSession(
                 CreateUserCredential("rt", "at"),

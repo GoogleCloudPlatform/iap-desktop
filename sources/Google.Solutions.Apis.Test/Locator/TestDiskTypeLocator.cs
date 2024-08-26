@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPathIsValid_ParseReturnsObject()
+        public void Parse_WhenPathIsValid_ParseReturnsObject()
         {
             var ref1 = DiskTypeLocator.Parse(
                 "projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
@@ -59,7 +59,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
         {
             var ref1 = DiskTypeLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
@@ -71,7 +71,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByGoogleapisHost_ParseReturnsObject()
         {
             var ref1 = DiskTypeLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
@@ -83,7 +83,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenUsingBetaApi_ParseReturnsObject()
+        public void Parse_WhenUsingBetaApi_ParseReturnsObject()
         {
             var ref1 = DiskTypeLocator.Parse(
                  "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
@@ -94,14 +94,14 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenPathLacksProject_ParseThrowsArgumentException()
+        public void Parse_WhenPathLacksProject_ParseThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => DiskTypeLocator.Parse(
                 "/project-1/zones/us-central1-a/diskTypes/pd-standard"));
         }
 
         [Test]
-        public void WhenPathInvalid_ParseThrowsArgumentException()
+        public void Parse_WhenPathInvalid_ParseThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => DiskTypeLocator.Parse(
                 "/project-1/zones/us-central1-a/diskTypes"));
@@ -116,7 +116,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
+        public void Equals_WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
         {
             var ref1 = new DiskTypeLocator("proj", "zone1", "pd-standard");
             var ref2 = new DiskTypeLocator("proj", "zone2", "pd-standard");
@@ -132,7 +132,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCreatedFromPath_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
         {
             var path = "projects/project-1/zones/us-central1-a/diskTypes/pd-standard";
 
@@ -142,7 +142,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenCreatedFromUrl_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromUrl_ThenToStringReturnsPath()
         {
             var path = "projects/project-1/zones/us-central1-a/diskTypes/pd-standard";
 

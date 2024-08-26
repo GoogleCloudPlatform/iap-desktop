@@ -28,7 +28,7 @@ namespace Google.Solutions.Common.Test.Runtime
     public class TestDisposable
     {
         [Test]
-        public void WhenWrappedAsComponent_ThenDisposingComponentInvokesAction()
+        public void Dispose_WhenWrappedAsComponent_ThenDisposingComponentInvokesAction()
         {
             var called = false;
 

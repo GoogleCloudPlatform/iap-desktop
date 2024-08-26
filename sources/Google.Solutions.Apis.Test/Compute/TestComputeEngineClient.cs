@@ -43,7 +43,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenPscEnabled_ThenRequestSucceeds(
+        public async Task GetProject_WhenPscEnabled(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var address = await Dns
@@ -76,7 +76,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUserInViewerRole_ThenGetProjectReturnsProject(
+        public async Task GetProject_WhenUserInViewerRole(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
@@ -95,7 +95,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUserNotInRole_ThenGetProjectThrowsResourceAccessDeniedException(
+        public async Task GetProject_WhenUserNotInRole(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
@@ -110,7 +110,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenProjectIdInvalid_ThenGetProjectThrowsException(
+        public async Task GetProject_WhenProjectIdInvalid_ThenThrowsException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
@@ -129,7 +129,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUserInViewerRole_ThenListInstancesAsyncReturnsInstances(
+        public async Task ListInstancesByProject_WhenUserInViewerRole_(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -153,7 +153,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUserInViewerRole_ThenListInstancesAsyncByZoneReturnsInstances(
+        public async Task ListInstancesByZone_WhenUserInViewerRole(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -176,7 +176,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUserNotInRole_ThenListInstancesAsyncThrowsResourceAccessDeniedException(
+        public async Task ListInstancesByProject_WhenUserNotInRole(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
@@ -191,7 +191,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUserNotInRole_ThenListInstancesAsyncByZoneThrowsResourceAccessDeniedException(
+        public async Task ListInstancesByZone_WhenUserNotInRole(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
@@ -206,7 +206,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUserNotInRole_ThenGetInstanceAsyncThrowsResourceAccessDeniedException(
+        public async Task GetInstance_WhenUserNotInRole(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
@@ -227,7 +227,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUserNotInRole_ThenGetGuestAttributesAsyncThrowsResourceAccessDeniedException(
+        public async Task GetGuestAttributes_WhenUserNotInRole(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
@@ -249,7 +249,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenLaunchingInstance_ThenInstanceSetupFinishedTextAppearsInStream(
+        public async Task GetSerialPortOutput_WhenLaunchingInstance_ThenInstanceSetupFinishedTextAppearsInStream(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -283,7 +283,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenInstanceNotFound_ThenControlInstanceThrowsException(
+        public async Task ControlInstance_WhenInstanceNotFound(
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             var client = new ComputeEngineClient(
@@ -299,7 +299,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenInstanceRunning_ThenStartingWithControlInstanceSucceeds(
+        public async Task ControlInstance_Start_WhenInstanceRunning(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -316,7 +316,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUserInRole_ThenControlInstanceFails(
+        public async Task ControlInstance_WhenUserNotInRole(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth,
             [Values(
@@ -343,7 +343,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUserInRole_ThenIsAccessGrantedReturnsTrue(
+        public async Task IsAccessGranted_WhenUserInRole_ThenReturnsTrue(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -362,7 +362,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUserNotInRole_ThenIsAccessGrantedReturnsFalse(
+        public async Task IsAccessGranted_WhenUserNotInRole_ThenReturnsFalse(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -381,7 +381,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUserLacksInstanceListPermission_ThenIsAccessGrantedFailsOpenAndReturnsTrue(
+        public async Task IsAccessGranted_WhenUserLacksInstanceListPermission_ThenFailsOpenAndReturnsTrue(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {

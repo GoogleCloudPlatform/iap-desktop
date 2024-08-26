@@ -28,7 +28,7 @@ namespace Google.Solutions.Common.Test.Diagnostics
     public class TestClrVersion : CommonFixtureBase
     {
         [Test]
-        public void VersionPopulated()
+        public void Version()
         {
             var version = ClrVersion.Version;
 

@@ -32,7 +32,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNameIsZonal_ThenTryParseReturnsZonalName()
+        public void TryParse_WhenNameIsZonal_ThenReturnsZonalName()
         {
             var name = "instance-1.zone-1.c.project-1.internal";
             Assert.IsTrue(InternalDnsName.TryParse(name, out var parsed));
@@ -43,7 +43,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void WhenNameIsGlobal_ThenTryParseReturnsGlobalName()
+        public void TryParse_WhenNameIsGlobal_ThenReturnsGlobalName()
         {
             var name = "instance-1.c.project-1.internal";
             Assert.IsTrue(InternalDnsName.TryParse(name, out var parsed));
@@ -54,7 +54,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void WhenNameIsInvalid_ThenTryParseReturnsFalse(
+        public void TryParse_WhenNameIsInvalid_ThenReturnsFalse(
             [Values(null, "", " ", ".internal", "example.com")] string name)
         {
             Assert.IsFalse(InternalDnsName.TryParse(name, out var _));

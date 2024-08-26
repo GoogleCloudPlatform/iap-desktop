@@ -29,7 +29,7 @@ namespace Google.Solutions.Common.Test.Threading
     public class TestCancellationTokenExtensions : CommonFixtureBase
     {
         [Test]
-        public void WhenFirstTokenCancelled_CombinedTokenIsCancelled()
+        public void Cancel_WhenFirstTokenCancelled_CombinedTokenIsCancelled()
         {
             using (var first = new CancellationTokenSource())
             using (var second = new CancellationTokenSource())
@@ -44,7 +44,7 @@ namespace Google.Solutions.Common.Test.Threading
         }
 
         [Test]
-        public void WhenSecondTokenCancelled_CombinedTokenIsCancelled()
+        public void Cancel_WhenSecondTokenCancelled_CombinedTokenIsCancelled()
         {
             using (var first = new CancellationTokenSource())
             using (var second = new CancellationTokenSource())

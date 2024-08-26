@@ -36,7 +36,7 @@ namespace Google.Solutions.Apis.Test.Compute
     public class TestWindowsCredentialGenerator
     {
         [Test]
-        public async Task WhenUsernameIsSuperLong_ThenPasswordResetExceptionIsThrown(
+        public async Task CreateWindowsCredentials_WhenUsernameIsSuperLong_ThenPasswordResetExceptionIsThrown(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -66,7 +66,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenInstanceDoesntExist_ThenPasswordResetExceptionIsThrown(
+        public async Task CreateWindowsCredentials_WhenInstanceDoesntExist_ThenPasswordResetExceptionIsThrown(
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
             var computeClient = new ComputeEngineClient(
@@ -100,7 +100,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUserDoesntExist_ThenCreateWindowsCredentialsCreatesNewUser(
+        public async Task CreateWindowsCredentials_WhenUserDoesntExist_ThenCreateWindowsCredentialsCreatesNewUser(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -126,7 +126,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenAdminUserExists_ThenCreateWindowsCredentialsUpdatesPassword(
+        public async Task CreateWindowsCredentials_WhenAdminUserExists_ThenCreateWindowsCredentialsUpdatesPassword(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -159,7 +159,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenNormalUserExists_ThenCreateWindowsCredentialsUpdatesPasswordAndChangesType(
+        public async Task CreateWindowsCredentials_WhenNormalUserExists_ThenCreateWindowsCredentialsUpdatesPasswordAndChangesType(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -192,7 +192,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenTokenSourceIsCanceled_ThenCreateWindowsCredentialsThrowsTaskCanceledException(
+        public async Task CreateWindowsCredentials_WhenTokenSourceIsCanceled_ThenCreateWindowsCredentialsThrowsTaskCanceledException(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -218,7 +218,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenTimeoutElapses_ThenCreateWindowsCredentialsThrowsPasswordResetException(
+        public async Task CreateWindowsCredentials_WhenTimeoutElapses_ThenCreateWindowsCredentialsThrowsPasswordResetException(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -247,7 +247,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUserInRole_ThenIsGrantedPermissionToCreateWindowsCredentialsReturnsTrue(
+        public async Task IsGrantedPermissionToCreateWindowsCredentials_WhenUserInRole(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -267,7 +267,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUserNotInRole_ThenIsGrantedPermissionToCreateWindowsCredentialsReturnsFalse(
+        public async Task IsGrantedPermissionToCreateWindowsCredentialsWhenUserNotInRole_ThenIsGrantedPermissionToCreateWindowsCredentialsReturnsFalse(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -287,7 +287,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenUserNotInInstanceAdminRole_ThenCreateWindowsCredentialsAsyncThrowsPasswordResetException(
+        public async Task IsGrantedPermissionToCreateWindowsCredentialsWhenUserNotInRole_WhenUserNotInInstanceAdminRole(
             [WindowsInstance(ServiceAccount = InstanceServiceAccount.None)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -309,7 +309,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenInstanceHasNoServiceAccountAndUserInInstanceAdminRole_ThenCreateWindowsCredentialsAsyncSucceeds(
+        public async Task IsGrantedPermissionToCreateWindowsCredentialsWhenUserNotInRole_WhenInstanceHasNoServiceAccountAndUserInInstanceAdminRole(
             [WindowsInstance(ServiceAccount = InstanceServiceAccount.None)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -331,7 +331,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenInstanceHasServiceAccountAndUserInInstanceAdminRole_ThenCreateWindowsCredentialsAsyncThrowsPasswordResetException(
+        public async Task IsGrantedPermissionToCreateWindowsCredentialsWhenUserNotInRole_WhenInstanceHasServiceAccountAndUserInInstanceAdminRole(
             [WindowsInstance(ServiceAccount = InstanceServiceAccount.ComputeDefault)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -353,7 +353,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenInstanceHasServiceAccountAndUserInInstanceAndServiceAccountUserAdminRole_ThenCreateWindowsCredentialsAsyncSucceeds(
+        public async Task IsGrantedPermissionToCreateWindowsCredentialsWhenUserNotInRole_WhenInstanceHasServiceAccountAndUserInInstanceAndServiceAccountUserAdminRole(
             [WindowsInstance(ServiceAccount = InstanceServiceAccount.ComputeDefault)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Roles = new [] {
                 PredefinedRole.ComputeInstanceAdminV1,

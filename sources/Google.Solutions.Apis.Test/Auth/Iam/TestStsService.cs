@@ -37,7 +37,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenClientCredentialsMissing_ThenIntrospectTokenThrowsException()
+        public async Task IntrospectToken_WhenClientCredentialsMissing_ThenThrowsException()
         {
             using (var service = new StsService(
                 new BaseClientService.Initializer()))
@@ -63,7 +63,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public async Task WhenClientCredentialsInvalid_ThenIntrospectTokenThrowsException()
+        public async Task IntrospectToken_WhenClientCredentialsInvalid_ThenThrowsException()
         {
             using (var service = new StsService(
                 new BaseClientService.Initializer()))

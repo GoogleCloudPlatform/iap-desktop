@@ -34,7 +34,7 @@ namespace Google.Solutions.Apis.Test.Compute
     public class TestInstanceExtensions
     {
         [Test]
-        public async Task WhenInstancePopulated_ThenGetInstanceLocatorSucceeds(
+        public async Task GetInstanceLocator_WhenInstancePopulated_ThenSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -58,7 +58,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenInstanceHasInternalIp_ThenPrivateAddressReturnsRfc1918Ip(
+        public async Task PrivateAddressReturns_WhenInstanceHasInternalIp_ThenRfc1918Ip(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -79,7 +79,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenInstanceLacksPublicIp_ThenPublicAddressReturnsNull(
+        public async Task PublicAddress_WhenInstanceLacksPublicIp_ThenReturnsNull(
             [LinuxInstance(PublicIp = false)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -96,7 +96,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task WhenInstanceHasPublicIp_ThenPublicAddressReturnsNonRfc1918Ip(
+        public async Task PublicAddress_WhenInstanceHasPublicIp_ThenReturnsNonRfc1918Ip(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {

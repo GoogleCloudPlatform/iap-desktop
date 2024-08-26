@@ -43,7 +43,7 @@ namespace Google.Solutions.Common.Test.Runtime
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNotDisposed_ThenIsDisposedIsFalse()
+        public void IsDisposed_WhenNotDisposed_ThenIsDisposedIsFalse()
         {
             using (var d = new SampleDisposable())
             {
@@ -52,7 +52,7 @@ namespace Google.Solutions.Common.Test.Runtime
         }
 
         [Test]
-        public void WhenDisposedMoreThanOnce_ThenIsDisposedIsTrue()
+        public void IsDisposed_WhenDisposedMoreThanOnce_ThenIsDisposedIsTrue()
         {
             var d = new SampleDisposable();
             d.Dispose();
@@ -65,7 +65,7 @@ namespace Google.Solutions.Common.Test.Runtime
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDisposedTwice_ThenDisposeIsOnlyCalledOnce()
+        public void Dispose_WhenDisposedTwice_ThenDisposeIsOnlyCalledOnce()
         {
             var d = new SampleDisposable();
             d.Dispose();

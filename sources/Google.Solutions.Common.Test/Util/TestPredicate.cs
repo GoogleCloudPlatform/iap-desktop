@@ -28,13 +28,13 @@ namespace Google.Solutions.Common.Test.Util
     public class TestPredicate
     {
         [Test]
-        public void InsideRange([Values(0, 1, 100)] int value)
+        public void InRange_WhenInsideRange([Values(0, 1, 100)] int value)
         {
             Assert.IsTrue(Predicate.InRange(0, 100)(value));
         }
 
         [Test]
-        public void OutsideRange([Values(-1, 101)] int value)
+        public void InRange_WhenOutsideRange([Values(-1, 101)] int value)
         {
             Assert.IsFalse(Predicate.InRange(0, 100)(value));
         }

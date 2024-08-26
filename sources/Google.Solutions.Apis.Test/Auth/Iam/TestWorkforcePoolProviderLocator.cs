@@ -40,21 +40,21 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenStringIsNullOrEmpty_ThenTryParseReturnsFalse(
+        public void TryParse_WhenStringIsNullOrEmpty_ThenReturnsFalse(
             [Values(null, "")] string id)
         {
             Assert.IsFalse(WorkforcePoolProviderLocator.TryParse(id, out var _));
         }
 
         [Test]
-        public void WhenStringIsMalformed_ThenTryParseReturnsFalse(
+        public void TryParse_WhenStringIsMalformed_ThenReturnsFalse(
             [Values("x", "principal://", " ")] string id)
         {
             Assert.IsFalse(WorkforcePoolProviderLocator.TryParse(id, out var _));
         }
 
         [Test]
-        public void WhenStringComponentIsNullOrEmpty_ThenTryParseReturnsFalse(
+        public void TryParse_WhenStringComponentIsNullOrEmpty_ThenReturnsFalse(
             [Values(
                 "locations//workforcePools/POOL/providers/PROVIDER",
                 "locations/LOCATION/workforcePools//providers/PROVIDER",
@@ -65,7 +65,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public void WhenStringValid_ThenTryParseReturnsTrue()
+        public void TryParse_WhenStringValid_ThenReturnsTrue()
         {
             Assert.IsTrue(WorkforcePoolProviderLocator.TryParse(
                 "locations/LOCATION/workforcePools/POOL/providers/PROVIDER",
@@ -82,7 +82,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenStringIsNullOrEmpty_ThenParseThrowsException(
+        public void Parse_WhenStringIsNullOrEmpty_ThenThrowsException(
             [Values(null, "")] string id)
         {
             Assert.Throws<ArgumentException>(
@@ -90,7 +90,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public void WhenStringIsMalformed_ThenParseThrowsException(
+        public void Parse_WhenStringIsMalformed_ThenThrowsException(
             [Values("x", "principal://", " ")] string id)
         {
             Assert.Throws<ArgumentException>(
@@ -98,7 +98,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public void WhenStringComponentIsNullOrEmpty_ThenParseThrowsException(
+        public void Parse_WhenStringComponentIsNullOrEmpty_ThenThrowsException(
             [Values(
                 "locations//workforcePools/POOL/providers/PROVIDER",
                 "locations/LOCATION/workforcePools//providers/PROVIDER",
@@ -110,7 +110,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public void WhenStringValid_ThenParseSucceeds()
+        public void Parse_WhenStringValid_ThenSucceeds()
         {
             var locator = WorkforcePoolProviderLocator.Parse(
                 "locations/LOCATION/workforcePools/POOL/providers/PROVIDER");

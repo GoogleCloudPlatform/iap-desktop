@@ -30,7 +30,7 @@ namespace Google.Solutions.Common.Test.Diagnostics
     public class TestTraceSourceExtensions
     {
         [Test]
-        public void WhenLevelNotEnabled_TraceEventCallsAreNotForwarded()
+        public void TraceEvent_WhenLevelNotEnabled_ThenCallsAreNotForwarded()
         {
             var listener = new Mock<TraceListener>();
             var destination = new TraceSource("destination");
@@ -50,7 +50,7 @@ namespace Google.Solutions.Common.Test.Diagnostics
         }
 
         [Test]
-        public void WhenLevelEnabled_TraceEventCallsAreForwarded()
+        public void TraceEvent_WhenLevelEnabled_ThenCallsAreForwarded()
         {
             var listener = new Mock<TraceListener>();
             var destination = new TraceSource("destination");
@@ -70,7 +70,7 @@ namespace Google.Solutions.Common.Test.Diagnostics
         }
 
         [Test]
-        public void WhenLevelEnabled_TraceEventCallsWithArgsAreForwarded()
+        public void TraceEvent_WhenLevelEnabled_ThenCallsWithArgsAreForwarded()
         {
             var listener = new Mock<TraceListener>();
             var destination = new TraceSource("destination");
@@ -91,7 +91,7 @@ namespace Google.Solutions.Common.Test.Diagnostics
         }
 
         [Test]
-        public void WhenLevelEnabled_TraceInformationCallsAreForwarded()
+        public void TraceEvent_WhenLevelEnabled_TraceInformationCallsAreForwarded()
         {
             var listener = new Mock<TraceListener>();
             var destination = new TraceSource("destination");
@@ -112,7 +112,7 @@ namespace Google.Solutions.Common.Test.Diagnostics
         }
 
         [Test]
-        public void WhenLevelEnabled_TraceInformationCallsWithArgsAreForwarded()
+        public void TraceEvent_WhenLevelEnabled_TraceInformationCallsWithArgsAreForwarded()
         {
             var listener = new Mock<TraceListener>();
             var destination = new TraceSource("destination");

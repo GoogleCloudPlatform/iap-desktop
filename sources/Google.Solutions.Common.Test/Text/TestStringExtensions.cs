@@ -32,14 +32,14 @@ namespace Google.Solutions.Common.Test.Text
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTextContainsChar_ThenIndexOfReturnsFirstIndex()
+        public void IndexOf_WhenTextContainsChar_ThenIndexOfReturnsFirstIndex()
         {
             var text = "a a a";
             Assert.AreEqual(1, text.IndexOf(c => char.IsWhiteSpace(c)));
         }
 
         [Test]
-        public void WhenTextDoesNotContainChar_ThenIndexOfReturnsMinusOne()
+        public void IndexOf_WhenTextDoesNotContainChar_ThenIndexOfReturnsMinusOne()
         {
             var text = "a a a";
             Assert.AreEqual(-1, text.IndexOf(c => char.IsDigit(c)));
@@ -50,14 +50,14 @@ namespace Google.Solutions.Common.Test.Text
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTextContainsChar_ThenLastIndexOfReturnsLastIndex()
+        public void LastIndexOf_WhenTextContainsChar_ThenLastIndexOfReturnsLastIndex()
         {
             var text = "a a a";
             Assert.AreEqual(3, text.LastIndexOf(c => char.IsWhiteSpace(c)));
         }
 
         [Test]
-        public void WhenTextDoesNotContainChar_ThenLastIndexOfReturnsMinusOne()
+        public void LastIndexOf_WhenTextDoesNotContainChar_ThenLastIndexOfReturnsMinusOne()
         {
             var text = "a a a";
             Assert.AreEqual(-1, text.LastIndexOf(c => char.IsDigit(c)));
@@ -68,14 +68,14 @@ namespace Google.Solutions.Common.Test.Text
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenStringShortEnough_ThenTruncateReturnsStringVerbatim()
+        public void Truncate_WhenStringShortEnough_ThenTruncateReturnsStringVerbatim()
         {
             Assert.AreEqual("", "".Truncate(3));
             Assert.AreEqual("foo", "foo".Truncate(3));
         }
 
         [Test]
-        public void WhenStringTooLong_ThenTruncateReturnsStringWithEllipsis()
+        public void Truncate_WhenStringTooLong_ThenTruncateReturnsStringWithEllipsis()
         {
             Assert.AreEqual("abc...", "abcd".Truncate(3));
         }
@@ -85,21 +85,21 @@ namespace Google.Solutions.Common.Test.Text
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenStringIsNull_ThenNullIfEmptyReturnsNull()
+        public void NullIfEmpty_WhenStringIsNull_ThenNullIfEmptyReturnsNull()
         {
             string? s = null;
             Assert.IsNull(s.NullIfEmpty());
         }
 
         [Test]
-        public void WhenStringIsEmpty_ThenNullIfEmptyReturnsNull()
+        public void NullIfEmpty_WhenStringIsEmpty_ThenNullIfEmptyReturnsNull()
         {
             var s = string.Empty;
             Assert.IsNull(s.NullIfEmpty());
         }
 
         [Test]
-        public void WhenStringIsWhitespace_ThenNullIfEmptyReturnsString()
+        public void NullIfEmpty_WhenStringIsWhitespace_ThenNullIfEmptyReturnsString()
         {
             var s = " ";
             Assert.AreEqual(" ", s.NullIfEmpty());
@@ -110,28 +110,28 @@ namespace Google.Solutions.Common.Test.Text
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenStringIsNull_ThenNullIfEmptyOrWhitespaceReturnsNull()
+        public void NullIfEmptyOrWhitespace_WhenStringIsNull_ThenNullIfEmptyOrWhitespaceReturnsNull()
         {
             string? s = null;
             Assert.IsNull(s.NullIfEmptyOrWhitespace());
         }
 
         [Test]
-        public void WhenStringIsEmpty_ThenNullIfEmptyOrWhitespaceReturnsNull()
+        public void NullIfEmptyOrWhitespace_WhenStringIsEmpty_ThenNullIfEmptyOrWhitespaceReturnsNull()
         {
             var s = string.Empty;
             Assert.IsNull(s.NullIfEmptyOrWhitespace());
         }
 
         [Test]
-        public void WhenStringIsWhitespace_ThenNullIfEmptyOrWhitespaceReturnsNull()
+        public void NullIfEmptyOrWhitespace_WhenStringIsWhitespace_ThenNullIfEmptyOrWhitespaceReturnsNull()
         {
             var s = " ";
             Assert.IsNull(s.NullIfEmptyOrWhitespace());
         }
 
         [Test]
-        public void WhenStringIsNotWhitespace_ThenNullIfEmptyOrWhitespaceReturnsString()
+        public void NullIfEmptyOrWhitespace_WhenStringIsNotWhitespace_ThenNullIfEmptyOrWhitespaceReturnsString()
         {
             var s = " a ";
             Assert.AreEqual(" a ", s.NullIfEmptyOrWhitespace());

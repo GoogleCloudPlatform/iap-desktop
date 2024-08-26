@@ -33,7 +33,7 @@ namespace Google.Solutions.Apis.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToStringContainsUri()
+        public void ToString_ContainsUri()
         {
             var directions = new ServiceEndpointDirections(
                 ServiceEndpointType.Tls,

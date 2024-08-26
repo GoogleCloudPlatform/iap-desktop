@@ -30,7 +30,7 @@ namespace Google.Solutions.Common.Test.Format
     public class TestBsdChecksum
     {
         [Test]
-        public void Enpty([Values(1, 16, 32)] int lengthInBits)
+        public void Value_WhenEnpty([Values(1, 16, 32)] int lengthInBits)
         {
             var checksum = new BsdChecksum((ushort)lengthInBits);
             checksum.Add(Array.Empty<byte>());
@@ -38,7 +38,7 @@ namespace Google.Solutions.Common.Test.Format
         }
 
         [Test]
-        public void Zeros([Values(1, 16, 32)] int lengthInBits)
+        public void Value_WhenZeros([Values(1, 16, 32)] int lengthInBits)
         {
             var checksum = new BsdChecksum((ushort)lengthInBits);
             checksum.Add(new byte[] { 0, 0, 0, 0 });
@@ -46,7 +46,7 @@ namespace Google.Solutions.Common.Test.Format
         }
 
         [Test]
-        public void SingleChunk()
+        public void Value_WhenSingleChunk()
         {
             var checksum = new BsdChecksum(16);
             checksum.Add(Encoding.ASCII.GetBytes("test\n"));
@@ -54,7 +54,7 @@ namespace Google.Solutions.Common.Test.Format
         }
 
         [Test]
-        public void MultipleChunks()
+        public void Value_WhenMultipleChunks()
         {
             var checksum = new BsdChecksum(16);
             checksum.Add(Encoding.ASCII.GetBytes("Test"));

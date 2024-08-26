@@ -40,7 +40,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPathIsValid_ParseReturnsObject()
+        public void Parse_WhenPathIsValid_ParseReturnsObject()
         {
             var ref1 = AccessLevelLocator.Parse(
                 "accessPolicies/policy-1/accessLevels/level-1");
@@ -50,7 +50,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenPathInvalid_ParseThrowsArgumentException()
+        public void Parse_WhenPathInvalid_ParseThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => AccessLevelLocator.Parse(
                 "accessPolicies/policy-1/notaccessLevels/level-1"));
@@ -65,7 +65,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
+        public void Equals_WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
         {
             var ref1 = new AccessLevelLocator("proj-1", "level-1");
             var ref2 = new AccessLevelLocator("proj-2", "level-1");
@@ -81,7 +81,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCreatedFromPath_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
         {
             var path = "accessPolicies/policy-1/accessLevels/level-1";
 

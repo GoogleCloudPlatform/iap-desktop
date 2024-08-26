@@ -44,7 +44,7 @@ namespace Google.Solutions.Apis.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenMtlsDisabled_ThenSelectEndpointReturnsTlsEndpoint(
+        public void GetDirections_WhenMtlsDisabled_ThenReturnsTlsEndpoint(
             [Values(DeviceEnrollmentState.Disabled, DeviceEnrollmentState.NotEnrolled)]
             DeviceEnrollmentState state)
         {
@@ -65,7 +65,7 @@ namespace Google.Solutions.Apis.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenMtlsEnabled_ThenSelectEndpointReturnsMtlsEndpoint()
+        public void GetDirections__WhenMtlsEnabled_ThenReturnsMtlsEndpoint()
         {
             var endpoint = new ServiceEndpoint<SampleAdapter>(
                 ServiceRoute.Public,
@@ -80,7 +80,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         [Test]
-        public void WhenMtlsEnabledButMtlsEndpointisNull_ThenSelectEndpointReturnsTlsEndpoint()
+        public void GetDirections_WhenMtlsEnabledButMtlsEndpointisNull_ThenReturnsTlsEndpoint()
         {
             var endpoint = new ServiceEndpoint<SampleAdapter>(
                 ServiceRoute.Public,
@@ -100,7 +100,7 @@ namespace Google.Solutions.Apis.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPscEnabled_ThenSelectEndpointReturnsPscEndpoint(
+        public void GetDirections_WhenPscEnabled_ThenReturnsPscEndpoint(
             [Values(DeviceEnrollmentState.Disabled, DeviceEnrollmentState.Enrolled)]
             DeviceEnrollmentState state)
         {
@@ -121,7 +121,7 @@ namespace Google.Solutions.Apis.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToStringContainsUri()
+        public void ToString_ContainsUri()
         {
             var endpoint = new ServiceEndpoint<SampleAdapter>(
                 ServiceRoute.Public,

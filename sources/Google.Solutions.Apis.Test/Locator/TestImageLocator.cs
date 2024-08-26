@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPathIsValid_ParseReturnsObject()
+        public void Parse_WhenPathIsValid_ParseReturnsObject()
         {
             var ref1 = ImageLocator.Parse(
                 "projects/project-1/global/images/image-1");
@@ -58,7 +58,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenResourceNameCotainsSlash_ParseReturnsObject()
+        public void Parse_WhenResourceNameCotainsSlash_ParseReturnsObject()
         {
             var ref1 = ImageLocator.Parse(
                 "projects/debian-cloud/global/images/family/debian-9");
@@ -69,7 +69,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
         {
             var ref1 = ImageLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/debian-cloud/global/images/family/debian-9");
@@ -80,7 +80,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenQualifiedByGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByGoogleapisHost_ParseReturnsObject()
         {
             var ref1 = ImageLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/images/windows-server-core");
@@ -91,7 +91,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenUsingBetaApi_ParseReturnsObject()
+        public void Parse_WhenUsingBetaApi_ParseReturnsObject()
         {
             var ref1 = ImageLocator.Parse(
                 "https://compute.googleapis.com/compute/beta/projects/eip-images/global/images/debian-9-drawfork-v20191004");
@@ -102,14 +102,14 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenPathLacksProject_ParseThrowsArgumentException()
+        public void Parse_WhenPathLacksProject_ParseThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => ImageLocator.Parse(
                 "/project-1/project-1/global/images/image-1"));
         }
 
         [Test]
-        public void WhenPathInvalid_ParseThrowsArgumentException()
+        public void Parse_WhenPathInvalid_ParseThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => ImageLocator.Parse(
                 "projects/project-1/notglobal/images/image-1"));
@@ -124,7 +124,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
+        public void Equals_WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
         {
             var ref1 = new ImageLocator("proj-1", "image-1");
             var ref2 = new ImageLocator("proj-2", "image-1");
@@ -140,7 +140,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCreatedFromPath_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
         {
             var path = "projects/project-1/global/images/image-1";
 
@@ -150,7 +150,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenCreatedFromUrl_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromUrl_ThenToStringReturnsPath()
         {
             var path = "projects/project-1/global/images/image-1";
 

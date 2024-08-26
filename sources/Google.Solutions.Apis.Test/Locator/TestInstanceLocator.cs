@@ -46,7 +46,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCreatedFromPath_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
         {
             var path = "projects/project-1/zones/us-central-1/instances/instance-1";
 
@@ -56,7 +56,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenCreatedFromUrl_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromUrl_ThenToStringReturnsPath()
         {
             var path = "projects/project-1/zones/us-central-1/instances/instance-1";
 
@@ -71,7 +71,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
+        public void Equals_WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
         {
             var ref1 = new InstanceLocator("proj", "zone", "inst");
             var ref2 = new InstanceLocator("proj", "zone", "other");
@@ -83,7 +83,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void WhenReferencesAreOfDifferentType_ThenEqualsReturnsFalse()
+        public void Equals_WhenReferencesAreOfDifferentType_ThenEqualsReturnsFalse()
         {
             var ref1 = new InstanceLocator("proj", "zone", "inst");
             var ref2 = new DiskTypeLocator("proj", "zone", "pd-standard");

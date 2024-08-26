@@ -58,7 +58,7 @@ namespace Google.Solutions.Apis.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task ProbePublicRouteSucceeds()
+        public async Task Probe_Public_RouteSucceeds()
         {
             await ServiceRoute.Public
                 .ProbeAsync(TimeSpan.FromSeconds(5))
@@ -66,7 +66,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         [Test]
-        public async Task WhenPscEndpointValid_ThenProbePublicRouteSucceeds()
+        public async Task Probe_WhenPscEndpointValid()
         {
             //
             // Use IP address as pseudo-PSC endpoint.
@@ -83,7 +83,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         [Test]
-        public void WhenPscEndpointInvalid_ThenProbePublicRouteThrowsException()
+        public void Probe_WhenPscEndpointInvalid()
         {
             //
             // Use IP address as pseudo-PSC endpoint.
