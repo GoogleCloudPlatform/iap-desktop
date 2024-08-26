@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
             var joinAdapter = new DomainJoinService(
                 new Mock<IComputeEngineClient>().AsService());
 
-            var message = await AwaitMessageAsync<TestMessage>(
+            var message = await joinAdapter.AwaitMessageAsync<TestMessage>(
                     operation.Object,
                     "test-message",
                     CancellationToken.None)

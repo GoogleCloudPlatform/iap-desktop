@@ -46,8 +46,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
         public Version? OperatingSystemVersion { get; }
         public string? AgentVersion { get; }
 
-        public GuestPackages InstalledPackages { get; }
-        public GuestPackages AvailablePackages { get; }
+        public GuestPackages? InstalledPackages { get; }
+        public GuestPackages? AvailablePackages { get; }
 
         internal GuestOsInfo(
             InstanceLocator instance,
@@ -59,8 +59,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
             Version? operatingSystemVersion,
             string? agentVersion,
             DateTime? lastUpdated,
-            GuestPackages installedPackages,
-            GuestPackages availablePackages)
+            GuestPackages? installedPackages,
+            GuestPackages? availablePackages)
         {
             this.Instance = instance;
             this.Architecture = architecture;
@@ -75,7 +75,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
             this.AvailablePackages = availablePackages;
         }
 
-        private static T DecodeAndParseBase64Gzip<T>(string base64gzipped)
+        private static T? DecodeAndParseBase64Gzip<T>(string base64gzipped)
+            where T : class
         {
             using (var reader = new StreamReader(
                     new GZipStream(

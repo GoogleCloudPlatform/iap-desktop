@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
         /// Get OS inventory data for instance.
         /// </summary>
         /// <returns>Inventory of null if data is not available</returns>
-        Task<GuestOsInfo> GetInstanceInventoryAsync(
+        Task<GuestOsInfo?> GetInstanceInventoryAsync(
             InstanceLocator locator,
             CancellationToken token);
 
@@ -75,15 +75,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
             IEnumerable<InstanceLocator> instanceLocators,
             CancellationToken token)
         {
+            //
             // There is no way to query guest attributes for multiple instances at one,
             // so we have to do it in a (parallel) loop.
-
-            return await instanceLocators
+            //
+            var info = await instanceLocators
                 .SelectParallelAsync(
                     instanceLocator => GetInstanceInventoryAsync(
                         instanceLocator,
                         token))
                 .ConfigureAwait(false);
+
+            return info.OfType<GuestOsInfo>();
         }
 
         private static bool IsRunningOperatingSystem(
@@ -99,10 +102,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
         }
 
         //---------------------------------------------------------------------
-        // IInventoryService.
+        // IGuestOsInventory.
         //---------------------------------------------------------------------
 
-        public async Task<GuestOsInfo> GetInstanceInventoryAsync(
+        public async Task<GuestOsInfo?> GetInstanceInventoryAsync(
             InstanceLocator instanceLocator,
             CancellationToken token)
         {

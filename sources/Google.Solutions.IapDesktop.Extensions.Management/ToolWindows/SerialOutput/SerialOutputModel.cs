@@ -94,14 +94,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
                 var exceptionCaught = false;
                 while (!exceptionCaught)
                 {
+                    //
                     // Check if we can continue to tail.
+                    //
                     if (token.IsCancellationRequested)
                     {
                         ApplicationTraceSource.Log.TraceVerbose("Stop polling serial output");
                         break;
                     }
 
-                    string newOutput;
+                    string? newOutput;
                     try
                     {
                         ApplicationTraceSource.Log.TraceVerbose("Polling serial output...");
@@ -115,7 +117,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
                     }
                     catch (Exception e) when (e.IsCancellation())
                     {
+                        //
                         // This is deliberate, so do not emit anything to output.
+                        //
                         newOutput = null;
                     }
                     catch (Exception e)
@@ -124,9 +128,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
                         exceptionCaught = true;
                     }
 
+                    //
                     // By the time we read the data, the form might have begun closing. In this
                     // case, updating the UI would cause an exception.
-                    if (!token.IsCancellationRequested && !string.IsNullOrEmpty(newOutput))
+                    //
+                    if (!token.IsCancellationRequested && newOutput != null && !string.IsNullOrEmpty(newOutput))
                     {
                         newOutputFunc(newOutput);
                     }

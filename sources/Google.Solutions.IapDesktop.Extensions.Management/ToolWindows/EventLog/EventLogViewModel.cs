@@ -221,7 +221,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
         public void OpenInCloudConsole()
         {
             Debug.Assert(!(this.ModelKey is IProjectModelCloudNode));
-            this.cloudConsoleAdapter.OpenLogs(this.ModelKey);
+
+            if (this.ModelKey != null)
+            {
+                this.cloudConsoleAdapter.OpenLogs(this.ModelKey);
+            }
         }
 
         //---------------------------------------------------------------------

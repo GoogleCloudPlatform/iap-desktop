@@ -109,6 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
                 if (accessLevels != null)
                 {
                     return accessLevels.Values<string>()
+                        .OfType<string>()
                         .Select(AccessLevelLocator.Parse);
                 }
                 else

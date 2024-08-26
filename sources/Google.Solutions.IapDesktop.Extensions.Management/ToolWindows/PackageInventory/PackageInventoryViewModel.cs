@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        protected override async Task<PackageInventoryModel> LoadModelAsync(
+        protected override async Task<PackageInventoryModel?> LoadModelAsync(
             IProjectModelNode node,
             CancellationToken token)
         {
