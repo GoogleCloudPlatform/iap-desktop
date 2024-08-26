@@ -313,7 +313,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
             public string DomainName { get; set; }
             public string Username { get; set; }
             public string EncryptedPassword { get; set; }
-            public string NewComputerName { get; set; }
+            public string? NewComputerName { get; set; }
         }
 
         /// <summary>

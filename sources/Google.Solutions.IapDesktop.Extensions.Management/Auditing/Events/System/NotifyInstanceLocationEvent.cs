@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Syst
     {
         public const string Method = "NotifyInstanceLocation";
 
-        public string ServerId => base.LogRecord.ProtoPayload.Metadata["serverId"].Value<string>();
+        public string? ServerId => base.LogRecord.ProtoPayload?.Metadata?["serverId"]?.Value<string>();
 
         public NodeTypeLocator NodeType
         {
@@ -39,14 +39,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Syst
             {
                 // The node type is unqualified, e.g. "n1-node-96-624".
 
-                if (base.LogRecord.ProtoPayload.Metadata.ContainsKey("nodeType") &&
+                if (base.LogRecord.ProtoPayload?.Metadata != null && 
+                    base.LogRecord.ProtoPayload.Metadata.ContainsKey("nodeType") &&
+                    base.LogRecord.Resource?.Labels != null &&
                     base.LogRecord.Resource.Labels.ContainsKey("project_id") &&
                     base.LogRecord.Resource.Labels.ContainsKey("zone"))
                 {
                     return new NodeTypeLocator(
                         base.LogRecord.Resource.Labels["project_id"],
                         base.LogRecord.Resource.Labels["zone"],
-                        base.LogRecord.ProtoPayload.Metadata["nodeType"].Value<string>());
+                        base.LogRecord.ProtoPayload.Metadata["nodeType"]?.Value<string>()!);
                 }
                 else
                 {
@@ -55,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Syst
             }
         }
 
-        public DateTime SchedulingTimestamp => base.LogRecord.ProtoPayload.Metadata["timestamp"].Value<DateTime>();
+        public DateTime? SchedulingTimestamp => base.LogRecord.ProtoPayload?.Metadata?["timestamp"]?.Value<DateTime>();
 
         public override string Message => "Instance scheduled to run on sole tenant node " + this.ServerId;
 

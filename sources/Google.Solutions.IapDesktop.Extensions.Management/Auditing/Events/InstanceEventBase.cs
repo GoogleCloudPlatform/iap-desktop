@@ -27,7 +27,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
 {
     public abstract class InstanceEventBase : EventBase
     {
-        public InstanceLocator InstanceReference
+        public InstanceLocator? InstanceReference
         {
             get
             {
@@ -36,8 +36,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
                 // projects/<project-number-or-id>/zones/<zone>/instances/<name>
                 // for instance-related events.
                 //
-                var resourceName = base.LogRecord.ProtoPayload.ResourceName;
-                if (string.IsNullOrEmpty(resourceName))
+                var resourceName = base.LogRecord.ProtoPayload?.ResourceName;
+                if (resourceName == null || string.IsNullOrEmpty(resourceName))
                 {
                     return null;
                 }
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
                 {
                     throw new ArgumentException(
                         "Encountered unexpected resource name format: " +
-                        base.LogRecord.ProtoPayload.ResourceName);
+                        base.LogRecord.ProtoPayload?.ResourceName);
                 }
 
                 return new InstanceLocator(
@@ -57,9 +57,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
             }
         }
 
-        public virtual ulong InstanceId => string.IsNullOrEmpty(base.LogRecord.Resource.Labels["instance_id"])
-            ? 0
-            : ulong.Parse(base.LogRecord.Resource.Labels["instance_id"]);
+        public virtual ulong InstanceId
+        {
+            get
+            {
+                var labels = base.LogRecord.Resource?.Labels;
+                if (labels != null &&
+                    labels.TryGetValue("instance_id", out var idString) &&
+                    ulong.TryParse(idString, out var id))
+                {
+                    return id;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
 
         protected InstanceEventBase(LogRecord logRecord)
             : base(logRecord)

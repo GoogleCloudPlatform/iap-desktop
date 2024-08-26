@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Life
         public static bool IsDeleteInstanceEvent(LogRecord record)
         {
             return record.IsActivityEvent &&
-                record.ProtoPayload.MethodName == Method;
+                record.ProtoPayload?.MethodName == Method;
         }
     }
 }

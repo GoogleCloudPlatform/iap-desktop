@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
 
         protected InstanceOperationEventBase(LogRecord logRecord) : base(logRecord)
         {
-            Debug.Assert(!this.IsError || logRecord.ProtoPayload.Status != null);
+            Debug.Assert(!this.IsError || logRecord.ProtoPayload?.Status != null);
         }
     }
 }

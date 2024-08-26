@@ -96,20 +96,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
                 throw new ArgumentException("Not a valid audit log record");
             }
 
-            if (lifecycleEvents.TryGetValue(record.ProtoPayload.MethodName, out var lcFunc))
+            if (record.ProtoPayload?.MethodName != null &&
+                lifecycleEvents.TryGetValue(record.ProtoPayload.MethodName, out var lcFunc))
             {
                 var e = lcFunc(record);
                 Debug.Assert(e.Category == EventCategory.Lifecycle);
                 return e;
             }
-            else if (systemEvents.TryGetValue(record.ProtoPayload.MethodName, out var sysFunc))
+            else if (record.ProtoPayload?.MethodName != null && 
+                systemEvents.TryGetValue(record.ProtoPayload.MethodName, out var sysFunc))
             {
                 var e = sysFunc(record);
                 Debug.Assert(e.Category == EventCategory.System);
                 return e;
             }
-
-            if (accessEvents.TryGetValue(record.ProtoPayload.MethodName, out var accessFunc))
+            else if (record.ProtoPayload?.MethodName != null && 
+                accessEvents.TryGetValue(record.ProtoPayload.MethodName, out var accessFunc))
             {
                 var e = accessFunc(record);
                 Debug.Assert(e.Category == EventCategory.Access);
@@ -117,14 +119,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
             }
             else if (record.IsSystemEvent)
             {
+                //
                 // There are some less common/more esoteric system events that do not
                 // have a wrapper class. Map these to GenericSystemEvent.
+                //
                 return new GenericSystemEvent(record);
             }
             else
             {
+                //
                 // The list of activity event types is incomplete any might grow stale over time,
                 // so ensure to fail open.
+                //
                 return new UnknownEvent(record);
             }
         }

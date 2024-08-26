@@ -233,8 +233,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(node))
             {
-                IEnumerable<ulong> instanceIdFilter;
-                IEnumerable<string> zonesFilter;
+                IEnumerable<ulong>? instanceIdFilter;
+                IEnumerable<string>? zonesFilter;
                 string projectIdFilter;
                 string displayName;
 

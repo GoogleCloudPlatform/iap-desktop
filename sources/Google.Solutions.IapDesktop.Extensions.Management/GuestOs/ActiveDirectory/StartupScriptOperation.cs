@@ -108,13 +108,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
             using (ApplicationTraceSource.Log.TraceMethod()
                 .WithParameters(string.Join(", ", keysToReplace)))
             {
-                List<Metadata.ItemsData> oldItems = null;
+                List<Metadata.ItemsData>? oldItems = null;
                 await this.ComputeClient.UpdateMetadataAsync(
                         this.Instance,
                         metadata =>
                         {
-                            Debug.Assert(metadata != null);
-
                             if (failIfGuardKeyFound)
                             {
                                 //
