@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
             };
         }
 
-        public static async Task<PackageInventoryModel> LoadAsync(
+        public static async Task<PackageInventoryModel?> LoadAsync(
             IGuestOsInventory packageInventory,
             PackageInventoryType inventoryType,
             IProjectModelNode node,

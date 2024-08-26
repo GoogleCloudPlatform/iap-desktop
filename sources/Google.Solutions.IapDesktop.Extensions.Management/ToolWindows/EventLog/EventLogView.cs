@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
                 bindingContext);
 
             this.list.BindColumn(0, e => e.Timestamp.ToString());
-            this.list.BindColumn(1, e => GetInstanceName(e));
+            this.list.BindColumn(1, e => GetInstanceName(e) ?? string.Empty);
             this.list.BindColumn(2, e => e.Severity ?? string.Empty);
             this.list.BindColumn(3, e => e.Message);
             this.list.BindColumn(4, e => e.Principal ?? string.Empty);
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
             };
         }
 
-        private static string GetInstanceName(EventBase e)
+        private static string? GetInstanceName(EventBase e)
         {
             if (e is InstanceEventBase vmEvent)
             {

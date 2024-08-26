@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
         private readonly IJobService jobService;
         private readonly Service<IAuditLogClient> auditLogAdapter;
 
-        private EventBase selectedEvent;
+        private EventBase? selectedEvent;
         private int selectedTimeframeIndex = 0;
         private bool isEventListEnabled = false;
         private bool isRefreshButtonEnabled = false;
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public EventBase SelectedEvent
+        public EventBase? SelectedEvent
         {
             get => this.selectedEvent;
             set
@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        protected override async Task<EventLogModel> LoadModelAsync(
+        protected override async Task<EventLogModel?> LoadModelAsync(
             IProjectModelNode node,
             CancellationToken token)
         {

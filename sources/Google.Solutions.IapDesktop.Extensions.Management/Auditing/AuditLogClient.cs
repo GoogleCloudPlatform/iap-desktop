@@ -40,9 +40,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management
     public interface IAuditLogClient
     {
         Task ProcessInstanceEventsAsync(
-            IEnumerable<string> projectIds,
-            IEnumerable<string> zones,
-            IEnumerable<ulong> instanceIds,
+            IEnumerable<string>? projectIds,
+            IEnumerable<string>? zones,
+            IEnumerable<ulong>? instanceIds,
             DateTime startTime,
             IEventProcessor processor,
             CancellationToken cancellationToken);
@@ -115,9 +115,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management
         //---------------------------------------------------------------------
 
         public async Task ProcessInstanceEventsAsync(
-            IEnumerable<string> projectIds,
-            IEnumerable<string> zones,
-            IEnumerable<ulong> instanceIds,
+            IEnumerable<string>? projectIds,
+            IEnumerable<string>? zones,
+            IEnumerable<ulong>? instanceIds,
             DateTime startTime,
             IEventProcessor processor,
             CancellationToken cancellationToken)

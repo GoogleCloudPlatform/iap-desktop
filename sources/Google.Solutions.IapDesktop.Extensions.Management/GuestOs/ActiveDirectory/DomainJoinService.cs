@@ -249,7 +249,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
         public async Task JoinDomainAsync(
             InstanceLocator instance,
             string domain,
-            string newComputerName,
+            string? newComputerName,
             NetworkCredential domainCredential,
             CancellationToken cancellationToken)
         {

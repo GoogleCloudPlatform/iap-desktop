@@ -27,7 +27,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.History
     public interface IEventProcessor
     {
         EventOrder ExpectedOrder { get; }
-        IEnumerable<string> SupportedSeverities { get; }
+        IEnumerable<string>? SupportedSeverities { get; }
         IEnumerable<string> SupportedMethods { get; }
 
         void Process(EventBase e);

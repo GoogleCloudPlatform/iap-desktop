@@ -37,27 +37,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 
         public InstanceLocator Instance { get; }
 
-        public string Architecture { get; }
-        public string KernelRelease { get; }
-        public string KernelVersion { get; }
+        public string? Architecture { get; }
+        public string? KernelRelease { get; }
+        public string? KernelVersion { get; }
         public DateTime? LastUpdated { get; }
-        public string OperatingSystem { get; }
-        public string OperatingSystemFullName { get; }
-        public Version OperatingSystemVersion { get; }
-        public string AgentVersion { get; }
+        public string? OperatingSystem { get; }
+        public string? OperatingSystemFullName { get; }
+        public Version? OperatingSystemVersion { get; }
+        public string? AgentVersion { get; }
 
         public GuestPackages InstalledPackages { get; }
         public GuestPackages AvailablePackages { get; }
 
         internal GuestOsInfo(
             InstanceLocator instance,
-            string architecture,
-            string kernelRelease,
-            string kernelVersion,
-            string operatingSystem,
-            string operatingSystemFullName,
-            Version operatingSystemVersion,
-            string agentVersion,
+            string? architecture,
+            string? kernelRelease,
+            string? kernelVersion,
+            string? operatingSystem,
+            string? operatingSystemFullName,
+            Version? operatingSystemVersion,
+            string? agentVersion,
             DateTime? lastUpdated,
             GuestPackages installedPackages,
             GuestPackages availablePackages)
@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
             var availablePackages = guestAttributes.FirstOrDefault(a => a.Key == "PackageUpdates")?.Value;
             var version = guestAttributes.FirstOrDefault(a => a.Key == "Version")?.Value;
 
-            if (string.IsNullOrWhiteSpace(version))
+            if (version == null || string.IsNullOrWhiteSpace(version))
             {
                 version = null;
             }

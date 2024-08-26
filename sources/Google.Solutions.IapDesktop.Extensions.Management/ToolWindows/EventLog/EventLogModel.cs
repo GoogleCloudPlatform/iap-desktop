@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
         public IEnumerable<EventBase> Events => this.events;
         public EventOrder ExpectedOrder => EventOrder.NewestFirst;
 
-        public IEnumerable<string> SupportedSeverities => null; // All
+        public IEnumerable<string>? SupportedSeverities => null; // All
         public IEnumerable<string> SupportedMethods =>
             EventFactory.LifecycleEventMethods
                 .Concat(EventFactory.SystemEventMethods)

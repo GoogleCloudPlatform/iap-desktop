@@ -59,16 +59,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Acce
         //---------------------------------------------------------------------
 
         public string? DestinationHost =>
-            base.LogRecord.ProtoPayload.RequestMetadata?["destinationAttributes"]?.Value<string>("ip");
+            base.LogRecord.ProtoPayload?.RequestMetadata?["destinationAttributes"]?.Value<string>("ip");
         public string? DestinationPort =>
-            base.LogRecord.ProtoPayload.RequestMetadata?["destinationAttributes"]?.Value<string>("port");
+            base.LogRecord.ProtoPayload?.RequestMetadata?["destinationAttributes"]?.Value<string>("port");
 
-        public ulong InstanceId => string.IsNullOrEmpty(base.LogRecord.Resource.Labels["instance_id"])
+        public ulong InstanceId => string.IsNullOrEmpty(base.LogRecord.Resource?.Labels?["instance_id"])
             ? 0
-            : ulong.Parse(base.LogRecord.Resource.Labels["instance_id"]);
+            : ulong.Parse(base.LogRecord.Resource?.Labels?["instance_id"]);
 
-        public string ProjectId => base.LogRecord.Resource.Labels["project_id"];
-        public string Zone => base.LogRecord.Resource.Labels["zone"];
+        public string? ProjectId => base.LogRecord.Resource?.Labels?["project_id"];
+        public string? Zone => base.LogRecord.Resource?.Labels?["zone"];
 
     }
 }
