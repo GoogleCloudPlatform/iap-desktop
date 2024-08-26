@@ -43,7 +43,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenPerformingFirstWrite_ThenConnectionIsOpened()
+        public async Task Write_WhenPerformingFirstWrite_ThenConnectionIsOpened()
         {
             var stream = new MockStream()
             {
@@ -69,7 +69,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenPerformingWrite_ThenAckIsSentFirst()
+        public async Task Write_WhenPerformingWrite_ThenAckIsSentFirst()
         {
             var stream = new MockStream()
             {
@@ -117,7 +117,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenPerformingWriteWithoutPreviousRead_ThenNoAckIsSent()
+        public async Task Write_WhenPerformingWriteWithoutPreviousRead_ThenNoAckIsSent()
         {
             var stream = new MockStream()
             {
@@ -153,7 +153,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenPerformingWriteAfterBackendFailure_ThenWriteFailsWithException()
+        public async Task Write_WhenPerformingWriteAfterBackendFailure_ThenWriteFailsWithException()
         {
             var stream = new MockStream()
             {
@@ -188,7 +188,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenClientClosedConnection_ThenSubsequentWriteFailsWithException()
+        public async Task Write_WhenClientClosedConnection_ThenSubsequentWriteFailsWithException()
         {
             var stream = new MockStream()
             {
@@ -225,7 +225,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenServerClosedConnection_ThenSubsequentWriteFailsWithException()
+        public async Task Write_WhenServerClosedConnection_ThenSubsequentWriteFailsWithException()
         {
             var stream = new MockStream()
             {
@@ -260,7 +260,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenServerClosesConnectionForcefullyBeforeReceivingFirstAck_ThenChannelConnectsAgainAndDataIsResent(
+        public async Task Write_WhenServerClosesConnectionForcefullyBeforeReceivingFirstAck_ThenChannelConnectsAgainAndDataIsResent(
             [Values(
                 WebSocketCloseStatus.EndpointUnavailable,
                 WebSocketCloseStatus.InvalidMessageType,
@@ -331,7 +331,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenDataReadAndServerClosesConnectionForcefullyAfterReceivingFirstAck_ThenChannelReconnectsAndDataIsResent(
+        public async Task Write_WhenDataReadAndServerClosesConnectionForcefullyAfterReceivingFirstAck_ThenChannelReconnectsAndDataIsResent(
             [Values(
                 WebSocketCloseStatus.EndpointUnavailable,
                 WebSocketCloseStatus.InvalidMessageType,
@@ -410,7 +410,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
 
         [Test]
-        public async Task WhenDataReadAndServerClosesConnectionForcefullyAfterReceivingFirstAck_ThenChannelReconnectsAndDataSinceReconnectAckIsResent(
+        public async Task Write_WhenDataReadAndServerClosesConnectionForcefullyAfterReceivingFirstAck_ThenChannelReconnectsAndDataSinceReconnectAckIsResent(
             [Values(
                 WebSocketCloseStatus.EndpointUnavailable,
                 WebSocketCloseStatus.InvalidMessageType,
@@ -487,7 +487,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public void WhenServerClosesConnectionWithNotAuthorizedCode_ThenWriteFailsWithUnauthorizedException()
+        public void Write_WhenServerClosesConnectionWithNotAuthorizedCode_ThenWriteFailsWithUnauthorizedException()
         {
             var stream = new MockStream()
             {

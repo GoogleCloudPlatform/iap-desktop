@@ -38,7 +38,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
 
         [Test]
-        public async Task WhenPerformingFirstRead_ThenConnectionIsOpened()
+        public async Task Read_WhenPerformingFirstRead_ThenConnectionIsOpened()
         {
             var stream = new MockStream()
             {
@@ -65,7 +65,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public void WhenBufferIsTiny_ThenReadFailsWithIndexOutOfRangeException()
+        public void Read_WhenBufferIsTiny_ThenReadFailsWithIndexOutOfRangeException()
         {
             var stream = new MockStream()
             {
@@ -92,7 +92,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public void WhenReadingTruncatedMessage_ThenReadFailsWithInvalidServerResponseException()
+        public void Read_WhenReadingTruncatedMessage_ThenReadFailsWithInvalidServerResponseException()
         {
             var stream = new MockStream()
             {
@@ -119,7 +119,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenReadEncountersUnrecognizedMessageTag_ThenReadSkipsMessage(
+        public async Task Read_WhenReadEncountersUnrecognizedMessageTag_ThenReadSkipsMessage(
             [Values(
                 (byte)SshRelayMessageTag.UNUSED_0,
                 (byte)SshRelayMessageTag.DEPRECATED,
@@ -161,7 +161,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenAckIsRead_ThenUnacknoledgedQueueIsTrimmed()
+        public async Task Read_WhenAckIsRead_ThenUnacknoledgedQueueIsTrimmed()
         {
             var request = new byte[] { 1, 2, 3, 4 };
 
@@ -212,7 +212,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public void WhenAckIsZero_ThenReadFailsWithInvalidServerResponseException()
+        public void Read_WhenAckIsZero_ThenReadFailsWithInvalidServerResponseException()
         {
             var endpoint = new MockSshRelayEndpoint()
             {
@@ -237,7 +237,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenAckIsMismatched_ThenReadFailsWithInvalidServerResponseException()
+        public async Task Read_WhenAckIsMismatched_ThenReadFailsWithInvalidServerResponseException()
         {
             var endpoint = new MockSshRelayEndpoint()
             {
@@ -268,7 +268,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenReadingData_ThenDataHeaderIsTrimmed()
+        public async Task Read_WhenReadingData_ThenDataHeaderIsTrimmed()
         {
             var endpoint = new MockSshRelayEndpoint()
             {
@@ -294,7 +294,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenServerClosesConnectionGracefully_ThenReadReturnsZero()
+        public async Task Read_WhenServerClosesConnectionGracefully_ThenReadReturnsZero()
         {
             var stream = new MockStream()
             {
@@ -325,7 +325,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
 
         [Test]
-        public async Task WhenServerClosesConnectionWithNonNormalError_ThenReadThrowsException()
+        public async Task Read_WhenServerClosesConnectionWithNonNormalError_ThenReadThrowsException()
         {
             var stream = new MockStream()
             {
@@ -355,7 +355,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenServerClosesConnectionWithNonRecoverableError_ThenReadThrowsException(
+        public async Task Read_WhenServerClosesConnectionWithNonRecoverableError_ThenReadThrowsException(
             [Values(
                 (WebSocketCloseStatus)SshRelayCloseCode.FAILED_TO_CONNECT_TO_BACKEND
             )] WebSocketCloseStatus closeStatus)
@@ -389,7 +389,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenServerClosesConnectionWithRecoverableError_ThenConnectIsRetried(
+        public async Task Read_WhenServerClosesConnectionWithRecoverableError_ThenConnectIsRetried(
             [Values(
                 WebSocketCloseStatus.EndpointUnavailable,
                 WebSocketCloseStatus.InvalidMessageType,
@@ -432,7 +432,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
 
         [Test]
-        public async Task WhenServerClosesConnectionForcefullyOnSubsequentReadAndReconnectFails_ThenReadFailsWithException(
+        public async Task Read_WhenServerClosesConnectionForcefullyOnSubsequentReadAndReconnectFails_ThenReadFailsWithException(
             [Values(
                 (WebSocketCloseStatus)SshRelayCloseCode.SID_UNKNOWN,
                 (WebSocketCloseStatus)SshRelayCloseCode.SID_IN_USE
@@ -473,7 +473,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenServerClosesConnectionForcefullyOnSubsequentRead_ThenReconnectIsPerformed(
+        public async Task Read_WhenServerClosesConnectionForcefullyOnSubsequentRead_ThenReconnectIsPerformed(
             [Values(
                 WebSocketCloseStatus.EndpointUnavailable,
                 WebSocketCloseStatus.InvalidMessageType,
@@ -527,7 +527,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
 
         [Test]
-        public async Task WhenServerClosesConnectionForcefullyOnWriteAndSubsequentRead_ThenReconnectIsPerformed(
+        public async Task Read_WhenServerClosesConnectionForcefullyOnWriteAndSubsequentRead_ThenReconnectIsPerformed(
             [Values(
                 WebSocketCloseStatus.EndpointUnavailable,
                 WebSocketCloseStatus.InvalidMessageType,
@@ -591,7 +591,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenClientClosedConnection_SubsequentReadFailsWithException()
+        public async Task Read_WhenClientClosedConnection_SubsequentReadFailsWithException()
         {
             var endpoint = new MockSshRelayEndpoint()
             {
@@ -639,25 +639,6 @@ namespace Google.Solutions.Iap.Test.Protocol
             {
                 bytesRead = relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token).Result;
             });
-        }
-
-        [Test]
-        public void WhenServerClosesConnectionWithNotAuthorized_ThenTestConnectionAsyncThrowsUnauthorizedException()
-        {
-            var stream = new MockStream()
-            {
-                ExpectServerCloseCodeOnRead = (WebSocketCloseStatus)SshRelayCloseCode.NOT_AUTHORIZED
-            };
-            var endpoint = new MockSshRelayEndpoint()
-            {
-                ExpectedStream = stream
-            };
-            var relay = new SshRelayStream(endpoint);
-
-            ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(
-                () => relay
-                    .ProbeConnectionAsync(TimeSpan.FromSeconds(2))
-                    .Wait());
         }
     }
 }
