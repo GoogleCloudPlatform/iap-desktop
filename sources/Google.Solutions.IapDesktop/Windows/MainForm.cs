@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly CommandContainer<ToolWindowViewBase> windowMenuCommands;
 
         public bool ShowWhatsNew { get; set; } = false;
-        public IapRdpUrl StartupUrl { get; set; }
+        public IapRdpUrl? StartupUrl { get; set; }
         public ICommandContainer<IMainWindow> ViewMenu => this.viewMenuCommands;
         public ICommandContainer<ToolWindowViewBase> WindowMenu => this.windowMenuCommands;
 
@@ -602,7 +602,7 @@ namespace Google.Solutions.IapDesktop.Windows
         public ICommandContainer<TContext> AddMenu<TContext>(
             string caption,
             int? index,
-            Func<TContext> queryCurrentContextFunc)
+            Func<TContext?> queryCurrentContextFunc)
             where TContext : class
         {
             var menu = new ToolStripMenuItem(caption);
@@ -781,14 +781,14 @@ namespace Google.Solutions.IapDesktop.Windows
         private class CallbackSource<TContext> : IContextSource<TContext>
             where TContext : class
         {
-            private readonly Func<TContext> queryCurrentContextFunc;
+            private readonly Func<TContext?> queryCurrentContextFunc;
 
-            public CallbackSource(Func<TContext> queryCurrentContextFunc)
+            public CallbackSource(Func<TContext?> queryCurrentContextFunc)
             {
                 this.queryCurrentContextFunc = queryCurrentContextFunc;
             }
 
-            public TContext Context => this.queryCurrentContextFunc();
+            public TContext? Context => this.queryCurrentContextFunc();
         }
     }
 }

@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private string windowTitle = Install.ProductName;
         private bool isBackgroundJobStatusVisible = false;
-        private string profileState = null;
+        private string? profileState = null;
 
         public MainFormViewModel(
             Control view,
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
-        public string BackgroundJobStatus
+        public string? BackgroundJobStatus
         {
             get
             {
@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public string ProfileStateCaption
         {
-            get => this.profileState;
+            get => this.profileState!;
             set
             {
                 this.profileState = value;
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Windows
         // Other actions.
         //---------------------------------------------------------------------
 
-        public void SwitchToDocument(string title)
+        public void SwitchToDocument(string? title)
         {
             //
             // Update window title so that it shows the current document.
