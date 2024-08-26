@@ -255,7 +255,7 @@ namespace Google.Solutions.IapDesktop
                         // Open settings.
                         //
                         retryArgs.Retry = OptionsDialog.Show(
-                            dialog.ViewModel.View,
+                            dialog.ViewModel.View!,
                             (IServiceCategoryProvider)serviceProvider) == DialogResult.OK;
                     }
                 };
@@ -274,7 +274,7 @@ namespace Google.Solutions.IapDesktop
                 {
                     Debug.Assert(dialog.ViewModel.Authorization != null);
 
-                    return dialog.ViewModel.Authorization;
+                    return dialog.ViewModel.Authorization!;
                 }
                 else
                 {
@@ -297,7 +297,7 @@ namespace Google.Solutions.IapDesktop
         // SingletonApplicationBase overrides.
         //---------------------------------------------------------------------
 
-        private MainForm initializedMainForm = null;
+        private MainForm? initializedMainForm = null;
         private readonly ManualResetEvent mainFormInitialized = new ManualResetEvent(false);
 
         private readonly CommandLineOptions commandLineOptions;
@@ -791,7 +791,7 @@ namespace Google.Solutions.IapDesktop
         protected override void HandleSubsequentInvocationException(Exception e)
             => ShowFatalErrorAndExit(e, null);
 
-        private static void ShowFatalErrorAndExit(Exception e, MessageTrace messageTrace)
+        private static void ShowFatalErrorAndExit(Exception e, MessageTrace? messageTrace)
         {
             //
             // Ensure logs are flushed.
