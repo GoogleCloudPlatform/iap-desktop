@@ -63,9 +63,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(model.IsInventoryDataAvailable);
-            Assert.IsNotNull(model.Packages);
-            Assert.IsFalse(model.Packages.Any());
+            Assert.IsFalse(model?.IsInventoryDataAvailable);
+            Assert.IsNotNull(model?.Packages);
+            Assert.IsFalse(model?.Packages.Any());
         }
     }
 }

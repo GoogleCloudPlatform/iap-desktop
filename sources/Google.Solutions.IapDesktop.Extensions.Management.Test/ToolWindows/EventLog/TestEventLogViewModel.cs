@@ -46,11 +46,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
     [TestFixture]
     public class TestEventLogViewModel : ApplicationFixtureBase
     {
-        private SynchronousJobService jobServiceMock;
-        private AuditLogAdapterMock auditLogAdapter;
-        private EventLogViewModel viewModel;
 
-        private class AuditLogAdapterMock : IAuditLogClient
+        private class AuditLogClientMock : IAuditLogClient
         {
             public int CallCount = 0;
 
@@ -62,9 +59,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
             }
 
             public Task ProcessInstanceEventsAsync(
-                IEnumerable<string> projectIds,
-                IEnumerable<string> zones,
-                IEnumerable<ulong> instanceIds,
+                IEnumerable<string>? projectIds,
+                IEnumerable<string>? zones,
+                IEnumerable<ulong>? instanceIds,
                 DateTime startTime,
                 IEventProcessor processor,
                 CancellationToken cancellationToken)
@@ -140,29 +137,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
                    'receiveTimestamp': '2020-05-11T14:41:31.096086630Z'
                  }";
 
-                processor.Process(new NotifyInstanceLocationEvent(LogRecord.Deserialize(systemEventJson)));
-                processor.Process(new ResetInstanceEvent(LogRecord.Deserialize(lifecycleEventJson)));
+                processor.Process(new NotifyInstanceLocationEvent(LogRecord.Deserialize(systemEventJson)!));
+                processor.Process(new ResetInstanceEvent(LogRecord.Deserialize(lifecycleEventJson)!));
                 return Task.CompletedTask;
-            }
-
-            public void Dispose()
-            {
             }
         }
 
-        [SetUp]
-        public void SetUp()
+        private static EventLogViewModel CreateViewModel(
+            IJobService jobService,
+            IAuditLogClient auditLogClient)
         {
             var registry = new ServiceRegistry();
             registry.AddMock<ICloudConsoleClient>();
+            registry.AddSingleton<IJobService>(jobService);
+            registry.AddSingleton<IAuditLogClient>(auditLogClient);
 
-            this.jobServiceMock = new SynchronousJobService();
-            registry.AddSingleton<IJobService>(this.jobServiceMock);
-
-            this.auditLogAdapter = new AuditLogAdapterMock();
-            registry.AddSingleton<IAuditLogClient>(this.auditLogAdapter);
-
-            this.viewModel = new EventLogViewModel(registry);
+            return new EventLogViewModel(registry);
         }
 
         //---------------------------------------------------------------------
@@ -173,14 +163,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
         public async Task WhenSwitchingToCloudNode_ThenListIsDisabled()
         {
             var node = new Mock<IProjectModelCloudNode>();
-            await this.viewModel
+
+            var viewModel = CreateViewModel(
+                new SynchronousJobService(), 
+                new AuditLogClientMock());
+
+            await viewModel
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(this.viewModel.IsEventListEnabled);
-            Assert.AreEqual(EventLogViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
+            Assert.IsFalse(viewModel.IsEventListEnabled);
+            Assert.AreEqual(EventLogViewModel.DefaultWindowTitle, viewModel.WindowTitle);
 
-            Assert.IsFalse(this.viewModel.Events.Any());
+            Assert.IsFalse(viewModel.Events.Any());
         }
 
         [Test]
@@ -189,20 +184,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
             var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
 
-            await this.viewModel
+            var viewModel = CreateViewModel(
+                new SynchronousJobService(),
+                new AuditLogClientMock());
+
+            await viewModel
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
             // Switch again.
-            await this.viewModel
+            await viewModel
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(this.viewModel.IsEventListEnabled);
-            StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
-            StringAssert.Contains("project-1", this.viewModel.WindowTitle);
+            Assert.IsTrue(viewModel.IsEventListEnabled);
+            StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            StringAssert.Contains("project-1", viewModel.WindowTitle);
 
-            Assert.AreEqual(2, this.viewModel.Events.Count);
+            Assert.AreEqual(2, viewModel.Events.Count);
         }
 
         [Test]
@@ -211,20 +210,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
             var node = new Mock<IProjectModelZoneNode>();
             node.SetupGet(n => n.Zone).Returns(new ZoneLocator("project-1", "zone-1"));
 
-            await this.viewModel
+            var viewModel = CreateViewModel(
+                new SynchronousJobService(),
+                new AuditLogClientMock());
+
+            await viewModel
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
             // Switch again.
-            await this.viewModel
+            await viewModel
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(this.viewModel.IsEventListEnabled);
-            StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
-            StringAssert.Contains("zone-1", this.viewModel.WindowTitle);
+            Assert.IsTrue(viewModel.IsEventListEnabled);
+            StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            StringAssert.Contains("zone-1", viewModel.WindowTitle);
 
-            Assert.AreEqual(2, this.viewModel.Events.Count);
+            Assert.AreEqual(2, viewModel.Events.Count);
         }
 
         [Test]
@@ -234,20 +237,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 
-            await this.viewModel
+            var viewModel = CreateViewModel(
+                new SynchronousJobService(),
+                new AuditLogClientMock());
+
+            await viewModel
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
             // Switch again.
-            await this.viewModel
+            await viewModel
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(this.viewModel.IsEventListEnabled);
-            StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
-            StringAssert.Contains("instance-1", this.viewModel.WindowTitle);
+            Assert.IsTrue(viewModel.IsEventListEnabled);
+            StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            StringAssert.Contains("instance-1", viewModel.WindowTitle);
 
-            Assert.AreEqual(2, this.viewModel.Events.Count);
+            Assert.AreEqual(2, viewModel.Events.Count);
         }
 
         [Test]
@@ -263,19 +270,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
                 .SetupGet(n => n.Instance)
                 .Returns(new InstanceLocator("project-1", "zone-1", "instance-2"));
 
-            await this.viewModel
+            var viewModel = CreateViewModel(
+                new SynchronousJobService(),
+                new AuditLogClientMock());
+
+            await viewModel
                 .SwitchToModelAsync(node1.Object)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(2, this.viewModel.Events.Count);
-            this.viewModel.SelectedEvent = this.viewModel.Events.First();
+            Assert.AreEqual(2, viewModel.Events.Count);
+            viewModel.SelectedEvent = viewModel.Events.First();
 
             // Switch to different node.
-            await this.viewModel
+            await viewModel
                 .SwitchToModelAsync(node2.Object)
                 .ConfigureAwait(true);
-            Assert.IsNull(this.viewModel.SelectedEvent);
-            Assert.IsFalse(this.viewModel.IsOpenSelectedEventInCloudConsoleButtonEnabled);
+            Assert.IsNull(viewModel.SelectedEvent);
+            Assert.IsFalse(viewModel.IsOpenSelectedEventInCloudConsoleButtonEnabled);
         }
 
         //---------------------------------------------------------------------
@@ -289,15 +300,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 
-            await this.viewModel
+            var viewModel = CreateViewModel(
+                new SynchronousJobService(),
+                new AuditLogClientMock());
+
+            await viewModel
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(2, this.viewModel.Events.Count);
+            Assert.AreEqual(2, viewModel.Events.Count);
 
-            this.viewModel.IsIncludeSystemEventsButtonChecked = false;
-            Assert.AreEqual(1, this.viewModel.Events.Count);
-            Assert.IsTrue(this.viewModel.Events.All(e => e.LogRecord.IsActivityEvent));
+            viewModel.IsIncludeSystemEventsButtonChecked = false;
+            Assert.AreEqual(1, viewModel.Events.Count);
+            Assert.IsTrue(viewModel.Events.All(e => e.LogRecord.IsActivityEvent));
         }
 
         [Test]
@@ -307,33 +322,43 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 
-            await this.viewModel
+            var viewModel = CreateViewModel(
+                new SynchronousJobService(),
+                new AuditLogClientMock());
+
+            await viewModel
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(2, this.viewModel.Events.Count);
+            Assert.AreEqual(2, viewModel.Events.Count);
 
-            this.viewModel.IsIncludeLifecycleEventsButtonChecked = false;
-            Assert.AreEqual(1, this.viewModel.Events.Count);
-            Assert.IsTrue(this.viewModel.Events.All(e => e.LogRecord.IsSystemEvent));
+            viewModel.IsIncludeLifecycleEventsButtonChecked = false;
+            Assert.AreEqual(1, viewModel.Events.Count);
+            Assert.IsTrue(viewModel.Events.All(e => e.LogRecord.IsSystemEvent));
         }
 
         [Test]
         public async Task WhenChangingTimeframe_ThenReloadIsTriggered()
         {
+            var jobService = new SynchronousJobService();
+
+            var viewModel = CreateViewModel (
+                jobService,
+                new AuditLogClientMock());
+
             var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 
-            await this.viewModel
+            await viewModel
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(1, this.jobServiceMock.JobsCompleted);
+            Assert.AreEqual(1, jobService.JobsCompleted);
 
-            this.viewModel.SelectedTimeframeIndex = 2;
+            viewModel.SelectedTimeframeIndex = 2;
 
-            Assert.AreEqual(2, this.jobServiceMock.JobsCompleted);
+            Assert.AreEqual(2, jobService.JobsCompleted);
         }
     }
 }
