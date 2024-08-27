@@ -92,9 +92,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             var e = (OsLoginCheckPolicyEvent)r.ToEvent();
 
             Assert.AreEqual("INFO", e.Severity);
-            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
-            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
-            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
+            Assert.AreEqual("project-1", e.Instance?.ProjectId);
+            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
+            Assert.AreEqual("instance-1", e.Instance?.Name);
             Assert.AreEqual(1234567890, e.InstanceId);
             Assert.AreEqual("bob@example.com", e.Principal);
             Assert.IsTrue(e.IsSuccess);
@@ -157,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             var e = (OsLoginCheckPolicyEvent)r.ToEvent();
 
-            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
+            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
             Assert.AreEqual(0, e.InstanceId);
         }
 
@@ -218,9 +218,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             var e = (OsLoginCheckPolicyEvent)r.ToEvent();
 
             Assert.AreEqual("INFO", e.Severity);
-            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
-            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
-            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
+            Assert.AreEqual("project-1", e.Instance?.ProjectId);
+            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
+            Assert.AreEqual("instance-1", e.Instance?.Name);
             Assert.AreEqual(1234567890, e.InstanceId);
             Assert.AreEqual("bob@example.com", e.Principal);
             Assert.IsFalse(e.IsSuccess);
@@ -290,9 +290,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             var e = (OsLoginCheckPolicyEvent)r.ToEvent();
 
             Assert.AreEqual("INFO", e.Severity);
-            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
-            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
-            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
+            Assert.AreEqual("project-1", e.Instance?.ProjectId);
+            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
+            Assert.AreEqual("instance-1", e.Instance?.Name);
             Assert.AreEqual(1234567890, e.InstanceId);
             Assert.AreEqual("bob@example.com", e.Principal);
             Assert.IsFalse(e.IsSuccess);

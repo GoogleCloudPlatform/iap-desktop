@@ -102,9 +102,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             var e = (OsLoginStartSessionEvent)r.ToEvent();
 
             Assert.AreEqual("INFO", e.Severity);
-            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
-            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
-            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
+            Assert.AreEqual("project-1", e.Instance?.ProjectId);
+            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
+            Assert.AreEqual("instance-1", e.Instance?.Name);
             Assert.AreEqual(1234567890, e.InstanceId);
             Assert.AreEqual("bob@example.com", e.Principal);
             Assert.AreEqual("CHALLENGE_REQUIRED", e.ChallengeStatus);
@@ -171,9 +171,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             var e = (OsLoginStartSessionEvent)r.ToEvent();
 
             Assert.AreEqual("INFO", e.Severity);
-            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
-            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
-            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
+            Assert.AreEqual("project-1", e.Instance?.ProjectId);
+            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
+            Assert.AreEqual("instance-1", e.Instance?.Name);
             Assert.AreEqual("bob@example.com", e.Principal);
             Assert.AreEqual("NO_AVAILABLE_CHALLENGES", e.ChallengeStatus);
             Assert.AreEqual("Start OS Login 2FA session for bob@example.com: NO_AVAILABLE_CHALLENGES", e.Message);

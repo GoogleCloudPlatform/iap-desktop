@@ -153,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
         {
             if (e is InstanceEventBase vmEvent)
             {
-                return vmEvent.InstanceReference?.Name;
+                return vmEvent.Instance?.Name;
             }
             else
             {

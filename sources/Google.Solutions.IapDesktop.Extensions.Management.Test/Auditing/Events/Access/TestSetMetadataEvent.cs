@@ -108,8 +108,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             Assert.AreEqual("user@example.com", e.Principal);
             Assert.AreEqual(20008111111111111, e.InstanceId);
-            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
-            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
+            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
+            Assert.AreEqual("project-1", e.Instance?.ProjectId);
             Assert.AreEqual("NOTICE", e.Severity);
             Assert.IsNull(e.Status);
 
@@ -175,8 +175,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             Assert.AreEqual("user@example.com", e.Principal);
             Assert.AreEqual(20008111111111111, e.InstanceId);
-            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
-            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
+            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
+            Assert.AreEqual("project-1", e.Instance?.ProjectId);
             Assert.AreEqual("NOTICE", e.Severity);
             Assert.IsNull(e.Status);
 
@@ -244,8 +244,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             Assert.AreEqual("user@example.com", e.Principal);
             Assert.AreEqual(37848154511111, e.InstanceId);
-            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
-            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
+            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
+            Assert.AreEqual("project-1", e.Instance?.ProjectId);
             Assert.AreEqual("NOTICE", e.Severity);
             Assert.IsNull(e.Status);
 
@@ -321,8 +321,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             Assert.AreEqual("user@example.com", e.Principal);
             Assert.AreEqual(0, e.InstanceId);
-            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
-            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
+            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
+            Assert.AreEqual("project-1", e.Instance?.ProjectId);
             Assert.AreEqual("ERROR", e.Severity);
             Assert.AreEqual(7, e.Status?.Code);
             Assert.AreEqual("Required ...", e.Status?.Message);
@@ -410,8 +410,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             Assert.AreEqual("user@example.com", e.Principal);
             Assert.AreEqual(20008111111111111, e.InstanceId);
-            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
-            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
+            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
+            Assert.AreEqual("project-1", e.Instance?.ProjectId);
             Assert.AreEqual("NOTICE", e.Severity);
             Assert.IsNull(e.Status);
 

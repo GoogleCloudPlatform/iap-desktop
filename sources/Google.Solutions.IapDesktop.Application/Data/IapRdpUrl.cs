@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Data
         // Parsing.
         //---------------------------------------------------------------------
 
-        private static InstanceLocator CreateVmInstanceReferenceFromPath(string absolutePath)
+        private static InstanceLocator CreateInstanceLocatorFromPath(string absolutePath)
         {
             if (string.IsNullOrEmpty(absolutePath))
             {
@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Application.Data
                 throw new IapRdpUrlFormatException($"Host part not empty: {uri.Host}");
             }
 
-            var instanceRef = CreateVmInstanceReferenceFromPath(uri.AbsolutePath);
+            var instanceRef = CreateInstanceLocatorFromPath(uri.AbsolutePath);
 
             return new IapRdpUrl(
                 instanceRef,
