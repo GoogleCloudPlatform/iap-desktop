@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
 
         private readonly Project projectDetails;
         private readonly Instance instanceDetails;
-        private readonly GuestOsInfo guestOsInfo;
+        private readonly GuestOsInfo? guestOsInfo;
 
         private FeatureFlag GetMetadataFeatureFlag(string key, bool trueMeansEnabled)
         {
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             InstanceLocator instance,
             Project projectDetails,
             Instance instanceDetails,
-            GuestOsInfo guestOsInfo)
+            GuestOsInfo? guestOsInfo)
         {
             this.projectDetails = projectDetails.ExpectNotNull(nameof(projectDetails));
             this.instanceDetails = instanceDetails.ExpectNotNull(nameof(instanceDetails));
@@ -449,7 +449,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
             // Reading OS inventory data can fail because of a 
             // `compute.disableGuestAttributesAccess` constraint.
             //
-            GuestOsInfo osInfo;
+            GuestOsInfo? osInfo;
             try
             {
                 osInfo = await packageInventory.GetInstanceInventoryAsync(

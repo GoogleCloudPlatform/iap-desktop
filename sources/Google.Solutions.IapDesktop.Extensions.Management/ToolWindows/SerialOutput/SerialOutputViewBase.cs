@@ -109,9 +109,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
         {
             base.OnUserVisibilityChanged(visible);
 
+            //
             // Start/stop tailing depending on whether the window is actually
             // visible to the user. That avoids keeping the tail thread running
             // when nobody is watching.
+            //
 
             this.viewModel.Value.IsTailBlocked = !visible;
         }
@@ -129,8 +131,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
 
         private void SerialOutputWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
+            //
             // Disable background activity to avoid having it touch any controls
             // while the window is being destroyed.
+            //
             this.viewModel.Value.IsTailBlocked = true;
         }
     }

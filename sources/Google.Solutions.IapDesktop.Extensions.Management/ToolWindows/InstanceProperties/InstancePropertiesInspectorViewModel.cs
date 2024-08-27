@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.Instance
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        protected override async Task<InstancePropertiesInspectorModel> LoadModelAsync(
+        protected override async Task<InstancePropertiesInspectorModel?> LoadModelAsync(
             IProjectModelNode node,
             CancellationToken token)
         {
