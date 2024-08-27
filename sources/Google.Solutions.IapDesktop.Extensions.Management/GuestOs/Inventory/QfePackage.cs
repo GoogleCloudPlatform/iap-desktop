@@ -22,6 +22,8 @@
 using Newtonsoft.Json;
 using System;
 
+#pragma warning disable CA1507 // Use nameof to express symbol names
+
 namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 {
     public class QfePackage : IPackage
@@ -44,11 +46,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 
         string IPackage.PackageId => this.HotFixID;
 
-        string IPackage.Architecture => null;
+        string? IPackage.Architecture => null;
 
-        string IPackage.Version => null;
+        string? IPackage.Version => null;
 
-        Uri IPackage.Weblink
+        Uri? IPackage.Weblink
         {
             get
             {

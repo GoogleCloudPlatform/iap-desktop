@@ -29,12 +29,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
         string PackageType { get; }
 
         string PackageId { get; }
-        string Description { get; }
-        string Architecture { get; }
-        string Version { get; }
+        string? Description { get; }
+        string? Architecture { get; }
+        string? Version { get; }
         DateTime? PublishedOn { get; }
         DateTime? InstalledOn { get; }
-        Uri Weblink { get; }
+        Uri? Weblink { get; }
     }
 
     public enum PackageCriticality

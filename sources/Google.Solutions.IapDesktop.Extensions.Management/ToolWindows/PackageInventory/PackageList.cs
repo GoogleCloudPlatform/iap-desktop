@@ -49,14 +49,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
             this.List.BindImageIndex(m => (int)m.Package.Criticality);
             this.List.BindColumn(0, m => m.Package.PackageType);
             this.List.BindColumn(1, m => m.Package.PackageId);
-            this.List.BindColumn(2, m => m.Package.Version);
-            this.List.BindColumn(3, m => m.Package.Architecture);
+            this.List.BindColumn(2, m => m.Package.Version ?? string.Empty);
+            this.List.BindColumn(3, m => m.Package.Architecture ?? string.Empty);
             this.List.BindColumn(4, m => m.Instance.Name);
             this.List.BindColumn(5, m => m.Instance.Zone);
             this.List.BindColumn(6, m => m.Instance.ProjectId);
-            this.List.BindColumn(7, m => m.Package.PublishedOn?.ToShortDateString());
-            this.List.BindColumn(8, m => m.Package.InstalledOn?.ToShortDateString());
-            this.List.BindColumn(9, m => m.Package.Description);
+            this.List.BindColumn(7, m => m.Package.PublishedOn?.ToShortDateString() ?? string.Empty);
+            this.List.BindColumn(8, m => m.Package.InstalledOn?.ToShortDateString() ?? string.Empty);
+            this.List.BindColumn(9, m => m.Package.Description ?? string.Empty);
         }
     }
 }

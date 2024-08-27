@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Acce
         public static bool IsSetMetadataEvent(LogRecord record)
         {
             return record.IsActivityEvent &&
-                record.ProtoPayload.MethodName == Method;
+                record.ProtoPayload?.MethodName == Method;
         }
 
         public bool IsModifyingKey(string key)

@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs
                 else if (reader.TokenType == JsonToken.StartObject)
                 {
                     var record = LogRecord.Deserialize(reader);
-                    if (record.IsValidAuditLogRecord)
+                    if (record != null && record.IsValidAuditLogRecord)
                     {
                         yield return record.ToEvent();
                     }
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs
             }
         }
 
-        internal static string Read(
+        internal static string? Read(
             JsonReader reader,
             Action<EventBase> callback)
         {
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs
                 }
                 else if (reader.TokenType == JsonToken.String && reader.Path == "nextPageToken")
                 {
-                    return (string)reader.Value;
+                    return (string)reader.Value!;
                 }
             }
 

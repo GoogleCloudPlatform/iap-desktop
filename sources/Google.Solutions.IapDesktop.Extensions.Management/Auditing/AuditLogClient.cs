@@ -40,9 +40,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management
     public interface IAuditLogClient
     {
         Task ProcessInstanceEventsAsync(
-            IEnumerable<string> projectIds,
-            IEnumerable<string> zones,
-            IEnumerable<ulong> instanceIds,
+            IEnumerable<string>? projectIds,
+            IEnumerable<string>? zones,
+            IEnumerable<ulong>? instanceIds,
             DateTime startTime,
             IEventProcessor processor,
             CancellationToken cancellationToken);
@@ -59,10 +59,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management
         }
 
         internal static string CreateFilterString(
-            IEnumerable<string> zones,
-            IEnumerable<ulong> instanceIds,
-            IEnumerable<string> methods,
-            IEnumerable<string> severities,
+            IEnumerable<string>? zones,
+            IEnumerable<ulong>? instanceIds,
+            IEnumerable<string>? methods,
+            IEnumerable<string>? severities,
             DateTime startTime)
         {
             Debug.Assert(startTime.Kind == DateTimeKind.Utc);
@@ -115,9 +115,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management
         //---------------------------------------------------------------------
 
         public async Task ProcessInstanceEventsAsync(
-            IEnumerable<string> projectIds,
-            IEnumerable<string> zones,
-            IEnumerable<ulong> instanceIds,
+            IEnumerable<string>? projectIds,
+            IEnumerable<string>? zones,
+            IEnumerable<ulong>? instanceIds,
             DateTime startTime,
             IEventProcessor processor,
             CancellationToken cancellationToken)

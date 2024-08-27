@@ -62,8 +62,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
                     inventory.Any(),
                     inventory
                         .Where(i => i.AvailablePackages != null)
-                        .SelectMany(i => i.AvailablePackages
+                        .SelectMany(i => i.AvailablePackages?
                             .AllPackages
+                            .EnsureNotNull()
                             .Select(p => new Item(i.Instance, p)))),
 
                 PackageInventoryType.InstalledPackages => new PackageInventoryModel(
@@ -71,15 +72,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
                     inventory.Any(),
                     inventory
                         .Where(i => i.InstalledPackages != null)
-                        .SelectMany(i => i.InstalledPackages
+                        .SelectMany(i => i.InstalledPackages?
                             .AllPackages
+                            .EnsureNotNull()
                             .Select(p => new Item(i.Instance, p)))),
 
                 _ => throw new ArgumentException(nameof(inventoryType)),
             };
         }
 
-        public static async Task<PackageInventoryModel> LoadAsync(
+        public static async Task<PackageInventoryModel?> LoadAsync(
             IGuestOsInventory packageInventory,
             PackageInventoryType inventoryType,
             IProjectModelNode node,

@@ -29,6 +29,7 @@ using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -73,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             Assert.AreEqual(FeatureFlag.Enabled, model.GuestAttributes);
             Assert.IsFalse(model.IsSoleTenant);
             Assert.AreEqual(WindowsInstanceAttribute.DefaultMachineType, model.MachineType);
-            Assert.IsNull(model.Tags);
+            Assert.IsFalse(model.Tags.Any());
         }
 
         [Test]

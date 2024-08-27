@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
         Task JoinDomainAsync(
             InstanceLocator instance,
             string domain,
-            string newComputerName,
+            string? newComputerName,
             NetworkCredential domainCredential,
             CancellationToken cancellationToken);
     }
@@ -122,14 +122,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
                     var match = logBuffer.ToString()
                         .Split('\n')
                         .Where(line =>
-                                line.Contains(operation.OperationId.ToString()) &&
-                                line.Contains(messageType))
+                               line.Contains(operation.OperationId.ToString()) &&
+                               line.Contains(messageType))
                         .FirstOrDefault();
-                    if (match != null)
+                    if (match != null &&
+                        JsonConvert.DeserializeObject<TMessage>(match) is TMessage message &&
+                        message.MessageType == messageType)
                     {
-                        var message = JsonConvert.DeserializeObject<TMessage>(match);
-                        Debug.Assert(message.MessageType == messageType);
-
                         return message;
                     }
                 }
@@ -139,13 +138,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
         internal async Task JoinDomainAsync(
             IStartupScriptOperation operation,
             string domain,
-            string newComputerName,
+            string? newComputerName,
             NetworkCredential domainCredential,
             CancellationToken cancellationToken)
         {
             domain.ExpectNotEmpty(nameof(domain));
-            domainCredential?.UserName.ExpectNotNull("username");
-            domainCredential?.Password.ExpectNotNull("password");
+            domainCredential.UserName.ExpectNotNull("username");
+            domainCredential.Password.ExpectNotNull("password");
 
             //
             // Swap existing startup scripts against the
@@ -225,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
                         cancellationToken)
                     .ConfigureAwait(false);
 
-                if (!joinResponse.Succeeded)
+                if (joinResponse.Succeeded != true)
                 {
                     throw new DomainJoinFailedException(
                         $"The domain join failed: {joinResponse.ErrorDetails}");
@@ -250,7 +249,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
         public async Task JoinDomainAsync(
             InstanceLocator instance,
             string domain,
-            string newComputerName,
+            string? newComputerName,
             NetworkCredential domainCredential,
             CancellationToken cancellationToken)
         {
@@ -283,12 +282,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
             /// <summary>
             /// Unique identifier for the join operation.
             /// </summary>
-            public string OperationId { get; set; }
+            public string? OperationId { get; set; }
 
             /// <summary>
             /// Identifier for the message.
             /// </summary>
-            public string MessageType { get; set; }
+            public string? MessageType { get; set; }
         }
 
         /// <summary>
@@ -299,8 +298,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
         {
             internal const string MessageTypeString = "hello";
 
-            public string Modulus { get; set; }
-            public string Exponent { get; set; }
+            public string? Modulus { get; set; }
+            public string? Exponent { get; set; }
         }
 
         /// <summary>
@@ -310,10 +309,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
         {
             internal const string MessageTypeString = "join-request";
 
-            public string DomainName { get; set; }
-            public string Username { get; set; }
-            public string EncryptedPassword { get; set; }
-            public string NewComputerName { get; set; }
+            public string? DomainName { get; set; }
+            public string? Username { get; set; }
+            public string? EncryptedPassword { get; set; }
+            public string? NewComputerName { get; set; }
         }
 
         /// <summary>
@@ -323,8 +322,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
         {
             internal const string MessageTypeString = "join-response";
 
-            public bool Succeeded { get; set; }
-            public string ErrorDetails { get; set; }
+            public bool? Succeeded { get; set; }
+            public string? ErrorDetails { get; set; }
         }
 
         internal static class MetadataKeys

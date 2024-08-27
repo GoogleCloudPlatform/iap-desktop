@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
         private const int ModelCacheCapacity = 10;
         internal const string DefaultWindowTitle = "Serial log";
 
-        internal CancellationTokenSource TailCancellationTokenSource = null;
+        internal CancellationTokenSource? TailCancellationTokenSource = null;
 
         private readonly IJobService jobService;
         private readonly Service<IComputeEngineClient> computeClient;
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
         private bool isTailBlocked = true;
         private string windowTitle = DefaultWindowTitle;
 
-        public event EventHandler<string> NewOutputAvailable;
+        public event EventHandler<string>? NewOutputAvailable;
 
         public SerialOutputViewModel(IServiceProvider serviceProvider)
             : base(ModelCacheCapacity)
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public string Output => this.Model?.Output;
+        public string? Output => this.Model?.Output;
 
         public bool IsEnableTailingButtonEnabled
         {
@@ -187,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        protected override async Task<SerialOutputModel> LoadModelAsync(
+        protected override async Task<SerialOutputModel?> LoadModelAsync(
             IProjectModelNode node,
             CancellationToken token)
         {

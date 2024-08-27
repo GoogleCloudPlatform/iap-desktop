@@ -26,7 +26,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
 {
     public abstract class ProjectEventBase : EventBase
     {
-        public string ProjectId
+        public string? ProjectId
         {
             get
             {
@@ -35,8 +35,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
                 // projects/<project-number-or-id>
                 // for project-related events.
                 //
-                var resourceName = base.LogRecord.ProtoPayload.ResourceName;
-                if (string.IsNullOrEmpty(resourceName))
+                var resourceName = base.LogRecord.ProtoPayload?.ResourceName;
+                if (resourceName == null || string.IsNullOrEmpty(resourceName))
                 {
                     return null;
                 }
@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
                 {
                     throw new ArgumentException(
                         "Encountered unexpected resource name format: " +
-                        base.LogRecord.ProtoPayload.ResourceName);
+                        base.LogRecord.ProtoPayload?.ResourceName);
                 }
 
                 return parts[1];

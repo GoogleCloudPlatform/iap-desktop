@@ -33,35 +33,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs
         public const string TypeString = "type.googleapis.com/google.cloud.audit.AuditLog";
 
         [JsonProperty("serviceName")]
-        public string ServiceName { get; set; }
+        public string? ServiceName { get; set; }
 
         [JsonProperty("methodName")]
-        public string MethodName { get; set; }
+        public string? MethodName { get; set; }
 
         [JsonProperty("resourceName")]
-        public string ResourceName { get; set; }
+        public string? ResourceName { get; set; }
 
         [JsonProperty("authenticationInfo")]
-        public AuthenticationInfo AuthenticationInfo { get; set; }
+        public AuthenticationInfo? AuthenticationInfo { get; set; }
 
         [JsonProperty("status")]
-        public StatusInfo Status { get; set; }
+        public StatusInfo? Status { get; set; }
 
         //---------------------------------------------------------------------
         // Polymorphic part.
         //---------------------------------------------------------------------
 
         [JsonProperty("metadata")]
-        public JObject Metadata { get; set; }
+        public JObject? Metadata { get; set; }
 
         [JsonProperty("requestMetadata")]
-        public JObject RequestMetadata { get; set; }
+        public JObject? RequestMetadata { get; set; }
 
         [JsonProperty("request")]
-        public JObject Request { get; set; }
+        public JObject? Request { get; set; }
 
         [JsonProperty("response")]
-        public JObject Response { get; set; }
+        public JObject? Response { get; set; }
 
         internal bool IsValid => !string.IsNullOrEmpty(this.MethodName);
     }
@@ -69,16 +69,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs
     public class AuthenticationInfo
     {
         [JsonProperty("principalEmail")]
-        public string PrincipalEmail { get; set; }
+        public string? PrincipalEmail { get; set; }
 
         [JsonProperty("principalSubject")]
-        public string PrincipalSubject { get; set; }
+        public string? PrincipalSubject { get; set; }
     }
 
     public class StatusInfo
     {
         [JsonProperty("message")]
-        public string Message { get; set; }
+        public string? Message { get; set; }
 
         [JsonProperty("code")]
         public int Code { get; set; }

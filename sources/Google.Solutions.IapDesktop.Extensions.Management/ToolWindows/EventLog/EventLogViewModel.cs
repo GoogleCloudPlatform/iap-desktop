@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
         private readonly IJobService jobService;
         private readonly Service<IAuditLogClient> auditLogAdapter;
 
-        private EventBase selectedEvent;
+        private EventBase? selectedEvent;
         private int selectedTimeframeIndex = 0;
         private bool isEventListEnabled = false;
         private bool isRefreshButtonEnabled = false;
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public EventBase SelectedEvent
+        public EventBase? SelectedEvent
         {
             get => this.selectedEvent;
             set
@@ -208,7 +208,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
 
         public void OpenSelectedEventInCloudConsole()
         {
-            if (this.SelectedEvent != null)
+            if (this.SelectedEvent != null &&
+                this.SelectedEvent.LogRecord.InsertId != null)
             {
                 this.cloudConsoleAdapter.OpenVmInstanceLogDetails(
                     this.SelectedEvent.LogRecord.ProjectId,
@@ -220,21 +221,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
         public void OpenInCloudConsole()
         {
             Debug.Assert(!(this.ModelKey is IProjectModelCloudNode));
-            this.cloudConsoleAdapter.OpenLogs(this.ModelKey);
+
+            if (this.ModelKey != null)
+            {
+                this.cloudConsoleAdapter.OpenLogs(this.ModelKey);
+            }
         }
 
         //---------------------------------------------------------------------
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        protected override async Task<EventLogModel> LoadModelAsync(
+        protected override async Task<EventLogModel?> LoadModelAsync(
             IProjectModelNode node,
             CancellationToken token)
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(node))
             {
-                IEnumerable<ulong> instanceIdFilter;
-                IEnumerable<string> zonesFilter;
+                IEnumerable<ulong>? instanceIdFilter;
+                IEnumerable<string>? zonesFilter;
                 string projectIdFilter;
                 string displayName;
 

@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
         : ProjectExplorerTrackingToolWindow<PackageInventoryViewModel>, IView<PackageInventoryViewModel>
     {
         private readonly PackageInventoryType inventoryType;
-        private PackageInventoryViewModel viewModel;
+        private Bound<PackageInventoryViewModel> viewModel;
 
         public PackageInventoryViewBase(
             PackageInventoryType inventoryType,
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
             PackageInventoryViewModel viewModel,
             IBindingContext bindingContext)
         {
-            this.viewModel = viewModel;
+            this.viewModel.Value = viewModel;
             viewModel.InventoryType = this.inventoryType;
 
             this.panel.BindReadonlyObservableProperty(
@@ -76,26 +76,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
                 viewModel,
                 m => m.WindowTitle,
                 bindingContext);
-            this.viewModel.ResetWindowTitle();  // Fire event to set initial window title.
+            viewModel.ResetWindowTitle();  // Fire event to set initial window title.
 
             //
             // Bind list.
             //
             this.packageList.BindReadonlyObservableProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsPackageListEnabled,
                 bindingContext);
 
-            this.packageList.List.BindCollection(this.viewModel.FilteredPackages);
+            this.packageList.List.BindCollection(viewModel.FilteredPackages);
             this.packageList.BindProperty(
                 c => c.SearchTerm,
-                this.viewModel,
+                viewModel,
                 m => m.Filter,
                 bindingContext);
             this.packageList.BindReadonlyObservableProperty(
                 c => c.Loading,
-                this.viewModel,
+                viewModel,
                 m => m.IsLoading,
                 bindingContext);
             this.packageList.SearchOnKeyDown = true;
@@ -105,8 +105,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
                 null,
                 (sender, args) =>
                 {
-                    Browser.Default.Navigate(
-                        this.packageList.List.SelectedModelItem?.Package?.Weblink.ToString());
+                    var address = this.packageList.List
+                        .SelectedModelItem?
+                        .Package?
+                        .Weblink?
+                        .ToString();
+
+                    if (address != null)
+                    {
+                        Browser.Default.Navigate(address);
+                    }
                 });
             this.packageList.List.ContextMenuStrip.Items.Add(openUrl);
             this.packageList.List.ContextMenuStrip.Opening += (sender, args) =>
@@ -122,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
         protected override async Task SwitchToNodeAsync(IProjectModelNode node)
         {
             Debug.Assert(!this.InvokeRequired, "running on UI thread");
-            await this.viewModel.SwitchToModelAsync(node)
+            await this.viewModel.Value.SwitchToModelAsync(node)
                 .ConfigureAwait(true);
         }
 

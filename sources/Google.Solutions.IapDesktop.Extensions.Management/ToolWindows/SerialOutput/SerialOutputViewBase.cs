@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
     public partial class SerialOutputViewBase
         : ProjectExplorerTrackingToolWindow<SerialOutputViewModel>, IView<SerialOutputViewModel>
     {
-        private SerialOutputViewModel viewModel;
+        private Bound<SerialOutputViewModel> viewModel;
         private readonly ushort portNumber;
 
         public SerialOutputViewBase(
@@ -53,10 +53,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
             SerialOutputViewModel viewModel,
             IBindingContext bindingContext)
         {
-            this.viewModel = viewModel;
+            this.viewModel.Value = viewModel;
             viewModel.SerialPortNumber = this.portNumber;
 
-            this.viewModel.OnPropertyChange(
+            viewModel.OnPropertyChange(
                 m => m.WindowTitle,
                 title =>
                 {
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
                     this.Text = title;
                 },
                 bindingContext);
-            this.viewModel.OnPropertyChange(
+            viewModel.OnPropertyChange(
                 m => m.Output,
                 text =>
                 {
@@ -86,16 +86,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
 
             this.enableTailButton.BindProperty(
                 c => c.Checked,
-                this.viewModel,
+                viewModel,
                 m => m.IsTailEnabled,
                 bindingContext);
             this.enableTailButton.BindProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsEnableTailingButtonEnabled,
                 bindingContext);
 
-            this.viewModel.NewOutputAvailable += (sender, output) =>
+            viewModel.NewOutputAvailable += (sender, output) =>
             {
                 BeginInvoke((Action)(() => this.output.AppendText(output)));
             };
@@ -109,17 +109,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
         {
             base.OnUserVisibilityChanged(visible);
 
+            //
             // Start/stop tailing depending on whether the window is actually
             // visible to the user. That avoids keeping the tail thread running
             // when nobody is watching.
+            //
 
-            this.viewModel.IsTailBlocked = !visible;
+            this.viewModel.Value.IsTailBlocked = !visible;
         }
 
         protected override async Task SwitchToNodeAsync(IProjectModelNode node)
         {
             Debug.Assert(!this.InvokeRequired, "running on UI thread");
-            await this.viewModel.SwitchToModelAsync(node)
+            await this.viewModel.Value.SwitchToModelAsync(node)
                 .ConfigureAwait(true);
         }
 
@@ -129,9 +131,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
 
         private void SerialOutputWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
+            //
             // Disable background activity to avoid having it touch any controls
             // while the window is being destroyed.
-            this.viewModel.IsTailBlocked = true;
+            //
+            this.viewModel.Value.IsTailBlocked = true;
         }
     }
 }

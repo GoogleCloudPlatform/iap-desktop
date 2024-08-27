@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
         /// List of metadata items that have been temporarily replaced
         /// and must be restored in the end.
         /// </summary>
-        private List<Metadata.ItemsData> itemsToRestore;
+        private List<Metadata.ItemsData> itemsToRestore = new List<Metadata.ItemsData>();
 
         /// <summary>
         /// List of metadata keys that have been added and must be
@@ -108,13 +108,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
             using (ApplicationTraceSource.Log.TraceMethod()
                 .WithParameters(string.Join(", ", keysToReplace)))
             {
-                List<Metadata.ItemsData> oldItems = null;
+                List<Metadata.ItemsData>? oldItems = null;
                 await this.ComputeClient.UpdateMetadataAsync(
                         this.Instance,
                         metadata =>
                         {
-                            Debug.Assert(metadata != null);
-
                             if (failIfGuardKeyFound)
                             {
                                 //
@@ -161,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
                     .ConfigureAwait(false);
 
                 Debug.Assert(oldItems != null);
-                return oldItems;
+                return oldItems!;
             }
         }
 
@@ -194,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
             string newStartupScript,
             CancellationToken cancellationToken)
         {
-            Debug.Assert(this.itemsToRestore == null);
+            Debug.Assert(!this.itemsToRestore.Any());
 
             //
             // Replace startup scripts and set guard key

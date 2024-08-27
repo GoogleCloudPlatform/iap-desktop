@@ -27,6 +27,7 @@ using System.Linq;
 
 #pragma warning disable CA1056 // Uri properties should not be strings
 #pragma warning disable CA1054 // Uri parameters should not be strings
+#pragma warning disable CA1507 // Use nameof to express symbol names
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 {
@@ -65,11 +66,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 
         string IPackage.PackageId => this.Title;
 
-        string IPackage.Architecture => null;
+        string? IPackage.Architecture => null;
 
         string IPackage.Version => this.RevisionNumber.ToString();
 
-        Uri IPackage.Weblink => !string.IsNullOrEmpty(this.SupportURL)
+        Uri? IPackage.Weblink => !string.IsNullOrEmpty(this.SupportURL)
             ? new Uri(this.SupportURL)
             : null;
 
@@ -115,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 
     internal class WuaPackageType
     {
-        private static readonly IDictionary<Guid, WuaPackageType> Types
+        private static readonly Dictionary<Guid, WuaPackageType> Types
             = new Dictionary<Guid, WuaPackageType>()
             {
                 // https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ff357803(v=vs.85)
@@ -142,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
             this.Criticality = criticality;
         }
 
-        public static WuaPackageType FromCategoryId(string categoryId)
+        public static WuaPackageType? FromCategoryId(string categoryId)
         {
             if (Guid.TryParse(categoryId, out var guid) &&
                 Types.TryGetValue(guid, out var type))
@@ -160,7 +161,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
             return ids
                 .EnsureNotNull()
                 .Select(id => FromCategoryId(id))
-                .Where(type => type != null);
+                .Where(type => type != null)
+                .Select(type => type!);
         }
 
         public static PackageCriticality MaxCriticality(IEnumerable<string> ids)

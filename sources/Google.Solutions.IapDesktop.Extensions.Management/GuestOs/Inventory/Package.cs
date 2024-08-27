@@ -22,6 +22,8 @@
 using Newtonsoft.Json;
 using System;
 
+#pragma warning disable CA1507 // Use nameof to express symbol names
+
 namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 {
     public class Package : IPackage
@@ -41,13 +43,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 
         string IPackage.PackageId => this.Name;
 
-        string IPackage.Description => null;
+        string? IPackage.Description => null;
 
         DateTime? IPackage.InstalledOn => null;
 
         DateTime? IPackage.PublishedOn => null;
 
-        Uri IPackage.Weblink => null;
+        Uri? IPackage.Weblink => null;
 
         PackageCriticality IPackage.Criticality => PackageCriticality.NonCritical;
 

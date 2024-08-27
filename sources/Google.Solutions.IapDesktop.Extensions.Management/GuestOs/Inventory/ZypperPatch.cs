@@ -22,6 +22,8 @@
 using Newtonsoft.Json;
 using System;
 
+#pragma warning disable CA1507 // Use nameof to express symbol names
+
 namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 {
     public class ZypperPatch : IPackage
@@ -45,11 +47,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 
         string IPackage.PackageId => this.Name;
 
-        string IPackage.Architecture => null;
+        string? IPackage.Architecture => null;
 
-        string IPackage.Version => null;
+        string? IPackage.Version => null;
 
-        Uri IPackage.Weblink => null;
+        Uri? IPackage.Weblink => null;
 
         string IPackage.Description => this.Summary +
             (this.Category != null ? $" ({this.Category})" : string.Empty);

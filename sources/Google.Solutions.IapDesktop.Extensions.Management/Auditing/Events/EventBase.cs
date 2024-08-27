@@ -33,11 +33,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
         public abstract EventCategory Category { get; }
         public LogRecord LogRecord { get; }
 
-        public DateTime Timestamp => this.LogRecord.Timestamp;
+        public DateTime? Timestamp => this.LogRecord.Timestamp;
 
-        public string Severity => this.LogRecord.Severity;
+        public string? Severity => this.LogRecord.Severity;
 
-        public string Principal
+        public string? Principal
         {
             get
             {
@@ -65,21 +65,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
             }
         }
 
-        public StatusInfo Status
+        public StatusInfo? Status
         {
             get => this.LogRecord.ProtoPayload?.Status?.Message != null
                 ? this.LogRecord.ProtoPayload?.Status
                 : null;
         }
 
-        public string SourceHost
+        public string? SourceHost
         {
-            get => this.LogRecord.ProtoPayload.RequestMetadata?.Value<string>("callerIp");
+            get => this.LogRecord.ProtoPayload?.RequestMetadata?.Value<string>("callerIp");
         }
 
-        public string UserAgent
+        public string? UserAgent
         {
-            get => this.LogRecord.ProtoPayload.RequestMetadata?.Value<string>("callerSuppliedUserAgent");
+            get => this.LogRecord.ProtoPayload?.RequestMetadata?.Value<string>("callerSuppliedUserAgent");
         }
 
         public string UserAgentShort
@@ -109,6 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
                 if (accessLevels != null)
                 {
                     return accessLevels.Values<string>()
+                        .OfType<string>()
                         .Select(AccessLevelLocator.Parse);
                 }
                 else
@@ -118,19 +119,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
             }
         }
 
-        public string DeviceState
-            => this.LogRecord
+        public string? DeviceState
+        {
+            get => this.LogRecord
                 .ProtoPayload?
                 .Metadata?
                 .Value<string>("device_state")
                 .NullIfEmpty();
+        }
 
-        public string DeviceId
-            => this.LogRecord
+        public string? DeviceId
+        {
+            get => this.LogRecord
                 .ProtoPayload?
                 .Metadata?
                 .Value<string>("device_id")
                 .NullIfEmpty();
+        }
 
         public abstract string Message { get; }
 
@@ -147,8 +152,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
 
     public enum EventCategory
     {
+        //
         // NB. Categories are contextual and do not map 1:1 to admin 
         // activity/system/data access events!
+        //
 
         Unknown,
 

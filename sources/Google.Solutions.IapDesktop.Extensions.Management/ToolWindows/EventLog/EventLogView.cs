@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
     internal partial class EventLogView
         : ProjectExplorerTrackingToolWindow<EventLogViewModel>, IView<EventLogViewModel>
     {
-        private EventLogViewModel viewModel;
+        private Bound<EventLogViewModel> viewModel;
 
         public EventLogView(IServiceProvider serviceProvider)
             : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide)
@@ -54,11 +54,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
             EventLogViewModel viewModel,
             IBindingContext bindingContext)
         {
-            this.viewModel = viewModel;
+            this.viewModel.Value = viewModel;
 
             this.timeFrameComboBox.Items.AddRange(EventLogViewModel.AvailableTimeframes.ToArray());
 
-            this.viewModel.OnPropertyChange(
+            viewModel.OnPropertyChange(
                 m => m.WindowTitle,
                 title =>
                 {
@@ -72,71 +72,71 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
             // Bind toolbar buttons.
             this.timeFrameComboBox.BindProperty(
                 c => c.SelectedIndex,
-                this.viewModel,
+                viewModel,
                 m => m.SelectedTimeframeIndex,
                 bindingContext);
             this.timeFrameComboBox.BindProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsTimeframeComboBoxEnabled,
                 bindingContext);
 
             this.refreshButton.BindProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsRefreshButtonEnabled,
                 bindingContext);
 
             this.includeLifecycleEventsButton.BindProperty(
                 c => c.Checked,
-                this.viewModel,
+                viewModel,
                 m => m.IsIncludeLifecycleEventsButtonChecked,
                 bindingContext);
             this.includeSystemEventsButton.BindProperty(
                 c => c.Checked,
-                this.viewModel,
+                viewModel,
                 m => m.IsIncludeSystemEventsButtonChecked,
                 bindingContext);
             this.includeAccessEventsButton.BindProperty(
                 c => c.Checked,
-                this.viewModel,
+                viewModel,
                 m => m.IsIncludeAccessEventsButtonChecked,
                 bindingContext);
 
             this.openInCloudConsoleToolStripMenuItem.BindReadonlyProperty(
                 b => b.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsOpenSelectedEventInCloudConsoleButtonEnabled,
                 bindingContext);
             this.openLogsButton.BindReadonlyProperty(
                 b => b.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsOpenSelectedEventInCloudConsoleButtonEnabled,
                 bindingContext);
 
             // Bind list.
             this.list.BindProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsEventListEnabled,
                 bindingContext);
             this.list.BindProperty(
                 c => c.SelectedModelItem,
-                this.viewModel,
+                viewModel,
                 m => m.SelectedEvent,
                 bindingContext);
 
             this.list.BindColumn(0, e => e.Timestamp.ToString());
-            this.list.BindColumn(1, e => GetInstanceName(e));
-            this.list.BindColumn(2, e => e.Severity);
+            this.list.BindColumn(1, e => GetInstanceName(e) ?? string.Empty);
+            this.list.BindColumn(2, e => e.Severity ?? string.Empty);
             this.list.BindColumn(3, e => e.Message);
-            this.list.BindColumn(4, e => e.Principal);
-            this.list.BindColumn(5, e => e.DeviceId);
-            this.list.BindColumn(6, e => e.DeviceState);
+            this.list.BindColumn(4, e => e.Principal ?? string.Empty);
+            this.list.BindColumn(5, e => e.DeviceId ?? string.Empty);
+            this.list.BindColumn(6, e => e.DeviceState ?? string.Empty);
             this.list.BindColumn(7, e => string.Join(", ", e.AccessLevels.Select(l => l.AccessLevel)));
 
             this.list.BindImageIndex(e => GetImageIndex(e));
-            this.list.BindCollection(this.viewModel.Events);
+            this.list.BindCollection(viewModel.Events);
         }
 
         private static int GetImageIndex(EventBase e)
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
             };
         }
 
-        private static string GetInstanceName(EventBase e)
+        private static string? GetInstanceName(EventBase e)
         {
             if (e is InstanceEventBase vmEvent)
             {
@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
         protected override async Task SwitchToNodeAsync(IProjectModelNode node)
         {
             Debug.Assert(!this.InvokeRequired, "running on UI thread");
-            await this.viewModel.SwitchToModelAsync(node)
+            await this.viewModel.Value.SwitchToModelAsync(node)
                 .ConfigureAwait(true);
         }
 
@@ -178,17 +178,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog
 
         private void refreshButton_Click(object sender, EventArgs e)
         {
-            this.viewModel.Refresh();
+            this.viewModel.Value.Refresh();
         }
 
         private void openInCloudConsoleToolStripMenuItem_Click(object sender, EventArgs e)
-            => this.viewModel.OpenSelectedEventInCloudConsole();
+        {
+            this.viewModel.Value.OpenSelectedEventInCloudConsole();
+        }
 
         private void list_DoubleClick(object sender, EventArgs e)
-            => this.viewModel.OpenSelectedEventInCloudConsole();
+        {
+            this.viewModel.Value.OpenSelectedEventInCloudConsole();
+        }
 
         private void openLogsButton_Click(object sender, EventArgs e)
-            => this.viewModel.OpenInCloudConsole();
+        {
+            this.viewModel.Value.OpenInCloudConsole();
+        }
     }
 
     public class EventsListView : BindableListView<EventBase>
