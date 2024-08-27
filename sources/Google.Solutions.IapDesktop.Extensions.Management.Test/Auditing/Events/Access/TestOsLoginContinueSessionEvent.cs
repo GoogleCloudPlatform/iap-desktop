@@ -92,15 +92,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                   'receiveTimestamp': '2021-11-10T06:49:50.169748838Z'
                 }".Replace("v1", version);
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(OsLoginContinueSessionEvent.IsStartOsLoginContinueSessionEvent(r));
 
             var e = (OsLoginContinueSessionEvent)r.ToEvent();
 
             Assert.AreEqual("INFO", e.Severity);
-            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
-            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
-            Assert.AreEqual("instance-1", e.InstanceReference.Name);
+            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
+            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
+            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
             Assert.AreEqual(1234567890, e.InstanceId);
             Assert.AreEqual("bob@example.com", e.Principal);
             Assert.AreEqual("CHALLENGE_PENDING", e.ChallengeStatus);
@@ -159,15 +159,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                   'receiveTimestamp': '2021-11-10T06:54:57.097840918Z'
                 }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(OsLoginContinueSessionEvent.IsStartOsLoginContinueSessionEvent(r));
 
             var e = (OsLoginContinueSessionEvent)r.ToEvent();
 
             Assert.AreEqual("INFO", e.Severity);
-            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
-            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
-            Assert.AreEqual("instance-1", e.InstanceReference.Name);
+            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
+            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
+            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
             Assert.AreEqual("bob@example.com", e.Principal);
             Assert.AreEqual("AUTHENTICATED", e.ChallengeStatus);
             Assert.AreEqual("Continue OS Login 2FA session for bob@example.com: AUTHENTICATED", e.Message);

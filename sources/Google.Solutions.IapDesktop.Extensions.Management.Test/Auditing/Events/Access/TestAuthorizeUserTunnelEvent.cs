@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                'receiveTimestamp': '2020-09-30T09:35:39.345791898Z'
              }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
 
             var e = (AuthorizeUserTunnelEvent)r.ToEvent();
@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                'receiveTimestamp': '2020-09-30T09:35:39.345791898Z'
              }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
 
             var e = (AuthorizeUserTunnelEvent)r.ToEvent();
@@ -300,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                'receiveTimestamp': '2020-10-01T09:35:51.222201769Z'
              }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
 
             var e = (AuthorizeUserTunnelEvent)r.ToEvent();
@@ -309,7 +309,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.AreEqual("us-central1-a", e.Zone);
             Assert.AreEqual("project-1", e.ProjectId);
             Assert.AreEqual("ERROR", e.Severity);
-            Assert.AreEqual(7, e.Status.Code);
+            Assert.AreEqual(7, e.Status?.Code);
             Assert.AreEqual("3.4.5.6", e.SourceHost);
             Assert.AreEqual("gzip(gfe)", e.UserAgent);
             Assert.AreEqual("10.0.0.1", e.DestinationHost);
@@ -362,7 +362,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                'receiveTimestamp': '2020-10-01T09:35:51.222201769Z'
              }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
 
             var e = (AuthorizeUserTunnelEvent)r.ToEvent();
@@ -371,7 +371,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.AreEqual("us-central1-a", e.Zone);
             Assert.AreEqual("project-1", e.ProjectId);
             Assert.AreEqual("ERROR", e.Severity);
-            Assert.AreEqual(7, e.Status.Code);
+            Assert.AreEqual(7, e.Status?.Code);
             Assert.IsNull(e.SourceHost);
             Assert.IsNull(e.UserAgent);
             Assert.IsNull(e.DestinationHost);
@@ -447,7 +447,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                'receiveTimestamp': '2020-09-30T22:06:43.571840925Z'
              }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsFalse(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
         }
 
@@ -513,7 +513,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
               'receiveTimestamp': '2023-08-25T00:28:10.903692392Z'
             }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
 
             var e = (AuthorizeUserTunnelEvent)r.ToEvent();

@@ -67,12 +67,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                    'receiveTimestamp': '2020-03-23T10:35:11.269405964Z'
                  }";
 
-            var record = LogRecord.Deserialize(json);
+            var record = LogRecord.Deserialize(json)!;
 
             Assert.IsInstanceOf<AuditLogRecord>(record.ProtoPayload);
-            var auditLog = (AuditLogRecord)record.ProtoPayload;
+            var auditLog = (AuditLogRecord)record.ProtoPayload!;
 
-            Assert.AreEqual("system@google.com", auditLog.AuthenticationInfo.PrincipalEmail);
+            Assert.AreEqual("system@google.com", auditLog.AuthenticationInfo?.PrincipalEmail);
             Assert.AreEqual("compute.googleapis.com", auditLog.ServiceName);
             Assert.AreEqual("NotifyInstanceLocation", auditLog.MethodName);
             Assert.AreEqual("foo", auditLog.ResourceName);
@@ -115,14 +115,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                    'receiveTimestamp': '2020-03-23T10:35:11.269405964Z'
                  }";
 
-            var record = LogRecord.Deserialize(json);
+            var record = LogRecord.Deserialize(json)!;
 
             Assert.IsInstanceOf<AuditLogRecord>(record.ProtoPayload);
-            var auditLog = (AuditLogRecord)record.ProtoPayload;
+            var auditLog = (AuditLogRecord)record.ProtoPayload!;
 
             Assert.IsNotNull(auditLog.Metadata);
-            Assert.AreEqual("b67639853d26e39b79a4fb306fd7d297", auditLog.Metadata["serverId"].Value<string>());
-            Assert.AreEqual(new DateTime(2020, 3, 23, 10, 35, 9), auditLog.Metadata["timestamp"].Value<DateTime>());
+            Assert.AreEqual("b67639853d26e39b79a4fb306fd7d297", auditLog.Metadata?["serverId"]?.Value<string>());
+            Assert.AreEqual(new DateTime(2020, 3, 23, 10, 35, 9), auditLog.Metadata?["timestamp"]?.Value<DateTime>());
         }
 
         [Test]
@@ -188,14 +188,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                    'receiveTimestamp': '2020-05-11T01:26:38.791926381Z'
                  }";
 
-            var record = LogRecord.Deserialize(json);
+            var record = LogRecord.Deserialize(json)!;
 
             Assert.IsInstanceOf<AuditLogRecord>(record.ProtoPayload);
-            var auditLog = (AuditLogRecord)record.ProtoPayload;
+            var auditLog = (AuditLogRecord)record.ProtoPayload!;
 
             Assert.IsNotNull(auditLog.Request);
-            Assert.AreEqual("my-managed-group2-f3ng", auditLog.Request["name"].Value<string>());
-            Assert.AreEqual(false, auditLog.Request["canIpForward"].Value<bool>());
+            Assert.AreEqual("my-managed-group2-f3ng", auditLog.Request?["name"]?.Value<string>());
+            Assert.AreEqual(false, auditLog.Request?["canIpForward"]?.Value<bool>());
         }
 
 
@@ -263,14 +263,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                    'receiveTimestamp': '2020-05-11T01:26:38.791926381Z'
                  }";
 
-            var record = LogRecord.Deserialize(json);
+            var record = LogRecord.Deserialize(json)!;
 
             Assert.IsInstanceOf<AuditLogRecord>(record.ProtoPayload);
-            var auditLog = (AuditLogRecord)record.ProtoPayload;
+            var auditLog = (AuditLogRecord)record.ProtoPayload!;
 
             Assert.IsNotNull(auditLog.Response);
-            Assert.AreEqual("2713656233496483618", auditLog.Response["id"].Value<string>());
-            Assert.AreEqual("operation-1589", auditLog.Response["name"].Value<string>());
+            Assert.AreEqual("2713656233496483618", auditLog.Response?["id"]?.Value<string>());
+            Assert.AreEqual("operation-1589", auditLog.Response?["name"]?.Value<string>());
         }
     }
 }

@@ -76,29 +76,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 
         [JsonConstructor]
         public GuestPackages(
-            [JsonProperty("yum")] IList<Package> yumPackages,
-            [JsonProperty("rpm")] IList<Package> rpmPackages,
-            [JsonProperty("apt")] IList<Package> aptPackages,
-            [JsonProperty("deb")] IList<Package> debPackages,
-            [JsonProperty("zypper")] IList<Package> zypperPackages,
-            [JsonProperty("zypperPatches")] IList<ZypperPatch> zypperPatches,
-            [JsonProperty("gem")] IList<Package> gemPackages,
-            [JsonProperty("pip")] IList<Package> pipPackages,
-            [JsonProperty("googet")] IList<Package> googetPackages,
-            [JsonProperty("wua")] IList<WuaPackage> wuaPackages,
-            [JsonProperty("qfe")] IList<QfePackage> qfePackages)
+            [JsonProperty("yum")] IList<Package>? yumPackages,
+            [JsonProperty("rpm")] IList<Package>? rpmPackages,
+            [JsonProperty("apt")] IList<Package>? aptPackages,
+            [JsonProperty("deb")] IList<Package>? debPackages,
+            [JsonProperty("zypper")] IList<Package>? zypperPackages,
+            [JsonProperty("zypperPatches")] IList<ZypperPatch>? zypperPatches,
+            [JsonProperty("gem")] IList<Package>? gemPackages,
+            [JsonProperty("pip")] IList<Package>? pipPackages,
+            [JsonProperty("googet")] IList<Package>? googetPackages,
+            [JsonProperty("wua")] IList<WuaPackage>? wuaPackages,
+            [JsonProperty("qfe")] IList<QfePackage>? qfePackages)
         {
-            this.YumPackages = yumPackages;
-            this.RpmPackages = rpmPackages;
-            this.AptPackages = aptPackages;
-            this.DebPackages = debPackages;
-            this.ZypperPackages = zypperPackages;
-            this.ZypperPatches = zypperPatches;
-            this.GemPackages = gemPackages;
-            this.PipPackages = pipPackages;
-            this.GoogetPackages = googetPackages;
-            this.WuaPackages = wuaPackages;
-            this.QfePackages = qfePackages;
+            this.YumPackages = yumPackages ?? new List<Package>();
+            this.RpmPackages = rpmPackages ?? new List<Package>();
+            this.AptPackages = aptPackages ?? new List<Package>();
+            this.DebPackages = debPackages ?? new List<Package>();
+            this.ZypperPackages = zypperPackages ?? new List<Package>();
+            this.ZypperPatches = zypperPatches ?? new List<ZypperPatch>();
+            this.GemPackages = gemPackages ?? new List<Package>();
+            this.PipPackages = pipPackages ?? new List<Package>();
+            this.GoogetPackages = googetPackages ?? new List<Package>();
+            this.WuaPackages = wuaPackages ?? new List<WuaPackage>();
+            this.QfePackages = qfePackages ?? new List<QfePackage>();
         }
     }
 }

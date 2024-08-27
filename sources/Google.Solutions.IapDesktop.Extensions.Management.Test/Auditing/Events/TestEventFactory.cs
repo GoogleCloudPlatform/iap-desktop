@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                    'receiveTimestamp': '2020-05-11T15:56:45.021692902Z'
                  }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.Throws<ArgumentException>(() => EventFactory.FromRecord(r));
         }
     }

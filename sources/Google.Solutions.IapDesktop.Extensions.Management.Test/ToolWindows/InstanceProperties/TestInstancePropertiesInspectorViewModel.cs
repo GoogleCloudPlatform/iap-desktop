@@ -32,6 +32,7 @@ using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -50,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             gceAdapter.Setup(a => a.GetInstanceAsync(
                 It.Is((InstanceLocator loc) => loc.Name == "denied-1"),
                 It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new ResourceAccessDeniedException("mock exception", null));
+                .ThrowsAsync(new ResourceAccessDeniedException("mock exception", new Exception()));
             gceAdapter.Setup(a => a.GetInstanceAsync(
                 It.Is((InstanceLocator loc) => loc.Name == "instance-1"),
                 It.IsAny<CancellationToken>()))
@@ -67,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                 });
 
             registry.AddSingleton<IComputeEngineClient>(gceAdapter.Object);
-            registry.AddSingleton<IGuestOsInventory>(new Management.GuestOs.Inventory.GuestOsInventory(gceAdapter.Object));
+            registry.AddSingleton<IGuestOsInventory>(new GuestOsInventory(gceAdapter.Object));
 
             return new InstancePropertiesInspectorViewModel(registry);
         }

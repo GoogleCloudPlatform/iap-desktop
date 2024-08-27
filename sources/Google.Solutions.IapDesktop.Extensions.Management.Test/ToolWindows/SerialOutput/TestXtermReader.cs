@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             {
                 if (!this.enumerator.MoveNext())
                 {
-                    return Task.FromResult<T>(null);
+                    return Task.FromResult<T>(null!);
                 }
                 else
                 {

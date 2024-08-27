@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                'receiveTimestamp': '2020-05-04T13:56:27.582777461Z'
              }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsInstanceOf<UnknownEvent>(r.ToEvent());
             var e = (UnknownEvent)r.ToEvent();
 

@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             viewModel.IsTailEnabled = false;
 
             // CTS cancelled => not tailing.
-            Assert.IsTrue(tailCts.IsCancellationRequested, "tailing stopped");
+            Assert.IsTrue(tailCts!.IsCancellationRequested, "tailing stopped");
             Assert.IsNull(viewModel.TailCancellationTokenSource);
         }
 
@@ -146,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             viewModel.IsTailBlocked = true;
 
             // CTS cancelled => not tailing.
-            Assert.IsTrue(tailCts.IsCancellationRequested, "tailing stopped");
+            Assert.IsTrue(tailCts!.IsCancellationRequested, "tailing stopped");
             Assert.IsNull(viewModel.TailCancellationTokenSource);
         }
 

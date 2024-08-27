@@ -28,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
         PackageCriticality Criticality { get; }
         string PackageType { get; }
 
-        string PackageId { get; }
+        string? PackageId { get; }
         string? Description { get; }
         string? Architecture { get; }
         string? Version { get; }

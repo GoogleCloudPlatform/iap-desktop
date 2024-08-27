@@ -196,9 +196,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.AreEqual("20200709.00-g1.el6", attributes.AgentVersion);
             Assert.AreEqual(
                 new DateTime(2020, 7, 3, 9, 10, 8, DateTimeKind.Utc),
-                attributes.LastUpdated.Value.ToUniversalTime());
+                attributes.LastUpdated?.ToUniversalTime());
 
-            Assert.AreEqual(392, attributes.InstalledPackages.AllPackages.Count());
+            Assert.AreEqual(392, attributes.InstalledPackages?.AllPackages.Count());
         }
 
         [Test]
@@ -210,16 +210,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.IsNotNull(attributes.InstalledPackages);
 
             // RPM
-            Assert.AreEqual(392, attributes.InstalledPackages.RpmPackages.Count);
-            Assert.AreEqual("wireless-tools", attributes.InstalledPackages.RpmPackages[0].Name);
-            Assert.AreEqual("x86_64", attributes.InstalledPackages.RpmPackages[0].Architecture);
-            Assert.AreEqual("29-6.el6", attributes.InstalledPackages.RpmPackages[0].Version);
+            Assert.AreEqual(392, attributes.InstalledPackages?.RpmPackages.Count);
+            Assert.AreEqual("wireless-tools", attributes.InstalledPackages?.RpmPackages[0].Name);
+            Assert.AreEqual("x86_64", attributes.InstalledPackages?.RpmPackages[0].Architecture);
+            Assert.AreEqual("29-6.el6", attributes.InstalledPackages?.RpmPackages[0].Version);
 
-            Assert.AreEqual("pm-utils", attributes.InstalledPackages.RpmPackages[391].Name);
-            Assert.AreEqual("x86_64", attributes.InstalledPackages.RpmPackages[391].Architecture);
-            Assert.AreEqual("1.2.5-11.el6", attributes.InstalledPackages.RpmPackages[391].Version);
+            Assert.AreEqual("pm-utils", attributes.InstalledPackages?.RpmPackages[391].Name);
+            Assert.AreEqual("x86_64", attributes.InstalledPackages?.RpmPackages[391].Architecture);
+            Assert.AreEqual("1.2.5-11.el6", attributes.InstalledPackages?.RpmPackages[391].Version);
 
-            Assert.AreEqual(392, attributes.InstalledPackages.AllPackages.Count());
+            Assert.AreEqual(392, attributes.InstalledPackages?.AllPackages.Count());
         }
 
         [Test]
@@ -231,20 +231,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.IsNotNull(attributes.AvailablePackages);
 
             // Yum
-            Assert.AreEqual(3, attributes.AvailablePackages.YumPackages.Count);
-            Assert.AreEqual("kernel", attributes.AvailablePackages.YumPackages[0].Name);
-            Assert.AreEqual("x86_64", attributes.AvailablePackages.YumPackages[0].Architecture);
-            Assert.AreEqual("2.6.32-754.31.1.el6", attributes.AvailablePackages.YumPackages[0].Version);
+            Assert.AreEqual(3, attributes.AvailablePackages?.YumPackages.Count);
+            Assert.AreEqual("kernel", attributes.AvailablePackages?.YumPackages[0].Name);
+            Assert.AreEqual("x86_64", attributes.AvailablePackages?.YumPackages[0].Architecture);
+            Assert.AreEqual("2.6.32-754.31.1.el6", attributes.AvailablePackages?.YumPackages[0].Version);
 
-            Assert.AreEqual("google-osconfig-agent", attributes.AvailablePackages.YumPackages[1].Name);
-            Assert.AreEqual("x86_64", attributes.AvailablePackages.YumPackages[1].Architecture);
-            Assert.AreEqual("1:20200723.01-g1.el6", attributes.AvailablePackages.YumPackages[1].Version);
+            Assert.AreEqual("google-osconfig-agent", attributes.AvailablePackages?.YumPackages[1].Name);
+            Assert.AreEqual("x86_64", attributes.AvailablePackages?.YumPackages[1].Architecture);
+            Assert.AreEqual("1:20200723.01-g1.el6", attributes.AvailablePackages?.YumPackages[1].Version);
 
-            Assert.AreEqual("kernel-firmware", attributes.AvailablePackages.YumPackages[2].Name);
-            Assert.AreEqual("all", attributes.AvailablePackages.YumPackages[2].Architecture);
-            Assert.AreEqual("2.6.32-754.31.1.el6", attributes.AvailablePackages.YumPackages[2].Version);
+            Assert.AreEqual("kernel-firmware", attributes.AvailablePackages?.YumPackages[2].Name);
+            Assert.AreEqual("all", attributes.AvailablePackages?.YumPackages[2].Architecture);
+            Assert.AreEqual("2.6.32-754.31.1.el6", attributes.AvailablePackages?.YumPackages[2].Version);
 
-            Assert.AreEqual(392, attributes.InstalledPackages.AllPackages.Count());
+            Assert.AreEqual(392, attributes.InstalledPackages?.AllPackages.Count());
         }
     }
 }

@@ -50,8 +50,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             var type = WuaPackageType.FromCategoryId(
                 "cd5ffd1e-e932-4e3a-bf74-18bf0b1bbd83");
 
-            Assert.AreEqual("Updates", type.Name);
-            Assert.AreEqual(PackageCriticality.NonCritical, type.Criticality);
+            Assert.AreEqual("Updates", type?.Name);
+            Assert.AreEqual(PackageCriticality.NonCritical, type?.Criticality);
         }
 
         [Test]

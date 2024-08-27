@@ -29,19 +29,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
     public class Package : IPackage
     {
         [JsonProperty("Name")]
-        public string Name { get; }
+        public string? Name { get; }
 
         [JsonProperty("Arch")]
-        public string Architecture { get; }
+        public string? Architecture { get; }
 
         [JsonProperty("Version")]
-        public string Version { get; }
+        public string? Version { get; }
 
         //---------------------------------------------------------------------
         // IPackage
         //---------------------------------------------------------------------
 
-        string IPackage.PackageId => this.Name;
+        string? IPackage.PackageId => this.Name;
 
         string? IPackage.Description => null;
 
@@ -61,9 +61,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 
         [JsonConstructor]
         public Package(
-            [JsonProperty("Name")] string name,
-            [JsonProperty("Arch")] string arch,
-            [JsonProperty("Version")] string version)
+            [JsonProperty("Name")] string? name,
+            [JsonProperty("Arch")] string? arch,
+            [JsonProperty("Version")] string? version)
         {
             this.Name = name;
             this.Architecture = arch;

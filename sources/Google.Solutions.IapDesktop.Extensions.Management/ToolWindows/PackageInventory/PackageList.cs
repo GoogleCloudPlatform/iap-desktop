@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageI
 
             this.List.BindImageIndex(m => (int)m.Package.Criticality);
             this.List.BindColumn(0, m => m.Package.PackageType);
-            this.List.BindColumn(1, m => m.Package.PackageId);
+            this.List.BindColumn(1, m => m.Package.PackageId ?? string.Empty);
             this.List.BindColumn(2, m => m.Package.Version ?? string.Empty);
             this.List.BindColumn(3, m => m.Package.Architecture ?? string.Empty);
             this.List.BindColumn(4, m => m.Instance.Name);
