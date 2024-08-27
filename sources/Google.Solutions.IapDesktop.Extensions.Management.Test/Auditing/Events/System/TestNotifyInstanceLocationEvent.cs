@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             var e = (NotifyInstanceLocationEvent)r.ToEvent();
 
             Assert.AreEqual(7045222222254025, e.InstanceId);
-            Assert.IsNull(e.InstanceReference);
+            Assert.IsNull(e.Instance);
             Assert.AreEqual("INFO", e.Severity);
             Assert.IsNull(e.Status);
             Assert.AreEqual("4aaaa7b32a208e7ccb4ee62acedee725", e.ServerId);
@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             var e = (NotifyInstanceLocationEvent)r.ToEvent();
 
             Assert.AreEqual(7045222222254025, e.InstanceId);
-            Assert.IsNull(e.InstanceReference);
+            Assert.IsNull(e.Instance);
             Assert.AreEqual("INFO", e.Severity);
             Assert.IsNull(e.Status);
             Assert.AreEqual("4aaaa7b32a208e7ccb4ee62acedee725", e.ServerId);
@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             var e = (NotifyInstanceLocationEvent)r.ToEvent();
 
             Assert.AreEqual(7045222222254025, e.InstanceId);
-            Assert.IsNull(e.InstanceReference);
+            Assert.IsNull(e.Instance);
             Assert.AreEqual("INFO", e.Severity);
             Assert.IsNull(e.Status);
             Assert.AreEqual("4aaaa7b32a208e7ccb4ee62acedee725", e.ServerId);

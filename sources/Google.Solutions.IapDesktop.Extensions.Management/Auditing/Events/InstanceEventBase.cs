@@ -27,7 +27,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
 {
     public abstract class InstanceEventBase : EventBase
     {
-        public InstanceLocator? InstanceReference
+        public InstanceLocator? Instance
         {
             get
             {
