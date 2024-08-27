@@ -259,7 +259,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                 attributes.AvailablePackages?.WuaPackages?[0]?.LastDeploymentChangeTime?.ToUniversalTime());
 
             // Qfe
-            Assert.IsNull(attributes.AvailablePackages?.QfePackages);
+            Assert.IsFalse(attributes.AvailablePackages?.QfePackages.Any());
 
             Assert.AreEqual(34, attributes.InstalledPackages?.AllPackages.Count());
         }
