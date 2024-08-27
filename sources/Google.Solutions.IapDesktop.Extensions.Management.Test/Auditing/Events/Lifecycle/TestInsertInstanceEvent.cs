@@ -162,15 +162,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }
              ";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(InsertInstanceEvent.IsInsertInstanceEvent(r));
 
             var e = (InsertInstanceEvent)r.ToEvent();
 
             Assert.AreEqual(11111111631960822, e.InstanceId);
-            Assert.AreEqual("instance-1", e.InstanceReference.Name);
-            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
-            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
+            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
+            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
             Assert.AreEqual("NOTICE", e.Severity);
             Assert.IsNull(e.Status);
             Assert.AreEqual(
@@ -224,18 +224,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 'receiveTimestamp': '2020-04-24T08:13:40.134230447Z'
                 }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(InsertInstanceEvent.IsInsertInstanceEvent(r));
 
             var e = (InsertInstanceEvent)r.ToEvent();
 
             Assert.AreEqual(11111111631960822, e.InstanceId);
-            Assert.AreEqual("instance-1", e.InstanceReference.Name);
-            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
-            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
+            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
+            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
             Assert.AreEqual("ERROR", e.Severity);
-            Assert.AreEqual(3, e.Status.Code);
-            Assert.AreEqual("INVALID_ARGUMENT", e.Status.Message);
+            Assert.AreEqual(3, e.Status?.Code);
+            Assert.AreEqual("INVALID_ARGUMENT", e.Status?.Message);
             Assert.AreEqual(
                 new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                 e.InstanceReference);

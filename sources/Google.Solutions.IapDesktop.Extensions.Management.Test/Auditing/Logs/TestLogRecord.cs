@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                    'receiveTimestamp': '2020-03-23T10:35:11.269405964Z'
                  }";
 
-            var record = LogRecord.Deserialize(json);
+            var record = LogRecord.Deserialize(json)!;
 
             Assert.AreEqual("kj1zbe4j2eg", record.InsertId);
             Assert.AreEqual("projects/project-1/logs/cloudaudit.googleapis.com%2Fsystem_event", record.LogName);
@@ -73,10 +73,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
             Assert.AreEqual(new DateTime(2020, 3, 23, 10, 35, 10), record.Timestamp);
 
             Assert.IsNotNull(record.Resource);
-            Assert.AreEqual("gce_instance", record.Resource.Type);
-            Assert.AreEqual("project-1", record.Resource.Labels["project_id"]);
-            Assert.AreEqual("22470777052", record.Resource.Labels["instance_id"]);
-            Assert.AreEqual("asia-east1-c", record.Resource.Labels["zone"]);
+            Assert.AreEqual("gce_instance", record.Resource?.Type);
+            Assert.AreEqual("project-1", record.Resource?.Labels?["project_id"]);
+            Assert.AreEqual("22470777052", record.Resource?.Labels?["instance_id"]);
+            Assert.AreEqual("asia-east1-c", record.Resource?.Labels?["zone"]);
 
             Assert.IsNull(record.Operation);
 
@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                    'receiveTimestamp': '2020-05-11T01:26:38.791926381Z'
                  }";
 
-            var record = LogRecord.Deserialize(json);
+            var record = LogRecord.Deserialize(json)!;
 
             Assert.AreEqual("-oyhqund58si", record.InsertId);
             Assert.AreEqual("projects/project-1/logs/cloudaudit.googleapis.com%2Factivity", record.LogName);
@@ -156,14 +156,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
             Assert.AreEqual(new DateTime(2020, 5, 11, 1, 26, 36, 738), record.Timestamp);
 
             Assert.IsNotNull(record.Resource);
-            Assert.AreEqual("gce_instance", record.Resource.Type);
-            Assert.AreEqual("project-1", record.Resource.Labels["project_id"]);
-            Assert.AreEqual("16752163", record.Resource.Labels["instance_id"]);
-            Assert.AreEqual("us-central1-b", record.Resource.Labels["zone"]);
+            Assert.AreEqual("gce_instance", record.Resource?.Type);
+            Assert.AreEqual("project-1", record.Resource?.Labels?["project_id"]);
+            Assert.AreEqual("16752163", record.Resource?.Labels?["instance_id"]);
+            Assert.AreEqual("us-central1-b", record.Resource?.Labels?["zone"]);
 
-            Assert.AreEqual("operation-1589160396842-5a5553cf1e7c8-796d6bb5-473f0464", record.Operation.Id);
-            Assert.IsTrue(record.Operation.IsFirst);
-            Assert.IsFalse(record.Operation.IsLast);
+            Assert.AreEqual("operation-1589160396842-5a5553cf1e7c8-796d6bb5-473f0464", record.Operation?.Id);
+            Assert.IsTrue(record.Operation?.IsFirst);
+            Assert.IsFalse(record.Operation?.IsLast);
 
             Assert.AreEqual("project-1", record.ProjectId);
             Assert.IsFalse(record.IsSystemEvent);
@@ -217,12 +217,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                 }
             ";
 
-            var record = LogRecord.Deserialize(json);
+            var record = LogRecord.Deserialize(json)!;
 
             Assert.AreEqual("-vwncp9d6006", record.InsertId);
 
-            Assert.IsFalse(record.Operation.IsFirst);
-            Assert.IsTrue(record.Operation.IsLast);
+            Assert.IsFalse(record.Operation?.IsFirst);
+            Assert.IsTrue(record.Operation?.IsLast);
 
             Assert.AreEqual("project-1", record.ProjectId);
             Assert.IsFalse(record.IsSystemEvent);

@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.AreEqual("title", package.PackageId);
             Assert.AreEqual("description", package.Description);
             Assert.AreEqual("42", package.Version);
-            Assert.AreEqual("http://microsoft.com/", package.Weblink.ToString());
+            Assert.AreEqual("http://microsoft.com/", package.Weblink?.ToString());
             Assert.AreEqual(new DateTime(2020, 1, 2, 3, 4, 5, DateTimeKind.Utc), package.PublishedOn);
             Assert.IsNull(package.InstalledOn);
             Assert.AreEqual(PackageCriticality.NonCritical, package.Criticality);

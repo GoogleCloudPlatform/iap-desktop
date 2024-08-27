@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }
               ";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r));
 
             var e = (SetCommonInstanceMetadataEvent)r.ToEvent();
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                   'receiveTimestamp': '2021-03-24T09:59:47.688249630Z'
                 }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r));
 
             var e = (SetCommonInstanceMetadataEvent)r.ToEvent();
@@ -214,7 +214,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                   'receiveTimestamp': '2021-03-24T09:59:47.688249630Z'
                 }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r));
 
             var e = (SetCommonInstanceMetadataEvent)r.ToEvent();
@@ -300,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                   'receiveTimestamp': '2021-03-11T15:33:35.703168353Z'
                 }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r));
 
             var e = (SetCommonInstanceMetadataEvent)r.ToEvent();
@@ -308,8 +308,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.AreEqual("user@example.com", e.Principal);
             Assert.AreEqual("project-1", e.ProjectId);
             Assert.AreEqual("ERROR", e.Severity);
-            Assert.AreEqual(7, e.Status.Code);
-            Assert.AreEqual("Required iam.serviceAccounts.actAs permission for projects/project-1", e.Status.Message);
+            Assert.AreEqual(7, e.Status?.Code);
+            Assert.AreEqual("Required iam.serviceAccounts.actAs permission for projects/project-1", e.Status?.Message);
 
             Assert.AreEqual("1.2.3.4", e.SourceHost);
             Assert.AreEqual("IAP-Desktop/1.1", e.UserAgent);

@@ -34,10 +34,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
     public class WuaPackage : IPackage
     {
         [JsonProperty("Title")]
-        public string Title { get; }
+        public string? Title { get; }
 
         [JsonProperty("Description")]
-        public string Description { get; }
+        public string? Description { get; }
 
         [JsonProperty("Categories")]
         public IList<string> Categories { get; }
@@ -49,10 +49,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
         public IList<string> KBArticleIDs { get; }
 
         [JsonProperty("SupportURL")]
-        public string SupportURL { get; }
+        public string? SupportURL { get; }
 
         [JsonProperty("UpdateID")]
-        public string UpdateID { get; }
+        public string? UpdateID { get; }
 
         [JsonProperty("RevisionNumber")]
         public int RevisionNumber { get; }
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
         // IPackage
         //---------------------------------------------------------------------
 
-        string IPackage.PackageId => this.Title;
+        string? IPackage.PackageId => this.Title;
 
         string? IPackage.Architecture => null;
 
@@ -92,24 +92,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 
         [JsonConstructor]
         public WuaPackage(
-            [JsonProperty("Title")] string title,
-            [JsonProperty("Description")] string description,
-            [JsonProperty("Categories")] IList<string> categories,
-            [JsonProperty("CategoryIDs")] IList<string> categoryIDs,
-            [JsonProperty("KBArticleIDs")] IList<string> kbArticleIDs,
-            [JsonProperty("SupportURL")] string supportURL,
-            [JsonProperty("UpdateID")] string updateID,
-            [JsonProperty("RevisionNumber")] int revisionNumber,
+            [JsonProperty("Title")] string? title,
+            [JsonProperty("Description")] string? description,
+            [JsonProperty("Categories")] IList<string>? categories,
+            [JsonProperty("CategoryIDs")] IList<string>? categoryIDs,
+            [JsonProperty("KBArticleIDs")] IList<string>? kbArticleIDs,
+            [JsonProperty("SupportURL")] string? supportURL,
+            [JsonProperty("UpdateID")] string? updateID,
+            [JsonProperty("RevisionNumber")] int? revisionNumber,
             [JsonProperty("LastDeploymentChangeTime")] DateTime? lastDeploymentChangeTime)
         {
             this.Title = title;
             this.Description = description;
-            this.Categories = categories;
-            this.CategoryIDs = categoryIDs;
-            this.KBArticleIDs = kbArticleIDs;
+            this.Categories = categories ?? new List<string>();
+            this.CategoryIDs = categoryIDs ?? new List<string>();
+            this.KBArticleIDs = kbArticleIDs ?? new List<string>();
             this.SupportURL = supportURL;
             this.UpdateID = updateID;
-            this.RevisionNumber = revisionNumber;
+            this.RevisionNumber = revisionNumber ?? 0;
             this.LastDeploymentChangeTime = lastDeploymentChangeTime;
         }
     }

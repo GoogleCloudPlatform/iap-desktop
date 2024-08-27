@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.AreEqual("20200402.01", attributes.AgentVersion);
             Assert.AreEqual(
                 new DateTime(2020, 7, 3, 9, 10, 8, DateTimeKind.Utc),
-                attributes.LastUpdated.Value.ToUniversalTime());
+                attributes.LastUpdated?.ToUniversalTime());
         }
 
         [Test]
@@ -179,44 +179,46 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.IsNotNull(attributes.InstalledPackages);
 
             // Googet
-            Assert.AreEqual(16, attributes.InstalledPackages.GoogetPackages.Count);
-            Assert.AreEqual("certgen", attributes.InstalledPackages.GoogetPackages[0].Name);
-            Assert.AreEqual("x86_64", attributes.InstalledPackages.GoogetPackages[0].Architecture);
-            Assert.AreEqual("1.1.0@1", attributes.InstalledPackages.GoogetPackages[0].Version);
+            Assert.AreEqual(16, attributes.InstalledPackages?.GoogetPackages.Count);
+            Assert.AreEqual("certgen", attributes.InstalledPackages?.GoogetPackages[0].Name);
+            Assert.AreEqual("x86_64", attributes.InstalledPackages?.GoogetPackages[0].Architecture);
+            Assert.AreEqual("1.1.0@1", attributes.InstalledPackages?.GoogetPackages[0].Version);
 
             // Wua
-            Assert.AreEqual(8, attributes.InstalledPackages.WuaPackages.Count);
+            Assert.AreEqual(8, attributes.InstalledPackages?.WuaPackages.Count);
             Assert.AreEqual(
                 "Update for Windows Defender Antivirus antimalware platform - KB4052623 (Version 4.18.2001.10)",
-                attributes.InstalledPackages.WuaPackages[0].Title);
+                attributes.InstalledPackages?.WuaPackages[0].Title);
             Assert.AreEqual(
                 "This package will update Windows Defender Antivirus antimalware platform’s components on the user machine.",
-                attributes.InstalledPackages.WuaPackages[0].Description);
-            Assert.AreEqual(2, attributes.InstalledPackages.WuaPackages[0].Categories.Count);
-            Assert.AreEqual("Microsoft Defender Antivirus", attributes.InstalledPackages.WuaPackages[0].Categories[0]);
-            Assert.AreEqual("Updates", attributes.InstalledPackages.WuaPackages[0].Categories[1]);
-            Assert.AreEqual(2, attributes.InstalledPackages.WuaPackages[0].CategoryIDs.Count);
-            Assert.AreEqual("8c3fcc84-7410-4a95-8b89-a166a0190486", attributes.InstalledPackages.WuaPackages[0].CategoryIDs[0]);
-            Assert.AreEqual("cd5ffd1e-e932-4e3a-bf74-18bf0b1bbd83", attributes.InstalledPackages.WuaPackages[0].CategoryIDs[1]);
-            Assert.AreEqual(1, attributes.InstalledPackages.WuaPackages[0].KBArticleIDs.Count);
-            Assert.AreEqual("4052623", attributes.InstalledPackages.WuaPackages[0].KBArticleIDs[0]);
-            Assert.AreEqual("https://go.microsoft.com/fwlink/?linkid=862339", attributes.InstalledPackages.WuaPackages[0].SupportURL);
-            Assert.AreEqual("c01629fc-64ea-45f3-b7cb-cabc7d566933", attributes.InstalledPackages.WuaPackages[0].UpdateID);
-            Assert.AreEqual(200, attributes.InstalledPackages.WuaPackages[0].RevisionNumber);
+                attributes.InstalledPackages?.WuaPackages[0].Description);
+            Assert.AreEqual(2, attributes.InstalledPackages?.WuaPackages[0].Categories.Count);
+            Assert.AreEqual("Microsoft Defender Antivirus", attributes.InstalledPackages?.WuaPackages[0].Categories[0]);
+            Assert.AreEqual("Updates", attributes.InstalledPackages?.WuaPackages[0].Categories[1]);
+            Assert.AreEqual(2, attributes.InstalledPackages?.WuaPackages[0].CategoryIDs.Count);
+            Assert.AreEqual("8c3fcc84-7410-4a95-8b89-a166a0190486", attributes.InstalledPackages?.WuaPackages[0].CategoryIDs[0]);
+            Assert.AreEqual("cd5ffd1e-e932-4e3a-bf74-18bf0b1bbd83", attributes.InstalledPackages?.WuaPackages[0].CategoryIDs[1]);
+            Assert.AreEqual(1, attributes.InstalledPackages?.WuaPackages[0].KBArticleIDs.Count);
+            Assert.AreEqual("4052623", attributes.InstalledPackages?.WuaPackages[0].KBArticleIDs[0]);
+            Assert.AreEqual("https://go.microsoft.com/fwlink/?linkid=862339", attributes.InstalledPackages?.WuaPackages[0].SupportURL);
+            Assert.AreEqual("c01629fc-64ea-45f3-b7cb-cabc7d566933", attributes.InstalledPackages?.WuaPackages[0].UpdateID);
+            Assert.AreEqual(200, attributes.InstalledPackages?.WuaPackages[0].RevisionNumber);
             Assert.AreEqual(
                 new DateTime(2020, 5, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                attributes.InstalledPackages.WuaPackages[0].LastDeploymentChangeTime.Value.ToUniversalTime());
+                attributes.InstalledPackages?.WuaPackages?[0]?.LastDeploymentChangeTime?.ToUniversalTime());
 
             // Qfe
-            Assert.AreEqual(10, attributes.InstalledPackages.QfePackages.Count);
-            Assert.AreEqual("http://support.microsoft.com/?kbid=4552930", attributes.InstalledPackages.QfePackages[0].Caption);
-            Assert.AreEqual("Update", attributes.InstalledPackages.QfePackages[0].Description);
-            Assert.AreEqual("KB4552930", attributes.InstalledPackages.QfePackages[0].HotFixID);
+            Assert.AreEqual(10, attributes.InstalledPackages?.QfePackages.Count);
+            Assert.AreEqual(
+                "http://support.microsoft.com/?kbid=4552930", 
+                attributes.InstalledPackages?.QfePackages?[0].Caption);
+            Assert.AreEqual("Update", attributes.InstalledPackages?.QfePackages[0].Description);
+            Assert.AreEqual("KB4552930", attributes.InstalledPackages?.QfePackages[0].HotFixID);
             Assert.AreEqual(
                 new DateTime(2020, 5, 14, 0, 0, 0, 0, DateTimeKind.Utc),
-                attributes.InstalledPackages.QfePackages[0].InstalledOn.Value.ToUniversalTime());
+                attributes.InstalledPackages?.QfePackages?[0]?.InstalledOn?.ToUniversalTime());
 
-            Assert.AreEqual(34, attributes.InstalledPackages.AllPackages.Count());
+            Assert.AreEqual(34, attributes.InstalledPackages?.AllPackages.Count());
         }
 
         [Test]
@@ -228,38 +230,38 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.IsNotNull(attributes.AvailablePackages);
 
             // Googet
-            Assert.AreEqual(1, attributes.AvailablePackages.GoogetPackages.Count);
-            Assert.AreEqual("google-osconfig-agent", attributes.AvailablePackages.GoogetPackages[0].Name);
-            Assert.AreEqual("x86_64", attributes.AvailablePackages.GoogetPackages[0].Architecture);
-            Assert.AreEqual("20200619.00.0@1", attributes.AvailablePackages.GoogetPackages[0].Version);
+            Assert.AreEqual(1, attributes.AvailablePackages?.GoogetPackages.Count);
+            Assert.AreEqual("google-osconfig-agent", attributes.AvailablePackages?.GoogetPackages[0].Name);
+            Assert.AreEqual("x86_64", attributes.AvailablePackages?.GoogetPackages[0].Architecture);
+            Assert.AreEqual("20200619.00.0@1", attributes.AvailablePackages?.GoogetPackages[0].Version);
 
             // Wua
-            Assert.AreEqual(1, attributes.AvailablePackages.WuaPackages.Count);
+            Assert.AreEqual(1, attributes.AvailablePackages?.WuaPackages.Count);
             Assert.AreEqual(
                 "Security Intelligence Update for Microsoft Defender Antivirus - KB2267602 (Version 1.319.701.0)",
-                attributes.AvailablePackages.WuaPackages[0].Title);
+                attributes.AvailablePackages?.WuaPackages[0].Title);
             Assert.AreEqual(
                 "Install this update to revise the files that are used to detect viruses, spyware, and other potentially unwanted software. Once you have installed this item, it cannot be removed.",
-                attributes.AvailablePackages.WuaPackages[0].Description);
-            Assert.AreEqual(2, attributes.AvailablePackages.WuaPackages[0].Categories.Count);
-            Assert.AreEqual("Definition Updates", attributes.AvailablePackages.WuaPackages[0].Categories[0]);
-            Assert.AreEqual("Microsoft Defender Antivirus", attributes.AvailablePackages.WuaPackages[0].Categories[1]);
-            Assert.AreEqual(2, attributes.AvailablePackages.WuaPackages[0].CategoryIDs.Count);
-            Assert.AreEqual("e0789628-ce08-4437-be74-2495b842f43b", attributes.AvailablePackages.WuaPackages[0].CategoryIDs[0]);
-            Assert.AreEqual("8c3fcc84-7410-4a95-8b89-a166a0190486", attributes.AvailablePackages.WuaPackages[0].CategoryIDs[1]);
-            Assert.AreEqual(1, attributes.AvailablePackages.WuaPackages[0].KBArticleIDs.Count);
-            Assert.AreEqual("2267602", attributes.AvailablePackages.WuaPackages[0].KBArticleIDs[0]);
-            Assert.AreEqual("https://go.microsoft.com/fwlink/?LinkId=52661", attributes.AvailablePackages.WuaPackages[0].SupportURL);
-            Assert.AreEqual("5ee77da1-660e-404c-b075-cc955a64549b", attributes.AvailablePackages.WuaPackages[0].UpdateID);
-            Assert.AreEqual(200, attributes.AvailablePackages.WuaPackages[0].RevisionNumber);
+                attributes.AvailablePackages?.WuaPackages[0].Description);
+            Assert.AreEqual(2, attributes.AvailablePackages?.WuaPackages[0].Categories.Count);
+            Assert.AreEqual("Definition Updates", attributes.AvailablePackages?.WuaPackages[0].Categories[0]);
+            Assert.AreEqual("Microsoft Defender Antivirus", attributes.AvailablePackages?.WuaPackages[0].Categories[1]);
+            Assert.AreEqual(2, attributes.AvailablePackages?.WuaPackages[0].CategoryIDs.Count);
+            Assert.AreEqual("e0789628-ce08-4437-be74-2495b842f43b", attributes.AvailablePackages?.WuaPackages[0].CategoryIDs[0]);
+            Assert.AreEqual("8c3fcc84-7410-4a95-8b89-a166a0190486", attributes.AvailablePackages?.WuaPackages[0].CategoryIDs[1]);
+            Assert.AreEqual(1, attributes.AvailablePackages?.WuaPackages[0].KBArticleIDs.Count);
+            Assert.AreEqual("2267602", attributes.AvailablePackages?.WuaPackages[0].KBArticleIDs[0]);
+            Assert.AreEqual("https://go.microsoft.com/fwlink/?LinkId=52661", attributes.AvailablePackages?.WuaPackages[0].SupportURL);
+            Assert.AreEqual("5ee77da1-660e-404c-b075-cc955a64549b", attributes.AvailablePackages?.WuaPackages[0].UpdateID);
+            Assert.AreEqual(200, attributes.AvailablePackages?.WuaPackages[0].RevisionNumber);
             Assert.AreEqual(
                 new DateTime(2020, 7, 3, 0, 0, 0, 0, DateTimeKind.Utc),
-                attributes.AvailablePackages.WuaPackages[0].LastDeploymentChangeTime.Value.ToUniversalTime());
+                attributes.AvailablePackages?.WuaPackages?[0]?.LastDeploymentChangeTime?.ToUniversalTime());
 
             // Qfe
-            Assert.IsNull(attributes.AvailablePackages.QfePackages);
+            Assert.IsNull(attributes.AvailablePackages?.QfePackages);
 
-            Assert.AreEqual(34, attributes.InstalledPackages.AllPackages.Count());
+            Assert.AreEqual(34, attributes.InstalledPackages?.AllPackages.Count());
         }
     }
 }

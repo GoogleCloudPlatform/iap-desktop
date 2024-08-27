@@ -86,15 +86,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                   'receiveTimestamp': '2021-11-10T06:54:57.478165572Z'
                 }".Replace("v1", version);
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r));
 
             var e = (OsLoginCheckPolicyEvent)r.ToEvent();
 
             Assert.AreEqual("INFO", e.Severity);
-            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
-            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
-            Assert.AreEqual("instance-1", e.InstanceReference.Name);
+            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
+            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
+            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
             Assert.AreEqual(1234567890, e.InstanceId);
             Assert.AreEqual("bob@example.com", e.Principal);
             Assert.IsTrue(e.IsSuccess);
@@ -152,12 +152,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                   'receiveTimestamp': '2021-11-10T06:54:57.478165572Z'
                 }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r));
 
             var e = (OsLoginCheckPolicyEvent)r.ToEvent();
 
-            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
+            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
             Assert.AreEqual(0, e.InstanceId);
         }
 
@@ -212,15 +212,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                   'receiveTimestamp': '2021-11-10T07:27:24.463212211Z'
                 }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r));
 
             var e = (OsLoginCheckPolicyEvent)r.ToEvent();
 
             Assert.AreEqual("INFO", e.Severity);
-            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
-            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
-            Assert.AreEqual("instance-1", e.InstanceReference.Name);
+            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
+            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
+            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
             Assert.AreEqual(1234567890, e.InstanceId);
             Assert.AreEqual("bob@example.com", e.Principal);
             Assert.IsFalse(e.IsSuccess);
@@ -284,15 +284,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                   'receiveTimestamp': '2021-11-10T07:27:24.463212211Z'
                 }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r));
 
             var e = (OsLoginCheckPolicyEvent)r.ToEvent();
 
             Assert.AreEqual("INFO", e.Severity);
-            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
-            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
-            Assert.AreEqual("instance-1", e.InstanceReference.Name);
+            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
+            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
+            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
             Assert.AreEqual(1234567890, e.InstanceId);
             Assert.AreEqual("bob@example.com", e.Principal);
             Assert.IsFalse(e.IsSuccess);

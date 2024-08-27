@@ -79,15 +79,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                'receiveTimestamp': '2020-05-04T02:07:41.604695630Z'
              }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(DeleteInstanceEvent.IsDeleteInstanceEvent(r));
 
             var e = (DeleteInstanceEvent)r.ToEvent();
 
             Assert.AreEqual(3771111960822, e.InstanceId);
-            Assert.AreEqual("instance-1", e.InstanceReference.Name);
-            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
-            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
+            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
+            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
             Assert.AreEqual("NOTICE", e.Severity);
             Assert.IsNull(e.Status);
             Assert.AreEqual(
@@ -141,18 +141,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                    'receiveTimestamp': '2020-05-04T15:53:42.026014229Z'
                  }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(DeleteInstanceEvent.IsDeleteInstanceEvent(r));
 
             var e = (DeleteInstanceEvent)r.ToEvent();
 
             Assert.AreEqual(3771111960822, e.InstanceId);
-            Assert.AreEqual("instance-1", e.InstanceReference.Name);
-            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
-            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
+            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
+            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
             Assert.AreEqual("ERROR", e.Severity);
-            Assert.AreEqual(5, e.Status.Code);
-            Assert.AreEqual("NOT_FOUND", e.Status.Message);
+            Assert.AreEqual(5, e.Status?.Code);
+            Assert.AreEqual("NOT_FOUND", e.Status?.Message);
             Assert.AreEqual(
                 new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                 e.InstanceReference);

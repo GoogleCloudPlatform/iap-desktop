@@ -29,13 +29,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
     public class QfePackage : IPackage
     {
         [JsonProperty("Caption")]
-        public string Caption { get; }
+        public string? Caption { get; }
 
         [JsonProperty("Description")]
-        public string Description { get; }
+        public string? Description { get; }
 
         [JsonProperty("HotFixID")]
-        public string HotFixID { get; }
+        public string? HotFixID { get; }
 
         [JsonProperty("InstalledOn")]
         public DateTime? InstalledOn { get; }
@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
         // IPackage
         //---------------------------------------------------------------------
 
-        string IPackage.PackageId => this.HotFixID;
+        string? IPackage.PackageId => this.HotFixID;
 
         string? IPackage.Architecture => null;
 
@@ -79,9 +79,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 
         [JsonConstructor]
         public QfePackage(
-            [JsonProperty("Caption")] string caption,
-            [JsonProperty("Description")] string description,
-            [JsonProperty("HotFixID")] string hotFixID,
+            [JsonProperty("Caption")] string? caption,
+            [JsonProperty("Description")] string? description,
+            [JsonProperty("HotFixID")] string? hotFixID,
             [JsonProperty("InstalledOn")] DateTime? installedOn)
         {
             this.Caption = caption;

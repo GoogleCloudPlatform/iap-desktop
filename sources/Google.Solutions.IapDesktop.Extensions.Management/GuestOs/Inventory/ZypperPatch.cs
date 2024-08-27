@@ -29,23 +29,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
     public class ZypperPatch : IPackage
     {
         [JsonProperty("Name")]
-        public string Name { get; }
+        public string? Name { get; }
 
         [JsonProperty("Category")]
-        public string Category { get; }
+        public string? Category { get; }
 
         [JsonProperty("Severity")]
-        public string Severity { get; }
+        public string? Severity { get; }
 
         [JsonProperty("Summary ")]
-        public string Summary { get; }
+        public string? Summary { get; }
 
 
         //---------------------------------------------------------------------
         // IPackage
         //---------------------------------------------------------------------
 
-        string IPackage.PackageId => this.Name;
+        string? IPackage.PackageId => this.Name;
 
         string? IPackage.Architecture => null;
 
@@ -69,10 +69,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
 
         [JsonConstructor]
         public ZypperPatch(
-            [JsonProperty("Name")] string name,
-            [JsonProperty("Category")] string category,
-            [JsonProperty("Severity")] string severity,
-            [JsonProperty("Summary")] string summary)
+            [JsonProperty("Name")] string? name,
+            [JsonProperty("Category")] string? category,
+            [JsonProperty("Severity")] string? severity,
+            [JsonProperty("Summary")] string? summary)
         {
             this.Name = name;
             this.Category = category;

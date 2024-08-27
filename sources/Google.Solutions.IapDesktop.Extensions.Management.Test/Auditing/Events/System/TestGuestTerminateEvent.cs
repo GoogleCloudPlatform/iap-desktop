@@ -73,15 +73,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                    'receiveTimestamp': '2020-05-06T17:39:35.248673021Z'
                  }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(GuestTerminateEvent.IsGuestTerminateEvent(r));
 
             var e = (GuestTerminateEvent)r.ToEvent();
 
             Assert.AreEqual(2162224123123123213, e.InstanceId);
-            Assert.AreEqual("instance-1", e.InstanceReference.Name);
-            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
-            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
+            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
+            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
             Assert.AreEqual("INFO", e.Severity);
             Assert.IsNull(e.Status);
             Assert.AreEqual(

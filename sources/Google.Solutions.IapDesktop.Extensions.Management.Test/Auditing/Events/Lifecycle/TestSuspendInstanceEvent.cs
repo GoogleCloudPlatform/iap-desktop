@@ -69,15 +69,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                'receiveTimestamp': '2020-06-18T07:50:52.551069316Z'
              }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(SuspendInstanceEvent.IsSuspendInstanceEvent(r));
 
             var e = (SuspendInstanceEvent)r.ToEvent();
 
             Assert.AreEqual(1111111245427925863, e.InstanceId);
-            Assert.AreEqual("instance-1", e.InstanceReference.Name);
-            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
-            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
+            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
+            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
             Assert.AreEqual("NOTICE", e.Severity);
             Assert.IsNull(e.Status);
             Assert.AreEqual(
@@ -123,15 +123,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                'receiveTimestamp': '2020-06-18T07:50:52.551069316Z'
              }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(SuspendInstanceEvent.IsSuspendInstanceEvent(r));
 
             var e = (SuspendInstanceEvent)r.ToEvent();
 
             Assert.AreEqual(1111111245427925863, e.InstanceId);
-            Assert.AreEqual("instance-1", e.InstanceReference.Name);
-            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
-            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
+            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
+            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
             Assert.AreEqual("NOTICE", e.Severity);
             Assert.IsNull(e.Status);
             Assert.AreEqual(
@@ -177,15 +177,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                'receiveTimestamp': '2020-06-18T07:50:52.551069316Z'
              }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(SuspendInstanceEvent.IsSuspendInstanceEvent(r));
 
             var e = (SuspendInstanceEvent)r.ToEvent();
 
             Assert.AreEqual(1111111245427925863, e.InstanceId);
-            Assert.AreEqual("instance-1", e.InstanceReference.Name);
-            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
-            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
+            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
+            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
             Assert.AreEqual("NOTICE", e.Severity);
             Assert.IsNull(e.Status);
             Assert.AreEqual(

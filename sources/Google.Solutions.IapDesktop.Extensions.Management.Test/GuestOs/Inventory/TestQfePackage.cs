@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.AreEqual("kb123", package.PackageId);
             Assert.AreEqual("description", package.Description);
             Assert.IsNull(package.Version);
-            Assert.AreEqual("http://uri/", package.Weblink.ToString());
+            Assert.AreEqual("http://uri/", package.Weblink?.ToString());
             Assert.AreEqual(new DateTime(2020, 1, 3, 4, 5, 6, DateTimeKind.Utc), package.InstalledOn);
             Assert.AreEqual(PackageCriticality.NonCritical, package.Criticality);
         }

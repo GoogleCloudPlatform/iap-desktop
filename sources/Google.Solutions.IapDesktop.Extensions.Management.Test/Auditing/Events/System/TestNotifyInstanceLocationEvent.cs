@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                'receiveTimestamp': '2020-05-04T01:50:17.020301892Z'
              } ";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(NotifyInstanceLocationEvent.IsInstanceScheduledEvent(r));
 
             var e = (NotifyInstanceLocationEvent)r.ToEvent();
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.AreEqual("INFO", e.Severity);
             Assert.IsNull(e.Status);
             Assert.AreEqual("4aaaa7b32a208e7ccb4ee62acedee725", e.ServerId);
-            Assert.AreEqual("c2-node-60-240", e.NodeType.Name);
+            Assert.AreEqual("c2-node-60-240", e.NodeType?.Name);
             Assert.AreEqual(new DateTime(2020, 5, 4, 1, 50, 10, 917), e.SchedulingTimestamp);
         }
 
@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                'receiveTimestamp': '2020-05-04T01:50:17.020301892Z'
              } ";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(NotifyInstanceLocationEvent.IsInstanceScheduledEvent(r));
 
             var e = (NotifyInstanceLocationEvent)r.ToEvent();
@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                'receiveTimestamp': '2020-05-04T01:50:17.020301892Z'
              } ";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(NotifyInstanceLocationEvent.IsInstanceScheduledEvent(r));
 
             var e = (NotifyInstanceLocationEvent)r.ToEvent();

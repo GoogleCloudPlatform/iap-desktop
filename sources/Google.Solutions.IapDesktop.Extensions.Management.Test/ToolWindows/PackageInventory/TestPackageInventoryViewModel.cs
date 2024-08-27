@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
         private static GuestOsInfo CreateGuestOsInfo(
             InstanceLocator locator,
             PackageInventoryType type,
-            IList<Package> packages)
+            IList<Package>? packages)
         {
             var packageInfo = packages == null ? null : new GuestPackages(
                 packages,
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
             packageInventory.Setup(s => s.GetInstanceInventoryAsync(
                         It.Is<InstanceLocator>(loc => loc.Name == "instance-3"),
                         It.IsAny<CancellationToken>()))
-                .ReturnsAsync((GuestOsInfo)null);
+                .ReturnsAsync((GuestOsInfo?)null);
 
             packageInventory.Setup(s => s.ListZoneInventoryAsync(
                         It.IsAny<ZoneLocator>(),
@@ -331,7 +331,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
             viewModel.Filter = "   PACKAGE-3   ";
             Assert.AreEqual(1, viewModel.FilteredPackages.Count);
 
-            viewModel.Filter = null;
+            viewModel.Filter = string.Empty;
             Assert.AreEqual(4, viewModel.FilteredPackages.Count);
         }
     }

@@ -78,15 +78,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 'receiveTimestamp': '2020-05-04T08:49:28.949573763Z'
               }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(StopInstanceEvent.IsStopInstanceEvent(r));
 
             var e = (StopInstanceEvent)r.ToEvent();
 
             Assert.AreEqual(2162224123123123213, e.InstanceId);
-            Assert.AreEqual("instance-1", e.InstanceReference.Name);
-            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
-            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
+            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
+            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
             Assert.AreEqual(
                 new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                 e.InstanceReference);
@@ -139,15 +139,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 'receiveTimestamp': '2020-05-04T08:49:28.949573763Z'
               }";
 
-            var r = LogRecord.Deserialize(json);
+            var r = LogRecord.Deserialize(json)!;
             Assert.IsTrue(StopInstanceEvent.IsStopInstanceEvent(r));
 
             var e = (StopInstanceEvent)r.ToEvent();
 
             Assert.AreEqual(2162224123123123213, e.InstanceId);
-            Assert.AreEqual("instance-1", e.InstanceReference.Name);
-            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
-            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
+            Assert.AreEqual("instance-1", e.InstanceReference?.Name);
+            Assert.AreEqual("us-central1-a", e.InstanceReference?.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference?.ProjectId);
             Assert.AreEqual(
                 new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                 e.InstanceReference);
