@@ -29,7 +29,7 @@ namespace Google.Solutions.Platform.Test.Net
     public class TestChromePolicyUrlPattern
     {
         [Test]
-        public void WhenPatternIsMalformed_ThenParseThrowsException()
+        public void Parse_WhenPatternIsMalformed_ThenParseThrowsException()
         {
             Assert.Throws<ArgumentException>(
                 () => ChromePolicyUrlPattern.Parse("//"));
@@ -46,7 +46,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void WhenFileScheme_ThenNoUrlsMatch()
+        public void IsMatch_WhenFileScheme_ThenNoUrlsMatch()
         {
             Assert.IsFalse(ChromePolicyUrlPattern.Parse("file://path").IsMatch("file://path"));
             Assert.IsFalse(ChromePolicyUrlPattern.Parse("file://path/sub").IsMatch("file://path/sub"));
@@ -58,7 +58,7 @@ namespace Google.Solutions.Platform.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenWildcard_ThenFileUrlsMatch()
+        public void IsMatch_WhenWildcard_ThenFileUrlsMatch()
         {
             Assert.IsFalse(ChromePolicyUrlPattern.Parse("*").IsMatch("file://path"));
             Assert.IsFalse(ChromePolicyUrlPattern.Parse("*://path").IsMatch("file://path"));
@@ -68,7 +68,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void WhenWildcard_ThenAllHttpUrlsMatch()
+        public void IsMatch_WhenWildcard_ThenAllHttpUrlsMatch()
         {
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("*").IsMatch("http://example.com"));
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("*").IsMatch("http://example.com/path"));
@@ -77,7 +77,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void WhenWildcard_ThenAllHttpsUrlsMatch()
+        public void IsMatch_WhenWildcard_ThenAllHttpsUrlsMatch()
         {
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("*").IsMatch("https://example.com"));
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("*").IsMatch("https://example.com/path"));
@@ -90,7 +90,7 @@ namespace Google.Solutions.Platform.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSchemeMissing_ThenHttpAndHttpsUrlsMatch()
+        public void IsMatch_WhenSchemeMissing_ThenHttpAndHttpsUrlsMatch()
         {
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("example.com").IsMatch("http://example.com"));
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("example.com").IsMatch("https://example.com"));
@@ -103,7 +103,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void WhenSchemeIsWildcard_ThenHttpAndHttpsUrlsMatch()
+        public void IsMatch_WhenSchemeIsWildcard_ThenHttpAndHttpsUrlsMatch()
         {
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("*://example.com").IsMatch("http://example.com"));
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("*://example.com").IsMatch("https://example.com"));
@@ -116,7 +116,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void WhenSchemeIsWildcard_ThenHttpsUrlsMatch()
+        public void IsMatch_WhenSchemeIsWildcard_ThenHttpsUrlsMatch()
         {
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("example.com").IsMatch("https://example.com"));
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("example.com:443/path").IsMatch("https://example.com/path"));
@@ -129,7 +129,7 @@ namespace Google.Solutions.Platform.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDomainHasNoWildcard_ThenOnlyExactDomainsMatch()
+        public void IsMatch_WhenDomainHasNoWildcard_ThenOnlyExactDomainsMatch()
         {
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("https://example.com").IsMatch("https://EXAMPLE.com"));
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("https://example.com").IsMatch("https://EXAMPLE.com:443"));
@@ -140,7 +140,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void WhenDomainIsIpv4_ThenOnlyExactDomainsMatch()
+        public void IsMatch_WhenDomainIsIpv4_ThenOnlyExactDomainsMatch()
         {
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("https://1.2.3.4/").IsMatch("https://1.2.3.4/"));
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("https://1.2.3.4:8000/").IsMatch("https://1.2.3.4:8000/"));
@@ -149,7 +149,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void WhenDomainIsIpv6_ThenOnlyExactDomainsMatch()
+        public void IsMatch_WhenDomainIsIpv6_ThenOnlyExactDomainsMatch()
         {
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("https://[2a00:1000:4000:2::]/").IsMatch("https://[2a00:1000:4000:2::]"));
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("https://[2a00:1000:4000:2::]").IsMatch("https://[2a00:1000:4000:2::]/"));
@@ -160,7 +160,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void WhenDomainHasWildcard_ThenExactDomainsMatch()
+        public void IsMatch_WhenDomainHasWildcard_ThenExactDomainsMatch()
         {
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("https://[*.]example.com").IsMatch("https://EXAMPLE.com"));
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("https://[*.]example.com").IsMatch("https://EXAMPLE.com:443"));
@@ -168,7 +168,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void WhenDomainHasWildcard_ThenSubDomainsMatch()
+        public void IsMatch_WhenDomainHasWildcard_ThenSubDomainsMatch()
         {
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("https://[*.]example.com").IsMatch("https://www.EXAMPLE.com"));
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("https://[*.]example.com").IsMatch("https://sub.sub.sub.EXAMPLE.com:443"));
@@ -181,7 +181,7 @@ namespace Google.Solutions.Platform.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPortSpecified_ThenOnlyExactPortsMatch()
+        public void IsMatch_WhenPortSpecified_ThenOnlyExactPortsMatch()
         {
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("http://example.com:8080/path").IsMatch("http://EXAMPLE.com:8080/path"));
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("http://example.com/path").IsMatch("http://EXAMPLE.com:80/path"));
@@ -192,7 +192,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void WhenNoPortSpecified_ThenDefaultPortsMatch()
+        public void IsMatch_WhenNoPortSpecified_ThenDefaultPortsMatch()
         {
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("http://example.com").IsMatch("http://EXAMPLE.com:80"));
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("https://example.com").IsMatch("https://EXAMPLE.com:443"));
@@ -202,7 +202,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void WhenPortIsWildcard_ThenAllPortssMatch()
+        public void IsMatch_WhenPortIsWildcard_ThenAllPortssMatch()
         {
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("http://example.com:*").IsMatch("http://EXAMPLE.com:80"));
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("http://example.com:*").IsMatch("http://EXAMPLE.com:8080"));
@@ -215,7 +215,7 @@ namespace Google.Solutions.Platform.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPathSpecified_ThenPathIsIgnored()
+        public void IsMatch_WhenPathSpecified_ThenPathIsIgnored()
         {
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("http://example.com").IsMatch("http://EXAMPLE.com/foo"));
             Assert.IsTrue(ChromePolicyUrlPattern.Parse("http://example.com/foo").IsMatch("http://EXAMPLE.com"));

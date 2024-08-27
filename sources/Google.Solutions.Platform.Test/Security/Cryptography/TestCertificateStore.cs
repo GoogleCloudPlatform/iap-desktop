@@ -107,7 +107,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPredicateMatches_ThenListUserCertificatesReturnsUserCertificate()
+        public void ListUserCertificates_WhenPredicateMatches_ThenListUserCertificatesReturnsUserCertificate()
         {
             CertificateStore.AddUserCertitficate(ExampleCertificate);
 
@@ -126,7 +126,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         }
 
         [Test]
-        public void WhenPredicateDoesNotMatch_ThenListUserCertificatesReturnsEmpty()
+        public void ListUserCertificates_WhenPredicateDoesNotMatch_ThenListUserCertificatesReturnsEmpty()
         {
             CertificateStore.AddUserCertitficate(ExampleCertificate);
 
@@ -142,7 +142,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         //---------------------------------------------------------------------
 
         [Test]
-        public void ListComputerCertificatesDoesNotReturnUserCertificate()
+        public void ListComputerCertificates_DoesNotReturnUserCertificate()
         {
             CertificateStore.AddUserCertitficate(ExampleCertificate);
 
@@ -155,7 +155,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         }
 
         [Test]
-        public void WhenPredicateDoesNotMatch_ThenListComputerCertificatesReturnsEmpty()
+        public void ListComputerCertificates_WhenPredicateDoesNotMatch()
         {
             CertificateStore.AddUserCertitficate(ExampleCertificate);
 

@@ -33,7 +33,7 @@ namespace Google.Solutions.Platform.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSourceIsNullOrEmpty_ThenExpandEnvironmentStringsReturnsSource(
+        public void ExpandEnvironmentStrings_WhenSourceIsNullOrEmpty(
             [Values("", " ", null)] string source)
         {
             Assert.AreEqual(
@@ -42,7 +42,7 @@ namespace Google.Solutions.Platform.Test
         }
 
         [Test]
-        public void WhenSourceIncludesVariable_ThenExpandEnvironmentStringsReturnsExpandedSource()
+        public void ExpandEnvironmentStrings__WhenSourceIncludesVariable()
         {
             var source = "%ProgramFiles(x86)%\\foo";
             var expanded = UserEnvironment.ExpandEnvironmentStrings(source);
@@ -55,7 +55,7 @@ namespace Google.Solutions.Platform.Test
         }
 
         [Test]
-        public void WhenSourceIncludesUnknownVariable_ThenExpandEnvironmentStringsReturnsSource()
+        public void ExpandEnvironmentStrings_WhenSourceIncludesUnknownVariable()
         {
             var source = "%THISVARIABLEDOESNOTEXIST%\\foo";
             Assert.AreEqual(
@@ -68,13 +68,13 @@ namespace Google.Solutions.Platform.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenAppUnknown_ThenTryResolveAppPathReturnsFalse()
+        public void TryResolveAppPath_WhenAppUnknown_ThenTryResolveAppPathReturnsFalse()
         {
             Assert.IsFalse(UserEnvironment.TryResolveAppPath("doesnotexist.exe", out var _));
         }
 
         [Test]
-        public void WhenAppRegistered_ThenTryResolveAppPathReturnsPath()
+        public void TryResolveAppPath_WhenAppRegistered_ThenTryResolveAppPathReturnsPath()
         {
             Assert.IsTrue(UserEnvironment.TryResolveAppPath("Powershell.EXE", out var powershell));
             Assert.IsNotNull(powershell);
@@ -82,7 +82,7 @@ namespace Google.Solutions.Platform.Test
         }
 
         [Test]
-        public void WhenAppNameIsPath_ThenTryResolveAppPathReturnsFalse(
+        public void TryResolveAppPath_WhenAppNameIsPath_ThenTryResolveAppPathReturnsFalse(
             [Values("../app.exe", "c:\\app.exe")] string exeName)
         {
             Assert.IsFalse(UserEnvironment.TryResolveAppPath(exeName, out var _));

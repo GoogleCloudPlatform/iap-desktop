@@ -37,11 +37,11 @@ namespace Google.Solutions.Platform.Security
         private const string Eicar = @"X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*";
 
         //---------------------------------------------------------------------
-        // ScanAsync.
+        // Scan.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenFileOriginatesFromInternet_ThenScanAppliesMotw()
+        public async Task Scan_WhenFileOriginatesFromInternet_ThenScanAppliesMotw()
         {
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, "test");
@@ -62,7 +62,7 @@ namespace Google.Solutions.Platform.Security
         }
 
         [Test]
-        public async Task WhenFileOriginatesFromUnknownSource_ThenScanAppliesMotw()
+        public async Task Scan_WhenFileOriginatesFromUnknownSource_ThenScanAppliesMotw()
         {
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, "test");
@@ -81,7 +81,7 @@ namespace Google.Solutions.Platform.Security
         }
 
         [Test]
-        public async Task WhenFileOriginatesFromLocalMachine_ThenScanAppliesMotw()
+        public async Task Scan_WhenFileOriginatesFromLocalMachine_ThenScanAppliesMotw()
         {
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, "test");
@@ -102,7 +102,7 @@ namespace Google.Solutions.Platform.Security
         }
 
         [Test]
-        public void WhenFileIsMalicious_ThenScanThrowsException()
+        public void Scan_WhenFileIsMalicious_ThenScanThrowsException()
         {
             if (!Environment.UserInteractive)
             {
@@ -121,11 +121,11 @@ namespace Google.Solutions.Platform.Security
         }
 
         //---------------------------------------------------------------------
-        // GetSourceZoneAsync.
+        // GetSourceZone.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenFileIsLocal_ThenGetSourceZoneReturnsLocalMachine()
+        public async Task GetSourceZone_WhenFileIsLocal_ThenGetSourceZoneReturnsLocalMachine()
         {
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, "test");

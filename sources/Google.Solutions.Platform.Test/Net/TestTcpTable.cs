@@ -29,7 +29,7 @@ namespace Google.Solutions.Platform.Test.Net
     public class TestTcpTable
     {
         [Test]
-        public void WhenRunningOnWindows_ThenGetTcpTable2ReturnsEntryForRpcss()
+        public void GetTcpTable2_WhenRunningOnWindows_ThenGetTcpTable2ReturnsEntryForRpcss()
         {
             var netlogonListeningPorts = TcpTable.GetTcpTable2()
                 .Where(r => r.State == TcpTable.MibTcpState.MIB_TCP_STATE_LISTEN)

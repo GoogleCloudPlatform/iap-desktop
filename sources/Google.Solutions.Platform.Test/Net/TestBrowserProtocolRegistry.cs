@@ -41,14 +41,14 @@ namespace Google.Solutions.Platform.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProtocolNotRegistered_ThenIsRegisteredReturnsFalse()
+        public void IsRegistered_WhenProtocolNotRegistered_ThenIsRegisteredReturnsFalse()
         {
             var registry = new BrowserProtocolRegistry();
             Assert.IsFalse(registry.IsRegistered("unknown-scheme", "app.exe"));
         }
 
         [Test]
-        public void WhenProtocolRegisteredByDifferentApp_ThenIsRegisteredReturnsFalse()
+        public void IsRegistered_WhenProtocolRegisteredByDifferentApp_ThenIsRegisteredReturnsFalse()
         {
             var registry = new BrowserProtocolRegistry();
             registry.Register(TestScheme, "Test", "app.exe");
@@ -58,7 +58,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void WhenProtocolRegistered_ThenIsRegisteredReturnsTrue()
+        public void IsRegistered_WhenProtocolRegistered_ThenIsRegisteredReturnsTrue()
         {
             var registry = new BrowserProtocolRegistry();
             registry.Register(TestScheme, "Test", "app.exe");
@@ -72,7 +72,7 @@ namespace Google.Solutions.Platform.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProtocolRegisteredByDifferentApp_TheRegisterOverridesRegistration()
+        public void Register_WhenProtocolRegisteredByDifferentApp_TheRegisterOverridesRegistration()
         {
             var registry = new BrowserProtocolRegistry();
             registry.Register(TestScheme, "Test", "someotherapp.exe");
@@ -86,7 +86,7 @@ namespace Google.Solutions.Platform.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProtocolNotRegistered_ThenUnregisterDoesNothing()
+        public void Unregister_WhenProtocolNotRegistered_ThenUnregisterDoesNothing()
         {
             var registry = new BrowserProtocolRegistry();
             registry.Unregister("unknown-scheme");

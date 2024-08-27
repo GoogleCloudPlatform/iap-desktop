@@ -49,7 +49,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenExecutableNotFound_ThenCreateProcessThrowsException()
+        public void CreateProcess_WhenExecutableNotFound_ThenCreateProcessThrowsException()
         {
             var factory = new Win32ProcessFactory();
 
@@ -57,7 +57,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void WhenExecutablePathFound_ThenCreateProcessSucceeds()
+        public void CreateProcess_WhenExecutablePathFound_ThenCreateProcessSucceeds()
         {
             var factory = new Win32ProcessFactory();
 
@@ -73,7 +73,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void WhenOnProcessCreatedFails_ThenCreateProcessDisposesProcess()
+        public void CreateProcess_WhenOnProcessCreatedFails_ThenCreateProcessDisposesProcess()
         {
             var factory = new Win32ProcessFactoryWithEvent();
             IWin32Process? createdProcess = null;
@@ -96,7 +96,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenExecutableNotFound_ThenCCreateProcessWithPseudoConsoleThrowsException()
+        public void CreateProcessWithPseudoConsole_WhenExecutableNotFound_ThenThrowsException()
         {
             var factory = new Win32ProcessFactory();
 
@@ -107,7 +107,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void WhenExecutablePathFound_ThenCreateProcessWithPseudoConsoleSucceeds()
+        public void CreateProcessWithPseudoConsole_WhenExecutablePathFound_ThenSucceeds()
         {
             var factory = new Win32ProcessFactory();
 
@@ -128,7 +128,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void WhenOnProcessCreatedFails_ThenCreateProcessWithPseudoConsoleDisposesProcess()
+        public void CreateProcessWithPseudoConsole_WhenOnProcessCreatedFails_ThenDisposesProcess()
         {
             var factory = new Win32ProcessFactoryWithEvent();
             IWin32Process? createdProcess = null;
@@ -153,7 +153,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsingDomainCredentialsForNetonlyLogon_ThenCreateProcessAsUserSucceeds()
+        public void CreateProcessAsUser_WhenUsingDomainCredentialsForNetonlyLogon_ThenCreateProcessAsUserSucceeds()
         {
             var factory = new Win32ProcessFactory();
 
@@ -172,7 +172,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void WhenUsingDomainCredentialsInBackslashNotation_ThenCreateProcessAsUserSucceeds()
+        public void CreateProcessAsUser_WhenUsingDomainCredentialsInBackslashNotation_ThenCreateProcessAsUserSucceeds()
         {
             var factory = new Win32ProcessFactory();
 
@@ -190,7 +190,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void WhenUsingDomainCredentialsInUpnNotation_ThenCreateProcessAsUserSucceeds()
+        public void CreateProcessAsUser_WhenUsingDomainCredentialsInUpnNotation_ThenCreateProcessAsUserSucceeds()
         {
             var factory = new Win32ProcessFactory();
 
@@ -208,7 +208,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void WhenUsingInvalidLocalCredentialsForNetonlyLogon_ThenCreateProcessAsUserThrowsException()
+        public void CreateProcessAsUser_WhenUsingInvalidLocalCredentialsForNetonlyLogon_ThenCreateProcessAsUserThrowsException()
         {
             var factory = new Win32ProcessFactory();
 
@@ -222,7 +222,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
 
         [Test]
-        public void WhenOnProcessCreatedFails_ThenCreateProcessAsUserDisposesProcess()
+        public void CreateProcessAsUser_WhenOnProcessCreatedFails_ThenCreateProcessAsUserDisposesProcess()
         {
             var factory = new Win32ProcessFactoryWithEvent();
             IWin32Process? createdProcess = null;
