@@ -35,11 +35,11 @@ namespace Google.Solutions.Settings.Test
         protected abstract T SampleData { get; }
 
         //---------------------------------------------------------------------
-        // Read.
+        // TryRead.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueNotSet_ThenTryReadReturnsFalse()
+        public void TryRead_WhenValueNotSet_ThenTryReadReturnsFalse()
         {
             var dictionary = new Dictionary<string, string>();
             var accessor = CreateAccessor("test");
@@ -48,7 +48,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public virtual void WhenValueSet_ThenTryReadReturnsTrue()
+        public virtual void TryRead_WhenValueSet_ThenTryReadReturnsTrue()
         {
             var dictionary = new Dictionary<string, string>();
             var accessor = CreateAccessor("test");
@@ -63,7 +63,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueNotSet_ThenDeleteReturns()
+        public void Delete_WhenValueNotSet_ThenDeleteReturns()
         {
             var dictionary = new Dictionary<string, string>();
             var accessor = CreateAccessor("test");
@@ -73,7 +73,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void WhenValueSet_ThenDeleteDeletesValue()
+        public void Delete_WhenValueSet_ThenDeleteDeletesValue()
         {
             var dictionary = new Dictionary<string, string>();
             var accessor = CreateAccessor("test");

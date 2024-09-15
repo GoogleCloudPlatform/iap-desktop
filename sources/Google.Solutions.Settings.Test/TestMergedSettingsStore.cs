@@ -34,7 +34,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void PolicyKeyValueEmpty_LesserKeyValueEmpty()
+        public void Read_PolicyKeyValueEmpty_ThenLesserKeyValueEmpty()
         {
             var mergedKey = new MergedSettingsStore(
                 new[]
@@ -55,7 +55,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void PolicyKeyValueEmpty_LesserKeyValueSet()
+        public void PRead_olicyKeyValueEmpty_ThenLesserKeyValueSet()
         {
             var lesserStore = new DictionarySettingsStore(new Dictionary<string, string>
             {
@@ -82,7 +82,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void PolicyKeyValueSet_LesserKeyValueEmpty()
+        public void Read_PolicyKeyValueSet_ThenLesserKeyValueEmpty()
         {
             var lesserStore = DictionarySettingsStore.Empty();
             var policyStore = new DictionarySettingsStore(new Dictionary<string, string>
@@ -109,7 +109,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void PolicyKeyValueSet_LesserKeyValueSet()
+        public void Read_PolicyKeyValueSet_ThenLesserKeyValueSet()
         {
             var lesserStore = new DictionarySettingsStore(new Dictionary<string, string>
             {
@@ -148,7 +148,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void OverlayKeyValueEmpty_LesserKeyValueEmpty()
+        public void Read_OverlayKeyValueEmpty_ThenLesserKeyValueEmpty()
         {
             var mergedKey = new MergedSettingsStore(
                 new[]
@@ -169,7 +169,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void OverlayKeyValueEmpty_LesserKeyValueSet()
+        public void Read_OverlayKeyValueEmpty_ThenLesserKeyValueSet()
         {
             var lesserStore = new DictionarySettingsStore(new Dictionary<string, string>
             {
@@ -196,7 +196,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void OverlayKeyValueSet_LesserKeyValueEmpty()
+        public void Read_OverlayKeyValueSet_ThenLesserKeyValueEmpty()
         {
             var lesserStore = DictionarySettingsStore.Empty();
             var overlayStore = new DictionarySettingsStore(new Dictionary<string, string>
@@ -223,7 +223,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void OverlayKeyValueSet_LesserKeyValueSet()
+        public void Read_OverlayKeyValueSet_ThenLesserKeyValueSet()
         {
             var lesserStore = new DictionarySettingsStore(new Dictionary<string, string>
             {
@@ -262,7 +262,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenBehaviorIsPolicy_ThenWriteGoesToLesserStore()
+        public void Write_WhenBehaviorIsPolicy_ThenWriteGoesToLesserStore()
         {
             var policyStore = DictionarySettingsStore.Empty();
             var lesserStore = DictionarySettingsStore.Empty();
@@ -286,7 +286,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void WhenBehaviorIsOverlay_ThenWriteGoesToOverlayStore()
+        public void Write_WhenBehaviorIsOverlay_ThenWriteGoesToOverlayStore()
         {
             var overlayStore = DictionarySettingsStore.Empty();
             var lesserStore = DictionarySettingsStore.Empty();
@@ -312,7 +312,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void ClearThrowsException()
+        public void Clear_ThrowsException()
         {
             var mergedKey = new MergedSettingsStore(
                 new[]

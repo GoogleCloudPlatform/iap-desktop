@@ -28,8 +28,12 @@ namespace Google.Solutions.Settings.Test.ComponentModel
     [TestFixture]
     public class TestMaskedSettingDescriptor
     {
+        //----------------------------------------------------------------------
+        // GetValue.
+        //----------------------------------------------------------------------
+
         [Test]
-        public void GetValueReturnsMaskedString()
+        public void GetValue_ReturnsMaskedString()
         {
             var setting = DictionarySettingsStore
                 .Empty()
@@ -40,6 +44,10 @@ namespace Google.Solutions.Settings.Test.ComponentModel
 
             Assert.AreEqual("********", descriptor.GetValue(setting));
         }
+
+        //----------------------------------------------------------------------
+        // SetValue.
+        //----------------------------------------------------------------------
 
         [Test]
         public void SetValue()
@@ -53,6 +61,11 @@ namespace Google.Solutions.Settings.Test.ComponentModel
 
             Assert.AreEqual("secret", setting.GetClearTextValue());
         }
+
+
+        //----------------------------------------------------------------------
+        // ResetValue.
+        //----------------------------------------------------------------------
 
         [Test]
         public void ResetValue()

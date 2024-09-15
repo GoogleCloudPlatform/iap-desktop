@@ -50,7 +50,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTypeUnsupported_ThenReadThrowsException()
+        public void Read_WhenTypeUnsupported_ThenReadThrowsException()
         {
             using (var key = new RegistrySettingsStore(CreateKey()))
             {
@@ -59,8 +59,12 @@ namespace Google.Solutions.Settings.Test
             }
         }
 
+        //---------------------------------------------------------------------
+        // IsSpecified.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenValueExists_ThenIsSpecifiedIsTrue()
+        public void IsSpecified_WhenValueExists_ThenIsSpecifiedIsTrue()
         {
             using (var key = new RegistrySettingsStore(CreateKey()))
             {
@@ -81,8 +85,12 @@ namespace Google.Solutions.Settings.Test
             }
         }
 
+        //---------------------------------------------------------------------
+        // IsDefault.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenValueExists_ThenValueIsNotDefault()
+        public void IsDefault_WhenValueExists_ThenValueIsNotDefault()
         {
             using (var key = new RegistrySettingsStore(CreateKey()))
             {
@@ -106,8 +114,12 @@ namespace Google.Solutions.Settings.Test
             }
         }
 
+        //---------------------------------------------------------------------
+        // SetValue.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenCustomValidationFails_ThenSetValueThrowsException()
+        public void SetValue_WhenCustomValidationFails_ThenSetValueThrowsException()
         {
             using (var key = new RegistrySettingsStore(CreateKey()))
             {
@@ -139,7 +151,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueIsDefault_ThenWriteDeletesValue()
+        public void Write_WhenValueIsDefault_ThenWriteDeletesValue()
         {
             using (var key = new RegistrySettingsStore(CreateKey()))
             {
@@ -173,7 +185,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void ClearRemovesAllRegistryValues()
+        public void Clear_RemovesAllRegistryValues()
         {
             using (var key = CreateKey())
             {

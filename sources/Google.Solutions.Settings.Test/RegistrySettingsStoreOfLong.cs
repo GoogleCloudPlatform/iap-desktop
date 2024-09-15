@@ -35,7 +35,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueChanged_ThenIsSpecifiedIsTrue()
+        public void IsSpecified_WhenValueChanged()
         {
             using (var key = CreateSettingsKey())
             {
@@ -63,11 +63,11 @@ namespace Google.Solutions.Settings.Test
         }
 
         //---------------------------------------------------------------------
-        // Load.
+        // Read.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenRegistryValueDoesNotExist_ThenReadUsesDefaults()
+        public void Read_WhenRegistryValueDoesNotExist_ThenUsesDefaults()
         {
             using (var key = CreateSettingsKey())
             {
@@ -91,7 +91,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void WhenRegistryKeyIsNull_ThenReadUsesDefaults()
+        public void Read_WhenRegistryKeyIsNull_ThenUsesDefaults()
         {
             using (var key = CreateSettingsKey())
             {
@@ -115,7 +115,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void WhenRegistryValueExists_ThenReadUsesValue()
+        public void Read_WhenRegistryValueExists_ThenUsesValue()
         {
             using (var key = CreateSettingsKey())
             {
@@ -145,7 +145,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSettingIsNonNull_ThenSaveUpdatesRegistry()
+        public void Save_WhenSettingIsNonNull()
         {
             using (var key = CreateSettingsKey())
             {
@@ -165,7 +165,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void WhenSettingIsDefaultValue_ThenSaveResetsRegistry()
+        public void Save_WhenSettingIsDefaultValue_ThenResetsRegistry()
         {
             using (var key = CreateSettingsKey())
             {
@@ -191,7 +191,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()
+        public void SetValue_WhenValuelsDefault_ThenSucceedsAndSettingIsNotDirty()
         {
             using (var key = CreateSettingsKey())
             {
@@ -232,7 +232,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void WhenValueDiffersFromDefault_ThenSetValueSucceedsAndSettingIsDirty()
+        public void SetValue_WhenValueDiffersFromDefault_ThenSucceedsAndSettingIsDirty()
         {
             using (var key = CreateSettingsKey())
             {
@@ -273,7 +273,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueIsNull_ThenSetAnyValueResetsToDefault()
+        public void SetAnyValue_WhenValueIsNull_ThenResetsToDefault()
         {
             using (var key = CreateSettingsKey())
             {
@@ -294,7 +294,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void WhenValueIsOfWrongType_ThenSetAnyValueRaisesInvalidCastException()
+        public void SetAnyValue_WhenValueIsOfWrongType_ThenThrowsException()
         {
             using (var key = CreateSettingsKey())
             {
@@ -315,7 +315,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPolicyIsEmpty_ThenPolicyIsIgnored()
+        public void Policy_WhenPolicyIsEmpty_ThenPolicyIsIgnored()
         {
             using (var key = CreateSettingsKey())
             using (var policyKey = CreatePolicySettingsKey())
@@ -366,7 +366,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void WhenPolicySet_ThenSettingHasPolicyApplied()
+        public void Policy_WhenPolicyNotEmpty_ThenSettingIsMerged()
         {
             using (var key = CreateSettingsKey())
             using (var policyKey = CreatePolicySettingsKey())
