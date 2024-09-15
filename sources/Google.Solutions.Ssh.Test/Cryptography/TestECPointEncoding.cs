@@ -30,8 +30,12 @@ namespace Google.Solutions.Ssh.Test.Cryptography
     [TestFixture]
     public class TestECPointEncoding
     {
+        //--------------------------------------------------------------------
+        // Encode.
+        //--------------------------------------------------------------------
+
         [Test]
-        public void WhenKeySizeDoesNotMatchPoint_ThenEncodeThrowsException()
+        public void Encode_WhenKeySizeDoesNotMatchPoint_ThenEncodeThrowsException()
         {
             using (var key = new ECDsaCng(ECCurve.NamedCurves.nistP256))
             {
@@ -42,8 +46,12 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             }
         }
 
+        //--------------------------------------------------------------------
+        // Decode.
+        //--------------------------------------------------------------------
+
         [Test]
-        public void WhenEncodedAndDecoded_ThenPointIsEqual()
+        public void Decode_WhenEncodedAndDecoded_ThenPointIsEqual()
         {
             using (var key = new ECDsaCng(ECCurve.NamedCurves.nistP256))
             {
@@ -68,7 +76,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void WhenEncodedDataUncompressedButWithoutTag_ThenDecodeThrowsException()
+        public void Decode_WhenEncodedDataUncompressedButWithoutTag_ThenDecodeThrowsException()
         {
             var uncompressedSizeData = new byte[256 / 8 * 2 + 1];
             uncompressedSizeData[0] = 1; // Junk.
@@ -78,7 +86,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void WhenEncodedDataNotUncompressed_ThenDecodeThrowsException()
+        public void Decode_WhenEncodedDataNotUncompressed_ThenDecodeThrowsException()
         {
             Assert.Throws<NotImplementedException>(
                 () => ECPointEncoding.Decode(

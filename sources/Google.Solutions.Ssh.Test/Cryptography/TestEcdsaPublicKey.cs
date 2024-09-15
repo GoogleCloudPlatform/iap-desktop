@@ -36,7 +36,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         //---------------------------------------------------------------------
 
         [Test]
-        public void TypeNistp256()
+        public void Type_Nistp256()
         {
             using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP256)))
             using (var publicKey = new ECDsaPublicKey(key, true))
@@ -46,7 +46,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void TypeNistp384()
+        public void Type_Nistp384()
         {
             using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP384)))
             using (var publicKey = new ECDsaPublicKey(key, true))
@@ -56,7 +56,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void TypeNistp521()
+        public void Type_Nistp521()
         {
             using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP521)))
             using (var publicKey = new ECDsaPublicKey(key, true))
@@ -70,7 +70,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDecodedAndEncoded_ThenFromWireFormatReturnsSameKey(
+        public void FromWireFormat_WhenDecodedAndEncoded_ThenFromWireFormatReturnsSameKey(
             [Values(
                 SampleKeys.Nistp256,
                 SampleKeys.Nistp384,
@@ -85,7 +85,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void WhenEncodedKeyIsUnsupported_ThenFromWireFormatThrowsException(
+        public void FromWireFormat_WhenEncodedKeyIsUnsupported_ThenFromWireFormatThrowsException(
             [Values(
                 SampleKeys.Ed25519,
                 SampleKeys.Rsa2048)] string encodedKey)
@@ -95,7 +95,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void WhenKeyTruncated_ThenFromWireFormatThrowsException(
+        public void FromWireFormat_WhenKeyTruncated_ThenFromWireFormatThrowsException(
             [Values(1, 20, 40)] int take)
         {
             Assert.Throws<SshFormatException>(
@@ -108,7 +108,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenOwnsKeyIsTrue_ThenDisposeClosesKey()
+        public void Dispose_WhenOwnsKeyIsTrue_ThenDisposeClosesKey()
         {
             var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP256));
             using (var publicKey = new ECDsaPublicKey(key, true))
@@ -123,7 +123,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void WhenOwnsKeyIsFalse_ThenDisposeClosesKey()
+        public void Dispose_WhenOwnsKeyIsFalse_ThenDisposeClosesKey()
         {
             using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP256)))
             {

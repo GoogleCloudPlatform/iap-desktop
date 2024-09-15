@@ -27,8 +27,12 @@ namespace Google.Solutions.Ssh.Test.Native
     [TestFixture]
     public class TestEnvironmentVariable : SshFixtureBase
     {
+        //----------------------------------------------------------------------
+        // Equals.
+        //----------------------------------------------------------------------
+
         [Test]
-        public void WhenVariablesAreEquivalent_ThenEqualsReturnsTrue()
+        public void Equals_WhenVariablesAreEquivalent_ThenEqualsReturnsTrue()
         {
             var ref1 = new EnvironmentVariable("NAME", "value", false);
             var ref2 = new EnvironmentVariable("NAME", "value", false);
@@ -40,7 +44,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void WhenVariablesAreSame_ThenEqualsReturnsTrue()
+        public void Equals_WhenVariablesAreSame_ThenEqualsReturnsTrue()
         {
             var ref1 = new EnvironmentVariable("NAME", "value", true);
             var ref2 = ref1;
@@ -52,7 +56,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void WhenVariablesAreNotEquivalent_ThenEqualsReturnsFalse()
+        public void Equals_WhenVariablesAreNotEquivalent_ThenEqualsReturnsFalse()
         {
             var ref1 = new EnvironmentVariable("NAME", "", true);
             var ref2 = new EnvironmentVariable("NAME", "", false);
@@ -64,7 +68,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void TestEqualsNull()
+        public void Equals_estEqualsNull()
         {
             var ref1 = new EnvironmentVariable("NAME", "value", false);
 

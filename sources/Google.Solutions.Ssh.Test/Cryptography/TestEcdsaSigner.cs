@@ -33,7 +33,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenKeyIsNistP256_ThenHashAlgorithmIsSha256()
+        public void HashAlgorithm_WhenKeyIsNistP256_ThenHashAlgorithmIsSha256()
         {
             using (var key = new ECDsaCng(256))
             using (var credential = new ECDsaSigner(key, true))
@@ -43,7 +43,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void WhenKeyIsNistP384_ThenHashAlgorithmIsSha384()
+        public void HashAlgorithm_WhenKeyIsNistP384_ThenHashAlgorithmIsSha384()
         {
             using (var key = new ECDsaCng(384))
             using (var credential = new ECDsaSigner(key, true))
@@ -53,7 +53,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void WhenKeyIsNistP521_ThenHashAlgorithmIsSha512()
+        public void HashAlgorithm_WhenKeyIsNistP521_ThenHashAlgorithmIsSha512()
         {
             using (var key = new ECDsaCng(521))
             using (var credential = new ECDsaSigner(key, true))
@@ -67,7 +67,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenOwnsKeyIsTrue_ThenDisposeClosesKey()
+        public void Dispose_WhenOwnsKeyIsTrue_ThenDisposeClosesKey()
         {
             var key = new ECDsaCng(521);
             using (var signer = new ECDsaSigner(key, true))
@@ -82,7 +82,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void WhenOwnsKeyIsFalse_ThenDisposeClosesKey()
+        public void Dispose_WhenOwnsKeyIsFalse_ThenDisposeClosesKey()
         {
             using (var key = new ECDsaCng(521))
             {

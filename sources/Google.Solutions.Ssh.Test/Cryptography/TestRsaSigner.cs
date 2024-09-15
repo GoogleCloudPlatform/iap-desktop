@@ -34,7 +34,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenChallengeRequiresSha512_ThenSignReturnsSignature()
+        public void Sign_WhenChallengeRequiresSha512_ThenSignReturnsSignature()
         {
             var challengeBlob = Convert.FromBase64String(
                 "AAAAIEVr/Hy4lWvHE87XI+c+jchQ4kkz/gCEpWzdIYU+PLvjMgAAAAh0ZX" +
@@ -66,7 +66,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void WhenChallengeRequiresSha256_ThenSignReturnsSignature()
+        public void Sign_WhenChallengeRequiresSha256_ThenSignReturnsSignature()
         {
             var challengeBlob = Convert.FromBase64String(
                 "AAAAIEVr/Hy4lWvHE87XI+c+jchQ4kkz/gCEpWzdIYU+PLvjMgAAAAh0ZX" +
@@ -102,7 +102,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenOwnsKeyIsTrue_ThenDisposeClosesKey()
+        public void Dispose_WhenOwnsKeyIsTrue_ThenDisposeClosesKey()
         {
             var key = new RSACng();
             using (var signer = new RsaSigner(key, true))
@@ -117,7 +117,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void WhenOwnsKeyIsFalse_ThenDisposeClosesKey()
+        public void Dispose_WhenOwnsKeyIsFalse_ThenDisposeClosesKey()
         {
             using (var key = new RSACng())
             {

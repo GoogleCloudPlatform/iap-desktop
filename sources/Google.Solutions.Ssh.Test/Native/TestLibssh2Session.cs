@@ -43,7 +43,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNotInitialized_ThenHandleThrowsException()
+        public void Handle_WhenNotInitialized_ThenHandleThrowsException()
         {
             using (var session = CreateSession())
             {
@@ -56,7 +56,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenBannerInvalid_ThenSetBannerThrowsException(
+        public void Banner_WhenBannerInvalid_ThenSetBannerThrowsException(
             [Values("-1", "a b")] string banner)
         {
             using (var session = CreateSession())
@@ -70,7 +70,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTimeoutSet_ThenTimeoutReflectsValue()
+        public void Timeout()
         {
             using (var session = CreateSession())
             {
@@ -85,7 +85,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsingDefaults_ThenBlockingIsEnabled()
+        public void Blocking_EnabledByDefault()
         {
             using (var session = CreateSession())
             {
@@ -98,7 +98,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenLastErrorStillApplies_ThenExceptionContainsErrorMessage()
+        public void LastError_WhenLastErrorStillApplies_ThenExceptionContainsErrorMessage()
         {
             using (var session = CreateSession())
             {
@@ -122,7 +122,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void WhenLastErrorDoesNotApplyAnymore_ThenExceptionContainsGenericErrorMessage()
+        public void LastError_WhenLastErrorDoesNotApplyAnymore_ThenExceptionContainsGenericErrorMessage()
         {
             using (var session = CreateSession())
             {
@@ -139,7 +139,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenRequestingKex_ThenSupportedAlgorithmsIncludesDiffieHellman()
+        public void GetSupportedAlgorithms_WhenRequestingKex_ThenSupportedAlgorithmsIncludesDiffieHellman()
         {
             using (var session = CreateSession())
             {
@@ -159,7 +159,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void WhenRequestingHostkey_ThenSupportedAlgorithmsIncludesRsaAndEcdsa()
+        public void GetSupportedAlgorithms_WhenRequestingHostkey_ThenSupportedAlgorithmsIncludesRsaAndEcdsa()
         {
             using (var session = CreateSession())
             {
@@ -178,7 +178,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void WhenRequestingCryptCs_ThenSupportedAlgorithmsIncludesAes()
+        public void GetSupportedAlgorithms_WhenRequestingCryptCs_ThenSupportedAlgorithmsIncludesAes()
         {
             using (var session = CreateSession())
             {
@@ -192,7 +192,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void WhenRequestingCryptSc_ThenSupportedAlgorithmsIncludesAes()
+        public void WGetSupportedAlgorithms_henRequestingCryptSc_ThenSupportedAlgorithmsIncludesAes()
         {
             using (var session = CreateSession())
             {
@@ -206,7 +206,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void WhenRequestingMacSc_ThenSupportedAlgorithmsIncludesAes()
+        public void GetSupportedAlgorithms_WhenRequestingMacSc_ThenSupportedAlgorithmsIncludesAes()
         {
             using (var session = CreateSession())
             {
@@ -220,7 +220,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void WhenRequestingMacCs_ThenSupportedAlgorithmsIncludesAes()
+        public void GetSupportedAlgorithms_WhenRequestingMacCs_ThenSupportedAlgorithmsIncludesAes()
         {
             using (var session = CreateSession())
             {
@@ -234,7 +234,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void WhenRequestingInvalidType_ThenSupportedAlgorithmsThrowsException()
+        public void GetSupportedAlgorithms_WhenRequestingInvalidType_ThenSupportedAlgorithmsThrowsException()
         {
             using (var session = CreateSession())
             {
@@ -248,7 +248,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenPreferredMethodNotAccepted_ThenConnectFails(
+        public async Task SetPreferredMethods_WhenPreferredMethodNotAccepted_ThenConnectFails(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -269,7 +269,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenPreferredMethodIsInvalid_ThenConnectFails(
+        public async Task SetPreferredMethods_WhenPreferredMethodIsInvalid_ThenConnectFails(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -290,7 +290,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void WhenPreferredMethodIsEmpty_ThenSetPreferredMethodsThrowsNotSupportedError()
+        public void SetPreferredMethods_WhenPreferredMethodIsEmpty_ThenSetPreferredMethodsThrowsNotSupportedError()
         {
             using (var session = CreateSession())
             {
@@ -306,7 +306,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenPortIsCorrect_ThenHandshakeSucceeds(
+        public async Task Connect_WhenPortIsCorrect_ThenHandshakeSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -320,7 +320,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenPortNotListening_ThenHandshakeThrowsSocketException(
+        public async Task Connect_WhenPortNotListening_ThenHandshakeThrowsSocketException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
@@ -335,7 +335,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void WhenPortIsNotSsh_ThenHandshakeThrowsDisconnect()
+        public void Connect_WhenPortIsNotSsh_ThenHandshakeThrowsDisconnect()
         {
             using (var session = CreateSession())
             {
