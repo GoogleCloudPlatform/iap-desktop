@@ -106,3 +106,17 @@ article li {
 .tabbed-labels {
     padding-left: 0.2rem;
 }
+
+/* Use constant font size */
+
+@media screen and (min-width: 100em) {
+    html {
+        font-size: 125%;
+    }
+}
+
+@media screen and (min-width: 125em) {
+    html {
+        font-size: 125%;
+    }
+}
