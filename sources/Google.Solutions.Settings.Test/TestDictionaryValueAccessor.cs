@@ -58,7 +58,7 @@ namespace Google.Solutions.Settings.Test
             protected override SecureString SampleData => null;
 
             [Test]
-            public override void WhenValueSet_ThenTryReadReturnsTrue()
+            public override void TryRead_WhenValueSet_ThenTryReadReturnsTrue()
             {
                 var dictionary = new Dictionary<string, string>();
                 var accessor = CreateAccessor("test");

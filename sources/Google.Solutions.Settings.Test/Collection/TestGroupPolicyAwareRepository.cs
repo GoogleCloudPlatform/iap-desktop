@@ -84,8 +84,12 @@ namespace Google.Solutions.Settings.Test.Collection
             }
         }
 
+        //----------------------------------------------------------------------
+        // IsPolicyPresent.
+        //----------------------------------------------------------------------
+
         [Test]
-        public void MachinePolicyNull_UserPolicyNull()
+        public void IsPolicyPresent_MachinePolicyNull_UserPolicyNull()
         {
             var repository = new SampleRepository(
                 CreateKey(),
@@ -96,7 +100,7 @@ namespace Google.Solutions.Settings.Test.Collection
         }
 
         [Test]
-        public void MachinePolicyExists_UserPolicyNull()
+        public void IsPolicyPresent_MachinePolicyExists_UserPolicyNull()
         {
             var repository = new SampleRepository(
                 CreateKey(),
@@ -107,7 +111,7 @@ namespace Google.Solutions.Settings.Test.Collection
         }
 
         [Test]
-        public void MachinePolicyNull_UserPolicyExists()
+        public void IsPolicyPresent_MachinePolicyNull_UserPolicyExists()
         {
             var repository = new SampleRepository(
                 CreateKey(),
@@ -118,7 +122,7 @@ namespace Google.Solutions.Settings.Test.Collection
         }
 
         [Test]
-        public void MachinePolicyExists_UserPolicyExists()
+        public void IsPolicyPresent_MachinePolicyExists_UserPolicyExists()
         {
             var repository = new SampleRepository(
                 CreateKey(),

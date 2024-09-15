@@ -84,7 +84,7 @@ namespace Google.Solutions.Settings.Test
             }
 
             [Test]
-            public override void WhenValueSet_ThenTryReadReturnsTrue()
+            public override void TryRead_WhenValueSet_ThenTryReadReturnsTrue()
             {
                 using (var key = CreateKey())
                 {

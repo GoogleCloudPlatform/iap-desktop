@@ -55,11 +55,11 @@ namespace Google.Solutions.Settings.Test
         }
 
         //---------------------------------------------------------------------
-        // Read.
+        // TryRead.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueNotSet_ThenTryReadReturnsFalse()
+        public void TryRead_WhenValueNotSet_ThenTryReadReturnsFalse()
         {
             using (var key = CreateKey())
             {
@@ -70,7 +70,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public virtual void WhenValueSet_ThenTryReadReturnsTrue()
+        public virtual void TryRead_WhenValueSet_ThenTryReadReturnsTrue()
         {
             using (var key = CreateKey())
             {
@@ -83,7 +83,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void WhenValueHasWrongKind_ThenTryReadThrowsException()
+        public void TryRead_WhenValueHasWrongKind_ThenTryReadThrowsException()
         {
             using (var key = CreateKey())
             {
@@ -100,7 +100,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueNotSet_ThenDeleteReturns()
+        public void Delete_WhenValueNotSet_ThenDeleteReturns()
         {
             using (var key = CreateKey())
             {
@@ -111,7 +111,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void WhenValueSet_ThenDeleteDeletesValue()
+        public void Delete_WhenValueSet_ThenDeleteDeletesValue()
         {
             using (var key = CreateKey())
             {
