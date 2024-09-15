@@ -46,7 +46,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToStringReturnsOpenSshFormat()
+        public void ToString_ReturnsOpenSshFormat()
         {
             using (var key = new SamplePublicKey("sample", Convert.FromBase64String("ABCD")))
             {
@@ -55,7 +55,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void ToOpenSshString()
+        public void ToString_WhenFormatIsOpenSsh()
         {
             using (var key = new SamplePublicKey("sample", Convert.FromBase64String("ABCD")))
             {
@@ -64,7 +64,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void ToSsh2String()
+        public void ToString_WhenFormatIsSsh2()
         {
             using (var key = new SamplePublicKey("sample", Convert.FromBase64String("ABCD")))
             {
@@ -81,7 +81,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTypesDifferent_ThenEqualsReturnsFalse()
+        public void Equals_WhenTypesDifferent_ThenEqualsReturnsFalse()
         {
             using (var lhs = new SamplePublicKey("type1", Convert.FromBase64String("ABCD")))
             using (var rhs = new SamplePublicKey("type2", Convert.FromBase64String("ABCD")))
@@ -92,7 +92,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void WhenWireFormatDifferent_ThenEqualsReturnsFalse()
+        public void Equals_WhenWireFormatDifferent_ThenEqualsReturnsFalse()
         {
             using (var lhs = new SamplePublicKey("type", Convert.FromBase64String("ABCD")))
             using (var rhs = new SamplePublicKey("type", Convert.FromBase64String("ABCE")))
@@ -103,7 +103,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void WhenTypesAndWireFormatEqual_ThenEqualsReturnsTrue()
+        public void Equals_WhenTypesAndWireFormatEqual_ThenEqualsReturnsTrue()
         {
             using (var lhs = new SamplePublicKey("type", Convert.FromBase64String("ABCD")))
             using (var rhs = new SamplePublicKey("type", Convert.FromBase64String("ABCD")))
@@ -118,7 +118,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenWireFormatDifferent_ThenHashCodeIsDifferent()
+        public void GetHashCode_WhenWireFormatDifferent_ThenHashCodeIsDifferent()
         {
             using (var lhs = new SamplePublicKey("type", Convert.FromBase64String("ABCD")))
             using (var rhs = new SamplePublicKey("type", Convert.FromBase64String("ABCE")))
@@ -128,7 +128,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void WhenTypesAndWireFormatEqual_ThenHashCodeIsEqual()
+        public void GetHashCode_WhenTypesAndWireFormatEqual_ThenHashCodeIsEqual()
         {
             using (var lhs = new SamplePublicKey("type", Convert.FromBase64String("ABCD")))
             using (var rhs = new SamplePublicKey("type", Convert.FromBase64String("ABCD")))

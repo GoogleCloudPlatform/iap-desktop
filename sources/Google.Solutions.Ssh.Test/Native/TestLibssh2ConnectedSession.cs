@@ -37,11 +37,11 @@ namespace Google.Solutions.Ssh.Test.Native
     public class TestLibssh2ConnectedSession : SshFixtureBase
     {
         //---------------------------------------------------------------------
-        // Banner.
+        // RemoteBanner.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenConnected_ThenGetRemoteBannerReturnsBanner(
+        public async Task RemoteBanner_WhenConnected(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -56,13 +56,26 @@ namespace Google.Solutions.Ssh.Test.Native
             }
         }
 
+        [Test]
+        public async Task RemoteBanner_WhenConnected_GetRemoteBannerReturnsBanner(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            {
+                StringAssert.StartsWith("SSH", connection.RemoteBanner);
+            }
+        }
 
         //---------------------------------------------------------------------
         // GetActiveAlgorithms.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenConnected_ThenGetActiveAlgorithmsSucceeds(
+        public async Task GetActiveAlgorithms_WhenConnected(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -85,7 +98,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenRequestedAlgorithmInvalid_ThenGetActiveAlgorithmsReturnsEmpty(
+        public async Task GetActiveAlgorithms_WhenRequestedAlgorithmInvalid_ThenReturnsEmpty(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -105,7 +118,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenCustomBannerSet_ThenConnectionSucceeds(
+        public async Task Banner_WhenCustomBannerSet_ThenConnectionSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -120,22 +133,6 @@ namespace Google.Solutions.Ssh.Test.Native
                 }
             }
 
-        }
-
-        [Test]
-        public async Task WhenConnected_GetRemoteBannerReturnsBanner(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-
-            using (var session = CreateSession())
-            {
-                using (var connection = session.Connect(endpoint))
-                {
-                    StringAssert.StartsWith("SSH", connection.RemoteBanner);
-                }
-            }
         }
 
         //---------------------------------------------------------------------
@@ -168,7 +165,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task ConnectWithRsaHostKey(
+        public async Task Connect_WhenServerProvidesRsaHostKey(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -180,7 +177,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task ConnectWithEcdsaNistp256HostKey(
+        public async Task Connect_WhenServerProvidesEcdsaNistp256HostKey(
             [LinuxInstance(InitializeScript = InitializeScripts.EcdsaNistp256HostKey)] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -192,7 +189,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task ConnectWithEcdsaNistp384HostKey(
+        public async Task Connect_WhenServerProvidesEcdsaNistp384HostKey(
             [LinuxInstance(InitializeScript = InitializeScripts.EcdsaNistp384HostKey)] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -204,7 +201,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task ConnectWithEcdsaNistp521HostKey(
+        public async Task Connect_WhenServerProvidesEcdsaNistp521HostKey(
             [LinuxInstance(InitializeScript = InitializeScripts.EcdsaNistp521HostKey)] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -220,7 +217,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenRequestedAlgorithmInvalid_ThennGetRemoteHostKeyHashThrowsArgumentException(
+        public async Task GetRemoteHostKeyHash_WhenRequestedAlgorithmInvalid_ThennGetRemoteHostKeyHashThrowsArgumentException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -234,40 +231,12 @@ namespace Google.Solutions.Ssh.Test.Native
             }
         }
 
-        [Test]
-        public async Task WhenNeitherEcdsaNorRsaHostKeyAlgorithmAllowed_ThenConnectThrowsException(
-            [LinuxInstance(InitializeScript = InitializeScripts.AllowNeitherEcdsaNorRsaForHostKey)]
-            ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-
-            using (var session = CreateSession())
-            {
-                //
-                // NB. Connect should throw an exception, but libssh doesn't
-                // set the last error. So we have to check the exception
-                // message.
-                //
-
-                try
-                {
-                    session.Connect(endpoint);
-                    Assert.Fail("Expected exception");
-                }
-                catch (Libssh2Exception e)
-                {
-                    Assert.AreEqual("Unable to exchange encryption keys", e.Message);
-                }
-            }
-        }
-
         //---------------------------------------------------------------------
         // GetAuthenticationMethods.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenConnected_ThenGetAuthenticationMethodsReturnsPublicKey(
+        public async Task GetAuthenticationMethods_WhenConnected_ThenGetAuthenticationMethodsReturnsPublicKey(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -328,6 +297,38 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         //---------------------------------------------------------------------
+        // Connect.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task Connect_WhenServerAcceptsNeitherEcdsaNorRsaHostKey(
+            [LinuxInstance(InitializeScript = InitializeScripts.AllowNeitherEcdsaNorRsaForHostKey)]
+            ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var session = CreateSession())
+            {
+                //
+                // NB. Connect should throw an exception, but libssh doesn't
+                // set the last error. So we have to check the exception
+                // message.
+                //
+
+                try
+                {
+                    session.Connect(endpoint);
+                    Assert.Fail("Expected exception");
+                }
+                catch (Libssh2Exception e)
+                {
+                    Assert.AreEqual("Unable to exchange encryption keys", e.Message);
+                }
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Authentication: password.
         //---------------------------------------------------------------------
 
@@ -339,7 +340,7 @@ namespace Google.Solutions.Ssh.Test.Native
             "systemctl restart sshd";
 
         [Test]
-        public async Task WhenPasswordInvalid_ThenAuthenticateUsingPasswordThrowsException(
+        public async Task Authenticate_Password_WhenPasswordInvalid_ThenAuthenticateUsingPasswordThrowsException(
             [LinuxInstance(InitializeScript = SshdWithPublicKeyOrPasswordAuth)]
             ResourceTask<InstanceLocator> instanceLocatorTask)
         {
@@ -359,7 +360,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenPasswordValid_ThenAuthenticateUsingPasswordSucceeds(
+        public async Task Authenticate_Password_WhenPasswordValid_ThenAuthenticateUsingPasswordSucceeds(
             [LinuxInstance(InitializeScript = SshdWithPublicKeyOrPasswordAuth)]
             ResourceTask<InstanceLocator> instanceLocatorTask)
         {
@@ -382,7 +383,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenPasswordEmpty_ThenAuthenticateInvokesPrompt(
+        public async Task Authenticate_Password_WhenPasswordEmpty_ThenAuthenticateInvokesPrompt(
             [LinuxInstance(InitializeScript = SshdWithPublicKeyOrPasswordAuth)]
             ResourceTask<InstanceLocator> instanceLocatorTask)
         {
@@ -418,7 +419,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenPasswordEmptyAndPromptCanceled_ThenAuthenticateThrowsException(
+        public async Task Authenticate_Password_WhenPasswordEmptyAndPromptCanceled_ThenAuthenticateThrowsException(
             [LinuxInstance(InitializeScript = SshdWithPublicKeyOrPasswordAuth)]
             ResourceTask<InstanceLocator> instanceLocatorTask)
         {
@@ -463,7 +464,7 @@ namespace Google.Solutions.Ssh.Test.Native
             "systemctl restart sshd";
 
         [Test]
-        public async Task WhenPasswordInvalid_ThenAuthenticateUsingKeyboardInteractiveThrowsException(
+        public async Task Authenticate_KeyboardInteractive_WhenPasswordInvalid_ThenAuthenticateUsingKeyboardInteractiveThrowsException(
             [LinuxInstance(InitializeScript = SshdWithPublicKeyOrKeyboardInteractiveAuth)]
             ResourceTask<InstanceLocator> instanceLocatorTask)
         {
@@ -486,7 +487,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenPasswordValid_ThenAuthenticateUsingKeyboardInteractiveSucceeds(
+        public async Task Authenticate_KeyboardInteractive_WhenPasswordValid_ThenAuthenticateUsingKeyboardInteractiveSucceeds(
             [LinuxInstance(InitializeScript = SshdWithPublicKeyOrKeyboardInteractiveAuth)]
             ResourceTask<InstanceLocator> instanceLocatorTask)
         {
@@ -523,7 +524,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenPublicKeyValidButUnrecognized_ThenAuthenticateThrowsException(
+        public async Task Authenticate_PublicKey_WhenPublicKeyValidButUnrecognized_ThenAuthenticateThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
@@ -544,7 +545,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenPublicKeyValidAndKnownFromMetadata_ThenAuthenticateSucceeds(
+        public async Task Authenticate_PublicKey_WhenPublicKeyValidAndKnownFromMetadata_ThenAuthenticateSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(
                 SshKeyType.Rsa3072,
@@ -577,7 +578,7 @@ namespace Google.Solutions.Ssh.Test.Native
             "systemctl restart sshd";
 
         [Test]
-        public async Task WhenPublicKeyAndPasswordRequired_ThenAuthenticateThrowsException(
+        public async Task Authenticate_PublicKey_WhenPublicKeyAndPasswordRequired_ThenAuthenticateThrowsException(
             [LinuxInstance(InitializeScript = SshdWithPublicKeyAndPasswordAuth)] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
@@ -614,7 +615,7 @@ namespace Google.Solutions.Ssh.Test.Native
             "systemctl restart sshd";
 
         [Test]
-        public async Task When2faRequiredAndPromptReturnsWrongValue_ThenPromptIsRetried(
+        public async Task Authenticate_PublicKey2fa_When2faRequiredAndPromptReturnsWrongValue_ThenPromptIsRetried(
             [LinuxInstance(InitializeScript = SshdWithPublicKeyAndKeyboardInteractiveAuth)] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
@@ -652,7 +653,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task When2faRequiredAndPromptReturnsNull_ThenPromptIsRetried(
+        public async Task Authenticate_PublicKey2fa_When2faRequiredAndPromptReturnsNull_ThenPromptIsRetried(
             [LinuxInstance(InitializeScript = SshdWithPublicKeyAndKeyboardInteractiveAuth)] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
@@ -687,7 +688,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task When2faRequiredAndPromptThrowsException_ThenAuthenticateFailsWithoutRetry(
+        public async Task Authenticate_PublicKey2fa_When2faRequiredAndPromptThrowsException_ThenAuthenticateFailsWithoutRetry(
             [LinuxInstance(InitializeScript = SshdWithPublicKeyAndKeyboardInteractiveAuth)] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {

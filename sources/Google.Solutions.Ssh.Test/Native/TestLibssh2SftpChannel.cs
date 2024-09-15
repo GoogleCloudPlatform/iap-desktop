@@ -39,7 +39,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSftpDisabledAuthenticated_ThenOpenSftpChannelThrowsException(
+        public async Task OpenSftpChannel_WhenSftpDisabled_ThenOpenSftpChannelThrowsException(
             [LinuxInstance(InitializeScript =
                 "sed -i '/.*sftp-server/d' /etc/ssh/sshd_config && systemctl restart sshd")]
             ResourceTask<InstanceLocator> instanceLocatorTask)
@@ -65,7 +65,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenAuthenticated_ThenOpenSftpChannelReturnsChannel(
+        public async Task OpenSftpChannel_WhenAuthenticated_ThenOpenSftpChannelReturnsChannel(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -91,7 +91,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenDirectoryDoesNotExist_ThenListFilesThrowsException(
+        public async Task ListFiles_WhenDirectoryDoesNotExist_ThenListFilesThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -115,7 +115,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenDirectoryExists_ThenListFilesReturnsFiles(
+        public async Task ListFiles_WhenDirectoryExists_ThenListFilesReturnsFiles(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -145,7 +145,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenPathIsDot_ThenListFilesReturnsFilesFromHomeDirectory(
+        public async Task ListFiles_WhenPathIsDot_ThenListFilesReturnsFilesFromHomeDirectory(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -179,7 +179,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenParentDirectoryDoesNotExist_ThenCreateDirectoryThrowsException(
+        public async Task CreateDirectory_WhenParentDirectoryDoesNotExist_ThenCreateDirectoryThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -207,7 +207,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenParentDirectoryNotWritable_ThenCreateDirectoryThrowsException(
+        public async Task CreateDirectory_WhenParentDirectoryNotWritable_ThenCreateDirectoryThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -235,7 +235,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenParentDirectoryExists_ThenCreateDirectorySucceeds(
+        public async Task CreateDirectory_WhenParentDirectoryExists_ThenCreateDirectorySucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -270,7 +270,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenDirectoryDoesNotExist_ThenDeleteDirectoryThrowsException(
+        public async Task DeleteDirectory_WhenDirectoryDoesNotExist_ThenDeleteDirectoryThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -294,7 +294,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenDirectoryExists_ThenDeleteDirectorySucceeds(
+        public async Task DeleteDirectory_WhenDirectoryExists_ThenDeleteDirectorySucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -330,7 +330,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenParentDirectoryDoesNotExist_ThenCreateFileThrowsException(
+        public async Task CreateFile_WhenParentDirectoryDoesNotExist_ThenCreateFileThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -359,7 +359,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenParentDirectoryNotWritable_ThenCreateFileThrowsException(
+        public async Task CreateFile_WhenParentDirectoryNotWritable_ThenCreateFileThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -388,7 +388,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenParentDirectoryExists_ThenCreateFileSucceeds(
+        public async Task CreateFile_WhenParentDirectoryExists_ThenCreateFileSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -425,7 +425,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenFileDoesNotExist_ThenDeleteFileThrowsException(
+        public async Task DeleteFile_WhenFileDoesNotExist_ThenDeleteFileThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -448,7 +448,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenFileIsDirectory_ThenDeleteFileThrowsException(
+        public async Task DeleteFile_WhenFileIsDirectory_ThenDeleteFileThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -472,7 +472,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenFileExists_ThenDeleteFileSucceeds(
+        public async Task DeleteFile_WhenFileExists_ThenDeleteFileSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;

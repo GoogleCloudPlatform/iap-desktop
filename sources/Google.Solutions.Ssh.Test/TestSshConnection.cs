@@ -33,7 +33,7 @@ namespace Google.Solutions.Ssh.Test
     public class TestSshConnection : SshFixtureBase
     {
         [Test]
-        public async Task WhenDisposingConnection_ThenWorkerIsStopped(
+        public async Task Dispose_ThenWorkerIsStopped(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;

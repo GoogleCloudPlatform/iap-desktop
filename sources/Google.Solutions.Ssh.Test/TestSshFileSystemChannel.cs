@@ -51,7 +51,7 @@ namespace Google.Solutions.Ssh.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenChannelClosedExplicitly_ThenDoubleCloseIsPrevented(
+        public async Task Close_WhenChannelClosedExplicitly_ThenDoubleCloseIsPrevented(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -83,7 +83,7 @@ namespace Google.Solutions.Ssh.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenPathExists_ThenListFilesAsyncReturnsFiles(
+        public async Task ListFiles_WhenPathExists_ThenListFilesAsyncReturnsFiles(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -116,7 +116,7 @@ namespace Google.Solutions.Ssh.Test
         }
 
         [Test]
-        public async Task WhenPathInvalid_ThenListFilesAsyncThrowsException(
+        public async Task ListFiles_WhenPathInvalid_ThenListFilesAsyncThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -152,7 +152,7 @@ namespace Google.Solutions.Ssh.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenFileDoesNotExistYet_ThenUploadFileSucceeds(
+        public async Task UploadFile_WhenFileDoesNotExistYet_ThenUploadFileSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -191,7 +191,7 @@ namespace Google.Solutions.Ssh.Test
         }
 
         [Test]
-        public async Task WhenFileExists_ThenUploadFileThrowsException(
+        public async Task UploadFile_WhenFileExists_ThenUploadFileThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -230,9 +230,8 @@ namespace Google.Solutions.Ssh.Test
             }
         }
 
-
         [Test]
-        public async Task WhenUploadCancelled_ThenUploadFileThrowsException(
+        public async Task UploadFile_WhenUploadCancelled_ThenUploadFileThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -279,7 +278,7 @@ namespace Google.Solutions.Ssh.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenFileExists_ThenDownloadFileSucceeds(
+        public async Task DownloadFile_WhenFileExists_ThenDownloadFileSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -317,7 +316,7 @@ namespace Google.Solutions.Ssh.Test
         }
 
         [Test]
-        public async Task WhenFileDoesNotExist_ThenDownloadFileThrowsException(
+        public async Task DownloadFile_WhenFileDoesNotExist_ThenDownloadFileThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -355,7 +354,7 @@ namespace Google.Solutions.Ssh.Test
         }
 
         [Test]
-        public async Task WhenDownloadCancelled_ThenDownloadFileThrowsException(
+        public async Task DownloadFile_WhenDownloadCancelled_ThenDownloadFileThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;

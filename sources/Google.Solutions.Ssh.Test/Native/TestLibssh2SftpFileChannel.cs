@@ -39,7 +39,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenFileSizeIsZero_ThenReadReturnsZero(
+        public async Task Read_WhenFileSizeIsZero_ThenReadReturnsZero(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -72,7 +72,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenFileWritten_ThenReadReturnsSameData(
+        public async Task Write_WhenFileWritten_ThenReadReturnsSameData(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;

@@ -30,7 +30,7 @@ namespace Google.Solutions.Ssh.Test
     public class TestStreamingDecoder : SshFixtureBase
     {
         [Test]
-        public void WhenInputContainsOneByteUtf8Sequence_ThenInputIsDecoded()
+        public void Decode_WhenInputContainsOneByteUtf8Sequence_ThenInputIsDecoded()
         {
             var decoder = new StreamingDecoder(Encoding.UTF8);
             var s = decoder.Decode(new byte[] { 0x24, 0x24 });
@@ -39,7 +39,7 @@ namespace Google.Solutions.Ssh.Test
 
 
         [Test]
-        public void WhenInputContainsTwoByteUtf8Sequence_ThenInputIsDecoded()
+        public void Decode_WhenInputContainsTwoByteUtf8Sequence_ThenInputIsDecoded()
         {
             var decoder = new StreamingDecoder(Encoding.UTF8);
             var s = decoder.Decode(new byte[] { 0xC2, 0xA2 });
@@ -47,7 +47,7 @@ namespace Google.Solutions.Ssh.Test
         }
 
         [Test]
-        public void WhenInputContainsThreeByteUtf8Sequence_ThenInputIsDecoded()
+        public void Decode_WhenInputContainsThreeByteUtf8Sequence_ThenInputIsDecoded()
         {
             var decoder = new StreamingDecoder(Encoding.UTF8);
             var s = decoder.Decode(new byte[] { 0xE0, 0xA4, 0xB9 });
@@ -55,7 +55,7 @@ namespace Google.Solutions.Ssh.Test
         }
 
         [Test]
-        public void WhenInputContainsPartialTwoByteUtf8Sequence_ThenInputIsHeld()
+        public void Decode_WhenInputContainsPartialTwoByteUtf8Sequence_ThenInputIsHeld()
         {
             var decoder = new StreamingDecoder(Encoding.UTF8);
 
@@ -67,7 +67,7 @@ namespace Google.Solutions.Ssh.Test
         }
 
         [Test]
-        public void WhenInputContainsPartialThreeByteUtf8Sequence_ThenInputIsHeld()
+        public void Decode_WhenInputContainsPartialThreeByteUtf8Sequence_ThenInputIsHeld()
         {
             var decoder = new StreamingDecoder(Encoding.UTF8);
 

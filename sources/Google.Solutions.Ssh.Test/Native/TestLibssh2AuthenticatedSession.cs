@@ -33,12 +33,12 @@ namespace Google.Solutions.Ssh.Test.Native
     public class TestLibssh2AuthenticatedSession : SshFixtureBase
     {
         //---------------------------------------------------------------------
-        // Channel.
+        // OpenShellChannel.
         //---------------------------------------------------------------------
 
         [Test]
         [Repeat(300)]
-        public async Task WhenConnected_ThenOpenShellChannelSucceeds(
+        public async Task OpenShellChannel_WhenConnected_ThenOpenShellChannelSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
@@ -66,7 +66,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenClosingSessionBeforeChannel_ThenDoubleFreeIsPrevented(
+        public async Task OpenShellChannel_Dispose_PreventsDoubleFree(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -98,7 +98,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenUsingRsaKeyButOnlyEcdsaAllowed_ThenAuthenticateThrowsException(
+        public async Task Authenticate_WhenUsingRsaKeyButOnlyEcdsaAllowed_ThenAuthenticateThrowsException(
             [LinuxInstance(InitializeScript = InitializeScripts.AllowEcdsaOnlyForPubkey)]
             ResourceTask<InstanceLocator> instanceLocatorTask)
         {

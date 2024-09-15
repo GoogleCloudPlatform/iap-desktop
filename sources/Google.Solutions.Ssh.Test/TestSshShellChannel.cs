@@ -85,7 +85,7 @@ namespace Google.Solutions.Ssh.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSendingEchoCommand_ThenEchoIsReceived(
+        public async Task Send_WhenSendingEchoCommand_ThenEchoIsReceived(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -132,7 +132,7 @@ namespace Google.Solutions.Ssh.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenChannelClosedExplicitly_ThenDoubleCloseIsPrevented(
+        public async Task Close_WhenChannelClosedExplicitly_ThenDoubleCloseIsPrevented(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -171,7 +171,7 @@ namespace Google.Solutions.Ssh.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenServerAcceptsLocale_ThenShellUsesRightLocale(
+        public async Task OpenShell_WhenServerAcceptsLocale_ThenShellUsesRightLocale(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -220,7 +220,7 @@ namespace Google.Solutions.Ssh.Test
         }
 
         [Test]
-        public async Task WhenServerRejectsLocale_ThenShellUsesDefaultLocale(
+        public async Task OpenShell_WhenServerRejectsLocale_ThenShellUsesDefaultLocale(
             [LinuxInstance(InitializeScript =
                 "sed -i '/AcceptEnv/d' /etc/ssh/sshd_config && systemctl restart sshd")]
                 ResourceTask<InstanceLocator> instanceLocatorTask)
@@ -272,7 +272,7 @@ namespace Google.Solutions.Ssh.Test
         }
 
         [Test]
-        public async Task WhenLocaleIsNull_ThenShellUsesDefaultLocale(
+        public async Task OpenShell_WhenLocaleIsNull_ThenShellUsesDefaultLocale(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;

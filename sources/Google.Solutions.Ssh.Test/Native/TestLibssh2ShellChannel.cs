@@ -29,7 +29,6 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Test.Native
 {
-
     [TestFixture]
     [UsesCloudResources]
     public class TestLibssh2ShellChannel : SshFixtureBase
@@ -80,7 +79,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenConnected_ThenOpenShellChannelAsyncSucceeds(
+        public async Task OpenShellChannel_WhenConnected(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -119,7 +118,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenWhitelistedEnvironmentVariablePassed_ThenShellCanAccessVariable(
+        public async Task OpenShellChannel_WhenWhitelistedEnvironmentVariablePassed_ThenShellCanAccessVariable(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -167,7 +166,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenNonWhitelistedEnvironmentVariablePassed_ThenOpenShellChannelAsyncThrowsRequestDenied(
+        public async Task OpenShellChannel_WhenNonWhitelistedEnvironmentVariablePassed_ThenOpenShellChannelAsyncThrowsRequestDenied(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -200,7 +199,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenPseudoterminalResized_ThenShellReflectsNewSize(
+        public async Task OpenShellChannel_WhenPseudoterminalResized_ThenShellReflectsNewSize(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
