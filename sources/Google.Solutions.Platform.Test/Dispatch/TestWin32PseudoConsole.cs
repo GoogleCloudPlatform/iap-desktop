@@ -36,7 +36,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenProcessWritesToStdout_ThenOutputAvailableIsRaised()
+        public async Task OutputAvailable_WhenProcessWritesToStdout_ThenOutputAvailableIsRaised()
         {
             var factory = new Win32ProcessFactory();
             using (var process = factory.CreateProcessWithPseudoConsole(
@@ -76,7 +76,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenProcessTerminated_ThenDisconnectedIsRaised()
+        public async Task Disconnected_WhenProcessTerminated_ThenDisconnectedIsRaised()
         {
             var factory = new Win32ProcessFactory();
             using (var process = factory.CreateProcessWithPseudoConsole(
@@ -103,7 +103,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task CloseKeepStreamOpen()
+        public async Task Close_KeepsStreamOpen()
         {
             using (var pty = new Win32PseudoConsole(new PseudoConsoleSize(80, 24)))
             {
@@ -126,7 +126,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void DisposeTerminatesProcess()
+        public void Dispose_TerminatesProcess()
         {
             var factory = new Win32ProcessFactory();
             using (var process = factory.CreateProcessWithPseudoConsole(
@@ -142,7 +142,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void DisposeClosesStreams()
+        public void Dispose_ClosesStreams()
         {
             var pty = new Win32PseudoConsole(new PseudoConsoleSize(80, 24));
             pty.Dispose();

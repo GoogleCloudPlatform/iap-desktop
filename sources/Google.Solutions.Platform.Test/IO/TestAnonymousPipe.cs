@@ -33,7 +33,7 @@ namespace Google.Solutions.Platform.Test.IO
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenWriteSideClosed_ThenHandlesAreClosed()
+        public void Handle_WhenWriteSideClosed_ThenHandlesAreClosed()
         {
             using (var pipe = new AnonymousPipe())
             {
@@ -48,7 +48,7 @@ namespace Google.Solutions.Platform.Test.IO
         }
 
         [Test]
-        public void WhenReadSideClosed_ThenHandlesAreClosed()
+        public void Handle_WhenReadSideClosed_ThenHandlesAreClosed()
         {
             using (var pipe = new AnonymousPipe())
             {
@@ -67,7 +67,7 @@ namespace Google.Solutions.Platform.Test.IO
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenWriteStreamClosed_ThenHandlesAreClosed()
+        public void Stream_WhenWriteStreamClosed_ThenHandlesAreClosed()
         {
             using (var pipe = new AnonymousPipe())
             {
@@ -82,7 +82,7 @@ namespace Google.Solutions.Platform.Test.IO
         }
 
         [Test]
-        public void WhenReadStreamClosed_ThenHandlesAreClosed()
+        public void Stream_WhenReadStreamClosed_ThenHandlesAreClosed()
         {
             using (var pipe = new AnonymousPipe())
             {
@@ -97,7 +97,7 @@ namespace Google.Solutions.Platform.Test.IO
         }
 
         [Test]
-        public void WhenDataWrittenToWriteSide_ThenDataCanBeReadFromReadSide()
+        public void Stream_WhenDataWrittenToWriteSide_ThenDataCanBeReadFromReadSide()
         {
             using (var pipe = new AnonymousPipe())
             {

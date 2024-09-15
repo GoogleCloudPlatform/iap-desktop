@@ -37,7 +37,7 @@ namespace Google.Solutions.Platform.Test.Interop
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTransferOwnershipIsFalse_ThenToWaitHandleReturnsNonOwningHandle()
+        public void ToWaitHandle_WhenTransferOwnershipIsFalse_ThenToWaitHandleReturnsNonOwningHandle()
         {
             using (var handle = Process.GetCurrentProcess().SafeHandle)
             {
@@ -51,7 +51,7 @@ namespace Google.Solutions.Platform.Test.Interop
         }
 
         [Test]
-        public void WhenTransferOwnershipIsTrue_ThenToWaitHandleReturnsOwningHandle()
+        public void ToWaitHandle_WhenTransferOwnershipIsTrue_ThenToWaitHandleReturnsOwningHandle()
         {
             var handle = Process.GetCurrentProcess().SafeHandle;
             var waitHandle = handle.ToWaitHandle(false);
@@ -63,11 +63,11 @@ namespace Google.Solutions.Platform.Test.Interop
         }
 
         //---------------------------------------------------------------------
-        // WaitAsync.
+        // Wait.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTimeoutElapses_ThenWaitAsyncThrowsException()
+        public void Wait_WhenTimeoutElapses_ThenWaitAsyncThrowsException()
         {
             using (var cts = new CancellationTokenSource())
             using (var ev = new ManualResetEvent(false))
@@ -80,7 +80,7 @@ namespace Google.Solutions.Platform.Test.Interop
         }
 
         [Test]
-        public void WhenCancelled_ThenWaitAsyncThrowsException()
+        public void Wait_WhenCancelled_ThenWaitAsyncThrowsException()
         {
             using (var ev = new ManualResetEvent(false))
             using (var cts = new CancellationTokenSource())
@@ -94,7 +94,7 @@ namespace Google.Solutions.Platform.Test.Interop
         }
 
         [Test]
-        public async Task WhenSignalled_ThenWaitAsyncReturns()
+        public async Task Wait_WhenSignalled_ThenWaitAsyncReturns()
         {
             using (var ev = new ManualResetEvent(true))
             {

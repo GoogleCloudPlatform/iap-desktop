@@ -50,7 +50,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void JobsArePerProcess()
+        public void Jobs_JobsArePerProcess()
         {
             using (var factory = new Win32ChildProcessFactory(true))
             using (var process1 = factory.CreateProcess(CmdExe, null))
@@ -65,7 +65,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProcessFound_ThenContainsReturnsTrue()
+        public void Contains_WhenProcessFound_ThenContainsReturnsTrue()
         {
             using (var factory = new Win32ChildProcessFactory(true))
             using (var process = factory.CreateProcess(CmdExe, null))
@@ -76,7 +76,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void WhenProcessNotFound_ThenContainsReturnsFalse()
+        public void Contains_WhenProcessNotFound_ThenContainsReturnsFalse()
         {
             using (var factory = new Win32ChildProcessFactory(true))
             {
@@ -89,7 +89,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenChildTerminated_ThenCloseReturns()
+        public async Task Close_WhenChildTerminated_ThenCloseReturns()
         {
             using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
             using (var factory = new Win32ChildProcessFactory(false))
@@ -108,7 +108,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public async Task WhenChildRunning_ThenCloseReturns()
+        public async Task Close_WhenChildRunning_ThenCloseReturns()
         {
             using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
             using (var factory = new Win32ChildProcessFactory(false))
@@ -127,7 +127,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTerminateOnCloseIsFalse_ThenDisposeKeepsProcesses()
+        public void Dispose_WhenTerminateOnCloseIsFalse_ThenDisposeKeepsProcesses()
         {
             var factory = new Win32ChildProcessFactory(false);
             var process = factory.CreateProcess(CmdExe, null);
@@ -142,7 +142,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void WhenTerminateOnCloseIsTrue_ThenDisposeTerminatesProcesses()
+        public void Dispose_WhenTerminateOnCloseIsTrue_ThenDisposeTerminatesProcesses()
         {
             var factory = new Win32ChildProcessFactory(true);
             var process = factory.CreateProcess(CmdExe, null);

@@ -76,7 +76,7 @@ namespace Google.Solutions.Platform.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenKeyIsNull_ThenBuilderCreatesEmptyPolicy()
+        public void Build_WhenKeyIsNull_ThenBuilderCreatesEmptyPolicy()
         {
             var policy = new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
                 .AddGroupPolicy((RegistryKey?)null)
@@ -87,7 +87,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void WhenPolicyEmpty_ThenNoCertificatesMatch()
+        public void Build_WhenPolicyEmpty_ThenNoCertificatesMatch()
         {
             Assert.IsFalse(new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
                 .Build()
@@ -95,7 +95,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void WhenKeyContainsJunkValues_ThenBuilderIgnoresJunkValues()
+        public void Build_WhenKeyContainsJunkValues_ThenBuilderIgnoresJunkValues()
         {
             this.key!.SetValue("1", "{'pattern': 'https://[*.]example.org', 'filter':{}}");
             this.key.SetValue("2", "{'pattern': 'https://[*.]example.com', 'filter':{}}");
@@ -109,7 +109,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void WhenKeyContainsMalformedValues_ThenBuilderIgnoresJunkValues()
+        public void Build_WhenKeyContainsMalformedValues_ThenBuilderIgnoresJunkValues()
         {
             this.key!.SetValue("1", "{'pattern': 'https://[*.]example.org', 'filter':{}}");
             this.key.SetValue("2", "{'pattern': 'https://[*.]example.com', 'filter':{"); // Syntax error.
@@ -121,7 +121,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void WhenKeyContainsSelectors_ThenBuilderEvaluatesSelectors()
+        public void Build_WhenKeyContainsSelectors_ThenBuilderEvaluatesSelectors()
         {
             this.key!.SetValue("11",
                 "{'pattern': 'https://[*.]example.org', 'filter':{'SUBJECT': {'CN': 'example.org'}}}");

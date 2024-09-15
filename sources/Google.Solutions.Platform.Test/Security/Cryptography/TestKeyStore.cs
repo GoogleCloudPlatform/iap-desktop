@@ -73,7 +73,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTypeIsValid_ThenOpenPersistentKeyReturnsKey(
+        public void OpenKey_WhenTypeIsValid_ThenOpenPersistentKeyReturnsKey(
             [Values(
                 CommonKeyType.Rsa1024,
                 CommonKeyType.Rsa2048,
@@ -96,7 +96,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         }
 
         [Test]
-        public void WhenTypeIsInvalid_ThenOpenPersistentKeyThrowsException()
+        public void OpenKey_WhenTypeIsInvalid_ThenOpenPersistentKeyThrowsException()
         {
             var keyType = new KeyType(CngAlgorithm.Rsa, 1);
 
@@ -110,7 +110,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         }
 
         [Test]
-        public void WhenKeyFoundAndForceCreateIsFalse_ThenOpenPersistentKeyReturnsExistingKey(
+        public void OpenKey_WhenKeyFoundAndForceCreateIsFalse_ThenOpenPersistentKeyReturnsExistingKey(
             [Values(
                 CommonKeyType.Rsa1024,
                 CommonKeyType.Rsa2048,
@@ -140,7 +140,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         }
 
         [Test]
-        public void WhenKeyFoundAndForceCreateIsTrue_ThenOpenPersistentKeyReturnsNewKey(
+        public void OpenKey_WhenKeyFoundAndForceCreateIsTrue_ThenOpenPersistentKeyReturnsNewKey(
             [Values(
                 CommonKeyType.Rsa1024,
                 CommonKeyType.Rsa2048,
@@ -170,7 +170,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         }
 
         [Test]
-        public void WhenKeyFoundButAlgorithmMismatches_ThenOpenPersistentKeyThrowsException()
+        public void OpenKey_WhenKeyFoundButAlgorithmMismatches_ThenOpenPersistentKeyThrowsException()
         {
             using (this.Store.OpenKey(
                 IntPtr.Zero,
@@ -190,7 +190,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         }
 
         [Test]
-        public void WhenKeyFoundButSizeMismatches_ThenOpenPersistentKeyThrowsException()
+        public void OpenKey_WhenKeyFoundButSizeMismatches_ThenOpenPersistentKeyThrowsException()
         {
             using (this.Store.OpenKey(
                 IntPtr.Zero,
@@ -210,7 +210,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         }
 
         [Test]
-        public void WhenKeyFoundButUsageMismatches_ThenOpenPersistentKeyThrowsException()
+        public void OpenKey_WhenKeyFoundButUsageMismatches_ThenOpenPersistentKeyThrowsException()
         {
             using (this.Store.OpenKey(
                 IntPtr.Zero,
@@ -234,7 +234,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenKeyExists_ThenDeletePersistentKeyDeletesKey()
+        public void DeletePersistentKey_WhenKeyExists()
         {
             using (this.Store.OpenKey(
                 IntPtr.Zero,

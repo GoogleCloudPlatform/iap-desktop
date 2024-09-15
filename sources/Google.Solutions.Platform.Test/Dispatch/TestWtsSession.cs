@@ -50,7 +50,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPidIsFromCurrentProcess_ThenFromProcessIdReturnsSession()
+        public void FromProcessId_WhenPidIsFromCurrentProcess_ThenFromProcessIdReturnsSession()
         {
             var session = WtsSession.FromProcessId((uint)Process.GetCurrentProcess().Id);
             Assert.IsNotNull(session);
@@ -58,7 +58,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void WhenPidNotFound_ThenFromProcessIdThrowsException()
+        public void FromProcessId_WhenPidNotFound_ThenFromProcessIdThrowsException()
         {
             Assert.Throws<DispatchException>(
                 () => WtsSession.FromProcessId(uint.MaxValue));

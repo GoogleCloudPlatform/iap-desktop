@@ -28,7 +28,7 @@ namespace Google.Solutions.Platform.Test.Interop
     public class TestCoTaskMemAllocSafeHandle
     {
         [Test]
-        public void WhenMemoryFreed_ThenHandleIsInvalid()
+        public void IsInvalid_WhenMemoryFreed_ThenHandleIsInvalid()
         {
             var handle = CoTaskMemAllocSafeHandle.Alloc(8);
             Assert.IsFalse(handle.IsClosed);
@@ -41,7 +41,7 @@ namespace Google.Solutions.Platform.Test.Interop
         }
 
         [Test]
-        public void WhenStringFreed_ThenHandleIsInvalid()
+        public void IsInvalid_WhenStringFreed_ThenHandleIsInvalid()
         {
             var handle = CoTaskMemAllocSafeHandle.Alloc("test");
             Assert.IsFalse(handle.IsClosed);

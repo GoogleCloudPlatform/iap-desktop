@@ -40,7 +40,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenKillOnJobCloseIsTrue_ThenDisposeKillsProcesses()
+        public void Ctor_WhenKillOnJobCloseIsTrue_ThenDisposeKillsProcesses()
         {
             var factory = new Win32ProcessFactory();
 
@@ -59,7 +59,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void WhenKillOnJobCloseIsFalse_ThenDisposeKeepsProcesses()
+        public void Ctor_WhenKillOnJobCloseIsFalse_ThenDisposeKeepsProcesses()
         {
             var factory = new Win32ProcessFactory();
 
@@ -83,7 +83,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenAdded_ThenContainsReturnsTrue()
+        public void Contains_WhenAdded_ThenContainsReturnsTrue()
         {
             var factory = new Win32ProcessFactory();
 
@@ -104,7 +104,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void WhenProcessDoesNotExist_ThenContainsThrowsException()
+        public void Contains_WhenProcessDoesNotExist_ThenContainsThrowsException()
         {
             using (var job = new Win32Job(true))
             {
@@ -118,7 +118,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenJobEmpty_ThenProcessIdsIsEmpty()
+        public void ProcessIds_WhenJobEmpty_ThenProcessIdsIsEmpty()
         {
             using (var job = new Win32Job(true))
             {
@@ -127,7 +127,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void WhenJobContainsProcesses_ThenProcessIdsReturnsId()
+        public void ProcessIds_WhenJobContainsProcesses_ThenProcessIdsReturnsId()
         {
             var factory = new Win32ProcessFactory();
 
@@ -146,11 +146,11 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         //---------------------------------------------------------------------
-        // ProcessIds.
+        // WaitForProcesses.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenJobEmpty_ThenWaitReturns()
+        public async Task WaitForProcesses_WhenJobEmpty_ThenWaitReturns()
         {
             using (var job = new Win32Job(true))
             {
@@ -161,7 +161,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void WhenTimeoutElapses_ThenWaitThrowsException()
+        public void WaitForProcesses_WhenTimeoutElapses_ThenWaitThrowsException()
         {
             var factory = new Win32ProcessFactory();
 
@@ -178,7 +178,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public async Task WhenProcessTerminates_ThenWaitReturns()
+        public async Task WaitForProcesses_WhenProcessTerminates_ThenWaitReturns()
         {
             var factory = new Win32ProcessFactory();
 
