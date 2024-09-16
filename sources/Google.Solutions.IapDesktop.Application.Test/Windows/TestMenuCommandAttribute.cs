@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenCommandIsForDifferentContext_ThenAddCommandsIgnoresIt()
+        public void DiscoverCommands_WhenCommandIsForDifferentContext()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddTransient<NotContextCommand>();
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenCommandIsForDifferentMenu_ThenAddCommandsIgnoresIt()
+        public void DiscoverCommands_WhenCommandIsForDifferentMenu()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddTransient<ContextCommandForToolbarsOnly>();
@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenCommandIsForDifferentCommandType_ThenAddCommandsIgnoresIt()
+        public void DiscoverCommands_WhenCommandIsForDifferentCommandType()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddTransient<ContextCommandForToolbarsOnly>();
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenCommandMatches_ThenAddCommandsAddsCommand()
+        public void DiscoverCommands_WhenCommandMatches()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddTransient<ContextCommandForToolbarsOnly>();
@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenRanksFarApart_ThenAddCommandsInjectsSeparator()
+        public void DiscoverCommands_WhenRanksFarApart()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddTransient<ContextCommandWithRank100>();
@@ -201,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenCommandIsMenu_ThenAddCommandsAddsNestedCommands()
+        public void DiscoverCommands_WhenCommandIsMenu_ThenAddCommandsAddsNestedCommands()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddTransient<ContextCommandWithSubMenu>();

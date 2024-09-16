@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public void ApplyChangesCallsSaveAndWritesBackSettings()
+        public void ApplyChanges_CallsSaveAndWritesBackSettings()
         {
             var repository = CreateRepositoryMock();
             var optionsViewModel = new OptionsViewModel(
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public async Task WhenWriteBackSucceeds_ThenApplyChangesReturns()
+        public async Task ApplyChanges_WhenWriteBackSucceeds()
         {
             var repository = CreateRepositoryMock();
             var optionsViewModel = new OptionsViewModel(
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenSaveFails_ThenApplyChangesThrowsException()
+        public void ApplyChanges_WhenSaveFails()
         {
             var repository = CreateRepositoryMock();
             repository
@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenWriteBackFails_ThenApplyChangesThrowsException()
+        public void ApplyChanges_WhenWriteBackFails()
         {
             var repository = CreateRepositoryMock();
             repository
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task ApplyChangesClearsDirtyFlag()
+        public async Task ApplyChanges_ClearsDirtyFlag()
         {
             var repository = CreateRepositoryMock();
             var optionsViewModel = new OptionsViewModel(
@@ -186,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenPropertyChanges_TheDirtyFlagIsSet()
+        public void IsDirty_WhenPropertyChanges()
         {
             var repository = CreateRepositoryMock();
             var optionsViewModel = new OptionsViewModel(

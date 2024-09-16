@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task NoExistingAuthorizationFound()
+        public async Task TryLoadExistingAuthorization_WhenNoExistingAuthorizationFound()
         {
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public async Task ExistingAuthorizationFails()
+        public async Task TryLoadExistingAuthorization_WhenExistingAuthorizationFails()
         {
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
@@ -163,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public async Task ExistingAuthorizationFound()
+        public async Task TryLoadExistingAuthorization_WhenExistingAuthorizationFound()
         {
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
@@ -188,11 +188,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         //---------------------------------------------------------------------
-        // SignInAsync.
+        // SignInWithDefaultBrowserCommand.
         //---------------------------------------------------------------------
 
         [Test]
-        public void SignInCancelled()
+        public void SignInWithDefaultBrowserCommand_WhenSignInCancelled()
         {
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
@@ -214,7 +214,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public async Task NetworkErrorAndRetryDenied()
+        public async Task SignInWithDefaultBrowserCommand_WhenNetworkErrorAndRetryDenied()
         {
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
@@ -247,7 +247,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public async Task OAuthScopeNotGrantedAndRetryDenied()
+        public async Task SignInWithDefaultBrowserCommand_WhenOAuthScopeNotGrantedAndRetryDenied()
         {
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
@@ -285,7 +285,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public async Task SignInForInitialAuthorization()
+        public async Task SignInWithDefaultBrowserCommand_WhenInitialAuthorization()
         {
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
@@ -317,7 +317,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public async Task SignInForReauthorization()
+        public async Task SignInWithDefaultBrowserCommand_WhenReauthorizing()
         {
             IAuthorization authorization;
             using (var view = new Form())

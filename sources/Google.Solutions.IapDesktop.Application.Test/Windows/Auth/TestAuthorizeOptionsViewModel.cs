@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenGaiaOptionChecked_ThenIsOkButtonEnabledReturnsTrue()
+        public void IsOkButtonEnabled_WhenGaiaOptionChecked_ThenIsOkButtonEnabledReturnsTrue()
         {
             var repository = CreateSettingsRepository(null);
             var viewModel = new AuthorizeOptionsViewModel(repository.Object);
@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public void WhenWorkforcePoolOptionChecked_ThenIsOkButtonEnabledReturnsFalse()
+        public void IsOkButtonEnabled_WhenWorkforcePoolOptionChecked_ThenIsOkButtonEnabledReturnsFalse()
         {
             var repository = CreateSettingsRepository(null);
             var viewModel = new AuthorizeOptionsViewModel(repository.Object);
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public void WhenWorkforcePoolOptionCheckedAndDetailsProvided_ThenIsOkButtonEnabledReturnsTrue()
+        public void IsOkButtonEnabled_WhenWorkforcePoolOptionCheckedAndDetailsProvided_ThenIsOkButtonEnabledReturnsTrue()
         {
             var repository = CreateSettingsRepository(null);
             var viewModel = new AuthorizeOptionsViewModel(repository.Object);
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSettingsDoNotContainWorkforcePoolProvider_ThenRadioButtonsAreSet()
+        public void IsXxxOptionChecked_WhenSettingsDoNotContainWorkforcePoolProvider_ThenRadioButtonsAreSet()
         {
             var repository = CreateSettingsRepository(null);
             var viewModel = new AuthorizeOptionsViewModel(repository.Object);
@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public void WhenSettingsContainWorkforcePoolProvider_ThenRadioButtonsAreSet()
+        public void IsXxxOptionChecked_WhenSettingsContainWorkforcePoolProvider_ThenRadioButtonsAreSet()
         {
             var repository = CreateSettingsRepository(SampleProviderLocator);
             var viewModel = new AuthorizeOptionsViewModel(repository.Object)
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSettingsDoNotContainWorkforcePoolProvider_ThenTextBoxesAreEmpty()
+        public void WorkforcePool_WhenSettingsDoNotContainWorkforcePoolProvider_ThenTextBoxesAreEmpty()
         {
             var repository = CreateSettingsRepository(null);
             var viewModel = new AuthorizeOptionsViewModel(repository.Object);
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public void WhenLocatorSet_ThenIsWorkforcePoolOptionCheckedReturnsTrue()
+        public void WorkforcePool_WhenLocatorSet_ThenIsWorkforcePoolOptionCheckedReturnsTrue()
         {
             var repository = CreateSettingsRepository(SampleProviderLocator);
             var viewModel = new AuthorizeOptionsViewModel(repository.Object);

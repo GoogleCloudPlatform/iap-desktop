@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSettingEnabled_ThenIsDeviceCertificateAuthenticationEnabledIsTrue()
+        public void DeviceCertificateAuthentication_WhenSettingEnabled()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenSettingDisabled_ThenIsDeviceCertificateAuthenticationEnabledIsTrue()
+        public void DeviceCertificateAuthentication_WhenSettingDisabled()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenSettingEnabledByPolicy_ThenIsDeviceCertificateAuthenticationEditableIsFalse()
+        public void DeviceCertificateAuthentication_WhenSettingEnabledByPolicy()
         {
             var settingsRepository = CreateSettingsRepository(
                 new Dictionary<string, object>
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public async Task WhenDisablingDca_ThenChangeIsApplied()
+        public async Task DeviceCertificateAuthentication_ApplyChanges()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenDcaChanged_ThenIsDirtyIsTrueUntilApplied()
+        public void DeviceCertificateAuthentication_WhenChanged_ThenIsDirtyIsTrueUntilApplied()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new AccessOptionsViewModel(
@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPrivateServiceConnectEndpointConfigured_ThenPrivateServiceConnectEndpointEnabledIsSet()
+        public void PrivateServiceConnectEndpoint_WhenPrivateServiceConnectEndpointConfigured()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenPrivateServiceConnectEndpointNotConfigured_ThenIsPrivateServiceConnectEndpointEnabledIsNull()
+        public void PrivateServiceConnectEndpoint_WhenPrivateServiceConnectEndpointNotConfigured()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -190,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenPrivateServiceConnectEndpointConfiguredByPolicy_ThenIsPrivateServiceConnectEndpointEditableIsFalse()
+        public void PrivateServiceConnectEndpoint_WhenPrivateServiceConnectEndpointConfiguredByPolicy()
         {
             var settingsRepository = CreateSettingsRepository(
                 new Dictionary<string, object>
@@ -212,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public async Task WhenChangingPrivateServiceConnectEndpoint_ThenChangeIsApplied()
+        public async Task PrivateServiceConnectEndpoint_WhenChangingPrivateServiceConnectEndpoint_ApplyChanges()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -234,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenChangingPrivateServiceConnectEndpoint_ThenIsDirtyIsTrueUntilApplied()
+        public void PrivateServiceConnectEndpoint_WhenChangingPrivateServiceConnectEndpoint_ThenIsDirtyIsTrueUntilApplied()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new AccessOptionsViewModel(
@@ -253,11 +253,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         //---------------------------------------------------------------------
-        // Connection limit.
+        // ConnectionPoolLimit.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNotConfigured_ThenConnectionLimitSetToDefault()
+        public void ConnectionPoolLimit_WhenNotConfigured()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new AccessOptionsViewModel(
@@ -268,7 +268,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenConfigured_ThenConnectionLimitSetToCustomValue()
+        public void ConnectionPoolLimit_WhenConfigured()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -283,7 +283,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public async Task WhenConnectionLimitChanged_ThenIsDirtyIsTrueUntilApplied()
+        public async Task ConnectionPoolLimit_WhenChanged_ThenIsDirtyIsTrueUntilApplied()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new AccessOptionsViewModel(
@@ -302,11 +302,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         //---------------------------------------------------------------------
-        // Save.
+        // ApplyChanges.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenDisablingPsc_ThenApplyChangesClearsPscEndpoint()
+        public async Task ApplyChanges_WhenDisablingPsc_ThenApplyChangesClearsPscEndpoint()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -325,7 +325,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenPscAndDcaEnabled_ThenApplyChangesThrowsException()
+        public void ApplyChanges_WhenPscAndDcaEnabled_ThenApplyChangesThrowsException()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -343,7 +343,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenPscEndpointInvalid_ThenApplyChangesThrowsException()
+        public void ApplyChanges_WhenPscEndpointInvalid_ThenApplyChangesThrowsException()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();

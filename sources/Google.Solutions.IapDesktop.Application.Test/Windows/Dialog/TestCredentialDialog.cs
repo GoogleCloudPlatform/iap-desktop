@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInputValid_ThenLookupAuthenticationPackageIdReturnsId(
+        public void LookupAuthenticationPackageId_WhenInputValid(
             [Values(
                 AuthenticationPackage.Any,
                 AuthenticationPackage.Kerberos,
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPackageNameValid_ThenLookupAuthenticationPackageReturnsId()
+        public void LookupAuthenticationPackage_WhenPackageNameValid()
         {
             using (var lsa = CredentialDialog.Lsa.ConnectUntrusted())
             {
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
         }
 
         [Test]
-        public void WhenPackageNameInvalid_ThenLookupAuthenticationPackageThrowsException()
+        public void LookupAuthenticationPackage_WhenPackageNameInvalid()
         {
             using (var lsa = CredentialDialog.Lsa.ConnectUntrusted())
             {
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
 
         [RequiresInteraction]
         [Test]
-        public void PromptForWindowsCredentialsWithSaveOption()
+        public void PromptForWindowsCredentials_WithSaveOption()
         {
             var dialog = new CredentialDialog(
                 new Service<ISystemDialogTheme>(new Mock<IServiceProvider>().Object));
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
 
         [RequiresInteraction]
         [Test]
-        public void PromptForWindowsCredentialsWithPrefill()
+        public void PromptForWindowsCredentials_WithPrefill()
         {
             var dialog = new CredentialDialog(
                 new Service<ISystemDialogTheme>(new Mock<IServiceProvider>().Object));
@@ -188,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
         }
 
         [Test]
-        public void PackEmptyCredential()
+        public void PackCredential_WhenCredentialEmpty()
         {
             var empty = new NetworkCredential();
             using (var packed = new CredentialDialog.PackedCredential(empty))

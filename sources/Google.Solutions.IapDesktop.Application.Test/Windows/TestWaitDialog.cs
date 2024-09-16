@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTaskCompletedAlready_ThenWaitReturns()
+        public void Wait_WhenTaskCompletedAlready()
         {
             WaitDialog.Wait(
                 null,
@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenTaskCompletes_ThenWaitReturns()
+        public void Wait_WhenTaskCompletes()
         {
             WaitDialog.Wait(
                 null,
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenTaskThrowsException_ThenWaitPropagatesException()
+        public void Wait_WhenTaskThrowsException_ThenWaitPropagatesException()
         {
             Assert.Throws<ArgumentException>(
                 () => WaitDialog.Wait(
@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenTaskThrowsTaskCanceledException_ThenWaitPropagatesException()
+        public void Wait_WhenTaskThrowsTaskCanceledException_ThenWaitPropagatesException()
         {
             Assert.Throws<TaskCanceledException>(
                 () => WaitDialog.Wait(
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenDialogCancelled_ThenWaitThrowsException()
+        public void Wait_WhenDialogCancelled_ThenWaitThrowsException()
         {
             Assert.Throws<TaskCanceledException>(
                 () => WaitDialog.Wait(

@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoProxyConfigured_ThenPropertiesAreInitializedCorrectly()
+        public void Proxy_WhenNoProxyConfigured()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCustomProxyConfigured_ThenPropertiesAreInitializedCorrectly()
+        public void Proxy_WhenCustomProxyConfigured()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenCustomProxyConfiguredButInvalid_ThenDefaultsAreUsed()
+        public void Proxy_WhenCustomProxyConfiguredButInvalid()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -157,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenCustomProxyConfiguredByPolicy_ThenIsProxyEditableIsFalse()
+        public void Proxy_WhenCustomProxyConfiguredByPolicy()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -187,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenEnablingCustomProxy_ThenProxyHostAndPortSetToDefaults()
+        public void Proxy_WhenEnablingCustomProxy_ThenProxyHostAndPortSetToDefaults()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -213,7 +213,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenDisablingCustomProxy_ThenProxyHostAndPortAreCleared()
+        public void Proxy_WhenDisablingCustomProxy_ThenProxyHostAndPortAreCleared()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProxyAutoconfigConfigured_ThenPropertiesAreInitializedCorrectly()
+        public void ProxyAutoConfiguration_WhenProxyAutoconfigConfigured()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -274,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenProxyAutoconfigConfiguredButInvalid_ThenDefaultsAreUsed()
+        public void ProxyAutoConfiguration_WhenProxyAutoconfigConfiguredButInvalid()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -301,7 +301,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenProxyAutoconfigConfiguredByPolicy_ThenIsProxyEditableIsFalse()
+        public void ProxyAutoConfiguration_WhenProxyAutoconfigConfiguredByPolicy()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -331,7 +331,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenEnablingProxyAutoconfig_ThenProxyHostAndPortSetToDefaults()
+        public void ProxyAutoConfiguration_WhenEnablingProxyAutoconfig_ThenProxyHostAndPortSetToDefaults()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -357,7 +357,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenDisablingProxyAutoconfig_ThenProxyHostAndPortAreCleared()
+        public void ProxyAutoConfiguration_WhenDisablingProxyAutoconfig_ThenProxyHostAndPortAreCleared()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -389,7 +389,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProxyAuthConfigured_ThenPropertiesAreInitializedCorrectly()
+        public void ProxyAuthentication_WhenProxyAuthConfigured()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -416,7 +416,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenEnablingProxyAuth_ThenProxyUsernameSetToDefault()
+        public void ProxyAuthentication_WhenEnablingProxyAuth_ThenProxyUsernameSetToDefault()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -436,7 +436,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenDisablingProxyAuth_ThenProxyUsernameAndPasswordAreCleared()
+        public void ProxyAuthentication_WhenDisablingProxyAuth_ThenProxyUsernameAndPasswordAreCleared()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -463,7 +463,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProxyServerInvalid_ThenApplyChangesThrowsArgumentException()
+        public void ApplyChanges_WhenProxyServerInvalid_ThenApplyChangesThrowsArgumentException()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -482,7 +482,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenProxyPortIsZero_ThenApplyChangesThrowsArgumentException()
+        public void ApplyChanges_WhenProxyPortIsZero_ThenApplyChangesThrowsArgumentException()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -501,7 +501,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenProxyPortIsOutOfBounds_ThenApplyChangesThrowsArgumentException()
+        public void ApplyChanges_WhenProxyPortIsOutOfBounds_ThenApplyChangesThrowsArgumentException()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -520,7 +520,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenProxyAutoconfigUrlInvalid_ThenApplyChangesThrowsArgumentException()
+        public void ApplyChanges_WhenProxyAutoconfigUrlInvalid_ThenApplyChangesThrowsArgumentException()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -538,7 +538,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenProxyAuthIncomplete_ThenApplyChangesThrowsArgumentException()
+        public void ApplyChanges_WhenProxyAuthIncomplete_ThenApplyChangesThrowsArgumentException()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -558,7 +558,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public async Task WhenEnablingCustomProxy_ThenProxyAdapterIsUpdated()
+        public async Task ApplyChanges_WhenEnablingCustomProxy_ThenProxyAdapterIsUpdated()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -579,7 +579,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public async Task WhenEnablingOrDisablingCustomProxy_ThenSettingsAreSaved()
+        public async Task ApplyChanges_WhenEnablingOrDisablingCustomProxy_ThenSettingsAreSaved()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -625,7 +625,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
 
         [Test]
-        public async Task WhenEnablingOrDisablingProxyAutoconfig_ThenSettingsAreSaved()
+        public async Task ApplyChanges_WhenEnablingOrDisablingProxyAutoconfig_ThenSettingsAreSaved()
         {
             using (var settingsKey = CreateSettingsKey())
             {
@@ -668,7 +668,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public async Task WhenChangesApplied_ThenDirtyFlagIsCleared()
+        public async Task ApplyChanges_ClearsDirtyFlag()
         {
             using (var settingsKey = CreateSettingsKey())
             {
