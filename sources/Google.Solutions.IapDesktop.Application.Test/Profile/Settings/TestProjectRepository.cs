@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenNoProjectsAdded_ListProjectsReturnsEmptyList()
+        public void ListProjects_WhenNoProjectsAdded_ListProjectsReturnsEmptyList()
         {
             using (var repository = CreateProjectRepository())
             {
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenProjectsAddedTwice_ListProjectsReturnsProjectOnce()
+        public void ListProjects_WhenProjectsAddedTwice_ListProjectsReturnsProjectOnce()
         {
             using (var repository = CreateProjectRepository())
             {
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenProjectsDeleted_ListProjectsExcludesProject()
+        public void ListProjects_WhenProjectsDeleted_ListProjectsExcludesProject()
         {
             using (var repository = CreateProjectRepository())
             {
@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenProjectExists_ThenCreateRegistryKeyReturnsKey()
+        public void AddProject_WhenProjectExists_ThenReturnsKey()
         {
             using (var repository = CreateProjectRepository())
             {
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenProjectExists_ThenCreateRegistryKeyWithSubkeyReturnsKey()
+        public void AddProject_CreateSubkey()
         {
             using (var repository = CreateProjectRepository())
             {
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenSubkeyDoesNotExist_ThenOpenRegistryReturnsNull()
+        public void AddProject_OpenNonexistingSubkey()
         {
             using (var repository = CreateProjectRepository())
             {

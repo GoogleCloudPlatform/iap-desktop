@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Properties
         }
 
         [Test]
-        public void WhenObjectIsPocoWithNoBrowsableProperties_ThenNoPropertiesShown()
+        public void Grid_WhenObjectIsPocoWithNoBrowsableProperties_ThenNoPropertiesShown()
         {
             var viewModel = new SampleViewModel<PocoWithoutProperty>();
             var window = new SampleView<PocoWithoutProperty>(this.ServiceProvider);
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Properties
         }
 
         [Test]
-        public void WhenObjectIsPocoWithBrowsableProperty_ThenPropertyIsShown()
+        public void Grid_WhenObjectIsPocoWithBrowsableProperty_ThenPropertyIsShown()
         {
             var viewModel = new SampleViewModel<PocoWithoutProperty>();
             var window = new SampleView<PocoWithoutProperty>(this.ServiceProvider);
@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Properties
         }
 
         [Test]
-        public void WhenObjectIsSettingsCollection_ThenSettingIsShown()
+        public void Grid_WhenObjectIsSettingsCollection_ThenSettingIsShown()
         {
             var viewModel = new SampleViewModel<Settings>();
             var window = new SampleView<Settings>(this.ServiceProvider);

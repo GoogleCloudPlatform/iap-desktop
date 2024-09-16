@@ -130,11 +130,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         }
 
         //---------------------------------------------------------------------
-        // DCA disabled.
+        // State - DCA disabled.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDcaIsDisabledInSettings_ThenStateIsNotInstalled()
+        public void State_WhenDcaIsDisabledInSettings_ThenStateIsNotInstalled()
         {
             var settingsRepository = CreateSettingsRepository();
 
@@ -160,11 +160,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         }
 
         //---------------------------------------------------------------------
-        // Default certificate selector.
+        // State - with default certificate selector.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsingDefaultCertificateSelectorButNoCertificateInStore_ThenStateIsNotEnrolled()
+        public void State_WhenUsingDefaultCertificateSelectorButNoCertificateInStore_ThenStateIsNotEnrolled()
         {
             var settingsRepository = CreateSettingsRepository();
 
@@ -190,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         }
 
         [Test]
-        public void WhenUsingDefaultCertificateSelectorAndCertificateFoundInUserStore_ThenStateIsEnrolled()
+        public void State_WhenUsingDefaultCertificateSelectorAndCertificateFoundInUserStore_ThenStateIsEnrolled()
         {
             var settingsRepository = CreateSettingsRepository();
 
@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         }
 
         [Test]
-        public void WhenUsingDefaultCertificateSelectorAndCertificateOnlyInComputerStore_ThenStateIsNotEnrolled()
+        public void State_WhenUsingDefaultCertificateSelectorAndCertificateOnlyInComputerStore_ThenStateIsNotEnrolled()
         {
             var settingsRepository = CreateSettingsRepository();
 
@@ -243,11 +243,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         }
 
         //---------------------------------------------------------------------
-        // Custom certificate selector.
+        // State_ - with custom certificate selector.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsingCustomCertificateSelectorButNoCertificateInStore_ThenStateIsNotEnrolled()
+        public void State_WhenUsingCustomCertificateSelectorButNoCertificateInStore_ThenStateIsNotEnrolled()
         {
             var settingsRepository = CreateSettingsRepository();
 
@@ -281,7 +281,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         }
 
         [Test]
-        public void WhenUsingCustomCertificateSelectorButCertificateDoesNotPermitClientAuth_ThenStateIsNotEnrolled()
+        public void State_WhenUsingCustomCertificateSelectorButCertificateDoesNotPermitClientAuth_ThenStateIsNotEnrolled()
         {
             var settingsRepository = CreateSettingsRepository();
 
@@ -317,7 +317,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         }
 
         [Test]
-        public void WhenUsingCustomCertificateSelectorAndCertificateFoundInUserStore_ThenStateIsEnrolled()
+        public void State_WhenUsingCustomCertificateSelectorAndCertificateFoundInUserStore_ThenStateIsEnrolled()
         {
             var settingsRepository = CreateSettingsRepository();
 

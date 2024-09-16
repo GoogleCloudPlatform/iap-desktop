@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenAuthenticatedWithGaiaAndEnrolled_ThenOpenInstanceDetailsUsesSecureConsole()
+        public void OpenInstanceDetails_WhenAuthenticatedWithGaiaAndEnrolled_ThenOpenInstanceDetailsUsesSecureConsole()
         {
             var browser = new Mock<IBrowser>();
             var cloudConsole = new CloudConsoleClient(
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         }
 
         [Test]
-        public void WhenAuthenticatedWithGaiaAndNotEnrolled_ThenOpenInstanceDetailsUsesSecureConsole()
+        public void OpenInstanceDetails_WhenAuthenticatedWithGaiaAndNotEnrolled_ThenOpenInstanceDetailsUsesSecureConsole()
         {
             var browser = new Mock<IBrowser>();
             var cloudConsole = new CloudConsoleClient(
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         }
 
         [Test]
-        public void WhenAuthenticatedWithWorkforceIdentity_ThenOpenInstanceDetailsUsesByoidConsole()
+        public void OpenInstanceDetails_WhenAuthenticatedWithWorkforceIdentity_ThenOpenInstanceDetailsUsesByoidConsole()
         {
             var browser = new Mock<IBrowser>();
             var cloudConsole = new CloudConsoleClient(
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenAuthenticatedWithGaiaAndEnrolled_ThenOpenIapSecurityUsesSecureConsole()
+        public void OpenIapSecurity_WhenAuthenticatedWithGaiaAndEnrolled_ThenOpenIapSecurityUsesSecureConsole()
         {
             var browser = new Mock<IBrowser>();
             var cloudConsole = new CloudConsoleClient(
@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         }
 
         [Test]
-        public void WhenAuthenticatedWithGaiaAndNotEnrolled_ThenOpenIapSecurityUsesSecureConsole()
+        public void OpenIapSecurity_WhenAuthenticatedWithGaiaAndNotEnrolled_ThenOpenIapSecurityUsesSecureConsole()
         {
             var browser = new Mock<IBrowser>();
             var cloudConsole = new CloudConsoleClient(
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         }
 
         [Test]
-        public void WhenAuthenticatedWithWorkforceIdentity_ThenOpenIapSecurityUsesByoidConsole()
+        public void OpenIapSecurity_WhenAuthenticatedWithWorkforceIdentity_ThenOpenIapSecurityUsesByoidConsole()
         {
             var browser = new Mock<IBrowser>();
             var cloudConsole = new CloudConsoleClient(

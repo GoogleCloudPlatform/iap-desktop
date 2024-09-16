@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoValueSaved_ThenCollapsedProjectsReturnsEmptySet()
+        public void CollapsedProjects_WhenNoValueSaved_ThenCollapsedProjectsReturnsEmptySet()
         {
             var settingsRepository = CreateSettingsRepository();
 
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public void WhenValueSaved_ThenCollapsedProjectsReturnsSavedValue()
+        public void CollapsedProjects_WhenValueSaved_ThenCollapsedProjectsReturnsSavedValue()
         {
             var settingsRepository = CreateSettingsRepository();
 
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public void WhenDisposed_ThenCollapsedProjectsAreSaved()
+        public void CollapsedProjects_WhenDisposed_ThenCollapsedProjectsAreSaved()
         {
             var settingsRepository = CreateSettingsRepository();
 

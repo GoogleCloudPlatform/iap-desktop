@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenBaseKeyIsEmpty_SettingsAreEmpty()
+        public void GetSettings_WhenBaseKeyIsEmpty_SettingsAreEmpty()
         {
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenSettingsSaved_GetSettingsReturnsData()
+        public void GetSettings_WhenSettingsSaved_GetSettingsReturnsData()
         {
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenBlobNullOrEmpty_ThenTryReadReturnsFalse(
+        public void TryRead_WhenBlobNullOrEmpty_ThenTryReadReturnsFalse(
             [Values(null, "", "{")] string value)
         {
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenBlobContainsFullTokenResponse_ThenTryReadReturnsTrue()
+        public void TryRead_WhenBlobContainsFullTokenResponse_ThenTryReadReturnsTrue()
         {
             var value = @"{
                 'access_token':'ya29.a0A...',
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenBlobOnlyContainsGaiaRefreshToken_ThenTryReadReturnsTrue()
+        public void TryRead_WhenBlobOnlyContainsGaiaRefreshToken_ThenTryReadReturnsTrue()
         {
             var value = @"{
                 'refresh_token':'rt',
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenBlobOnlyContainsStsRefreshToken_ThenTryReadReturnsTrue()
+        public void TryRead_WhenBlobOnlyContainsStsRefreshToken_ThenTryReadReturnsTrue()
         {
             var value = @"{
                 'refresh_token':'rt',
@@ -177,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void WriteGaiaOfflineCredential()
+        public void Write_GaiaOfflineCredential()
         {
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WriteStsOfflineCredential()
+        public void Write_StsOfflineCredential()
         {
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);

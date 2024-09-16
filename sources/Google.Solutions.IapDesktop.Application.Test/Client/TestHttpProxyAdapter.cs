@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         }
 
         [Test]
-        public async Task WhenUsingCustomProxySettingsWithoutCredentials_ThenRequestsAreSentToProxy()
+        public async Task SendWebRequest_WhenUsingCustomProxySettingsWithoutCredentials_ThenRequestsAreSentToProxy()
         {
             using (var proxy = new InProcessHttpProxy())
             {
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         }
 
         [Test]
-        public async Task WhenUsingCustomProxySettingsWithCredentials_ThenRequestsAreSentToProxyWithCredentials()
+        public async Task SendWebRequest_WhenUsingCustomProxySettingsWithCredentials_ThenRequestsAreSentToProxyWithCredentials()
         {
             var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
             using (var proxy = new InProcessAuthenticatingHttpProxy(
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
         [Test]
         [RequiresProxyAutoconfig]
-        public async Task WhenUsingProxyAutoConfigWithoutCredentials_ThenRequestsAreSentToProxy()
+        public async Task SendWebRequest_WhenUsingProxyAutoConfigWithoutCredentials_ThenRequestsAreSentToProxy()
         {
             using (var proxy = new InProcessHttpProxy())
             {
@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
         [Test]
         [RequiresProxyAutoconfig]
-        public async Task WhenUsingProxyAutoConfigWithCredentials_ThenRequestsAreSentToProxyWithCredentials()
+        public async Task SendWebRequest_WhenUsingProxyAutoConfigWithCredentials_ThenRequestsAreSentToProxyWithCredentials()
         {
             var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
             using (var proxy = new InProcessAuthenticatingHttpProxy(
@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         }
 
         [Test]
-        public async Task WhenRevertedToSystemProxySettings_ThenRequestsAreNotSentToProxy()
+        public async Task SendWebRequest_WhenRevertedToSystemProxySettings_ThenRequestsAreNotSentToProxy()
         {
             var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
             using (var proxy = new InProcessAuthenticatingHttpProxy(

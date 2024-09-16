@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUserFollowsCanaryTrack_ThenFeedOptionsIncludeCanaryReleases()
+        public void FeedOptions_WhenUserFollowsCanaryTrack_ThenFeedOptionsIncludeCanaryReleases()
         {
             var policyFactory = CreatePolicy(true, ReleaseTrack.Canary);
 
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public void WhenUserFollowsNormalTrack_ThenFeedOptionsAreClear()
+        public void FeedOptions_WhenUserFollowsNormalTrack_ThenFeedOptionsAreClear()
         {
             var policyFactory = CreatePolicy(true, ReleaseTrack.Normal);
 
@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenReleaseIsNull_ThenPromptForActionReturns()
+        public void PromptForAction_WhenReleaseIsNull_ThenPromptForActionReturns()
         {
             var policy = new Mock<IUpdatePolicy>();
 
@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public void WhenPolicyDoesNotAdviseUpdate_ThenPromptForActionReturns()
+        public void PromptForAction_WhenPolicyDoesNotAdviseUpdate_ThenPromptForActionReturns()
         {
             var policy = new Mock<IUpdatePolicy>();
 
@@ -186,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public void WhenUserCancels_ThenPromptForActionReturns()
+        public void PromptForAction_WhenUserCancels_ThenPromptForActionReturns()
         {
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public void WhenUserSelectsDownload_ThenPromptForActionOpensDownload()
+        public void PromptForAction_WhenUserSelectsDownload_ThenPromptForActionOpensDownload()
         {
             var browser = new Mock<IBrowser>();
             var release = new Mock<IRelease>();
@@ -224,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public void WhenDownloadUrlNotFound_ThenPromptForActionOpensDetails()
+        public void PromptForAction_WhenDownloadUrlNotFound_ThenPromptForActionOpensDetails()
         {
             var browser = new Mock<IBrowser>();
 
@@ -251,7 +251,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public void WhenUserSelectsMoreDetails_ThenPromptForActionOpensDetails()
+        public void PromptForAction_WhenUserSelectsMoreDetails_ThenPromptForActionOpensDetails()
         {
             var browser = new Mock<IBrowser>();
 
@@ -278,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public void WhenUserSelectsLater_ThenPromptForActionReturns()
+        public void PromptForAction_WhenUserSelectsLater_ThenPromptForActionReturns()
         {
             var browser = new Mock<IBrowser>();
 
@@ -300,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenReleaseHasNoSurvey_ThenPromptForActionReturns()
+        public void PromptForAction_WhenReleaseHasNoSurvey_ThenPromptForActionReturns()
         {
             var release = new Mock<IRelease>();
             release.SetupGet(r => r.Survey).Returns((IReleaseSurvey?)null);
@@ -327,7 +327,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public void WhenReleaseHasSurveyButSurveysAreDisabled_ThenPromptForActionReturns()
+        public void PromptForAction_WhenReleaseHasSurveyButSurveysAreDisabled_ThenPromptForActionReturns()
         {
             var survey = new Mock<IReleaseSurvey>();
             var release = new Mock<IRelease>();
@@ -355,7 +355,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public void WhenReleaseHasSurveyButSurveysWasTakenBefore_ThenPromptForActionReturns()
+        public void PromptForAction_WhenReleaseHasSurveyButSurveysWasTakenBefore_ThenPromptForActionReturns()
         {
             var lastVersion = new Version("2.1.3");
 
@@ -387,7 +387,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public void WhenReleaseHasSurvey_ThenPromptForActionShowsDialog()
+        public void PromptForAction_WhenReleaseHasSurvey_ThenPromptForActionShowsDialog()
         {
             var survey = new Mock<IReleaseSurvey>();
             var release = new Mock<IRelease>();
@@ -417,7 +417,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public void WhenUserOpensSurvey_ThenPromptForActionUpdatesLastSurveyVersion()
+        public void PromptForAction_WhenUserOpensSurvey_ThenPromptForActionUpdatesLastSurveyVersion()
         {
             var survey = new Mock<IReleaseSurvey>();
             var release = new Mock<IRelease>();
@@ -446,7 +446,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPolicyUsesNormalOrCriticalTrack_ThenExecuteReadsCanaryFeed(
+        public void Execute_WhenPolicyUsesNormalOrCriticalTrack_ThenExecuteReadsCanaryFeed(
             [Values(ReleaseTrack.Normal, ReleaseTrack.Critical)] ReleaseTrack track)
         {
             var feed = new Mock<IReleaseFeed>();
@@ -467,7 +467,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public void WhenPolicyUsesCanaryTrack_ThenExecuteReadsCanaryFeed()
+        public void Execute_WhenPolicyUsesCanaryTrack_ThenExecuteReadsCanaryFeed()
         {
             var feed = new Mock<IReleaseFeed>();
             var command = new CheckForUpdateCommand<IMainWindow>(
