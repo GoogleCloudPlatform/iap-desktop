@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Util;
+using Google.Solutions.Common.Linq;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using System;
 using System.Collections.Generic;

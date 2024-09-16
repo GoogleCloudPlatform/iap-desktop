@@ -23,7 +23,7 @@ using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Util;
+using Google.Solutions.Common.Linq;
 using Google.Solutions.IapDesktop.Application;
 using System;
 using System.Collections.Generic;

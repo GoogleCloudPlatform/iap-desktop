@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Client;

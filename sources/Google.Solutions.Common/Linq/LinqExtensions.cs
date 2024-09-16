@@ -19,11 +19,13 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Linq;
+using Google.Solutions.Common.Util;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 
-namespace Google.Solutions.Common.Util
+namespace Google.Solutions.Common.Linq
 {
     public static class LinqExtensions
     {
@@ -49,7 +51,7 @@ namespace Google.Solutions.Common.Util
 
         public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, ushort chunkSize)
         {
-            Precondition.ExpectNotNull(source, nameof(source));
+            source.ExpectNotNull(nameof(source));
 
             var chunk = new List<T>(chunkSize);
             foreach (var x in source)
@@ -70,7 +72,7 @@ namespace Google.Solutions.Common.Util
 
         public static IEnumerable<T> ConcatItem<T>(this IEnumerable<T> target, T item)
         {
-            Precondition.ExpectNotNull(target, nameof(target));
+            target.ExpectNotNull(nameof(target));
 
             foreach (var t in target)
             {

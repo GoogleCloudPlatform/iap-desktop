@@ -22,6 +22,7 @@
 using Google.Apis.Json;
 using Google.Apis.Services;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;

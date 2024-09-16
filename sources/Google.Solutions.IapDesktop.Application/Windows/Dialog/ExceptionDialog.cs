@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Diagnostics;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Diagnostics;

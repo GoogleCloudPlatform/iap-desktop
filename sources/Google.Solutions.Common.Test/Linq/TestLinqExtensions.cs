@@ -19,12 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
+using Google.Solutions.Common.Linq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.Common.Test.Util
+namespace Google.Solutions.Common.Test.Linq
 {
     [TestFixture]
     public class TestLinqExtensions : CommonFixtureBase

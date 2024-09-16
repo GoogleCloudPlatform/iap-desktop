@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Util;
+using Google.Solutions.Common.Linq;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Settings.Collection;
 using System;

@@ -21,7 +21,7 @@
 
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Util;
+using Google.Solutions.Common.Linq;
 using System.Linq;
 using System.Net;
 

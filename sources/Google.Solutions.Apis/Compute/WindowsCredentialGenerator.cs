@@ -23,6 +23,7 @@ using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Diagnostics;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;

@@ -21,8 +21,8 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Security;
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;

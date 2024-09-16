@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Json;
 using Google.Solutions.Apis.Diagnostics;
+using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;

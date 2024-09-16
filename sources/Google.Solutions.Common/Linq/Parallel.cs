@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.Util
+namespace Google.Solutions.Common.Linq
 {
     public static class ParallelLinqExtensions
     {
