@@ -17,7 +17,6 @@
   </compatibility>
 
   <!-- Enable themes for Windows common controls and dialogs (Windows XP and later) -->
-  <!--
   <dependency>
     <dependentAssembly>
       <assemblyIdentity
@@ -26,10 +25,7 @@
           version="6.0.0.0"
           processorArchitecture="*"
           publicKeyToken="6595b64144ccf1df"
-          language="*"
-        />
+          language="*"/>
     </dependentAssembly>
   </dependency>
-  -->
-
 </assembly>
