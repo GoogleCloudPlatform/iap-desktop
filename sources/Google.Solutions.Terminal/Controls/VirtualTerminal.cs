@@ -371,6 +371,7 @@ namespace Google.Solutions.Terminal.Controls
 
             base.OnPaint(e);
         }
+
         protected override void OnHandleCreated(EventArgs e)
         {
             if (this.DesignMode)
@@ -777,6 +778,11 @@ namespace Google.Solutions.Terminal.Controls
         //---------------------------------------------------------------------
         // Testing-only methods.
         //---------------------------------------------------------------------
+
+        internal bool TerminalHandleCreated
+        {
+            get => this.terminal != null;
+        }
 
         internal void SimulateKey(Keys keyCode)
         {
