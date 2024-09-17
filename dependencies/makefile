@@ -29,7 +29,8 @@ DIRS=\
     $(MAKEDIR)\sources\vtnetcore \
     $(MAKEDIR)\sources\dockpanelsuite \
     $(MAKEDIR)\sources\libssh2-cng \
-    $(MAKEDIR)\sources\terminal
+    $(MAKEDIR)\sources\terminal \
+    $(MAKEDIR)\sources\terminal-icushim
 
 # Nuget packages to build
 PACKAGES=$(PACKAGES) \
@@ -37,7 +38,8 @@ PACKAGES=$(PACKAGES) \
     $(MAKEDIR)\sources\vtnetcore\obj\Google.Solutions.ThirdParty.Vtnetcore.nupkg \
     $(MAKEDIR)\sources\dockpanelsuite\obj\Google.Solutions.ThirdParty.DockPanelSuite.nupkg \
     $(MAKEDIR)\sources\libssh2-cng\obj\Google.Solutions.ThirdParty.Libssh2.Cng.nupkg \
-    $(MAKEDIR)\sources\terminal\obj\Google.Solutions.ThirdParty.Terminal.nupkg
+    $(MAKEDIR)\sources\terminal\obj\Google.Solutions.ThirdParty.Terminal.nupkg \
+    $(MAKEDIR)\sources\terminal-icushim\obj\Google.Solutions.IcuShim.nupkg
 
 default: publish
 

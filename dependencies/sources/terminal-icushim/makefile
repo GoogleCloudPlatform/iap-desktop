@@ -24,6 +24,7 @@ PLATFORM = x86
 # The tag should be increased whenever one of the dependencies is changed
 TAG = 2
 
+ICUSHIM_VERSION=1.0.0.$(TAG)
 ICUSHIM_PACKAGE_ID = Google.Solutions.IcuShim
 
 !if ("$(PLATFORM)" == "x86")
