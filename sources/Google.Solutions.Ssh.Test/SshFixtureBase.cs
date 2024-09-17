@@ -23,7 +23,7 @@ using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common;
-using Google.Solutions.Common.Util;
+using Google.Solutions.Common.Linq;
 using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Ssh.Native;
 using Google.Solutions.Testing.Apis;

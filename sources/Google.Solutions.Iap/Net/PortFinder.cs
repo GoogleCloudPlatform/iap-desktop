@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Format;
-using Google.Solutions.Common.Util;
+using Google.Solutions.Common.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

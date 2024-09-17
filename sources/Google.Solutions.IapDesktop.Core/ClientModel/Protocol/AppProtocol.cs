@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using System.Collections.Generic;

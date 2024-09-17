@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using System;

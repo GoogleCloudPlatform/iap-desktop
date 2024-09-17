@@ -25,7 +25,7 @@ using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Util;
+using Google.Solutions.Common.Linq;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using Moq;

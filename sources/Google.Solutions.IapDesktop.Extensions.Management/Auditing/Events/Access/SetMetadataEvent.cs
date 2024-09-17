@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
+using Google.Solutions.Common.Linq;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs;
 using System.Diagnostics;
 using System.Linq;

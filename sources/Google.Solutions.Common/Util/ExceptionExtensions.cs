@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Linq;
 using System;
 using System.Diagnostics;
 using System.Linq;

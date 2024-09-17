@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Specialized;

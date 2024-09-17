@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
+using Google.Solutions.Common.Linq;
 using System.Collections.Generic;
 
 namespace Google.Solutions.Mvvm.Binding.Commands

@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Util;
+using Google.Solutions.Common.Linq;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
