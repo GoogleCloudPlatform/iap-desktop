@@ -36,6 +36,11 @@ namespace Google.Solutions.Terminal.Test.Controls
     [Apartment(ApartmentState.STA)]
     internal class TestVirtualTerminal
     {
+        protected static void PumpWindowMessages()
+        {
+            System.Windows.Forms.Application.DoEvents();
+        }
+
         private class TerminalForm : Form
         {
             public VirtualTerminal VirtualTerminal { get; }
@@ -202,6 +207,8 @@ namespace Google.Solutions.Terminal.Test.Controls
             using (var form = new TerminalForm())
             {
                 form.Show();
+                form.CreateControl();
+
 
                 var themeChangeEventRaised = false;
                 form.VirtualTerminal.ThemeChanged += (_, __) => themeChangeEventRaised = true;
@@ -219,6 +226,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             using (var form = new TerminalForm())
             {
                 form.Show();
+                PumpWindowMessages();
 
                 var themeChangeEventRaised = false;
                 form.VirtualTerminal.ThemeChanged += (_, __) => themeChangeEventRaised = true;
