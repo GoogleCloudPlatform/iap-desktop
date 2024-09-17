@@ -94,6 +94,75 @@ namespace Google.Solutions.Terminal.Controls
             }
         }
 
+        /// <summary>
+        /// Create terminal handle. This triggers the native DLL to be loaded.
+        /// 
+        /// For unit testing, it can be necessary to call this method explicitly.
+        /// During normal operation, it's invoked in OnHandleCreated.
+        /// </summary>
+        internal void CreateTerminalHandle()
+        {
+            if (this.DesignMode)
+            {
+                return;
+            }
+
+            if (this.terminal != null || this.terminalSubclass != null)
+            {
+                throw new InvalidOperationException(
+                    "Handle has been created already");
+            }
+
+            //
+            // Create terminal. This loads the native DLL if it's the first time.
+            //
+            var hr = NativeMethods.CreateTerminal(
+                this.Handle,
+                out var terminalHwnd,
+                out this.terminal);
+            if (hr != 0)
+            {
+                throw TerminalException.FromHresult(
+                    hr,
+                    "Allocating a terminal failed");
+            }
+
+            NativeMethods.TerminalRegisterWriteCallback(
+                this.terminal,
+                this.writeCallback);
+            NativeMethods.TerminalRegisterScrollCallback(
+                this.terminal,
+                this.scrollCallback);
+
+            OnThemeChanged();
+
+            //
+            // Install a subclassing hook so that we can handle some of the
+            // terminal HWND's messages.
+            //
+            this.terminalSubclass = new SubclassCallback(
+                terminalHwnd,
+                this,
+                TerminalSubclassWndProc);
+            this.terminalSubclass.UnhandledException += (_, ex)
+                => Application.OnThreadException(ex);
+            this.components.Add(this.terminalSubclass.AsComponent());
+
+            //
+            // Resize terminal so that it fills the entire control.
+            //
+            OnResize(EventArgs.Empty);
+
+            if (NativeMethods.GetFocus() == this.terminalSubclass.WindowHandle)
+            {
+                this.caretBlinkTimer.Start();
+            }
+            else
+            {
+                NativeMethods.TerminalSetCursorVisible(this.terminal, false);
+            }
+        }
+
         //---------------------------------------------------------------------
         // Publics.
         //---------------------------------------------------------------------
@@ -374,66 +443,7 @@ namespace Google.Solutions.Terminal.Controls
 
         protected override void OnHandleCreated(EventArgs e)
         {
-            if (this.DesignMode)
-            {
-                return;
-            }
-            
-            if (this.terminal != null || this.terminalSubclass != null)
-            {
-                throw new InvalidOperationException(
-                    "Handle has been created already");
-            }
-
-            //
-            // Create terminal. This loads the native DLL if it's the first time.
-            //
-            var hr = NativeMethods.CreateTerminal(
-                this.Handle, 
-                out var terminalHwnd, 
-                out this.terminal);
-            if (hr != 0)
-            {
-                throw TerminalException.FromHresult(
-                    hr, 
-                    "Allocating a terminal failed");
-            }
-
-            NativeMethods.TerminalRegisterWriteCallback(
-                this.terminal, 
-                this.writeCallback);
-            NativeMethods.TerminalRegisterScrollCallback(
-                this.terminal,
-                this.scrollCallback);
-
-            OnThemeChanged();
-
-            //
-            // Install a subclassing hook so that we can handle some of the
-            // terminal HWND's messages.
-            //
-            this.terminalSubclass = new SubclassCallback(
-                terminalHwnd, 
-                this, 
-                TerminalSubclassWndProc);
-            this.terminalSubclass.UnhandledException += (_, ex) 
-                => Application.OnThreadException(ex);
-            this.components.Add(this.terminalSubclass.AsComponent());
-
-            //
-            // Resize terminal so that it fills the entire control.
-            //
-            OnResize(EventArgs.Empty);
-
-            if (NativeMethods.GetFocus() == this.terminalSubclass.WindowHandle)
-            {
-                this.caretBlinkTimer.Start();
-            }
-            else
-            {
-                NativeMethods.TerminalSetCursorVisible(this.terminal, false);
-            }
-
+            CreateTerminalHandle();
             base.OnHandleCreated(e);
         }
 

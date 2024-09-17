@@ -40,7 +40,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         {
             public VirtualTerminal VirtualTerminal { get; }
 
-            public TerminalForm()
+            private TerminalForm()
             {
                 this.VirtualTerminal = new VirtualTerminal()
                 {
@@ -48,6 +48,23 @@ namespace Google.Solutions.Terminal.Test.Controls
                 };
 
                 this.Controls.Add(this.VirtualTerminal);
+            }
+
+            internal static TerminalForm Create()
+            {
+                var form = new TerminalForm();
+
+                //
+                // When run in a headless environment, the terminal
+                // might not be initialized automatically, so force
+                // initialization if necessary.
+                //
+                if (!form.VirtualTerminal.TerminalHandleCreated)
+                {
+                    form.VirtualTerminal.CreateTerminalHandle();
+                }
+
+                return form;
             }
         }
 
@@ -58,7 +75,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void Size_WhenChanged_ThenUpdatesDimensions()
         {
-            using (var form = new TerminalForm())
+            using (var form = TerminalForm.Create())
             {
                 form.Size = new Size(500, 500);
                 form.Show();
@@ -83,7 +100,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void Send_WhenCharKey_ThenTerminalSendsData()
         {
-            using (var form = new TerminalForm())
+            using (var form = TerminalForm.Create())
             {
                 form.Size = new Size(500, 500);
                 form.Show();
@@ -100,7 +117,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void Send_WhenEnterKey_ThenTerminalSendsData()
         {
-            using (var form = new TerminalForm())
+            using (var form = TerminalForm.Create())
             {
                 form.Size = new Size(500, 500);
                 form.Show();
@@ -117,7 +134,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void Send_WhenLeftKey_ThenTerminalSendsData()
         {
-            using (var form = new TerminalForm())
+            using (var form = TerminalForm.Create())
             {
                 form.Size = new Size(500, 500);
                 form.Show();
@@ -138,7 +155,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void Device_WhenChanged_ThenClearsScreen()
         {
-            using (var form = new TerminalForm())
+            using (var form = TerminalForm.Create())
             {
                 form.Size = new Size(500, 500);
                 form.VirtualTerminal.Device = new Mock<IPseudoConsole>().Object;
@@ -159,7 +176,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void Device_WhenChanged_ThenDisposesPreviousBindingAndClearsScreen()
         {
-            using (var form = new TerminalForm())
+            using (var form = TerminalForm.Create())
             {
                 var device = new Mock<IPseudoConsole>();
 
@@ -181,7 +198,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         {
             var device = new Mock<IPseudoConsole>();
 
-            using (var form = new TerminalForm())
+            using (var form = TerminalForm.Create())
             {
                 form.Size = new Size(500, 500);
                 form.VirtualTerminal.Device = device.Object;
@@ -199,11 +216,9 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void ForeColor_WhenChanged_ThenRaisesEvent()
         {
-            using (var form = new TerminalForm())
+            using (var form = TerminalForm.Create())
             {
                 form.Show();
-                form.VirtualTerminal.CreateControl();
-                Assert.IsTrue(form.VirtualTerminal.TerminalHandleCreated);
 
                 var themeChangeEventRaised = false;
                 form.VirtualTerminal.ThemeChanged += (_, __) => themeChangeEventRaised = true;
@@ -218,10 +233,9 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void BackColor_WhenChanged_ThenRaisesEvent()
         {
-            using (var form = new TerminalForm())
+            using (var form = TerminalForm.Create())
             {
                 form.Show();
-                Assert.IsTrue(form.VirtualTerminal.TerminalHandleCreated);
 
                 var themeChangeEventRaised = false;
                 form.VirtualTerminal.ThemeChanged += (_, __) => themeChangeEventRaised = true;
@@ -236,7 +250,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void Font_WhenChanged_ThenRaisesEvent()
         {
-            using (var form = new TerminalForm())
+            using (var form = TerminalForm.Create())
             {
                 form.Show();
 
@@ -253,7 +267,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void SelectionBackColor_WhenChanged_ThenRaisesEvent()
         {
-            using (var form = new TerminalForm())
+            using (var form = TerminalForm.Create())
             {
                 form.Show();
 
@@ -270,7 +284,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void SelectionBackgroundAlpha_WhenChanged_ThenRaisesEvent()
         {
-            using (var form = new TerminalForm())
+            using (var form = TerminalForm.Create())
             {
                 form.Show();
 
@@ -287,7 +301,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void CaretStyle_WhenChanged_ThenRaisesEvent()
         {
-            using (var form = new TerminalForm())
+            using (var form = TerminalForm.Create())
             {
                 form.Show();
 
