@@ -21,7 +21,7 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 1
+TAG = 2
 
 #
 # Use the pre-built and signed Microsoft binaries.
