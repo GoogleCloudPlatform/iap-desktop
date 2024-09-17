@@ -21,6 +21,7 @@
 
 using Google.Solutions.Platform.IO;
 using Google.Solutions.Terminal.Controls;
+using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -54,7 +55,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         // Resizing.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public void Size_WhenChanged_ThenUpdatesDimensions()
         {
             using (var form = new TerminalForm())
@@ -79,7 +80,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         // Send.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public void Send_WhenCharKey_ThenTerminalSendsData()
         {
             using (var form = new TerminalForm())
@@ -96,7 +97,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void Send_WhenEnterKey_ThenTerminalSendsData()
         {
             using (var form = new TerminalForm())
@@ -113,7 +114,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void Send_WhenLeftKey_ThenTerminalSendsData()
         {
             using (var form = new TerminalForm())
@@ -134,7 +135,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         // Device.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public void Device_WhenChanged_ThenClearsScreen()
         {
             using (var form = new TerminalForm())
@@ -155,7 +156,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void Device_WhenChanged_ThenDisposesPreviousBindingAndClearsScreen()
         {
             using (var form = new TerminalForm())
@@ -175,7 +176,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void Device_WhenDisposed_ThenDisposesDevice()
         {
             var device = new Mock<IPseudoConsole>();
@@ -195,7 +196,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         // Theme.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public void ForeColor_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
@@ -212,7 +213,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void BackColor_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
@@ -229,7 +230,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void Font_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
@@ -246,7 +247,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void SelectionBackColor_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
@@ -263,7 +264,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void SelectionBackgroundAlpha_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
@@ -280,7 +281,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void CaretStyle_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
