@@ -54,6 +54,7 @@ TestResult.xml
 *.pidb
 *.svclog
 *.scc
+.aps
 
 # NuGet Packages
 *.nupkg
