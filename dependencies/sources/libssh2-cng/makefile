@@ -22,7 +22,7 @@ CONFIGURATION = Release
 PLATFORM = x86
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 102
+TAG = 103
 
 LIBSSH2_REF = 6f3d3bc8ff944ef03048f7130c0ffc816320ac46
 LIBSSH2_URL = https://github.com/libssh2/libssh2.git
