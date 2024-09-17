@@ -244,11 +244,13 @@ namespace Google.Solutions.Terminal.Test.Controls
             using (var form = new TerminalForm())
             {
                 form.Show();
+                PumpWindowMessages();
 
                 var themeChangeEventRaised = false;
                 form.VirtualTerminal.ThemeChanged += (_, __) => themeChangeEventRaised = true;
 
                 form.VirtualTerminal.Font = SystemFonts.DialogFont;
+                PumpWindowMessages();
                 form.Close();
 
                 Assert.IsTrue(themeChangeEventRaised);
