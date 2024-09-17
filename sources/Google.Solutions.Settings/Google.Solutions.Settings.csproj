@@ -10,6 +10,7 @@
       deal with the various data conversions used in this library.
     -->
     <Nullable>disable</Nullable>
+    <Platforms>x64;x86;ARM64</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Security" />

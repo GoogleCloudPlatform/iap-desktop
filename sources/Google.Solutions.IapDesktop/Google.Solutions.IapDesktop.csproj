@@ -9,6 +9,7 @@
     <Description>Zero-trust Remote Desktop and SSH client</Description>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <Prefer32Bit>true</Prefer32Bit>
+    <Platforms>x64;x86;ARM64</Platforms>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>

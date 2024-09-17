@@ -27,7 +27,7 @@
            Manufacturer="Google LLC" 
            UpgradeCode="8077382c-6b47-11ea-bc55-0242ac130003">
 		<Package 
-          InstallerVersion="200" 
+          InstallerVersion="500" 
           Compressed="yes" 
           InstallScope="perUser" 
           InstallPrivileges="limited"

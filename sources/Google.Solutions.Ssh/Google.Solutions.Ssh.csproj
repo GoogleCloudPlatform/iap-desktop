@@ -4,6 +4,7 @@
     <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <Description>SSH library</Description>
+    <Platforms>x64;x86;ARM64</Platforms>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent />

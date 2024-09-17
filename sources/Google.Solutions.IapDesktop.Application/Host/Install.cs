@@ -102,7 +102,8 @@ namespace Google.Solutions.IapDesktop.Application.Host
     public enum Architecture
     {
         X86,
-        X64
+        X64,
+        Arm64
     }
 
     public class Install : IInstall
@@ -161,6 +162,8 @@ namespace Google.Solutions.IapDesktop.Application.Host
             get => Architecture.X86;
 #elif X64
             get => Architecture.X64;
+#elif ARM64
+            get => Architecture.Arm64;
 #else
 #error Unknown architecture
 #endif
