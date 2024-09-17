@@ -55,7 +55,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         // Resizing.
         //---------------------------------------------------------------------
 
-        [WindowsFormsTest]
+        [Test]
         public void Size_WhenChanged_ThenUpdatesDimensions()
         {
             using (var form = new TerminalForm())
@@ -80,7 +80,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         // Send.
         //---------------------------------------------------------------------
 
-        [WindowsFormsTest]
+        [Test]
         public void Send_WhenCharKey_ThenTerminalSendsData()
         {
             using (var form = new TerminalForm())
@@ -97,7 +97,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [WindowsFormsTest]
+        [Test]
         public void Send_WhenEnterKey_ThenTerminalSendsData()
         {
             using (var form = new TerminalForm())
@@ -114,7 +114,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [WindowsFormsTest]
+        [Test]
         public void Send_WhenLeftKey_ThenTerminalSendsData()
         {
             using (var form = new TerminalForm())
@@ -135,7 +135,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         // Device.
         //---------------------------------------------------------------------
 
-        [WindowsFormsTest]
+        [Test]
         public void Device_WhenChanged_ThenClearsScreen()
         {
             using (var form = new TerminalForm())
@@ -156,7 +156,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [WindowsFormsTest]
+        [Test]
         public void Device_WhenChanged_ThenDisposesPreviousBindingAndClearsScreen()
         {
             using (var form = new TerminalForm())
@@ -176,7 +176,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [WindowsFormsTest]
+        [Test]
         public void Device_WhenDisposed_ThenDisposesDevice()
         {
             var device = new Mock<IPseudoConsole>();
@@ -196,7 +196,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         // Theme.
         //---------------------------------------------------------------------
 
-        [WindowsFormsTest]
+        [Test]
         public void ForeColor_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
@@ -213,7 +213,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [WindowsFormsTest]
+        [Test]
         public void BackColor_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
@@ -230,7 +230,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [WindowsFormsTest]
+        [Test]
         public void Font_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
@@ -247,7 +247,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [WindowsFormsTest]
+        [Test]
         public void SelectionBackColor_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
@@ -264,7 +264,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [WindowsFormsTest]
+        [Test]
         public void SelectionBackgroundAlpha_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
@@ -281,7 +281,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        [WindowsFormsTest]
+        [Test]
         public void CaretStyle_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
