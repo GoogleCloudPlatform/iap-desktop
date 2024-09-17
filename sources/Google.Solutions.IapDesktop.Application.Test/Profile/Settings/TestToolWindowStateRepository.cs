@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenKeyEmpty_ThenDefaultsAreProvided()
+        public void GetSettings_WhenKeyEmpty()
         {
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new ToolWindowStateRepository(baseKey);
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenSettingsSaved_ThenSettingsCanBeRead()
+        public void GetSettings_WhenSettingsSaved()
         {
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new ToolWindowStateRepository(baseKey);

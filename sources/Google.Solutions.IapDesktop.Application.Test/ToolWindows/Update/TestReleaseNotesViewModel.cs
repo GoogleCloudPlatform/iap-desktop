@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNotLoadedYet_ThenSummaryContainsDefaultText()
+        public void Summary_WhenNotLoadedYet_ThenSummaryContainsDefaultText()
         {
             var viewModel = new ReleaseNotesViewModel(
                 new Mock<IInstall>().Object,
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public async Task WhenLoadingFailed_ThenSummaryContainsError()
+        public async Task Summary_WhenLoadingFailed_ThenSummaryContainsError()
         {
             var feed = new Mock<IReleaseFeed>();
             feed
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public async Task WhenLatestVersionIsNewerThanCurrentVersion_ThenSummaryIgnoresLatestVersion()
+        public async Task Summary_WhenLatestVersionIsNewerThanCurrentVersion_ThenSummaryIgnoresLatestVersion()
         {
             var currentVersion = new Version(2, 1, 0, 0);
 
@@ -112,12 +112,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             StringAssert.Contains("old release", viewModel.Summary.Value);
         }
 
-        //---------------------------------------------------------------------
-        // ShowAllReleases.
-        //---------------------------------------------------------------------
-
         [Test]
-        public async Task WhenShowAllReleasesisFalse_ThenSummaryExcludesOlderReleases()
+        public async Task Summary_WhenShowAllReleasesisFalse_ThenSummaryExcludesOlderReleases()
         {
             var currentVersion = new Version(2, 1, 0, 0);
             var previousVersion = new Version(2, 0, 0, 0);

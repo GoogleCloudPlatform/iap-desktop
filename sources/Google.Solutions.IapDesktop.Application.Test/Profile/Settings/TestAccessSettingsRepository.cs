@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenKeyEmpty_ThenDefaultsAreProvided()
+        public void GetSettings_WhenKeyEmpty_ThenDefaultsAreProvided()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenSettingsSaved_ThenSettingsCanBeRead()
+        public void GetSettings_WhenSettingsSaved_ThenSettingsCanBeRead()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPrivateServiceConnectEndpointValid_ThenSettingWins()
+        public void PrivateServiceConnectEndpoint_WhenPrivateServiceConnectEndpointValid_ThenSettingWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenPrivateServiceConnectEndpointValidAndUserPolicySet_ThenPolicyWins()
+        public void PrivateServiceConnectEndpoint_WhenPrivateServiceConnectEndpointValidAndUserPolicySet_ThenPolicyWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenPrivateServiceConnectEndpointValidAndMachinePolicySet_ThenPolicyWins()
+        public void PrivateServiceConnectEndpoint_WhenPrivateServiceConnectEndpointValidAndMachinePolicySet_ThenPolicyWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenPrivateServiceConnectEndpointValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
+        public void PrivateServiceConnectEndpoint_WhenPrivateServiceConnectEndpointValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenIsDeviceCertificateAuthenticationEnabledValid_ThenSettingWins()
+        public void IsDeviceCertificateAuthenticationEnabled_WhenIsDeviceCertificateAuthenticationEnabledValid_ThenSettingWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenIsDeviceCertificateAuthenticationEnabledValidAndUserPolicySet_ThenPolicyWins()
+        public void IsDeviceCertificateAuthenticationEnabled_WhenIsDeviceCertificateAuthenticationEnabledValidAndUserPolicySet_ThenPolicyWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
@@ -214,7 +214,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenIsDeviceCertificateAuthenticationEnabledValidAndMachinePolicySet_ThenPolicyWins()
+        public void IsDeviceCertificateAuthenticationEnabled_WhenIsDeviceCertificateAuthenticationEnabledValidAndMachinePolicySet_ThenPolicyWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
@@ -235,7 +235,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenIsDeviceCertificateAuthenticationEnabledValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
+        public void IsDeviceCertificateAuthenticationEnabled_WhenIsDeviceCertificateAuthenticationEnabledValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
@@ -261,7 +261,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenConnectionLimitValid_ThenSettingWins()
+        public void ConnectionLimit_WhenConnectionLimitValid_ThenSettingWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -283,7 +283,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenWorkforcePoolProviderValid_ThenSettingWins()
+        public void WorkforcePoolProvider_WhenWorkforcePoolProviderValid_ThenSettingWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -299,7 +299,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenWorkforcePoolProviderValidAndUserPolicySet_ThenPolicyWins()
+        public void WorkforcePoolProvider_WhenWorkforcePoolProviderValidAndUserPolicySet_ThenPolicyWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
@@ -322,7 +322,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenWorkforcePoolProviderValidAndMachinePolicySet_ThenPolicyWins()
+        public void WorkforcePoolProvider_WhenWorkforcePoolProviderValidAndMachinePolicySet_ThenPolicyWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
@@ -345,7 +345,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenWorkforcePoolProviderValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
+        public void WorkforcePoolProvider_WhenWorkforcePoolProviderValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
@@ -374,7 +374,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenMachineAndUserPolicyKeysAreNull_ThenIsPolicyPresentReturnsFalse()
+        public void IsPolicyPresent_WhenMachineAndUserPolicyKeysAreNull_ThenIsPolicyPresentReturnsFalse()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -385,7 +385,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenMachinePolicyKeyExists_ThenIsPolicyPresentReturnsTrue()
+        public void IsPolicyPresent_WhenMachinePolicyKeyExists_ThenIsPolicyPresentReturnsTrue()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var policyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
@@ -397,7 +397,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenUserPolicyKeyExists_ThenIsPolicyPresentReturnsTrue()
+        public void IsPolicyPresent_WhenUserPolicyKeyExists_ThenIsPolicyPresentReturnsTrue()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var policyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))

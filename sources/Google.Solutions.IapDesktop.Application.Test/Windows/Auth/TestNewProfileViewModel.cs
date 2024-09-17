@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProfileNameContainsUnsupportedCharacters_ThenIsProfileNameInvalidIsTrue()
+        public void IsProfileNameInvalid_WhenProfileNameContainsUnsupportedCharacters()
         {
             var viewModel = new NewProfileViewModel()
             {
@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public void WhenProfileNameIsEmpty_ThenIsProfileNameInvalidIsFalse()
+        public void IsProfileNameInvalid_WhenProfileNameIsEmpty()
         {
             var viewModel = new NewProfileViewModel();
 
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public void WhenProfileNameIsValid_ThenIsProfileNameInvalidIsFalse()
+        public void IsProfileNameInvalid_WhenProfileNameIsValid()
         {
             var viewModel = new NewProfileViewModel()
             {
@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProfileNameContainsUnsupportedCharacters_ThenIsOkButtonEnabledIsFalse()
+        public void IsOkButtonEnabled_WhenProfileNameContainsUnsupportedCharacters()
         {
             var viewModel = new NewProfileViewModel()
             {
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public void WhenProfileNameIsEmpty_ThenIsOkButtonEnabledIsFalse()
+        public void IsOkButtonEnabled_WhenProfileNameIsEmpty()
         {
             var viewModel = new NewProfileViewModel();
 
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public void WhenProfileNameIsValid_ThenIsIsOkButtonEnabledIsTrue()
+        public void IsOkButtonEnabled_WhenProfileNameIsValid()
         {
             var viewModel = new NewProfileViewModel()
             {

@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public async Task WhenReauthRequired_ThenReauthConfirmationIsPrompted()
+        public async Task Run_WhenReauthRequired_ThenReauthConfirmationIsPrompted()
         {
             var jobHost = CreateJobHost();
             var jobService = new JobService(jobHost.Object);
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public async Task WhenReauthConfirmed_ThenFuncIsRepeated()
+        public async Task Run_WhenReauthConfirmed_ThenFuncIsRepeated()
         {
             var jobHost = CreateJobHost();
             var jobService = new JobService(jobHost.Object);
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenReauthCancelled_ThenTaskCanceledExceptionIsPopagated()
+        public void Run_WhenReauthCancelled_ThenTaskCanceledExceptionIsPopagated()
         {
             var jobHost = CreateJobHost();
             var jobService = new JobService(jobHost.Object);
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public async Task WhenReauthRequired_ThenReauthConfirmationIsPrompted_WithAggregateException()
+        public async Task Run_WhenReauthRequired_ThenReauthConfirmationIsPrompted_WithAggregateException()
         {
             var jobHost = CreateJobHost();
             var jobService = new JobService(jobHost.Object);
@@ -205,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public async Task WhenReauthConfirmed_ThenFuncIsRepeated_WithAggregateException()
+        public async Task Run_WhenReauthConfirmed_ThenFuncIsRepeated_WithAggregateException()
         {
             var jobHost = CreateJobHost();
             var jobService = new JobService(jobHost.Object);
@@ -237,7 +237,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenReauthCancelled_ThenTaskCanceledExceptionIsPopagated_WithAggregateException()
+        public void Run_WhenReauthCancelled_ThenTaskCanceledExceptionIsPopagated_WithAggregateException()
         {
             var jobHost = CreateJobHost();
             var jobService = new JobService(jobHost.Object);

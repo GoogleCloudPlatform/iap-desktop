@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenFilterSetToNull_ThenListIsPopulatedWithAllProjects()
+        public async Task Filter_WhenFilterSetToNull_ThenListIsPopulatedWithAllProjects()
         {
             var modelMock = CreateModelMock();
             var viewModel = new ProjectPickerViewModel(modelMock.Object);
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
         }
 
         [Test]
-        public async Task WhenFilterTooBroad_ThenStatusTextIndicatedTruncation()
+        public async Task Filter_WhenFilterTooBroad_ThenStatusTextIndicatedTruncation()
         {
             var modelMock = CreateModelMock();
             var viewModel = new ProjectPickerViewModel(modelMock.Object);
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
         }
 
         [Test]
-        public async Task WhenFilterSpecificEnough_ThenStatusTextIndicatsNumberOfResults()
+        public async Task Filter_WhenFilterSpecificEnough_ThenStatusTextIndicatsNumberOfResults()
         {
             var modelMock = CreateModelMock();
             var viewModel = new ProjectPickerViewModel(modelMock.Object);
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
         }
 
         [Test]
-        public async Task WhenFilterUpdated_ThenSelectionIsCleared()
+        public async Task Filter_WhenFilterUpdated_ThenSelectionIsCleared()
         {
             var modelMock = CreateModelMock();
             var viewModel = new ProjectPickerViewModel(modelMock.Object);
@@ -153,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
         }
 
         [Test]
-        public async Task WhenFilteringFails_ThenLoadingErrorContainsException()
+        public async Task Filter_WhenFilteringFails_ThenLoadingErrorContainsException()
         {
             var modelMock = CreateModelMock();
             var viewModel = new ProjectPickerViewModel(modelMock.Object);

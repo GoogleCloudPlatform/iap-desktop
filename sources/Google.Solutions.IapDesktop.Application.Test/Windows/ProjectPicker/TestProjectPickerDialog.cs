@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenCloudModelFilterIsNull_ThenProjectFilterIsNull()
+        public async Task ListProjects_WhenCloudModelFilterIsNull_ThenProjectFilterIsNull()
         {
             var resourceManager = new Mock<IResourceManagerClient>();
             var model = new Application.Windows.ProjectPicker.ProjectPickerDialog.CloudModel(resourceManager.Object);
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
         }
 
         [Test]
-        public async Task WhenCloudModelFilterIsNotNull_ThenProjectFilterIsSet()
+        public async Task ListProjects_WhenCloudModelFilterIsNotNull_ThenProjectFilterIsSet()
         {
             var resourceManager = new Mock<IResourceManagerClient>();
             var model = new Application.Windows.ProjectPicker.ProjectPickerDialog.CloudModel(resourceManager.Object);
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenStaticModelProjectsIsNull_ThenListProjectsReturnsEmptyList()
+        public async Task ListProjects_WhenStaticModelProjectsIsNull_ThenListProjectsReturnsEmptyList()
         {
             var model = new Application.Windows.ProjectPicker.ProjectPickerDialog.StaticModel(null!);
 
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
         }
 
         [Test]
-        public async Task WhenStaticModelFilterIsNull_ThenListProjectsReturnsAllProjects()
+        public async Task ListProjects_WhenStaticModelFilterIsNull_ThenListProjectsReturnsAllProjects()
         {
             var projects = new List<Project>()
             {
@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
         }
 
         [Test]
-        public async Task WhenStaticModelMaxResultsExceeded_ThenListProjectsReturnsTruncatedList()
+        public async Task ListProjects_WhenStaticModelMaxResultsExceeded_ThenListProjectsReturnsTruncatedList()
         {
             var projects = new List<Project>()
             {
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
         }
 
         [Test]
-        public async Task WhenStaticModelFilterIsNotNull_ThenListProjectsReturnsMatchingProjects()
+        public async Task ListProjects_WhenStaticModelFilterIsNotNull_ThenListProjectsReturnsMatchingProjects()
         {
             var projects = new List<Project>()
             {

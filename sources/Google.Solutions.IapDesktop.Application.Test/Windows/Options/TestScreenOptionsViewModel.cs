@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenKeyIsMissing_ThenNoDevicesAreSelected()
+        public void Devices_WhenKeyIsMissing_ThenNoDevicesAreSelected()
         {
             var settingsRepository = CreateSettingsRepository();
 
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenKeyIsEmpty_ThenNoDevicesAreSelected()
+        public void Devices_WhenKeyIsEmpty_ThenNoDevicesAreSelected()
         {
             var settingsRepository = CreateSettingsRepository();
 
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenKeyContainsUnknownDevice_ThenNoDevicesAreSelected()
+        public void Devices_WhenKeyContainsUnknownDevice_ThenNoDevicesAreSelected()
         {
             var settingsRepository = CreateSettingsRepository();
 
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
 
         [Test]
-        public void WhenKeyContainsDevices_ThenDevicesAreSelected()
+        public void Devices_WhenKeyContainsDevices_ThenDevicesAreSelected()
         {
             var settingsRepository = CreateSettingsRepository();
 
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenDeviceSelected_ThenIsDirtyIsSet()
+        public void Devices_WhenDeviceSelected_ThenIsDirtyIsSet()
         {
             var settingsRepository = CreateSettingsRepository();
 
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public async Task WhenAllDevicesDeselected_ThenKeyIsRemoved()
+        public async Task Devices_WhenAllDevicesDeselected_ThenKeyIsRemoved()
         {
             var settingsRepository = CreateSettingsRepository();
 
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public async Task WhenDeviceSelected_ThenKeyIsUpdated()
+        public async Task Devices_WhenDeviceSelected_ThenKeyIsUpdated()
         {
             var settingsRepository = CreateSettingsRepository();
 

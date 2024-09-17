@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSettingEnabled_ThenIsUpdateCheckEnabledIsTrue()
+        public void UpdateCheck_WhenSettingEnabled_ThenIsUpdateCheckEnabledIsTrue()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenSettingDisabled_ThenIsUpdateCheckEnabledIsTrue()
+        public void UpdateCheck_WhenSettingDisabled_ThenIsUpdateCheckEnabledIsTrue()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenSettingDisabledByPolicy_ThenIsUpdateCheckEditableIsFalse()
+        public void UpdateCheck_WhenSettingDisabledByPolicy_ThenIsUpdateCheckEditableIsFalse()
         {
             var settingsRepository = CreateSettingsRepository(
                 new Dictionary<string, object>
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public async Task WhenDisablingUpdateCheck_ThenChangeIsApplied()
+        public async Task UpdateCheck_WhenDisablingUpdateCheck_ThenChangeIsApplied()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenUpdateCheckChanged_ThenIsDirtyIsTrueUntilApplied()
+        public void UpdateCheck_WhenUpdateCheckChanged_ThenIsDirtyIsTrueUntilApplied()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new GeneralOptionsViewModel(
@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenLastCheckIsZero_ThenLastUpdateCheckReturnsNever()
+        public void UpdateCheck_WhenLastCheckIsZero_ThenLastUpdateCheckReturnsNever()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new GeneralOptionsViewModel(
@@ -180,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenLastCheckIsNonZero_ThenLastUpdateCheckReturnsNever()
+        public void UpdateCheck_WhenLastCheckIsNonZero_ThenLastUpdateCheckReturnsNever()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -201,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenBrowserIntegrationChanged_ThenIsDirtyIsTrueUntilApplied()
+        public void BrowserIntegration_WhenBrowserIntegrationChanged_ThenIsDirtyIsTrueUntilApplied()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new GeneralOptionsViewModel(
@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public async Task WhenBrowserIntegrationEnabled_ThenApplyChangesRegistersProtocol()
+        public async Task BrowserIntegration_WhenBrowserIntegrationEnabled_ThenApplyChangesRegistersProtocol()
         {
             var settingsRepository = CreateSettingsRepository();
             var protocolRegistryMock = new Mock<IBrowserProtocolRegistry>();
@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public async Task WhenBrowserIntegrationDisabled_ThenApplyChangesUnregistersProtocol()
+        public async Task BrowserIntegration_WhenBrowserIntegrationDisabled_ThenApplyChangesUnregistersProtocol()
         {
             var settingsRepository = CreateSettingsRepository();
             var protocolRegistryMock = new Mock<IBrowserProtocolRegistry>();
@@ -265,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSettingEnabled_ThenIsTelemetryEnabledIsTrue()
+        public void Telemetry_WhenSettingEnabled_ThenIsTelemetryEnabledIsTrue()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -283,7 +283,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenSettingDisabled_ThenIsTelemetryEnabledIsTrue()
+        public void Telemetry_WhenSettingDisabled_ThenIsTelemetryEnabledIsTrue()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -301,7 +301,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenSettingDisabledByPolicy_ThenIsTelemetryEditableIsFalse()
+        public void Telemetry_WhenSettingDisabledByPolicy_ThenIsTelemetryEditableIsFalse()
         {
             var settingsRepository = CreateSettingsRepository(
                 new Dictionary<string, object>
@@ -324,7 +324,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public async Task WhenEnablingTelemetry_ThenChangeIsApplied()
+        public async Task Telemetry_WhenEnablingTelemetry_ThenChangeIsApplied()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -349,7 +349,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public async Task WhenDisablingTelemetry_ThenChangeIsApplied()
+        public async Task Telemetry_WhenDisablingTelemetry_ThenChangeIsApplied()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -374,7 +374,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void WhenTelemetryChanged_ThenIsDirtyIsTrueUntilApplied()
+        public void IsDirty_WhenTelemetryChanged()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new GeneralOptionsViewModel(

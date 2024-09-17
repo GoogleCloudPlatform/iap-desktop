@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         //---------------------------------------------------------------------
-        // CurrentVersion.
+        // UserAgent.
         //---------------------------------------------------------------------
 
         [Test]
@@ -121,14 +121,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenFreshlyInstalled_ThenInitialVersionIsCurrentVersion()
+        public void InitialVersion_WhenFreshlyInstalled_ThenInitialVersionIsCurrentVersion()
         {
             var install = new Install(TestBaseKeyPath);
             Assert.AreEqual(install.CurrentVersion, install.InitialVersion);
         }
 
         [Test]
-        public void WhenKeyMissing_ThenInitialVersionIsCurrentVersion()
+        public void InitialVersion_WhenKeyMissing_ThenInitialVersionIsCurrentVersion()
         {
             var install = new Install(TestBaseKeyPath);
             this.hkcu.DeleteSubKeyTree(TestBaseKeyPath, false);
@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenUpgraded_ThenInitialVersionOldestVersionEverInstalled()
+        public void InitialVersion_WhenUpgraded_ThenInitialVersionOldestVersionEverInstalled()
         {
             var install = new Install(TestBaseKeyPath);
 
@@ -157,14 +157,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenFreshlyInstalled_ThenPreviousVersionIsNull()
+        public void PreviousVersion_WhenFreshlyInstalled_ThenPreviousVersionIsNull()
         {
             var install = new Install(TestBaseKeyPath);
             Assert.IsNull(install.PreviousVersion);
         }
 
         [Test]
-        public void WhenKeyMissing_ThenPreviousVersionIsNull()
+        public void PreviousVersion_WhenKeyMissing_ThenPreviousVersionIsNull()
         {
             var install = new Install(TestBaseKeyPath);
             this.hkcu.DeleteSubKeyTree(TestBaseKeyPath, false);
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenUpgraded_ThenPreviousVersionIsSet()
+        public void PreviousVersion_WhenUpgraded_ThenPreviousVersionIsSet()
         {
             var install = new Install(TestBaseKeyPath);
 
@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
-        public void UserAgentIncludesPlatform()
+        public void UserAgent_IncludesPlatform()
         {
             StringAssert.Contains(
                 Environment.OSVersion.VersionString,
@@ -211,7 +211,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProfileNameIsNotValid_ThenCreateProfileThrowsException()
+        public void CreateProfile_WhenProfileNameIsNotValid_ThenCreateProfileThrowsException()
         {
             var install = new Install(TestBaseKeyPath);
 
@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenProfileNameIsNull_ThenCreateProfileThrowsException()
+        public void CreateProfile_WhenProfileNameIsNull_ThenCreateProfileThrowsException()
         {
             var install = new Install(TestBaseKeyPath);
 
@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenProfileExists_ThenCreateProfileOpensProfile()
+        public void CreateProfile_WhenProfileExists_ThenCreateProfileOpensProfile()
         {
             var install = new Install(TestBaseKeyPath);
 
@@ -244,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProfileNameIsNotValid_ThenOpenProfileThrowsException()
+        public void OpenProfile_WhenProfileNameIsNotValid_ThenOpenProfileThrowsException()
         {
             var install = new Install(TestBaseKeyPath);
 
@@ -252,7 +252,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenProfileDoesNotExist_ThenOpenProfileThrowsException()
+        public void OpenProfile_WhenProfileDoesNotExist_ThenOpenProfileThrowsException()
         {
             var install = new Install(TestBaseKeyPath);
 
@@ -261,7 +261,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenProfileExists_ThenOpenProfileOpensProfile()
+        public void OpenProfile_WhenProfileExists_ThenOpenProfileOpensProfile()
         {
             var install = new Install(TestBaseKeyPath);
 
@@ -278,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenProfileNameIsNullThenOpenProfileReturnsDefaultProfile()
+        public void OpenProfile_WhenProfileNameIsNullThenOpenProfileReturnsDefaultProfile()
         {
             var install = new Install(TestBaseKeyPath);
 
@@ -292,7 +292,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProfileDoesNotExist_ThenDeleteProfileDoesNothing()
+        public void DeleteProfile_WhenProfileDoesNotExist_ThenDeleteProfileDoesNothing()
         {
             var install = new Install(TestBaseKeyPath);
 
@@ -300,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenProfileExists_ThenDeleteProfileDeletesProfile()
+        public void DeleteProfile_WhenProfileExists_ThenDeleteProfileDeletesProfile()
         {
             var install = new Install(TestBaseKeyPath);
 
@@ -318,7 +318,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProfileCreated_ThenListProfilesIncludesProfile()
+        public void ListProfiles_WhenProfileCreated_ThenListProfilesIncludesProfile()
         {
             var install = new Install(TestBaseKeyPath);
 
@@ -332,7 +332,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenDefaultProfileCreated_ThenListProfilesIncludesDefaultProfile()
+        public void ListProfiles_WhenDefaultProfileCreated_ThenListProfilesIncludesDefaultProfile()
         {
             var install = new Install(TestBaseKeyPath);
 
@@ -346,7 +346,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenNonProfileKeysPresent_ThenListProfilesIgnoresKeys()
+        public void ListProfiles_WhenNonProfileKeysPresent_ThenListProfilesIgnoresKeys()
         {
             var install = new Install(TestBaseKeyPath);
 

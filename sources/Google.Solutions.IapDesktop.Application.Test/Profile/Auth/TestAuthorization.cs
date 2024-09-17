@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNotAuthorized_ThenSessionThrowsException()
+        public void Session_WhenNotAuthorized_ThenSessionThrowsException()
         {
             var client = CreateClient();
             var authorization = new Authorization(
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSuccessful_ThenTryAuthorizeSilentlySetsSession()
+        public async Task TryAuthorizeSilently_WhenSuccessful_ThenTryAuthorizeSilentlySetsSession()
         {
             var session = new Mock<IOidcSession>();
             var client = CreateClient();
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSessionIsNull_ThenAuthorizeSetsSession()
+        public async Task Authorize_WhenSessionIsNull_ThenAuthorizeSetsSession()
         {
             var session = new Mock<IOidcSession>();
             var client = CreateClient();
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         }
 
         [Test]
-        public async Task WhenSessionExists_ThenAuthorizeSplicesSessionsAndRaisesEvent()
+        public async Task Authorize_WhenSessionExists_ThenAuthorizeSplicesSessionsAndRaisesEvent()
         {
             var client = CreateClient();
             var authorization = new Authorization(

@@ -47,11 +47,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
         }
 
         //---------------------------------------------------------------------
-        // Enabled
+        // CollectEvent - enable/disable.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDisabled_ThenEventsAreNotCollected()
+        public void CollectEvent_WhenDisabled_ThenEventsAreNotCollected()
         {
             var client = new Mock<IMeasurementClient>();
             var listener = new TelemetryCollector(
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
         }
 
         [Test]
-        public void WhenEnabled_ThenEventsAreCollected()
+        public void CollectEvent_WhenEnabled_ThenEventsAreCollected()
         {
             var client = new Mock<IMeasurementClient>();
             var listener = new TelemetryCollector(
@@ -105,11 +105,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
         }
 
         //---------------------------------------------------------------------
-        // Collect.
+        // CollectEvent.
         //---------------------------------------------------------------------
 
         [Test]
-        public void CollectIncludesDefaultParameters()
+        public void CollectEvent_IncludesDefaultParameters()
         {
 
             var client = new Mock<IMeasurementClient>();
@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
         }
 
         [Test]
-        public void CollectIncludesEventParameters()
+        public void CollectEvent_IncludesEventParameters()
         {
 
             var client = new Mock<IMeasurementClient>();

@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public void WhenPscEnabled_ThenPropertiesAreSetAccordingly()
+        public void Properties_WhenPscEnabled()
         {
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public void WhenNotInstalled_ThenPropertiesAreSetAccordingly()
+        public void Properties_WhenNotInstalled()
         {
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public void WhenNotEnrolled_ThenPropertiesAreSetAccordingly()
+        public void Properties_WhenNotEnrolled()
         {
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public void WhenEnrolled_ThenPropertiesAreSetAccordingly()
+        public void Properties_WhenEnrolled()
         {
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Enrolled);

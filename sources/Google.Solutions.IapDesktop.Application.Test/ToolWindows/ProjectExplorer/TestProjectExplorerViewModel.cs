@@ -190,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsingDefaultSettings_ThenWindowsAndLinuxIsIncluded()
+        public void IsXxxIncluded_WhenUsingDefaultSettings_ThenWindowsAndLinuxIsIncluded()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -206,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenOsFilterChanged_ThenViewModelIsUpdated()
+        public async Task IsXxxIncluded_WhenOsFilterChanged_ThenViewModelIsUpdated()
         {
             var computeClient = CreateComputeEngineClient();
             var viewModel = CreateViewModel(
@@ -244,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public void WhenIsWindowsIncludedChanged_ThenEventIsFired()
+        public void IsXxxIncluded_WhenIsWindowsIncludedChanged_ThenEventIsFired()
         {
             var initialViewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -270,7 +270,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public void WhenIsLinuxIncludedChanged_ThenEventIsFired()
+        public void IsXxxIncluded_WhenIsLinuxIncludedChanged_ThenEventIsFired()
         {
             var initialViewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -295,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public void WhenOperatingSystemFilterChanged_ThenEventIsFired()
+        public void IsXxxIncluded_WhenOperatingSystemFilterChanged_ThenEventIsFired()
         {
             var initialViewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -324,7 +324,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenInstanceFilterChanged_ThenViewModelIsUpdated()
+        public async Task InstanceFilter_WhenInstanceFilterChanged_ThenViewModelIsUpdated()
         {
             var computeClient = CreateComputeEngineClient();
             var viewModel = CreateViewModel(
@@ -359,7 +359,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public void WhenInstanceFilterChanged_ThenEventIsFired()
+        public void InstanceFilter_WhenInstanceFilterChanged_ThenEventIsFired()
         {
             var initialViewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -389,7 +389,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoProjectsAdded_ThenProjectsIsEmpty()
+        public void Projects_WhenNoProjectsAdded_ThenProjectsIsEmpty()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -404,7 +404,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenProjectAdded_ThenProjectsIsNotEmpty()
+        public async Task Projects_WhenProjectAdded_ThenProjectsIsNotEmpty()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -423,11 +423,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         //---------------------------------------------------------------------
-        // Add/RemoveProjectAsync.
+        // Add/RemoveProject.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenProjectAdded_ThenViewModelIsUpdated()
+        public async Task AddProjects_UpdatesViewModel()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -456,7 +456,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenProjectRemoved_ThenViewModelIsUpdated()
+        public async Task RemoveProject_UpdatesViewModel()
         {
             var projectRepository = CreateProjectRepository();
             projectRepository.AddProject(new ProjectLocator(SampleProjectId));
@@ -488,11 +488,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         //---------------------------------------------------------------------
-        // Project ordering.
+        // ExpandRoot - project ordering.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenMultipleProjectsAdded_ThenProjectsAreOrderedByDisplayName()
+        public async Task ExpandRoot_WhenMultipleProjectsAdded_ThenProjectsAreOrderedByDisplayName()
         {
             var project2 = new ProjectLocator("project-2");
             var inaccessible = new ProjectLocator("inaccessible-1");
@@ -539,7 +539,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenReloadProjectsIsTrue_ThenRefreshReloadsProjects()
+        public async Task Refresh_WhenReloadProjectsIsTrue_ThenRefreshReloadsProjects()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -577,7 +577,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenReloadProjectsIsFalse_ThenRefreshReloadsZones()
+        public async Task Refresh_WhenReloadProjectsIsFalse_ThenRefreshReloadsZones()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -625,7 +625,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenSelectedNodeIsNull_ThenRefreshSelectedNodeAsyncReloadsProjects()
+        public async Task Refresh_WhenSelectedNodeIsNull_ThenRefreshSelectedNodeAsyncReloadsProjects()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -664,7 +664,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenSelectedNodeIsRoot_ThenRefreshSelectedNodeAsyncReloadsProjects()
+        public async Task Refresh_WhenSelectedNodeIsRoot_ThenRefreshSelectedNodeAsyncReloadsProjects()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -703,7 +703,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenSelectedNodeIsProject_ThenRefreshSelectedNodeAsyncReloadsZones()
+        public async Task Refresh_WhenSelectedNodeIsProject_ThenRefreshSelectedNodeAsyncReloadsZones()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -752,7 +752,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenSelectedNodeIsZone_ThenRefreshSelectedNodeAsyncReloadsZones()
+        public async Task Refresh_WhenSelectedNodeIsZone_ThenRefreshSelectedNodeAsyncReloadsZones()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -801,7 +801,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenSelectedNodeIsInstance_ThenRefreshSelectedNodeAsyncReloadsZones()
+        public async Task Refresh_WhenSelectedNodeIsInstance_ThenRefreshSelectedNodeAsyncReloadsZones()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -857,7 +857,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenInstanceConnected_ThenIsConnectedIsTrue()
+        public async Task IsConnected_WhenInstanceConnected_ThenIsConnectedIsTrue()
         {
             var sessionBroker = new Mock<ISessionBroker>();
             sessionBroker.Setup(b => b.IsConnected(
@@ -885,7 +885,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenSessionEventFired_ThenIsConnectedIsUpdated()
+        public async Task IsConnected_WhenSessionEventFired_ThenIsConnectedIsUpdated()
         {
             var eventQueue = new Mock<IEventQueue>();
 
@@ -945,11 +945,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         //---------------------------------------------------------------------
-        // IsConnected tracking.
+        // ImageIndex.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenInstanceConnected_ThenNodeUsesRightIcon()
+        public async Task ImageIndex_WhenInstanceConnected_ThenNodeUsesRightIcon()
         {
             var sessionBroker = new Mock<ISessionBroker>();
             sessionBroker.Setup(b => b.IsConnected(
@@ -981,7 +981,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenInstanceDisonnected_ThenNodeUsesRightIcon()
+        public async Task ImageIndex_WhenInstanceDisonnected_ThenNodeUsesRightIcon()
         {
             new Mock<ISessionBroker>().Setup(b => b.IsConnected(
                     It.IsAny<InstanceLocator>()))
@@ -1016,7 +1016,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenInstanceStateChanges_ThenProjectIsReloaded()
+        public async Task InstanceStateChanged_WhenInstanceStateChanges_ThenProjectIsReloaded()
         {
             var eventQueue = new Mock<IEventQueue>();
 
@@ -1056,11 +1056,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         //---------------------------------------------------------------------
-        // UnloadSelectedProjectAsync.
+        // UnloadSelectedProject.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSelectedNodeIsProject_ThenUnloadSelectedProjectAsyncUnloadsProject()
+        public async Task UnloadSelectedProject_WhenSelectedNodeIsProject_ThenUnloadSelectedProjectAsyncUnloadsProject()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -1089,7 +1089,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenSelectedNodeIsInstance_ThenUnloadSelectedProjectAsyncDoesNothing()
+        public async Task UnloadSelectedProject_WhenSelectedNodeIsInstance_ThenUnloadSelectedProjectAsyncDoesNothing()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -1120,7 +1120,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSelectedNodeIsProject_ThenOpenInCloudConsoleOpensInstancesList()
+        public async Task OpenInCloudConsole_WhenSelectedNodeIsProject()
         {
             var consoleClient = new Mock<ICloudConsoleClient>();
             var viewModel = CreateViewModel(
@@ -1149,7 +1149,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenSelectedNodeIsZone_ThenUnloadSelectedProjectOpensInstancesList()
+        public async Task OpenInCloudConsole_WhenSelectedNodeIsZone()
         {
             var consoleClient = new Mock<ICloudConsoleClient>();
             var viewModel = CreateViewModel(
@@ -1181,7 +1181,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenSelectedNodeIsInstance_ThenUnloadSelectedProjectOpensInstanceDetails()
+        public async Task OpenInCloudConsole_WhenSelectedNodeIsInstance()
         {
             var consoleClient = new Mock<ICloudConsoleClient>();
             var viewModel = CreateViewModel(
@@ -1212,7 +1212,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSelectedNodeIsProject_ThenConfigureIapAccessOpensProjectConfig()
+        public async Task ConfigureIapAccess_WhenSelectedNodeIsProject()
         {
             var consoleClient = new Mock<ICloudConsoleClient>();
             var viewModel = CreateViewModel(
@@ -1241,7 +1241,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenSelectedNodeIsZone_ThenConfigureIapAccessOpensProjectConfig()
+        public async Task ConfigureIapAccess_WhenSelectedNodeIsZone()
         {
             var consoleClient = new Mock<ICloudConsoleClient>();
             var viewModel = CreateViewModel(
@@ -1272,7 +1272,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenSelectedNodeIsInstance_ThenConfigureIapAccessOpensProjectConfig()
+        public async Task ConfigureIapAccess_WhenSelectedNodeIsInstance()
         {
             var consoleClient = new Mock<ICloudConsoleClient>();
             var viewModel = CreateViewModel(
@@ -1302,7 +1302,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSelectedNodeIsRoot_ThenCommandVisiblityIsUpdated()
+        public void IsXxxCommandVisible_WhenSelectedNodeIsRoot_ThenCommandVisiblityIsUpdated()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -1321,7 +1321,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenSelectedNodeIsProject_ThenCommandVisiblityIsUpdated()
+        public async Task IsXxxCommandVisible_WhenSelectedNodeIsProject_ThenCommandVisiblityIsUpdated()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -1349,7 +1349,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenSelectedNodeIsZone_ThenCommandVisiblityIsUpdated()
+        public async Task IsXxxCommandVisible_WhenSelectedNodeIsZone_ThenCommandVisiblityIsUpdated()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -1380,7 +1380,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenSelectedNodeIsInstance_ThenCommandVisiblityIsUpdated()
+        public async Task IsXxxCommandVisible_WhenSelectedNodeIsInstance_ThenCommandVisiblityIsUpdated()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -1410,7 +1410,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenProjectAddedAndNotSavedAsCollapsed_ThenProjectIsExpanded()
+        public async Task IsExpanded_WhenProjectAddedAndNotSavedAsCollapsed_ThenProjectIsExpanded()
         {
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -1436,7 +1436,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenProjectAddedAndSavedAsCollapsed_ThenProjectIsCollapsed()
+        public async Task IsExpanded_WhenProjectAddedAndSavedAsCollapsed_ThenProjectIsCollapsed()
         {
             var projectExplorerSettings = CreateProjectExplorerSettings();
             projectExplorerSettings.CollapsedProjects.Add(new ProjectLocator(SampleProjectId));
@@ -1465,7 +1465,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenProjectRemoved_ThenProjectIsRemovedFromSettings()
+        public async Task IsExpanded_RemoveProjects_WhenProjectRemoved_ThenProjectIsRemovedFromSettings()
         {
             var projectExplorerSettings = CreateProjectExplorerSettings();
             projectExplorerSettings.CollapsedProjects.Add(new ProjectLocator(SampleProjectId));
@@ -1493,7 +1493,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         }
 
         [Test]
-        public async Task WhenProjectExpandedOrCollapsed_ThenSettingsAreUpdated()
+        public async Task IsExpanded_WhenProjectExpandedOrCollapsed_ThenSettingsAreUpdated()
         {
             var projectExplorerSettings = CreateProjectExplorerSettings();
 

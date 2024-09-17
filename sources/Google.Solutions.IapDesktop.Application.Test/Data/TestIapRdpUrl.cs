@@ -34,70 +34,70 @@ namespace Google.Solutions.IapDesktop.Application.Test.Data
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenStringIsNull_ThenFromStringThrowsArgumentNullException()
+        public void FromString_WhenStringIsNull_ThenFromStringThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => IapRdpUrl.FromString(null!));
         }
 
         [Test]
-        public void WhenStringIsEmpty_ThenFromStringThrowsUriFormatException()
+        public void FromString_WhenStringIsEmpty_ThenFromStringThrowsUriFormatException()
         {
             Assert.Throws<UriFormatException>(() => IapRdpUrl.FromString(string.Empty));
         }
 
         [Test]
-        public void WhenStringIsNotAUri_ThenFromStringThrowsUriFormatException()
+        public void FromString_WhenStringIsNotAUri_ThenFromStringThrowsUriFormatException()
         {
             Assert.Throws<UriFormatException>(() => IapRdpUrl.FromString("::"));
         }
 
         [Test]
-        public void WhenSchemeIsWrong_ThenFromStringThrowsIapRdpUrlFormatException()
+        public void FromString_WhenSchemeIsWrong_ThenFromStringThrowsIapRdpUrlFormatException()
         {
             Assert.Throws<IapRdpUrlFormatException>(() => IapRdpUrl.FromString("http://www/"));
         }
 
         [Test]
-        public void WhenHostNotEmpty_ThenFromStringThrowsIapRdpUrlFormatException()
+        public void FromString_WhenHostNotEmpty_ThenFromStringThrowsIapRdpUrlFormatException()
         {
             Assert.Throws<IapRdpUrlFormatException>(() => IapRdpUrl.FromString("iap-rdp://host/my-project/us-central1-a/my-instance"));
         }
 
         [Test]
-        public void WhenLeadingSlashMissing_ThenFromStringThrowsIapRdpUrlFormatException()
+        public void FromString_WhenLeadingSlashMissing_ThenFromStringThrowsIapRdpUrlFormatException()
         {
             Assert.Throws<IapRdpUrlFormatException>(() => IapRdpUrl.FromString("iap-rdp:my-project/us-central1-a/my-instance"));
         }
 
         [Test]
-        public void WhenTooManySlashed_ThenFromStringThrowsIapRdpUrlFormatException()
+        public void FromString_WhenTooManySlashed_ThenFromStringThrowsIapRdpUrlFormatException()
         {
             Assert.Throws<IapRdpUrlFormatException>(() => IapRdpUrl.FromString("iap-rdp:my-project/us-central1-a/my-instance/baz"));
         }
 
         [Test]
-        public void WhenProjectIdIsIsInvalid_ThenFromStringThrowsIapRdpUrlFormatException()
+        public void FromString_WhenProjectIdIsIsInvalid_ThenFromStringThrowsIapRdpUrlFormatException()
         {
             Assert.Throws<IapRdpUrlFormatException>(() =>
                 IapRdpUrl.FromString("iap-rdp:///__/us-central1-a/my-instance"));
         }
 
         [Test]
-        public void WhenZoneIdIsIsInvalid_ThenFromStringThrowsIapRdpUrlFormatException()
+        public void FromString_WhenZoneIdIsIsInvalid_ThenFromStringThrowsIapRdpUrlFormatException()
         {
             Assert.Throws<IapRdpUrlFormatException>(() =>
                 IapRdpUrl.FromString("iap-rdp:///my-project/__/my-instance"));
         }
 
         [Test]
-        public void WhenInstanceNameIsIsInvalid_ThenFromStringThrowsIapRdpUrlFormatException()
+        public void FromString_WhenInstanceNameIsIsInvalid_ThenFromStringThrowsIapRdpUrlFormatException()
         {
             Assert.Throws<IapRdpUrlFormatException>(() =>
                 IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/__"));
         }
 
         [Test]
-        public void WhenCapitalSchemeIsUsed_ThenFromStringSucceeds()
+        public void FromString_WhenCapitalSchemeIsUsed_ThenFromStringSucceeds()
         {
             var url = IapRdpUrl.FromString("IaP-Rdp:///my-project/us-central1-a/my-instance");
 
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Data
         }
 
         [Test]
-        public void WhenTripleSlashUsed_ThenFromStringSucceeds()
+        public void FromString_WhenTripleSlashUsed_ThenFromStringSucceeds()
         {
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance");
 
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Data
         }
 
         [Test]
-        public void WhenSingleSlashUsed_ThenFromStringSucceeds()
+        public void FromString_WhenSingleSlashUsed_ThenFromStringSucceeds()
         {
             var url = IapRdpUrl.FromString("iap-rdp:/my-project/us-central1-a/my-instance");
 
@@ -127,14 +127,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Data
         }
 
         [Test]
-        public void WhenTripleSlashUsed_ThenToStringReturnsSameString()
+        public void FromString_WhenTripleSlashUsed_ThenToStringReturnsSameString()
         {
             var url = "iap-rdp:///my-project/us-central1-a/my-instance";
             Assert.AreEqual(url, IapRdpUrl.FromString(url).ToString(false));
         }
 
         [Test]
-        public void WhenIncludeQueryIsFalse_ThenToStringStripsQuery()
+        public void FromString_WhenIncludeQueryIsFalse_ThenToStringStripsQuery()
         {
             var url = "iap-rdp:///my-project/us-central1-a/my-instance?a=b&c=d";
             Assert.AreEqual(
@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Data
         }
 
         [Test]
-        public void WhenIncludeQueryIsTrue_ThenToStringIncludesEscapedQuery()
+        public void FromString_WhenIncludeQueryIsTrue_ThenToStringIncludesEscapedQuery()
         {
             var url = "iap-rdp:///my-project/us-central1-a/my-instance?" +
                 "foo=%C2%B0!%22%C2%A7%24%25%26%2F()%3D%3F&bar=".ToLower();

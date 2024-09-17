@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void WhenKeyEmpty_ThenDefaultsAreProvided()
+        public void GetSettings_WhenKeyEmpty_ThenDefaultsAreProvided()
         {
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new ThemeSettingsRepository(baseKey);

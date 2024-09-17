@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSelectedThemeChanged_ThenDirtyFlagIsSet()
+        public void SelectedTheme_WhenChanged_ThenDirtyFlagIsSet()
         {
             var settingsRepository = CreateSettingsRepository();
 
@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenScalingModeChanged_ThenDirtyFlagIsSet()
+        public void ScalingMode_WhenChanged_ThenDirtyFlagIsSet()
         {
             var settingsRepository = CreateSettingsRepository();
 
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public void LoadReadsSettings()
+        public void LoadSettings()
         {
             var settingsRepository = CreateSettingsRepository();
 
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public async Task SaveUpdatesSettings()
+        public async Task ApplyChanges()
         {
             var settingsRepository = CreateSettingsRepository();
 

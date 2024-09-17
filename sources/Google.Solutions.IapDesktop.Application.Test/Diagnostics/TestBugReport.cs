@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
     public class TestBugReport
     {
         [Test]
-        public void WhenExceptionIsNull_ThenToStringContainsVersionDetails()
+        public void ToString_WhenExceptionIsNull_ThenToStringContainsVersionDetails()
         {
             var report = new BugReport(GetType(), new Exception());
 
@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
         }
 
         [Test]
-        public void WhenExceptionIsNotNull_ThenToStringContainsNestedExceptionDetails()
+        public void ToString_WhenExceptionIsNotNull_ThenToStringContainsNestedExceptionDetails()
         {
             var ex = new ApplicationException("outer", new NullReferenceException("inner"));
             var report = new BugReport(GetType(), ex);
@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
         }
 
         [Test]
-        public void WhenExceptionIsLoaderException_ThenToStringContainsExceptionDetails()
+        public void ToString_WhenExceptionIsLoaderException_ThenToStringContainsExceptionDetails()
         {
             var ex = new ReflectionTypeLoadException(
                 new[] { typeof(BugReport) },
@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
         }
 
         [Test]
-        public void WhenSourceWindowSetToControl_ThenToStringContainsWindowDetails()
+        public void ToString_WhenSourceWindowSetToControl_ThenToStringContainsWindowDetails()
         {
             using (var form = new Form()
             {

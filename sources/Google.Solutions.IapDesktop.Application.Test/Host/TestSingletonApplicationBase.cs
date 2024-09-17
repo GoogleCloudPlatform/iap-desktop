@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoInstanceRunning_ThenRunStartsNewInstance(
+        public void Run_WhenNoInstanceRunning_ThenRunStartsNewInstance(
             [Values(
                 new string[0],
                 new [] {"one", "two"},
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenInstanceRunning_ThenRunPassesArgumentsToFirstInstance(
+        public void Run_WhenInstanceRunning_ThenRunPassesArgumentsToFirstInstance(
             [Values(
                 new string[0],
                 new [] {"one", "two"},
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenFirstInstanceHung_ThenRunStartsNewInstance()
+        public void Run_WhenFirstInstanceHung_ThenRunStartsNewInstance()
         {
             var appName = Guid.NewGuid().ToString();
 
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void WhenInstanceNamesOnlyDifferInCasing_ThenRunPassesArgumentsToFirstInstance()
+        public void Run_WhenInstanceNamesOnlyDifferInCasing_ThenRunPassesArgumentsToFirstInstance()
         {
             var guid = Guid.NewGuid().ToString();
             var first = new Singleton("TEST_" + guid);
@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
-        public void MutexNameIsLocal()
+        public void ObjectName_IsLocal()
         {
             var app = new Singleton("test");
             StringAssert.StartsWith("Local\\test_", app.MutexName);
@@ -210,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void ObjectNamesIncludeSessionId()
+        public void ObjectName_IncludeSessionId()
         {
             var app = new Singleton("test");
             StringAssert.Contains($"_{app.SessionId:X}_", app.MutexName);
@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void ObjectNamesIncludeUsername()
+        public void ObjectName_IncludeUsername()
         {
             var app = new Singleton("test");
             StringAssert.Contains(Environment.UserName.ToLower(), app.MutexName);
