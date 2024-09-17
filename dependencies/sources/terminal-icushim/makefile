@@ -39,15 +39,14 @@ VC_PLATFORM = $(PLATFORM)
 
 default: package
 
-$(MAKEDIR)\icu\bin\$(PLATFORM)\$(CONFIGURATION)\icu.dll:
+$(MAKEDIR)\bin\$(PLATFORM)\$(CONFIGURATION)\icu.dll:
 	@echo "========================================================"
 	@echo "=== Building icu ($(PLATFORM))                               ==="
 	@echo "========================================================"
 	
-	cd $(MAKEDIR)\icu
 	msbuild icu.sln
 
-compile: $(MAKEDIR)\icu\bin\$(PLATFORM)\$(CONFIGURATION)\icu.dll
+compile: $(MAKEDIR)\bin\$(PLATFORM)\$(CONFIGURATION)\icu.dll
 
 #------------------------------------------------------------------------------
 # Package targets
@@ -75,14 +74,14 @@ $(MAKEDIR)\obj\$(ICUSHIM_PACKAGE_ID).$(ICUSHIM_VERSION).nupkg:
   </metadata>
   <files>
 	<!-- pretend the library is platform-neutral -->
-    <file src="$(MAKEDIR)\icu\bin\Win32\$(CONFIGURATION)\icu.dll" target="runtimes\win10-x86\native" />
-    <file src="$(MAKEDIR)\icu\bin\Win32\$(CONFIGURATION)\icu.pdb" target="runtimes\win10-x86\native" />
+    <file src="$(MAKEDIR)\bin\Win32\$(CONFIGURATION)\icu.dll" target="runtimes\win10-x86\native" />
+    <file src="$(MAKEDIR)\bin\Win32\$(CONFIGURATION)\icu.pdb" target="runtimes\win10-x86\native" />
 
-    <file src="$(MAKEDIR)\icu\bin\x64\$(CONFIGURATION)\icu.dll" target="runtimes\win10-x64\native" />
-    <file src="$(MAKEDIR)\icu\bin\x64\$(CONFIGURATION)\icu.pdb" target="runtimes\win10-x64\native" />
+    <file src="$(MAKEDIR)\bin\x64\$(CONFIGURATION)\icu.dll" target="runtimes\win10-x64\native" />
+    <file src="$(MAKEDIR)\bin\x64\$(CONFIGURATION)\icu.pdb" target="runtimes\win10-x64\native" />
 
-    <file src="$(MAKEDIR)\icu\bin\arm64\$(CONFIGURATION)\icu.dll" target="runtimes\win10-arm64\native" />
-    <file src="$(MAKEDIR)\icu\bin\arm64\$(CONFIGURATION)\icu.pdb" target="runtimes\win10-arm64\native" />
+    <file src="$(MAKEDIR)\bin\arm64\$(CONFIGURATION)\icu.dll" target="runtimes\win10-arm64\native" />
+    <file src="$(MAKEDIR)\bin\arm64\$(CONFIGURATION)\icu.pdb" target="runtimes\win10-arm64\native" />
     <file src="$(ICUSHIM_PACKAGE_ID).targets" target="build" />
   </files>
 </package>
@@ -96,8 +95,9 @@ package: $(MAKEDIR)\obj\$(ICUSHIM_PACKAGE_ID).$(ICUSHIM_VERSION).nupkg
     copy /Y $(MAKEDIR)\obj\$(ICUSHIM_PACKAGE_ID).$(ICUSHIM_VERSION).nupkg $(MAKEDIR)\obj\$(ICUSHIM_PACKAGE_ID).nupkg
 
 clean:
-	cd $(MAKEDIR)\icu
 	-del *.nupkg
 	msbuild -t:clean icu.sln
 
 distclean: clean
+    -rd /S /Q $(MAKEDIR)\obj
+    -rd /S /Q $(MAKEDIR)\bin
