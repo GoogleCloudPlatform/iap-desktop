@@ -1,0 +1,13 @@
+LIBRARY
+EXPORTS
+	uregex_open
+	uregex_close
+	utext_setup
+	uregex_start64
+	uregex_setTimeLimit
+	uregex_setStackLimit
+	uregex_findNext
+	uregex_find
+	uregex_setUText
+	uregex_end64
+	uregex_clone
