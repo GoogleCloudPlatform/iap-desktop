@@ -29,7 +29,7 @@ namespace Google.Solutions.Terminal.Test.Controls
     public class TestTerminalColors
     {
         [Test]
-        public void DefaultToNative()
+        public void Default_ToNative()
         {
             var colorTable = new uint[] { 
                 0x0C0C0C, 

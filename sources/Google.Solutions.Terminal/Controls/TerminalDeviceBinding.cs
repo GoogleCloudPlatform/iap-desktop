@@ -139,7 +139,6 @@ namespace Google.Solutions.Terminal.Controls
             }
         }
 
-
         private void OnDeviceDisconnected(object sender, EventArgs args)
         {
             try

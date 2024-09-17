@@ -55,7 +55,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenControlResized_ThenDimensionsAreUpdated()
+        public void Size_WhenChanged_ThenUpdatesDimensions()
         {
             using (var form = new TerminalForm())
             {
@@ -80,7 +80,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCharKeyPressed_ThenTerminalSendsData()
+        public void Send_WhenCharKey_ThenTerminalSendsData()
         {
             using (var form = new TerminalForm())
             {
@@ -97,7 +97,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void WhenEnterKeyPressed_ThenTerminalSendsData()
+        public void Send_WhenEnterKey_ThenTerminalSendsData()
         {
             using (var form = new TerminalForm())
             {
@@ -114,7 +114,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void WhenLeftKeyPressed_ThenTerminalSendsData()
+        public void Send_WhenLeftKey_ThenTerminalSendsData()
         {
             using (var form = new TerminalForm())
             {
@@ -135,7 +135,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDeviceChanged_ThenScreenIsCleared()
+        public void Device_WhenChanged_ThenClearsScreen()
         {
             using (var form = new TerminalForm())
             {
@@ -156,7 +156,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void WhenDeviceChanged_ThenPreviousBindingIsDisposedAndScreenIsCleared()
+        public void Device_WhenChanged_ThenDisposesPreviousBindingAndClearsScreen()
         {
             using (var form = new TerminalForm())
             {
@@ -176,7 +176,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void WhenDisposed_ThenDeviceIsDisposed()
+        public void Device_WhenDisposed_ThenDisposesDevice()
         {
             var device = new Mock<IPseudoConsole>();
 
@@ -196,7 +196,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenForeColorChanged_ThenThemeIsChanged()
+        public void ForeColor_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
             {
@@ -213,7 +213,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void WhenBackColorChanged_ThenThemeIsChanged()
+        public void BackColor_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
             {
@@ -230,7 +230,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void WhenFontChanged_ThenThemeIsChanged()
+        public void Font_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
             {
@@ -247,7 +247,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void WhenSelectionBackColorChanged_ThenThemeIsChanged()
+        public void SelectionBackColor_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
             {
@@ -264,7 +264,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void WhenSelectionBackgroundAlphaChanged_ThenThemeIsChanged()
+        public void SelectionBackgroundAlpha_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
             {
@@ -281,7 +281,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void WhenCaretStyleChanged_ThenThemeIsChanged()
+        public void CaretStyle_WhenChanged_ThenRaisesEvent()
         {
             using (var form = new TerminalForm())
             {

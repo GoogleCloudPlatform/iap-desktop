@@ -36,7 +36,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTerminalDisposed_ThenDeviceIsDisposed()
+        public void OnTerminalDisposed_WhenTerminalDisposed_DisposesDevice()
         {
             var device = new Mock<IPseudoConsole>();
             var virtualTerminal = new VirtualTerminal()
@@ -50,11 +50,11 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         //---------------------------------------------------------------------
-        // OnTerminalDataSent.
+        // OnTerminalUserInput.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTerminalSentData_ThenDataIsWrittenToDevice()
+        public void OnTerminalUserInput_WritesToDevice()
         {
             var device = new Mock<IPseudoConsole>();
             using (var virtualTerminal = new VirtualTerminal()
@@ -72,7 +72,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void WhenTerminalSentDataButDeviceIsClosed_ThenNoDataIsWrittenToDevice()
+        public void OnTerminalUserInput_WhenDeviceIsClosed_ThenDoesNotWriteToDevice()
         {
             var device = new Mock<IPseudoConsole>();
             device.SetupGet(d => d.IsClosed).Returns(true);
@@ -92,7 +92,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void WhenDeviceWriteFails_ThenTerminalEventIsRaised()
+        public void OnTerminalUserInput_WhenDeviceFails_ThenRaisesEvent()
         {
             var device = new Mock<IPseudoConsole>();
             device
@@ -106,7 +106,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Device = device.Object,
             })
             {
-                Exception exception = null;
+                Exception? exception = null;
                 virtualTerminal.DeviceError += (_, args) => exception = args.Exception;
 
                 virtualTerminal.SimulateSend("data");
@@ -117,11 +117,11 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         //---------------------------------------------------------------------
-        // OnPseudoConsoleSizeChanged.
+        // OnTerminalDimensionsChanged.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTerminaDimensionsChanged_ThenDeviceIsResized()
+        public void OnTerminalDimensionsChanged_ResizesDevice()
         {
             var device = new Mock<IPseudoConsole>();
             using (var virtualTerminal = new VirtualTerminal()
@@ -139,7 +139,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void WhenTerminaDimensionsChangedButDeviceIsClosed_ThenDeviceIsNotResized()
+        public void OnTerminalDimensionsChanged_WhenDeviceIsClosed_ThenDoesNotResizeDevice()
         {
             var device = new Mock<IPseudoConsole>();
             device.SetupGet(d => d.IsClosed).Returns(true);
@@ -159,7 +159,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void WhenDeviceResizeFails_ThenTerminalEventIsRaised()
+        public void OnTerminalDimensionsChanged_WhenDeviceResizeFails_ThenRaisesEvent()
         {
             var device = new Mock<IPseudoConsole>();
             device
@@ -188,7 +188,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDeviceReportsError_ThenTerminalEventIsRaised()
+        public void OnDeviceError_RaisesEvent()
         {
             var device = new Mock<IPseudoConsole>();
             using (var virtualTerminal = new VirtualTerminal()
@@ -199,7 +199,9 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Exception? exception = null;
                 virtualTerminal.DeviceError += (_, args) => exception = args.Exception;
 
-                device.Raise(d => d.FatalError += null, new PseudoConsoleErrorEventArgs(new ArgumentException()));
+                device.Raise(
+                    d => d.FatalError += null, 
+                    new PseudoConsoleErrorEventArgs(new ArgumentException()));
 
                 Assert.IsNotNull(exception);
                 Assert.IsInstanceOf<ArgumentException>(exception);
@@ -211,7 +213,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDeviceDisconnects_ThenTerminalIsClosed()
+        public void OnDeviceDisconnected_ClosesDevice()
         {
             var device = new Mock<IPseudoConsole>();
             using (var virtualTerminal = new VirtualTerminal()
@@ -233,7 +235,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDeviceReportsOutput_ThenTerminalEventIsRaised()
+        public void OnDeviceOutput_RaisesEvent()
         {
             var device = new Mock<IPseudoConsole>();
             using (var virtualTerminal = new VirtualTerminal()
@@ -251,7 +253,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void WhenDeviceReportsEof_ThenTerminalEventIsRaised()
+        public void OnDeviceOutput_WhenDeviceReportsEof_ThenRaisesEvent()
         {
             var device = new Mock<IPseudoConsole>();
             using (var virtualTerminal = new VirtualTerminal()

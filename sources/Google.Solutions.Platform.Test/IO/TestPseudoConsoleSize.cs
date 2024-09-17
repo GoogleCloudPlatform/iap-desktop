@@ -28,9 +28,9 @@ namespace Google.Solutions.Platform.Test.IO
     public class TestPseudoConsoleSize
     {
         [Test]
-        public void ToStringReturnsSize()
+        public void ToString_ReturnsSize()
         {
-            Assert.AreEqual("80x24", new PseudoConsoleSize(80, 24));
+            Assert.AreEqual("80x24", new PseudoConsoleSize(80, 24).ToString());
         }
     }
 }
