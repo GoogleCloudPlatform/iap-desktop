@@ -126,12 +126,18 @@ namespace Google.Solutions.Platform
                 }
 
                 //
-                // If IsWow64Process2 didn't work, or isn't available,
-                // then it's unlikely that we're running on ARM hardware.
+                // Fall back to using the less reliable approach of using
+                // environment variables.
                 //
-                return Environment.Is64BitProcess
-                    ? Architecture.X64
-                    : Architecture.X86;
+                return Environment
+                    .GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")?
+                    .ToLower() switch
+                {
+                    "amd64" => Architecture.X64,
+                    "x86" => Architecture.X86,
+                    "arm64" => Architecture.Arm64,
+                    _ => Architecture.Unknown
+                };
             }
         }
 
