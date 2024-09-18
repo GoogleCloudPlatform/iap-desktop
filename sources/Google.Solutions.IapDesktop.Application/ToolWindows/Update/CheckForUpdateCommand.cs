@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Platform;
 using Google.Solutions.Platform.Net;
 using System;
 using System.Threading;
@@ -133,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                     DialogResult.OK);
 
                 if (!latestRelease.TryGetDownloadUrl(
-                        Install.ProcessArchitecture,
+                        ProcessEnvironment.ProcessArchitecture,
                         out var downloadUrl) ||
                     downloadUrl == null)
                 {

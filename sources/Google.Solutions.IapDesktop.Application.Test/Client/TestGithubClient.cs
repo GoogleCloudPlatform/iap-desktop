@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
+using Google.Solutions.Platform;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
@@ -487,7 +488,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
             Assert.IsNotNull(release);
             Assert.IsFalse(release!.TryGetDownloadUrl(
-                Application.Host.Architecture.X86,
+                Architecture.X86,
                 out var downloadUrl));
             Assert.IsNull(downloadUrl);
         }
@@ -523,12 +524,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
             Assert.IsNotNull(release);
 
             Assert.IsTrue(release!.TryGetDownloadUrl(
-                Application.Host.Architecture.X86,
+                Architecture.X86,
                 out var downloadUrlX86));
             Assert.AreEqual("http://example.com/download.x86.MSI", downloadUrlX86);
 
             Assert.IsTrue(release.TryGetDownloadUrl(
-                Application.Host.Architecture.X64,
+                Architecture.X64,
                 out var downloadUrlX64));
             Assert.AreEqual("http://example.com/download.x64.msi", downloadUrlX64);
         }
@@ -561,7 +562,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
             Assert.IsNotNull(release);
             Assert.IsTrue(release!.TryGetDownloadUrl(
-                Application.Host.Architecture.X86,
+                Architecture.X86,
                 out var downloadUrl));
             Assert.AreEqual("http://example.com/download.msi", downloadUrl);
         }
@@ -585,7 +586,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
             Assert.IsTrue(release.TagVersion!.Major >= 1);
 
             Assert.IsTrue(release.TryGetDownloadUrl(
-                Application.Host.Architecture.X86,
+                Architecture.X86,
                 out var downloadUrl));
 
             Assert.IsNotNull(downloadUrl);

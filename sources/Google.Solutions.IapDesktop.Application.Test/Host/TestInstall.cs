@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
+using Google.Solutions.Platform;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
@@ -198,13 +199,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 Environment.OSVersion.VersionString,
                 Install.UserAgent.Platform);
             StringAssert.Contains(
-                $"{Install.ProcessArchitecture.ToString().ToLower()}/",
+                $"{ProcessEnvironment.ProcessArchitecture.ToString().ToLower()}/",
                 Install.UserAgent.Platform);
             StringAssert.Contains(
-                $"/{Install.CpuArchitecture.ToString().ToLower()}",
+                $"/{ProcessEnvironment.NativeArchitecture.ToString().ToLower()}",
                 Install.UserAgent.Platform);
         }
-
 
         //---------------------------------------------------------------------
         // CreateProfile.

@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.ToolWindows.Update;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Platform;
 using Google.Solutions.Platform.Net;
 using Moq;
 using NUnit.Framework;
@@ -207,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
 
             var downloadUrl = "http://example.com/download";
             release
-                .Setup(r => r.TryGetDownloadUrl(Install.ProcessArchitecture, out downloadUrl))
+                .Setup(r => r.TryGetDownloadUrl(ProcessEnvironment.ProcessArchitecture, out downloadUrl))
                 .Returns(true);
 
             var command = new CheckForUpdateCommand<IMainWindow>(
@@ -234,7 +235,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
 
             string? downloadUrl = null;
             release
-                .Setup(r => r.TryGetDownloadUrl(Install.ProcessArchitecture, out downloadUrl))
+                .Setup(r => r.TryGetDownloadUrl(ProcessEnvironment.ProcessArchitecture, out downloadUrl))
                 .Returns(false);
 
             var command = new CheckForUpdateCommand<IMainWindow>(
@@ -261,7 +262,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
             var release = new Mock<IRelease>();
             release.SetupGet(r => r.DetailsUrl).Returns(detailsUrl);
             release
-                .Setup(r => r.TryGetDownloadUrl(Install.ProcessArchitecture, out downloadUrl))
+                .Setup(r => r.TryGetDownloadUrl(ProcessEnvironment.ProcessArchitecture, out downloadUrl))
                 .Returns(true);
 
             var command = new CheckForUpdateCommand<IMainWindow>(
