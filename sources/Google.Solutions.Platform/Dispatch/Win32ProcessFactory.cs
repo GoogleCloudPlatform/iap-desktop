@@ -225,8 +225,8 @@ namespace Google.Solutions.Platform.Dispatch
                         if (!NativeMethods.CreateProcess(
                             null,
                             $"{Quote(executable)} {arguments}",
-                            IntPtr.Zero,
-                            IntPtr.Zero,
+                            ref processSecurityAttributes,
+                            ref threadSecurityAttributes,
                             false,
                             NativeMethods.CREATE_SUSPENDED | NativeMethods.EXTENDED_STARTUPINFO_PRESENT,
                             IntPtr.Zero,
@@ -262,6 +262,10 @@ namespace Google.Solutions.Platform.Dispatch
                     {
                         pseudoConsole.Dispose();
                         throw;
+                    }
+                    finally
+                    {
+                        NativeMethods.DeleteProcThreadAttributeList(startupInfo.lpAttributeList);
                     }
                 }
             }
@@ -430,8 +434,8 @@ namespace Google.Solutions.Platform.Dispatch
             internal static extern bool CreateProcess(
                 string? lpApplicationName,
                 string lpCommandLine,
-                IntPtr lpProcessAttributes,
-                IntPtr lpThreadAttributes,
+                ref SECURITY_ATTRIBUTES lpProcessAttributes,
+                ref SECURITY_ATTRIBUTES lpThreadAttributes,
                 bool bInheritHandles,
                 uint dwCreationFlags,
                 IntPtr lpEnvironment,

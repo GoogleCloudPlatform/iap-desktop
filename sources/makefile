@@ -51,6 +51,7 @@ NUNIT_ASSEMBLIES = \
 	Google.Solutions.Ssh.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Ssh.Test.dll \
 	Google.Solutions.Mvvm.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Mvvm.Test.dll \
 	Google.Solutions.Settings.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Settings.Test.dll \
+	Google.Solutions.Terminal.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.Terminal.Test.dll \
 	Google.Solutions.IapDesktop.Core.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Core.Test.dll \
 	Google.Solutions.IapDesktop.Application.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Application.Test.dll \
 	Google.Solutions.IapDesktop.Extensions.Management.Test\bin\$(PLATFORM)\$(CONFIGURATION)\$(TARGET_FRAMEWORK)\Google.Solutions.IapDesktop.Extensions.Management.Test.dll \
@@ -65,6 +66,7 @@ NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.Ssh]* \
 	+[Google.Solutions.Mvvm]* \
 	+[Google.Solutions.Settings]* \
+	+[Google.Solutions.Terminal]* \
 	+[Google.Solutions.IapDesktop.Core]* \
 	+[Google.Solutions.IapDesktop.Application]* \
 	+[Google.Solutions.IapDesktop.Extensions.Management]* \

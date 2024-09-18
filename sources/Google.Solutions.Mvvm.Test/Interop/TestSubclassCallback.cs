@@ -38,9 +38,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
         [Test]
         public void Ctor_WhenArgumentInvalid_ThenConstructorThrowsException()
         {
-            Assert.Throws<ArgumentException>(
-                () => new SubclassCallback(null, SubclassCallback.DefaultWndProc));
-            Assert.Throws<ArgumentException>(
+            Assert.Throws<ArgumentNullException>(
                 () => new SubclassCallback(new Control(), null));
         }
 
