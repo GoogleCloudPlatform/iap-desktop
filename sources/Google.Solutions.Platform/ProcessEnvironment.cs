@@ -90,6 +90,19 @@ namespace Google.Solutions.Platform
                     {
                         if (processMachine == NativeMethods.IMAGE_FILE_MACHINE_UNKNOWN)
                         {
+                            if (nativeMachine == NativeMethods.IMAGE_FILE_MACHINE_ARM64 &&
+                                "amd64".Equals(
+                                    Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE"), 
+                                    StringComparison.OrdinalIgnoreCase))
+                            {
+                                //
+                                // Windows 11 22H2 incorrectly returns
+                                // IMAGE_FILE_MACHINE_UNKNOWN when emulating
+                                // x64 processes on ARM64.
+                                //
+                                return Architecture.X64;
+                            }
+
                             //
                             // Not a WOW process, refer to the native machine type.
                             //
@@ -132,7 +145,7 @@ namespace Google.Solutions.Platform
             internal const int IMAGE_FILE_MACHINE_AMD64 = 0x8664;
             internal const int IMAGE_FILE_MACHINE_ARM64 = 0xAA64;
 
-            [DllImport("kernel32.dll", SetLastError = true, EntryPoint = "doesnotexist")]
+            [DllImport("kernel32.dll", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool IsWow64Process2(
                 [In] IntPtr hProcess,
