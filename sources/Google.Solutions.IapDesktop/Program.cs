@@ -555,7 +555,7 @@ namespace Google.Solutions.IapDesktop
                     new Dictionary<string, string>()
                     {
                         { DefaultParameters.UserAgent, Install.UserAgent.ToApplicationName() },
-                        { DefaultParameters.UserAgentArchitecture, Install.ProcessArchitecture.ToString() },
+                        { DefaultParameters.UserAgentArchitecture, ProcessEnvironment.ProcessArchitecture.ToString() },
                         { DefaultParameters.UserAgentPlatformVersion, Environment.OSVersion.Version.ToString() },
                         { "osdrk", SystemTheme.ShouldAppsUseDarkMode ? "1" : "0" },
                         { "oscdp", DeviceCapabilities.Current.Dpi.ToString() },

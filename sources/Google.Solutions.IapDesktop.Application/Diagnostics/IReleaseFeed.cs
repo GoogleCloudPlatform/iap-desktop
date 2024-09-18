@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Host;
+using Google.Solutions.Platform;
 using System;
 using System.Collections.Generic;
 using System.Threading;

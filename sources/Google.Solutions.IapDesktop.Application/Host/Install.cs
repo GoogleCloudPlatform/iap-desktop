@@ -24,6 +24,7 @@ using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Properties;
+using Google.Solutions.Platform;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -99,12 +100,6 @@ namespace Google.Solutions.IapDesktop.Application.Host
         void DeleteProfile(string name);
     }
 
-    public enum Architecture
-    {
-        X86,
-        X64
-    }
-
     public class Install : IInstall
     {
         private const string VersionHistoryValueName = "InstalledVersionHistory";
@@ -144,36 +139,14 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// </summary>
         public static UserAgent UserAgent { get; }
 
-        /// <summary>
-        /// Architecture of the CPU.
-        /// </summary>
-        public static Architecture CpuArchitecture
-        {
-            get => Environment.Is64BitOperatingSystem ? Architecture.X64 : Architecture.X86;
-        }
-
-        /// <summary>
-        /// Architecture of the process (which might run emulated).
-        /// </summary>
-        public static Architecture ProcessArchitecture
-        {
-#if X86
-            get => Architecture.X86;
-#elif X64
-            get => Architecture.X64;
-#else
-#error Unknown architecture
-#endif
-        }
-
         public static bool IsExecutingTests { get; }
 
         static Install()
         {
             var platform =
                 $"{Environment.OSVersion.VersionString}; " +
-                $"{ProcessArchitecture.ToString().ToLower()}/" +
-                $"{CpuArchitecture.ToString().ToLower()}";
+                $"{ProcessEnvironment.ProcessArchitecture.ToString().ToLower()}/" +
+                $"{ProcessEnvironment.NativeArchitecture.ToString().ToLower()}";
 
             assemblyVersion = typeof(Install).Assembly.GetName().Version;
             UserAgent = new UserAgent(

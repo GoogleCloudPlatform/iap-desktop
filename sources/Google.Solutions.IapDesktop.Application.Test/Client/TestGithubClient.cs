@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
+using Google.Solutions.Platform;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
@@ -461,7 +462,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task DownloadUrl_WhenReleaseHasNoMsiDownload_ThenTryGetDownloadUrlReturnsFalse()
+        public async Task DownloadUrl_WhenReleaseHasNoMsiDownload()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -487,13 +488,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
             Assert.IsNotNull(release);
             Assert.IsFalse(release!.TryGetDownloadUrl(
-                Application.Host.Architecture.X86,
+                Architecture.X86,
                 out var downloadUrl));
             Assert.IsNull(downloadUrl);
         }
 
         [Test]
-        public async Task DownloadUrl_WhenReleaseHasPlatformSpecificMsiDownload_ThenDownloadUrlIsNull()
+        public async Task DownloadUrl_WhenReleaseHasPlatformSpecificMsiDownload()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -510,6 +511,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                         new GithubClient.ReleaseAsset("http://example.com/x86.x64.txt"),
                         new GithubClient.ReleaseAsset("http://example.com/download.x64.msi"),
                         new GithubClient.ReleaseAsset("http://example.com/download.x86.MSI"),
+                        new GithubClient.ReleaseAsset("http://example.com/download.arm64.msi"),
                         new GithubClient.ReleaseAsset("http://example.com/download.MSI")
                     }));
 
@@ -523,18 +525,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
             Assert.IsNotNull(release);
 
             Assert.IsTrue(release!.TryGetDownloadUrl(
-                Application.Host.Architecture.X86,
+                Architecture.X86,
                 out var downloadUrlX86));
             Assert.AreEqual("http://example.com/download.x86.MSI", downloadUrlX86);
 
             Assert.IsTrue(release.TryGetDownloadUrl(
-                Application.Host.Architecture.X64,
+                Architecture.X64,
                 out var downloadUrlX64));
             Assert.AreEqual("http://example.com/download.x64.msi", downloadUrlX64);
+
+            Assert.IsTrue(release.TryGetDownloadUrl(
+                Architecture.Arm64,
+                out var downloadUrlArm64));
+            Assert.AreEqual("http://example.com/download.arm64.msi", downloadUrlArm64);
         }
 
         [Test]
-        public async Task DownloadUrl_WhenReleaseHasGenericMsiDownload_ThenDownloadUrlIsNull()
+        public async Task DownloadUrl_WhenReleaseHasGenericMsiDownload()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -561,7 +568,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
             Assert.IsNotNull(release);
             Assert.IsTrue(release!.TryGetDownloadUrl(
-                Application.Host.Architecture.X86,
+                Architecture.X86,
                 out var downloadUrl));
             Assert.AreEqual("http://example.com/download.msi", downloadUrl);
         }
@@ -571,7 +578,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task FindLatestRelease_WhenRepositoryExists_ThenFindLatestReleaseReturnsRelease()
+        public async Task FindLatestRelease_WhenRepositoryExists()
         {
             var adapter = new GithubClient(
                 new ExternalRestClient(),
@@ -585,7 +592,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
             Assert.IsTrue(release.TagVersion!.Major >= 1);
 
             Assert.IsTrue(release.TryGetDownloadUrl(
-                Application.Host.Architecture.X86,
+                Architecture.X86,
                 out var downloadUrl));
 
             Assert.IsNotNull(downloadUrl);

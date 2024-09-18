@@ -5,6 +5,7 @@
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <Description>Session extension</Description>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Platforms>x64;x86;ARM64</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.11" />

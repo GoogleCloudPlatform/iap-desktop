@@ -5,6 +5,7 @@
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     <Description>Management extension</Description>
     <UseWindowsForms>true</UseWindowsForms>
+    <Platforms>x64;x86;ARM64</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="ToolWindows\Install\About.md" />

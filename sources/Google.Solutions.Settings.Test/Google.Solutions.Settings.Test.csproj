@@ -9,6 +9,7 @@
       deal with the various data conversions used in this library.
     -->
     <Nullable>disable</Nullable>
+    <Platforms>x64;x86;ARM64</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Castle.Core" Version="5.1.1" />
