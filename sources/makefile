@@ -310,8 +310,10 @@ policies: $(POLICIES_PACKAGE)
 #------------------------------------------------------------------------------
 # Kokoro specific targets
 #------------------------------------------------------------------------------
-
-# NB. Run integration tests for single platform only to save time
+#
+# NB. Run integration tests for single platform only to save time, and
+#     skip arm64 tests entirely because Kokoro is x64.
+#
 kokoro-continuous-integration:
     $(MAKE) $(MAKEFLAGS) PLATFORM=x86 SKIP_INTEGRATION_TESTS=1 \
         installer \
@@ -319,6 +321,12 @@ kokoro-continuous-integration:
         symbols \
         policies \
         test
+		
+    $(MAKE) $(MAKEFLAGS) PLATFORM=arm64 \
+        installer \
+        installer-snapshot \
+        symbols \
+        policies
 
     $(MAKE) $(MAKEFLAGS) PLATFORM=x64 \
         installer \
