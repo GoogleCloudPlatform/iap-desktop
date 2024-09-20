@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Interop;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Platform.IO;
@@ -426,6 +427,9 @@ namespace Google.Solutions.Terminal.Controls
         {
             if (this.DesignMode)
             {
+                //
+                // Draw a placeholder where the terminal would appear.
+                //
                 e.Graphics.DrawRectangle(
                     SystemPens.Highlight, 
                     this.Bounds);
@@ -639,7 +643,7 @@ namespace Google.Solutions.Terminal.Controls
                             {
                                 if (!string.IsNullOrWhiteSpace(this.selectionToClearOnEnter))
                                 {
-                                    Clipboard.SetText(this.selectionToClearOnEnter);
+                                    ClipboardUtil.SetText(this.selectionToClearOnEnter);
                                 }
                             }
                             catch (ExternalException)
