@@ -45,6 +45,7 @@ namespace Google.Solutions.Terminal.Controls
         private const string Esc = "\u001b";
 
         private TerminalSafeHandle? terminal = null;
+        private IntPtr terminalHwnd;
         private SubclassCallback? terminalSubclass;
 
         private PseudoConsoleSize dimensions;
@@ -119,7 +120,7 @@ namespace Google.Solutions.Terminal.Controls
             //
             var hr = NativeMethods.CreateTerminal(
                 this.Handle,
-                out var terminalHwnd,
+                out this.terminalHwnd,
                 out this.terminal);
             if (hr != 0)
             {
@@ -142,7 +143,7 @@ namespace Google.Solutions.Terminal.Controls
             // terminal HWND's messages.
             //
             this.terminalSubclass = new SubclassCallback(
-                terminalHwnd,
+                this.terminalHwnd,
                 this,
                 TerminalSubclassWndProc);
             this.terminalSubclass.UnhandledException += (_, ex)
@@ -558,7 +559,7 @@ namespace Google.Solutions.Terminal.Controls
 
         private void TerminalSubclassWndProc(ref Message m)
         {
-            bool IsKeyForCopyingCurrentSelection(Keys key)
+            bool IsAcceleratorForCopyingCurrentSelection(Keys key)
             {
                 //
                 // NB. Ctrl+C is handled by ther terminal itself.
@@ -620,7 +621,7 @@ namespace Google.Solutions.Terminal.Controls
                         NativeMethods.TerminalSetCursorVisible(terminalHandle, true);
                         this.caretBlinkTimer.Start();
 
-                        if (IsKeyForCopyingCurrentSelection((Keys)keyParams.VirtualKey) && 
+                        if (IsAcceleratorForCopyingCurrentSelection((Keys)keyParams.VirtualKey) && 
                             NativeMethods.TerminalIsSelectionActive(terminalHandle))
                         {
                             //
@@ -653,7 +654,7 @@ namespace Google.Solutions.Terminal.Controls
                     {
                         var keyParams = new WmKeyUpDownParams(m);
 
-                        if (IsKeyForCopyingCurrentSelection((Keys)keyParams.VirtualKey) &&
+                        if (IsAcceleratorForCopyingCurrentSelection((Keys)keyParams.VirtualKey) &&
                             this.selectionToClearOnEnter != null)
                         {
                             //
@@ -838,6 +839,10 @@ namespace Google.Solutions.Terminal.Controls
             }
         }
 
+        internal IntPtr TerminalHwnd
+        {
+            get => this.terminalHwnd;
+        }
 
         internal void SimulateSend(string data)
         {
