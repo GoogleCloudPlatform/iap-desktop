@@ -672,7 +672,7 @@ namespace Google.Solutions.Terminal.Controls
                             {
                                 if (!string.IsNullOrWhiteSpace(this.selectionToClearOnEnter))
                                 {
-                                    ClipboardUtil.SetText(this.selectionToClearOnEnter);
+                                    Clipboard.SetText(this.selectionToClearOnEnter);
                                 }
                             }
                             catch (ExternalException)
