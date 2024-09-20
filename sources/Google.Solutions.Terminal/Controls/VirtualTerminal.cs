@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Interop;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Platform.IO;
@@ -303,11 +304,6 @@ namespace Google.Solutions.Terminal.Controls
             this.DimensionsChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        protected virtual void OnUserInput(string data)
-        { 
-            this.UserInput?.Invoke(this, new TerminalInputEventArgs(data));
-        }
-
         protected virtual void OnTerminalScrolled(
             int viewTop,
             int viewHeight,
@@ -322,6 +318,34 @@ namespace Google.Solutions.Terminal.Controls
             this.scrollBar.Value = viewTop;
         }
 
+        /// <summary>
+        /// Invoked when the terminal received user input that needs to
+        /// be sent to the device.
+        /// </summary>
+        protected virtual void OnUserInput(string data)
+        {
+            //
+            // When a user presses Enter, the terminal produces a CR (\r).
+            // This is in line with what you'd expect.
+            //
+            // If the user pastes text into the terminal (for example, by
+            // using a right-click, which is handled by the terminal itself),
+            // and the pasted text contains CRLFs, the the terminal doesn't
+            // covert these CRLFs to CRs. Instead, it passes through the CRLFs
+            // to this callback here.
+            //
+            // Sanitize the CRLFs here, because most applications (incl. bash)
+            // will otherwise interpret a CRLF as two line breaks.
+            //
+            data = data.Replace("\r\n", "\r");
+
+            this.UserInput?.Invoke(this, new TerminalInputEventArgs(data));
+        }
+
+        /// <summary>
+        /// Invoked when the device produced output that needs to be
+        /// sent to the terminal for rendering.
+        /// </summary>
         protected virtual void OnOutputReceived(string data)
         {
             if (this.DesignMode)
@@ -426,6 +450,9 @@ namespace Google.Solutions.Terminal.Controls
         {
             if (this.DesignMode)
             {
+                //
+                // Draw a placeholder where the terminal would appear.
+                //
                 e.Graphics.DrawRectangle(
                     SystemPens.Highlight, 
                     this.Bounds);
@@ -639,7 +666,7 @@ namespace Google.Solutions.Terminal.Controls
                             {
                                 if (!string.IsNullOrWhiteSpace(this.selectionToClearOnEnter))
                                 {
-                                    Clipboard.SetText(this.selectionToClearOnEnter);
+                                    ClipboardUtil.SetText(this.selectionToClearOnEnter);
                                 }
                             }
                             catch (ExternalException)

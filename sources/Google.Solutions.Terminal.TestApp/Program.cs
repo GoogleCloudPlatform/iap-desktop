@@ -20,11 +20,11 @@
 //
 
 using System;
+using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 using Google.Solutions.Platform.Dispatch;
-using System.Diagnostics;
 using Google.Solutions.Terminal.Controls;
-using System.Drawing;
 
 namespace Google.Solutions.Terminal.TestApp
 {
