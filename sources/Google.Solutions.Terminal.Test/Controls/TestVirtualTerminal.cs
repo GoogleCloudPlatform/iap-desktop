@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.IO;
 using Google.Solutions.Terminal.Controls;
 using Google.Solutions.Testing.Apis;
@@ -342,7 +343,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             action();
             terminal.UserInput -= AccumulateData;
 
-            Assert.AreEqual(receiveBuffer.ToString(), expectedData);
+            Assert.AreEqual(expectedData, receiveBuffer.ToString());
         }
     }
 }

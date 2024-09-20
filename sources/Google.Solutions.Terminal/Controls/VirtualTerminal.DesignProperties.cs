@@ -114,9 +114,21 @@ namespace Google.Solutions.Terminal.Controls
         public bool EnableCtrlInsert { get; set; } = true;
 
         /// <summary>
+        /// Enable Shift+Insert to paste.
+        /// </summary>
+        [Category("Behavior")]
+        public bool EnableShiftInsert { get; set; } = true;
+
+        /// <summary>
         /// Enable Ctrl+C to copy.
         /// </summary>
         [Category("Behavior")]
         public bool EnableCtrlC { get; set; } = true;
+
+        /// <summary>
+        /// Enable Ctrl+V to paste.
+        /// </summary>
+        [Category("Behavior")]
+        public bool EnableCtrlV { get; set; } = true;
     }
 }

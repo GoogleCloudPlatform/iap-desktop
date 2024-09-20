@@ -587,6 +587,22 @@ namespace Google.Solutions.Terminal.Controls
                 };
             }
 
+            bool IsAcceleratorForPasting(Keys key)
+            {
+                if (ModifierKeys == Keys.Shift && key == Keys.Insert)
+                {
+                    return this.EnableShiftInsert;
+                }
+                else if (ModifierKeys == Keys.Control && key == Keys.V)
+                {
+                    return this.EnableCtrlV;
+                }
+                else
+                {
+                    return false;
+                };
+            }
+
             Debug.Assert(!this.DesignMode);
 
             var terminalHandle = Invariant.ExpectNotNull(this.terminal, "Terminal");
@@ -640,6 +656,14 @@ namespace Google.Solutions.Terminal.Controls
                             this.selectionToClearOnEnter = 
                                 NativeMethods.TerminalGetSelection(terminalHandle);
                         }
+                        else if (IsAcceleratorForPasting((Keys)keyParams.VirtualKey))
+                        {
+                            //
+                            // We'll handle the paste in WM_KEYUP.
+                            //
+                            // NB. We must not pass this key event to the terminal.
+                            //
+                        }
                         else
                         {
                             NativeMethods.TerminalSendKeyEvent(
@@ -684,6 +708,23 @@ namespace Google.Solutions.Terminal.Controls
 
                             NativeMethods.TerminalClearSelection(terminalHandle);
                             this.selectionToClearOnEnter = null;
+                        }
+                        else if (IsAcceleratorForPasting((Keys)keyParams.VirtualKey))
+                        {
+                            try
+                            {
+                                var contents = Clipboard.GetText();
+                                if (!string.IsNullOrWhiteSpace(contents))
+                                {
+                                    OnUserInput(contents);
+                                }
+                            }
+                            catch (ExternalException)
+                            {
+                                //
+                                // Clipboard busy, ignore.
+                                //
+                            }
                         }
                         else
                         {
