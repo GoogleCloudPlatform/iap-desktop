@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.IO;
 using Google.Solutions.Terminal.Controls;
 using Google.Solutions.Testing.Apis;
@@ -96,17 +97,17 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         //---------------------------------------------------------------------
-        // SimulateKey.
+        // UserInput - key handling.
         //---------------------------------------------------------------------
 
         [Test]
-        public void SimulateKey_WhenCharKey_ThenTerminalSendsData()
+        public void UserInput_WhenCharKey_ThenTerminalSendsData()
         {
             using (var form = TerminalForm.Create())
             {
                 form.Show();
 
-                VirtualTerminalAssert.RaisesSendEvent(
+                VirtualTerminalAssert.RaisesUserInputEvent(
                     form.VirtualTerminal,
                     "A",
                     () => form.VirtualTerminal.SimulateKey(Keys.A));
@@ -116,13 +117,13 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void SimulateKey_WhenEnterKey_ThenTerminalSendsData()
+        public void UserInput_WhenEnterKey_ThenTerminalSendsData()
         {
             using (var form = TerminalForm.Create())
             {
                 form.Show();
 
-                VirtualTerminalAssert.RaisesSendEvent(
+                VirtualTerminalAssert.RaisesUserInputEvent(
                     form.VirtualTerminal,
                     "\r",
                     () => form.VirtualTerminal.SimulateKey(Keys.Enter));
@@ -132,13 +133,13 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void SimulateKey_WhenLeftKey_ThenTerminalSendsData()
+        public void UserInput_WhenLeftKey_ThenTerminalSendsData()
         {
             using (var form = TerminalForm.Create())
             {
                 form.Show();
 
-                VirtualTerminalAssert.RaisesSendEvent(
+                VirtualTerminalAssert.RaisesUserInputEvent(
                     form.VirtualTerminal,
                     "\u001b[D\u001b[D",
                     () => form.VirtualTerminal.SimulateKey(Keys.Left));
@@ -147,26 +148,17 @@ namespace Google.Solutions.Terminal.Test.Controls
             }
         }
 
-        //---------------------------------------------------------------------
-        // SimulateSend.
-        //---------------------------------------------------------------------
-
         [Test]
-        public void SimulateSend_WhenDataContainsCrlf_ThenLineFeedsAreRemoved()
+        public void UserInput_WhenDataContainsCrlf_ThenLineFeedsAreRemoved()
         {
             using (var form = TerminalForm.Create())
             {
                 form.Show();
 
-                var userInputBuffer = new StringBuilder();
-                form.VirtualTerminal.UserInput += (_, args) 
-                    => userInputBuffer.Append(args.Data);
-
-                form.VirtualTerminal.SimulateSend("one\r\ntwo\r\nthree\r\n");
-
-                Assert.AreEqual(
+                VirtualTerminalAssert.RaisesUserInputEvent(
+                    form.VirtualTerminal,
                     "one\rtwo\rthree\r",
-                    userInputBuffer.ToString());
+                    () => form.VirtualTerminal.SimulateSend("one\r\ntwo\r\nthree\r\n"));
 
                 form.Close();
             }
@@ -376,7 +368,7 @@ namespace Google.Solutions.Terminal.Test.Controls
 
     public static class VirtualTerminalAssert
     {
-        public static void RaisesSendEvent(
+        public static void RaisesUserInputEvent(
             VirtualTerminal terminal,
             string expectedData,
             Action action)
@@ -391,7 +383,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             action();
             terminal.UserInput -= AccumulateData;
 
-            Assert.AreEqual(receiveBuffer.ToString(), expectedData);
+            Assert.AreEqual(expectedData, receiveBuffer.ToString());
         }
     }
 }

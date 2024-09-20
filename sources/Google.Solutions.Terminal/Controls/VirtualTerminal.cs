@@ -45,6 +45,7 @@ namespace Google.Solutions.Terminal.Controls
         private const string Esc = "\u001b";
 
         private TerminalSafeHandle? terminal = null;
+        private IntPtr terminalHwnd;
         private SubclassCallback? terminalSubclass;
 
         private PseudoConsoleSize dimensions;
@@ -119,7 +120,7 @@ namespace Google.Solutions.Terminal.Controls
             //
             var hr = NativeMethods.CreateTerminal(
                 this.Handle,
-                out var terminalHwnd,
+                out this.terminalHwnd,
                 out this.terminal);
             if (hr != 0)
             {
@@ -142,7 +143,7 @@ namespace Google.Solutions.Terminal.Controls
             // terminal HWND's messages.
             //
             this.terminalSubclass = new SubclassCallback(
-                terminalHwnd,
+                this.terminalHwnd,
                 this,
                 TerminalSubclassWndProc);
             this.terminalSubclass.UnhandledException += (_, ex)
@@ -557,16 +558,13 @@ namespace Google.Solutions.Terminal.Controls
         // Terminal subclass.
         //---------------------------------------------------------------------
 
-        private ushort lastKeyUpVirtualKey = 0;
+        private ushort lastKeyDownVirtualKey = 0;
         private string? selectionToClearOnEnter = null;
 
         private void TerminalSubclassWndProc(ref Message m)
         {
-            bool IsKeyForCopyingCurrentSelection(Keys key)
+            bool IsAcceleratorForCopyingCurrentSelection(Keys key)
             {
-                //
-                // NB. Ctrl+C is handled by ther terminal itself.
-                //
                 if (ModifierKeys == Keys.None && key == Keys.Enter)
                 {
                     //
@@ -577,7 +575,31 @@ namespace Google.Solutions.Terminal.Controls
                 }
                 else if (ModifierKeys == Keys.Control && key == Keys.Insert)
                 {
-                    return true;
+                    return this.EnableCtrlInsert;
+                }
+                else if (ModifierKeys == Keys.Control && key == Keys.C)
+                {
+                    //
+                    // NB. Powershell handles Ctrl+C itself, but cmd and bash
+                    // don't.
+                    //
+                    return this.EnableCtrlC;
+                }
+                else
+                {
+                    return false;
+                };
+            }
+
+            bool IsAcceleratorForPasting(Keys key)
+            {
+                if (ModifierKeys == Keys.Shift && key == Keys.Insert)
+                {
+                    return this.EnableShiftInsert;
+                }
+                else if (ModifierKeys == Keys.Control && key == Keys.V)
+                {
+                    return this.EnableCtrlV;
                 }
                 else
                 {
@@ -624,7 +646,7 @@ namespace Google.Solutions.Terminal.Controls
                         NativeMethods.TerminalSetCursorVisible(terminalHandle, true);
                         this.caretBlinkTimer.Start();
 
-                        if (IsKeyForCopyingCurrentSelection((Keys)keyParams.VirtualKey) && 
+                        if (IsAcceleratorForCopyingCurrentSelection((Keys)keyParams.VirtualKey) && 
                             NativeMethods.TerminalIsSelectionActive(terminalHandle))
                         {
                             //
@@ -638,6 +660,14 @@ namespace Google.Solutions.Terminal.Controls
                             this.selectionToClearOnEnter = 
                                 NativeMethods.TerminalGetSelection(terminalHandle);
                         }
+                        else if (IsAcceleratorForPasting((Keys)keyParams.VirtualKey))
+                        {
+                            //
+                            // We'll handle the paste in WM_KEYUP.
+                            //
+                            // NB. We must not pass this key event to the terminal.
+                            //
+                        }
                         else
                         {
                             NativeMethods.TerminalSendKeyEvent(
@@ -648,7 +678,7 @@ namespace Google.Solutions.Terminal.Controls
                                 true);
                         }
 
-                        this.lastKeyUpVirtualKey = keyParams.VirtualKey;
+                        this.lastKeyDownVirtualKey = keyParams.VirtualKey;
                         break;
                     }
 
@@ -657,7 +687,7 @@ namespace Google.Solutions.Terminal.Controls
                     {
                         var keyParams = new WmKeyUpDownParams(m);
 
-                        if (IsKeyForCopyingCurrentSelection((Keys)keyParams.VirtualKey) &&
+                        if (IsAcceleratorForCopyingCurrentSelection((Keys)keyParams.VirtualKey) &&
                             this.selectionToClearOnEnter != null)
                         {
                             //
@@ -670,7 +700,7 @@ namespace Google.Solutions.Terminal.Controls
                             {
                                 if (!string.IsNullOrWhiteSpace(this.selectionToClearOnEnter))
                                 {
-                                    ClipboardUtil.SetText(this.selectionToClearOnEnter);
+                                    Clipboard.SetText(this.selectionToClearOnEnter);
                                 }
                             }
                             catch (ExternalException)
@@ -683,9 +713,26 @@ namespace Google.Solutions.Terminal.Controls
                             NativeMethods.TerminalClearSelection(terminalHandle);
                             this.selectionToClearOnEnter = null;
                         }
+                        else if (IsAcceleratorForPasting((Keys)keyParams.VirtualKey))
+                        {
+                            try
+                            {
+                                var contents = Clipboard.GetText();
+                                if (!string.IsNullOrWhiteSpace(contents))
+                                {
+                                    OnUserInput(contents);
+                                }
+                            }
+                            catch (ExternalException)
+                            {
+                                //
+                                // Clipboard busy, ignore.
+                                //
+                            }
+                        }
                         else
                         {
-                            if (this.lastKeyUpVirtualKey != keyParams.VirtualKey)
+                            if (this.lastKeyDownVirtualKey != keyParams.VirtualKey)
                             {
                                 //
                                 // For some keys (in particular, TAB and the
@@ -841,7 +888,6 @@ namespace Google.Solutions.Terminal.Controls
                 TerminalSubclassWndProc(ref m);
             }
         }
-
 
         internal void SimulateSend(string data)
         {
