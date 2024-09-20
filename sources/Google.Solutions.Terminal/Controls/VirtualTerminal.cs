@@ -554,7 +554,7 @@ namespace Google.Solutions.Terminal.Controls
         // Terminal subclass.
         //---------------------------------------------------------------------
 
-        private ushort lastKeyUpVirtualKey = 0;
+        private ushort lastKeyDownVirtualKey = 0;
         private string? selectionToClearOnEnter = null;
 
         private void TerminalSubclassWndProc(ref Message m)
@@ -650,7 +650,7 @@ namespace Google.Solutions.Terminal.Controls
                                 true);
                         }
 
-                        this.lastKeyUpVirtualKey = keyParams.VirtualKey;
+                        this.lastKeyDownVirtualKey = keyParams.VirtualKey;
                         break;
                     }
 
@@ -687,7 +687,7 @@ namespace Google.Solutions.Terminal.Controls
                         }
                         else
                         {
-                            if (this.lastKeyUpVirtualKey != keyParams.VirtualKey)
+                            if (this.lastKeyDownVirtualKey != keyParams.VirtualKey)
                             {
                                 //
                                 // For some keys (in particular, TAB and the
@@ -842,11 +842,6 @@ namespace Google.Solutions.Terminal.Controls
                 var m = message;
                 TerminalSubclassWndProc(ref m);
             }
-        }
-
-        internal IntPtr TerminalHwnd
-        {
-            get => this.terminalHwnd;
         }
 
         internal void SimulateSend(string data)
