@@ -304,11 +304,6 @@ namespace Google.Solutions.Terminal.Controls
             this.DimensionsChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        protected virtual void OnUserInput(string data)
-        { 
-            this.UserInput?.Invoke(this, new TerminalInputEventArgs(data));
-        }
-
         protected virtual void OnTerminalScrolled(
             int viewTop,
             int viewHeight,
@@ -323,6 +318,19 @@ namespace Google.Solutions.Terminal.Controls
             this.scrollBar.Value = viewTop;
         }
 
+        /// <summary>
+        /// Invoked when the terminal received user input that needs to
+        /// be sent to the device.
+        /// </summary>
+        protected virtual void OnUserInput(string data)
+        { 
+            this.UserInput?.Invoke(this, new TerminalInputEventArgs(data));
+        }
+
+        /// <summary>
+        /// Invoked when the device produced output that needs to be
+        /// sent to the terminal for rendering.
+        /// </summary>
         protected virtual void OnOutputReceived(string data)
         {
             if (this.DesignMode)
