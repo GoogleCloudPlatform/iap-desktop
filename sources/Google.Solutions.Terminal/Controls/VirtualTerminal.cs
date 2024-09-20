@@ -478,7 +478,11 @@ namespace Google.Solutions.Terminal.Controls
         {
             if (this.Width == 0 || this.Height == 0)
             {
-                throw new ArgumentException("Size cannot be zero");
+                //
+                // This happens when the window is being minimized.
+                // We can ignore that.
+                //
+                return;
             }
 
             //

@@ -37,13 +37,14 @@ namespace Google.Solutions.Terminal.TestApp
             {
                 Width = 800,
                 Height = 600,
+                Text = "Terminal TestApp"
             })
             {
                 var control = new VirtualTerminal()
                 {
                     Dock = DockStyle.Fill,
-                    ForeColor = Color.Beige,
-                    BackColor = Color.DarkGray
+                    ForeColor = Color.LightGray,
+                    BackColor = Color.Black
                 };
 
                 f.Controls.Add(control);

@@ -52,7 +52,10 @@ namespace Google.Solutions.Terminal.Test.Controls
 
             internal static TerminalForm Create()
             {
-                var form = new TerminalForm();
+                var form = new TerminalForm()
+                {
+                    Size = new Size(800, 600)
+                };
 
                 //
                 // When run in a headless environment, the terminal
@@ -330,6 +333,43 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.Close();
 
                 Assert.IsTrue(themeChangeEventRaised);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Dimensions.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Dimensions()
+        {
+            using (var form = TerminalForm.Create())
+            {
+                form.Show();
+
+                Assert.Greater(form.VirtualTerminal.Dimensions.Width, 80);
+                Assert.Greater(form.VirtualTerminal.Dimensions.Height, 20);
+
+                form.Close();
+            }
+        }
+
+        [Test]
+        public void Dimensions_WhenMinimized_ThenDimensionsAreKept()
+        {
+            using (var form = TerminalForm.Create())
+            {
+                form.Show();
+
+                var dimensions = form.VirtualTerminal.Dimensions;
+
+                form.WindowState = FormWindowState.Minimized;
+                Assert.AreEqual(dimensions, form.VirtualTerminal.Dimensions);
+
+                form.WindowState = FormWindowState.Normal;
+                Assert.AreEqual(dimensions, form.VirtualTerminal.Dimensions);
+
+                form.Close();
             }
         }
     }
