@@ -323,7 +323,22 @@ namespace Google.Solutions.Terminal.Controls
         /// be sent to the device.
         /// </summary>
         protected virtual void OnUserInput(string data)
-        { 
+        {
+            //
+            // When a user presses Enter, the terminal produces a CR (\r).
+            // This is in line with what you'd expect.
+            //
+            // If the user pastes text into the terminal (for example, by
+            // using a right-click, which is handled by the terminal itself),
+            // and the pasted text contains CRLFs, the the terminal doesn't
+            // covert these CRLFs to CRs. Instead, it passes through the CRLFs
+            // to this callback here.
+            //
+            // Sanitize the CRLFs here, because most applications (incl. bash)
+            // will otherwise interpret a CRLF as two line breaks.
+            //
+            data = data.Replace("\r\n", "\r");
+
             this.UserInput?.Invoke(this, new TerminalInputEventArgs(data));
         }
 

@@ -77,7 +77,6 @@ namespace Google.Solutions.Terminal.Test.Controls
         {
             using (var form = TerminalForm.Create())
             {
-                form.Size = new Size(500, 500);
                 form.Show();
 
                 var initialDimensions = form.VirtualTerminal.Dimensions;
@@ -94,15 +93,14 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         //---------------------------------------------------------------------
-        // Send.
+        // SimulateKey.
         //---------------------------------------------------------------------
 
         [Test]
-        public void Send_WhenCharKey_ThenTerminalSendsData()
+        public void SimulateKey_WhenCharKey_ThenTerminalSendsData()
         {
             using (var form = TerminalForm.Create())
             {
-                form.Size = new Size(500, 500);
                 form.Show();
 
                 VirtualTerminalAssert.RaisesSendEvent(
@@ -115,11 +113,10 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void Send_WhenEnterKey_ThenTerminalSendsData()
+        public void SimulateKey_WhenEnterKey_ThenTerminalSendsData()
         {
             using (var form = TerminalForm.Create())
             {
-                form.Size = new Size(500, 500);
                 form.Show();
 
                 VirtualTerminalAssert.RaisesSendEvent(
@@ -132,17 +129,41 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void Send_WhenLeftKey_ThenTerminalSendsData()
+        public void SimulateKey_WhenLeftKey_ThenTerminalSendsData()
         {
             using (var form = TerminalForm.Create())
             {
-                form.Size = new Size(500, 500);
                 form.Show();
 
                 VirtualTerminalAssert.RaisesSendEvent(
                     form.VirtualTerminal,
                     "\u001b[D\u001b[D",
                     () => form.VirtualTerminal.SimulateKey(Keys.Left));
+
+                form.Close();
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // SimulateSend.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void SimulateSend_WhenDataContainsCrlf_ThenLineFeedsAreRemoved()
+        {
+            using (var form = TerminalForm.Create())
+            {
+                form.Show();
+
+                var userInputBuffer = new StringBuilder();
+                form.VirtualTerminal.UserInput += (_, args) 
+                    => userInputBuffer.Append(args.Data);
+
+                form.VirtualTerminal.SimulateSend("one\r\ntwo\r\nthree\r\n");
+
+                Assert.AreEqual(
+                    "one\rtwo\rthree\r",
+                    userInputBuffer.ToString());
 
                 form.Close();
             }
@@ -157,7 +178,6 @@ namespace Google.Solutions.Terminal.Test.Controls
         {
             using (var form = TerminalForm.Create())
             {
-                form.Size = new Size(500, 500);
                 form.VirtualTerminal.Device = new Mock<IPseudoConsole>().Object;
                 form.Show();
 
@@ -180,7 +200,6 @@ namespace Google.Solutions.Terminal.Test.Controls
             {
                 var device = new Mock<IPseudoConsole>();
 
-                form.Size = new Size(500, 500);
                 form.VirtualTerminal.Device = device.Object;
                 form.Show();
 
@@ -200,7 +219,6 @@ namespace Google.Solutions.Terminal.Test.Controls
 
             using (var form = TerminalForm.Create())
             {
-                form.Size = new Size(500, 500);
                 form.VirtualTerminal.Device = device.Object;
                 form.Show();
                 form.Close();
