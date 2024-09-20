@@ -106,5 +106,17 @@ namespace Google.Solutions.Terminal.Controls
                 OnThemeChanged();
             }
         }
+
+        /// <summary>
+        /// Enable Ctrl+Insert to copy.
+        /// </summary>
+        [Category("Behavior")]
+        public bool EnableCtrlInsert { get; set; } = true;
+
+        /// <summary>
+        /// Enable Ctrl+C to copy.
+        /// </summary>
+        [Category("Behavior")]
+        public bool EnableCtrlC { get; set; } = true;
     }
 }

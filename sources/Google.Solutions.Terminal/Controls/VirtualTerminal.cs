@@ -561,9 +561,6 @@ namespace Google.Solutions.Terminal.Controls
         {
             bool IsAcceleratorForCopyingCurrentSelection(Keys key)
             {
-                //
-                // NB. Ctrl+C is handled by ther terminal itself.
-                //
                 if (ModifierKeys == Keys.None && key == Keys.Enter)
                 {
                     //
@@ -574,7 +571,15 @@ namespace Google.Solutions.Terminal.Controls
                 }
                 else if (ModifierKeys == Keys.Control && key == Keys.Insert)
                 {
-                    return true;
+                    return this.EnableCtrlInsert;
+                }
+                else if (ModifierKeys == Keys.Control && key == Keys.C)
+                {
+                    //
+                    // NB. Powershell handles Ctrl+C itself, but cmd and bash
+                    // don't.
+                    //
+                    return this.EnableCtrlC;
                 }
                 else
                 {
