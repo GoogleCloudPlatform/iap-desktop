@@ -177,6 +177,7 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 	$(REMOTE_SIGNTOOL) sign $(REMOTE_SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\WeifenLuo.WinFormsUI.Docking*.dll
 	$(REMOTE_SIGNTOOL) sign $(REMOTE_SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*Interop*.dll
 	$(REMOTE_SIGNTOOL) sign $(REMOTE_SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\IapDesktop.exe
+	$(REMOTE_SIGNTOOL) sign $(REMOTE_SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\icu.dll
 	
 	$(SIGNTOOL) verify /pa $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*.exe
 	$(SIGNTOOL) verify /pa $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*.dll
