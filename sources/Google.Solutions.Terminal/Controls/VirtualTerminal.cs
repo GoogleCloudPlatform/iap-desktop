@@ -558,8 +558,9 @@ namespace Google.Solutions.Terminal.Controls
         // Terminal subclass.
         //---------------------------------------------------------------------
 
+        private bool ignoreWmCharBecauseOfAccelerator = false;
         private ushort lastKeyDownVirtualKey = 0;
-        private string? selectionToClearOnEnter = null;
+        private string? selectionToCopyInKeyUp = null;
 
         private void TerminalSubclassWndProc(ref Message m)
         {
@@ -657,7 +658,8 @@ namespace Google.Solutions.Terminal.Controls
                             //
                             // NB. We must not pass this key event to the terminal.
                             //
-                            this.selectionToClearOnEnter = 
+                            this.ignoreWmCharBecauseOfAccelerator = true;
+                            this.selectionToCopyInKeyUp = 
                                 NativeMethods.TerminalGetSelection(terminalHandle);
                         }
                         else if (IsAcceleratorForPasting((Keys)keyParams.VirtualKey))
@@ -667,6 +669,7 @@ namespace Google.Solutions.Terminal.Controls
                             //
                             // NB. We must not pass this key event to the terminal.
                             //
+                            this.ignoreWmCharBecauseOfAccelerator = true;
                         }
                         else
                         {
@@ -688,8 +691,10 @@ namespace Google.Solutions.Terminal.Controls
                         var keyParams = new WmKeyUpDownParams(m);
 
                         if (IsAcceleratorForCopyingCurrentSelection((Keys)keyParams.VirtualKey) &&
-                            this.selectionToClearOnEnter != null)
+                            this.selectionToCopyInKeyUp != null)
                         {
+                            Debug.Assert(this.ignoreWmCharBecauseOfAccelerator);
+
                             //
                             // Continue the "copy" operation begun in WM_KEYDOWN.
                             //
@@ -698,9 +703,9 @@ namespace Google.Solutions.Terminal.Controls
                             //
                             try
                             {
-                                if (!string.IsNullOrWhiteSpace(this.selectionToClearOnEnter))
+                                if (!string.IsNullOrWhiteSpace(this.selectionToCopyInKeyUp))
                                 {
-                                    Clipboard.SetText(this.selectionToClearOnEnter);
+                                    Clipboard.SetText(this.selectionToCopyInKeyUp);
                                 }
                             }
                             catch (ExternalException)
@@ -711,10 +716,13 @@ namespace Google.Solutions.Terminal.Controls
                             }
 
                             NativeMethods.TerminalClearSelection(terminalHandle);
-                            this.selectionToClearOnEnter = null;
+                            this.selectionToCopyInKeyUp = null;
+                            this.ignoreWmCharBecauseOfAccelerator = false;
                         }
                         else if (IsAcceleratorForPasting((Keys)keyParams.VirtualKey))
                         {
+                            Debug.Assert(this.ignoreWmCharBecauseOfAccelerator);
+
                             try
                             {
                                 var contents = Clipboard.GetText();
@@ -729,6 +737,8 @@ namespace Google.Solutions.Terminal.Controls
                                 // Clipboard busy, ignore.
                                 //
                             }
+
+                            this.ignoreWmCharBecauseOfAccelerator = false;
                         }
                         else
                         {
@@ -772,10 +782,10 @@ namespace Google.Solutions.Terminal.Controls
 
                 case WindowMessage.WM_CHAR:
                     {
-                        if (this.selectionToClearOnEnter != null)
+                        if (this.ignoreWmCharBecauseOfAccelerator)
                         {
                             //
-                            // Ignore.
+                            // Ignore these keys because they're part of an accelerator.
                             //
                         }
                         else
