@@ -212,17 +212,6 @@ namespace Google.Solutions.Terminal.Controls
             //---------------------------------------------------------------------
 
             [DllImport(TerminalCore, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
-            public static extern HRESULT TerminalStartSelection(
-                TerminalSafeHandle terminal,
-                TilPoint cursorPosition,
-                bool altPressed);
-
-            [DllImport(TerminalCore, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
-            public static extern HRESULT TerminalMoveSelection(
-                TerminalSafeHandle terminal,
-                TilPoint cursorPosition);
-
-            [DllImport(TerminalCore, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
             public static extern void TerminalClearSelection(
                 TerminalSafeHandle terminal);
 
