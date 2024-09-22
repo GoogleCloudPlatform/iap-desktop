@@ -95,7 +95,7 @@ namespace Google.Solutions.Apis.Locator
                     this.ProjectId == other.ProjectId;
             }
 
-            public override bool Equals(ResourceLocator? other)
+            public override bool Equals(ComputeEngineLocator? other)
             {
                 return other is <#= className #>Locator locator && Equals(locator);
             }

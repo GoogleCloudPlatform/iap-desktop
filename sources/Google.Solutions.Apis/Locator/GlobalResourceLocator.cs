@@ -43,21 +43,35 @@ namespace Google.Solutions.Apis.Locator
             {
             }
 
-            public static ImageLocator Parse(string resourceReference)
+            public static bool TryParse(string path, out ImageLocator? locator)
             {
-                resourceReference = StripUrlPrefix(resourceReference);
+                path = StripUrlPrefix(path);
 
                 var match = new Regex("(?:/compute/beta/)?projects/(.*)/global/images/(.*)")
-                    .Match(resourceReference);
+                    .Match(path);
                 if (match.Success)
                 {
-                    return new ImageLocator(
+                    locator = new ImageLocator(
                         match.Groups[1].Value,
                         match.Groups[2].Value);
+                    return true;
                 }
                 else
                 {
-                    throw new ArgumentException($"'{resourceReference}' is not a valid global resource reference");
+                    locator = null;
+                    return false;
+                }
+            }
+
+            public static ImageLocator Parse(string path)
+            {
+                if (TryParse(path, out var locator))
+                {
+                    return locator!;
+                }
+                else
+                {
+                    throw new ArgumentException($"'{path}' is not a valid global resource reference");
                 }
             }
 
@@ -123,21 +137,35 @@ namespace Google.Solutions.Apis.Locator
             {
             }
 
-            public static LicenseLocator Parse(string resourceReference)
+            public static bool TryParse(string path, out LicenseLocator? locator)
             {
-                resourceReference = StripUrlPrefix(resourceReference);
+                path = StripUrlPrefix(path);
 
                 var match = new Regex("(?:/compute/beta/)?projects/(.*)/global/licenses/(.*)")
-                    .Match(resourceReference);
+                    .Match(path);
                 if (match.Success)
                 {
-                    return new LicenseLocator(
+                    locator = new LicenseLocator(
                         match.Groups[1].Value,
                         match.Groups[2].Value);
+                    return true;
                 }
                 else
                 {
-                    throw new ArgumentException($"'{resourceReference}' is not a valid global resource reference");
+                    locator = null;
+                    return false;
+                }
+            }
+
+            public static LicenseLocator Parse(string path)
+            {
+                if (TryParse(path, out var locator))
+                {
+                    return locator!;
+                }
+                else
+                {
+                    throw new ArgumentException($"'{path}' is not a valid global resource reference");
                 }
             }
 
