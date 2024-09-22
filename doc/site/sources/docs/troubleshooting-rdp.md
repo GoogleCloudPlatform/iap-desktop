@@ -60,7 +60,7 @@ To check if this is the case, do the following:
         PSDrive                     : HKLM
         PSProvider                  : Microsoft.PowerShell.Core\Registry
 
-    If the output is empty, then your local computer allows copy/paste, but it's possible that the remote VM doesn't.
+    If the output is empty, then your local computer allows copy/paste, but it's possible that the remote VM doesn't allow it.
     
 ### Check remote policies
 
@@ -128,7 +128,7 @@ To solve this issue, make sure that the LAN Manager authentication level on both
 
 ## Other errors
 
-If you are seeting other error messages, try manually establishing a Cloud IAP TCP forwarding tunnel:
+If you encounter other error messages, try manually establishing a IAP TCP forwarding tunnel:
 
 1.  If you have not installed the Cloud SDK yet, 
     [download and install it first :octicons-link-external-16:](https://cloud.google.com/sdk/docs/downloads-interactive).

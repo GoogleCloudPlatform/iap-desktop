@@ -32,7 +32,7 @@ You can enable or disable data sharing at any time.
 
 When you enable data sharing, IAP Desktop periodically sends anonymous usage data to the 
 [Google Analytics Measurement API :octicons-link-external-16:](https://developers.google.com/analytics/devguides/collection/protocol/ga4).
-Usage data includes information about which menu commands you use, any errors that occured,
+Usage data includes information about which menu commands you use, any errors that occurred,
 and similar information.
 
 Usage data doesn't include personal information and isn't associated with your Google account.

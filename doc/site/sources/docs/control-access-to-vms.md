@@ -49,7 +49,7 @@ Context-aware access distinguishes between policy definition and policy enforcem
     and another access level that requires a user to use a corporate device and managed browser.
     
 *   **Policy Enforcement**: IAP can enforce context-aware access policies by verifying that a user
-    satisifies a certain access level. IAP performs this check in addition to verifying that the 
+    satisfies a certain access level. IAP performs this check in addition to verifying that the 
     user holds one of the required IAM roles.
     
 

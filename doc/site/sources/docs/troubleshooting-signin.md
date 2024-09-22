@@ -56,7 +56,7 @@ As a Cloud Identity or Workspace administrator, you can fix this error by allow-
         [disable reauthentication :octicons-link-external-16:](https://support.google.com/a/answer/9368756)
         for IAP Desktop.
     
-1.  On the **Review** page, confiirm your choice of settings and click **Finish**.
+1.  On the **Review** page, confirm your choice of settings and click **Finish**.
 
 
 

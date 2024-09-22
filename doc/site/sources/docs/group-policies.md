@@ -1,7 +1,7 @@
 # Use group policies to customize IAP Desktop
 
 You can use a group policy object (GPO) to configure policies for IAP Desktop. Policies take
-precendence of user settings: When you configure a policy, users can't change the respectice
+precedence over user settings: When you configure a policy, users can't change the respective
 setting anymore. 
 
 For a full list of settings that you can control using group policies, see [Group policy reference](group-policy-reference.md).
@@ -17,7 +17,7 @@ You can now use the IAP Desktop Policy Templates to configure policies:
 1.  In the **Group Policy Management Console**, create or select a GPO.
 1.  Link the GPO to an organizational unit that contains the users who should be able to use IAP Desktop.
 
-    Note: You can configure policies per-computer or per-user. Computer-based policies take precendence
+    Note: You can configure policies per-computer or per-user. Computer-based policies take precedence
     over user-based policies.
 
 1.  Right-click the GPO and select **Edit**.

@@ -56,7 +56,7 @@ For more information about customizing connection settings, see [Connection sett
 
 ### Which SSH key does IAP Desktop use for authentication?
 
-By default, IAP Desktop uses [a ECDSA NISTP-256 key pair for SSH public key authentication](ssh-algorithms.md).
+By default, IAP Desktop uses [an ECDSA NISTP-256 key pair for SSH public key authentication](ssh-algorithms.md).
 The key is created automatically on first use, is managed using the
 [Microsoft Software Key Storage Provider :octicons-link-external-16:](https://docs.microsoft.com/en-us/windows/win32/seccertenroll/cng-key-storage-providers#microsoft-software-key-storage-provider),
 and is not exportable.

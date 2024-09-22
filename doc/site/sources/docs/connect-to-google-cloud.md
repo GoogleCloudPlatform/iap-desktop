@@ -47,7 +47,7 @@ To configure PSC, do the following:
         PSC endpoint that you created earlier.
         
 Alternatively, you can use [a group policy](group-policies.md) to configure Private Service Connect
-for mulitple users and workstations.
+for multiple users and workstations.
 
         
 !!! note
