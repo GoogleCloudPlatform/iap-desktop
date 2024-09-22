@@ -75,7 +75,7 @@ Ephemeral keys are only kept in memory and deleted once you close the applicatio
 To use ephemeral keys, do the following:
 
 1.  Go to **Tools > Options > SSH**.
-1.  Disable the option **Use persisten key**.
+1.  Disable the option **Use persistent key**.
 1.  Click **OK**.
 
 When you use an ephemeral key and IAP Desktop publishes the public key to OS Login or metadata, it 

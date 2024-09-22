@@ -193,7 +193,7 @@ The following parameters are supported:
         IAP Desktop then uses these credentials to automatically log on the user.
        The response must use the content type <code>application/json</code>.
 
-Use URL signing or similar mechanisms to ensusre that callback URLs can only be retrieved
+Use URL signing or similar mechanisms to ensure that callback URLs can only be retrieved
 once, or stay valid for a limited period of time only.
     </td>
 </tr>

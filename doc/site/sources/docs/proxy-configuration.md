@@ -31,7 +31,7 @@ some additional configuration might be required to allow users to use IAP Deskto
 
 IAP Desktop uses the Windows _Trusted Root Certification Authorities Certificate Store_
 for verifying TLS certificates. If your proxy server performs TLS inspection and therefore
-re-encrypts traffic, make sure to add the proxy server's CA certiticate to this
+re-encrypts traffic, make sure to add the proxy server's CA certificate to this
 certificate store.
 
 ### Allow-list for domains accessed by IAP Desktop
