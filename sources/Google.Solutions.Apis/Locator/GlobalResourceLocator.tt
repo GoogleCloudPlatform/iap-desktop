@@ -39,7 +39,7 @@ namespace Google.Solutions.Apis.Locator
         var resourceType = Char.ToLowerInvariant(className[0]) + className.Substring(1) + "s";
         #>
 
-		public class <#= className #>Locator : ResourceLocator, IEquatable<<#= className #>Locator>
+		public class <#= className #>Locator : ComputeEngineLocator, IEquatable<<#= className #>Locator>
 		{
             public override string ResourceType => "<#= resourceType #>";
             

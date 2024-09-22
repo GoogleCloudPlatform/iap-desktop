@@ -42,6 +42,6 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
         /// <summary>
         /// Target instance or destination group.
         /// </summary>
-        ResourceLocator Target { get; }
+        ComputeEngineLocator Target { get; }
     }
 }

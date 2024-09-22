@@ -28,7 +28,7 @@ namespace Google.Solutions.Apis.Locator
     /// Locator for zones. These locators are global, but differ from
     /// other global locators by not having a "global/" part in the URL.
     /// </summary>
-    public class ZoneLocator : ResourceLocator, IEquatable<ZoneLocator>
+    public class ZoneLocator : ComputeEngineLocator, IEquatable<ZoneLocator>
     {
         public override string ResourceType => "zones";
 
@@ -79,7 +79,7 @@ namespace Google.Solutions.Apis.Locator
                 this.ProjectId == other.ProjectId;
         }
 
-        public override bool Equals(ResourceLocator? obj)
+        public override bool Equals(ComputeEngineLocator? obj)
         {
             return obj is ZoneLocator locator && Equals(locator);
         }

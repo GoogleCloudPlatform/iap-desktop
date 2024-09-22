@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             public TargetLocator(
                 string scheme,
                 IProtocol protocol,
-                ResourceLocator resource,
+                ComputeEngineLocator resource,
                 NameValueCollection parameters)
                 : base(resource, parameters)
             {

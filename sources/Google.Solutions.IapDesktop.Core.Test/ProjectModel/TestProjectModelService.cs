@@ -823,7 +823,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 .ConfigureAwait(true);
 
             await workspace
-                .SetActiveNodeAsync((ResourceLocator?)null, CancellationToken.None)
+                .SetActiveNodeAsync((ComputeEngineLocator?)null, CancellationToken.None)
                 .ConfigureAwait(true);
 
             eventService.Verify(s => s.PublishAsync<ActiveProjectChangedEvent>(
@@ -874,7 +874,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 eventService.Object);
 
             await workspace
-                .SetActiveNodeAsync((ResourceLocator?)null, CancellationToken.None)
+                .SetActiveNodeAsync((ComputeEngineLocator?)null, CancellationToken.None)
                 .ConfigureAwait(true);
 
             eventService.Verify(s => s.PublishAsync<ActiveProjectChangedEvent>(

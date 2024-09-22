@@ -28,7 +28,7 @@ namespace Google.Solutions.Apis.Locator
     /// Locator for projects. These locators are global, but differ from
     /// other global locators by not having a "global/" part in the URL.
     /// </summary>
-    public class ProjectLocator : ResourceLocator, IEquatable<ProjectLocator>
+    public class ProjectLocator : ComputeEngineLocator, IEquatable<ProjectLocator>
     {
         public override string ResourceType => "projects";
 
@@ -72,7 +72,7 @@ namespace Google.Solutions.Apis.Locator
                 this.ProjectId == other.ProjectId;
         }
 
-        public override bool Equals(ResourceLocator? other)
+        public override bool Equals(ComputeEngineLocator? other)
         {
             return other is ProjectLocator locator && Equals(locator);
         }

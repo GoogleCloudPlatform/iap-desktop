@@ -42,19 +42,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// <summary>
         /// Resource (instance, zone, project) that these settings apply to.
         /// </summary>
-        public ResourceLocator Resource { get; }
+        public ComputeEngineLocator Resource { get; }
 
         /// <summary>
         /// Create new empty settings.
         /// </summary>
         /// <param name="resource"></param>
-        internal ConnectionSettings(ResourceLocator resource)
+        internal ConnectionSettings(ComputeEngineLocator resource)
             : this(resource, new DictionarySettingsStore(new Dictionary<string, string>()))
         {
         }
 
         public ConnectionSettings(
-            ResourceLocator resource,
+            ComputeEngineLocator resource,
             ISettingsStore store)
         {
             this.Resource = resource.ExpectNotNull(nameof(resource));

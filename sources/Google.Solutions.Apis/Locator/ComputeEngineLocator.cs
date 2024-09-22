@@ -26,9 +26,9 @@ using System.Diagnostics;
 namespace Google.Solutions.Apis.Locator
 {
     /// <summary>
-    /// Locator for a project resource.
+    /// Locator for a Compute Engine resource.
     /// </summary>
-    public abstract class ResourceLocator : IEquatable<ResourceLocator>
+    public abstract class ComputeEngineLocator : IEquatable<ComputeEngineLocator>
     {
         private const string ComputeGoogleapisPrefix = "https://compute.googleapis.com/compute/v1/";
         private const string GoogleapisUrlPrefix = "https://www.googleapis.com/compute/v1/";
@@ -69,7 +69,7 @@ namespace Google.Solutions.Apis.Locator
             }
         }
 
-        protected ResourceLocator(
+        protected ComputeEngineLocator(
             string projectId,
             string resourceName)
         {
@@ -84,6 +84,6 @@ namespace Google.Solutions.Apis.Locator
             this.Name = resourceName;
         }
 
-        public abstract bool Equals(ResourceLocator? other);
+        public abstract bool Equals(ComputeEngineLocator? other);
     }
 }
