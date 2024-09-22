@@ -71,7 +71,7 @@ namespace Google.Solutions.Apis.Locator
                 }
                 else
                 {
-                    throw new ArgumentException($"'{path}' is not a valid global resource reference");
+                    throw new ArgumentException($"'{path}' is not a valid global resource locator");
                 }
             }
 
@@ -165,7 +165,7 @@ namespace Google.Solutions.Apis.Locator
                 }
                 else
                 {
-                    throw new ArgumentException($"'{path}' is not a valid global resource reference");
+                    throw new ArgumentException($"'{path}' is not a valid global resource locator");
                 }
             }
 
