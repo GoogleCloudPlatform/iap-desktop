@@ -30,10 +30,15 @@ namespace Google.Solutions.Apis.Locator
     /// NB. Although access levels are global, their locator does not 
     /// follow the same conventions as other (Compute) resources.
     /// </summary>
-    public class AccessLevelLocator : IEquatable<AccessLevelLocator>
+    public class AccessLevelLocator : ILocator, IEquatable<AccessLevelLocator>
     {
         public string AccessPolicy { get; }
         public string AccessLevel { get; }
+
+        public string ResourceType
+        {
+            get => "accessLevels";
+        }
 
         public AccessLevelLocator(string accessPolicy, string accessLevel)
         {

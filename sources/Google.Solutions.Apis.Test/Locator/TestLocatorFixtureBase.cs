@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2019 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,59 +20,34 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
 
 namespace Google.Solutions.Apis.Test.Locator
 {
-    [TestFixture]
-    public class TestOrganizationLocator
-        : TestLocatorFixtureBase<OrganizationLocator>
+    public abstract class TestLocatorFixtureBase<TLocator> : EquatableFixtureBase<TLocator, TLocator>
+        where TLocator : class, IEquatable<TLocator>, ILocator
     {
-        protected override OrganizationLocator CreateInstance()
-        {
-            return new OrganizationLocator(12345678900001);
-        }
-
         //---------------------------------------------------------------------
-        // Parse.
+        // ResourceType.
         //---------------------------------------------------------------------
 
         [Test]
-        public void Parse_WhenPathIsValid_ParseReturnsObject()
+        public void ResourceType_IsPlural()
         {
-            var ref1 = OrganizationLocator.Parse(
-                "organizations/12345678900001");
-
-            Assert.AreEqual("organizations", ref1.ResourceType);
-            Assert.AreEqual(12345678900001, ref1.Id);
+            Assert.IsTrue(CreateInstance().ResourceType.EndsWith("s"));
         }
-
-        [Test]
-        public void Parse_WhenPathLacksOrganization_ParseThrowsArgumentException()
-        {
-            Assert.Throws<ArgumentException>(() => OrganizationLocator.Parse("/1"));
-        }
-
-        [Test]
-        public void Parse_WhenPathInvalid_ParseThrowsArgumentException(
-            [Values("x/1", "organizations/", "organizations/0xxx")] string path)
-        {
-            Assert.Throws<ArgumentException>(() => OrganizationLocator.Parse(path));
-        }
-
+    
         //---------------------------------------------------------------------
         // ToString.
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
+        public void ToString_ContainsResourceType()
         {
-            var path = "organizations/12345678900001";
-
-            Assert.AreEqual(
-                path,
-                OrganizationLocator.Parse(path).ToString());
+            var locator = CreateInstance();
+            StringAssert.Contains(locator.ResourceType, locator.ToString());
         }
     }
 }

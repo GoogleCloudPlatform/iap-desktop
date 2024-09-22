@@ -29,7 +29,7 @@ namespace Google.Solutions.Apis.Locator
     /// <summary>
     /// Locator for organizations.
     /// </summary>
-    public class OrganizationLocator : IEquatable<OrganizationLocator>
+    public class OrganizationLocator : ILocator, IEquatable<OrganizationLocator>
     {
         public OrganizationLocator(long organizationId)
         {

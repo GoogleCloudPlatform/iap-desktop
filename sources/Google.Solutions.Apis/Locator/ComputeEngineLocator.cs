@@ -28,7 +28,7 @@ namespace Google.Solutions.Apis.Locator
     /// <summary>
     /// Locator for a Compute Engine resource.
     /// </summary>
-    public abstract class ComputeEngineLocator : IEquatable<ComputeEngineLocator>
+    public abstract class ComputeEngineLocator : ILocator, IEquatable<ComputeEngineLocator>
     {
         private const string ComputeGoogleapisPrefix = "https://compute.googleapis.com/compute/v1/";
         private const string GoogleapisUrlPrefix = "https://www.googleapis.com/compute/v1/";

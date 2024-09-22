@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
 
@@ -28,7 +27,7 @@ namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
     public class TestProjectLocator
-        : EquatableFixtureBase<ProjectLocator, ProjectLocator>
+        : TestLocatorFixtureBase<ProjectLocator>
     {
         protected override ProjectLocator CreateInstance()
         {

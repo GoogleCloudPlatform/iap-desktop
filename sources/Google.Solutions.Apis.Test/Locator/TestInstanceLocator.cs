@@ -20,14 +20,13 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 
 namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
     public class TestInstanceLocator
-        : EquatableFixtureBase<InstanceLocator, InstanceLocator>
+        : TestLocatorFixtureBase<InstanceLocator>
     {
         protected override InstanceLocator CreateInstance()
         {
