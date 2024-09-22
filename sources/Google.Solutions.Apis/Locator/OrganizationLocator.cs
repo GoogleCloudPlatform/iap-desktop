@@ -43,17 +43,19 @@ namespace Google.Solutions.Apis.Locator
             get => "organizations";
         }
 
-        public static OrganizationLocator Parse(string s)
+        public static bool TryParse(string s, out OrganizationLocator? locator)
         {
             var match = new Regex("^organizations/(\\d*)$").Match(s);
             if (match.Success &&
                 long.TryParse(match.Groups[1].Value, out var organizationId))
             {
-                return new OrganizationLocator(organizationId);
+                locator = new OrganizationLocator(organizationId);
+                return true;
             }
             else
             {
-                throw new ArgumentException($"'{s}' is not a valid organization locator");
+                locator = null;
+                return false;
             }
         }
 

@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 using NUnit.Framework;
+using System;
 
 namespace Google.Solutions.Apis.Test.Locator
 {
@@ -38,6 +39,157 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var ref1 = new InstanceLocator("project-1", "zone-1", "instance-1");
             Assert.AreEqual(ref1.ProjectId, ref1.Project.Name);
+        }
+
+        //---------------------------------------------------------------------
+        // TryParse.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void TryParse_WhenPathIsValid()
+        {
+            Assert.IsTrue(InstanceLocator.TryParse(
+                "projects/project-1/zones/us-central1-a/instances/instance-1",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("instances", ref1!.ResourceType);
+            Assert.AreEqual("instance-1", ref1.Name);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenQualifiedByComputeGoogleapisHost()
+        {
+            Assert.IsTrue(InstanceLocator.TryParse(
+                "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/instances/instance-1",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("instances", ref1!.ResourceType);
+            Assert.AreEqual("instance-1", ref1.Name);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenQualifiedByGoogleapisHost()
+        {
+            Assert.IsTrue(InstanceLocator.TryParse(
+                "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/instances/instance-1",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("instances", ref1!.ResourceType);
+            Assert.AreEqual("instance-1", ref1.Name);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenUsingBetaApi()
+        {
+            Assert.IsTrue(InstanceLocator.TryParse(
+                 "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/instances/instance-1",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("instances", ref1!.ResourceType);
+            Assert.AreEqual("instance-1", ref1.Name);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenPathLacksProject()
+        {
+            Assert.IsFalse(InstanceLocator.TryParse(
+                "/project-1/zones/us-central1-a/instances/instance-1",
+                out var _));
+        }
+
+        [Test]
+        public void TryParse_WhenPathInvalid()
+        {
+            Assert.IsFalse(InstanceLocator.TryParse(
+                "/project-1/zones/us-central1-a/instances",
+                out var _));
+            Assert.IsFalse(InstanceLocator.TryParse(
+                "/project-1/zones/us-central1-a/instances/instance-1",
+                out var _));
+            Assert.IsFalse(InstanceLocator.TryParse(
+                "/",
+                out var _));
+        }
+
+        //---------------------------------------------------------------------
+        // Parse.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Parse_WhenPathIsValid()
+        {
+            var ref1 = InstanceLocator.Parse(
+                "projects/project-1/zones/us-central1-a/instances/instance-1");
+
+            Assert.AreEqual("instances", ref1.ResourceType);
+            Assert.AreEqual("instance-1", ref1.Name);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void Parse_WhenQualifiedByComputeGoogleapisHost()
+        {
+            var ref1 = InstanceLocator.Parse(
+                "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/instances/instance-1");
+
+            Assert.AreEqual("instances", ref1.ResourceType);
+            Assert.AreEqual("instance-1", ref1.Name);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void Parse_WhenQualifiedByGoogleapisHost()
+        {
+            var ref1 = InstanceLocator.Parse(
+                "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/instances/instance-1");
+
+            Assert.AreEqual("instances", ref1.ResourceType);
+            Assert.AreEqual("instance-1", ref1.Name);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void Parse_WhenUsingBetaApi()
+        {
+            var ref1 = InstanceLocator.Parse(
+                 "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/instances/instance-1");
+            Assert.AreEqual("instances", ref1.ResourceType);
+            Assert.AreEqual("instance-1", ref1.Name);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void Parse_WhenPathLacksProject()
+        {
+            Assert.Throws<ArgumentException>(() => InstanceLocator.Parse(
+                "/project-1/zones/us-central1-a/instances/instance-1"));
+        }
+
+        [Test]
+        public void Parse_WhenPathInvalid()
+        {
+            Assert.Throws<ArgumentException>(() => InstanceLocator.Parse(
+                "/project-1/zones/us-central1-a/instances"));
+            Assert.Throws<ArgumentException>(() => InstanceLocator.Parse(
+                "/project-1/zones/us-central1-a/instances/instance-1"));
+            Assert.Throws<ArgumentException>(() => InstanceLocator.Parse(
+                "/"));
         }
 
         //---------------------------------------------------------------------
@@ -85,7 +237,7 @@ namespace Google.Solutions.Apis.Test.Locator
         public void Equals_WhenReferencesAreOfDifferentType_ThenEqualsReturnsFalse()
         {
             var ref1 = new InstanceLocator("proj", "zone", "inst");
-            var ref2 = new DiskTypeLocator("proj", "zone", "pd-standard");
+            var ref2 = new InstanceLocator("proj", "zone", "instance-1");
 
             Assert.IsFalse(ref2.Equals(ref1));
             Assert.IsFalse(ref2.Equals((object?)ref1));

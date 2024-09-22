@@ -20,6 +20,7 @@
 //
 
 using System;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace Google.Solutions.Apis.Locator
@@ -37,19 +38,33 @@ namespace Google.Solutions.Apis.Locator
         {
         }
 
-        public static ProjectLocator Parse(string resourceReference)
+        public static bool TryParse(string path, out ProjectLocator? locator)
         {
-            resourceReference = StripUrlPrefix(resourceReference);
+            path = StripUrlPrefix(path);
 
             var match = new Regex("(?:/compute/beta/)?projects/([^/]*)$")
-                .Match(resourceReference);
+                .Match(path);
             if (match.Success)
             {
-                return new ProjectLocator(match.Groups[1].Value);
+                locator = new ProjectLocator(match.Groups[1].Value);
+                return true;
             }
             else
             {
-                throw new ArgumentException($"'{resourceReference}' is not a valid global locator");
+                locator = null;
+                return false;
+            }
+        }
+
+        public static ProjectLocator Parse(string path)
+        {
+            if (TryParse(path, out var locator))
+            {
+                return locator!;
+            }
+            else
+            {
+                throw new ArgumentException($"'{path}' is not a valid project locator");
             }
         }
 

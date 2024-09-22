@@ -45,22 +45,36 @@ namespace Google.Solutions.Apis.Locator
             {
             }
 
-            public static DiskTypeLocator Parse(string resourceReference)
+            public static bool TryParse(string path, out DiskTypeLocator? locator)
             {
-                resourceReference = StripUrlPrefix(resourceReference);
+                path = StripUrlPrefix(path);
 
                 var match = new Regex("(?:/compute/beta/)?projects/(.+)/zones/(.+)/diskTypes/(.+)")
-                    .Match(resourceReference);
+                    .Match(path);
                 if (match.Success)
                 {
-                    return new DiskTypeLocator(
+                    locator = new DiskTypeLocator(
                         match.Groups[1].Value,
                         match.Groups[2].Value,
                         match.Groups[3].Value);
+                    return true;
                 }
                 else
                 {
-                    throw new ArgumentException($"'{resourceReference}' is not a valid zonal resource reference");
+                    locator = null;
+                    return false;
+                }
+            }
+
+            public static DiskTypeLocator Parse(string path)
+            {
+                if (TryParse(path, out var locator))
+                {
+                    return locator!;
+                }
+                else
+                {
+                    throw new ArgumentException($"'{path}' is not a valid zonal resource reference");
                 }
             }
 
@@ -129,22 +143,36 @@ namespace Google.Solutions.Apis.Locator
             {
             }
 
-            public static InstanceLocator Parse(string resourceReference)
+            public static bool TryParse(string path, out InstanceLocator? locator)
             {
-                resourceReference = StripUrlPrefix(resourceReference);
+                path = StripUrlPrefix(path);
 
                 var match = new Regex("(?:/compute/beta/)?projects/(.+)/zones/(.+)/instances/(.+)")
-                    .Match(resourceReference);
+                    .Match(path);
                 if (match.Success)
                 {
-                    return new InstanceLocator(
+                    locator = new InstanceLocator(
                         match.Groups[1].Value,
                         match.Groups[2].Value,
                         match.Groups[3].Value);
+                    return true;
                 }
                 else
                 {
-                    throw new ArgumentException($"'{resourceReference}' is not a valid zonal resource reference");
+                    locator = null;
+                    return false;
+                }
+            }
+
+            public static InstanceLocator Parse(string path)
+            {
+                if (TryParse(path, out var locator))
+                {
+                    return locator!;
+                }
+                else
+                {
+                    throw new ArgumentException($"'{path}' is not a valid zonal resource reference");
                 }
             }
 
@@ -213,22 +241,36 @@ namespace Google.Solutions.Apis.Locator
             {
             }
 
-            public static MachineTypeLocator Parse(string resourceReference)
+            public static bool TryParse(string path, out MachineTypeLocator? locator)
             {
-                resourceReference = StripUrlPrefix(resourceReference);
+                path = StripUrlPrefix(path);
 
                 var match = new Regex("(?:/compute/beta/)?projects/(.+)/zones/(.+)/machineTypes/(.+)")
-                    .Match(resourceReference);
+                    .Match(path);
                 if (match.Success)
                 {
-                    return new MachineTypeLocator(
+                    locator = new MachineTypeLocator(
                         match.Groups[1].Value,
                         match.Groups[2].Value,
                         match.Groups[3].Value);
+                    return true;
                 }
                 else
                 {
-                    throw new ArgumentException($"'{resourceReference}' is not a valid zonal resource reference");
+                    locator = null;
+                    return false;
+                }
+            }
+
+            public static MachineTypeLocator Parse(string path)
+            {
+                if (TryParse(path, out var locator))
+                {
+                    return locator!;
+                }
+                else
+                {
+                    throw new ArgumentException($"'{path}' is not a valid zonal resource reference");
                 }
             }
 
@@ -297,22 +339,36 @@ namespace Google.Solutions.Apis.Locator
             {
             }
 
-            public static NodeTypeLocator Parse(string resourceReference)
+            public static bool TryParse(string path, out NodeTypeLocator? locator)
             {
-                resourceReference = StripUrlPrefix(resourceReference);
+                path = StripUrlPrefix(path);
 
                 var match = new Regex("(?:/compute/beta/)?projects/(.+)/zones/(.+)/nodeTypes/(.+)")
-                    .Match(resourceReference);
+                    .Match(path);
                 if (match.Success)
                 {
-                    return new NodeTypeLocator(
+                    locator = new NodeTypeLocator(
                         match.Groups[1].Value,
                         match.Groups[2].Value,
                         match.Groups[3].Value);
+                    return true;
                 }
                 else
                 {
-                    throw new ArgumentException($"'{resourceReference}' is not a valid zonal resource reference");
+                    locator = null;
+                    return false;
+                }
+            }
+
+            public static NodeTypeLocator Parse(string path)
+            {
+                if (TryParse(path, out var locator))
+                {
+                    return locator!;
+                }
+                else
+                {
+                    throw new ArgumentException($"'{path}' is not a valid zonal resource reference");
                 }
             }
 

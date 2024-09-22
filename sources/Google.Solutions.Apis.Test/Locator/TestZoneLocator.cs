@@ -42,11 +42,73 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         //---------------------------------------------------------------------
+        // TryParse.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void TryParse_WhenPathIsValid()
+        {
+            Assert.IsTrue(ZoneLocator.TryParse(
+                "projects/project-1/zones/us-central1-a",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("zones", ref1!.ResourceType);
+            Assert.AreEqual("us-central1-a", ref1.Name);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenQualifiedByComputeGoogleapisHost()
+        {
+            Assert.IsTrue(ZoneLocator.TryParse(
+                "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("zones", ref1!.ResourceType);
+            Assert.AreEqual("us-central1-a", ref1.Name);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenQualifiedByGoogleapisHost()
+        {
+            Assert.IsTrue(ZoneLocator.TryParse(
+                "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("zones", ref1!.ResourceType);
+            Assert.AreEqual("us-central1-a", ref1.Name);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenPathLacksProject()
+        {
+            Assert.IsFalse(ZoneLocator.TryParse(
+                "/project-1/project-1/zones/us-central1-a",
+                out var _));
+        }
+
+        [Test]
+        public void TryParse_WhenPathInvalid()
+        {
+            Assert.IsFalse(ZoneLocator.TryParse(
+                "projects/project-1/zone/us-central1-a",
+                out var _));
+            Assert.IsFalse(ZoneLocator.TryParse(
+                "projects/project-1/zones",
+                out var _));
+        }
+
+        //---------------------------------------------------------------------
         // Parse.
         //---------------------------------------------------------------------
 
         [Test]
-        public void Parse_WhenPathIsValid_ParseReturnsObject()
+        public void Parse_WhenPathIsValid()
         {
             var ref1 = ZoneLocator.Parse(
                 "projects/project-1/zones/us-central1-a");
@@ -57,7 +119,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void Parse_WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByComputeGoogleapisHost()
         {
             var ref1 = ZoneLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a");
@@ -68,7 +130,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void Parse_WhenQualifiedByGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByGoogleapisHost()
         {
             var ref1 = ZoneLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a");
@@ -79,14 +141,14 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void Parse_WhenPathLacksProject_ParseThrowsArgumentException()
+        public void Parse_WhenPathLacksProject()
         {
             Assert.Throws<ArgumentException>(() => ZoneLocator.Parse(
                 "/project-1/project-1/zones/us-central1-a"));
         }
 
         [Test]
-        public void Parse_WhenPathInvalid_ParseThrowsArgumentException()
+        public void Parse_WhenPathInvalid()
         {
             Assert.Throws<ArgumentException>(() => ZoneLocator.Parse(
                 "projects/project-1/zone/us-central1-a"));

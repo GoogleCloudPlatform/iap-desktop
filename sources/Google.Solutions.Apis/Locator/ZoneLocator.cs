@@ -42,21 +42,35 @@ namespace Google.Solutions.Apis.Locator
         {
         }
 
-        public static ZoneLocator Parse(string resourceReference)
+        public static bool TryParse(string path, out ZoneLocator? locator)
         {
-            resourceReference = StripUrlPrefix(resourceReference);
+            path = StripUrlPrefix(path);
 
             var match = new Regex("(?:/compute/beta/)?projects/(.*)/zones/(.*)")
-                .Match(resourceReference);
+                .Match(path);
             if (match.Success)
             {
-                return new ZoneLocator(
+                locator = new ZoneLocator(
                     match.Groups[1].Value,
                     match.Groups[2].Value);
+                return true;
             }
             else
             {
-                throw new ArgumentException($"'{resourceReference}' is not a valid global resource reference");
+                locator = null; 
+                return false;
+            }
+        }
+
+        public static ZoneLocator Parse(string path)
+        {
+            if (TryParse(path, out var locator))
+            {
+                return locator!;
+            }
+            else
+            {
+                throw new ArgumentException($"'{path}' is not a valid global resource reference");
             }
         }
 
