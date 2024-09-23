@@ -49,8 +49,8 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             // Child nodes, loaded lazily.
             //
 
-            private RangeObservableCollection<ViewModelNode>? nodes;
-            private RangeObservableCollection<ViewModelNode>? filteredNodes;
+            private RangeObservableCollection<ViewModelNode>? children;
+            private RangeObservableCollection<ViewModelNode>? filteredChildren;
 
             //-----------------------------------------------------------------
             // Properties.
@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 
             internal bool IsLoaded
             {
-                get => this.nodes != null;
+                get => this.children != null;
             }
 
             //-----------------------------------------------------------------
@@ -97,16 +97,17 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             }
 
             /// <summary>
-            /// List all children thet match the current filter.
+            /// List all children that match the current filter. Causes
+            /// children to be loaded if necessary.
             /// </summary>
             public async Task<ObservableCollection<ViewModelNode>> GetFilteredChildrenAsync(
                 bool forceReload)
             {
                 Debug.Assert(!((Control)this.viewModel.View!).InvokeRequired);
 
-                if (this.nodes == null)
+                if (this.children == null)
                 {
-                    Debug.Assert(this.filteredNodes == null);
+                    Debug.Assert(this.filteredChildren == null);
 
                     //
                     // Load lazily. No locking required as we're
@@ -116,22 +117,22 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                     var loadedNodes = await LoadChildrenAsync(forceReload)
                         .ConfigureAwait(true);
 
-                    this.nodes = new RangeObservableCollection<ViewModelNode>();
-                    this.filteredNodes = new RangeObservableCollection<ViewModelNode>();
+                    this.children = new RangeObservableCollection<ViewModelNode>();
+                    this.filteredChildren = new RangeObservableCollection<ViewModelNode>();
 
-                    this.nodes.AddRange(loadedNodes);
+                    this.children.AddRange(loadedNodes);
 
                     ReapplyFilter();
                 }
                 else if (forceReload)
                 {
-                    Debug.Assert(this.filteredNodes != null);
+                    Debug.Assert(this.filteredChildren != null);
 
                     var loadedNodes = await LoadChildrenAsync(forceReload)
                         .ConfigureAwait(true);
 
-                    this.nodes.Clear();
-                    this.nodes.AddRange(loadedNodes);
+                    this.children.Clear();
+                    this.children.AddRange(loadedNodes);
 
                     ReapplyFilter();
                 }
@@ -140,10 +141,10 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                     // Use cached copy.
                 }
 
-                Debug.Assert(this.filteredNodes != null);
-                Debug.Assert(this.nodes != null);
+                Debug.Assert(this.filteredChildren != null);
+                Debug.Assert(this.children != null);
 
-                return this.filteredNodes!;
+                return this.filteredChildren!;
             }
 
             /// <summary>
@@ -180,35 +181,35 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 {
                     return true;
                 }
-                else if (this.filteredNodes == null)
+                else if (this.filteredChildren == null)
                 {
                     return false;
                 }
                 else
                 {
-                    return this.filteredNodes.Any(n => n.DebugIsValidNode(n));
+                    return this.filteredChildren.Any(n => n.DebugIsValidNode(n));
                 }
             }
 
             internal void ReapplyFilter()
             {
                 Debug.Assert(this.IsLoaded);
-                Debug.Assert(this.nodes != null);
-                Debug.Assert(this.filteredNodes != null);
+                Debug.Assert(this.children != null);
+                Debug.Assert(this.filteredChildren != null);
 
                 //
                 // Avoid clearing and re-applying filter it's not really
                 // necessary. Excessive re-binding can otherwise cause
                 // significant CPU load.
                 //
-                var newFilteredNodes = ApplyFilter(this.nodes!);
-                if (!this.filteredNodes!.SequenceEqual(newFilteredNodes))
+                var newFilteredNodes = ApplyFilter(this.children!);
+                if (!this.filteredChildren!.SequenceEqual(newFilteredNodes))
                 {
-                    this.filteredNodes!.Clear();
-                    this.filteredNodes.AddRange(newFilteredNodes);
+                    this.filteredChildren!.Clear();
+                    this.filteredChildren.AddRange(newFilteredNodes);
                 }
 
-                foreach (var n in this.nodes.Where(n => n.IsLoaded))
+                foreach (var n in this.children.Where(n => n.IsLoaded))
                 {
                     n.ReapplyFilter();
                 }
