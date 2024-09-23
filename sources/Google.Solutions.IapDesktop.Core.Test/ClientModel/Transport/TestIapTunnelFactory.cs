@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenEndpointIsNotLoopback_ThenCreateTunnelThrowsException()
+        public void CreateTunnel_WhenEndpointIsNotLoopback()
         {
             var protocol = new Mock<IProtocol>();
             var policy = new Mock<ITransportPolicy>();
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         }
 
         [Test]
-        public void WhenProbeDenied_CreateTunnelThrowsException()
+        public void CreateTunnel_WhenProbeDenied_CreateTunnelThrowsException()
         {
             var protocol = new Mock<IProtocol>();
             var policy = new Mock<ITransportPolicy>();

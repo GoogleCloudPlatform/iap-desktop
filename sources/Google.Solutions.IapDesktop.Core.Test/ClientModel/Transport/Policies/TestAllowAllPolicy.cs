@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToStringReturnsName()
+        public void ToString_ReturnsName()
         {
             Assert.AreEqual("Allow all", new AllowAllPolicy().ToString());
         }

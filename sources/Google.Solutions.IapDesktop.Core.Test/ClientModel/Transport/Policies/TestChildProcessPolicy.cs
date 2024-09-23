@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToStringReturnsName()
+        public void ToString_ReturnsName()
         {
             Assert.AreEqual(
                 "Child processes",
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenEndpointNotLoopback_ThenIsClientAllowedReturnsFalse()
+        public void IsClientAllowed_WhenEndpointNotLoopback()
         {
             var endpoint = new IPEndPoint(IPAddress.Parse("10.0.0.1"), 1111);
             var policy = new ChildProcessPolicy(new Mock<IWin32ProcessSet>().Object);
@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         }
 
         [Test]
-        public void WhenEndpointBelongsToDifferentProcess_ThenIsClientAllowedReturnsFalse()
+        public void IsClientAllowed_WhenEndpointBelongsToDifferentProcess()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 445);
             var policy = new ChildProcessPolicy(new Mock<IWin32ProcessSet>().Object);
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProcessInJob_ThenIsClientProcessAllowedReturnsTrue()
+        public void IsClientProcessAllowed_WhenProcessInJob()
         {
             var job = new Mock<IWin32ProcessSet>();
             job.Setup(j => j.Contains(It.IsAny<uint>())).Returns(true);
@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         }
 
         [Test]
-        public void WhenProcessNotInJob_ThenIsClientProcessAllowedReturnsFalse()
+        public void IsClientProcessAllowed_WhenProcessNotInJob()
         {
             var job = new Mock<IWin32ProcessSet>();
             job.Setup(j => j.Contains(It.IsAny<uint>())).Returns(false);

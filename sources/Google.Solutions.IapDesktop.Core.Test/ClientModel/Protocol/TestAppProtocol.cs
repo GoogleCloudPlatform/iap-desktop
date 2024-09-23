@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenClientNotAvailable_ThenIsAvailableReturnsFalse()
+        public void IsAvailable_WhenClientNotAvailable()
         {
             var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(false);
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenRequiredTraitMissing_ThenIsAvailableReturnsFalse()
+        public void IsAvailable_WhenRequiredTraitMissing()
         {
             var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenPrerequisitesMet_ThenIsAvailableReturnsTrue()
+        public void IsAvailable_WhenPrerequisitesMet()
         {
             var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToStringReturnsName()
+        public void ToString_ReturnsName()
         {
             var protocol = CreateProtocol("app-1");
 
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenOtherHasDifferentName_ThenEqualsReturnsFalse()
+        public void Equals_WhenOtherHasDifferentName()
         {
             var protocol1 = new AppProtocol(
                 "app-1",
@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenOtherHasDifferentRequiredTraits_ThenEqualsReturnsFalse()
+        public void Equals_WhenOtherHasDifferentRequiredTraits()
         {
             var protocol1 = new AppProtocol(
                 "app-1",
@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenOtherHasDifferentRemotePort_ThenEqualsReturnsFalse()
+        public void Equals_WhenOtherHasDifferentRemotePort()
         {
             var protocol1 = new AppProtocol(
                 "app-1",
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenOtherHasDifferentClient_ThenEqualsReturnsTrue()
+        public void Equals_WhenOtherHasDifferentClient()
         {
             var protocol1 = new AppProtocol(
                 "app-1",

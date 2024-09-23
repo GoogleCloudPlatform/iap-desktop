@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProtocolHasNoClient_ThenCreateTransportPolicyReturnsWtsPolicy()
+        public void CreateTransportPolicy_WhenProtocolHasNoClient()
         {
             var context = new AppProtocolContext(
                 CreateProtocol(null),
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenFactoryCannotTrackChildren_ThenCreateTransportPolicyReturnsWtsPolicy()
+        public void CreateTransportPolicy_WhenFactoryCannotTrackChildren()
         {
             var context = new AppProtocolContext(
                 CreateProtocol(new Mock<IAppProtocolClient>().Object),
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenFactoryCanTrackChildren_ThenCreateTransportPolicyReturnsChildProcessPolicy()
+        public void CreateTransportPolicy_WhenFactoryCanTrackChildren()
         {
             var factory = (IWin32ProcessFactory)new Mock<IWin32ProcessFactory>()
                 .As<IWin32ProcessSet>()
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenClientIsNull_ThenCanLaunchClientReturnsFalse()
+        public void CanLaunchClient_WhenClientIsNull()
         {
             var context = new AppProtocolContext(
                 CreateProtocol(null),
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenClientIsNotAvailable_ThenCanLaunchClientReturnsFalse()
+        public void CanLaunchClient_WhenClientIsNotAvailable()
         {
             var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(false);
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenClientIsAvailable_ThenCanLaunchClientReturnsTrue()
+        public void CanLaunchClient_WhenClientIsAvailable()
         {
             var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
@@ -146,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenClientCannotBeLaunched_ThenLaunchClientThrowsException()
+        public void LaunchClient_WhenClientCannotBeLaunched()
         {
             var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(false);
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenCredentialIsNull_ThenLaunchClientCreatesProcess()
+        public void LaunchClient_WhenCredentialIsNull()
         {
             var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);
@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenCredentialSet_ThenLaunchClientCreatesProcessAsUser()
+        public void LaunchClient_WhenCredentialSet()
         {
             var client = new Mock<IAppProtocolClient>();
             client.SetupGet(c => c.IsAvailable).Returns(true);

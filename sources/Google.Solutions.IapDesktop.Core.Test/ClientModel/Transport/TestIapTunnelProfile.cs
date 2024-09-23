@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             = new IPEndPoint(IPAddress.Loopback, 8000);
 
         [Test]
-        public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
+        public void Equals_WhenReferencesAreEquivalent()
         {
             var protocol = new Mock<IProtocol>().Object;
             var policy = new Mock<ITransportPolicy>().Object;
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         }
 
         [Test]
-        public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
+        public void Equals_WhenReferencesAreSame()
         {
             var ref1 = new IapTunnel.Profile(
                 new Mock<IProtocol>().Object,
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         }
 
         [Test]
-        public void WhenPoliciesDiffer_ThenEqualsReturnsFalse()
+        public void Equals_WhenPoliciesDiffer()
         {
             var protocol = new Mock<IProtocol>().Object;
 
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         }
 
         [Test]
-        public void WhenProtocolsDiffer_ThenEqualsReturnsFalse()
+        public void Equals_WhenProtocolsDiffer()
         {
             var policy = new Mock<ITransportPolicy>().Object;
 
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         }
 
         [Test]
-        public void WhenInstancesDiffer_ThenEqualsReturnsFalse()
+        public void Equals_WhenInstancesDiffer()
         {
             var protocol = new Mock<IProtocol>().Object;
             var policy = new Mock<ITransportPolicy>().Object;
@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         }
 
         [Test]
-        public void WhenPortsDiffer_ThenEqualsReturnsFalse()
+        public void Equals_WhenPortsDiffer()
         {
             var protocol = new Mock<IProtocol>().Object;
             var policy = new Mock<ITransportPolicy>().Object;
@@ -188,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         }
 
         [Test]
-        public void WhenLocalEndpointsDiffer_ThenEqualsReturnsFalse()
+        public void Equals_WhenLocalEndpointsDiffer()
         {
             var protocol = new Mock<IProtocol>().Object;
             var policy = new Mock<ITransportPolicy>().Object;
@@ -215,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         }
 
         [Test]
-        public void TestEqualsNull()
+        public void Equals_WhenNull()
         {
             var ref1 = new IapTunnel.Profile(
                 new Mock<IProtocol>().Object,

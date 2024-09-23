@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoTransportsCreated_ThenPoolIsEmpty()
+        public void Pool_WhenNoTransportsCreated()
         {
             var factory = new IapTransportFactory(
                 new Mock<IEventQueue>().Object,
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         }
 
         [Test]
-        public void PoolIgnoresFaultedTunnels()
+        public void Pool_IgnoresFaultedTunnels()
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
             var faultingProfile = CreateTunnelProfile(SampleInstance, 23);
@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         }
 
         [Test]
-        public void PoolIgnoresIncompleteTunnels()
+        public void Pool_IgnoresIncompleteTunnels()
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
             var tunnelTask = new TaskCompletionSource<IapTunnel>();
@@ -177,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenMatchFoundInPoolButTunnelFaulted_ThenCreateTransportCreatesNewTunnel()
+        public void CreateTransport_WhenMatchFoundInPoolButTunnelFaulted()
         {
             var faultingProfile = CreateTunnelProfile(SampleInstance, 23);
             var tunnelFactory = CreateTunnelFactory();
@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         }
 
         [Test]
-        public void WhenMatchFoundInPoolButTunnelNotCompletedYet_ThenCreateTransportReturnsPooledTunnel()
+        public void CreateTransport_WhenMatchFoundInPoolButTunnelNotCompletedYet()
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
             var tunnelTask = new TaskCompletionSource<IapTunnel>();
@@ -270,7 +270,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         }
 
         [Test]
-        public async Task WhenMatchFoundInPool_ThenCreateTransportReturnsPooledTunnel()
+        public async Task CreateTransport_WhenMatchFoundInPool()
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
             var tunnelTask = new TaskCompletionSource<IapTunnel>();
@@ -324,7 +324,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenTunnelCreatedOrClosed_ThenCreateTransportPublishesEvent()
+        public async Task CreateTransport_WhenTunnelCreatedOrClosed()
         {
             var eventQueue = new Mock<IEventQueue>();
 
@@ -367,7 +367,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         }
 
         [Test]
-        public async Task WhenFactoryPublishesEvents_ThenPoolIsUpToDate()
+        public async Task CreateTransport_WhenFactoryPublishesEvents()
         {
             var invoker = new ThreadpoolInvoker();
             var eventQueue = new EventQueue(invoker);
@@ -423,7 +423,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSshRelayDenied_ThenCreateTransportThrowsException()
+        public void CreateTransport_WhenSshRelayDenied()
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
             var tunnelFactory = CreateTunnelFactory();
@@ -451,7 +451,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         }
 
         [Test]
-        public void WhenNetworkStreamClosed_ThenCreateTransportThrowsException()
+        public void CreateTransport_WhenNetworkStreamClosed()
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
             var tunnelFactory = CreateTunnelFactory();
@@ -479,7 +479,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         }
 
         [Test]
-        public void WhenWebSocketConnectionDenied_ThenCreateTransportThrowsException()
+        public void CreateTransport_WhenWebSocketConnectionDenied()
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
             var tunnelFactory = CreateTunnelFactory();
@@ -511,7 +511,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDisposedTwice_ThenTunnelIsOnlyDisposedOnce()
+        public void Transport_WhenDisposedTwice()
         {
             var protocol = new Mock<IProtocol>();
             var tunnel = new IapTunnel(
@@ -537,7 +537,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         }
 
         [Test]
-        public async Task WhenTunnelCreated_ThenCreateTransportReturnsTransport()
+        public async Task Transport_WhenTunnelCreated()
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
             var tunnelFactory = CreateTunnelFactory();

@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoProtocolsRegistered_ThenProtocolsIsEmpty()
+        public void Protocols_WhenNoProtocolsRegistered()
         {
             var registry = new ProtocolRegistry();
             Assert.IsNotNull(registry.Protocols);
@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenProtocolsRegistered_ThenProtocoReturnsAll()
+        public void Protocols_WhenProtocolsRegistered()
         {
             var registry = new ProtocolRegistry();
             registry.RegisterProtocol(new Mock<IProtocol>().Object);
@@ -51,11 +51,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         //---------------------------------------------------------------------
-        // Protocols.
+        // GetAvailableProtocols.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoProtocolsRegistered_ThenGetAvailableProtocolsReturnsEmpty()
+        public void GetAvailableProtocols_WhenNoProtocolsRegistered()
         {
             var registry = new ProtocolRegistry();
             var protocols = registry.GetAvailableProtocols(new Mock<IProtocolTarget>().Object);
@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenNoProtocolsAvailable_ThenGetAvailableProtocolsReturnsEmpty()
+        public void GetAvailableProtocols_WhenNoProtocolsAvailable()
         {
             var target = new Mock<IProtocolTarget>().Object;
             var unavailableProtocol = new Mock<IProtocol>();

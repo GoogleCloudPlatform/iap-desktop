@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInstanceIsWindowsByGuestOsFeature_ThenDetectTraitsReturnsTraits()
+        public void DetectTraits_WhenInstanceIsWindowsByGuestOsFeature()
         {
             var instance = new Instance()
             {
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         }
 
         [Test]
-        public void WhenInstanceIsWindowsByLicense_ThenDetectTraitsReturnsTraits()
+        public void DetectTraits_WhenInstanceIsWindowsByLicense()
         {
             var instance = new Instance()
             {
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         }
 
         [Test]
-        public void WhenInstanceIsLinux_ThenDetectTraitsReturnsTraits()
+        public void DetectTraits_WhenInstanceIsLinux()
         {
             var instance = new Instance();
 
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCustomDetectorRegistered_ThenDetectTraitsReturnsCustomTraits()
+        public void DetectTraits__WhenCustomDetectorRegistered()
         {
             var customTrait = new Mock<ITrait>();
             var detector = new Mock<ITraitDetector>();
