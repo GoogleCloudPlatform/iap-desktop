@@ -38,7 +38,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 {
     [TestFixture]
-    public class TestProjectModelService
+    public class TestProjectWorkspace
     {
         private static readonly Instance SampleWindowsInstanceInZone1 = new Instance()
         {
@@ -160,11 +160,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 
 
         //---------------------------------------------------------------------
-        // AddProjectAsync.
+        // AddProject
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenProjectAdded_ThenProjectIsAddedToRepositoryAndEventIsRaised()
+        public async Task AddProject()
         {
             var projectRepository = new Mock<IProjectRepository>();
             var eventService = new Mock<IEventQueue>();
@@ -186,11 +186,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         //---------------------------------------------------------------------
-        // RemoveProjectAsync.
+        // RemoveProject.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenProjectRemoved_ThenProjectIsRemovedFromRepositoryAndEventIsRaised()
+        public async Task RemoveProject()
         {
             var projectRepository = new Mock<IProjectRepository>();
             var eventService = new Mock<IEventQueue>();
@@ -212,11 +212,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         //---------------------------------------------------------------------
-        // GetRootNodeAsync.
+        // GetRootNode.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenProjectsNotCached_ThenGetRootNodeLoadsProjects()
+        public async Task GetRootNode_WhenProjectsNotCached_ThenGetRootNodeLoadsProjects()
         {
             var computeClient = CreateComputeEngineClientMock(SampleProjectId);
             var resourceManagerClient = CreateResourceManagerClientMock();
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenSomeProjectsInaccessible_ThenGetRootNodeLoadsOtherProjects()
+        public async Task GetRootNode_WhenSomeProjectsInaccessible_ThenGetRootNodeLoadsOtherProjects()
         {
             var accessibleProject = new ProjectLocator("accessible-project");
             var inaccessibleProject = new ProjectLocator("inaccessible-project");
@@ -300,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenProjectsCached_ThenGetRootNodeAsyncReturnsCachedProjects()
+        public async Task GetRootNode_WhenProjectsCached_ThenGetRootNodeAsyncReturnsCachedProjects()
         {
             var computeClient = CreateComputeEngineClientMock(SampleProjectId);
             var resourceManagerAdapter = CreateResourceManagerClientMock();
@@ -331,7 +331,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenProjectsCachedButForceRefreshIsTrue_ThenGetRootNodeAsyncLoadsProjects()
+        public async Task GetRootNode_WhenProjectsCachedButForceRefreshIsTrue_ThenGetRootNodeAsyncLoadsProjects()
         {
             var computeClient = CreateComputeEngineClientMock(SampleProjectId);
             var resourceManagerAdapter = CreateResourceManagerClientMock();
@@ -362,7 +362,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenProjectInaccessible_ThenGetRootNodeAsyncLoadsRemainingProjects()
+        public async Task GetRootNode_WhenProjectInaccessible_ThenGetRootNodeAsyncLoadsRemainingProjects()
         {
             var nonexistingProjectId = new ProjectLocator("nonexisting-1");
             var workspace = new ProjectWorkspace(
@@ -386,7 +386,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public void WhenLoadingDataCausesReauthError_ThenGetRootNodeAsyncPropagatesException()
+        public void GetRootNode_WhenLoadingDataCausesReauthError_ThenGetRootNodeAsyncPropagatesException()
         {
             var resourceManagerAdapter = new Mock<IResourceManagerClient>();
             resourceManagerAdapter.Setup(a => a.GetProjectAsync(
@@ -408,11 +408,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         //---------------------------------------------------------------------
-        // GetZoneNodesAsync.
+        // GetZoneNodes.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenZonesNotCached_ThenGetZoneNodesAsyncLoadsZones()
+        public async Task GetZoneNodes_WhenZonesNotCached_ThenGetZoneNodesAsyncLoadsZones()
         {
             var computeAdapter = CreateComputeEngineClientMock(
                 SampleProjectId,
@@ -448,7 +448,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenZonesCached_ThenGetZoneNodesAsyncReturnsCachedZones()
+        public async Task GetZoneNodes_WhenZonesCached_ThenGetZoneNodesAsyncReturnsCachedZones()
         {
             var computeAdapter = CreateComputeEngineClientMock(
                 SampleProjectId,
@@ -483,7 +483,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenZonesCachedButForceRefreshIsTrue_ThenGetZoneNodesAsyncLoadsZones()
+        public async Task GetZoneNodes_WhenZonesCachedButForceRefreshIsTrue_ThenGetZoneNodesAsyncLoadsZones()
         {
             var computeAdapter = CreateComputeEngineClientMock(
                 SampleProjectId,
@@ -516,7 +516,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenInstanceHasNoDisk_ThenGetZoneNodesAsyncSkipsInstance()
+        public async Task GetZoneNodes_WhenInstanceHasNoDisk_ThenGetZoneNodesAsyncSkipsInstance()
         {
             var computeAdapter = CreateComputeEngineClientMock(
                 SampleProjectId,
@@ -545,7 +545,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenInstanceIsTerminated_ThenGetZoneNodesAsyncMarksInstanceAsNotRunning()
+        public async Task GetZoneNodes_WhenInstanceIsTerminated_ThenGetZoneNodesAsyncMarksInstanceAsNotRunning()
         {
             var computeAdapter = CreateComputeEngineClientMock(
                 SampleProjectId,
@@ -580,11 +580,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         //---------------------------------------------------------------------
-        // GetNodeAsync.
+        // GetNode.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenLocatorOfUnknownType_ThenGetNodeAsyncThrowsArgumentException()
+        public async Task GetNode_WhenLocatorOfUnknownType_ThenGetNodeAsyncThrowsArgumentException()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(SampleProjectId).Object,
@@ -602,7 +602,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenProjectLocatorValid_ThenGetNodeAsyncReturnsNode()
+        public async Task GetNode_WhenProjectLocatorValid_ThenGetNodeAsyncReturnsNode()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(SampleProjectId).Object,
@@ -628,7 +628,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenZoneLocatorValid_ThenGetNodeAsyncReturnsNode()
+        public async Task GetNode_WhenZoneLocatorValid_ThenGetNodeAsyncReturnsNode()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(
@@ -654,7 +654,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenInstanceLocatorValid_ThenGetNodeAsyncReturnsNode()
+        public async Task GetNode_WhenInstanceLocatorValid_ThenGetNodeAsyncReturnsNode()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(
@@ -680,7 +680,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenProjectNotAddedButZoneLocatorValid_ThenGetNodeAsyncReturnsNull()
+        public async Task GetNode_WhenProjectNotAddedButZoneLocatorValid_ThenGetNodeAsyncReturnsNull()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(
@@ -698,7 +698,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenProjectNotAddedButInstanceLocatorValid_ThenGetNodeAsyncReturnsNull()
+        public async Task GetNode_WhenProjectNotAddedButInstanceLocatorValid_ThenGetNodeAsyncReturnsNull()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(
@@ -716,11 +716,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         //---------------------------------------------------------------------
-        // GetActiveNodeAsync.
+        // GetActiveNode.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenNoActiveNodeSet_ThenGetActiveNodeAsyncReturnsRoot()
+        public async Task GetActiveNode_WhenNoActiveNodeSet_ThenGetActiveNodeAsyncReturnsRoot()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(SampleProjectId).Object,
@@ -740,8 +740,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 activeNode);
         }
 
+        //---------------------------------------------------------------------
+        // SetActiveNode.
+        //---------------------------------------------------------------------
+
         [Test]
-        public async Task WhenActiveNodeSet_ThenGetActiveNodeAsyncReturnsNode()
+        public async Task SetActiveNode_WhenActiveNodeSet_ThenGetActiveNodeAsyncReturnsNode()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(
@@ -771,7 +775,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenActiveNodeSetToValidLocator_ThenEventIsFired()
+        public async Task SetActiveNode_WhenActiveNodeSetToValidLocator_ThenEventIsFired()
         {
             var eventService = new Mock<IEventQueue>();
             var workspace = new ProjectWorkspace(
@@ -802,7 +806,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenActiveNodeSetToNull_ThenEventIsFired()
+        public async Task SetActiveNode_WhenActiveNodeSetToNull_ThenEventIsFired()
         {
             var eventService = new Mock<IEventQueue>();
             var workspace = new ProjectWorkspace(
@@ -832,7 +836,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenActiveNodeSetToNonexistingLocator_ThenEventIsFired()
+        public async Task SetActiveNode_WhenActiveNodeSetToNonexistingLocator_ThenEventIsFired()
         {
             var eventService = new Mock<IEventQueue>();
             var workspace = new ProjectWorkspace(
@@ -864,7 +868,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenCacheEmptyAndActiveNodeSetToNull_ThenNoEventIsFired()
+        public async Task SetActiveNode_WhenCacheEmptyAndActiveNodeSetToNull_ThenNoEventIsFired()
         {
             var eventService = new Mock<IEventQueue>();
             var workspace = new ProjectWorkspace(
@@ -883,7 +887,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public void WhenLocatorIsInvalid_ThenSetActiveNodeAsyncRaisesArgumentException()
+        public void SetActiveNode_WhenLocatorIsInvalid_ThenSetActiveNodeAsyncRaisesArgumentException()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(SampleProjectId).Object,
