@@ -306,7 +306,9 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                     .ConfigureAwait(true);
 
                 var children = new List<ViewModelNode>();
-                children.AddRange(this.cloudNode.Projects
+                children.AddRange(this.cloudNode
+                    .Organizations
+                    .SelectMany(o => o.Projects)
                     .Select(m => new ProjectViewModelNode(
                         this.ViewModel,
                         this,

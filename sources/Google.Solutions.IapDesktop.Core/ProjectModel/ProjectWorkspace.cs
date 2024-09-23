@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         /// is kept across reloads.
         /// </summary>
         Task SetActiveNodeAsync(
-            ILocator locator,
+            ILocator? locator,
             CancellationToken token);
     }
 
