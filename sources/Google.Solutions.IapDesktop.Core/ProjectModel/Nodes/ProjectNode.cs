@@ -23,15 +23,13 @@ using Google.Solutions.Apis.Locator;
 
 namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
 {
-    internal class ProjectNode : IProjectModelProjectNode
+    internal class ProjectNode : NodeBase, IProjectModelProjectNode
     {
         //---------------------------------------------------------------------
         // Readonly properties.
         //---------------------------------------------------------------------
 
         public ProjectLocator Project { get; }
-
-        public string DisplayName { get; }
 
         public bool IsAccesible { get; }
 
@@ -43,10 +41,10 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
             ProjectLocator locator,
             bool accessible,
             string displayName)
+            : base(displayName, locator)
         {
             this.Project = locator;
             this.IsAccesible = accessible;
-            this.DisplayName = displayName;
         }
     }
 }

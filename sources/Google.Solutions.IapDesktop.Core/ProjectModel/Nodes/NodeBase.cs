@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,26 +20,19 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
 {
-    internal class CloudNode : NodeBase, IProjectModelCloudNode
+    public abstract class NodeBase : IProjectModelNode
     {
-        //---------------------------------------------------------------------
-        // Readonly properties.
-        //---------------------------------------------------------------------
+        public string DisplayName { get; }
 
-        public IEnumerable<IProjectModelProjectNode> Projects { get; }
+        public ILocator Locator { get; }
 
-        //---------------------------------------------------------------------
-        // Ctor.
-        //---------------------------------------------------------------------
-
-        public CloudNode(IEnumerable<IProjectModelProjectNode> projects)
-            : base("Google Cloud", UniverseLocator.Cloud)
+        protected NodeBase(string displayName, ILocator locator)
         {
-            this.Projects = projects;
+            this.DisplayName = displayName;
+            this.Locator = locator;
         }
     }
 }

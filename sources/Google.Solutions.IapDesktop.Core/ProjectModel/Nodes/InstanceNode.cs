@@ -31,17 +31,17 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
 {
-    internal class InstanceNode : IProjectModelInstanceNode
+    internal class InstanceNode : NodeBase, IProjectModelInstanceNode
     {
-        private readonly ProjectWorkspace workspace;
-
+        private readonly IProjectWorkspace workspace;
 
         public InstanceNode(
-            ProjectWorkspace workspace,
+            IProjectWorkspace workspace,
             ulong instanceId,
             InstanceLocator instance,
             IReadOnlyCollection<ITrait> traits,
             string status)
+            : base(instance.Name, instance)
         {
             status.ExpectNotNull(nameof(status));
             Debug.Assert(status.All(char.IsUpper));
@@ -70,7 +70,6 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
         public string TargetName => this.Instance.Name;
         public IEnumerable<ITrait> Traits { get; }
 
-
         //---------------------------------------------------------------------
         // IProjectModelInstanceNode.
         //---------------------------------------------------------------------
@@ -85,7 +84,6 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
         public bool CanSuspend { get; }
         public bool CanResume { get; }
         public bool CanReset { get; }
-        public string DisplayName => this.Instance.Name;
 
         public OperatingSystems OperatingSystem
         {
