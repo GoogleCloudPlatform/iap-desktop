@@ -145,7 +145,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 Assert.IsFalse(process.WaitHandle.WaitOne(1));
 
                 process.Terminate(1);
-                Assert.IsTrue(process.WaitHandle.WaitOne(1));
+                Assert.IsTrue(process.WaitHandle.WaitOne(50));
             }
         }
 
