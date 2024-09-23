@@ -96,6 +96,9 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 return allNodes;
             }
 
+            /// <summary>
+            /// List all children thet match the current filter.
+            /// </summary>
             public async Task<ObservableCollection<ViewModelNode>> GetFilteredNodesAsync(
                 bool forceReload)
             {
@@ -143,6 +146,9 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 return this.filteredNodes!;
             }
 
+            /// <summary>
+            /// Load children in a job.
+            /// </summary>
             protected async Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
                 bool forceReload)
             {
@@ -161,6 +167,9 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 }
             }
 
+            /// <summary>
+            /// Load children.
+            /// </summary>
             protected abstract Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
                 bool forceReload,
                 CancellationToken token);
