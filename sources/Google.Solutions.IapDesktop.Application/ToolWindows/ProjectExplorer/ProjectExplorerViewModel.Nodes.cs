@@ -40,8 +40,6 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
     {
         public abstract class ViewModelNode : ViewModelBase
         {
-            protected readonly ProjectExplorerViewModel viewModel;
-
             private bool isExpanded;
             private readonly int defaultImageIndex;
 
@@ -58,6 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 
             internal ViewModelNode? Parent { get; }
             internal abstract bool CanReload { get; }
+            protected abstract ProjectExplorerViewModel ViewModel { get; }
             public abstract IProjectModelNode ModelNode { get; }
             public ComputeEngineLocator? Locator { get; }
             public string Text { get; }
@@ -84,6 +83,32 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 get => this.children != null;
             }
 
+            /// <summary>
+            /// List all children that have been loaded, ignoring any filter.
+            /// </summary>
+            internal IEnumerable<ViewModelNode> LoadedChildren
+            {
+                get => this.children ?? Enumerable.Empty<ViewModelNode>();
+            }
+
+            /// <summary>
+            /// List all descendents that have been loaded, ignoring any filter.
+            /// </summary>
+            internal IEnumerable<ViewModelNode> LoadedDescendents // TODO: test
+            {
+                get
+                {
+                    var accumulator = new List<ViewModelNode>();
+                    foreach (var child in this.LoadedChildren)
+                    {
+                        accumulator.Add(child);
+                        accumulator.AddRange(child.LoadedDescendents);
+                    }
+
+                    return accumulator;
+                }
+            }
+
             //-----------------------------------------------------------------
             // Children.
             //-----------------------------------------------------------------
@@ -103,7 +128,8 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             public async Task<ObservableCollection<ViewModelNode>> GetFilteredChildrenAsync(
                 bool forceReload)
             {
-                Debug.Assert(!((Control)this.viewModel.View!).InvokeRequired);
+                Debug.Assert(!((Control)this.ViewModel.View!).InvokeRequired);
+                Debug.Assert(!this.IsLeaf);
 
                 if (this.children == null)
                 {
@@ -153,13 +179,13 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             protected async Task<IEnumerable<ViewModelNode>> LoadChildrenAsync(
                 bool forceReload)
             {
-                using (this.viewModel.EnableLoadingStatus())
+                using (this.ViewModel.EnableLoadingStatus())
                 {
                     //
                     // Wrap loading task in a job since it might kick of
                     // I/O (if data has not been cached yet).
                     //
-                    return await this.viewModel.jobService.RunAsync(
+                    return await this.ViewModel.jobService.RunAsync(
                             new JobDescription(
                                 $"Loading {this.Text}...",
                                 JobUserFeedbackType.BackgroundFeedback),
@@ -220,14 +246,12 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             //-----------------------------------------------------------------
 
             protected ViewModelNode(
-                ProjectExplorerViewModel viewModel,
                 ViewModelNode? parent,
                 ComputeEngineLocator? locator,
                 string text,
                 bool isLeaf,
                 int defaultImageIndex)
             {
-                this.viewModel = viewModel;
                 this.Parent = parent;
                 this.Locator = locator;
                 this.Text = text;
@@ -240,17 +264,18 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
         {
             private const int DefaultIconIndex = 0;
             private IProjectModelCloudNode? cloudNode; // Loaded lazily.
+            protected override ProjectExplorerViewModel ViewModel { get; }
 
             public CloudViewModelNode(
                 ProjectExplorerViewModel viewModel)
                 : base(
-                      viewModel,
                       null,
                       null,
                       "Google Cloud",
                       false,
                       DefaultIconIndex)
             {
+                this.ViewModel = viewModel;
             }
 
             public override IProjectModelNode ModelNode
@@ -271,14 +296,14 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 bool forceReload,
                 CancellationToken token)
             {
-                this.cloudNode = await this.viewModel.workspace
+                this.cloudNode = await this.ViewModel.workspace
                     .GetRootNodeAsync(forceReload, token)
                     .ConfigureAwait(true);
 
                 var children = new List<ViewModelNode>();
                 children.AddRange(this.cloudNode.Projects
                     .Select(m => new ProjectViewModelNode(
-                        this.viewModel,
+                        this.ViewModel,
                         this,
                         m))
                     .OrderBy(n => n.Text));
@@ -291,6 +316,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
         {
             private const int DefaultIconIndex = 1;
             internal IProjectModelProjectNode ProjectNode { get; }
+            protected override ProjectExplorerViewModel ViewModel { get; }
 
             private static string CreateDisplayName(IProjectModelProjectNode node)
             {
@@ -313,7 +339,6 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 CloudViewModelNode parent,
                 IProjectModelProjectNode modelNode)
                 : base(
-                      viewModel,
                       parent,
                       modelNode.Project,
                       CreateDisplayName(modelNode),
@@ -321,6 +346,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                       DefaultIconIndex)
             {
                 this.ProjectNode = modelNode;
+                this.ViewModel = viewModel;
                 this.IsExpanded = !viewModel.settings.CollapsedProjects.Contains(modelNode.Project);
             }
 
@@ -328,11 +354,11 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             {
                 if (this.IsExpanded)
                 {
-                    this.viewModel.settings.CollapsedProjects.Remove(this.ProjectNode.Project);
+                    this.ViewModel.settings.CollapsedProjects.Remove(this.ProjectNode.Project);
                 }
                 else
                 {
-                    this.viewModel.settings.CollapsedProjects.Add(this.ProjectNode.Project);
+                    this.ViewModel.settings.CollapsedProjects.Add(this.ProjectNode.Project);
                 }
 
                 base.OnExpandedChanged();
@@ -354,14 +380,14 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             {
                 try
                 {
-                    var zones = await this.viewModel.workspace.GetZoneNodesAsync(
+                    var zones = await this.ViewModel.workspace.GetZoneNodesAsync(
                             this.ProjectNode.Project,
                             forceReload,
                             token)
                         .ConfigureAwait(true);
 
                     return zones
-                        .Select(z => new ZoneViewModelNode(this.viewModel, this, z))
+                        .Select(z => new ZoneViewModelNode(this.ViewModel, this, z))
                         .Cast<ViewModelNode>();
                 }
                 catch (Exception e) when (e.Is<ResourceAccessDeniedException>())
@@ -382,13 +408,13 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             private const int DefaultIconIndex = 3;
 
             internal IProjectModelZoneNode ZoneNode { get; }
+            protected override ProjectExplorerViewModel ViewModel { get; }
 
             public ZoneViewModelNode(
                 ProjectExplorerViewModel viewModel,
                 ProjectViewModelNode parent,
                 IProjectModelZoneNode modelNode)
                 : base(
-                      viewModel,
                       parent,
                       modelNode.Zone,
                       modelNode.DisplayName,
@@ -396,6 +422,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                       DefaultIconIndex)
             {
                 this.ZoneNode = modelNode;
+                this.ViewModel = viewModel;
                 this.IsExpanded = true;
             }
 
@@ -415,7 +442,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             {
                 return Task.FromResult(this.ZoneNode
                     .Instances
-                    .Select(i => new InstanceViewModelNode(this.viewModel, this, i))
+                    .Select(i => new InstanceViewModelNode(this.ViewModel, this, i))
                     .Cast<ViewModelNode>());
             }
 
@@ -424,10 +451,10 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             {
                 return allNodes
                     .Cast<InstanceViewModelNode>()
-                    .Where(i => this.viewModel.InstanceFilter == null ||
-                                i.InstanceNode.DisplayName.Contains(this.viewModel.instanceFilter))
+                    .Where(i => this.ViewModel.InstanceFilter == null ||
+                                i.InstanceNode.DisplayName.Contains(this.ViewModel.instanceFilter))
                     .Where(i => (i.InstanceNode.OperatingSystem &
-                                this.viewModel.OperatingSystemsFilter) != 0);
+                                this.ViewModel.OperatingSystemsFilter) != 0);
             }
         }
 
@@ -442,13 +469,13 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             private bool isConnected = false;
 
             internal IProjectModelInstanceNode InstanceNode { get; }
+            protected override ProjectExplorerViewModel ViewModel { get; }
 
             public InstanceViewModelNode(
                 ProjectExplorerViewModel viewModel,
                 ZoneViewModelNode parent,
                 IProjectModelInstanceNode modelNode)
                 : base(
-                      viewModel,
                       parent,
                       modelNode.Instance,
                       modelNode.DisplayName,
@@ -456,6 +483,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                       -1)
             {
                 this.InstanceNode = modelNode;
+                this.ViewModel = viewModel;
                 this.IsConnected = viewModel.sessionBroker.IsConnected(modelNode.Instance);
             }
 
