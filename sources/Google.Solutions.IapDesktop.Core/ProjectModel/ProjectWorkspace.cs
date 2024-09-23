@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         /// is kept across reloads.
         /// </summary>
         Task SetActiveNodeAsync(
-            ComputeEngineLocator locator,
+            ComputeEngineLocator? locator,
             CancellationToken token);
     }
 
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
 
         private readonly AsyncLock cacheLock = new AsyncLock();
         private CloudNode? cachedRoot = null;
-        private readonly IDictionary<ProjectLocator, IReadOnlyCollection<IProjectModelZoneNode>> cachedZones =
+        private readonly Dictionary<ProjectLocator, IReadOnlyCollection<IProjectModelZoneNode>> cachedZones =
             new Dictionary<ProjectLocator, IReadOnlyCollection<IProjectModelZoneNode>>();
 
         // For testing only.

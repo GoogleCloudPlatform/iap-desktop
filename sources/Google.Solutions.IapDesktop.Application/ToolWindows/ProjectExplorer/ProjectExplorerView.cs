@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             //
             // Bind tree view.
             //
-            this.treeView.BindChildren(node => node.GetFilteredNodesAsync(false));
+            this.treeView.BindChildren(node => node.GetFilteredChildrenAsync(false));
             this.treeView.BindImageIndex(node => node.ImageIndex);
             this.treeView.BindSelectedImageIndex(node => node.ImageIndex);
             this.treeView.BindIsExpanded(node => node.IsExpanded);
@@ -152,10 +152,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
                 node =>
                 {
                     //
-                    // NB. Due to lazily loading and inaccessible projects,
-                    // ModelNode can be null.
+                    // NB. Due to lazily loading, the model might not
+                    // be available yet.
                     //
-                    if (node?.ModelNode != null)
+                    if (node != null && node.IsLoaded)
                     {
                         contextSource.Context = node.ModelNode;
                     }
@@ -280,7 +280,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
         {
             try
             {
-                await this.jobService.RunAsync(
+                await this.jobService
+                    .RunAsync(
                         new JobDescription("Loading projects..."),
                         _ => this.authorization
                             .Session

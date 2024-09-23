@@ -173,15 +173,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             ProjectExplorerViewModel viewModel)
         {
             var projects = await viewModel.RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(false);
 
             var zones = await projects[0]
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(false);
 
             return await zones[0]
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(false);
         }
 
@@ -449,7 +449,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ConfigureAwait(false);
 
             var updatedProjectsList = await viewModel.RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(false);
 
             Assert.AreEqual(1, updatedProjectsList.Count);
@@ -481,7 +481,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ConfigureAwait(false);
 
             var updatedProjectsList = await viewModel.RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(false);
 
             Assert.IsFalse(updatedProjectsList.Any());
@@ -557,7 +557,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var nofifications = 0;
             var projects = await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
             projects.CollectionChanged += (sender, args) =>
             {
@@ -572,7 +572,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
             Assert.AreEqual(1, (await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true)).Count);
         }
 
@@ -595,10 +595,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var nofifications = 0;
             var projects = await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
             var zones = await projects[0]
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
             projects.CollectionChanged += (sender, args) =>
             {
@@ -617,10 +617,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
             Assert.AreEqual(1, (await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true)).Count);
             Assert.AreEqual(1, (await projects[0]
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true)).Count);
         }
 
@@ -643,7 +643,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var nofifications = 0;
             var projects = await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
             projects.CollectionChanged += (sender, args) =>
             {
@@ -659,7 +659,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
             Assert.AreEqual(1, (await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true)).Count);
         }
 
@@ -682,7 +682,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var nofifications = 0;
             var projects = await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
             projects.CollectionChanged += (sender, args) =>
             {
@@ -698,7 +698,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
             Assert.AreEqual(1, (await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true)).Count);
         }
 
@@ -721,10 +721,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var nofifications = 0;
             var projects = await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
             var zones = await projects[0]
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
             projects.CollectionChanged += (sender, args) =>
             {
@@ -744,10 +744,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
             Assert.AreEqual(1, (await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true)).Count);
             Assert.AreEqual(1, (await projects[0]
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true)).Count);
         }
 
@@ -770,10 +770,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var nofifications = 0;
             var projects = await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
             var zones = await projects[0]
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
             projects.CollectionChanged += (sender, args) =>
             {
@@ -793,10 +793,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
             Assert.AreEqual(1, (await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true)).Count);
             Assert.AreEqual(1, (await projects[0]
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true)).Count);
         }
 
@@ -819,13 +819,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var nofifications = 0;
             var projects = await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
             var zones = await projects[0]
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
             var instances = await zones[0]
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
             projects.CollectionChanged += (sender, args) =>
             {
@@ -845,10 +845,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
             Assert.AreEqual(1, (await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true)).Count);
             Assert.AreEqual(1, (await projects[0]
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true)).Count);
         }
 
@@ -890,15 +890,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var eventQueue = new Mock<IEventQueue>();
 
             // Capture event handlers that the view model will register.
-            Func<SessionStartedEvent, Task>? sessionStartedEventHandler = null;
+            Action<SessionStartedEvent>? sessionStartedEventHandler = null;
             eventQueue.Setup(e => e.Subscribe(
-                    It.IsAny<Func<SessionStartedEvent, Task>>()))
-                .Callback<Func<SessionStartedEvent, Task>>(e => sessionStartedEventHandler = e);
+                    It.IsAny<Action<SessionStartedEvent>>()))
+                .Callback<Action<SessionStartedEvent>>(e => sessionStartedEventHandler = e);
 
-            Func<SessionEndedEvent, Task>? sessionEndedEventHandler = null;
+            Action<SessionEndedEvent>? sessionEndedEventHandler = null;
             eventQueue.Setup(e => e.Subscribe(
-                    It.IsAny<Func<SessionEndedEvent, Task>>()))
-                .Callback<Func<SessionEndedEvent, Task>>(e => sessionEndedEventHandler = e);
+                    It.IsAny<Action<SessionEndedEvent>>()))
+                .Callback<Action<SessionEndedEvent>>(e => sessionEndedEventHandler = e);
 
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -922,23 +922,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             Assert.IsFalse(instances[0].IsConnected);
             Assert.IsFalse(instances[1].IsConnected);
 
-            await sessionStartedEventHandler!(
-                    new SessionStartedEvent((InstanceLocator)instances[0].Locator))
-                .ConfigureAwait(true);
+            sessionStartedEventHandler!(
+                new SessionStartedEvent((InstanceLocator)instances[0].Locator!));
 
             Assert.IsTrue(instances[0].IsConnected);
             Assert.IsFalse(instances[1].IsConnected);
 
-            await sessionEndedEventHandler!(
-                    new SessionEndedEvent((InstanceLocator)instances[0].Locator))
-                .ConfigureAwait(true);
+            sessionEndedEventHandler!(
+                new SessionEndedEvent((InstanceLocator)instances[0].Locator!));
 
             Assert.IsFalse(instances[0].IsConnected);
             Assert.IsFalse(instances[1].IsConnected);
 
-            await sessionStartedEventHandler!(
-                    new SessionStartedEvent(new InstanceLocator(SampleProjectId, "zone-1", "unknown-1")))
-                .ConfigureAwait(true);
+            sessionStartedEventHandler!(
+                new SessionStartedEvent(new InstanceLocator(SampleProjectId, "zone-1", "unknown-1")));
 
             Assert.IsFalse(instances[0].IsConnected);
             Assert.IsFalse(instances[1].IsConnected);
@@ -1076,7 +1073,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ConfigureAwait(true);
             var projects = await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
 
             viewModel.SelectedNode = projects[0];
@@ -1137,7 +1134,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ConfigureAwait(true);
             var projects = await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
 
             viewModel.SelectedNode = projects[0];
@@ -1166,10 +1163,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ConfigureAwait(true);
             var projects = await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
             var zones = await projects[0]
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
 
             viewModel.SelectedNode = zones[0];
@@ -1229,7 +1226,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ConfigureAwait(true);
             var projects = await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
 
             viewModel.SelectedNode = projects[0];
@@ -1257,10 +1254,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ConfigureAwait(true);
             var projects = await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
             var zones = await projects[0]
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
 
             viewModel.SelectedNode = zones[0];
@@ -1337,7 +1334,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ConfigureAwait(true);
             var projects = await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
 
             viewModel.SelectedNode = projects[0];
@@ -1365,10 +1362,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ConfigureAwait(true);
             var projects = await viewModel
                 .RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
             var zones = await projects[0]
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
 
             viewModel.SelectedNode = zones[0];
@@ -1426,7 +1423,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ConfigureAwait(false);
 
             var projectViewModelNodes = (await viewModel.RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(false))
                 .Cast<ProjectExplorerViewModel.ProjectViewModelNode>()
                 .ToList();
@@ -1455,7 +1452,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ConfigureAwait(false);
 
             var projectViewModelNodes = (await viewModel.RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(false))
                 .Cast<ProjectExplorerViewModel.ProjectViewModelNode>()
                 .ToList();
@@ -1511,7 +1508,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ConfigureAwait(false);
 
             var projectViewModelNodes = (await viewModel.RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(false))
                 .Cast<ProjectExplorerViewModel.ProjectViewModelNode>()
                 .ToList();
