@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
 
@@ -28,7 +27,7 @@ namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
     public class TestNodeTypeLocator
-        : EquatableFixtureBase<NodeTypeLocator, NodeTypeLocator>
+        : TestLocatorFixtureBase<NodeTypeLocator>
     {
         protected override NodeTypeLocator CreateInstance()
         {
@@ -43,11 +42,93 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         //---------------------------------------------------------------------
+        // TryParse.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void TryParse_WhenPathIsValid()
+        {
+            Assert.IsTrue(NodeTypeLocator.TryParse(
+                "projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("nodeTypes", ref1!.ResourceType);
+            Assert.AreEqual("c2-node-60-240", ref1.Name);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenQualifiedByComputeGoogleapisHost()
+        {
+            Assert.IsTrue(NodeTypeLocator.TryParse(
+                "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("nodeTypes", ref1!.ResourceType);
+            Assert.AreEqual("c2-node-60-240", ref1.Name);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenQualifiedByGoogleapisHost()
+        {
+            Assert.IsTrue(NodeTypeLocator.TryParse(
+                "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("nodeTypes", ref1!.ResourceType);
+            Assert.AreEqual("c2-node-60-240", ref1.Name);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenUsingBetaApi()
+        {
+            Assert.IsTrue(NodeTypeLocator.TryParse(
+                 "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("nodeTypes", ref1!.ResourceType);
+            Assert.AreEqual("c2-node-60-240", ref1.Name);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenPathLacksProject()
+        {
+            Assert.IsFalse(NodeTypeLocator.TryParse(
+                "project-1/zones/us-central1-a/nodeTypes/c2-node-60-240",
+                out var _));
+        }
+
+        [Test]
+        public void TryParse_WhenPathInvalid()
+        {
+            Assert.IsFalse(NodeTypeLocator.TryParse(
+                "projects/project-1/zones/us-central1-a/nodeTypes/",
+                out var _));
+            Assert.IsFalse(NodeTypeLocator.TryParse(
+                "/zones/us-central1-a/nodeTypes/c2-node-60-240 ",
+                out var _));
+            Assert.IsFalse(NodeTypeLocator.TryParse(
+                "/",
+                out var _));
+        }
+
+        //---------------------------------------------------------------------
         // Parse.
         //---------------------------------------------------------------------
 
         [Test]
-        public void Parse_WhenPathIsValid_ParseReturnsObject()
+        public void Parse_WhenPathIsValid()
         {
             var ref1 = NodeTypeLocator.Parse(
                 "projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240");
@@ -59,7 +140,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void Parse_WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByComputeGoogleapisHost()
         {
             var ref1 = NodeTypeLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240");
@@ -71,7 +152,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void Parse_WhenQualifiedByGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByGoogleapisHost()
         {
             var ref1 = NodeTypeLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240");
@@ -83,7 +164,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void Parse_WhenUsingBetaApi_ParseReturnsObject()
+        public void Parse_WhenUsingBetaApi()
         {
             var ref1 = NodeTypeLocator.Parse(
                  "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240");
@@ -94,14 +175,14 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void Parse_WhenPathLacksProject_ParseThrowsArgumentException()
+        public void Parse_WhenPathLacksProject()
         {
             Assert.Throws<ArgumentException>(() => NodeTypeLocator.Parse(
                 "project-1/zones/us-central1-a/nodeTypes/c2-node-60-240"));
         }
 
         [Test]
-        public void Parse_WhenPathInvalid_ParseThrowsArgumentException()
+        public void Parse_WhenPathInvalid()
         {
             Assert.Throws<ArgumentException>(() => NodeTypeLocator.Parse(
                 "projects/project-1/zones/us-central1-a/nodeTypes/"));

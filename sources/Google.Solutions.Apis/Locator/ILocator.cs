@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,29 +19,22 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
-using System;
-using System.Net;
-
-namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
+namespace Google.Solutions.Apis.Locator
 {
-    public interface ITransport : IDisposable
+    /// <summary>
+    /// Locator for a Google Cloud resource.
+    /// </summary>
+    public interface ILocator
     {
         /// <summary>
-        /// Protocol this transport has been created for.
+        /// Type of resource as identified in URL paths. Typically plural,
+        /// for example "projects".
         /// </summary>
-        IProtocol Protocol { get; }
+        string ResourceType { get; }
 
         /// <summary>
-        /// Endpoint that clients can connect to. This might 
-        /// be a localhost endpoint.
+        /// Locator in URL path notation: 'resource-type/resource-id'.
         /// </summary>
-        IPEndPoint Endpoint { get; }
-
-        /// <summary>
-        /// Target instance or destination group.
-        /// </summary>
-        ComputeEngineLocator Target { get; }
+        string ToString();
     }
 }

@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         /// <summary>
         /// Base resource referenced by this locator.
         /// </summary>
-        public ResourceLocator Resource { get; }
+        public ComputeEngineLocator Resource { get; }
 
         /// <summary>
         /// Query string parameters that might contain connection settings.
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         protected ProtocolTargetLocator(
-            ResourceLocator resource,
+            ComputeEngineLocator resource,
             NameValueCollection parameters)
         {
             this.Resource = resource.ExpectNotNull(nameof(resource));

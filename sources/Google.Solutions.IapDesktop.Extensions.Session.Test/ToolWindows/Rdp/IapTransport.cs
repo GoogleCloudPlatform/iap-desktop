@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
 
         public IProtocol Protocol { get; }
 
-        public ResourceLocator Target { get; }
+        public ComputeEngineLocator Target { get; }
 
         public IPEndPoint Endpoint => this.Tunnel.LocalEndpoint;
 

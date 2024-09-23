@@ -20,15 +20,15 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
+using System.IO;
 
 namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
     public class TestOrganizationLocator
-        : EquatableFixtureBase<OrganizationLocator, OrganizationLocator>
+        : TestLocatorFixtureBase<OrganizationLocator>
     {
         protected override OrganizationLocator CreateInstance()
         {
@@ -36,30 +36,32 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         //---------------------------------------------------------------------
-        // Parse.
+        // TryParse.
         //---------------------------------------------------------------------
 
         [Test]
-        public void Parse_WhenPathIsValid_ParseReturnsObject()
+        public void TryParse_WhenPathIsValid_TryParseReturnsObject()
         {
-            var ref1 = OrganizationLocator.Parse(
-                "organizations/12345678900001");
+            Assert.IsTrue(OrganizationLocator.TryParse(
+                "organizations/12345678900001",
+                out var ref1));
 
-            Assert.AreEqual("organizations", ref1.ResourceType);
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("organizations", ref1!.ResourceType);
             Assert.AreEqual(12345678900001, ref1.Id);
         }
 
         [Test]
-        public void Parse_WhenPathLacksOrganization_ParseThrowsArgumentException()
+        public void TryParse_WhenPathLacksOrganization_TryParseThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => OrganizationLocator.Parse("/1"));
+            Assert.IsFalse(OrganizationLocator.TryParse("/1", out var _));
         }
 
         [Test]
-        public void Parse_WhenPathInvalid_ParseThrowsArgumentException(
+        public void TryParse_WhenPathInvalid_TryParseThrowsArgumentException(
             [Values("x/1", "organizations/", "organizations/0xxx")] string path)
         {
-            Assert.Throws<ArgumentException>(() => OrganizationLocator.Parse(path));
+            Assert.IsFalse(OrganizationLocator.TryParse(path, out var _));
         }
 
         //---------------------------------------------------------------------
@@ -70,10 +72,9 @@ namespace Google.Solutions.Apis.Test.Locator
         public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
         {
             var path = "organizations/12345678900001";
+            Assert.IsTrue(OrganizationLocator.TryParse(path, out var locator));
 
-            Assert.AreEqual(
-                path,
-                OrganizationLocator.Parse(path).ToString());
+            Assert.AreEqual(path, locator!.ToString());
         }
     }
 }

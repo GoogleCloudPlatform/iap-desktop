@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Transport
 
             public IPEndPoint Endpoint { get; }
 
-            public ResourceLocator Target { get; }
+            public ComputeEngineLocator Target { get; }
         }
     }
 }

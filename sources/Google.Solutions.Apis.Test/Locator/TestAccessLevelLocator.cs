@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
 
@@ -28,7 +27,7 @@ namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
     public class TestAccessLevelLocator
-        : EquatableFixtureBase<AccessLevelLocator, AccessLevelLocator>
+        : TestLocatorFixtureBase<AccessLevelLocator>
     {
         protected override AccessLevelLocator CreateInstance()
         {
@@ -36,11 +35,41 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         //---------------------------------------------------------------------
+        // TryParse.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void TryParse_WhenPathIsValid()
+        {
+            Assert.IsTrue(AccessLevelLocator.TryParse(
+                "accessPolicies/policy-1/accessLevels/level-1",
+                out var locator));
+
+            Assert.IsNotNull(locator);
+            Assert.AreEqual("policy-1", locator!.AccessPolicy);
+            Assert.AreEqual("level-1", locator.AccessLevel);
+        }
+
+        [Test]
+        public void TryParse_WhenPathInvalid()
+        {
+            Assert.IsFalse(AccessLevelLocator.TryParse(
+                "accessPolicies/policy-1/notaccessLevels/level-1",
+                out var _));
+            Assert.IsFalse(AccessLevelLocator.TryParse(
+                "/policy-1/accessLevels/level-1",
+                out var _));
+            Assert.IsFalse(AccessLevelLocator.TryParse(
+                "/", 
+                out var _));
+        }
+
+        //---------------------------------------------------------------------
         // Parse.
         //---------------------------------------------------------------------
 
         [Test]
-        public void Parse_WhenPathIsValid_ParseReturnsObject()
+        public void Parse_WhenPathIsValid()
         {
             var ref1 = AccessLevelLocator.Parse(
                 "accessPolicies/policy-1/accessLevels/level-1");
@@ -50,7 +79,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void Parse_WhenPathInvalid_ParseThrowsArgumentException()
+        public void Parse_WhenPathInvalid()
         {
             Assert.Throws<ArgumentException>(() => AccessLevelLocator.Parse(
                 "accessPolicies/policy-1/notaccessLevels/level-1"));

@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
 
@@ -28,7 +27,7 @@ namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
     public class TestImageLocator
-        : EquatableFixtureBase<ImageLocator, ImageLocator>
+        : TestLocatorFixtureBase<ImageLocator>
     {
         protected override ImageLocator CreateInstance()
         {
@@ -43,11 +42,102 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         //---------------------------------------------------------------------
+        // TryParse.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void TryParse_WhenPathIsValid()
+        {
+            Assert.IsTrue(ImageLocator.TryParse(
+                "projects/project-1/global/images/image-1",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("images", ref1!.ResourceType);
+            Assert.AreEqual("image-1", ref1.Name);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenResourceNameCotainsSlash()
+        {
+            Assert.IsTrue(ImageLocator.TryParse(
+                "projects/debian-cloud/global/images/family/debian-9",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("images", ref1!.ResourceType);
+            Assert.AreEqual("family/debian-9", ref1.Name);
+            Assert.AreEqual("debian-cloud", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenQualifiedByComputeGoogleapisHost()
+        {
+            Assert.IsTrue(ImageLocator.TryParse(
+                "https://compute.googleapis.com/compute/v1/projects/debian-cloud/global/images/family/debian-9",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("images", ref1!.ResourceType);
+            Assert.AreEqual("family/debian-9", ref1.Name);
+            Assert.AreEqual("debian-cloud", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenQualifiedByGoogleapisHost()
+        {
+            Assert.IsTrue(ImageLocator.TryParse(
+                "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/images/windows-server-core",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("images", ref1!.ResourceType);
+            Assert.AreEqual("windows-server-core", ref1.Name);
+            Assert.AreEqual("windows-cloud", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenUsingBetaApi()
+        {
+            Assert.IsTrue(ImageLocator.TryParse(
+                "https://compute.googleapis.com/compute/beta/projects/eip-images/global/images/debian-9-drawfork-v20191004",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("images", ref1!.ResourceType);
+            Assert.AreEqual("debian-9-drawfork-v20191004", ref1.Name);
+            Assert.AreEqual("eip-images", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenPathLacksProject()
+        {
+            Assert.IsFalse(ImageLocator.TryParse(
+                "/project-1/project-1/global/images/image-1",
+                out var _));
+        }
+
+        [Test]
+        public void TryParse_WhenPathInvalid()
+        {
+            Assert.IsFalse(ImageLocator.TryParse(
+                "projects/project-1/notglobal/images/image-1",
+                out var _));
+            Assert.IsFalse(ImageLocator.TryParse(
+                "/project-1/global/images/image-1",
+                out var _));
+            Assert.IsFalse(ImageLocator.TryParse(
+                "/",
+                out var _));
+        }
+
+        //---------------------------------------------------------------------
         // Parse.
         //---------------------------------------------------------------------
 
         [Test]
-        public void Parse_WhenPathIsValid_ParseReturnsObject()
+        public void Parse_WhenPathIsValid()
         {
             var ref1 = ImageLocator.Parse(
                 "projects/project-1/global/images/image-1");
@@ -58,7 +148,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void Parse_WhenResourceNameCotainsSlash_ParseReturnsObject()
+        public void Parse_WhenResourceNameCotainsSlash()
         {
             var ref1 = ImageLocator.Parse(
                 "projects/debian-cloud/global/images/family/debian-9");
@@ -69,7 +159,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void Parse_WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByComputeGoogleapisHost()
         {
             var ref1 = ImageLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/debian-cloud/global/images/family/debian-9");
@@ -80,7 +170,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void Parse_WhenQualifiedByGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByGoogleapisHost()
         {
             var ref1 = ImageLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/images/windows-server-core");
@@ -91,7 +181,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void Parse_WhenUsingBetaApi_ParseReturnsObject()
+        public void Parse_WhenUsingBetaApi()
         {
             var ref1 = ImageLocator.Parse(
                 "https://compute.googleapis.com/compute/beta/projects/eip-images/global/images/debian-9-drawfork-v20191004");
@@ -102,14 +192,14 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void Parse_WhenPathLacksProject_ParseThrowsArgumentException()
+        public void Parse_WhenPathLacksProject()
         {
             Assert.Throws<ArgumentException>(() => ImageLocator.Parse(
                 "/project-1/project-1/global/images/image-1"));
         }
 
         [Test]
-        public void Parse_WhenPathInvalid_ParseThrowsArgumentException()
+        public void Parse_WhenPathInvalid()
         {
             Assert.Throws<ArgumentException>(() => ImageLocator.Parse(
                 "projects/project-1/notglobal/images/image-1"));

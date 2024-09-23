@@ -30,10 +30,15 @@ namespace Google.Solutions.Apis.Locator
     /// NB. Although access levels are global, their locator does not 
     /// follow the same conventions as other (Compute) resources.
     /// </summary>
-    public class AccessLevelLocator : IEquatable<AccessLevelLocator>
+    public class AccessLevelLocator : ILocator, IEquatable<AccessLevelLocator>
     {
         public string AccessPolicy { get; }
         public string AccessLevel { get; }
+
+        public string ResourceType
+        {
+            get => "accessLevels";
+        }
 
         public AccessLevelLocator(string accessPolicy, string accessLevel)
         {
@@ -41,19 +46,33 @@ namespace Google.Solutions.Apis.Locator
             this.AccessLevel = accessLevel;
         }
 
-        public static AccessLevelLocator Parse(string resourceReference)
+        public static bool TryParse(string path, out AccessLevelLocator? locator)
         {
             var match = new Regex("accessPolicies/(.*)/accessLevels/(.*)")
-                .Match(resourceReference);
+                .Match(path);
             if (match.Success)
             {
-                return new AccessLevelLocator(
+                locator = new AccessLevelLocator(
                     match.Groups[1].Value,
                     match.Groups[2].Value);
+                return true;
             }
             else
             {
-                throw new ArgumentException($"'{resourceReference}' is not a valid access level locator");
+                locator = null;
+                return false;
+            }
+        }
+
+        public static AccessLevelLocator Parse(string path)
+        {
+            if (TryParse(path, out var locator))
+            {
+                return locator!;
+            }
+            else
+            {
+                throw new ArgumentException($"'{path}' is not a valid access level locator");
             }
         }
 

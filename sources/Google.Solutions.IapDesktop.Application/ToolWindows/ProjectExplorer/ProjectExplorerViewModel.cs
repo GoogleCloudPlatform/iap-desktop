@@ -545,7 +545,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 
             public abstract bool CanReload { get; }
             public abstract IProjectModelNode ModelNode { get; }
-            public ResourceLocator Locator { get; }
+            public ComputeEngineLocator Locator { get; }
             public string Text { get; }
             public bool IsLeaf { get; }
 
@@ -686,7 +686,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             protected ViewModelNode(
                 ProjectExplorerViewModel viewModel,
                 ViewModelNode parent,
-                ResourceLocator locator,
+                ComputeEngineLocator locator,
                 string text,
                 bool isLeaf,
                 int defaultImageIndex)

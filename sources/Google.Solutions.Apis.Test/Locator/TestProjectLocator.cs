@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 using System;
 
@@ -28,7 +27,7 @@ namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
     public class TestProjectLocator
-        : EquatableFixtureBase<ProjectLocator, ProjectLocator>
+        : TestLocatorFixtureBase<ProjectLocator>
     {
         protected override ProjectLocator CreateInstance()
         {
@@ -43,11 +42,73 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         //---------------------------------------------------------------------
+        // TryParse.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void TryParse_WhenPathIsValid()
+        {
+            Assert.IsTrue(ProjectLocator.TryParse(
+                "projects/project-1",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("projects", ref1!.ResourceType);
+            Assert.AreEqual("project-1", ref1.Name);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenQualifiedByComputeGoogleapisHost()
+        {
+            Assert.IsTrue(ProjectLocator.TryParse(
+                "https://compute.googleapis.com/compute/v1/projects/project-1",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("projects", ref1!.ResourceType);
+            Assert.AreEqual("project-1", ref1.Name);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenQualifiedByGoogleapisHost()
+        {
+            Assert.IsTrue(ProjectLocator.TryParse(
+                "https://www.googleapis.com/compute/v1/projects/project-1",
+                out var ref1));
+
+            Assert.IsNotNull(ref1);
+            Assert.AreEqual("projects", ref1!.ResourceType);
+            Assert.AreEqual("project-1", ref1.Name);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void TryParse_WhenPathLacksProject()
+        {
+            Assert.IsFalse(ProjectLocator.TryParse(
+                "/project-1",
+                out var _));
+        }
+
+        [Test]
+        public void TryParse_WhenPathInvalid()
+        {
+            Assert.IsFalse(ProjectLocator.TryParse(
+                "projects/project-1/zone",
+                out var _));
+            Assert.IsFalse(ProjectLocator.TryParse(
+                "",
+                out var _));
+        }
+
+        //---------------------------------------------------------------------
         // Parse.
         //---------------------------------------------------------------------
 
         [Test]
-        public void Parse_WhenPathIsValid_ParseReturnsObject()
+        public void Parse_WhenPathIsValid()
         {
             var ref1 = ProjectLocator.Parse(
                 "projects/project-1");
@@ -58,7 +119,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void Parse_WhenQualifiedByComputeGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByComputeGoogleapisHost()
         {
             var ref1 = ProjectLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/project-1");
@@ -69,7 +130,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void Parse_WhenQualifiedByGoogleapisHost_ParseReturnsObject()
+        public void Parse_WhenQualifiedByGoogleapisHost()
         {
             var ref1 = ProjectLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/project-1");
@@ -80,14 +141,14 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void Parse_WhenPathLacksProject_ParseThrowsArgumentException()
+        public void Parse_WhenPathLacksProject()
         {
             Assert.Throws<ArgumentException>(() => ProjectLocator.Parse(
                 "/project-1"));
         }
 
         [Test]
-        public void Parse_WhenPathInvalid_ParseThrowsArgumentException()
+        public void Parse_WhenPathInvalid()
         {
             Assert.Throws<ArgumentException>(() => ProjectLocator.Parse(
                 "projects/project-1/zone"));
