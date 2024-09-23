@@ -52,20 +52,12 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             private RangeObservableCollection<ViewModelNode>? nodes;
             private RangeObservableCollection<ViewModelNode>? filteredNodes;
 
+            //-----------------------------------------------------------------
+            // Properties.
+            //-----------------------------------------------------------------
+
             internal ViewModelNode? Parent { get; }
-
-            internal bool IsLoaded
-            {
-                get  => this.nodes != null;
-            }
-
-            protected virtual void OnExpandedChanged() { }
-
-            //-----------------------------------------------------------------
-            // Observable properties.
-            //-----------------------------------------------------------------
-
-            public abstract bool CanReload { get; }
+            internal abstract bool CanReload { get; }
             public abstract IProjectModelNode ModelNode { get; }
             public ComputeEngineLocator? Locator { get; }
             public string Text { get; }
@@ -87,9 +79,16 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 }
             }
 
+            internal bool IsLoaded
+            {
+                get => this.nodes != null;
+            }
+
             //-----------------------------------------------------------------
             // Children.
             //-----------------------------------------------------------------
+
+            protected virtual void OnExpandedChanged() { }
 
             protected virtual IEnumerable<ViewModelNode> ApplyFilter(
                 RangeObservableCollection<ViewModelNode> allNodes)
@@ -253,7 +252,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 }
             }
 
-            public override bool CanReload => true;
+            internal override bool CanReload => true;
 
             protected override async Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
                 bool forceReload,
@@ -278,7 +277,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
         internal class ProjectViewModelNode : ViewModelNode
         {
             private const int DefaultIconIndex = 1;
-            public IProjectModelProjectNode ProjectNode { get; }
+            internal IProjectModelProjectNode ProjectNode { get; }
 
             private static string CreateDisplayName(IProjectModelProjectNode node)
             {
@@ -328,7 +327,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 
             public override IProjectModelNode ModelNode => this.ProjectNode;
 
-            public override bool CanReload => true;
+            internal override bool CanReload => true;
 
             protected override async Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
                 bool forceReload,
@@ -363,7 +362,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
         {
             private const int DefaultIconIndex = 3;
 
-            public IProjectModelZoneNode ZoneNode { get; }
+            internal IProjectModelZoneNode ZoneNode { get; }
 
             public ZoneViewModelNode(
                 ProjectExplorerViewModel viewModel,
@@ -383,7 +382,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 
             public override IProjectModelNode ModelNode => this.ZoneNode;
 
-            public override bool CanReload => false;
+            internal override bool CanReload => false;
 
             protected override Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
                 bool forceReload,
@@ -417,7 +416,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 
             private bool isConnected = false;
 
-            public IProjectModelInstanceNode InstanceNode { get; }
+            internal IProjectModelInstanceNode InstanceNode { get; }
 
             public InstanceViewModelNode(
                 ProjectExplorerViewModel viewModel,
@@ -437,7 +436,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 
             public override IProjectModelNode ModelNode => this.InstanceNode;
 
-            public override bool CanReload => false;
+            internal override bool CanReload => false;
 
             public override int ImageIndex
             {
