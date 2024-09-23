@@ -173,7 +173,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Device = device.Object,
             })
             {
-                Exception exception = null;
+                Exception? exception = null;
                 virtualTerminal.DeviceError += (_, args) => exception = args.Exception;
 
                 virtualTerminal.Dimensions = new PseudoConsoleSize(81, 25);

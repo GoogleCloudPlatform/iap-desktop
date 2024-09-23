@@ -38,7 +38,7 @@ namespace Google.Solutions.Common.Test.Linq
         {
             var enumerable = Enumerables.Create("item");
             Assert.IsNotNull(enumerable);
-            Assert.AreEqual(1, enumerable.Count();
+            Assert.AreEqual(1, enumerable.Count());
             Assert.AreEqual("item", enumerable.First());
         }
     }

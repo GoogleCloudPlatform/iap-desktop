@@ -415,7 +415,10 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                     var root = await GetRootNodeAsync(false, token)
                         .ConfigureAwait(false);
 
-                    return root.Projects.FirstOrDefault(p => p.Project == projectLocator);
+                    return root
+                        .Organizations
+                        .SelectMany(o => o.Projects)
+                        .FirstOrDefault(p => p.Project == projectLocator);
                 }
                 else if (locator is ZoneLocator zoneLocator)
                 {

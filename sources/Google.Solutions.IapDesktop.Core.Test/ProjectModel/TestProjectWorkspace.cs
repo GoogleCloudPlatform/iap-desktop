@@ -32,6 +32,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -227,13 +228,16 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            var model = await workspace
+            var rootNode = await workspace
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true);
+            var projects = rootNode
+                .Organizations
+                .SelectMany(o => o.Projects);
 
-            Assert.AreEqual(1, model.Projects.Count());
-            Assert.AreEqual(SampleProjectId, model.Projects.First().Project);
-            Assert.AreEqual("[project-1]", model.Projects.First().DisplayName);
+            Assert.AreEqual(1, projects.Count());
+            Assert.AreEqual(SampleProjectId, projects.First().Project);
+            Assert.AreEqual("[project-1]", projects.First().DisplayName);
 
             resourceManagerClient.Verify(a => a.GetProjectAsync(
                     SampleProjectId,
@@ -255,7 +259,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             computeAdapter.Setup(a => a.ListInstancesAsync(
                     accessibleProject,
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Instance[0]);
+                .ReturnsAsync(Array.Empty<Instance>());
             computeAdapter.Setup(a => a.ListInstancesAsync(
                     inaccessibleProject,
                     It.IsAny<CancellationToken>()))
@@ -287,13 +291,16 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     inaccessibleProject).Object,
                 new Mock<IEventQueue>().Object);
 
-            var model = await workspace
+            var rootNode = await workspace
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true);
+            var projects = rootNode
+                .Organizations
+                .SelectMany(o => o.Projects);
 
             CollectionAssert.AreEquivalent(
                 new[] { "accessible-project", "inaccessible-project" },
-                model.Projects.Select(p => p.Project.Name).ToList());
+                projects.Select(p => p.Project.Name).ToList());
 
             // Only 1 or 2 projects should have been cached.
             Assert.AreEqual(1, workspace.CachedProjectsCount);
@@ -320,7 +327,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 
             Assert.AreSame(model, modelSecondLoad);
 
-            resourceManagerAdapter.Verify(a => a.GetProjectAsync(
+            resourceManagerAdapter
+                .Verify(a => a.GetProjectAsync(
                     SampleProjectId,
                     It.IsAny<CancellationToken>()),
                 Times.Once);
@@ -373,11 +381,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     nonexistingProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            var projects = (await workspace
+            var rootNode = await workspace
                 .GetRootNodeAsync(false, CancellationToken.None)
-                .ConfigureAwait(true))
-                    .Projects
-                    .ToList();
+                .ConfigureAwait(true);
+            var projects = rootNode
+                .Organizations
+                .SelectMany(o => o.Projects)
+                .ToList();
 
             Assert.AreEqual(2, projects.Count);
 
@@ -389,7 +399,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         public void WhenLoadingDataCausesReauthError_ThenGetRootNodeAsyncPropagatesException()
         {
             var resourceManagerAdapter = new Mock<IResourceManagerClient>();
-            resourceManagerAdapter.Setup(a => a.GetProjectAsync(
+            resourceManagerAdapter
+                .Setup(a => a.GetProjectAsync(
                     It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new TokenResponseException(new TokenErrorResponse()
@@ -784,20 +795,24 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true);
 
-            var root = await workspace
+            var rootNode = await workspace
                 .GetRootNodeAsync(
                     false,
                     CancellationToken.None)
                 .ConfigureAwait(true);
+            var projects = rootNode
+                .Organizations
+                .SelectMany(o => o.Projects);
 
             await workspace
                 .SetActiveNodeAsync(
-                    root.Projects.First(),
+                    projects.First(),
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            eventService.Verify(s => s.PublishAsync<ActiveProjectChangedEvent>(
-                    It.Is<ActiveProjectChangedEvent>(e => e.ActiveNode == root.Projects.First())),
+            eventService
+                .Verify(s => s.PublishAsync<ActiveProjectChangedEvent>(
+                    It.Is<ActiveProjectChangedEvent>(e => e.ActiveNode == projects.First())),
                 Times.Once);
         }
 
