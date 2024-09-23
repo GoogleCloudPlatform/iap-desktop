@@ -923,14 +923,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             Assert.IsFalse(instances[1].IsConnected);
 
             await sessionStartedEventHandler!(
-                    new SessionStartedEvent((InstanceLocator)instances[0].Locator))
+                    new SessionStartedEvent((InstanceLocator)instances[0].Locator!))
                 .ConfigureAwait(true);
 
             Assert.IsTrue(instances[0].IsConnected);
             Assert.IsFalse(instances[1].IsConnected);
 
             await sessionEndedEventHandler!(
-                    new SessionEndedEvent((InstanceLocator)instances[0].Locator))
+                    new SessionEndedEvent((InstanceLocator)instances[0].Locator!))
                 .ConfigureAwait(true);
 
             Assert.IsFalse(instances[0].IsConnected);

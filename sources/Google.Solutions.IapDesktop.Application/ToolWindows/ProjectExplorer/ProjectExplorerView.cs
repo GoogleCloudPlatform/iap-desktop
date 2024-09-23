@@ -280,7 +280,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
         {
             try
             {
-                await this.jobService.RunAsync(
+                await this.jobService
+                    .RunAsync(
                         new JobDescription("Loading projects..."),
                         _ => this.authorization
                             .Session
