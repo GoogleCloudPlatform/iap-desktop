@@ -255,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             computeAdapter.Setup(a => a.ListInstancesAsync(
                     accessibleProject,
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Instance[0]);
+                .ReturnsAsync(Array.Empty<Instance>());
             computeAdapter.Setup(a => a.ListInstancesAsync(
                     inaccessibleProject,
                     It.IsAny<CancellationToken>()))

@@ -270,8 +270,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             var child = new ServiceRegistry(parent);
             child.AddTransient<ServiceWithServiceProviderConstructor>();
 
-            Assert.AreEqual(1, parent.Registrations.Count());
-            Assert.AreEqual(2, child.Registrations.Count());
+            Assert.AreEqual(1, parent.Registrations.Count);
+            Assert.AreEqual(2, child.Registrations.Count);
 
             var registrations = child.Registrations;
 
