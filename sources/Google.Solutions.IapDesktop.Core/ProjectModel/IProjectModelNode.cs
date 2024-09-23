@@ -33,7 +33,15 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
     /// </summary>
     public interface IProjectModelNode
     {
+        /// <summary>
+        /// Display name.
+        /// </summary>
         string DisplayName { get; }
+
+        /// <summary>
+        /// Locator of the underlying resource.
+        /// </summary>
+        ILocator Locator { get; }
     }
 
     /// <summary>
