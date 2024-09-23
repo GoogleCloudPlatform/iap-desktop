@@ -24,16 +24,13 @@ using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
 {
-    internal class ZoneNode : IProjectModelZoneNode
+    internal class ZoneNode : NodeBase, IProjectModelZoneNode
     {
         //---------------------------------------------------------------------
         // Readonly properties.
         //---------------------------------------------------------------------
 
         public ZoneLocator Zone { get; }
-
-        public string DisplayName
-            => this.Zone.Name;
 
         public IEnumerable<IProjectModelInstanceNode> Instances { get; }
 
@@ -44,6 +41,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
         public ZoneNode(
             ZoneLocator locator,
             IEnumerable<IProjectModelInstanceNode> instances)
+            : base(locator.Name, locator)
         {
             this.Zone = locator;
             this.Instances = instances;

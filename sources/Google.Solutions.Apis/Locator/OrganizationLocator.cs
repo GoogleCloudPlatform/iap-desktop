@@ -66,7 +66,7 @@ namespace Google.Solutions.Apis.Locator
 
         public override string ToString()
         {
-            return $"organizations/{this.Id}";
+            return $"{this.ResourceType}/{this.Id}";
         }
 
         public bool Equals(OrganizationLocator? other)

@@ -101,6 +101,14 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         Task SetActiveNodeAsync(
             ComputeEngineLocator? locator,
             CancellationToken token);
+
+        /// <summary>
+        /// Change state of an instance.
+        /// </summary>
+        Task ControlInstanceAsync(
+            InstanceLocator instance,
+            InstanceControlCommand command,
+            CancellationToken cancellationToken);
     }
 
     public class ProjectWorkspace : IProjectWorkspace
@@ -233,30 +241,6 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                 }
 
                 return zones;
-            }
-        }
-
-        internal async Task ControlInstanceAsync(
-            InstanceLocator instance,
-            InstanceControlCommand command,
-            CancellationToken cancellationToken)
-        {
-            using (CoreTraceSource.Log.TraceMethod()
-                .WithParameters(instance, command))
-            {
-                await this.computeClient.ControlInstanceAsync(
-                    instance,
-                    command,
-                    cancellationToken)
-                .ConfigureAwait(false);
-
-                await this.eventQueue.PublishAsync(
-                    new InstanceStateChangedEvent(
-                        instance,
-                        command == InstanceControlCommand.Start ||
-                            command == InstanceControlCommand.Resume ||
-                            command == InstanceControlCommand.Reset))
-                    .ConfigureAwait(false);
             }
         }
 
@@ -538,6 +522,31 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                         .PublishAsync(new ActiveProjectChangedEvent(this.cachedRoot))
                         .ConfigureAwait(true);
                 }
+            }
+        }
+
+        public async Task ControlInstanceAsync(
+            InstanceLocator instance,
+            InstanceControlCommand command,
+            CancellationToken cancellationToken)
+        {
+            using (CoreTraceSource.Log.TraceMethod()
+                .WithParameters(instance, command))
+            {
+                await this.computeClient.ControlInstanceAsync(
+                    instance,
+                    command,
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+                await this.eventQueue
+                    .PublishAsync(
+                        new InstanceStateChangedEvent(
+                            instance,
+                            command == InstanceControlCommand.Start ||
+                                command == InstanceControlCommand.Resume ||
+                                command == InstanceControlCommand.Reset))
+                    .ConfigureAwait(false);
             }
         }
 
