@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             else
             {
                 // Force-reload children and discard result.
-                await node.GetFilteredNodesAsync(true)
+                await node.GetFilteredChildrenAsync(true)
                     .ConfigureAwait(true);
             }
         }
@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             InstanceLocator locator)
         {
             var project = (await this.RootNode
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true))
                 .FirstOrDefault(p => p.Locator.ProjectId == locator.ProjectId);
             if (project == null)
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             }
 
             var zone = (await project
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true))
                 .FirstOrDefault(z => z.Locator.Name == locator.Zone);
             if (zone == null)
@@ -188,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             }
 
             return (InstanceViewModelNode?)(await zone
-                .GetFilteredNodesAsync(false)
+                .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true))
                 .FirstOrDefault(i => i.Locator.Name == locator.Name);
         }
@@ -431,7 +431,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
         public async Task<IEnumerable<ViewModelNode>> ExpandRootAsync()
         {
             // Explicitly load nodes.
-            var nodes = await this.RootNode.GetFilteredNodesAsync(false)
+            var nodes = await this.RootNode.GetFilteredChildrenAsync(false)
                 .ConfigureAwait(true);
 
             // NB. If we did not load the nodes explicitly before, 
@@ -456,13 +456,13 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             {
                 // Retain project nodes, but refresh their descendents.
                 var projects = await this.RootNode
-                    .GetFilteredNodesAsync(false)
+                    .GetFilteredChildrenAsync(false)
                     .ConfigureAwait(true);
 
                 await Task
                     .WhenAll(projects
                         .Where(p => p.IsLoaded && p.CanReload)
-                        .Select(p => p.GetFilteredNodesAsync(true)))
+                        .Select(p => p.GetFilteredChildrenAsync(true)))
                     .ConfigureAwait(true);
             }
         }

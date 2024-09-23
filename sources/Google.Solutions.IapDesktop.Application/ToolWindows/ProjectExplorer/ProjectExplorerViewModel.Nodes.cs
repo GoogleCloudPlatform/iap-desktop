@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             /// <summary>
             /// List all children thet match the current filter.
             /// </summary>
-            public async Task<ObservableCollection<ViewModelNode>> GetFilteredNodesAsync(
+            public async Task<ObservableCollection<ViewModelNode>> GetFilteredChildrenAsync(
                 bool forceReload)
             {
                 Debug.Assert(!((Control)this.viewModel.View!).InvokeRequired);
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                     // operating on the UI thread.
                     //
 
-                    var loadedNodes = await LoadNodesAsync(forceReload)
+                    var loadedNodes = await LoadChildrenAsync(forceReload)
                         .ConfigureAwait(true);
 
                     this.nodes = new RangeObservableCollection<ViewModelNode>();
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 {
                     Debug.Assert(this.filteredNodes != null);
 
-                    var loadedNodes = await LoadNodesAsync(forceReload)
+                    var loadedNodes = await LoadChildrenAsync(forceReload)
                         .ConfigureAwait(true);
 
                     this.nodes.Clear();
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             /// <summary>
             /// Load children in a job.
             /// </summary>
-            protected async Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
+            protected async Task<IEnumerable<ViewModelNode>> LoadChildrenAsync(
                 bool forceReload)
             {
                 using (this.viewModel.EnableLoadingStatus())
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                             new JobDescription(
                                 $"Loading {this.Text}...",
                                 JobUserFeedbackType.BackgroundFeedback),
-                            token => LoadNodesAsync(forceReload, token))
+                            token => LoadChildrenAsync(forceReload, token))
                         .ConfigureAwait(true);
                 }
             }
@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             /// <summary>
             /// Load children.
             /// </summary>
-            protected abstract Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
+            protected abstract Task<IEnumerable<ViewModelNode>> LoadChildrenAsync(
                 bool forceReload,
                 CancellationToken token);
 
@@ -261,9 +261,12 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 }
             }
 
-            internal override bool CanReload => true;
+            internal override bool CanReload
+            {
+                get => true;
+            }
 
-            protected override async Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
+            protected override async Task<IEnumerable<ViewModelNode>> LoadChildrenAsync(
                 bool forceReload,
                 CancellationToken token)
             {
@@ -334,11 +337,17 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 base.OnExpandedChanged();
             }
 
-            public override IProjectModelNode ModelNode => this.ProjectNode;
+            public override IProjectModelNode ModelNode
+            {
+                get => this.ProjectNode;
+            }
 
-            internal override bool CanReload => true;
+            internal override bool CanReload 
+            {
+                get => true; 
+            }
 
-            protected override async Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
+            protected override async Task<IEnumerable<ViewModelNode>> LoadChildrenAsync(
                 bool forceReload,
                 CancellationToken token)
             {
@@ -389,11 +398,17 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 this.IsExpanded = true;
             }
 
-            public override IProjectModelNode ModelNode => this.ZoneNode;
+            public override IProjectModelNode ModelNode 
+            {
+                get => this.ZoneNode;
+            }
 
-            internal override bool CanReload => false;
+            internal override bool CanReload 
+            {
+                get => false;
+            }
 
-            protected override Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
+            protected override Task<IEnumerable<ViewModelNode>> LoadChildrenAsync(
                 bool forceReload,
                 CancellationToken token)
             {
@@ -443,9 +458,15 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 this.IsConnected = viewModel.sessionBroker.IsConnected(modelNode.Instance);
             }
 
-            public override IProjectModelNode ModelNode => this.InstanceNode;
+            public override IProjectModelNode ModelNode
+            {
+                get => this.InstanceNode;
+            }
 
-            internal override bool CanReload => false;
+            internal override bool CanReload
+            {
+                get => false;
+            }
 
             public override int ImageIndex
             {
@@ -481,7 +502,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 }
             }
 
-            protected override Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
+            protected override Task<IEnumerable<ViewModelNode>> LoadChildrenAsync(
                 bool forceReload,
                 CancellationToken token)
             {
