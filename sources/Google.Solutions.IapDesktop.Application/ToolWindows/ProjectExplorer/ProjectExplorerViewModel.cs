@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Logging.v2.Data;
 using Google.Solutions.Apis;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Linq;
@@ -98,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
         internal ProjectExplorerViewModel(
             IProjectExplorerSettings settings,
             IJobService jobService,
-            IEventQueue eventService,
+            IEventQueue eventQueue,
             ISessionBroker sessionBroker,
             IProjectWorkspace workspace,
             ICloudConsoleClient cloudConsoleService)
@@ -115,11 +116,26 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 
             this.RootNode = new CloudViewModelNode(this);
 
-            eventService.Subscribe<SessionStartedEvent>(
-                e => UpdateInstanceAsync(e.Instance, i => i.IsConnected = true));
-            eventService.Subscribe<SessionEndedEvent>(
-                e => UpdateInstanceAsync(e.Instance, i => i.IsConnected = false));
-            eventService.Subscribe<InstanceStateChangedEvent>(
+            //
+            // NB. Only consider instances that have already bee loaded.
+            //
+            eventQueue.Subscribe<SessionStartedEvent>(
+                e => 
+                {
+                    if (FindLoadedInstance(e.Instance) is InstanceViewModelNode instance)
+                    {
+                        instance.IsConnected = true;
+                    }
+                });
+            eventQueue.Subscribe<SessionEndedEvent>(
+                e =>
+                {
+                    if (FindLoadedInstance(e.Instance) is InstanceViewModelNode instance)
+                    {
+                        instance.IsConnected = false;
+                    }
+                });
+            eventQueue.Subscribe<InstanceStateChangedEvent>(
                 async e =>
                 {
                     //
@@ -127,11 +143,9 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                     // to ensure that both the UI and the underlying project model
                     // updated.
                     //
-                    var node = await TryFindInstanceNodeAsync(e.Instance)
-                        .ConfigureAwait(true);
-                    if (node != null)
+                    if (FindLoadedInstance(e.Instance) is InstanceViewModelNode instance)
                     {
-                        await RefreshAsync(node).ConfigureAwait(true);
+                        await RefreshAsync(instance).ConfigureAwait(true);
                     }
                 });
         }
@@ -155,42 +169,16 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
         {
         }
 
-        private async Task UpdateInstanceAsync(
-            InstanceLocator locator,
-            Action<InstanceViewModelNode> action)
-        {
-            if (await TryFindInstanceNodeAsync(locator).ConfigureAwait(true)
-                is InstanceViewModelNode instance)
-            {
-                action(instance);
-            }
-        }
-
-        private async Task<InstanceViewModelNode?> TryFindInstanceNodeAsync(
+        /// <summary>
+        /// Look for instance among the loaded nodes.
+        /// </summary>
+        private InstanceViewModelNode? FindLoadedInstance(
             InstanceLocator locator)
         {
-            var project = (await this.RootNode
-                .GetFilteredChildrenAsync(false)
-                .ConfigureAwait(true))
-                .FirstOrDefault(p => p.Locator.ProjectId == locator.ProjectId);
-            if (project == null)
-            {
-                return null;
-            }
-
-            var zone = (await project
-                .GetFilteredChildrenAsync(false)
-                .ConfigureAwait(true))
-                .FirstOrDefault(z => z.Locator.Name == locator.Zone);
-            if (zone == null)
-            {
-                return null;
-            }
-
-            return (InstanceViewModelNode?)(await zone
-                .GetFilteredChildrenAsync(false)
-                .ConfigureAwait(true))
-                .FirstOrDefault(i => i.Locator.Name == locator.Name);
+            
+            return this.RootNode.LoadedDescendents
+                .OfType<InstanceViewModelNode>()
+                .FirstOrDefault(i => Equals(i.Locator, locator));
         }
 
         internal IReadOnlyCollection<IProjectModelProjectNode> Projects

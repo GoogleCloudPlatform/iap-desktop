@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 }
             }
 
-            internal bool IsLoaded
+            internal virtual bool IsLoaded
             {
                 get => this.children != null;
             }
@@ -220,6 +220,11 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             internal void ReapplyFilter()
             {
                 Debug.Assert(this.IsLoaded);
+                if (this.IsLeaf)
+                {
+                    return;
+                }
+
                 Debug.Assert(this.children != null);
                 Debug.Assert(this.filteredChildren != null);
 
@@ -529,6 +534,11 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                     RaisePropertyChange();
                     RaisePropertyChange((InstanceViewModelNode n) => n.ImageIndex);
                 }
+            }
+
+            internal override bool IsLoaded
+            {
+                get => true;
             }
 
             protected override Task<IEnumerable<ViewModelNode>> LoadChildrenAsync(

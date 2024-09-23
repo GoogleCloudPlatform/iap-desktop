@@ -152,10 +152,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
                 node =>
                 {
                     //
-                    // NB. Due to lazily loading and inaccessible projects,
-                    // ModelNode can be null.
+                    // NB. Due to lazily loading, the model might not
+                    // be available yet.
                     //
-                    if (node?.ModelNode != null)
+                    if (node != null && node.IsLoaded)
                     {
                         contextSource.Context = node.ModelNode;
                     }
