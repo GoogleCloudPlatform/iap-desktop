@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -23,24 +23,24 @@ using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
 {
-    internal class CloudNode : IProjectModelCloudNode
+    internal class OrganizationNode : IProjectModelOrganizationNode
     {
-        //---------------------------------------------------------------------
-        // Ctor.
-        //---------------------------------------------------------------------
+        private const string DefaultName = "Default organization";
 
-        public CloudNode(
-            IEnumerable<IProjectModelOrganizationNode> organizations)
+        public OrganizationNode(
+            IEnumerable<IProjectModelProjectNode> projects,
+            string? primaryDomain)
         {
-            this.Organizations = organizations;
+            this.DisplayName = primaryDomain ?? DefaultName;
+            this.Projects = projects;
         }
 
         //---------------------------------------------------------------------
         // Readonly properties.
         //---------------------------------------------------------------------
 
-        public string DisplayName => "Google Cloud";
+        public string DisplayName { get; }
 
-        public IEnumerable<IProjectModelOrganizationNode> Organizations { get; }
+        public IEnumerable<IProjectModelProjectNode> Projects { get; }
     }
 }

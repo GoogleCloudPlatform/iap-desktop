@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,28 +19,27 @@
 // under the License.
 //
 
-using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
+using Google.Solutions.Common.Linq;
+using NUnit.Framework;
+using System.Linq;
+
+namespace Google.Solutions.Common.Test.Linq
 {
-    internal class CloudNode : IProjectModelCloudNode
+    [TestFixture]
+    public class TestEnumerables
     {
-        //---------------------------------------------------------------------
-        // Ctor.
-        //---------------------------------------------------------------------
+        //----------------------------------------------------------------------
+        // Create.
+        //----------------------------------------------------------------------
 
-        public CloudNode(
-            IEnumerable<IProjectModelOrganizationNode> organizations)
+        [Test]
+        public void Create()
         {
-            this.Organizations = organizations;
+            var enumerable = Enumerables.Create("item");
+            Assert.IsNotNull(enumerable);
+            Assert.AreEqual(1, enumerable.Count();
+            Assert.AreEqual("item", enumerable.First());
         }
-
-        //---------------------------------------------------------------------
-        // Readonly properties.
-        //---------------------------------------------------------------------
-
-        public string DisplayName => "Google Cloud";
-
-        public IEnumerable<IProjectModelOrganizationNode> Organizations { get; }
     }
 }

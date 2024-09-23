@@ -42,6 +42,17 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
     public interface IProjectModelCloudNode : IProjectModelNode
     {
         /// <summary>
+        /// Google Cloud organizations.
+        /// </summary>
+        IEnumerable<IProjectModelOrganizationNode> Organizations { get; }
+    }
+
+    /// <summary>
+    /// Represents a Google Cloud organization.
+    /// </summary>
+    public interface IProjectModelOrganizationNode : IProjectModelNode // TODO: Drop prefix?
+    {
+        /// <summary>
         /// List of projects that are currently loaded. Some
         /// projects might be inaccessible.
         /// </summary>

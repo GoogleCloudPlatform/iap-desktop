@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -21,26 +21,16 @@
 
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
+namespace Google.Solutions.Common.Linq
 {
-    internal class CloudNode : IProjectModelCloudNode
+    public static class Enumerables
     {
-        //---------------------------------------------------------------------
-        // Ctor.
-        //---------------------------------------------------------------------
-
-        public CloudNode(
-            IEnumerable<IProjectModelOrganizationNode> organizations)
+        /// <summary>
+        /// Create an enumerable from a single item.
+        /// </summary>
+        public static IEnumerable<T> Create<T>(T item)
         {
-            this.Organizations = organizations;
+            yield return item;
         }
-
-        //---------------------------------------------------------------------
-        // Readonly properties.
-        //---------------------------------------------------------------------
-
-        public string DisplayName => "Google Cloud";
-
-        public IEnumerable<IProjectModelOrganizationNode> Organizations { get; }
     }
 }

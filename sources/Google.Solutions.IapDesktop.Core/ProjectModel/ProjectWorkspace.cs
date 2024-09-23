@@ -190,7 +190,11 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                     }
                 }
 
-                return new CloudNode(accessibleProjects);
+                //
+                // Aggregate all projects under a "default" organization node.
+                //
+                var defaultOrganization = new OrganizationNode(accessibleProjects, null);
+                return new CloudNode(Enumerables.Create(defaultOrganization));
             }
         }
 
@@ -335,7 +339,8 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                     //   the list of projects, but also their contents (zones).
                     //
                     var loadProjectTasks = this.cachedRoot
-                        .Projects
+                        .Organizations
+                        .SelectMany(o => o.Projects)
                         .Select(p => new {
                             p.Project,
                             Zones = LoadZonesAsync(p.Project, token)
