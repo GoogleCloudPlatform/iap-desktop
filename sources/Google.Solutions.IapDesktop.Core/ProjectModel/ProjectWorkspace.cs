@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         /// Load any node. Uses cached data if available.
         /// </summary>
         Task<IProjectModelNode?> GetNodeAsync(
-            ComputeEngineLocator locator,
+            ILocator locator,
             CancellationToken token);
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         /// is kept across reloads.
         /// </summary>
         Task SetActiveNodeAsync(
-            ComputeEngineLocator? locator,
+            ILocator locator,
             CancellationToken token);
     }
 
@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         private readonly IProjectRepository projectRepository;
         private readonly IEventQueue eventQueue;
 
-        private ComputeEngineLocator? activeNode;
+        private ILocator? activeNode;
 
         private readonly AsyncLock cacheLock = new AsyncLock();
         private CloudNode? cachedRoot = null;
@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                 //
                 // Aggregate all projects under a "default" organization node.
                 //
-                var defaultOrganization = new OrganizationNode(accessibleProjects, null);
+                var defaultOrganization = OrganizationNode.CreateDefault(accessibleProjects);
                 return new CloudNode(Enumerables.Create(defaultOrganization));
             }
         }
@@ -405,12 +405,21 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         }
 
         public async Task<IProjectModelNode?> GetNodeAsync(
-            ComputeEngineLocator locator,
+            ILocator locator,
             CancellationToken token)
         {
             using (CoreTraceSource.Log.TraceMethod().WithParameters(locator))
             {
-                if (locator is ProjectLocator projectLocator)
+                if (locator is OrganizationLocator organizationLocator)
+                {
+                    var root = await GetRootNodeAsync(false, token)
+                        .ConfigureAwait(false);
+
+                    return root
+                        .Organizations
+                        .FirstOrDefault(o => o.Organization == organizationLocator);//TODO: test
+                }
+                else if (locator is ProjectLocator projectLocator)
                 {
                     var root = await GetRootNodeAsync(false, token)
                         .ConfigureAwait(false);
@@ -509,7 +518,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         }
 
         public async Task SetActiveNodeAsync(
-            ComputeEngineLocator? locator,
+            ILocator? locator,
             CancellationToken token)
         {
             using (CoreTraceSource.Log.TraceMethod().WithParameters(locator))

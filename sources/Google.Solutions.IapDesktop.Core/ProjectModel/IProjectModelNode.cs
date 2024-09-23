@@ -57,6 +57,11 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         /// projects might be inaccessible.
         /// </summary>
         IEnumerable<IProjectModelProjectNode> Projects { get; }
+
+        /// <summary>
+        /// Organization locator.
+        /// </summary>
+        OrganizationLocator Organization { get; }
     }
 
     /// <summary>

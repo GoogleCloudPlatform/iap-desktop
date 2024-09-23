@@ -213,7 +213,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         //---------------------------------------------------------------------
-        // GetRootNodeAsync.
+        // GetRootNode.
         //---------------------------------------------------------------------
 
         [Test]
@@ -419,7 +419,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         //---------------------------------------------------------------------
-        // GetZoneNodesAsync.
+        // GetZoneNodes.
         //---------------------------------------------------------------------
 
         [Test]
@@ -591,7 +591,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         //---------------------------------------------------------------------
-        // GetNodeAsync.
+        // GetNode.
         //---------------------------------------------------------------------
 
         [Test]
@@ -613,7 +613,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenProjectLocatorValid_ThenGetNodeAsyncReturnsNode()
+        public async Task WhenDefaultOganizationLocator_ThenGetNodeAsyncReturnsNode()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(SampleProjectId).Object,
@@ -625,12 +625,57 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.IsNull(await workspace.GetNodeAsync(
+            var organization = await workspace
+                .GetNodeAsync(
+                    new OrganizationLocator(0),
+                    CancellationToken.None)
+                .ConfigureAwait(true);
+            Assert.IsInstanceOf(typeof(IProjectModelOrganizationNode), organization);
+            Assert.IsNotNull(organization);
+        }
+
+        [Test]
+        public async Task WhenUnknownOganizationLocator_ThenGetNodeAsyncReturnsNode()
+        {
+            var workspace = new ProjectWorkspace(
+                CreateComputeEngineClientMock(SampleProjectId).Object,
+                CreateResourceManagerClientMock().Object,
+                CreateProjectRepositoryMock(SampleProjectId).Object,
+                new Mock<IEventQueue>().Object);
+
+            await workspace
+                .GetRootNodeAsync(false, CancellationToken.None)
+                .ConfigureAwait(true);
+
+            var organization = await workspace
+                .GetNodeAsync(
+                    new OrganizationLocator(123),
+                    CancellationToken.None)
+                .ConfigureAwait(true);
+            Assert.IsNull(organization);
+        }
+
+        [Test]
+        public async Task WhenProjectLocator_ThenGetNodeAsyncReturnsNode()
+        {
+            var workspace = new ProjectWorkspace(
+                CreateComputeEngineClientMock(SampleProjectId).Object,
+                CreateResourceManagerClientMock().Object,
+                CreateProjectRepositoryMock(SampleProjectId).Object,
+                new Mock<IEventQueue>().Object);
+
+            await workspace
+                .GetRootNodeAsync(false, CancellationToken.None)
+                .ConfigureAwait(true);
+
+            Assert.IsNull(await workspace
+                .GetNodeAsync(
                     new ProjectLocator("nonexisting-1"),
                     CancellationToken.None)
                 .ConfigureAwait(true));
 
-            var project = await workspace.GetNodeAsync(
+            var project = await workspace
+                .GetNodeAsync(
                     SampleProjectId,
                     CancellationToken.None)
                 .ConfigureAwait(true);
@@ -639,7 +684,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenZoneLocatorValid_ThenGetNodeAsyncReturnsNode()
+        public async Task WhenZoneLocator_ThenGetNodeAsyncReturnsNode()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(
@@ -665,7 +710,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task WhenInstanceLocatorValid_ThenGetNodeAsyncReturnsNode()
+        public async Task WhenInstanceLocator_ThenGetNodeAsyncReturnsNode()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(

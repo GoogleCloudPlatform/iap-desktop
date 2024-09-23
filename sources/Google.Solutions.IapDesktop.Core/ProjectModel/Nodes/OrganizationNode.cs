@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Locator;
 using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
@@ -26,18 +27,32 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
     internal class OrganizationNode : IProjectModelOrganizationNode
     {
         private const string DefaultName = "Default organization";
+        private static readonly OrganizationLocator DefaultLocator = new OrganizationLocator(0);
 
         public OrganizationNode(
             IEnumerable<IProjectModelProjectNode> projects,
-            string? primaryDomain)
+            OrganizationLocator organization,
+            string displayName)
         {
-            this.DisplayName = primaryDomain ?? DefaultName;
+            this.DisplayName = displayName;
+            this.Organization = organization;
             this.Projects = projects;
+        }
+
+        /// <summary>
+        /// Create a "default" organization node.
+        /// </summary>
+        public static OrganizationNode CreateDefault(
+            IEnumerable<IProjectModelProjectNode> projects)
+        {
+            return new OrganizationNode(projects, DefaultLocator, DefaultName);
         }
 
         //---------------------------------------------------------------------
         // Readonly properties.
         //---------------------------------------------------------------------
+
+        public OrganizationLocator Organization { get; }
 
         public string DisplayName { get; }
 
