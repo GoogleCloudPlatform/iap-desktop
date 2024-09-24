@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
         }
 
         [Test]
-        public void WhenReferencedServiceUnknown_ThenThenGetServiceThrowsUnknownServiceException()
+        public void GetService_WhenReferencedServiceUnknown()
         {
             var registry = new ServiceRegistry();
 
@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
         }
 
         [Test]
-        public void WhenReferencedServiceIsTransient_ThenGetServiceReturnsFactory()
+        public void GetService_WhenReferencedServiceIsTransient()
         {
             var registry = new ServiceRegistry();
             registry.AddTransient<ServiceWithDefaultConstructor>();
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
         }
 
         [Test]
-        public void WhenReferencedServiceIsSingleton_ThenGetServiceReturnsFactory()
+        public void GetService_WhenReferencedServiceIsSingleton()
         {
             var registry = new ServiceRegistry();
             registry.AddSingleton<ServiceWithDefaultConstructor>();

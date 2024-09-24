@@ -188,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         //---------------------------------------------------------------------
 
         [Test]
-        public void DisposeStopsRelay()
+        public void Dispose_StopsRelay()
         {
             var token = CancellationToken.None;
             var listener = new Mock<IIapListener>();
@@ -214,7 +214,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         //---------------------------------------------------------------------
 
         [Test]
-        public void CloseStopsRelay()
+        public void Close_StopsRelay()
         {
             Task listenTask = new TaskCompletionSource<object>().Task;
             var token = CancellationToken.None;
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         }
 
         [Test]
-        public void WhenPortAccessDenied_CreateTunnelRetriesWithDifferentPorts()
+        public void Factory_WhenPortAccessDenied_ThenCreateTunnelRetriesWithDifferentPorts()
         {
             var protocol = new Mock<IProtocol>();
             var policy = new Mock<ITransportPolicy>();

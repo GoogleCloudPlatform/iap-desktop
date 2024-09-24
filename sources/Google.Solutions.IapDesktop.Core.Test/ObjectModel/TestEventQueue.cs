@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
         }
 
         [Test]
-        public void WhenSubscriptionDisposed_ThenInvocationsAreIgnored()
+        public void Unsubscribe_WhenSubscriptionDisposed()
         {
             var queue = new EventQueue(new Mock<ISynchronizeInvoke>().Object);
 
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInvokeNotRequired_ThenSubscriberInvokedSynchronously()
+        public void PublishAsync_WhenInvokeNotRequired()
         {
             var invoker = new Mock<ISynchronizeInvoke>();
             invoker.SetupGet(i => i.InvokeRequired).Returns(false);
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
         }
 
         [Test]
-        public void WhenSubscriberThrowsException_ThenPublishAsyncThrowsException()
+        public void PublishAsync_WhenSubscriberThrowsException()
         {
             var invoker = new Mock<ISynchronizeInvoke>();
             invoker.SetupGet(i => i.InvokeRequired).Returns(false);
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSubscriberThrowsException_ThenPublishSwallowsException()
+        public void Publish_WhenSubscriberThrowsException()
         {
             var invoker = new Mock<ISynchronizeInvoke>();
             invoker.SetupGet(i => i.InvokeRequired).Returns(false);

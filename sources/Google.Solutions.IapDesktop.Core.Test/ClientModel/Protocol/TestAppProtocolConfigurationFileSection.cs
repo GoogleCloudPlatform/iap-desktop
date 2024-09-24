@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueIsNullOrEmpty_ThenParseNameThrowsException(
+        public void ParseName_WhenValueIsNullOrEmpty(
             [Values(" ", "", null)] string value)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenConditionIsNullOrEmpty_ThenParseConditionReturnsEmpty(
+        public void ParseCondition_WhenConditionIsNullOrEmpty(
             [Values(" ", "", null)] string condition)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenConditionContainsSingleClause_ThenParseConditionReturnsTraits(
+        public void ParseCondition_WhenConditionContainsSingleClause(
             [Values("isInstance()", " \nisInstance( )\r\n")] string condition)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenConditionContainsMultipleClauses_ThenParseConditionReturnsTraits()
+        public void ParseCondition_WhenConditionContainsMultipleClauses()
         {
             var section = new AppProtocolConfigurationFile.MainSection()
             {
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenConditionContainsUnknownClause_ThenParseConditionThrowsException(
+        public void ParseCondition_WhenConditionContainsUnknownClause(
             [Values("isFoo()", " \nisInstance( ) && isBar\r\n")] string condition)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueIsNullOrEmpty_ThenParseRemotePortThrowsException(
+        public void ParseRemotePort_WhenValueIsNullOrEmpty(
             [Values(null, "", " \n")] string value)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
 
         [Test]
-        public void WhenValueIsMalformed_ThenParseRemotePortThrowsException(
+        public void ParseRemotePort_WhenValueIsMalformed(
             [Values("test", "-1", "100000")] string value)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenValueIsValid_ThenParseRemotePortReturnsPort()
+        public void ParseRemotePort_WhenValueIsValid()
         {
             var section = new AppProtocolConfigurationFile.MainSection()
             {
@@ -153,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenValueIsNullOrEmpty_ThenParseLocalEndpointReturnsNull(
+        public void ParseLocalEndpoint_WhenValueIsNullOrEmpty(
             [Values(null, "", " \n")] string value)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
@@ -165,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenValueIsMalformed_ThenParseLocalEndpointThrowsException(
+        public void ParseLocalEndpoint_WhenValueIsMalformed(
             [Values("::", "test:0", "127.0.0.1:test", ":")] string value)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
@@ -177,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenValueIsValid_ThenParseLocalEndpointReturnsEndpoint()
+        public void ParseLocalEndpoint_WhenValueIsValid()
         {
             Assert.AreEqual(
                 new IPEndPoint(IPAddress.Loopback, 80),
@@ -204,13 +204,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenClientIsNull_ThenParseClientSectionReturnsEmpty()
+        public void ParseClientSection_WhenClientIsNull()
         {
             Assert.IsNull(new AppProtocolConfigurationFile.MainSection().ParseClientSection());
         }
 
         [Test]
-        public void WhenClientExecutableIsNullOrEmpty_ThenParseClientSectionReturnsEmpty(
+        public void ParseClientSection_WhenClientExecutableIsNullOrEmpty(
             [Values(null, "", " \n")] string value)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
@@ -225,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenClientExecutableContainsVariables_ThenParseClientSectionExpandsVariables()
+        public void ParseClientSection_WhenClientExecutableContainsVariables()
         {
             var section = new AppProtocolConfigurationFile.MainSection()
             {
@@ -247,7 +247,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenClientExecutableContainsFilenameOfRegisteredApp_ThenParseClientSectionResolvesAppPath()
+        public void ParseClientSection_WhenClientExecutableContainsFilenameOfRegisteredApp()
         {
             var section = new AppProtocolConfigurationFile.MainSection()
             {
@@ -263,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenClientExecutableContainsFilename_ThenParseClientSectionReturnsFilename(
+        public void ParseClientSection_WhenClientExecutableContainsFilename(
             [Values("notaregisteredapp.exe", "notanapp.txt")] string fileName)
         {
             var section = new AppProtocolConfigurationFile.MainSection()

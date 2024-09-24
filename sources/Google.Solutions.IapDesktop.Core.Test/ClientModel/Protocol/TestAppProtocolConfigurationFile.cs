@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenJsonIsNullOrEmptyOrMalformed_ThenReadJsonThrowsException(
+        public void ReadJson_WhenNullOrEmptyOrMalformed(
             [Values(null, " ", "{,", "{}")] string json)
         {
             Assert.Throws<InvalidAppProtocolException>(
@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenJsonContainsNoVersion_ThenReadJsonThrowsException()
+        public void ReadJson_WhenJsonContainsNoVersion()
         {
             var json = @"
                 {
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenJsonContainsUnsupportedVersion_ThenReadJsonThrowsException()
+        public void ReadJson_WhenJsonContainsUnsupportedVersion()
         {
             var json = @"
                 {
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenJsonIsValid_ThenReadJsonReturnsProtocol()
+        public void ReadJson_WhenJsonIsValid()
         {
             var json = @"
                 {
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenStreamDataEmptyOrMalformed_ThenReadStreamThrowsException(
+        public void ReadStreamAsync_WhenStreamDataEmptyOrMalformed(
             [Values("", " ", "{,", "{}")] string json)
         {
             var filePath = Path.GetTempFileName();
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenFileNotFound_ThenReadFileThrowsException()
+        public void ReadStreamAsync_WhenFileNotFound()
         {
             ExceptionAssert.ThrowsAggregateException<FileNotFoundException>(
                 () => AppProtocolConfigurationFile.ReadFileAsync("doesnotexist.json").Wait());
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenFileEmptyOrMalformed_ThenReadFileThrowsException(
+        public void ReadStreamAsync_WhenFileEmptyOrMalformed(
             [Values("", " ", "{,", "{}")] string json)
         {
             var filePath = Path.GetTempFileName();

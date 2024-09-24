@@ -33,7 +33,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
+namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Nodes
 {
     [TestFixture]
     public class TestInstanceNode
@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNodeHasWindowsTraits_ThenOperatingSystemIsWindows()
+        public void OperatingSystem_WhenNodeHasWindowsTraits()
         {
             var node = new InstanceNode(
                 CreateWorkspace(),
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public void WhenNodeHasNoOsTraits_ThenOperatingSystemIsLinux()
+        public void OperatingSystem_WhenNodeHasNoOsTraits()
         {
             var node = new InstanceNode(
                 CreateWorkspace(),
@@ -98,11 +98,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         //---------------------------------------------------------------------
-        // IsRunning.
+        // Properties.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenRunning_ThenPropertiesAreSet()
+        public void CanXxx_WhenRunning()
         {
             var node = new InstanceNode(
                 CreateWorkspace(),
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public void WhenTerminated_ThenPropertiesAreSet()
+        public void CanXxx_WhenTerminated()
         {
             var node = new InstanceNode(
                 CreateWorkspace(),
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public void WhenSuspended_ThenPropertiesAreSet()
+        public void CanXxx_WhenSuspended()
         {
             var node = new InstanceNode(
                 CreateWorkspace(),
@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public void WhenRepariring_ThenPropertiesAreSet()
+        public void CanXxx()
         {
             var node = new InstanceNode(
                 CreateWorkspace(),
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenStartOrResumeSucceeds_ThenControlInstanceFiresEvent(
+        public async Task ControlInstance_WhenStartOrResumeSucceeds(
             [Values(
                 InstanceControlCommand.Reset,
                 InstanceControlCommand.Start,
@@ -211,13 +211,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     command,
                     CancellationToken.None),
                 Times.Once);
-            eventQueue.Verify(s => s.PublishAsync<InstanceStateChangedEvent>(
+            eventQueue.Verify(s => s.PublishAsync(
                 It.Is<InstanceStateChangedEvent>(e => e.Instance == SampleLocator && e.IsRunning)),
                 Times.Once);
         }
 
         [Test]
-        public async Task WhenStopOrSuspendSucceeds_ThenControlInstanceFiresEvent(
+        public async Task ControlInstance_WhenStopOrSuspendSucceeds(
             [Values(
                 InstanceControlCommand.Stop,
                 InstanceControlCommand.Suspend)]
@@ -249,13 +249,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     command,
                     CancellationToken.None),
                 Times.Once);
-            eventQueue.Verify(s => s.PublishAsync<InstanceStateChangedEvent>(
+            eventQueue.Verify(s => s.PublishAsync(
                 It.Is<InstanceStateChangedEvent>(e => e.Instance == SampleLocator && !e.IsRunning)),
                 Times.Once);
         }
 
         [Test]
-        public void WhenOperationFails_ThenControlInstanceFiresEvent()
+        public void ControlInstance_WhenOperationFails()
         {
             var computeAdapter = new Mock<IComputeEngineClient>();
             computeAdapter
@@ -290,7 +290,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     InstanceControlCommand.Start,
                     CancellationToken.None),
                 Times.Once);
-            eventQueue.Verify(s => s.PublishAsync<InstanceStateChangedEvent>(
+            eventQueue.Verify(s => s.PublishAsync(
                 It.IsAny<InstanceStateChangedEvent>()),
                 Times.Never);
         }

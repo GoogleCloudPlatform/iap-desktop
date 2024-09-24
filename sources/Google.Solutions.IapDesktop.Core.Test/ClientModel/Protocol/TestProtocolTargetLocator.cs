@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenOtherHasDifferentScheme_ThenEqualsReturnsFalse()
+        public void Equals_WhenOtherHasDifferentScheme()
         {
             var locator1 = new TargetLocator(
                 "one",
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenOtherHasDifferentProtocol_ThenEqualsReturnsFalse()
+        public void Equals_WhenOtherHasDifferentProtocol()
         {
             var locator1 = new TargetLocator(
                 "one",
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenOtherHasDifferentResource_ThenEqualsReturnsFalse()
+        public void Equals_WhenOtherHasDifferentResource()
         {
             var locator1 = new TargetLocator(
                 "one",
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
-        public void WhenOtherHasDifferentParameters_ThenEqualsReturnsFalse()
+        public void Equals_WhenOtherHasDifferentParameters()
         {
             var locator1 = new TargetLocator(
                 "one",
