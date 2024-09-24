@@ -1,6 +1,7 @@
 ﻿using Google.Solutions.Apis.Locator;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +32,13 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         /// Get the active/selected item
         /// </summary>
         Task<ILocator> GetActiveItemAsync();
+
+        /// <summary>
+        /// Check if this item might have child items.
+        /// </summary>
+        bool CanHaveChildItems(ILocator locator); // -> check if any provider offers to list
+
+        bool CanGetItemInfo(ILocator locator); // -> check if any provider offers 
 
         void Register<TLocator>(IResourceItemProvider provider) where TLocator : ILocator;
     }

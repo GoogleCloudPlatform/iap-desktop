@@ -30,15 +30,20 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         bool CanHaveChildItems(ILocator locator);
     }
 
-    public interface IResourceItemDetailsProvider
+
+    // InstanceState, InstanceDetails, ConnectionSettings
+    // ConectionState (observable)
+    public interface IResourceItemInfoProvider
     {
+        public ICollection<Type> SupportedInfoTypes { get; }
+
         /// <summary>
         /// Lookup the full details for a resource item.
         /// </summary>
         /// <returns>List of items. Items might not all be of the same type.</returns>
         Task<IResourceItemDetails> GetItemDetailsAsync(
             ILocator locator,
-            Type type,
+            Type infoType,
             CancellationToken cancellationToken);
     }
 
@@ -51,8 +56,6 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
 
     public interface ICachingResourceProvider : IResourceItemProvider
     {
-        event EventHandler ItemInvalidated;
-
         /// <summary>
         /// Remove item from cache (if present) and cause it to
         /// be reloaded the next time it's accessed.
