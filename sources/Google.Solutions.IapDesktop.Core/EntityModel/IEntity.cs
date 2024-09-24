@@ -7,10 +7,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.ResourceModel
 {
-    /// <summary>
-    /// Summary information about a resource.
-    /// </summary>
-    public interface IResourceItem
+    public interface IEntity
     {
         /// <summary>
         /// Display name, might differ from the name
@@ -25,9 +22,10 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     }
 
     /// <summary>
-    /// Detailed information about a resource.
+    /// Summary information about a resource.
     /// </summary>
-    public interface IResourceItemDetails : IResourceItem
+    public interface IEntity<TLocator> : IEntity where TLocator : ILocator
     {
+        new TLocator Locator { get; }
     }
 }
