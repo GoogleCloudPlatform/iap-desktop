@@ -32,6 +32,6 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         /// </summary>
         Task<ILocator> GetActiveItemAsync();
 
-        void Mount(ILocator locator, IResourceProvider provider);
+        void Register<TLocator>(IResourceProvider provider) where TLocator : ILocator;
     }
 }

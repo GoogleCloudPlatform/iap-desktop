@@ -11,6 +11,12 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     public interface IResourceProvider
     {
         /// <summary>
+        /// Types of locators that this provider supports.
+        /// Types must be derived from ILocator.
+        /// </summary>
+        public ICollection<Type> SupportedLocatorTypes { get; }
+
+        /// <summary>
         /// List child items and return basic information about
         /// each item.
         /// </summary>
