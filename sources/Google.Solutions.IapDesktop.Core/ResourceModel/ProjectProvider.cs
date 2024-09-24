@@ -17,12 +17,21 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     /// - Projects
     /// </summary>
     [ServiceCategory(typeof(IResourceItemProvider))]
-    internal class ProjectProvider : IResourceItemProvider
+    internal class ProjectProvider : IResourceItemProvider, IResourceItemDetailsProvider
     {
-
         private static bool IsSupportedLocator(ILocator locator)
         {
-            return locator is OrganizationLocator
+            return locator is UniverseLocator || locator is OrganizationLocator ;
+        }
+
+        public void AddProject(ProjectLocator project)
+        {
+
+        }
+
+        public void RemoveProject(ProjectLocator project)
+        {
+
         }
 
         //----------------------------------------------------------------------
@@ -33,36 +42,45 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         {
             get => new[] 
             { 
-                //typeof(UniverseLocator) 
+                typeof(UniverseLocator),
                 typeof(OrganizationLocator) 
             };
         }
 
-        public Task<IResourceItemDetails> GetItemDetailsAsync(ILocator locator, CancellationToken cancellationToken)
+        public Task<ICollection<IResourceItem>> ListItemsAsync(
+            ILocator locator, 
+            CancellationToken cancellationToken)
         {
-            //
-            // For universes and organizations, there are no additional details to be
-            // looked up.
-            //
-            if (locator is OrganizationLocator)
+            if (locator is UniverseLocator universeLocator)
             {
+                // List organizations.
             }
-            
-
-            Precondition.Expect(IsSupportedLocator(locator), "Valid locator");
-            throw new NotImplementedException();
-        }
-
-        public Task<ICollection<IResourceItem>> ListItemsAsync(ILocator locator, CancellationToken cancellationToken)
-        {
-            Precondition.Expect(IsSupportedLocator(locator), "Valid locator");
-            throw new NotImplementedException();
+            else if (locator is OrganizationLocator organizationLocator)
+            {
+                // List projects.
+            }
+            else
+            {
+                throw new ArgumentException("The locator type is not supported");
+            }
         }
 
         public bool CanHaveChildItems(ILocator locator)
         {
             Precondition.Expect(IsSupportedLocator(locator), "Valid locator");
             return true;
+        }
+
+        //----------------------------------------------------------------------
+        // IResourceItemDetailsProvider.
+        //----------------------------------------------------------------------
+
+        public Task<IResourceItemDetails> GetItemDetailsAsync(
+            ILocator locator, 
+            Type type,
+            CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -51,10 +51,12 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
 
     public interface ICachingResourceProvider : IResourceItemProvider
     {
+        event EventHandler ItemInvalidated;
+
         /// <summary>
         /// Remove item from cache (if present) and cause it to
         /// be reloaded the next time it's accessed.
         /// </summary>
-        void Invalidate(ILocator locator);
+        void InvalidateItem(ILocator locator);
     }
 }
