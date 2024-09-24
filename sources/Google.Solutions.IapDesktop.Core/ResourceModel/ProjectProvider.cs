@@ -16,8 +16,8 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     /// - Organizations
     /// - Projects
     /// </summary>
-    [ServiceCategory(typeof(IResourceProvider))]
-    internal class ProjectProvider : IResourceProvider
+    [ServiceCategory(typeof(IResourceItemProvider))]
+    internal class ProjectProvider : IResourceItemProvider
     {
 
         private static bool IsSupportedLocator(ILocator locator)

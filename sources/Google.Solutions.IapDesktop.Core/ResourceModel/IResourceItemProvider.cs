@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.ResourceModel
 {
-    public interface IResourceProvider
+    public interface IResourceItemProvider
     {
         /// <summary>
         /// Types of locators that this provider supports.
@@ -25,27 +25,31 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
             CancellationToken cancellationToken);
 
         /// <summary>
-        /// Lookup the full details for a resource item.
-        /// </summary>
-        /// <returns>List of items. Items might not all be of the same type.</returns>
-        Task<IResourceItemDetails> GetItemDetailsAsync(
-            ILocator locator,
-            CancellationToken cancellationToken);
-
-        /// <summary>
         /// Check if this item might have child items.
         /// </summary>
         bool CanHaveChildItems(ILocator locator);
     }
 
-    public interface ISearchableResourceProvider : IResourceProvider
+    public interface IResourceItemDetailsProvider
+    {
+        /// <summary>
+        /// Lookup the full details for a resource item.
+        /// </summary>
+        /// <returns>List of items. Items might not all be of the same type.</returns>
+        Task<IResourceItemDetails> GetItemDetailsAsync(
+            ILocator locator,
+            Type type,
+            CancellationToken cancellationToken);
+    }
+
+    public interface ISearchableResourceProvider : IResourceItemProvider
     {
         Task<ICollection<IResourceItem>> SearchItemsAsync(
             string query,
             CancellationToken cancellationToken);
     }
 
-    public interface ICachingResourceProvider : IResourceProvider
+    public interface ICachingResourceProvider : IResourceItemProvider
     {
         /// <summary>
         /// Remove item from cache (if present) and cause it to
