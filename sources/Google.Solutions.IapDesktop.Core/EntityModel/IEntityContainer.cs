@@ -21,10 +21,6 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         where TLocator : ILocator
         where TEntity : IEntity
     {
-        /// <summary>
-        /// List entities that are direct descendents of the entity 
-        /// identified by the locator.
-        /// </summary>
         Task<ICollection<TEntity>> ListAsync(
             TLocator locator,
             CancellationToken cancellationToken);

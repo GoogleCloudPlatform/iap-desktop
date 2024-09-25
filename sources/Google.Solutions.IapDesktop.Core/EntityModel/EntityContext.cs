@@ -18,7 +18,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     /// Provides a unified view over data exposed by multiple
     /// entity containers and aspect providers.
     /// </summary>
-    public class EntityContext : ISearchableEntityContainer<ILocator, IEntity>
+    public class EntityContext //: ISearchableEntityContainer<ILocator, IEntity>
     {
         public delegate Task<ICollection<IEntity>> ListDelegate(
             ILocator locator,
@@ -58,32 +58,22 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             return this.getAspectDelegates.ContainsKey(Tuple.Create(locator.GetType(), typeof(TAspect)));
         }
 
-        public Task<ICollection<IEntity>> ListAsync(
+        public Task<ICollection<TEntity>> ListAsync<TEntity>(
             ILocator locator,
             CancellationToken cancellationToken)
+            where TEntity : IEntity
         {
             //
-            // Lookup the container that's responsible for this type of locator,
-            // and use it to list descendents.
+            // Query all containers that support the kind of locator and
+            // requested entity.
             //
-            if (this.listDelegates.TryGetValue(
-                locator.GetType(), 
-                out var listFunc))
-            {
-                return listFunc(locator, cancellationToken);
-            }
-            else
-            {
-                return Task.FromResult<ICollection<IEntity>>(Array.Empty<IEntity>());
-            }
-        }
-
-        public Task<ICollection<IEntity>> SearchAsync(string query, CancellationToken cancellationToken)
-        {
             throw new NotImplementedException();
         }
 
-        public Task<IEntity> GetAsync(ILocator locator, CancellationToken cancellationToken)
+        public Task<ICollection<TEntity>> SearchAsync<TEntity>(
+            string query, 
+            CancellationToken cancellationToken)
+            where TEntity : IEntity
         {
             throw new NotImplementedException();
         }
@@ -109,6 +99,16 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             }
         }
 
+        /// <summary>
+        /// Get the default aspect of an enitity.
+        /// </summary>
+        public async Task<IEntity> GetAsync(
+            ILocator locator,
+            CancellationToken cancellationToken)
+        { 
+            return await GetAsync<IEntity>(locator, cancellationToken)
+                .ConfigureAwait(false);
+        }
 
         //--------------------------------------------------------------------
         // Builder.
@@ -200,16 +200,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                     typeof(IEntityContainer<,>)))
                 {
                     this.registerEntityContainerMethod
-                        .MakeGenericMethod(genericInterface.GenericTypeArguments)
-                        .Invoke(this, new object[] { container });
-                }
-
-
-                foreach (var genericInterface in GetGenericInterfaces(
-                    container.GetType(),
-                    typeof(IEntityAspectProvider<,>)))
-                {
-                    this.registerEntityAspectProviderMethod
                         .MakeGenericMethod(genericInterface.GenericTypeArguments)
                         .Invoke(this, new object[] { container });
                 }

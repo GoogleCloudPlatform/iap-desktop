@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
 {
     [TestFixture]
-    public class TestWorkspace
+    public class TestEntityContext
     {
         public class SampleLocator : ILocator
         {
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         {
             var context = new EntityContext.Builder().Build();
             var entities = await context
-                .ListAsync(new SampleLocator(), CancellationToken.None)
+                .ListAsync<IEntity>(new SampleLocator(), CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsEmpty(entities);
         }
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 .Build();
 
             var entities = await workspace
-                .ListAsync(locator, CancellationToken.None)
+                .ListAsync<IEntity>(locator, CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsNotEmpty(entities);
         }

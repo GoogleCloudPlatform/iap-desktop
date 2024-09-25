@@ -24,11 +24,10 @@ using Google.Solutions.Apis.Locator;
 namespace Google.Solutions.IapDesktop.Core.ResourceModel
 {
     /// <summary>
-    /// Base interface for entity objects.
+    /// Default aspect of an entity. Implementations typically 
+    /// provide basic information about the entity,
+    /// but might not provide full details.
     /// </summary>
-    /// <remarks>
-    /// Implement IEntity<T> instead of this interface.,
-    /// </remarks>
     public interface IEntity
     {
         /// <summary>
@@ -42,11 +41,4 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         /// </summary>
         ILocator Locator { get; }
     }
-
-    /// <summary>
-    /// Represents an entity.
-    /// </summary>
-    //public interface IEntity<TLocator> : IEntity where TLocator : ILocator
-    //{
-    //}
 }
