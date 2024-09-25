@@ -45,10 +45,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public async Task List_WhenLocatorNotRegistered()
         {
-            var workspace = new Workspace(
-                Array.Empty<IEntityContainer>(),
-                Array.Empty<IEntityAspectProvider>());
-            var entities = await workspace
+            var context = new EntityContext.Builder().Build();
+            var entities = await context
                 .ListAsync(new SampleLocator(), CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsEmpty(entities);
@@ -63,9 +61,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 .Setup(c => c.ListAsync(It.IsIn(locator), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { new SampleEntity("Sample", locator) });
 
-            var workspace = new Workspace(
-                new[] {container.Object },
-                Array.Empty<IEntityAspectProvider>());
+            var workspace = new EntityContext.Builder()
+                .AddContainer(container.Object)
+                .Build();
 
             var entities = await workspace
                 .ListAsync(locator, CancellationToken.None)
