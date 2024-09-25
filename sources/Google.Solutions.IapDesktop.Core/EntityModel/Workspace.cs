@@ -88,12 +88,12 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         // IWorkspace.
         //--------------------------------------------------------------------
 
-        public bool CanList(ILocator locator)
+        public bool IsContainer(ILocator locator)
         {
             return this.listDelegates.ContainsKey(locator.GetType());
         }
 
-        public bool CanGetAspect<TAspect>(ILocator locator)
+        public bool HasAspect<TAspect>(ILocator locator)
         {
             return this.getAspectDelegates.ContainsKey(Tuple.Create(locator.GetType(), typeof(TAspect)));
         }
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             throw new NotImplementedException();
         }
 
-        public async Task<TAspect> GetAspectAsync<TAspect>(
+        public async Task<TAspect> GetAsync<TAspect>(
             ILocator locator,
             CancellationToken cancellationToken)
         {

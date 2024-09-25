@@ -29,9 +29,9 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         /// <summary>
         /// Check if this item might have child items.
         /// </summary>
-        bool CanList(ILocator locator); // -> check if any provider offers to list
+        bool IsContainer(ILocator locator); // -> check if any provider offers to list
 
-        bool CanGetAspect<TAspect>(ILocator locator);
+        bool HasAspect<TAspect>(ILocator locator);
 
 
 
@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         //    ILocator locator,
         //    CancellationToken cancellationToken);
 
-        Task<TAspect> GetAspectAsync<TAspect>(
+        Task<TAspect> GetAsync<TAspect>(
             ILocator locator,
             CancellationToken cancellationToken);
 
