@@ -16,8 +16,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     {
     }
 
-    public interface IEntityContainer<TLocator, TEntity> :
-        IEntityContainer, IEntityAspectProvider<TLocator, TEntity>
+    public interface IEntityContainer<TLocator, TEntity> : IEntityContainer
         where TLocator : ILocator
         where TEntity : IEntity
     {
@@ -26,7 +25,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
             CancellationToken cancellationToken);
     }
 
-    public interface ISearchableEntityContainer<TLocator, TEntity> 
+    public interface IEntitySearcher<TLocator, TEntity> 
         : IEntityContainer<TLocator, TEntity>
         where TLocator : ILocator
         where TEntity : IEntity
@@ -47,15 +46,24 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     {
     }
 
-    public interface IEntityAspectProvider<TLocator, TAspect> : IEntityAspectProvider
+    public interface IAsyncEntityAspectProvider<TLocator, TAspect> : IEntityAspectProvider
         where TLocator : ILocator
+        where TAspect : class
     {
-        Task<TAspect> GetAsync(
+        Task<TAspect?> QueryAspectAsync(
             TLocator locator,
             CancellationToken cancellationToken);
     }
 
 
+    public interface IEntityAspectProvider<TLocator, TAspect> : IEntityAspectProvider
+        where TLocator : ILocator
+        where TAspect : class
+    {
+        TAspect? QueryAspect(
+            TLocator locator,
+            CancellationToken cancellationToken);
+    }
 
 
     public interface ICachingEntityProvider : IEntityContainer

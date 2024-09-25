@@ -5,9 +5,11 @@ using Google.Solutions.IapDesktop.Core.ResourceModel;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,16 +22,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     /// </summary>
     public class EntityContext //: ISearchableEntityContainer<ILocator, IEntity>
     {
-        public delegate Task<ICollection<IEntity>> ListDelegate(
-            ILocator locator,
-            CancellationToken cancellationToken);
-
-        public delegate Task<object> GetAspectDelegate(
-            ILocator locator,
-            CancellationToken cancellationToken);
-
-        private readonly IDictionary<Type, ListDelegate> listDelegates;
-        private readonly IDictionary<Tuple<Type, Type>, GetAspectDelegate> getAspectDelegates;
+        private readonly List<Registration> registrations;
 
         public EntityContext(IServiceCategoryProvider serviceProvider)
             : this(new Builder()
@@ -40,34 +33,78 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
 
         private EntityContext(Builder builder)
         {
-            this.listDelegates = builder.ListDelegates;
-            this.getAspectDelegates = builder.GetAspectDelegates;
+            throw new NotImplementedException();
         }
 
         //--------------------------------------------------------------------
         // Publics.
         //--------------------------------------------------------------------
 
+        /// <summary>
+        /// Check of there is any entity container for this type of locator.
+        /// </summary>
         public bool IsContainer(ILocator locator)
         {
-            return this.listDelegates.ContainsKey(locator.GetType());
+            return this.registrations
+                .Where(r => r.LocatorType == locator.GetType())
+                .SelectMany(r => r.EntityContainers)
+                .Any();
         }
 
-        public bool HasAspect<TAspect>(ILocator locator)
+        public bool SupportsAspect<TAspect>(ILocator locator)
         {
-            return this.getAspectDelegates.ContainsKey(Tuple.Create(locator.GetType(), typeof(TAspect)));
+            //
+            // Check synchronous providers.
+            //
+            if (this.registrations
+                .Where(r => r.LocatorType == locator.GetType())
+                .SelectMany(r => r.AspectProviders)
+                .Any(p => typeof(TAspect).IsAssignableFrom(p.AspectType)))
+            {
+                return true; 
+            }
+
+            //
+            // Check asynchronous providers.
+            //
+            if (this.registrations
+                .Where(r => r.LocatorType == locator.GetType())
+                .SelectMany(r => r.AsyncAspectProviders)
+                .Any(p => typeof(TAspect).IsAssignableFrom(p.AspectType)))
+            {
+                return true;
+            }
+
+            return false;
         }
 
-        public Task<ICollection<TEntity>> ListAsync<TEntity>(
+        /// <summary>
+        /// Query all containers that support the kind of locator and
+        /// requested entity type, or a subtype thereof.
+        /// </summary>
+        public async Task<ICollection<TEntity>> ListAsync<TEntity>(
             ILocator locator,
             CancellationToken cancellationToken)
             where TEntity : IEntity
         {
+            var listTasks = this.registrations
+                .Where(r => r.LocatorType == locator.GetType())
+                .SelectMany(r => r.EntityContainers)
+                .Where(c => typeof(TEntity).IsAssignableFrom(c.EntityType))
+                .Select(c => c.ListAsync(locator, cancellationToken))
+                .ToList();
+
+            var listResults = await Task
+                .WhenAll(listTasks)
+                .ConfigureAwait(false);
+
             //
-            // Query all containers that support the kind of locator and
-            // requested entity.
+            // Flatten result and cast to requested type.
             //
-            throw new NotImplementedException();
+            return listResults
+                .SelectMany(r => r)
+                .Cast<TEntity>()
+                .ToList();
         }
 
         public Task<ICollection<TEntity>> SearchAsync<TEntity>(
@@ -78,36 +115,105 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             throw new NotImplementedException();
         }
 
-        public async Task<TAspect> GetAsync<TAspect>(
+        /// <summary>
+        /// Query an aspect from synchronous and asynchronous providers.
+        /// </summary>
+        public Task<TAspect?> QueryAspectAsync<TAspect>(
             ILocator locator,
             CancellationToken cancellationToken)
+            where TAspect : class
         {
-            //
-            // Lookup the provider that's responsible for this type of locator
-            // and aspect type, and use it to get the requested data.
-            //
-            if (this.getAspectDelegates.TryGetValue(
-                Tuple.Create(locator.GetType(), typeof(TAspect)), 
-                out var getFunc))
-            {
-                var result = await getFunc(locator, cancellationToken).ConfigureAwait(false);
-                return (TAspect)result;
-            }
-            else
-            {
-                throw new EntityAspectNotFoundException(locator, typeof(TAspect));
-            }
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Query an aspect from synchronous providers, ignoring 
+        /// asynchronous providers.
+        /// </summary>
+        public TAspect? QueryAspect<TAspect>(
+            ILocator locator,
+            CancellationToken cancellationToken)
+            where TAspect : class
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
         /// Get the default aspect of an enitity.
         /// </summary>
-        public async Task<IEntity> GetAsync(
+        public async Task<IEntity?> QueryAspectAsync(
             ILocator locator,
             CancellationToken cancellationToken)
         { 
-            return await GetAsync<IEntity>(locator, cancellationToken)
+            return await QueryAspectAsync<IEntity>(locator, cancellationToken)
                 .ConfigureAwait(false);
+        }
+
+        //--------------------------------------------------------------------
+        // Registration data structures.
+        //--------------------------------------------------------------------
+
+        private struct Registration
+        {
+            public Type LocatorType { get; }
+            public Collection<RegisteredEntityContainer> EntityContainers { get; }
+            public Collection<RegisteredEntitySearcher> EntitySearchers { get; }
+            public Collection<RegisteredAspectProvider> AspectProviders { get; }
+            public Collection<RegisteredAsyncAspectProvider> AsyncAspectProviders { get; }
+
+            public Registration(
+                Type locatorType,
+                Collection<RegisteredEntityContainer> entityContainers,
+                Collection<RegisteredEntitySearcher> entitySearchers,
+                Collection<RegisteredAspectProvider> aspectProviders,
+                Collection<RegisteredAsyncAspectProvider> asyncAspectProviders)
+            {
+                this.LocatorType = locatorType;
+                this.EntityContainers = entityContainers;
+                this.EntitySearchers = entitySearchers;
+                this.AspectProviders = aspectProviders;
+                this.AsyncAspectProviders = asyncAspectProviders;
+            }
+        }
+
+        private struct RegisteredEntityContainer
+        {
+            public delegate Task<ICollection<IEntity>> ListAsyncDelegate(
+                ILocator locator,
+                CancellationToken cancellationToken);
+
+            public Type EntityType { get; }
+            public ListAsyncDelegate ListAsync { get; }
+        }
+
+        private struct RegisteredEntitySearcher
+        {
+            public delegate Task<ICollection<IEntity>> SearchAsyncDelegate(
+                string query,
+                CancellationToken cancellationToken);
+
+            public Type EntityType { get; }
+            public SearchAsyncDelegate SearchAsync { get; }
+        }
+
+        private struct RegisteredAspectProvider
+        {
+            public delegate object? QueryAspectDelegate(
+                ILocator locator,
+                CancellationToken cancellationToken);
+
+            public Type AspectType { get; }
+            public QueryAspectDelegate QueryAspect { get; }
+        }
+
+        private struct RegisteredAsyncAspectProvider
+        {
+            public delegate Task<object?> QueryAspectAsyncDelegate(
+                ILocator locator,
+                CancellationToken cancellationToken);
+
+            public Type AspectType { get; }
+            public QueryAspectAsyncDelegate QueryAspectAsync { get; }
         }
 
         //--------------------------------------------------------------------
@@ -158,8 +264,9 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             }
 
             private void AddTypedEntityAspectProvider<TLocator, TAspect>(
-                IEntityAspectProvider<TLocator, TAspect> provider)
+                IAsyncEntityAspectProvider<TLocator, TAspect> provider)
                 where TLocator : ILocator
+                where TAspect : class
             {
                 var key = Tuple.Create(typeof(TLocator), typeof(TAspect));
 
@@ -171,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 {
                     Debug.Assert(locator is TLocator);
                     var result = await provider
-                        .GetAsync((TLocator)locator, cancellationToken)
+                        .QueryAspectAsync((TLocator)locator, cancellationToken)
                         .ConfigureAwait(false);
 
                     Debug.Assert(result != null);
@@ -212,7 +319,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             {
                 foreach (var genericInterface in GetGenericInterfaces(
                     provider.GetType(),
-                    typeof(IEntityAspectProvider<,>)))
+                    typeof(IAsyncEntityAspectProvider<,>)))
                 {
                     this.registerEntityAspectProviderMethod
                         .MakeGenericMethod(genericInterface.GenericTypeArguments)
