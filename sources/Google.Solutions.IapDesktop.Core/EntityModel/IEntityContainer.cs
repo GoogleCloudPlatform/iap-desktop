@@ -1,17 +1,19 @@
 ﻿using Google.Solutions.Apis.Locator;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.ResourceModel
 {
+    /// <summary>
+    /// Base interface for containers.
+    /// </summary>
+    /// <remarks>
+    /// Implementing types must also implement
+    /// the generic version of this interface.
+    /// </remarks>
     public interface IEntityContainer
     {
-        //Type LocatorType { get; }
-        //IEntityContainer<ILocator, IEntity> Cast();
     }
 
     public interface IEntityContainer<TLocator, TEntity> :
@@ -19,6 +21,10 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         where TLocator : ILocator
         where TEntity : IEntity<TLocator>
     {
+        /// <summary>
+        /// List entities that are direct descendents of the entity 
+        /// identified by the locator.
+        /// </summary>
         Task<ICollection<TEntity>> ListAsync(
             TLocator locator,
             CancellationToken cancellationToken);
@@ -34,10 +40,15 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
             CancellationToken cancellationToken);
     }
 
+    /// <summary>
+    /// Base interface for aspect providers.
+    /// </summary>
+    /// <remarks>
+    /// Implementing types must also implement
+    /// the generic version of this interface.
+    /// </remarks>
     public interface IEntityAspectProvider
     {
-        //Type LocatorType { get; }
-        //Type AspectType { get; }
     }
 
     public interface IEntityAspectProvider<TLocator, TAspect> : IEntityAspectProvider
@@ -50,37 +61,6 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
 
 
 
-
-
-    //public interface IEntityContainer
-    //{
-    //    /// <summary>
-    //    /// Types of locators that this provider supports.
-    //    /// Types must be derived from ILocator.
-    //    /// </summary>
-    //    public ICollection<Type> SupportedLocatorTypes { get; }
-
-    //    Task<ICollection<IEntity>> ListChildEntitiesAsync(
-    //        ILocator locator,
-    //        CancellationToken cancellationToken);
-    //}
-
-    ////TODO: Strongly type. Return nullable?
-
-    //// InstanceState, Icon, InstanceDetails, ConnectionSettings
-    //// ConectionState (observable)
-    //public interface IEntityAspectProvider
-    //{
-    //    public ICollection<Type> SupportedLocatorTypes { get; }
-    //    public ICollection<Type> SupportedAspects { get; }
-    //}
-
-    //public interface IEntityAspectProvider<TAspect> : IEntityAspectProvider
-    //{
-    //    Task<TAspect> GetAspectAsync(
-    //        ILocator locator,
-    //        CancellationToken cancellationToken);
-    //}
 
     public interface ICachingEntityProvider : IEntityContainer
     {

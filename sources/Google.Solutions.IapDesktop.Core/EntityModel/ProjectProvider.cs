@@ -20,11 +20,30 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     internal class ProjectProvider : IEntityContainer<ProjectLocator, ProjectEntity>, ICachingEntityProvider
     {
         private readonly IProjectProviderContext context;
+
+        public Task<ProjectEntity> GetAsync(ProjectLocator locator, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void InvalidateItem(ILocator locator)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ICollection<ProjectEntity>> ListAsync(ProjectLocator locator, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     internal class ProjectEntity : IEntity<ProjectLocator>
     {
+        public string DisplayName => throw new NotImplementedException();
 
+        public ProjectLocator Locator => throw new NotImplementedException();
+
+        ILocator IEntity.Locator => throw new NotImplementedException();
     }
 
     interface IProjectProviderContext

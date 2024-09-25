@@ -11,7 +11,9 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.ResourceModel
 {
-
+    /// <summary>
+    /// Provides access to entities and their descendents.
+    /// </summary>
     public interface IWorkspace 
     {
         /// <summary>
@@ -33,8 +35,15 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
 
 
 
-
+        /// <summary>
+        /// List entities that are direct descendents of the entity 
+        /// identified by the locator.
+        /// </summary>
         Task<ICollection<IEntity>> ListAsync(
+            ILocator locator,
+            CancellationToken cancellationToken);
+
+        Task<TAspect> GetAspectAsync<TAspect>(
             ILocator locator,
             CancellationToken cancellationToken);
 
@@ -42,32 +51,5 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         Task<ICollection<IEntity>> SearchAsync(
             string query,
             CancellationToken cancellationToken);
-
-        Task<TAspect> GetAspectAsync<TAspect>(
-            ILocator locator,
-            CancellationToken cancellationToken);
-    }
-
-    class Workspace // : IWorkspace
-    {
-        public Workspace(IServiceCategoryProvider provider) 
-        { }
-
-        public Workspace(
-            ICollection<IEntityContainer> entityProviders,
-            ICollection<IEntityAspectProvider> aspectProviders) 
-        { }
-
-
-        void Register<TLocator, TEntity>(IEntityContainer<TLocator, TEntity> entityContainer)
-            where TLocator : ILocator
-            where TEntity : IEntity<TLocator>
-        { }
-
-
-        void Register(IEntityContainer entityContainer)
-        { 
-            // Make generic method, cann Register<>
-        }
     }
 }
