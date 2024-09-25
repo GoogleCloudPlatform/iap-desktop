@@ -1,7 +1,7 @@
 ﻿using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.IapDesktop.Core.ResourceModel;
+using Google.Solutions.IapDesktop.Core.EntityModel;
 using System;
 using System.Collections;
 using System.Collections.Generic;

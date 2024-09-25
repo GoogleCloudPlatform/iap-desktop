@@ -1,6 +1,6 @@
 ﻿using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.EntityModel;
-using Google.Solutions.IapDesktop.Core.ResourceModel;
+using Google.Solutions.IapDesktop.Core.EntityModel;
 using Moq;
 using NUnit.Framework;
 using System;

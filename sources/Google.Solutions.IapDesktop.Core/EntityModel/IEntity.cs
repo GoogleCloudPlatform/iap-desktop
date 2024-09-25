@@ -21,7 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 
-namespace Google.Solutions.IapDesktop.Core.ResourceModel
+namespace Google.Solutions.IapDesktop.Core.EntityModel
 {
     /// <summary>
     /// Default aspect of an entity. Implementations typically 

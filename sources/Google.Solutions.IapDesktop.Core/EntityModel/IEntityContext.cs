@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Core.ResourceModel
+namespace Google.Solutions.IapDesktop.Core.EntityModel
 {
     /// <summary>
     /// Provides access to entities and their descendents.
