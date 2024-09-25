@@ -20,7 +20,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
             public string ResourceType => "sample";
         }
 
-        public class SampleEntity : IEntity<SampleLocator>
+        public class SampleEntity : IEntity
         {
             public string DisplayName { get; }
 

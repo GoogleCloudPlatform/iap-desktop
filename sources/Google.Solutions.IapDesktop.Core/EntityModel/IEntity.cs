@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     /// <summary>
     /// Represents an entity.
     /// </summary>
-    public interface IEntity<TLocator> : IEntity where TLocator : ILocator
-    {
-    }
+    //public interface IEntity<TLocator> : IEntity where TLocator : ILocator
+    //{
+    //}
 }

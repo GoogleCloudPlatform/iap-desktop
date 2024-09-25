@@ -19,7 +19,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     public interface IEntityContainer<TLocator, TEntity> :
         IEntityContainer, IEntityAspectProvider<TLocator, TEntity>
         where TLocator : ILocator
-        where TEntity : IEntity<TLocator>
+        where TEntity : IEntity
     {
         /// <summary>
         /// List entities that are direct descendents of the entity 
@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     public interface ISearchableEntityContainer<TLocator, TEntity> 
         : IEntityContainer<TLocator, TEntity>
         where TLocator : ILocator
-        where TEntity : IEntity<TLocator>
+        where TEntity : IEntity
     {
         Task<ICollection<TEntity>> SearchAsync(
             string query,

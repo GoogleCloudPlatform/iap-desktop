@@ -14,17 +14,17 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     /// <summary>
     /// Provides access to entities and their descendents.
     /// </summary>
-    public interface IWorkspace 
+    public interface IWorkspace : ISearchableEntityContainer<ILocator, IEntity>
     {
         /// <summary>
         /// Set the active/selected item.
         /// </summary>
-        Task SetActiveItemAsync(ILocator locator);
+        // Task SetActiveItemAsync(ILocator locator);
 
         /// <summary>
         /// Get the active/selected item
         /// </summary>
-        Task<ILocator> GetActiveItemAsync();
+        // Task<ILocator> GetActiveItemAsync();
 
         /// <summary>
         /// Check if this item might have child items.
@@ -39,17 +39,17 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         /// List entities that are direct descendents of the entity 
         /// identified by the locator.
         /// </summary>
-        Task<ICollection<IEntity>> ListAsync(
-            ILocator locator,
-            CancellationToken cancellationToken);
+        //Task<ICollection<IEntity>> ListAsync(
+        //    ILocator locator,
+        //    CancellationToken cancellationToken);
 
         Task<TAspect> GetAspectAsync<TAspect>(
             ILocator locator,
             CancellationToken cancellationToken);
 
 
-        Task<ICollection<IEntity>> SearchAsync(
-            string query,
-            CancellationToken cancellationToken);
+        //Task<ICollection<IEntity>> SearchAsync(
+        //    string query,
+        //    CancellationToken cancellationToken);
     }
 }

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.EntityModel
 {
-    public class Workspace
+    public class Workspace : IWorkspace
     {
         public delegate Task<ICollection<IEntity>> ListDelegate(
             ILocator locator,
@@ -88,6 +88,16 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         // IWorkspace.
         //--------------------------------------------------------------------
 
+        public bool CanList(ILocator locator)
+        {
+            return this.listDelegates.ContainsKey(locator.GetType());
+        }
+
+        public bool CanGetAspect<TAspect>(ILocator locator)
+        {
+            return this.getAspectDelegates.ContainsKey(Tuple.Create(locator.GetType(), typeof(TAspect)));
+        }
+
         public Task<ICollection<IEntity>> ListAsync(
             ILocator locator,
             CancellationToken cancellationToken)
@@ -106,6 +116,16 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             {
                 return Task.FromResult<ICollection<IEntity>>(Array.Empty<IEntity>());
             }
+        }
+
+        public Task<ICollection<IEntity>> SearchAsync(string query, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEntity> GetAsync(ILocator locator, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<TAspect> GetAspectAsync<TAspect>(
@@ -136,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         private void RegisterEntityContainer<TLocator, TEntity>(
             IEntityContainer<TLocator, TEntity> container)
             where TLocator : ILocator
-            where TEntity : IEntity<TLocator>
+            where TEntity : IEntity
         {
             Precondition.Expect(
                 !this.listDelegates.ContainsKey(typeof(TLocator)),
