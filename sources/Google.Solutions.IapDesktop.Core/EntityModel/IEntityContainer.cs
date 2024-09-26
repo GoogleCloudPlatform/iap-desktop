@@ -27,6 +27,12 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         Task DeleteAsync(
             TLocator locator,
             CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Remove item from cache (if present) and cause it to
+        /// be reloaded the next time it's accessed.
+        /// </summary>
+        void Invalidate(TLocator locator);
     }
 
     public interface IEntitySearcher
@@ -69,15 +75,5 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         where TAspect : class
     {
         TAspect? QueryAspect(TLocator locator);
-    }
-
-
-    public interface ICachingEntityProvider : IEntityContainer
-    {
-        /// <summary>
-        /// Remove item from cache (if present) and cause it to
-        /// be reloaded the next time it's accessed.
-        /// </summary>
-        void InvalidateItem(ILocator locator);
     }
 }

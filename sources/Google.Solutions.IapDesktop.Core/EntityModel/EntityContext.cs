@@ -1,4 +1,25 @@
-﻿using Google.Solutions.Apis.Locator;
+﻿//
+// Copyright 2024 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Collections.Generic;
@@ -8,8 +29,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.Common.Linq;
-using Google.Apis.Logging.v2.Data;
-using System.Collections;
 
 namespace Google.Solutions.IapDesktop.Core.EntityModel
 {
@@ -36,6 +55,15 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         //--------------------------------------------------------------------
         // Publics.
         //--------------------------------------------------------------------
+
+        public void InvalidateItem(ILocator locator)
+        {
+            foreach (var container in this.locators.Values
+                .SelectMany(c => c.EntityContainers))
+            {
+                container.Invalidate(locator);
+            }
+        }
 
         /// <summary>
         /// Check of there is any entity container for this type of locator.
@@ -269,18 +297,23 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 ILocator locator,
                 CancellationToken cancellationToken);
 
+            public delegate void InvalidateDelegate(ILocator locator);
+
             public Type LocatorType { get; }
             public Type EntityType { get; }
             public ListAsyncDelegate ListAsync { get; }
+            public InvalidateDelegate Invalidate { get; }
 
             public RegisteredEntityContainer(
                 Type locatorType, 
                 Type entityType, 
-                ListAsyncDelegate listAsync)
+                ListAsyncDelegate listAsync,
+                InvalidateDelegate invalidate)
             {
                 this.LocatorType = locatorType;
                 this.EntityType = entityType;
                 this.ListAsync = listAsync;
+                this.Invalidate = invalidate;
             }
         }
 
@@ -411,7 +444,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                             .ConfigureAwait(false);
 
                         return result.Cast<IEntity>().ToList();
-                    }));
+                    },
+                    locator => container.Invalidate((TLocator)locator)));
             }
 
             private void AddSearcherCore<TLocator, TEntity>(
