@@ -202,35 +202,35 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         }
 
         //--------------------------------------------------------------------
-        // List.
+        // Expand.
         //--------------------------------------------------------------------
 
         [Test]
-        public async Task List_WhenNoContainerRegisteredForLocator()
+        public async Task Expand_WhenNoContainerRegisteredForLocator()
         {
             var context = new EntityContext.Builder()
                 .AddExpander(new Mock<IEntityExpander<GarageLocator, Car, CarLocator>>().Object)
                 .Build();
 
             CollectionAssert.IsEmpty(await context
-                .ListAsync<IEntity>(new BikeLocator(), CancellationToken.None)
+                .ExpandAsync<IEntity>(new BikeLocator(), CancellationToken.None)
                 .ConfigureAwait(false));
         }
 
         [Test]
-        public async Task List_WhenNoContainerRegisteredForEntityType()
+        public async Task Expand_WhenNoContainerRegisteredForEntityType()
         {
             var context = new EntityContext.Builder()
                 .AddExpander(new Mock<IEntityExpander<GarageLocator, Car, CarLocator>>().Object)
                 .Build();
 
             CollectionAssert.IsEmpty(await context
-                .ListAsync<Bike>(new CarLocator(), CancellationToken.None)
+                .ExpandAsync<Bike>(new CarLocator(), CancellationToken.None)
                 .ConfigureAwait(false));
         }
 
         [Test]
-        public async Task List_WhenEntityTypeDoesNotMatch()
+        public async Task Expand_WhenEntityTypeDoesNotMatch()
         {
             var container = new Expander<GarageLocator, Car, CarLocator>(
                 new[] {
@@ -242,12 +242,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 .Build();
 
             CollectionAssert.IsEmpty(await context
-                .ListAsync<Bike>(new CarLocator(), CancellationToken.None)
+                .ExpandAsync<Bike>(new CarLocator(), CancellationToken.None)
                 .ConfigureAwait(false));
         }
 
         [Test]
-        public async Task List()
+        public async Task Expand()
         {
             var carContainer = new Expander<GarageLocator, Car, CarLocator>(
                 new[] {
@@ -264,13 +264,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 .Build();
 
             Assert.AreEqual(2, (await context
-                .ListAsync<Car>(new GarageLocator(), CancellationToken.None)
+                .ExpandAsync<Car>(new GarageLocator(), CancellationToken.None)
                 .ConfigureAwait(false)).Count);
             Assert.AreEqual(1, (await context
-                .ListAsync<Bike>(new GarageLocator(), CancellationToken.None)
+                .ExpandAsync<Bike>(new GarageLocator(), CancellationToken.None)
                 .ConfigureAwait(false)).Count);
             Assert.AreEqual(3, (await context
-                .ListAsync<IVehicle>(new GarageLocator(), CancellationToken.None)
+                .ExpandAsync<IVehicle>(new GarageLocator(), CancellationToken.None)
                 .ConfigureAwait(false)).Count);
         }
 

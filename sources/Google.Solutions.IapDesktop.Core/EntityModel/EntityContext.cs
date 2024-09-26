@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         /// Query all expanders that support the kind of locator and
         /// requested entity type, or a subtype thereof.
         /// </summary>
-        public async Task<ICollection<TEntity>> ListAsync<TEntity>( // TODO: Rename to ExpandAsync
+        public async Task<ICollection<TEntity>> ExpandAsync<TEntity>(
             ILocator locator,
             CancellationToken cancellationToken)
             where TEntity : IEntity
