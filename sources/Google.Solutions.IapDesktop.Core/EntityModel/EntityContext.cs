@@ -60,14 +60,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         // Publics.
         //--------------------------------------------------------------------
 
-        public void Invalidate(ILocator locator) // TODO: test
-        {
-            foreach (var cache in this.caches)
-            {
-                cache.Invalidate(locator);
-            }
-        }
-
         /// <summary>
         /// Check of there is any entity expander for this type of locator.
         /// </summary>
@@ -134,6 +126,17 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         public bool SupportsAspect<TLocator, TAspect>() where TLocator : ILocator
         {
             return SupportsAspect(typeof(TLocator), typeof(TAspect));
+        }
+
+        /// <summary>
+        /// Invalidate cached entities for a locator.
+        /// </summary>
+        public void Invalidate(ILocator locator)
+        {
+            foreach (var cache in this.caches)
+            {
+                cache.Invalidate(locator);
+            }
         }
 
         /// <summary>
@@ -530,7 +533,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                     }));
             }
 
-            private void AddCache(IEntityCache cache)
+            internal Builder AddCache(IEntityCache cache)
             {
                 foreach (var genericInterface in GetGenericInterfaces(
                     cache.GetType(),
@@ -540,6 +543,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                         .MakeGenericMethod(genericInterface.GenericTypeArguments)
                         .Invoke(this, new object[] { cache });
                 }
+
+                return this;
             }
 
             public Builder AddExpander(IEntityExpander expander)

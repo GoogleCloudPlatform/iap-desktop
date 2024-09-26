@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     /// Ancillary inteface that can be implemented by expanders,
     /// providers, and searchers that require cache invalidation.
     /// </summary>
-    public interface IEntityCache<TLocator>
+    public interface IEntityCache<TLocator> : IEntityCache
         where TLocator : ILocator
     {
         /// <summary>

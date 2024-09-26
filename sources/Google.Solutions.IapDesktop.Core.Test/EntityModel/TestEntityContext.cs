@@ -202,6 +202,38 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         }
 
         //--------------------------------------------------------------------
+        // Invalidate.
+        //--------------------------------------------------------------------
+
+        [Test]
+        public void Invalidate_WhenNoCachesRegisteredForLocator()
+        {
+            var context = new EntityContext.Builder()
+                .AddCache(new Mock<IEntityCache>().Object)
+                .AddCache(new Mock<IEntityCache<CarLocator>>().Object)
+                .Build();
+
+            context.Invalidate(new BikeLocator());
+        }
+
+        [Test]
+        public void Invalidate_WhenCachesRegisteredForLocator()
+        {
+            var cache1 = new Mock<IEntityCache<CarLocator>>();
+            var cache2 = new Mock<IEntityCache<CarLocator>>();
+            var context = new EntityContext.Builder()
+                .AddCache(cache1.Object)
+                .AddCache(cache2.Object)
+                .Build();
+
+            var car = new CarLocator();
+            context.Invalidate(car);
+
+            cache1.Verify(c => c.Invalidate(car), Times.Once);
+            cache2.Verify(c => c.Invalidate(car), Times.Once);
+        }
+
+        //--------------------------------------------------------------------
         // Expand.
         //--------------------------------------------------------------------
 
