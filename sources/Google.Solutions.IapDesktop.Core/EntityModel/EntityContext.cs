@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     /// Provides a unified view over data exposed by multiple
     /// entity containers and aspect providers.
     /// </summary>
-    public class EntityContext //: ISearchableEntityContainer<ILocator, IEntity>
+    public class EntityContext
     {
         private readonly IDictionary<Type, LocatorConfiguration> locators;
 

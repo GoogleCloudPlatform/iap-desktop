@@ -39,30 +39,4 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             this.Locator = locator;
         }
     }
-
-    /// <summary>
-    /// Indicates that a requested entity was not found.
-    /// </summary>
-    public class EntityNotFoundException : EntityException
-    {
-        public EntityNotFoundException(ILocator locator) 
-            : base($"The entity '{locator}' is not available", locator)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Indicates that a requested aspect was not found.
-    /// </summary>
-    public class EntityAspectNotFoundException : EntityException
-    {
-        public EntityAspectNotFoundException(
-            ILocator locator,
-            Type aspectType)
-            : base(
-                  $"The information '{aspectType.Name}' is not available for entity '{locator}'",
-                  locator)
-        {
-        }
-    }
 }
