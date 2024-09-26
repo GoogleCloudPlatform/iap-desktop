@@ -23,10 +23,18 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         Task<ICollection<TEntity>> ListAsync(
             TLocator locator,
             CancellationToken cancellationToken);
+
+        Task DeleteAsync(
+            TLocator locator,
+            CancellationToken cancellationToken);
     }
 
-    public interface IEntitySearcher<TLocator, TEntity> 
-        : IEntityContainer<TLocator, TEntity>
+    public interface IEntitySearcher
+    {
+
+    }
+
+    public interface IEntitySearcher<TLocator, TEntity> : IEntitySearcher
         where TLocator : ILocator
         where TEntity : IEntity
     {
@@ -60,9 +68,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         where TLocator : ILocator
         where TAspect : class
     {
-        TAspect? QueryAspect(
-            TLocator locator,
-            CancellationToken cancellationToken);
+        TAspect? QueryAspect(TLocator locator);
     }
 
 

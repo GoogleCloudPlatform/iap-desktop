@@ -27,7 +27,7 @@ using System.Linq;
 namespace Google.Solutions.Common.Test.Linq
 {
     [TestFixture]
-    public class TestLinqExtensions : CommonFixtureBase
+    public class TestEnumerableExtensions : CommonFixtureBase
     {
         //---------------------------------------------------------------------
         // EnsureNotNull.

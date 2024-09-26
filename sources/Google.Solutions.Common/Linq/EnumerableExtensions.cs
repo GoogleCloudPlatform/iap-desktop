@@ -19,15 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Util;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 
 namespace Google.Solutions.Common.Linq
 {
-    public static class LinqExtensions
+    public static class EnumerableExtensions
     {
         public static HashSet<T> ToHashSet<T>(
             this IEnumerable<T> source,
@@ -36,12 +34,20 @@ namespace Google.Solutions.Common.Linq
             return new HashSet<T>(source, comparer);
         }
 
+        /// <summary>
+        /// Ensure that an enumerable is not null.
+        /// </summary>
+        /// <returns>The enumerable or an empty enumerable if it's null</returns>
         public static IEnumerable<T> EnsureNotNull<T>(
             this IEnumerable<T>? e)
         {
             return e ?? Enumerable.Empty<T>();
         }
 
+        /// <summary>
+        /// Check if the enumerable is a subset of another
+        /// enumerable.
+        /// </summary>
         public static bool ContainsAll<T>(
             this IEnumerable<T> sequence,
             IEnumerable<T> lookup)
@@ -49,6 +55,14 @@ namespace Google.Solutions.Common.Linq
             return !lookup.Except(sequence).Any();
         }
 
+        /// <summary>
+        /// Split an enumerable into multiple enumerables that
+        /// each have a maximum size.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="chunkSize"></param>
+        /// <returns></returns>
         public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, ushort chunkSize)
         {
             source.ExpectNotNull(nameof(source));
@@ -70,6 +84,9 @@ namespace Google.Solutions.Common.Linq
             }
         }
 
+        /// <summary>
+        /// Concatenate an enumerable with a single item.
+        /// </summary>
         public static IEnumerable<T> ConcatItem<T>(this IEnumerable<T> target, T item)
         {
             target.ExpectNotNull(nameof(target));
@@ -82,36 +99,5 @@ namespace Google.Solutions.Common.Linq
             yield return item;
         }
 
-        public static IEnumerable<KeyValuePair<string, string>> ToKeyValuePairs(
-            this NameValueCollection collection)
-        {
-            return collection
-                .ExpectNotNull(nameof(collection))
-                .Cast<string>()
-                .Select(key => new KeyValuePair<string, string>(key, collection[key]));
-        }
-
-        public static IDictionary<K, V> ToDictionary<K, V>(
-            this IEnumerable<KeyValuePair<K, V>> entries)
-        {
-            return entries
-                .ExpectNotNull(nameof(entries))
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-        }
-
-        public static NameValueCollection ToNameValueCollection(
-            this IDictionary<string, string> dictionary)
-        {
-            dictionary.ExpectNotNull(nameof(dictionary));
-
-            var collection = new NameValueCollection();
-
-            foreach (var pair in dictionary)
-            {
-                collection.Add(pair.Key, pair.Value);
-            }
-
-            return collection;
-        }
     }
 }
