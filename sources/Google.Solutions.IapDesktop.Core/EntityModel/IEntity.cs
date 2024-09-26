@@ -38,6 +38,13 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
 
     }
 
+    /// <summary>
+    /// An entity that can be looked up by a locator.
+    /// 
+    /// In addition to implementing IEntity<T>, class may
+    /// implement additional interfaces that derive from IEntity
+    /// (non-generic).
+    /// </summary>
     public interface IEntity<TLocator> : IEntity where TLocator : ILocator
     { 
         /// <summary>

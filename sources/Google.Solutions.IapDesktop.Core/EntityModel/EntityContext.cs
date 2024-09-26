@@ -428,10 +428,11 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                         i.GetGenericTypeDefinition() == unboundType);
             }
 
-            private void AddContainerCore<TLocator, TEntity>(
-                IEntityContainer<TLocator, TEntity> container)
+            private void AddContainerCore<TLocator, TEntity, TEntityLocator>(
+                IEntityContainer<TLocator, TEntity, TEntityLocator> container)
                 where TLocator : ILocator
-                where TEntity : IEntity
+                where TEntityLocator : ILocator
+                where TEntity : IEntity<TEntityLocator>
             {
                 this.entityContainers.Add(new RegisteredEntityContainer(
                     typeof(TLocator),
@@ -505,7 +506,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             {
                 foreach (var genericInterface in GetGenericInterfaces(
                     container.GetType(),
-                    typeof(IEntityContainer<,>)))
+                    typeof(IEntityContainer<,,>)))
                 {
                     this.addContainerCoreMethod
                         .MakeGenericMethod(genericInterface.GenericTypeArguments)

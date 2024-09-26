@@ -42,8 +42,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
     /// by the organization they belong to.
     /// </summary>
     public class ProjectWorkspace : // TODO: rename to Profile, use locator other than Universe?
-        IEntityContainer<UniverseLocator, Organization>,
-        IEntityContainer<OrganizationLocator, Project>,
+        IEntityContainer<UniverseLocator, Organization, OrganizationLocator>,
+        IEntityContainer<OrganizationLocator, Project, ProjectLocator>,
         IAsyncEntityAspectProvider<OrganizationLocator, Organization>,
         IAsyncEntityAspectProvider<ProjectLocator, Project>
     {
@@ -327,6 +327,11 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
             //
         }
 
+        public Task DeleteAsync(ProjectLocator entity, CancellationToken cancellation)
+        {
+            throw new NotImplementedException();
+        }
+
         //----------------------------------------------------------------------
         // Organizations.
         //----------------------------------------------------------------------
@@ -358,6 +363,11 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
                 .ConfigureAwait(false);
 
             return state.Organizations.TryGet(locator);
+        }
+
+        public Task DeleteAsync(OrganizationLocator entity, CancellationToken cancellation)
+        {
+            throw new NotImplementedException();
         }
     }
 
