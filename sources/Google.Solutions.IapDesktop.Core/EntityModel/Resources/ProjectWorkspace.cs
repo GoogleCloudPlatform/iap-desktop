@@ -35,13 +35,15 @@ using System.Threading.Tasks;
 
 using CrmProject = Google.Apis.CloudResourceManager.v1.Data.Project;
 
-namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
+namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources 
 {
     /// <summary>
     /// Contains a user-selected set of projects, aggregated
     /// by the organization they belong to.
     /// </summary>
-    public class ProjectWorkspace : // TODO: rename to Profile, use locator other than Universe?
+    public class ProjectWorkspace :
+        // TODO: rename to Profile, use locator other than Universe?
+        // TODO: implement IEntityCache
         IEntityExpander<UniverseLocator, Organization, OrganizationLocator>,
         IEntityExpander<OrganizationLocator, Project, ProjectLocator>,
         IAsyncEntityAspectProvider<OrganizationLocator, Organization>,
@@ -319,14 +321,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
             return state.Projects.TryGet(locator);
         }
 
-        public void Invalidate(OrganizationLocator locator)
-        {
-            //
-            // There's nothing about an organization that's
-            // worth invalidating, so we can ignore this.
-            //
-        }
-
         //----------------------------------------------------------------------
         // Organizations.
         //----------------------------------------------------------------------
@@ -339,15 +333,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
                 .ConfigureAwait(false);
 
             return state.Organizations.Values;
-        }
-
-        public void Invalidate(UniverseLocator locator)
-        {
-            //
-            // We only maintan very basic information about
-            // projects, and there's nothing about it that's
-            // worth invalidating, so we can ignore this.
-            //
         }
 
         public async Task<Organization?> QueryAspectAsync(

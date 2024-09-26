@@ -34,10 +34,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             TLocator parent,
             CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Invalidate cache.
-        /// </summary>
-        void Invalidate(TLocator locator);
 
         /// <summary>
         /// Delete an entity.
