@@ -37,8 +37,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     {
     }
 
-    public interface IEntitySearcher<TLocator, TEntity> : IEntitySearcher
-        where TLocator : ILocator
+    public interface IEntitySearcher<TEntity> : IEntitySearcher
         where TEntity : IEntity
     {
         Task<ICollection<TEntity>> SearchAsync(

@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
                 new Mock<IResourceManagerClient>().Object);
 
             var organizations = await workspace
-                .ListAsync(UniverseLocator.Cloud, CancellationToken.None)
+                .ExpandAsync(UniverseLocator.Cloud, CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsEmpty(organizations);
         }
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
                 resourceMamager.Object);
 
             var organizations = await workspace
-                .ListAsync(UniverseLocator.Cloud, CancellationToken.None)
+                .ExpandAsync(UniverseLocator.Cloud, CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsNotEmpty(organizations);
             Assert.AreEqual(
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
                 resourceMamager.Object);
 
             var organizations = await workspace
-                .ListAsync(UniverseLocator.Cloud, CancellationToken.None)
+                .ExpandAsync(UniverseLocator.Cloud, CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsNotEmpty(organizations);
             Assert.AreEqual(
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
                 resourceMamager.Object);
 
             var organizations = await workspace
-                .ListAsync(UniverseLocator.Cloud, CancellationToken.None)
+                .ExpandAsync(UniverseLocator.Cloud, CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsNotEmpty(organizations);
             Assert.AreEqual(
@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
                 resourceMamager.Object);
 
             var organizations = await workspace
-                .ListAsync(UniverseLocator.Cloud, CancellationToken.None)
+                .ExpandAsync(UniverseLocator.Cloud, CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsNotEmpty(organizations);
             Assert.AreEqual(
@@ -238,7 +238,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
                 resourceMamager.Object);
 
             var projects = await workspace
-                .ListAsync(Organization.Default.Locator, CancellationToken.None)
+                .ExpandAsync(Organization.Default.Locator, CancellationToken.None)
                 .ConfigureAwait(false);
 
             CollectionAssert.IsNotEmpty(projects);
@@ -269,7 +269,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
 
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
                 () => workspace
-                    .ListAsync(Organization.Default.Locator, CancellationToken.None)
+                    .ExpandAsync(Organization.Default.Locator, CancellationToken.None)
                     .Wait());
         }
 
@@ -294,7 +294,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
                 resourceMamager.Object);
 
             var projects = await workspace
-                .ListAsync(Organization.Default.Locator, CancellationToken.None)
+                .ExpandAsync(Organization.Default.Locator, CancellationToken.None)
                 .ConfigureAwait(false);
 
             CollectionAssert.IsNotEmpty(projects);
@@ -336,7 +336,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
                 resourceMamager.Object);
 
             var projects = await workspace
-                .ListAsync(org, CancellationToken.None)
+                .ExpandAsync(org, CancellationToken.None)
                 .ConfigureAwait(false);
 
             CollectionAssert.IsNotEmpty(projects);

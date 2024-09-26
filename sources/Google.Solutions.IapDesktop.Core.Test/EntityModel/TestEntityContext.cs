@@ -80,15 +80,15 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         public class ColorAspect { }
         public class ShapeAspect { }
 
-        private class Container<TLocator, TEntity, TEntityLocator> 
-            : IEntityContainer<TLocator, TEntity, TEntityLocator>, IEntitySearcher<TLocator, TEntity>
+        private class Expander<TLocator, TEntity, TEntityLocator> 
+            : IEntityExpander<TLocator, TEntity, TEntityLocator>
             where TLocator : ILocator
             where TEntityLocator : ILocator
             where TEntity : IEntity<TEntityLocator>
         {
             private readonly ICollection<TEntity> entities;
 
-            public Container(ICollection<TEntity> entities)
+            public Expander(ICollection<TEntity> entities)
             {
                 this.entities = entities;
             }
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 throw new NotImplementedException();
             }
 
-            public Task<ICollection<TEntity>> ListAsync(
+            public Task<ICollection<TEntity>> ExpandAsync(
                 TLocator locator, 
                 CancellationToken cancellationToken)
             {
@@ -115,28 +115,48 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
             }
         }
 
+        private class Searcher<TEntity> : IEntitySearcher<TEntity> 
+            where TEntity : IEntity
+        {
+            private readonly ICollection<TEntity> entities;
+
+            public Searcher(ICollection<TEntity> entities)
+            {
+                this.entities = entities;
+            }
+
+            public Task<ICollection<TEntity>> SearchAsync(
+                string query,
+                CancellationToken cancellationToken)
+            {
+                return Task.FromResult<ICollection<TEntity>>(this.entities
+                    .Where(e => e.DisplayName.Contains(query))
+                    .ToList());
+            }
+        }
+
         //--------------------------------------------------------------------
-        // IsContainer.
+        // SupportsExpansion.
         //--------------------------------------------------------------------
 
         [Test]
-        public void IsContainer_WhenNoContainerRegistered()
+        public void SupportsExpansion_WhenNoExpanderRegistered()
         {
             var context = new EntityContext.Builder().Build();
-            Assert.IsFalse(context.IsContainer(new CarLocator()));
-            Assert.IsFalse(context.IsContainer<CarLocator>());
-            Assert.IsFalse(context.IsContainer(typeof(string)));
+            Assert.IsFalse(context.SupportsExpansion(new CarLocator()));
+            Assert.IsFalse(context.SupportsExpansion<CarLocator>());
+            Assert.IsFalse(context.SupportsExpansion(typeof(string)));
         }
 
         [Test]
-        public void IsContainer_WhenContainersRegistered()
+        public void SupportsExpansion_WhenExpandersRegistered()
         {
             var context = new EntityContext.Builder()
-                .AddContainer(new Mock<IEntityContainer<GarageLocator, Car, CarLocator>>().Object)
-                .AddContainer(new Mock<IEntityContainer<GarageLocator, Bike, BikeLocator>>().Object)
+                .AddExpander(new Mock<IEntityExpander<GarageLocator, Car, CarLocator>>().Object)
+                .AddExpander(new Mock<IEntityExpander<GarageLocator, Bike, BikeLocator>>().Object)
                 .Build();
-            Assert.IsTrue(context.IsContainer(new GarageLocator()));
-            Assert.IsTrue(context.IsContainer<GarageLocator>());
+            Assert.IsTrue(context.SupportsExpansion(new GarageLocator()));
+            Assert.IsTrue(context.SupportsExpansion<GarageLocator>());
         }
 
         //--------------------------------------------------------------------
@@ -189,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         public async Task List_WhenNoContainerRegisteredForLocator()
         {
             var context = new EntityContext.Builder()
-                .AddContainer(new Mock<IEntityContainer<GarageLocator, Car, CarLocator>>().Object)
+                .AddExpander(new Mock<IEntityExpander<GarageLocator, Car, CarLocator>>().Object)
                 .Build();
 
             CollectionAssert.IsEmpty(await context
@@ -201,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         public async Task List_WhenNoContainerRegisteredForEntityType()
         {
             var context = new EntityContext.Builder()
-                .AddContainer(new Mock<IEntityContainer<GarageLocator, Car, CarLocator>>().Object)
+                .AddExpander(new Mock<IEntityExpander<GarageLocator, Car, CarLocator>>().Object)
                 .Build();
 
             CollectionAssert.IsEmpty(await context
@@ -212,13 +232,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public async Task List_WhenEntityTypeDoesNotMatch()
         {
-            var container = new Container<GarageLocator, Car, CarLocator>(
+            var container = new Expander<GarageLocator, Car, CarLocator>(
                 new[] {
                     new Car("c1", new CarLocator()), 
                     new Car("c2", new CarLocator()) 
                 });
             var context = new EntityContext.Builder()
-                .AddContainer(container)
+                .AddExpander(container)
                 .Build();
 
             CollectionAssert.IsEmpty(await context
@@ -229,18 +249,18 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public async Task List()
         {
-            var carContainer = new Container<GarageLocator, Car, CarLocator>(
+            var carContainer = new Expander<GarageLocator, Car, CarLocator>(
                 new[] {
                     new Car("c1", new CarLocator()),
                     new Car("c2", new CarLocator())
                 });
-            var bikeContainer = new Container<GarageLocator, Bike, BikeLocator>(
+            var bikeContainer = new Expander<GarageLocator, Bike, BikeLocator>(
                 new[] {
                     new Bike("b1", new BikeLocator())
                 });
             var context = new EntityContext.Builder()
-                .AddContainer(carContainer)
-                .AddContainer(bikeContainer)
+                .AddExpander(carContainer)
+                .AddExpander(bikeContainer)
                 .Build();
 
             Assert.AreEqual(2, (await context
@@ -262,7 +282,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         public async Task Search_WhenNoContainerRegisteredForEntityType()
         {
             var context = new EntityContext.Builder()
-                .AddSearcher(new Mock<IEntitySearcher<CarLocator, Car>>().Object)
+                .AddSearcher(new Mock<IEntitySearcher<Car>>().Object)
                 .Build();
 
             CollectionAssert.IsEmpty(await context
@@ -273,18 +293,18 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public async Task Search()
         {
-            var carContainer = new Container<GarageLocator, Car, CarLocator>(
+            var carSearcher = new Searcher<Car>(
                 new[] {
                     new Car("sample-car1", new CarLocator()),
                     new Car("sample-car2", new CarLocator())
                 });
-            var bikeContainer = new Container<GarageLocator, Bike, BikeLocator>(
+            var bikeSearcher = new Searcher<Bike>(
                 new[] {
                     new Bike("sample-bike1", new BikeLocator())
                 });
             var context = new EntityContext.Builder()
-                .AddSearcher(carContainer)
-                .AddSearcher(bikeContainer)
+                .AddSearcher(carSearcher)
+                .AddSearcher(bikeSearcher)
                 .Build();
 
             Assert.AreEqual(2, (await context

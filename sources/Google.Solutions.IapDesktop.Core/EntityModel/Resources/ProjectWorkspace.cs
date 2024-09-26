@@ -42,8 +42,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
     /// by the organization they belong to.
     /// </summary>
     public class ProjectWorkspace : // TODO: rename to Profile, use locator other than Universe?
-        IEntityContainer<UniverseLocator, Organization, OrganizationLocator>,
-        IEntityContainer<OrganizationLocator, Project, ProjectLocator>,
+        IEntityExpander<UniverseLocator, Organization, OrganizationLocator>,
+        IEntityExpander<OrganizationLocator, Project, ProjectLocator>,
         IAsyncEntityAspectProvider<OrganizationLocator, Organization>,
         IAsyncEntityAspectProvider<ProjectLocator, Project>
     {
@@ -296,7 +296,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
         // Projects.
         //----------------------------------------------------------------------
 
-        public async Task<ICollection<Project>> ListAsync(
+        public async Task<ICollection<Project>> ExpandAsync(
             OrganizationLocator locator,
             CancellationToken cancellationToken)
         {
@@ -327,16 +327,11 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
             //
         }
 
-        public Task DeleteAsync(ProjectLocator entity, CancellationToken cancellation)
-        {
-            throw new NotImplementedException();
-        }
-
         //----------------------------------------------------------------------
         // Organizations.
         //----------------------------------------------------------------------
 
-        public async Task<ICollection<Organization>> ListAsync(
+        public async Task<ICollection<Organization>> ExpandAsync(
             UniverseLocator locator,
             CancellationToken cancellationToken)
         {
@@ -363,11 +358,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
                 .ConfigureAwait(false);
 
             return state.Organizations.TryGet(locator);
-        }
-
-        public Task DeleteAsync(OrganizationLocator entity, CancellationToken cancellation)
-        {
-            throw new NotImplementedException();
         }
     }
 

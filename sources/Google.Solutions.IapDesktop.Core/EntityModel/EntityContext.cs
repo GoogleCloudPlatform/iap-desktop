@@ -34,14 +34,15 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
 {
     /// <summary>
     /// Provides a unified view over data exposed by multiple
-    /// entity containers and aspect providers.
+    /// entity expanders and aspect providers.
     /// </summary>
     public class EntityContext
     {
+        private readonly IList<RegisteredEntitySearcher> searchers;
         private readonly IDictionary<Type, LocatorConfiguration> locators;
 
         public EntityContext(IServiceCategoryProvider serviceProvider) : this(new Builder()
-            .AddContainers(serviceProvider.GetServicesByCategory<IEntityContainer>())
+            .AddExpanders(serviceProvider.GetServicesByCategory<IEntityExpander>())
             .AddSearchers(serviceProvider.GetServicesByCategory<IEntitySearcher>())
             .AddAspectProviders(serviceProvider.GetServicesByCategory<IEntityAspectProvider>()))
         {
@@ -49,7 +50,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
 
         private EntityContext(Builder builder)
         {
-            this.locators = builder.BuildConfiguration();
+            this.locators = builder.BuildLocatorConfiguration();
+            this.searchers = builder.BuildSearchers();
         }
 
         //--------------------------------------------------------------------
@@ -58,21 +60,21 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
 
         public void InvalidateItem(ILocator locator)
         {
-            foreach (var container in this.locators.Values
-                .SelectMany(c => c.EntityContainers))
+            foreach (var expander in this.locators.Values
+                .SelectMany(c => c.EntityExpanders))
             {
-                container.Invalidate(locator);
+                expander.Invalidate(locator);
             }
         }
 
         /// <summary>
-        /// Check of there is any entity container for this type of locator.
+        /// Check of there is any entity expander for this type of locator.
         /// </summary>
-        public bool IsContainer(Type locatorType)
+        public bool SupportsExpansion(Type locatorType)
         {
             if (this.locators.TryGetValue(locatorType, out var configuration))
             {
-                return configuration.EntityContainers.Any();
+                return configuration.EntityExpanders.Any();
             }
             else
             {
@@ -81,19 +83,19 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         }
 
         /// <summary>
-        /// Check of there is any entity container for this type of locator.
+        /// Check of there is any entity expander for this type of locator.
         /// </summary>
-        public bool IsContainer(ILocator locator)
+        public bool SupportsExpansion(ILocator locator)
         {
-            return IsContainer(locator.GetType());
+            return SupportsExpansion(locator.GetType());
         }
 
         /// <summary>
-        /// Check of there is any entity container for this type of locator.
+        /// Check of there is any entity expander for this type of locator.
         /// </summary>
-        public bool IsContainer<TLocator>() where TLocator : ILocator
+        public bool SupportsExpansion<TLocator>() where TLocator : ILocator
         {
-            return IsContainer(typeof(TLocator));
+            return SupportsExpansion(typeof(TLocator));
         }
 
         /// <summary>
@@ -134,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         }
 
         /// <summary>
-        /// Query all containers that support the kind of locator and
+        /// Query all expanders that support the kind of locator and
         /// requested entity type, or a subtype thereof.
         /// </summary>
         public async Task<ICollection<TEntity>> ListAsync<TEntity>(
@@ -144,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         {
             if (this.locators.TryGetValue(locator.GetType(), out var configuration))
             {
-                var listTasks = configuration.EntityContainers
+                var listTasks = configuration.EntityExpanders
                     .Where(c => typeof(TEntity).IsAssignableFrom(c.EntityType))
                     .Select(c => c.ListAsync(locator, cancellationToken))
                     .ToList();
@@ -168,16 +170,14 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         }
 
         /// <summary>
-        /// Search all containers that support the kind of locator and
-        /// requested entity type, or a subtype thereof.
+        /// Search for entities that match a query.
         /// </summary>
         public async Task<ICollection<TEntity>> SearchAsync<TEntity>(
             string query, 
             CancellationToken cancellationToken)
             where TEntity : IEntity
         {
-            var searchTasks = this.locators.Values
-                .SelectMany(c => c.EntitySearchers)
+            var searchTasks = this.searchers
                 .Where(s => typeof(TEntity).IsAssignableFrom(s.EntityType))
                 .Select(s => s.SearchAsync(query, cancellationToken))
                 .ToList();
@@ -258,21 +258,18 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         internal readonly struct LocatorConfiguration
         {
             public Type LocatorType { get; }
-            public ICollection<RegisteredEntityContainer> EntityContainers { get; }
-            public ICollection<RegisteredEntitySearcher> EntitySearchers { get; }
+            public ICollection<RegisteredEntityExpander> EntityExpanders { get; }
             public ICollection<RegisteredAspectProvider> AspectProviders { get; }
             public ICollection<RegisteredAsyncAspectProvider> AsyncAspectProviders { get; }
 
             public LocatorConfiguration(
                 Type locatorType,
-                ICollection<RegisteredEntityContainer> entityContainers,
-                ICollection<RegisteredEntitySearcher> entitySearchers,
+                ICollection<RegisteredEntityExpander> entityExpanders,
                 ICollection<RegisteredAspectProvider> aspectProviders,
                 ICollection<RegisteredAsyncAspectProvider> asyncAspectProviders)
             {
                 this.LocatorType = locatorType;
-                this.EntityContainers = entityContainers;
-                this.EntitySearchers = entitySearchers;
+                this.EntityExpanders = entityExpanders;
                 this.AspectProviders = aspectProviders;
                 this.AsyncAspectProviders = asyncAspectProviders;
 
@@ -291,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             }
         }
 
-        internal readonly struct RegisteredEntityContainer
+        internal readonly struct RegisteredEntityExpander
         {
             public delegate Task<ICollection<IEntity>> ListAsyncDelegate(
                 ILocator locator,
@@ -304,7 +301,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             public ListAsyncDelegate ListAsync { get; }
             public InvalidateDelegate Invalidate { get; }
 
-            public RegisteredEntityContainer(
+            public RegisteredEntityExpander(
                 Type locatorType, 
                 Type entityType, 
                 ListAsyncDelegate listAsync,
@@ -323,16 +320,13 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 string query,
                 CancellationToken cancellationToken);
 
-            public Type LocatorType { get; }
             public Type EntityType { get; }
             public SearchAsyncDelegate SearchAsync { get; }
 
             public RegisteredEntitySearcher(
-                Type locatorType, 
                 Type entityType,
                 SearchAsyncDelegate searchAsync)
             {
-                this.LocatorType = locatorType;
                 this.EntityType = entityType;
                 this.SearchAsync = searchAsync;
             }
@@ -384,8 +378,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
 
         public class Builder
         {
-            private readonly List<RegisteredEntityContainer> entityContainers = 
-                new List<RegisteredEntityContainer>();
+            private readonly List<RegisteredEntityExpander> entityExpanders = 
+                new List<RegisteredEntityExpander>();
             private readonly List<RegisteredEntitySearcher> entitySearchers = 
                 new List<RegisteredEntitySearcher>();
             private readonly List<RegisteredAspectProvider> aspectProviders = 
@@ -393,15 +387,15 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             private readonly List<RegisteredAsyncAspectProvider> asyncAspectProviders = 
                 new List<RegisteredAsyncAspectProvider>();
 
-            private readonly MethodInfo addContainerCoreMethod;
+            private readonly MethodInfo addExpanderCoreMethod;
             private readonly MethodInfo addSearcherCoreMethod;
             private readonly MethodInfo addAspectProviderCoreMethod;
             private readonly MethodInfo addAsyncAspectProviderCoreMethod;
 
             public Builder()
             {
-                this.addContainerCoreMethod = GetType().GetMethod(
-                    nameof(AddContainerCore),
+                this.addExpanderCoreMethod = GetType().GetMethod(
+                    nameof(AddExpanderCore),
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 this.addSearcherCoreMethod = GetType().GetMethod(
                     nameof(AddSearcherCore),
@@ -428,38 +422,36 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                         i.GetGenericTypeDefinition() == unboundType);
             }
 
-            private void AddContainerCore<TLocator, TEntity, TEntityLocator>(
-                IEntityContainer<TLocator, TEntity, TEntityLocator> container)
+            private void AddExpanderCore<TLocator, TEntity, TEntityLocator>(
+                IEntityExpander<TLocator, TEntity, TEntityLocator> expander)
                 where TLocator : ILocator
                 where TEntityLocator : ILocator
                 where TEntity : IEntity<TEntityLocator>
             {
-                this.entityContainers.Add(new RegisteredEntityContainer(
+                this.entityExpanders.Add(new RegisteredEntityExpander(
                     typeof(TLocator),
                     typeof(TEntity),
                     async (locator, cancellationToken) =>
                     {
                         Debug.Assert(locator is TLocator);
-                        var result = await container
-                            .ListAsync((TLocator)locator, cancellationToken)
+                        var result = await expander
+                            .ExpandAsync((TLocator)locator, cancellationToken)
                             .ConfigureAwait(false);
 
                         return result.Cast<IEntity>().ToList();
                     },
-                    locator => container.Invalidate((TLocator)locator)));
+                    locator => expander.Invalidate((TLocator)locator)));
             }
 
-            private void AddSearcherCore<TLocator, TEntity>(
-                IEntitySearcher<TLocator, TEntity> container)
-                where TLocator : ILocator
+            private void AddSearcherCore<TEntity>(
+                IEntitySearcher<TEntity> searcher)
                 where TEntity : IEntity
             {
                 this.entitySearchers.Add(new RegisteredEntitySearcher(
-                    typeof(TLocator),
                     typeof(TEntity),
                     async (query, cancellationToken) =>
                     {
-                        var result = await container
+                        var result = await searcher
                             .SearchAsync(query, cancellationToken)
                             .ConfigureAwait(false);
 
@@ -502,15 +494,15 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                     }));
             }
 
-            public Builder AddContainer(IEntityContainer container)
+            public Builder AddExpander(IEntityExpander expander)
             {
                 foreach (var genericInterface in GetGenericInterfaces(
-                    container.GetType(),
-                    typeof(IEntityContainer<,,>)))
+                    expander.GetType(),
+                    typeof(IEntityExpander<,,>)))
                 {
-                    this.addContainerCoreMethod
+                    this.addExpanderCoreMethod
                         .MakeGenericMethod(genericInterface.GenericTypeArguments)
-                        .Invoke(this, new object[] { container });
+                        .Invoke(this, new object[] { expander });
                 }
 
                 return this;
@@ -520,7 +512,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             {
                 foreach (var genericInterface in GetGenericInterfaces(
                     searcher.GetType(),
-                    typeof(IEntitySearcher<,>)))
+                    typeof(IEntitySearcher<>)))
                 {
                     this.addSearcherCoreMethod
                         .MakeGenericMethod(genericInterface.GenericTypeArguments)
@@ -559,11 +551,11 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 return this;
             }
 
-            public Builder AddContainers(IEnumerable<IEntityContainer> containers)
+            public Builder AddExpanders(IEnumerable<IEntityExpander> expander)
             {
-                foreach (var container in containers)
+                foreach (var container in expander)
                 {
-                    AddContainer(container);
+                    AddExpander(container);
                 }
 
                 return this;
@@ -589,11 +581,10 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 return this;
             }
 
-            internal IDictionary<Type, LocatorConfiguration> BuildConfiguration()
+            internal IDictionary<Type, LocatorConfiguration> BuildLocatorConfiguration()
             {
                 return Enumerable.Empty<Type>()
-                    .Concat(this.entityContainers.Select(c => c.LocatorType))
-                    .Concat(this.entitySearchers.Select(c => c.LocatorType))
+                    .Concat(this.entityExpanders.Select(c => c.LocatorType))
                     .Concat(this.aspectProviders.Select(c => c.LocatorType))
                     .Concat(this.asyncAspectProviders.Select(c => c.LocatorType))
                     .Distinct()
@@ -601,10 +592,14 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                         type => type,
                         type => new LocatorConfiguration(
                             type,
-                            this.entityContainers.Where(c => c.LocatorType == type).ToList(),
-                            this.entitySearchers.Where(c => c.LocatorType == type).ToList(),
+                            this.entityExpanders.Where(c => c.LocatorType == type).ToList(),
                             this.aspectProviders.Where(c => c.LocatorType == type).ToList(),
                             this.asyncAspectProviders.Where(c => c.LocatorType == type).ToList()));
+            }
+
+            internal List<RegisteredEntitySearcher> BuildSearchers()
+            {
+                return this.entitySearchers;
             }
 
             public EntityContext Build()
