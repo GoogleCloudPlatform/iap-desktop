@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         }
 
         /// <summary>
-        /// Search for entities that match a query.
+        /// Search for entities of the requested entity type that match a query.
         /// </summary>
         public async Task<ICollection<TEntity>> SearchAsync<TQuery, TEntity>(
             TQuery query, 

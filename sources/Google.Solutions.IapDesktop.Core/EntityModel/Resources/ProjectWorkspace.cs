@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
     public class ProjectWorkspace :
         // TODO: rename to Profile, use locator other than Universe?
         // TODO: implement IEntityCache
-        IEntityExpander<UniverseLocator, Organization, OrganizationLocator>,
+        IEntityExpander<UniverseLocator, Organization, OrganizationLocator>, // TODO: IEntitySearcher<?, Organization>
         IEntityExpander<OrganizationLocator, Project, ProjectLocator>,
         IAsyncEntityAspectProvider<OrganizationLocator, Organization>,
         IAsyncEntityAspectProvider<ProjectLocator, Project>

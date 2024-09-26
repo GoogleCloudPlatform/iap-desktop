@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Locator;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
@@ -37,6 +36,9 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     {
     }
 
+    /// <summary>
+    /// Searches for entities.
+    /// </summary>
     public interface IEntitySearcher<TQuery, TEntity> : IEntitySearcher
         where TEntity : IEntity
     {

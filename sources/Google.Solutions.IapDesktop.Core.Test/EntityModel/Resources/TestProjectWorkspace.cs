@@ -45,11 +45,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         private static readonly ProjectLocator SampleProject = new ProjectLocator("project-1");
 
         //----------------------------------------------------------------------
-        // List organizations.
+        // Expand organizations.
         //----------------------------------------------------------------------
 
         [Test]
-        public async Task ListOrganizations_WhenWorkspaceEmpty()
+        public async Task ExpandOrganizations_WhenWorkspaceEmpty()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             var workspace = new ProjectWorkspace(
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         }
 
         [Test]
-        public async Task ListOrganizations_WhenProjectAncestryUnknown()
+        public async Task ExpandOrganizations_WhenProjectAncestryUnknown()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         }
 
         [Test]
-        public async Task ListOrganizations_WhenProjectAncestryCached()
+        public async Task ExpandOrganizations_WhenProjectAncestryCached()
         {
             var org = new OrganizationLocator(1);
 
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         }
 
         [Test]
-        public async Task ListOrganizations_WhenProjectAncestryInaccessible()
+        public async Task ExpandOrganizations_WhenProjectAncestryInaccessible()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         }
 
         [Test]
-        public async Task ListOrganizations_WhenProjectAncestryCachedButOrganizationInaccessible()
+        public async Task ExpandOrganizations_WhenProjectAncestryCachedButOrganizationInaccessible()
         {
             var org = new OrganizationLocator(1);
 
@@ -217,11 +217,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         }
 
         //----------------------------------------------------------------------
-        // List projects.
+        // Expand projects.
         //----------------------------------------------------------------------
 
         [Test]
-        public async Task ListProjects_WhenProjectInaccessible()
+        public async Task ExpandProjects_WhenProjectInaccessible()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
@@ -248,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         }
 
         [Test]
-        public void ListProjects_WhenReauthTriggered()
+        public void ExpandProjects_WhenReauthTriggered()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
@@ -274,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         }
 
         [Test]
-        public async Task ListProjects_WhenAncestryInaccessible()
+        public async Task ExpandProjects_WhenAncestryInaccessible()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
@@ -305,7 +305,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         }
 
         [Test]
-        public async Task ListProjects()
+        public async Task ExpandProjects()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
