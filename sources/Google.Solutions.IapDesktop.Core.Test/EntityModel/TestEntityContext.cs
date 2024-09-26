@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
             }
         }
 
-        private class Searcher<TEntity> : IEntitySearcher<TEntity> 
+        private class Searcher<TEntity> : IEntitySearcher<string, TEntity> 
             where TEntity : IEntity
         {
             private readonly ICollection<TEntity> entities;
@@ -282,11 +282,23 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         public async Task Search_WhenNoContainerRegisteredForEntityType()
         {
             var context = new EntityContext.Builder()
-                .AddSearcher(new Mock<IEntitySearcher<Car>>().Object)
+                .AddSearcher(new Mock<IEntitySearcher<string, Car>>().Object)
                 .Build();
 
             CollectionAssert.IsEmpty(await context
-                .SearchAsync<Bike>("*", CancellationToken.None)
+                .SearchAsync<string, Bike>("*", CancellationToken.None)
+                .ConfigureAwait(false));
+        }
+
+        [Test]
+        public async Task Search_WhenNoContainerRegisteredForQueryType()
+        {
+            var context = new EntityContext.Builder()
+                .AddSearcher(new Mock<IEntitySearcher<string, Car>>().Object)
+                .Build();
+
+            CollectionAssert.IsEmpty(await context
+                .SearchAsync<int, Car>(0, CancellationToken.None)
                 .ConfigureAwait(false));
         }
 
@@ -308,13 +320,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 .Build();
 
             Assert.AreEqual(2, (await context
-                .SearchAsync<Car>("car", CancellationToken.None)
+                .SearchAsync<string, Car>("car", CancellationToken.None)
                 .ConfigureAwait(false)).Count);
             Assert.AreEqual(1, (await context
-                .SearchAsync<Bike>("bike", CancellationToken.None)
+                .SearchAsync<string, Bike>("bike", CancellationToken.None)
                 .ConfigureAwait(false)).Count);
             Assert.AreEqual(3, (await context
-                .SearchAsync<IVehicle>("sample", CancellationToken.None)
+                .SearchAsync<string, IVehicle>("sample", CancellationToken.None)
                 .ConfigureAwait(false)).Count);
         }
 

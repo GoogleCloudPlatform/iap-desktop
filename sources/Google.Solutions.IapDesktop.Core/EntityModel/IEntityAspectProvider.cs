@@ -26,6 +26,17 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Core.EntityModel
 {
     /// <summary>
+    /// Base interface for aspect providers.
+    /// </summary>
+    /// <remarks>
+    /// Implementing types must also implement
+    /// the generic version of this interface.
+    /// </remarks>
+    public interface IEntityAspectProvider
+    {
+    }
+
+    /// <summary>
     /// Provides ancillary data (an "aspect") about an entity.
     /// </summary>
     public interface IAsyncEntityAspectProvider<TLocator, TAspect> : IEntityAspectProvider

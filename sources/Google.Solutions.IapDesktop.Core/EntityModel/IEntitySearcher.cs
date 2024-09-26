@@ -37,22 +37,11 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     {
     }
 
-    public interface IEntitySearcher<TEntity> : IEntitySearcher
+    public interface IEntitySearcher<TQuery, TEntity> : IEntitySearcher
         where TEntity : IEntity
     {
         Task<ICollection<TEntity>> SearchAsync(
-            string query,
+            TQuery query,
             CancellationToken cancellationToken);
-    }
-
-    /// <summary>
-    /// Base interface for aspect providers.
-    /// </summary>
-    /// <remarks>
-    /// Implementing types must also implement
-    /// the generic version of this interface.
-    /// </remarks>
-    public interface IEntityAspectProvider
-    {
     }
 }

@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     public class EntityContext
     {
         private readonly IList<RegisteredEntityCache> caches;
-        private readonly IList<RegisteredEntitySearcher> searchers;
+        private readonly IDictionary<Type, List<RegisteredEntitySearcher>> searchers;
         private readonly IDictionary<Type, LocatorConfiguration> locators;
 
         public EntityContext(IServiceCategoryProvider serviceProvider) : this(new Builder()
@@ -173,27 +173,35 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         /// <summary>
         /// Search for entities that match a query.
         /// </summary>
-        public async Task<ICollection<TEntity>> SearchAsync<TEntity>(
-            string query, 
+        public async Task<ICollection<TEntity>> SearchAsync<TQuery, TEntity>(
+            TQuery query, 
             CancellationToken cancellationToken)
             where TEntity : IEntity
         {
-            var searchTasks = this.searchers
-                .Where(s => typeof(TEntity).IsAssignableFrom(s.EntityType))
-                .Select(s => s.SearchAsync(query, cancellationToken))
-                .ToList();
+            if (query != null &&
+                this.searchers.TryGetValue(typeof(TQuery), out var searchers))
+            {
+                var searchTasks = searchers
+                    .Where(s => typeof(TEntity).IsAssignableFrom(s.EntityType))
+                    .Select(s => s.SearchAsync(query, cancellationToken))
+                    .ToList();
 
-            var searchResults = await Task
-                .WhenAll(searchTasks)
-                .ConfigureAwait(false);
+                var searchResults = await Task
+                    .WhenAll(searchTasks)
+                    .ConfigureAwait(false);
 
-            //
-            // Flatten result and cast to requested type.
-            //
-            return searchResults
-                .SelectMany(r => r)
-                .Cast<TEntity>()
-                .ToList();
+                //
+                // Flatten result and cast to requested type.
+                //
+                return searchResults
+                    .SelectMany(r => r)
+                    .Cast<TEntity>()
+                    .ToList();
+            }
+            else
+            {
+                return Array.Empty<TEntity>();
+            }
         }
 
         /// <summary>
@@ -327,17 +335,20 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         internal readonly struct RegisteredEntitySearcher
         {
             public delegate Task<ICollection<IEntity>> SearchAsyncDelegate(
-                string query,
+                object query,
                 CancellationToken cancellationToken);
 
             public Type EntityType { get; }
+            public Type QueryType { get; }
             public SearchAsyncDelegate SearchAsync { get; }
 
             public RegisteredEntitySearcher(
                 Type entityType,
+                Type queryType,
                 SearchAsyncDelegate searchAsync)
             {
                 this.EntityType = entityType;
+                this.QueryType = queryType;
                 this.SearchAsync = searchAsync;
             }
         }
@@ -466,16 +477,18 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                     }));
             }
 
-            private void AddSearcherCore<TEntity>(
-                IEntitySearcher<TEntity> searcher)
+            private void AddSearcherCore<TQuery, TEntity>(
+                IEntitySearcher<TQuery, TEntity> searcher)
                 where TEntity : IEntity
             {
                 this.entitySearchers.Add(new RegisteredEntitySearcher(
                     typeof(TEntity),
+                    typeof(TQuery),
                     async (query, cancellationToken) =>
                     {
+                        Debug.Assert(query is TQuery);
                         var result = await searcher
-                            .SearchAsync(query, cancellationToken)
+                            .SearchAsync((TQuery)query, cancellationToken)
                             .ConfigureAwait(false);
 
                         return result.Cast<IEntity>().ToList();
@@ -552,7 +565,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             {
                 foreach (var genericInterface in GetGenericInterfaces(
                     searcher.GetType(),
-                    typeof(IEntitySearcher<>)))
+                    typeof(IEntitySearcher<,>)))
                 {
                     this.addSearcherCoreMethod
                         .MakeGenericMethod(genericInterface.GenericTypeArguments)
@@ -652,9 +665,11 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 return this.entityCaches;
             }
 
-            internal List<RegisteredEntitySearcher> BuildSearchers()
+            internal IDictionary<Type, List<RegisteredEntitySearcher>> BuildSearchers()
             {
-                return this.entitySearchers;
+                return this.entitySearchers
+                    .GroupBy(s => s.QueryType)
+                    .ToDictionary(g => g.Key, g => g.ToList());
             }
 
             public EntityContext Build()
