@@ -23,34 +23,20 @@ using Google.Solutions.Apis.Locator;
 
 namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
 {
-    /// <summary>
-    /// A Google Cloud organization.
-    /// </summary>
-    public class Organization : IEntity<OrganizationLocator>
+    public class Zone : IInstanceSet, IEntity<ZoneLocator>
     {
-        /// <summary>
-        /// Default organzization, used in places where the actual
-        /// organization is unknown or inaccessible.
-        /// </summary>
-        public static readonly Organization Default = new Organization(
-            new OrganizationLocator(0),
-            "Default organization");
-
-        public Organization(OrganizationLocator locator, string displayName)
+        public Zone(ZoneLocator zoneLocator, string displayName)
         {
             this.DisplayName = displayName;
-            this.Locator = locator;
+            this.Locator = zoneLocator;
         }
 
         //----------------------------------------------------------------------
         // IEntity.
         //----------------------------------------------------------------------
 
-        /// <summary>
-        /// Primary domain of the organization, or a different display name.
-        /// </summary>
         public string DisplayName { get; }
 
-        public OrganizationLocator Locator { get; }
+        public ZoneLocator Locator { get; }
     }
 }

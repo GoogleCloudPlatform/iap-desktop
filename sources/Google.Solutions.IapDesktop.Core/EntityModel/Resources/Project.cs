@@ -26,13 +26,27 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
     /// <summary>
     /// A Google Cloud project.
     /// </summary>
-    public class Project : IEntity
+    public class Project : IEntity<ProjectLocator>
     {
-        private Project(ProjectLocator locator, string projectName)
+        public Project(
+            OrganizationLocator organizationLocator,
+            ProjectLocator locator, 
+            string projectName,
+            bool accessible)
         {
+            this.Organization = organizationLocator;
             this.DisplayName = projectName;
             this.Locator = locator;
+            this.IsAccessible = accessible;
         }
+
+        /// <summary>
+        /// Indicates whether this project can be accessed
+        /// by the current user.
+        /// </summary>
+        public bool IsAccessible { get; }
+
+        public OrganizationLocator Organization { get; }
 
         //----------------------------------------------------------------------
         // IEntity.
@@ -40,6 +54,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
 
         public string DisplayName { get; }
 
-        public ILocator Locator { get; }
+        public ProjectLocator Locator { get; }
     }
 }

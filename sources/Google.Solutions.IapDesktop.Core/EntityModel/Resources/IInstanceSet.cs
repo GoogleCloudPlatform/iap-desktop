@@ -19,30 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Locator;
-
-namespace Google.Solutions.IapDesktop.Core.EntityModel
+namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
 {
     /// <summary>
-    /// Default aspect of an entity. Implementations typically 
-    /// provide basic information about the entity,
-    /// but might not provide full details.
+    /// A set of instances
     /// </summary>
-    public interface IEntity
+    public interface IInstanceSet : IEntity
     {
-        /// <summary>
-        /// Display name, might differ from the name
-        /// used in the locator.
-        /// </summary>
-        string DisplayName { get; }
-
-    }
-
-    public interface IEntity<TLocator> : IEntity where TLocator : ILocator
-    { 
-        /// <summary>
-        /// Locator for this item.
-        /// </summary>
-        TLocator Locator { get; }
     }
 }

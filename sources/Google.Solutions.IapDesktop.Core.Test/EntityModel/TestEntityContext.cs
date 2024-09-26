@@ -92,11 +92,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 this.entities = entities;
             }
 
-            public Task DeleteAsync(TLocator locator, CancellationToken cancellationToken)
-            {
-                throw new NotImplementedException();
-            }
-
             public void Invalidate(TLocator locator)
             {
                 throw new NotImplementedException();

@@ -26,7 +26,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
     /// <summary>
     /// The Google Cloud universe.
     /// </summary>
-    public class Universe : IEntity
+    public class Universe : IEntity<UniverseLocator>
     {
         public static readonly Universe Cloud = new Universe(
             UniverseLocator.Cloud,
@@ -44,6 +44,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
 
         public string DisplayName { get; }
 
-        public ILocator Locator { get; }
+        public UniverseLocator Locator { get; }
     }
 }

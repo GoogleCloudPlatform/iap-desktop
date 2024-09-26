@@ -28,15 +28,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             CancellationToken cancellationToken);
 
         /// <summary>
-        /// Delete item.
-        /// </summary>
-        Task DeleteAsync(
-            TLocator locator,
-            CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Remove item from cache (if present) and cause it to
-        /// be reloaded the next time it's accessed.
+        /// Invalidate the container.
         /// </summary>
         void Invalidate(TLocator locator);
     }
