@@ -47,14 +47,14 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
         IAsyncEntityAspectProvider<OrganizationLocator, Organization>,
         IAsyncEntityAspectProvider<ProjectLocator, Project>
     {
-        private readonly IWorkspaceSettings settings;
+        private readonly IProjectWorkspaceSettings settings;
         private readonly IResourceManagerClient resourceManager;
 
         private readonly AsyncLock cacheLock = new AsyncLock();
         private State? cache = null;
 
         public ProjectWorkspace(
-            IWorkspaceSettings settings,
+            IProjectWorkspaceSettings settings,
             IResourceManagerClient resourceManager)
         {
             this.settings = settings;
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
         /// Load list of projects from API.
         /// </summary>
         private static async Task<State> LoadStateAsync(
-            IWorkspaceSettings context,
+            IProjectWorkspaceSettings context,
             IResourceManagerClient resourceManager,
             CancellationToken cancellationToken)
         {
@@ -365,7 +365,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
     // Context.
     //----------------------------------------------------------------------
 
-    public interface IWorkspaceSettings
+    public interface IProjectWorkspaceSettings
     {
         /// <summary>
         /// List of projects in this workspace.

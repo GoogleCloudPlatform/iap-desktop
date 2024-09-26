@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         [Test]
         public async Task ListOrganizations_WhenWorkspaceEmpty()
         {
-            var settings = new Mock<IWorkspaceSettings>();
+            var settings = new Mock<IProjectWorkspaceSettings>();
             var workspace = new ProjectWorkspace(
                 settings.Object,
                 new Mock<IResourceManagerClient>().Object);
@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         [Test]
         public async Task ListOrganizations_WhenProjectAncestryUnknown()
         {
-            var settings = new Mock<IWorkspaceSettings>();
+            var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
                 .Returns(Enumerables.Scalar(SampleProject));
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         {
             var org = new OrganizationLocator(1);
 
-            var settings = new Mock<IWorkspaceSettings>();
+            var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
                 .Returns(Enumerables.Scalar(SampleProject));
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         [Test]
         public async Task ListOrganizations_WhenProjectAncestryInaccessible()
         {
-            var settings = new Mock<IWorkspaceSettings>();
+            var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
                 .Returns(Enumerables.Scalar(SampleProject));
@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         {
             var org = new OrganizationLocator(1);
 
-            var settings = new Mock<IWorkspaceSettings>();
+            var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
                 .Returns(Enumerables.Scalar(SampleProject));
@@ -204,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         [Test]
         public async Task QueryOrganization_WhenNotFound()
         {
-            var settings = new Mock<IWorkspaceSettings>();
+            var settings = new Mock<IProjectWorkspaceSettings>();
             var workspace = new ProjectWorkspace(
                 settings.Object,
                 new Mock<IResourceManagerClient>().Object);
@@ -223,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         [Test]
         public async Task ListProjects_WhenProjectInaccessible()
         {
-            var settings = new Mock<IWorkspaceSettings>();
+            var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
                 .Returns(Enumerables.Scalar(SampleProject));
@@ -250,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         [Test]
         public void ListProjects_WhenReauthTriggered()
         {
-            var settings = new Mock<IWorkspaceSettings>();
+            var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
                 .Returns(Enumerables.Scalar(SampleProject));
@@ -276,7 +276,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         [Test]
         public async Task ListProjects_WhenAncestryInaccessible()
         {
-            var settings = new Mock<IWorkspaceSettings>();
+            var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
                 .Returns(Enumerables.Scalar(SampleProject));
@@ -307,7 +307,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         [Test]
         public async Task ListProjects()
         {
-            var settings = new Mock<IWorkspaceSettings>();
+            var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
                 .Returns(Enumerables.Scalar(SampleProject));
@@ -353,7 +353,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         [Test]
         public async Task QueryProject_WhenNotFound()
         {
-            var settings = new Mock<IWorkspaceSettings>();
+            var settings = new Mock<IProjectWorkspaceSettings>();
             var workspace = new ProjectWorkspace(
                 settings.Object,
                 new Mock<IResourceManagerClient>().Object);
