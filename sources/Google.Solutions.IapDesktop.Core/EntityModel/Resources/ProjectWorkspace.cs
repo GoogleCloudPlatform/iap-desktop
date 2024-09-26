@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
     /// Contains a user-selected set of projects, aggregated
     /// by the organization they belong to.
     /// </summary>
-    public class ProjectWorkspace :
+    public class ProjectWorkspace : // TODO: rename to Profile, use locator other than Universe?
         IEntityContainer<UniverseLocator, Organization>,
         IEntityContainer<OrganizationLocator, Project>,
         IAsyncEntityAspectProvider<OrganizationLocator, Organization>,

@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             /// <summary>
             /// List all descendents that have been loaded, ignoring any filter.
             /// </summary>
-            internal IEnumerable<ViewModelNode> LoadedDescendents // TODO: test
+            internal IEnumerable<ViewModelNode> LoadedDescendents
             {
                 get
                 {
