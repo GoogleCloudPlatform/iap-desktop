@@ -46,4 +46,9 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             TQuery query,
             CancellationToken cancellationToken);
     }
+
+    /// <summary>
+    /// Pseudo-query that matches everything.
+    /// </summary>
+    public abstract class AnyQuery { }
 }

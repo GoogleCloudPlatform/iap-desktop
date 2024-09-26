@@ -45,6 +45,16 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         private static readonly ProjectLocator SampleProject = new ProjectLocator("project-1");
 
         //----------------------------------------------------------------------
+        // Caching.
+        //----------------------------------------------------------------------
+
+        [Test]
+        public void Cache_WhenDirty()
+        {
+            Assert.Fail();
+        }
+
+        //----------------------------------------------------------------------
         // Expand organizations.
         //----------------------------------------------------------------------
 

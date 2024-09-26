@@ -28,6 +28,7 @@ using Google.Solutions.Common.Threading;
 using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -41,10 +42,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
     /// Contains a user-selected set of projects, aggregated
     /// by the organization they belong to.
     /// </summary>
-    public class ProjectWorkspace :
-        // TODO: rename to Profile, use locator other than Universe?
-        // TODO: implement IEntityCache
-        IEntityExpander<UniverseLocator, Organization, OrganizationLocator>, // TODO: IEntitySearcher<?, Organization>
+    public class ProjectWorkspace : // TODO: rename to Profile?
+        IEntityExpander<UniverseLocator, Organization, OrganizationLocator>, // TODO: IEntitySearcher<AnyQuery, Organization>, IEntitySearcher<AnyQuery, Project>
         IEntityExpander<OrganizationLocator, Project, ProjectLocator>,
         IAsyncEntityAspectProvider<OrganizationLocator, Organization>,
         IAsyncEntityAspectProvider<ProjectLocator, Project>
@@ -54,6 +53,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
 
         private readonly AsyncLock cacheLock = new AsyncLock();
         private State? cache = null;
+        private volatile bool cacheIsDirty = false;
 
         public ProjectWorkspace(
             IProjectWorkspaceSettings settings,
@@ -61,6 +61,17 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
         {
             this.settings = settings;
             this.resourceManager = resourceManager;
+
+            this.settings.PropertyChanged += (_, args) =>
+            {
+                if (args.PropertyName == nameof(settings.Projects))
+                {
+                    //
+                    // Force cache invalidation next time it's accessed.
+                    //
+                    this.cacheIsDirty = true;
+                }
+            };
         }
 
         //----------------------------------------------------------------------
@@ -266,7 +277,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
                 .AcquireAsync(cancellationToken)
                 .ConfigureAwait(false))
             {
-                if (this.cache == null)
+                if (this.cache == null || this.cacheIsDirty)
                 {
                     //
                     // Populate cache. If this fails, we rethrow the exception
@@ -277,6 +288,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
                         this.resourceManager,
                         cancellationToken)
                         .ConfigureAwait(false);
+                    this.cacheIsDirty = false;
                 }
 
                 return this.cache;
@@ -350,7 +362,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
     // Context.
     //----------------------------------------------------------------------
 
-    public interface IProjectWorkspaceSettings
+    public interface IProjectWorkspaceSettings : INotifyPropertyChanged
     {
         /// <summary>
         /// List of projects in this workspace.
