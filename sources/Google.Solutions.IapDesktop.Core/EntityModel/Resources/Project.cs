@@ -24,21 +24,13 @@ using Google.Solutions.Apis.Locator;
 namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
 {
     /// <summary>
-    /// A Google Cloud organization.
+    /// A Google Cloud project.
     /// </summary>
-    public class Organization : IEntity
+    public class Project : IEntity
     {
-        /// <summary>
-        /// Default organzization, used in places where the actual
-        /// organization is unknown or inaccessible.
-        /// </summary>
-        public static readonly Organization Default = new Organization(
-            new OrganizationLocator(0),
-            "Default organization");
-
-        public Organization(OrganizationLocator locator, string displayName)
+        private Project(ProjectLocator locator, string projectName)
         {
-            this.DisplayName = displayName;
+            this.DisplayName = projectName;
             this.Locator = locator;
         }
 
@@ -46,9 +38,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
         // IEntity.
         //----------------------------------------------------------------------
 
-        /// <summary>
-        /// Primary domain of the organization, or a different display name.
-        /// </summary>
         public string DisplayName { get; }
 
         public ILocator Locator { get; }

@@ -28,9 +28,11 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
     /// </summary>
     public class Universe : IEntity
     {
-        public static Universe Cloud = new Universe("Google Cloud", UniverseLocator.Cloud);
+        public static readonly Universe Cloud = new Universe(
+            UniverseLocator.Cloud,
+            "Google Cloud");
 
-        private Universe(string displayName, ILocator locator)
+        private Universe(UniverseLocator locator, string displayName)
         {
             this.DisplayName = displayName;
             this.Locator = locator;
