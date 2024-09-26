@@ -255,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         /// <summary>
         /// Configuration for a type of locator.
         /// </summary>
-        internal readonly struct LocatorConfiguration // TODO: make private
+        internal readonly struct LocatorConfiguration
         {
             public Type LocatorType { get; }
             public ICollection<RegisteredEntityContainer> EntityContainers { get; }
