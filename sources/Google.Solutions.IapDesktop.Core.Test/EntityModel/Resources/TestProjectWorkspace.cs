@@ -35,6 +35,8 @@ using CrmProject = Google.Apis.CloudResourceManager.v1.Data.Project;
 using CrmOrganization = Google.Apis.CloudResourceManager.v1.Data.Organization;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Testing.Apis;
+using Google.Solutions.IapDesktop.Core.EntityModel;
+using System.ComponentModel;
 
 
 namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
@@ -45,21 +47,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         private static readonly ProjectLocator SampleProject = new ProjectLocator("project-1");
 
         //----------------------------------------------------------------------
-        // Caching.
+        // Search organizations.
         //----------------------------------------------------------------------
 
         [Test]
-        public void Cache_WhenDirty()
-        {
-            Assert.Fail();
-        }
-
-        //----------------------------------------------------------------------
-        // Expand organizations.
-        //----------------------------------------------------------------------
-
-        [Test]
-        public async Task ExpandOrganizations_WhenWorkspaceEmpty()
+        public async Task SearchOrganizations_WhenWorkspaceEmpty()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             var workspace = new ProjectWorkspace(
@@ -67,13 +59,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
                 new Mock<IResourceManagerClient>().Object);
 
             var organizations = await workspace
-                .ExpandAsync(UniverseLocator.Cloud, CancellationToken.None)
+                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsEmpty(organizations);
         }
 
         [Test]
-        public async Task ExpandOrganizations_WhenProjectAncestryUnknown()
+        public async Task SearchOrganizations_WhenCalledTwice_ThenUsesCache()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
@@ -89,8 +81,81 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
                 settings.Object,
                 resourceMamager.Object);
 
+            // Search twice.
+            await workspace
+                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
+                .ConfigureAwait(false);
+            await workspace
+                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            // Check that cache loaded once.
+            resourceMamager.Verify(
+                r => r.GetProjectAsync(SampleProject, It.IsAny<CancellationToken>()),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task SearchOrganizations_WhenSettingsChange_ThenInvalidatesCache()
+        {
+            var settings = new Mock<IProjectWorkspaceSettings>();
+            settings
+                .SetupGet(s => s.Projects)
+                .Returns(Enumerables.Scalar(SampleProject));
+
+            var resourceMamager = new Mock<IResourceManagerClient>();
+            resourceMamager
+                .Setup(r => r.GetProjectAsync(SampleProject, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CrmProject());
+
+            var workspace = new ProjectWorkspace(
+                settings.Object,
+                resourceMamager.Object);
+
+            // Search to load cache.
+            await workspace
+                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            // Invalidate.
+            settings.Raise(
+                s => s.PropertyChanged += null,
+                new PropertyChangedEventArgs(nameof(IProjectWorkspaceSettings.Projects)));
+
+            // Search again.
+            await workspace
+                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
+                .ConfigureAwait(false);
+            await workspace
+                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            // Check that cache loaded once.
+            resourceMamager.Verify(
+                r => r.GetProjectAsync(SampleProject, It.IsAny<CancellationToken>()),
+                Times.Exactly(2));
+        }
+
+        [Test]
+        public async Task SearchOrganizations_WhenProjectAncestryUnknown()
+        {
+            var settings = new Mock<IProjectWorkspaceSettings>();
+            settings
+                .SetupGet(s => s.Projects)
+                .Returns(Enumerables.Scalar(SampleProject));
+
+            // Fail calls to load ancestry.
+            var resourceMamager = new Mock<IResourceManagerClient>();
+            resourceMamager
+                .Setup(r => r.GetProjectAsync(SampleProject, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CrmProject());
+
+            var workspace = new ProjectWorkspace(
+                settings.Object,
+                resourceMamager.Object);
+
             var organizations = await workspace
-                .ExpandAsync(UniverseLocator.Cloud, CancellationToken.None)
+                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsNotEmpty(organizations);
             Assert.AreEqual(
@@ -99,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         }
 
         [Test]
-        public async Task ExpandOrganizations_WhenProjectAncestryCached()
+        public async Task SearchOrganizations_WhenProjectAncestryCached()
         {
             var org = new OrganizationLocator(1);
 
@@ -127,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
                 resourceMamager.Object);
 
             var organizations = await workspace
-                .ExpandAsync(UniverseLocator.Cloud, CancellationToken.None)
+                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsNotEmpty(organizations);
             Assert.AreEqual(
@@ -145,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         }
 
         [Test]
-        public async Task ExpandOrganizations_WhenProjectAncestryInaccessible()
+        public async Task SearchOrganizations_WhenProjectAncestryInaccessible()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
@@ -165,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
                 resourceMamager.Object);
 
             var organizations = await workspace
-                .ExpandAsync(UniverseLocator.Cloud, CancellationToken.None)
+                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsNotEmpty(organizations);
             Assert.AreEqual(
@@ -174,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         }
 
         [Test]
-        public async Task ExpandOrganizations_WhenProjectAncestryCachedButOrganizationInaccessible()
+        public async Task SearchOrganizations_WhenProjectAncestryCachedButOrganizationInaccessible()
         {
             var org = new OrganizationLocator(1);
 
@@ -199,7 +264,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
                 resourceMamager.Object);
 
             var organizations = await workspace
-                .ExpandAsync(UniverseLocator.Cloud, CancellationToken.None)
+                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsNotEmpty(organizations);
             Assert.AreEqual(
@@ -208,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         }
 
         //----------------------------------------------------------------------
-        // Query organization.
+        // Query organizations.
         //----------------------------------------------------------------------
 
         [Test]
@@ -227,11 +292,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         }
 
         //----------------------------------------------------------------------
-        // Expand projects.
+        // Expand organizations.
         //----------------------------------------------------------------------
 
         [Test]
-        public async Task ExpandProjects_WhenProjectInaccessible()
+        public async Task ExpandOrganization_WhenProjectInaccessible()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
@@ -258,7 +323,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         }
 
         [Test]
-        public void ExpandProjects_WhenReauthTriggered()
+        public void ExpandOrganization_WhenReauthTriggered()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
@@ -284,7 +349,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         }
 
         [Test]
-        public async Task ExpandProjects_WhenAncestryInaccessible()
+        public async Task ExpandOrganization_WhenAncestryInaccessible()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
@@ -315,7 +380,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         }
 
         [Test]
-        public async Task ExpandProjects()
+        public async Task ExpandOrganization()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
@@ -357,7 +422,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
         }
 
         //----------------------------------------------------------------------
-        // Query project.
+        // Query projects.
         //----------------------------------------------------------------------
 
         [Test]

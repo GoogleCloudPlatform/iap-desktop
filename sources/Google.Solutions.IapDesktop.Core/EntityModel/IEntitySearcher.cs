@@ -50,5 +50,9 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     /// <summary>
     /// Pseudo-query that matches everything.
     /// </summary>
-    public abstract class AnyQuery { }
+    public class AnyQuery {
+        private AnyQuery() { }
+
+        public static readonly AnyQuery Instance = new AnyQuery();
+    }
 }

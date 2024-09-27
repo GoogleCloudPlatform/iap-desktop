@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
     /// by the organization they belong to.
     /// </summary>
     public class ProjectWorkspace : // TODO: rename to Profile?
-        IEntityExpander<UniverseLocator, Organization, OrganizationLocator>, // TODO: IEntitySearcher<AnyQuery, Organization>, IEntitySearcher<AnyQuery, Project>
+        IEntitySearcher<AnyQuery, Organization>, // TODO: IEntitySearcher<AnyQuery, Project>
         IEntityExpander<OrganizationLocator, Project, ProjectLocator>,
         IAsyncEntityAspectProvider<OrganizationLocator, Organization>,
         IAsyncEntityAspectProvider<ProjectLocator, Project>
@@ -337,8 +337,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
         // Organizations.
         //----------------------------------------------------------------------
 
-        public async Task<ICollection<Organization>> ExpandAsync(
-            UniverseLocator locator,
+        public async Task<ICollection<Organization>> SearchAsync(
+            AnyQuery query, 
             CancellationToken cancellationToken)
         {
             var state = await GetStateAsync(cancellationToken)
