@@ -42,8 +42,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
     /// Contains a user-selected set of projects, aggregated
     /// by the organization they belong to.
     /// </summary>
-    public class ProjectWorkspace : // TODO: rename to Profile?
-        IEntitySearcher<AnyQuery, Organization>, // TODO: IEntitySearcher<AnyQuery, Project>
+    public class ProjectWorkspace : 
+        IEntitySearcher<AnyQuery, Organization>,
         IEntityExpander<OrganizationLocator, Project, ProjectLocator>,
         IAsyncEntityAspectProvider<OrganizationLocator, Organization>,
         IAsyncEntityAspectProvider<ProjectLocator, Project>

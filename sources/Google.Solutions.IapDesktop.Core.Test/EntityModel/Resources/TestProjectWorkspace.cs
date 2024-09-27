@@ -330,6 +330,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
                 .SetupGet(s => s.Projects)
                 .Returns(Enumerables.Scalar(SampleProject));
 
+            // Trigger reauth.
             var resourceMamager = new Mock<IResourceManagerClient>();
             resourceMamager
                 .Setup(r => r.GetProjectAsync(SampleProject, It.IsAny<CancellationToken>()))
