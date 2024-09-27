@@ -196,6 +196,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 //
                 // Flatten result and cast to requested type.
                 //
+
+                // TODO: Order by type, displayname
                 return searchResults
                     .SelectMany(r => r)
                     .Cast<TEntity>()
