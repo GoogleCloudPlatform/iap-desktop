@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         /// </summary>
         public void Invalidate(ILocator locator)
         {
-            foreach (var cache in this.caches)
+            foreach (var cache in this.caches.Where(c => c.LocatorType == locator.GetType()))
             {
                 cache.Invalidate(locator);
             }
@@ -197,10 +197,10 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 // Flatten result and cast to requested type.
                 //
 
-                // TODO: Order by type, displayname
                 return searchResults
                     .SelectMany(r => r)
                     .Cast<TEntity>()
+                    .OrderBy(e => e.GetType().Name).ThenBy(e => e.DisplayName)
                     .ToList();
             }
             else

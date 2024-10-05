@@ -335,7 +335,35 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         }
 
         [Test]
-        public async Task Search()
+        public async Task Search_ResultsOrderedByTypeThenName()
+        {
+            var carSearcher = new Searcher<Car>(
+                new[] {
+                    new Car("sample-car3", new CarLocator()),
+                    new Car("sample-car1", new CarLocator()),
+                    new Car("sample-car2", new CarLocator())
+                });
+            var bikeSearcher = new Searcher<Bike>(
+                new[] {
+                    new Bike("sample-bike1", new BikeLocator())
+                });
+            var context = new EntityContext.Builder()
+                .AddSearcher(carSearcher)
+                .AddSearcher(bikeSearcher)
+                .Build();
+
+            var vehicles = (await context
+                .SearchAsync<string, IVehicle>("sample", CancellationToken.None)
+                .ConfigureAwait(false)).ToList();
+
+            Assert.AreEqual("sample-bike1", vehicles[0].DisplayName);
+            Assert.AreEqual("sample-car1", vehicles[1].DisplayName);
+            Assert.AreEqual("sample-car2", vehicles[2].DisplayName);
+            Assert.AreEqual("sample-car3", vehicles[3].DisplayName);
+        }
+
+        [Test]
+        public async Task Search_FilteredByType()
         {
             var carSearcher = new Searcher<Car>(
                 new[] {

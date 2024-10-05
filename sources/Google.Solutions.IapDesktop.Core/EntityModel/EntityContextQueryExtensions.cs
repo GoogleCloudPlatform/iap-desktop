@@ -11,7 +11,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     // TODO: Implement
     public static class EntityContextQueryExtensions
     {
-        public static Task<AspectQuery<TEntity>> Search<TQuery, TEntity>(
+        public static AspectQuery<TEntity> Search<TQuery, TEntity>(
             this EntityContext context,
             TQuery query,
             CancellationToken cancellationToken)
@@ -20,7 +20,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             throw new NotImplementedException();
         }
 
-        public static Task<AspectQuery<TEntity>> Expand<TEntity>(
+        public static AspectQuery<TEntity> Expand<TEntity>(
             this EntityContext context,
             ILocator locator,
             CancellationToken cancellationToken)
