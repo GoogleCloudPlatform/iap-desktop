@@ -19,27 +19,26 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.EntityModel.Introspection;
+using Google.Solutions.IapDesktop.Core.EntityModel;
+using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Introspection
+namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
 {
     [TestFixture]
-    public class TestEntityType
+    public class TestEntityTypeLocator : EquatableFixtureBase<EntityTypeLocator, EntityTypeLocator>
     {
-        [Test]
-        public void Locator()
+        protected override EntityTypeLocator CreateInstance()
         {
-            var entityType = new EntityType(typeof(string));
-            Assert.IsNotNull(entityType.Locator);
-            Assert.AreEqual(typeof(string), entityType.Locator.Type);
+            return new EntityTypeLocator(typeof(string));
         }
 
         [Test]
-        public void DisplayName()
+        public void ToString_ReturnsType()
         {
-            var entityType = new EntityType(typeof(string));
-            Assert.AreEqual("String", entityType.DisplayName);
+            Assert.AreEqual(
+                "types/System.String",
+                new EntityTypeLocator(typeof(string)).ToString());
         }
     }
 }

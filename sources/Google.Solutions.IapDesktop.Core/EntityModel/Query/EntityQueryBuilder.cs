@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Core.EntityModel
+namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
 {
     /// <summary>
     /// Delegate for deriving an aspect from one or more input aspects.
@@ -23,7 +23,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     /// <summary>
     /// Allows idiomatic querying of an entity context.
     /// </summary>
-    public class EntityQueryBuilder<TEntity>
+    public class EntityQueryBuilder<TEntity> // TODO: test
         where TEntity : IEntity<ILocator>
     {
         private readonly EntityContext context;

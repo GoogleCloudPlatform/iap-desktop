@@ -32,4 +32,7 @@
     <ProjectReference Include="..\Google.Solutions.Platform\Google.Solutions.Platform.csproj" />
     <ProjectReference Include="..\Google.Solutions.Testing.Apis\Google.Solutions.Testing.Apis.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="EntityModel\Query\" />
+  </ItemGroup>
 </Project>

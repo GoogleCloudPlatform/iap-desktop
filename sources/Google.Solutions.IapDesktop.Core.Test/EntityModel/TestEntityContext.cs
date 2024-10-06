@@ -21,7 +21,6 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.EntityModel;
-using Google.Solutions.IapDesktop.Core.EntityModel.Introspection;
 using Moq;
 using NUnit.Framework;
 using System;

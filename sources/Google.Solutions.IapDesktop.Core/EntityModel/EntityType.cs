@@ -22,7 +22,7 @@
 using Google.Solutions.Apis.Locator;
 using System;
 
-namespace Google.Solutions.IapDesktop.Core.EntityModel.Introspection
+namespace Google.Solutions.IapDesktop.Core.EntityModel
 {
     /// <summary>
     /// Identifies a type of entity.

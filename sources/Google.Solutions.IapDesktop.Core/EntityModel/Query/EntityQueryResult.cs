@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Core.EntityModel
+namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
 {
     /// <summary>
     /// Result of an entity query.
@@ -84,4 +84,4 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             }
         }
     }
-    }
+}
