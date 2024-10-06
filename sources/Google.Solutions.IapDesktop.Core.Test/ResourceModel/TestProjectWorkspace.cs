@@ -23,23 +23,22 @@ using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Linq;
 using Google.Solutions.Apis;
-using Google.Solutions.IapDesktop.Core.EntityModel.Resources;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
-using CrmProject = Google.Apis.CloudResourceManager.v1.Data.Project;
-using CrmOrganization = Google.Apis.CloudResourceManager.v1.Data.Organization;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.IapDesktop.Core.EntityModel;
 using System.ComponentModel;
+using Google.Solutions.IapDesktop.Core.ResourceModel;
 
+using CrmProject = Google.Apis.CloudResourceManager.v1.Data.Project;
+using CrmOrganization = Google.Apis.CloudResourceManager.v1.Data.Organization;
 
-namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
+namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 {
     [TestFixture]
     public class TestProjectWorkspace
@@ -204,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Resources
 
             resourceMamager
                 .Verify(r => r.FindOrganizationAsync(
-                    It.IsAny<ProjectLocator>(), 
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()),
                 Times.Never);
         }

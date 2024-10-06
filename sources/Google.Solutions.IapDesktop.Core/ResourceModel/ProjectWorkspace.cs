@@ -26,6 +26,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Threading;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Core.EntityModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,13 +37,13 @@ using System.Threading.Tasks;
 
 using CrmProject = Google.Apis.CloudResourceManager.v1.Data.Project;
 
-namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources 
+namespace Google.Solutions.IapDesktop.Core.ResourceModel
 {
     /// <summary>
     /// Contains a user-selected set of projects, aggregated
     /// by the organization they belong to.
     /// </summary>
-    public class ProjectWorkspace : 
+    public class ProjectWorkspace :
         IEntitySearcher<AnyQuery, Organization>,
         IEntityExpander<OrganizationLocator, Project>,
         IAsyncEntityAspectProvider<OrganizationLocator, Organization>,
@@ -301,8 +302,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
         public Task PreloadCacheAsync()
         {
             return LoadStateAsync(
-                this.settings, 
-                this.resourceManager, 
+                this.settings,
+                this.resourceManager,
                 CancellationToken.None);
         }
 
@@ -338,7 +339,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
         //----------------------------------------------------------------------
 
         public async Task<IEnumerable<Organization>> SearchAsync(
-            AnyQuery query, 
+            AnyQuery query,
             CancellationToken cancellationToken)
         {
             var state = await GetStateAsync(cancellationToken)

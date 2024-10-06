@@ -20,8 +20,9 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.IapDesktop.Core.EntityModel;
 
-namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
+namespace Google.Solutions.IapDesktop.Core.ResourceModel
 {
     public class Zone : IInstanceSet, IEntity<ComputeEngineLocator>
     {
