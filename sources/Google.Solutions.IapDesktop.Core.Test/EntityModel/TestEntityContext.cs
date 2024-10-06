@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.EntityModel;
+using Google.Solutions.IapDesktop.Core.EntityModel.Introspection;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -80,11 +81,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         public class ColorAspect { }
         public class ShapeAspect { }
 
-        private class Expander<TLocator, TEntity, TEntityLocator> 
-            : IEntityExpander<TLocator, TEntity, TEntityLocator>
+        private class Expander<TLocator, TEntity> 
+            : IEntityExpander<TLocator, TEntity>
             where TLocator : ILocator
-            where TEntityLocator : ILocator
-            where TEntity : IEntity<TEntityLocator>
+            where TEntity : IEntity
         {
             private readonly ICollection<TEntity> entities;
 
@@ -98,11 +98,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 throw new NotImplementedException();
             }
 
-            public Task<ICollection<TEntity>> ExpandAsync(
+            public Task<IEnumerable<TEntity>> ExpandAsync(
                 TLocator locator, 
                 CancellationToken cancellationToken)
             {
-                return Task.FromResult(this.entities);
+                return Task.FromResult<IEnumerable<TEntity>>(this.entities);
             }
 
             public Task<ICollection<TEntity>> SearchAsync(
@@ -125,11 +125,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 this.entities = entities;
             }
 
-            public Task<ICollection<TEntity>> SearchAsync(
+            public Task<IEnumerable<TEntity>> SearchAsync(
                 string query,
                 CancellationToken cancellationToken)
             {
-                return Task.FromResult<ICollection<TEntity>>(this.entities
+                return Task.FromResult<IEnumerable<TEntity>>(this.entities
                     .Where(e => e.DisplayName.Contains(query))
                     .ToList());
             }
@@ -152,8 +152,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         public void SupportsExpansion_WhenExpandersRegistered()
         {
             var context = new EntityContext.Builder()
-                .AddExpander(new Mock<IEntityExpander<GarageLocator, Car, CarLocator>>().Object)
-                .AddExpander(new Mock<IEntityExpander<GarageLocator, Bike, BikeLocator>>().Object)
+                .AddExpander(new Mock<IEntityExpander<GarageLocator, Car>>().Object)
+                .AddExpander(new Mock<IEntityExpander<GarageLocator, Bike>>().Object)
                 .Build();
             Assert.IsTrue(context.SupportsExpansion(new GarageLocator()));
             Assert.IsTrue(context.SupportsExpansion<GarageLocator>());
@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         public async Task Expand_WhenNoContainerRegisteredForLocator()
         {
             var context = new EntityContext.Builder()
-                .AddExpander(new Mock<IEntityExpander<GarageLocator, Car, CarLocator>>().Object)
+                .AddExpander(new Mock<IEntityExpander<GarageLocator, Car>>().Object)
                 .Build();
 
             CollectionAssert.IsEmpty(await context
@@ -253,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         public async Task Expand_WhenNoContainerRegisteredForEntityType()
         {
             var context = new EntityContext.Builder()
-                .AddExpander(new Mock<IEntityExpander<GarageLocator, Car, CarLocator>>().Object)
+                .AddExpander(new Mock<IEntityExpander<GarageLocator, Car>>().Object)
                 .Build();
 
             CollectionAssert.IsEmpty(await context
@@ -264,7 +264,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public async Task Expand_WhenEntityTypeDoesNotMatch()
         {
-            var container = new Expander<GarageLocator, Car, CarLocator>(
+            var container = new Expander<GarageLocator, Car>(
                 new[] {
                     new Car("c1", new CarLocator()), 
                     new Car("c2", new CarLocator()) 
@@ -281,12 +281,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public async Task Expand()
         {
-            var carContainer = new Expander<GarageLocator, Car, CarLocator>(
+            var carContainer = new Expander<GarageLocator, Car>(
                 new[] {
                     new Car("c1", new CarLocator()),
                     new Car("c2", new CarLocator())
                 });
-            var bikeContainer = new Expander<GarageLocator, Bike, BikeLocator>(
+            var bikeContainer = new Expander<GarageLocator, Bike>(
                 new[] {
                     new Bike("b1", new BikeLocator())
                 });
@@ -491,6 +491,79 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
             Assert.IsNotNull(await context
                 .QueryAspectAsync<ShapeAspect>(new CarLocator(), CancellationToken.None)
                 .ConfigureAwait(false));
+        }
+
+
+        //--------------------------------------------------------------------
+        // Introspection.
+        //--------------------------------------------------------------------
+
+        [Test]
+        public async Task Introspect()
+        {
+            var bikeSearcher = new Searcher<Bike>(
+                new[] {
+                    new Bike("sample-bike1", new BikeLocator())
+                });
+            var context = new EntityContext.Builder()
+                .AddSearcher(bikeSearcher)
+                .Build();
+
+            var typeNames = (await context
+                .SearchAsync<AnyQuery, EntityType>(AnyQuery.Instance, CancellationToken.None)
+                .ConfigureAwait(false))
+                .Select(t => t.DisplayName);
+
+            CollectionAssert.AreEquivalent(
+                new[] { "Bike", "EntityType" },
+                typeNames);
+        }
+
+        [Test]
+        public async Task Introspect_WhenEntityTypeDoesNotSupportQuery()
+        {
+            var bikeSearcher = new Searcher<Bike>(
+                new[] {
+                    new Bike("sample-bike1", new BikeLocator())
+                });
+            var context = new EntityContext.Builder()
+                .AddSearcher(bikeSearcher)
+                .Build();
+
+            var bikeType = (await context
+                .SearchAsync<AnyQuery, EntityType>(AnyQuery.Instance, CancellationToken.None)
+                .ConfigureAwait(false))
+                .First(t => t.Type == typeof(Bike));
+
+            Assert.AreEqual(0, (await context
+                .ExpandAsync<IEntity>(bikeType.Locator, CancellationToken.None)
+                .ConfigureAwait(false))
+                .Count());
+        }
+
+        [Test]
+        public async Task Introspect_Expand()
+        {
+            var searcher = new Mock<IEntitySearcher<AnyQuery, Bike>>();
+            searcher
+                .Setup(s => s.SearchAsync(AnyQuery.Instance, CancellationToken.None))
+                .ReturnsAsync(new[] {
+                    new Bike("sample-bike1", new BikeLocator())
+                });
+
+            var context = new EntityContext.Builder()
+                .AddSearcher(searcher.Object)
+                .Build();
+
+            var bikeType = (await context
+                .SearchAsync<AnyQuery, EntityType>(AnyQuery.Instance, CancellationToken.None)
+                .ConfigureAwait(false))
+                .First(t => t.Type == typeof(Bike));
+
+            Assert.AreEqual(1, (await context
+                .ExpandAsync<IEntity>(bikeType.Locator, CancellationToken.None)
+                .ConfigureAwait(false))
+                .Count());
         }
 
         //--------------------------------------------------------------------

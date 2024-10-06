@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
     /// </summary>
     public class ProjectWorkspace : 
         IEntitySearcher<AnyQuery, Organization>,
-        IEntityExpander<OrganizationLocator, Project, ProjectLocator>,
+        IEntityExpander<OrganizationLocator, Project>,
         IAsyncEntityAspectProvider<OrganizationLocator, Organization>,
         IAsyncEntityAspectProvider<ProjectLocator, Project>
     {
@@ -310,7 +310,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
         // Projects.
         //----------------------------------------------------------------------
 
-        public async Task<ICollection<Project>> ExpandAsync(
+        public async Task<IEnumerable<Project>> ExpandAsync(
             OrganizationLocator locator,
             CancellationToken cancellationToken)
         {
@@ -337,7 +337,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
         // Organizations.
         //----------------------------------------------------------------------
 
-        public async Task<ICollection<Organization>> SearchAsync(
+        public async Task<IEnumerable<Organization>> SearchAsync(
             AnyQuery query, 
             CancellationToken cancellationToken)
         {

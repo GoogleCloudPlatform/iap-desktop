@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     public interface IEntitySearcher<TQuery, TEntity> : IEntitySearcher
         where TEntity : IEntity
     {
-        Task<ICollection<TEntity>> SearchAsync(
+        Task<IEnumerable<TEntity>> SearchAsync(
             TQuery query,
             CancellationToken cancellationToken);
     }

@@ -42,16 +42,14 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     /// </summary>
     /// <typeparam name="TLocator">Parent locator type</typeparam>
     /// <typeparam name="TEntity">Entity type</typeparam>
-    /// <typeparam name="TEntityLocator">Entity locator type</typeparam>
-    public interface IEntityExpander<TLocator, TEntity, TEntityLocator> : IEntityExpander
+    public interface IEntityExpander<TLocator, TEntity> : IEntityExpander
         where TLocator : ILocator
-        where TEntityLocator: ILocator
-        where TEntity : IEntity<TEntityLocator>
+        where TEntity : IEntity
     {
         /// <summary>
         /// List direct descendents.
         /// </summary>
-        Task<ICollection<TEntity>> ExpandAsync(
+        Task<IEnumerable<TEntity>> ExpandAsync(
             TLocator parent,
             CancellationToken cancellationToken);
 

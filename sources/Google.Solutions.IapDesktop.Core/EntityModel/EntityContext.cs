@@ -20,15 +20,13 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.IapDesktop.Core.EntityModel.Introspection;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Common.Linq;
 
 namespace Google.Solutions.IapDesktop.Core.EntityModel
 {
@@ -36,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     /// Provides a unified view over data exposed by multiple
     /// entity expanders and aspect providers.
     /// </summary>
-    public class EntityContext
+    public partial class EntityContext
     {
         private readonly IList<RegisteredEntityCache> caches;
         private readonly IDictionary<Type, List<RegisteredEntitySearcher>> searchers;
@@ -152,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             {
                 var listTasks = configuration.Expanders
                     .Where(c => typeof(TEntity).IsAssignableFrom(c.EntityType))
-                    .Select(c => c.ListAsync(locator, cancellationToken))
+                    .Select(c => c.ExpandAsync(locator, cancellationToken))
                     .ToList();
 
                 var listResults = await Task
@@ -263,6 +261,61 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         }
 
         //--------------------------------------------------------------------
+        // Introspection
+        //--------------------------------------------------------------------
+
+        /// <summary>
+        /// Enables introspecting the entity types supported by this context.
+        /// </summary>
+        private class Introspector
+            : IEntitySearcher<AnyQuery, EntityType>, IEntityExpander<EntityTypeLocator, IEntity>
+        {
+            private readonly ICollection<RegisteredEntitySearcher> searchers;
+
+            public Introspector(ICollection<RegisteredEntitySearcher> searchers)
+            {
+                this.searchers = searchers;
+            }
+
+            /// <summary>
+            /// List all searchable entity types. Individual entity types
+            /// can then be expanded to list actual entities.
+            /// </summary>
+            public Task<IEnumerable<EntityType>> SearchAsync( // TODO: test
+                AnyQuery query,
+                CancellationToken cancellationToken)
+            {
+                return Task.FromResult<IEnumerable<EntityType>>(this.searchers
+                    .Select(s => new EntityType(s.EntityType))
+                    .ToList());
+            }
+
+            /// <summary>
+            /// List entities of a certain type.
+            /// </summary>
+            public Task<IEnumerable<IEntity>> ExpandAsync(
+                EntityTypeLocator typeLocator,
+                CancellationToken cancellationToken)
+            {
+                //
+                // Look for a suitable searcher.
+                //
+                var searcher = this.searchers.Where(s =>
+                    s.EntityType == typeLocator.Type && s.QueryType == typeof(AnyQuery));
+                if (searcher.Any())
+                {
+                    return searcher
+                        .First()
+                        .SearchAsync(AnyQuery.Instance, cancellationToken);
+                }
+                else
+                {
+                    return Task.FromResult(Enumerable.Empty<IEntity>());
+                }
+            }
+        }
+
+        //--------------------------------------------------------------------
         // Registration data structures.
         //--------------------------------------------------------------------
 
@@ -318,28 +371,28 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
 
         internal readonly struct RegisteredEntityExpander
         {
-            public delegate Task<ICollection<IEntity>> ListAsyncDelegate(
+            public delegate Task<IEnumerable<IEntity>> ExpandAsyncDelegate(
                 ILocator locator,
                 CancellationToken cancellationToken);
 
             public Type LocatorType { get; }
             public Type EntityType { get; }
-            public ListAsyncDelegate ListAsync { get; }
+            public ExpandAsyncDelegate ExpandAsync { get; }
 
             public RegisteredEntityExpander(
                 Type locatorType, 
                 Type entityType, 
-                ListAsyncDelegate listAsync)
+                ExpandAsyncDelegate listAsync)
             {
                 this.LocatorType = locatorType;
                 this.EntityType = entityType;
-                this.ListAsync = listAsync;
+                this.ExpandAsync = listAsync;
             }
         }
 
         internal readonly struct RegisteredEntitySearcher
         {
-            public delegate Task<ICollection<IEntity>> SearchAsyncDelegate(
+            public delegate Task<IEnumerable<IEntity>> SearchAsyncDelegate(
                 object query,
                 CancellationToken cancellationToken);
 
@@ -395,293 +448,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 this.LocatorType = locatorType;
                 this.AspectType = aspectType;
                 this.QueryAspectAsync = queryAspectAsync;
-            }
-        }
-
-        //--------------------------------------------------------------------
-        // Builder.
-        //--------------------------------------------------------------------
-
-        public class Builder
-        {
-            private readonly List<RegisteredEntityCache> entityCaches =
-                new List<RegisteredEntityCache>();
-            private readonly List<RegisteredEntityExpander> entityExpanders = 
-                new List<RegisteredEntityExpander>();
-            private readonly List<RegisteredEntitySearcher> entitySearchers = 
-                new List<RegisteredEntitySearcher>();
-            private readonly List<RegisteredAspectProvider> aspectProviders = 
-                new List<RegisteredAspectProvider>();
-            private readonly List<RegisteredAsyncAspectProvider> asyncAspectProviders = 
-                new List<RegisteredAsyncAspectProvider>();
-
-            private readonly MethodInfo addCacheCoreMethod;
-            private readonly MethodInfo addExpanderCoreMethod;
-            private readonly MethodInfo addSearcherCoreMethod;
-            private readonly MethodInfo addAspectProviderCoreMethod;
-            private readonly MethodInfo addAsyncAspectProviderCoreMethod;
-
-            public Builder()
-            {
-                this.addCacheCoreMethod = GetType().GetMethod(
-                    nameof(AddCacheCore),
-                    BindingFlags.Instance | BindingFlags.NonPublic);
-                this.addExpanderCoreMethod = GetType().GetMethod(
-                    nameof(AddExpanderCore),
-                    BindingFlags.Instance | BindingFlags.NonPublic);
-                this.addSearcherCoreMethod = GetType().GetMethod(
-                    nameof(AddSearcherCore),
-                    BindingFlags.Instance | BindingFlags.NonPublic);
-                this.addAspectProviderCoreMethod = GetType().GetMethod(
-                    nameof(AddAspectProviderCore),
-                    BindingFlags.Instance | BindingFlags.NonPublic);
-                this.addAsyncAspectProviderCoreMethod = GetType().GetMethod(
-                    nameof(AddAsyncAspectProviderCore),
-                    BindingFlags.Instance | BindingFlags.NonPublic);
-            }
-
-            /// <summary>
-            /// Lookup a type's implemented interface based on its unbound type.
-            /// </summary>
-            private static IEnumerable<Type> GetGenericInterfaces(
-                Type type,
-                Type unboundType)
-            {
-                return type
-                    .GetInterfaces()
-                    .Where(
-                        i => i.IsGenericType &&
-                        i.GetGenericTypeDefinition() == unboundType);
-            }
-
-            private void AddCacheCore<TLocator>(IEntityCache<TLocator> cache)
-                where TLocator : ILocator
-            {
-                this.entityCaches.Add(new RegisteredEntityCache(
-                    typeof(TLocator),
-                    locator => cache.Invalidate((TLocator)locator)));
-            }
-
-            private void AddExpanderCore<TLocator, TEntity, TEntityLocator>(
-                IEntityExpander<TLocator, TEntity, TEntityLocator> expander)
-                where TLocator : ILocator
-                where TEntityLocator : ILocator
-                where TEntity : IEntity<TEntityLocator>
-            {
-                this.entityExpanders.Add(new RegisteredEntityExpander(
-                    typeof(TLocator),
-                    typeof(TEntity),
-                    async (locator, cancellationToken) =>
-                    {
-                        Debug.Assert(locator is TLocator);
-                        var result = await expander
-                            .ExpandAsync((TLocator)locator, cancellationToken)
-                            .ConfigureAwait(false);
-
-                        return result.Cast<IEntity>().ToList();
-                    }));
-            }
-
-            private void AddSearcherCore<TQuery, TEntity>(
-                IEntitySearcher<TQuery, TEntity> searcher)
-                where TEntity : IEntity
-            {
-                this.entitySearchers.Add(new RegisteredEntitySearcher(
-                    typeof(TEntity),
-                    typeof(TQuery),
-                    async (query, cancellationToken) =>
-                    {
-                        Debug.Assert(query is TQuery);
-                        var result = await searcher
-                            .SearchAsync((TQuery)query, cancellationToken)
-                            .ConfigureAwait(false);
-
-                        return result.Cast<IEntity>().ToList();
-                    }));
-            }
-
-            private void AddAspectProviderCore<TLocator, TAspect>(
-                IEntityAspectProvider<TLocator, TAspect> provider)
-                where TLocator : ILocator
-                where TAspect : class
-            {
-                this.aspectProviders.Add(new RegisteredAspectProvider(
-                    typeof(TLocator),
-                    typeof(TAspect),
-                    locator =>
-                    {
-                        Debug.Assert(locator is TLocator);
-                        return provider.QueryAspect((TLocator)locator);
-                    }));
-            }
-
-            private void AddAsyncAspectProviderCore<TLocator, TAspect>(
-                IAsyncEntityAspectProvider<TLocator, TAspect> provider)
-                where TLocator : ILocator
-                where TAspect : class
-            {
-                this.asyncAspectProviders.Add(new RegisteredAsyncAspectProvider(
-                    typeof(TLocator),
-                    typeof(TAspect),
-                    async (locator, cancellationToken) =>
-                    {
-                        Debug.Assert(locator is TLocator);
-                        var result = await provider
-                            .QueryAspectAsync((TLocator)locator, cancellationToken)
-                            .ConfigureAwait(false);
-
-                        Debug.Assert(result != null);
-                        return result!;
-                    }));
-            }
-
-            internal Builder AddCache(IEntityCache cache)
-            {
-                foreach (var genericInterface in GetGenericInterfaces(
-                    cache.GetType(),
-                    typeof(IEntityCache<>)))
-                {
-                    this.addCacheCoreMethod
-                        .MakeGenericMethod(genericInterface.GenericTypeArguments)
-                        .Invoke(this, new object[] { cache });
-                }
-
-                return this;
-            }
-
-            public Builder AddExpander(IEntityExpander expander)
-            {
-                foreach (var genericInterface in GetGenericInterfaces(
-                    expander.GetType(),
-                    typeof(IEntityExpander<,,>)))
-                {
-                    this.addExpanderCoreMethod
-                        .MakeGenericMethod(genericInterface.GenericTypeArguments)
-                        .Invoke(this, new object[] { expander });
-                }
-
-                if (expander is IEntityCache cache)
-                {
-                    AddCache(cache);
-                }
-
-                return this;
-            }
-
-            public Builder AddSearcher(IEntitySearcher searcher)
-            {
-                foreach (var genericInterface in GetGenericInterfaces(
-                    searcher.GetType(),
-                    typeof(IEntitySearcher<,>)))
-                {
-                    this.addSearcherCoreMethod
-                        .MakeGenericMethod(genericInterface.GenericTypeArguments)
-                        .Invoke(this, new object[] { searcher });
-                }
-
-                if (searcher is IEntityCache cache)
-                {
-                    AddCache(cache);
-                }
-
-                return this;
-            }
-
-            public Builder AddAspectProvider(IEntityAspectProvider provider)
-            {
-                //
-                // Synchrounous.
-                //
-                foreach (var genericInterface in GetGenericInterfaces(
-                    provider.GetType(),
-                    typeof(IEntityAspectProvider<,>)))
-                {
-                    this.addAspectProviderCoreMethod
-                        .MakeGenericMethod(genericInterface.GenericTypeArguments)
-                        .Invoke(this, new object[] { provider });
-                }
-
-                //
-                // Asynchrounous.
-                //
-                foreach (var genericInterface in GetGenericInterfaces(
-                    provider.GetType(),
-                    typeof(IAsyncEntityAspectProvider<,>)))
-                {
-                    this.addAsyncAspectProviderCoreMethod
-                        .MakeGenericMethod(genericInterface.GenericTypeArguments)
-                        .Invoke(this, new object[] { provider });
-                }
-
-                if (provider is IEntityCache cache)
-                {
-                    AddCache(cache);
-                }
-
-                return this;
-            }
-
-            public Builder AddExpanders(IEnumerable<IEntityExpander> expander)
-            {
-                foreach (var container in expander)
-                {
-                    AddExpander(container);
-                }
-
-                return this;
-            }
-
-            public Builder AddSearchers(IEnumerable<IEntitySearcher> searchers)
-            {
-                foreach (var searcher in searchers)
-                {
-                    AddSearcher(searcher);
-                }
-
-                return this;
-            }
-
-            public Builder AddAspectProviders(IEnumerable<IEntityAspectProvider> providers)
-            {
-                foreach (var provider in providers)
-                {
-                    AddAspectProvider(provider);
-                }
-
-                return this;
-            }
-
-            internal IDictionary<Type, LocatorConfiguration> BuildLocatorConfiguration()
-            {
-                return Enumerable.Empty<Type>()
-                    .Concat(this.entityExpanders.Select(c => c.LocatorType))
-                    .Concat(this.aspectProviders.Select(c => c.LocatorType))
-                    .Concat(this.asyncAspectProviders.Select(c => c.LocatorType))
-                    .Distinct()
-                    .ToDictionary(
-                        type => type,
-                        type => new LocatorConfiguration(
-                            type,
-                            this.entityExpanders.Where(c => c.LocatorType == type).ToList(),
-                            this.aspectProviders.Where(c => c.LocatorType == type).ToList(),
-                            this.asyncAspectProviders.Where(c => c.LocatorType == type).ToList()));
-            }
-
-            internal List<RegisteredEntityCache> BuildCaches()
-            {
-                return this.entityCaches;
-            }
-
-            internal IDictionary<Type, List<RegisteredEntitySearcher>> BuildSearchers()
-            {
-                return this.entitySearchers
-                    .GroupBy(s => s.QueryType)
-                    .ToDictionary(g => g.Key, g => g.ToList());
-            }
-
-            public EntityContext Build()
-            {
-                return new EntityContext(this);
             }
         }
     }
