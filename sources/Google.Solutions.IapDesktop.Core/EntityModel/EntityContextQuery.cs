@@ -45,9 +45,9 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             /// <summary>
             /// Query entities by performing a search.
             /// </summary>
-            public AspectQuery<TEntity> Search<TQuery>(TQuery query)
+            public EntityAspectQuery<TEntity> Search<TQuery>(TQuery query)
             {
-                return new AspectQuery<TEntity>(
+                return new EntityAspectQuery<TEntity>(
                     this.context,
                     ct => this.context.SearchAsync<TQuery, TEntity>(query, ct));
             }
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             /// <summary>
             /// Query entities by performing a wildcard search.
             /// </summary>
-            public AspectQuery<TEntity> List()
+            public EntityAspectQuery<TEntity> List()
             {
                 return Search(AnyQuery.Instance);
             }
@@ -64,15 +64,15 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             /// Query entities by parent locator.
             /// </summary>
             /// <param name="locator">Locator of parent entity</param>
-            public AspectQuery<TEntity> ByAncestor(ILocator locator)
+            public EntityAspectQuery<TEntity> ByAncestor(ILocator locator)
             {
-                return new AspectQuery<TEntity>(
+                return new EntityAspectQuery<TEntity>(
                     this.context,
                     ct => this.context.ExpandAsync<TEntity>(locator, ct));
             }
         }
 
-        public class AspectQuery<TEntity>
+        public class EntityAspectQuery<TEntity>
             where TEntity : IEntity<ILocator>
         {
             private readonly EntityContext context;
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             private readonly Dictionary<Type, DeriveAspectDelegate> derivedAspects
                 = new Dictionary<Type, DeriveAspectDelegate>();
 
-            internal AspectQuery(
+            internal EntityAspectQuery(
                 EntityContext context,
                 QueryDelegate<TEntity> query)
             {
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             /// Include an aspect in the query so that its value
             /// can later be accessed in EntityWithAspects.
             /// </summary>
-            public AspectQuery<TEntity> IncludeAspect<TAspect>()
+            public EntityAspectQuery<TEntity> IncludeAspect<TAspect>()
                 where TAspect : class
             {
                 //
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             /// <summary>
             /// Derive an aspect from another aspect.
             /// </summary>
-            public AspectQuery<TEntity> IncludeAspect<TAspect, TInputAspect>(
+            public EntityAspectQuery<TEntity> IncludeAspect<TAspect, TInputAspect>(
                 Func<TInputAspect?, TAspect?> func)
                 where TInputAspect : class
                 where TAspect : class
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 return this;
             }
 
-            public async Task<EntityCollection<TEntity>> ExecuteAsync(
+            public async Task<EntityAspectQueryResult<TEntity>> ExecuteAsync(
                 CancellationToken cancellationToken)
             {
                 //
@@ -160,8 +160,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 //
                 // Kick of asynchronous queries for each aspects and entity.
                 //
-                return new EntityCollection<TEntity>(await Task.WhenAll(entities
-                    .Select(e => EntityWithAspects<TEntity>.CreateAsync(
+                return new EntityAspectQueryResult<TEntity>(await Task.WhenAll(entities
+                    .Select(e => EntityAspectQueryResult<TEntity>.Item.CreateAsync(
                         e,
                         this.aspects.ToDictionary(
                             item => item.Key,
@@ -175,76 +175,76 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     /// <summary>
     /// Collection of entities.
     /// </summary>
-    public sealed class EntityCollection<TEntity> : ReadOnlyCollection<EntityWithAspects<TEntity>>, IDisposable
+    public sealed class EntityAspectQueryResult<TEntity> 
+        : ReadOnlyCollection<EntityAspectQueryResult<TEntity>.Item>, IDisposable
         where TEntity : IEntity<ILocator>
     {
-        public EntityCollection(IList<EntityWithAspects<TEntity>> list) : base(list)
+        public EntityAspectQueryResult(IList<Item> list) : base(list)
         {
         }
 
         public void Dispose()
         {
         }
-    }
-
-    /// <summary>
-    /// An entity with associated aspects.
-    /// </summary>
-    public class EntityWithAspects<TEntity>
-        where TEntity : IEntity<ILocator>
-    {
-        private readonly Dictionary<Type, object?> aspects;
-        private readonly Dictionary<Type, DeriveAspectDelegate> derivedAspects;
-
-        internal static async Task<EntityWithAspects<TEntity>> CreateAsync(
-            TEntity entity,
-            Dictionary<Type, Task<object?>> aspectTasks,
-            Dictionary<Type, DeriveAspectDelegate> derivedAspects)
-        {
-            await Task
-                .WhenAll(aspectTasks.Values)
-                .ConfigureAwait(false);
-
-            return new EntityWithAspects<TEntity>(
-                entity,
-                aspectTasks.ToDictionary(
-                    item => item.Key,
-                    item => item.Value.Result),
-                derivedAspects);
-        }
-
-        private EntityWithAspects(
-            TEntity entity,
-            Dictionary<Type, object?> aspectValues,
-            Dictionary<Type, DeriveAspectDelegate> derivedAspects)
-        {
-            this.Entity = entity;
-            this.aspects = aspectValues;
-            this.derivedAspects = derivedAspects;
-        }
 
         /// <summary>
-        /// The entity itself.
+        /// An entity with associated aspects.
         /// </summary>
-        public TEntity Entity { get; }
-
-        /// <summary>
-        /// Get aspect for this entity.
-        /// </summary>
-        public TAspect? Aspect<TAspect>() where TAspect : class
+        public class Item
         {
-            if (this.aspects.ContainsKey(typeof(TAspect)))
+            private readonly Dictionary<Type, object?> aspects;
+            private readonly Dictionary<Type, DeriveAspectDelegate> derivedAspects;
+
+            internal static async Task<Item> CreateAsync(
+                TEntity entity,
+                Dictionary<Type, Task<object?>> aspectTasks,
+                Dictionary<Type, DeriveAspectDelegate> derivedAspects)
             {
-                return this.aspects[typeof(TAspect)] as TAspect;
+                await Task
+                    .WhenAll(aspectTasks.Values)
+                    .ConfigureAwait(false);
+
+                return new Item(
+                    entity,
+                    aspectTasks.ToDictionary(
+                        item => item.Key,
+                        item => item.Value.Result),
+                    derivedAspects);
             }
-            else if (this.derivedAspects.ContainsKey(typeof(TAspect)))
+
+            private Item(
+                TEntity entity,
+                Dictionary<Type, object?> aspectValues,
+                Dictionary<Type, DeriveAspectDelegate> derivedAspects)
             {
-                return this.derivedAspects[typeof(TAspect)](this.aspects) as TAspect;
+                this.Entity = entity;
+                this.aspects = aspectValues;
+                this.derivedAspects = derivedAspects;
             }
-            else
+
+            /// <summary>
+            /// The entity itself.
+            /// </summary>
+            public TEntity Entity { get; }
+
+            /// <summary>
+            /// Get aspect for this entity.
+            /// </summary>
+            public TAspect? Aspect<TAspect>() where TAspect : class
             {
-                throw new ArgumentException(
-                    $"The query does not include aspect '${typeof(TAspect)}'");
+                if (this.aspects.ContainsKey(typeof(TAspect)))
+                {
+                    return this.aspects[typeof(TAspect)] as TAspect;
+                }
+                else if (this.derivedAspects.ContainsKey(typeof(TAspect)))
+                {
+                    return this.derivedAspects[typeof(TAspect)](this.aspects) as TAspect;
+                }
+                else
+                {
+                    throw new ArgumentException(
+                        $"The query does not include aspect '${typeof(TAspect)}'");
+                }
             }
         }
     }

@@ -24,6 +24,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
             {
                 foreach (var entity in result)
                 {
+                    var e = entity.Entity;
+                    var a = entity.Aspect<string>();    
                 }
             }
         }
