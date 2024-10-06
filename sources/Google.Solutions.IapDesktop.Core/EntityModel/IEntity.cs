@@ -35,7 +35,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         /// used in the locator.
         /// </summary>
         string DisplayName { get; }
-
     }
 
     /// <summary>

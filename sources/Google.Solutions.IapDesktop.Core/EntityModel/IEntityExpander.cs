@@ -53,6 +53,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             TLocator parent,
             CancellationToken cancellationToken);
 
+        //TODO: rename to IEntityNavigator.ListDescendantsAsync
 
         /// <summary>
         /// Delete an entity.
