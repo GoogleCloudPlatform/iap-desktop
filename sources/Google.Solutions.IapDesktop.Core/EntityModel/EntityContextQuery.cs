@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
@@ -127,31 +128,13 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 //
                 // Kick of asynchronous queries for each aspects and entity.
                 //
-                var aspectQueryTasks = entities
-                    .SelectMany(e => this.aspectQueryDelegates.Select(queryDelegate => new {
-                        Key = Tuple.Create(e.Locator, queryDelegate.Key),
-                        Query = queryDelegate.Value(e.Locator, cancellationToken)
-                    }))
-                    .ToList();
-
-                //
-                // Collect aspect values in a single dictionary (for all entities).
-                //
-                var aspectValues = new Dictionary<Tuple<ILocator, Type>, object>();
-                foreach (var query in aspectQueryTasks)
-                {
-                    var aspectValue = await query.Query.ConfigureAwait(false);
-                    if (aspectValue != null)
-                    {
-                        aspectValues[query.Key] = aspectValue;
-                    }
-                }
-
-                return entities
-                    .Select(e => new EntityWithAspects<TEntity>(
+                return await Task.WhenAll(entities
+                    .Select(e => EntityWithAspects<TEntity>.CreateAsync(
                         e,
-                        aspectType => aspectValues.TryGet(Tuple.Create(e.Locator, aspectType))))
-                    .ToList();
+                        this.aspectQueryDelegates.ToDictionary(
+                            item => item.Key,
+                            item => item.Value(e.Locator, cancellationToken))))
+                    .ToList());
             }
         }
 
@@ -163,14 +146,23 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     public class EntityWithAspects<TEntity>
         where TEntity : IEntity<ILocator>
     {
-        private readonly Func<Type, object?> getDelegate;
+        private readonly Dictionary<Type, Task<object?>> aspectQueryTasks;
 
-        internal EntityWithAspects(
+        internal static async Task<EntityWithAspects<TEntity>> CreateAsync(
             TEntity entity,
-            Func<Type, object?> getDelegate)
+            Dictionary<Type, Task<object?>> aspectQueryTasks)
+        {
+            await Task
+                .WhenAll(aspectQueryTasks.Values)
+                .ConfigureAwait(false);
+
+            return new EntityWithAspects<TEntity>(entity, aspectQueryTasks);
+        }
+
+        private EntityWithAspects(TEntity entity, Dictionary<Type, Task<object?>> aspectQueryTasks)
         {
             this.Entity = entity;
-            this.getDelegate = getDelegate;
+            this.aspectQueryTasks = aspectQueryTasks;
         }
 
         /// <summary>
@@ -183,7 +175,15 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         /// </summary>
         public TAspect? Aspect<TAspect>() where TAspect : class
         {
-            return this.getDelegate(typeof(TAspect)) as TAspect;
+            if (this.aspectQueryTasks.TryGetValue(typeof(TAspect), out var task))
+            {
+                Debug.Assert(task.IsCompleted);
+                return task.Result as TAspect;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
