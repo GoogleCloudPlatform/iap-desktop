@@ -22,6 +22,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
+using Google.Solutions.Apis.Locator;
 
 namespace Google.Solutions.IapDesktop.Core.EntityModel
 {
@@ -40,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     /// Searches for entities.
     /// </summary>
     public interface IEntitySearcher<TQuery, TEntity> : IEntitySearcher
-        where TEntity : IEntity
+        where TEntity : IEntity<ILocator>
     {
         Task<IEnumerable<TEntity>> SearchAsync(
             TQuery query,

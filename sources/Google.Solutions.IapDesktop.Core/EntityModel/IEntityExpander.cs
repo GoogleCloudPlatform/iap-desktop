@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     /// <typeparam name="TEntity">Entity type</typeparam>
     public interface IEntityExpander<TLocator, TEntity> : IEntityExpander
         where TLocator : ILocator
-        where TEntity : IEntity
+        where TEntity : IEntity<ILocator>
     {
         /// <summary>
         /// List direct descendents.

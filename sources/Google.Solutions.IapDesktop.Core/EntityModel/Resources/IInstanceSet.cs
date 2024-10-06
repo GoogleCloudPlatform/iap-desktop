@@ -19,12 +19,14 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Locator;
+
 namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
 {
     /// <summary>
     /// A set of instances
     /// </summary>
-    public interface IInstanceSet : IEntity
+    public interface IInstanceSet : IEntity<ComputeEngineLocator>
     {
     }
 }

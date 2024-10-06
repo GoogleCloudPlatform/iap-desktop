@@ -23,7 +23,7 @@ using Google.Solutions.Apis.Locator;
 
 namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
 {
-    public class Zone : IInstanceSet, IEntity<ZoneLocator>
+    public class Zone : IInstanceSet, IEntity<ComputeEngineLocator>
     {
         public Zone(ZoneLocator zoneLocator, string displayName)
         {
@@ -37,6 +37,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Resources
 
         public string DisplayName { get; }
 
-        public ZoneLocator Locator { get; }
+        public ComputeEngineLocator Locator { get; }
     }
 }

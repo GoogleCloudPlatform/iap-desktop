@@ -24,28 +24,16 @@ using Google.Solutions.Apis.Locator;
 namespace Google.Solutions.IapDesktop.Core.EntityModel
 {
     /// <summary>
-    /// Default aspect of an entity. Implementations typically 
-    /// provide basic information about the entity,
-    /// but might not provide full details.
+    /// An entity that can be looked up by a locator.
     /// </summary>
-    public interface IEntity
+    public interface IEntity<out TLocator> where TLocator : ILocator
     {
         /// <summary>
         /// Display name, might differ from the name
         /// used in the locator.
         /// </summary>
         string DisplayName { get; }
-    }
 
-    /// <summary>
-    /// An entity that can be looked up by a locator.
-    /// 
-    /// In addition to implementing IEntity<T>, class may
-    /// implement additional interfaces that derive from IEntity
-    /// (non-generic).
-    /// </summary>
-    public interface IEntity<TLocator> : IEntity where TLocator : ILocator
-    { 
         /// <summary>
         /// Locator for this item.
         /// </summary>

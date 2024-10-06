@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             private void AddExpanderCore<TLocator, TEntity>(
                 IEntityExpander<TLocator, TEntity> expander)
                 where TLocator : ILocator
-                where TEntity : IEntity
+                where TEntity : IEntity<ILocator>
             {
                 this.entityExpanders.Add(new RegisteredEntityExpander(
                     typeof(TLocator),
@@ -115,13 +115,13 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                             .ExpandAsync((TLocator)locator, cancellationToken)
                             .ConfigureAwait(false);
 
-                        return result.Cast<IEntity>().ToList();
+                        return result.Cast<IEntity<ILocator>>().ToList();
                     }));
             }
 
             private void AddSearcherCore<TQuery, TEntity>(
                 IEntitySearcher<TQuery, TEntity> searcher)
-                where TEntity : IEntity
+                where TEntity : IEntity<ILocator>
             {
                 this.entitySearchers.Add(new RegisteredEntitySearcher(
                     typeof(TEntity),
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                             .SearchAsync((TQuery)query, cancellationToken)
                             .ConfigureAwait(false);
 
-                        return result.Cast<IEntity>().ToList();
+                        return result.Cast<IEntity<ILocator>>().ToList();
                     }));
             }
 

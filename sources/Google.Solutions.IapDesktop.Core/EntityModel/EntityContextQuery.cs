@@ -16,13 +16,13 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     {
         public static EntityQuery<TEntity> Entities<TEntity>(
             this EntityContext context)
-            where TEntity : IEntity
+            where TEntity : IEntity<ILocator>
         {
             return new EntityQuery<TEntity>(context);
         }
 
         public class EntityQuery<TEntity>
-            where TEntity : IEntity
+            where TEntity : IEntity<ILocator>
         {
             private readonly EntityContext context;
 
@@ -43,19 +43,12 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         }
 
         public class AspectQuery<TEntity> // TODO: test
-            where TEntity : IEntity
+            where TEntity : IEntity<ILocator>
         {
             private readonly EntityContext context;
-            private readonly Task<ICollection<TEntity>> entityQueryTask;
+            private readonly Func<Task<ICollection<TEntity>>> queryFunc;
             private readonly Dictionary<Type, Func<ILocator, CancellationToken, Task<object?>>> aspectQueries;
 
-            internal AspectQuery(
-                EntityContext context,
-                Task<ICollection<TEntity>> queryTask)
-            {
-                this.context = context;
-                this.entityQueryTask = queryTask;
-            }
 
             private async Task<object?> QueryAspectAsync<TAspect>(
                 ILocator locator,
@@ -91,18 +84,18 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 throw new NotImplementedException();
             }
 
-            public Task<ICollection<EntityProjection<TEntity>>> ExecuteAsync(
+            public async Task<ICollection<EntityProjection<TEntity>>> ExecuteAsync(
                 CancellationToken cancellationToken)
             {
-                //var entities = await this.entityQueryTask.ConfigureAwait(false);
+                var entities = await this.queryFunc().ConfigureAwait(false);
 
-                //foreach (var entity in entities)
-                //{
-                //    foreach (var aspectQuery in this.aspectQueries.Values)
-                //    {
-                //        aspectQuery(entity.Lo)
-                //    }
-                //}
+                foreach (var entity in entities)
+                {
+                    foreach (var aspectQuery in this.aspectQueries.Values)
+                    {
+                        await aspectQuery(entity.Locator, cancellationToken).ConfigureAwait(false);
+                    }
+                }
 
                 // 1. Perform the query or expansion
                 // 2. Query all aspects in parallel
@@ -112,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         }
 
         public class EntityProjection<TEntity>
-            where TEntity : IEntity
+            where TEntity : IEntity<ILocator>
         {
             public TAspect Get<TAspect>()
             {

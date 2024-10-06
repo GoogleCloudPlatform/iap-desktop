@@ -35,28 +35,33 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
     [TestFixture]
     public class TestEntityContext
     {
-        public class CarLocator : ILocator
+        public abstract class VehicleLocator : ILocator
         {
-            public string ResourceType => "car";
+            public abstract string ResourceType { get; }
         }
 
-        public class BikeLocator : ILocator
+        public class CarLocator : VehicleLocator
         {
-            public string ResourceType => "bike";
+            public override string ResourceType => "car";
         }
 
-        public class GarageLocator : ILocator
+        public class BikeLocator : VehicleLocator
         {
-            public string ResourceType => "garage";
+            public override string ResourceType => "bike";
         }
 
-        public interface IVehicle : IEntity { }
+        public class GarageLocator : VehicleLocator
+        {
+            public override string ResourceType => "garage";
+        }
 
-        public class Car : IVehicle, IEntity<CarLocator>
+        public interface IVehicle : IEntity<VehicleLocator> { }
+
+        public class Car : IVehicle, IEntity<VehicleLocator>
         {
             public string DisplayName { get; }
 
-            public CarLocator Locator { get; }
+            public VehicleLocator Locator { get; }
 
             public Car(string displayName, CarLocator locator)
             {
@@ -65,11 +70,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
             }
         }
 
-        public class Bike : IVehicle, IEntity<BikeLocator>
+        public class Bike : IVehicle, IEntity<VehicleLocator>
         {
             public string DisplayName { get; }
 
-            public BikeLocator Locator { get; }
+            public VehicleLocator Locator { get; }
 
             public Bike(string displayName, BikeLocator locator)
             {
@@ -84,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         private class Expander<TLocator, TEntity> 
             : IEntityExpander<TLocator, TEntity>
             where TLocator : ILocator
-            where TEntity : IEntity
+            where TEntity : IEntity<ILocator>
         {
             private readonly ICollection<TEntity> entities;
 
@@ -116,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         }
 
         private class Searcher<TEntity> : IEntitySearcher<string, TEntity> 
-            where TEntity : IEntity
+            where TEntity : IEntity<ILocator>
         {
             private readonly ICollection<TEntity> entities;
 
@@ -245,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 .Build();
 
             CollectionAssert.IsEmpty(await context
-                .ExpandAsync<IEntity>(new BikeLocator(), CancellationToken.None)
+                .ExpandAsync<IEntity<ILocator>>(new BikeLocator(), CancellationToken.None)
                 .ConfigureAwait(false));
         }
 
@@ -536,7 +541,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 .First(t => t.Type == typeof(Bike));
 
             Assert.AreEqual(0, (await context
-                .ExpandAsync<IEntity>(bikeType.Locator, CancellationToken.None)
+                .ExpandAsync<IEntity<ILocator>>(bikeType.Locator, CancellationToken.None)
                 .ConfigureAwait(false))
                 .Count());
         }
@@ -561,7 +566,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 .First(t => t.Type == typeof(Bike));
 
             Assert.AreEqual(1, (await context
-                .ExpandAsync<IEntity>(bikeType.Locator, CancellationToken.None)
+                .ExpandAsync<IEntity<ILocator>>(bikeType.Locator, CancellationToken.None)
                 .ConfigureAwait(false))
                 .Count());
         }

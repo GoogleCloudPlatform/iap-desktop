@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         public async Task<ICollection<TEntity>> ExpandAsync<TEntity>(
             ILocator locator,
             CancellationToken cancellationToken)
-            where TEntity : IEntity
+            where TEntity : IEntity<ILocator>
         {
             if (this.locators.TryGetValue(locator.GetType(), out var configuration))
             {
@@ -177,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         public async Task<ICollection<TEntity>> SearchAsync<TQuery, TEntity>(
             TQuery query, 
             CancellationToken cancellationToken)
-            where TEntity : IEntity
+            where TEntity : IEntity<ILocator>
         {
             if (query != null &&
                 this.searchers.TryGetValue(typeof(TQuery), out var searchers))
@@ -268,7 +268,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         /// Enables introspecting the entity types supported by this context.
         /// </summary>
         private class Introspector
-            : IEntitySearcher<AnyQuery, EntityType>, IEntityExpander<EntityTypeLocator, IEntity>
+            : IEntitySearcher<AnyQuery, EntityType>, IEntityExpander<EntityTypeLocator, IEntity<ILocator>>
         {
             private readonly ICollection<RegisteredEntitySearcher> searchers;
 
@@ -293,7 +293,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             /// <summary>
             /// List entities of a certain type.
             /// </summary>
-            public Task<IEnumerable<IEntity>> ExpandAsync(
+            public Task<IEnumerable<IEntity<ILocator>>> ExpandAsync(
                 EntityTypeLocator typeLocator,
                 CancellationToken cancellationToken)
             {
@@ -310,7 +310,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 }
                 else
                 {
-                    return Task.FromResult(Enumerable.Empty<IEntity>());
+                    return Task.FromResult(Enumerable.Empty<IEntity<ILocator>>());
                 }
             }
         }
@@ -371,7 +371,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
 
         internal readonly struct RegisteredEntityExpander
         {
-            public delegate Task<IEnumerable<IEntity>> ExpandAsyncDelegate(
+            public delegate Task<IEnumerable<IEntity<ILocator>>> ExpandAsyncDelegate(
                 ILocator locator,
                 CancellationToken cancellationToken);
 
@@ -392,7 +392,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
 
         internal readonly struct RegisteredEntitySearcher
         {
-            public delegate Task<IEnumerable<IEntity>> SearchAsyncDelegate(
+            public delegate Task<IEnumerable<IEntity<ILocator>>> SearchAsyncDelegate(
                 object query,
                 CancellationToken cancellationToken);
 
