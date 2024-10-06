@@ -1,4 +1,5 @@
 ﻿using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Linq;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
@@ -14,6 +15,9 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     // TODO: Implement
     public static class EntityContextQuery
     {
+        /// <summary>
+        /// Query entities of a certain type, or subtype thereof.
+        /// </summary>
         public static EntityQuery<TEntity> Entities<TEntity>(
             this EntityContext context)
             where TEntity : IEntity<ILocator>
@@ -31,11 +35,26 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 this.context = context;
             }
 
+            /// <summary>
+            /// Query entities by performing a search.
+            /// </summary>
             public AspectQuery<TEntity> Search<TQuery>(TQuery query)
             {
                 throw new NotImplementedException();
             }
 
+            /// <summary>
+            /// Query entities by performing a wildcard search.
+            /// </summary>
+            public AspectQuery<TEntity> List()
+            {
+                return Search(AnyQuery.Instance);
+            }
+
+            /// <summary>
+            /// Query entities by parent locator.
+            /// </summary>
+            /// <param name="locator">Locator of parent entity</param>
             public AspectQuery<TEntity> ByAncestor(ILocator locator)
             {
                 throw new NotImplementedException();
@@ -46,9 +65,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             where TEntity : IEntity<ILocator>
         {
             private readonly EntityContext context;
-            private readonly Func<Task<ICollection<TEntity>>> queryFunc;
-            private readonly Dictionary<Type, Func<ILocator, CancellationToken, Task<object?>>> aspectQueries;
-
+            private readonly Func<Task<ICollection<TEntity>>> queryDelegate;
+            private readonly Dictionary<Type, Func<ILocator, CancellationToken, Task<object?>>> aspectQueryDelegates;
 
             private async Task<object?> QueryAspectAsync<TAspect>(
                 ILocator locator,
@@ -60,18 +78,30 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                     .ConfigureAwait(false);
             }
 
+            /// <summary>
+            /// Include an aspect in the query so that its value
+            /// can later be accessed in EntityWithAspects.
+            /// </summary>
             public AspectQuery<TEntity> IncludeAspect<TAspect>()
                 where TAspect : class
             {
-                if (!this.aspectQueries.ContainsKey(typeof(TAspect)))
+                //
+                // Record that we need to query this aspect. We store a 
+                // delegate (as opposed to just the aspect type) because
+                // we won't have access to type information later.
+                //
+                if (!this.aspectQueryDelegates.ContainsKey(typeof(TAspect)))
                 {
-                    this.aspectQueries.Add(typeof(TAspect), QueryAspectAsync<TAspect>);
+                    this.aspectQueryDelegates.Add(typeof(TAspect), QueryAspectAsync<TAspect>);
                 }
 
                 return this;
             }
 
-            public AspectQuery<TEntity> Include<TAspect, TInputAspect>(
+            /// <summary>
+            /// Derive an aspect from another aspect.
+            /// </summary>
+            public AspectQuery<TEntity> IncludeAspect<TAspect, TInputAspect>(
                 Func<TInputAspect, TAspect> func)
                 where TInputAspect : class
                 where TAspect : class
@@ -84,33 +114,76 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 throw new NotImplementedException();
             }
 
-            public async Task<ICollection<EntityProjection<TEntity>>> ExecuteAsync(
+            public async Task<ICollection<EntityWithAspects<TEntity>>> ExecuteAsync(
                 CancellationToken cancellationToken)
             {
-                var entities = await this.queryFunc().ConfigureAwait(false);
+                //
+                // Query entities.
+                //
+                var entities = await this
+                    .queryDelegate()
+                    .ConfigureAwait(false);
 
-                foreach (var entity in entities)
+                //
+                // Kick of asynchronous queries for each aspects and entity.
+                //
+                var aspectQueryTasks = entities
+                    .SelectMany(e => this.aspectQueryDelegates.Select(queryDelegate => new {
+                        Key = Tuple.Create(e.Locator, queryDelegate.Key),
+                        Query = queryDelegate.Value(e.Locator, cancellationToken)
+                    }))
+                    .ToList();
+
+                //
+                // Collect aspect values in a single dictionary (for all entities).
+                //
+                var aspectValues = new Dictionary<Tuple<ILocator, Type>, object>();
+                foreach (var query in aspectQueryTasks)
                 {
-                    foreach (var aspectQuery in this.aspectQueries.Values)
+                    var aspectValue = await query.Query.ConfigureAwait(false);
+                    if (aspectValue != null)
                     {
-                        await aspectQuery(entity.Locator, cancellationToken).ConfigureAwait(false);
+                        aspectValues[query.Key] = aspectValue;
                     }
                 }
 
-                // 1. Perform the query or expansion
-                // 2. Query all aspects in parallel
-
-                throw new NotImplementedException();
+                return entities
+                    .Select(e => new EntityWithAspects<TEntity>(
+                        e,
+                        aspectType => aspectValues.TryGet(Tuple.Create(e.Locator, aspectType))))
+                    .ToList();
             }
         }
 
-        public class EntityProjection<TEntity>
-            where TEntity : IEntity<ILocator>
+    }
+
+    /// <summary>
+    /// An entity with associated aspects.
+    /// </summary>
+    public class EntityWithAspects<TEntity>
+        where TEntity : IEntity<ILocator>
+    {
+        private readonly Func<Type, object?> getDelegate;
+
+        internal EntityWithAspects(
+            TEntity entity,
+            Func<Type, object?> getDelegate)
         {
-            public TAspect Get<TAspect>()
-            {
-                throw new NotImplementedException();
-            }
+            this.Entity = entity;
+            this.getDelegate = getDelegate;
+        }
+
+        /// <summary>
+        /// The entity itself.
+        /// </summary>
+        public TEntity Entity { get; }
+
+        /// <summary>
+        /// Get aspect for this entity.
+        /// </summary>
+        public TAspect? Aspect<TAspect>() where TAspect : class
+        {
+            return this.getDelegate(typeof(TAspect)) as TAspect;
         }
     }
 }

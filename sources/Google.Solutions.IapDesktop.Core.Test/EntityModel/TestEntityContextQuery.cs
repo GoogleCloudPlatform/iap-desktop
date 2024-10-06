@@ -2,6 +2,8 @@
 using Google.Solutions.IapDesktop.Core.EntityModel.Introspection;
 using Moq;
 using NUnit.Framework;
+using System.Threading;
+using System.Threading.Tasks;
 
 
 namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
@@ -10,13 +12,18 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
     public class TestEntityContextQuery
     {
         [Test]
-        public void __()
+        public async Task __()
         {
             var context = new EntityContext.Builder().Build();
-            context
+            var result = await context
                 .Entities<EntityType>()
-                .Search(AnyQuery.Instance);
-
+                .List()
+                .IncludeAspect<string>()
+                .ExecuteAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+            foreach (var entity in result)
+            {
+            }
         }
     }
 }
