@@ -20,60 +20,59 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     internal delegate Task<ICollection<TEntity>> QueryDelegate<TEntity>(CancellationToken cancellationToken)
         where TEntity : IEntity<ILocator>;
 
-    public static class EntityContextQuery // TODO: test
+    public static class EntityContextQueryExtensions // TODO: test
     {
         /// <summary>
         /// Query entities of a certain type, or subtype thereof.
         /// </summary>
-        public static EntityQuery<TEntity> Entities<TEntity>(
+        public static EntityQueryBuilder<TEntity> Entities<TEntity>(
             this EntityContext context)
             where TEntity : IEntity<ILocator>
         {
-            return new EntityQuery<TEntity>(context);
+            return new EntityQueryBuilder<TEntity>(context);
         }
+    }
 
-        public class EntityQuery<TEntity>
-            where TEntity : IEntity<ILocator>
+    public class EntityQueryBuilder<TEntity>
+        where TEntity : IEntity<ILocator>
+    {
+        private readonly EntityContext context;
+
+        internal EntityQueryBuilder(EntityContext context)
         {
-            private readonly EntityContext context;
-
-            internal EntityQuery(EntityContext context)
-            {
-                this.context = context;
-            }
-
-            /// <summary>
-            /// Query entities by performing a search.
-            /// </summary>
-            public EntityAspectQuery<TEntity> Search<TQuery>(TQuery query)
-            {
-                return new EntityAspectQuery<TEntity>(
-                    this.context,
-                    ct => this.context.SearchAsync<TQuery, TEntity>(query, ct));
-            }
-
-            /// <summary>
-            /// Query entities by performing a wildcard search.
-            /// </summary>
-            public EntityAspectQuery<TEntity> List()
-            {
-                return Search(AnyQuery.Instance);
-            }
-
-            /// <summary>
-            /// Query entities by parent locator.
-            /// </summary>
-            /// <param name="locator">Locator of parent entity</param>
-            public EntityAspectQuery<TEntity> ByAncestor(ILocator locator)
-            {
-                return new EntityAspectQuery<TEntity>(
-                    this.context,
-                    ct => this.context.ExpandAsync<TEntity>(locator, ct));
-            }
+            this.context = context;
         }
 
-        public class EntityAspectQuery<TEntity>
-            where TEntity : IEntity<ILocator>
+        /// <summary>
+        /// Query entities by performing a search.
+        /// </summary>
+        public Query Search<TQuery>(TQuery query)
+        {
+            return new Query(
+                this.context,
+                ct => this.context.SearchAsync<TQuery, TEntity>(query, ct));
+        }
+
+        /// <summary>
+        /// Query entities by performing a wildcard search.
+        /// </summary>
+        public Query List()
+        {
+            return Search(AnyQuery.Instance);
+        }
+
+        /// <summary>
+        /// Query entities by parent locator.
+        /// </summary>
+        /// <param name="locator">Locator of parent entity</param>
+        public Query ByAncestor(ILocator locator)
+        {
+            return new Query(
+                this.context,
+                ct => this.context.ExpandAsync<TEntity>(locator, ct));
+        }
+
+        public class Query
         {
             private readonly EntityContext context;
             private readonly QueryDelegate<TEntity> query;
@@ -82,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             private readonly Dictionary<Type, DeriveAspectDelegate> derivedAspects
                 = new Dictionary<Type, DeriveAspectDelegate>();
 
-            internal EntityAspectQuery(
+            internal Query(
                 EntityContext context,
                 QueryDelegate<TEntity> query)
             {
@@ -104,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             /// Include an aspect in the query so that its value
             /// can later be accessed in EntityWithAspects.
             /// </summary>
-            public EntityAspectQuery<TEntity> IncludeAspect<TAspect>()
+            public Query IncludeAspect<TAspect>()
                 where TAspect : class
             {
                 //
@@ -123,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             /// <summary>
             /// Derive an aspect from another aspect.
             /// </summary>
-            public EntityAspectQuery<TEntity> IncludeAspect<TAspect, TInputAspect>(
+            public Query IncludeAspect<TAspect, TInputAspect>(
                 Func<TInputAspect?, TAspect?> func)
                 where TInputAspect : class
                 where TAspect : class
@@ -147,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 return this;
             }
 
-            public async Task<EntityAspectQueryResult<TEntity>> ExecuteAsync(
+            public async Task<EntityQueryResult<TEntity>> ExecuteAsync(
                 CancellationToken cancellationToken)
             {
                 //
@@ -160,8 +159,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 //
                 // Kick of asynchronous queries for each aspects and entity.
                 //
-                return new EntityAspectQueryResult<TEntity>(await Task.WhenAll(entities
-                    .Select(e => EntityAspectQueryResult<TEntity>.Item.CreateAsync(
+                return new EntityQueryResult<TEntity>(await Task.WhenAll(entities
+                    .Select(e => EntityQueryResult<TEntity>.Item.CreateAsync(
                         e,
                         this.aspects.ToDictionary(
                             item => item.Key,
@@ -175,11 +174,11 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     /// <summary>
     /// Collection of entities.
     /// </summary>
-    public sealed class EntityAspectQueryResult<TEntity> 
-        : ReadOnlyCollection<EntityAspectQueryResult<TEntity>.Item>, IDisposable
+    public sealed class EntityQueryResult<TEntity> 
+        : ReadOnlyCollection<EntityQueryResult<TEntity>.Item>, IDisposable
         where TEntity : IEntity<ILocator>
     {
-        public EntityAspectQueryResult(IList<Item> list) : base(list)
+        public EntityQueryResult(IList<Item> list) : base(list)
         {
         }
 
