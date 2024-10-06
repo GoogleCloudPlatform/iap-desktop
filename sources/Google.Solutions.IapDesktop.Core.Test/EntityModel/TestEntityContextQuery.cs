@@ -15,14 +15,16 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         public async Task __()
         {
             var context = new EntityContext.Builder().Build();
-            var result = await context
+            using (var result = await context
                 .Entities<EntityType>()
                 .List()
                 .IncludeAspect<string>()
                 .ExecuteAsync(CancellationToken.None)
-                .ConfigureAwait(false);
-            foreach (var entity in result)
+                .ConfigureAwait(false))
             {
+                foreach (var entity in result)
+                {
+                }
             }
         }
     }

@@ -2,12 +2,24 @@
 using Google.Solutions.Common.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.EntityModel
 {
+    /// <summary>
+    /// Delegate for deriving an aspect from one or more input aspects.
+    /// </summary>
+    internal delegate object? DeriveAspectDelegate(IDictionary<Type, object?> aspectValues);
+
+    /// <summary>
+    /// Delegate for looking up entities.
+    /// </summary>
+    internal delegate Task<ICollection<TEntity>> QueryDelegate<TEntity>(CancellationToken cancellationToken)
+        where TEntity : IEntity<ILocator>;
+
     public static class EntityContextQuery // TODO: test
     {
         /// <summary>
@@ -59,11 +71,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                     ct => this.context.ExpandAsync<TEntity>(locator, ct));
             }
         }
-
-        internal delegate object? DeriveAspectDelegate(IDictionary<Type, object?> aspectValues);
-
-        internal delegate Task<ICollection<TEntity>> QueryDelegate<TEntity>(CancellationToken cancellationToken)
-            where TEntity : IEntity<ILocator>;
 
         public class AspectQuery<TEntity>
             where TEntity : IEntity<ILocator>
@@ -140,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 return this;
             }
 
-            public async Task<ICollection<EntityWithAspects<TEntity>>> ExecuteAsync(
+            public async Task<EntityCollection<TEntity>> ExecuteAsync(
                 CancellationToken cancellationToken)
             {
                 //
@@ -153,76 +160,91 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 //
                 // Kick of asynchronous queries for each aspects and entity.
                 //
-                return await Task.WhenAll(entities
+                return new EntityCollection<TEntity>(await Task.WhenAll(entities
                     .Select(e => EntityWithAspects<TEntity>.CreateAsync(
                         e,
                         this.aspects.ToDictionary(
                             item => item.Key,
-                            item => item.Value(e.Locator, cancellationToken)), 
+                            item => item.Value(e.Locator, cancellationToken)),
                         this.derivedAspects))
-                    .ToList());
+                    .ToList()));
             }
+        }
+    }
+
+    /// <summary>
+    /// Collection of entities.
+    /// </summary>
+    public sealed class EntityCollection<TEntity> : ReadOnlyCollection<EntityWithAspects<TEntity>>, IDisposable
+        where TEntity : IEntity<ILocator>
+    {
+        public EntityCollection(IList<EntityWithAspects<TEntity>> list) : base(list)
+        {
+        }
+
+        public void Dispose()
+        {
+        }
+    }
+
+    /// <summary>
+    /// An entity with associated aspects.
+    /// </summary>
+    public class EntityWithAspects<TEntity>
+        where TEntity : IEntity<ILocator>
+    {
+        private readonly Dictionary<Type, object?> aspects;
+        private readonly Dictionary<Type, DeriveAspectDelegate> derivedAspects;
+
+        internal static async Task<EntityWithAspects<TEntity>> CreateAsync(
+            TEntity entity,
+            Dictionary<Type, Task<object?>> aspectTasks,
+            Dictionary<Type, DeriveAspectDelegate> derivedAspects)
+        {
+            await Task
+                .WhenAll(aspectTasks.Values)
+                .ConfigureAwait(false);
+
+            return new EntityWithAspects<TEntity>(
+                entity,
+                aspectTasks.ToDictionary(
+                    item => item.Key,
+                    item => item.Value.Result),
+                derivedAspects);
+        }
+
+        private EntityWithAspects(
+            TEntity entity,
+            Dictionary<Type, object?> aspectValues,
+            Dictionary<Type, DeriveAspectDelegate> derivedAspects)
+        {
+            this.Entity = entity;
+            this.aspects = aspectValues;
+            this.derivedAspects = derivedAspects;
         }
 
         /// <summary>
-        /// An entity with associated aspects.
+        /// The entity itself.
         /// </summary>
-        public class EntityWithAspects<TEntity>
-            where TEntity : IEntity<ILocator>
+        public TEntity Entity { get; }
+
+        /// <summary>
+        /// Get aspect for this entity.
+        /// </summary>
+        public TAspect? Aspect<TAspect>() where TAspect : class
         {
-            private readonly Dictionary<Type, object?> aspects;
-            private readonly Dictionary<Type, DeriveAspectDelegate> derivedAspects;
-
-            internal static async Task<EntityWithAspects<TEntity>> CreateAsync(
-                TEntity entity,
-                Dictionary<Type, Task<object?>> aspectTasks,
-                Dictionary<Type, DeriveAspectDelegate> derivedAspects)
+            if (this.aspects.ContainsKey(typeof(TAspect)))
             {
-                await Task
-                    .WhenAll(aspectTasks.Values)
-                    .ConfigureAwait(false);
-
-                return new EntityWithAspects<TEntity>(
-                    entity,
-                    aspectTasks.ToDictionary(
-                        item => item.Key,
-                        item => item.Value.Result),
-                    derivedAspects);
+                return this.aspects[typeof(TAspect)] as TAspect;
             }
-
-            private EntityWithAspects(
-                TEntity entity,
-                Dictionary<Type, object?> aspectValues,
-                Dictionary<Type, DeriveAspectDelegate> derivedAspects)
+            else if (this.derivedAspects.ContainsKey(typeof(TAspect)))
             {
-                this.Entity = entity;
-                this.aspects = aspectValues;
-                this.derivedAspects = derivedAspects;
+                return this.derivedAspects[typeof(TAspect)](this.aspects) as TAspect;
             }
-
-            /// <summary>
-            /// The entity itself.
-            /// </summary>
-            public TEntity Entity { get; }
-
-            /// <summary>
-            /// Get aspect for this entity.
-            /// </summary>
-            public TAspect? Aspect<TAspect>() where TAspect : class
+            else
             {
-                if (this.aspects.ContainsKey(typeof(TAspect)))
-                {
-                    return this.aspects[typeof(TAspect)] as TAspect;
-                }
-                else if (this.derivedAspects.ContainsKey(typeof(TAspect)))
-                {
-                    return this.derivedAspects[typeof(TAspect)](this.aspects) as TAspect;
-                }
-                else
-                {
-                    throw new ArgumentException(
-                        $"The query does not include aspect '${typeof(TAspect)}'");
-                }
+                throw new ArgumentException(
+                    $"The query does not include aspect '${typeof(TAspect)}'");
             }
         }
     }
