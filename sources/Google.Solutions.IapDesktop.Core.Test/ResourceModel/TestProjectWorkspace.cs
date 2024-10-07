@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
                 new Mock<IResourceManagerClient>().Object);
 
             var organizations = await workspace
-                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
+                .SearchAsync(WildcardQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsEmpty(organizations);
         }
@@ -82,10 +82,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 
             // Search twice.
             await workspace
-                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
+                .SearchAsync(WildcardQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false);
             await workspace
-                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
+                .SearchAsync(WildcardQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false);
 
             // Check that cache loaded once.
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 
             // Search to load cache.
             await workspace
-                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
+                .SearchAsync(WildcardQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false);
 
             // Invalidate.
@@ -123,10 +123,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 
             // Search again.
             await workspace
-                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
+                .SearchAsync(WildcardQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false);
             await workspace
-                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
+                .SearchAsync(WildcardQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false);
 
             // Check that cache loaded once.
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
                 resourceMamager.Object);
 
             var organizations = await workspace
-                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
+                .SearchAsync(WildcardQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsNotEmpty(organizations);
             Assert.AreEqual(
@@ -191,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
                 resourceMamager.Object);
 
             var organizations = await workspace
-                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
+                .SearchAsync(WildcardQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsNotEmpty(organizations);
             Assert.AreEqual(
@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
                 resourceMamager.Object);
 
             var organizations = await workspace
-                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
+                .SearchAsync(WildcardQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsNotEmpty(organizations);
             Assert.AreEqual(
@@ -263,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
                 resourceMamager.Object);
 
             var organizations = await workspace
-                .SearchAsync(AnyQuery.Instance, CancellationToken.None)
+                .SearchAsync(WildcardQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false);
             CollectionAssert.IsNotEmpty(organizations);
             Assert.AreEqual(

@@ -141,6 +141,9 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         /// Query all expanders that support the kind of locator and
         /// requested entity type, or a subtype thereof.
         /// </summary>
+        /// <returns>
+        /// Empty if there is no expander for this type of entity.
+        /// </returns>
         public async Task<ICollection<TEntity>> ExpandAsync<TEntity>(
             ILocator locator,
             CancellationToken cancellationToken)
@@ -174,6 +177,9 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         /// <summary>
         /// Search for entities of the requested entity type that match a query.
         /// </summary>
+        /// <returns>
+        /// Empty if there is no searcher for this type of query or entity.
+        /// </returns>
         public async Task<ICollection<TEntity>> SearchAsync<TQuery, TEntity>(
             TQuery query, 
             CancellationToken cancellationToken)
@@ -211,6 +217,10 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         /// Query an aspect from synchronous providers, ignoring 
         /// asynchronous providers.
         /// </summary>
+        /// <returns>
+        /// Null if there is no provider for the aspect, or if
+        /// the provider returned null.
+        /// </returns>
         public TAspect? QueryAspect<TAspect>(ILocator locator)
             where TAspect : class
         {
@@ -228,6 +238,10 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         /// <summary>
         /// Query an aspect from synchronous and asynchronous providers.
         /// </summary>
+        /// <returns>
+        /// Null if there is no provider for the aspect, or if
+        /// the provider returned null.
+        /// </returns>
         public async Task<TAspect?> QueryAspectAsync<TAspect>(
             ILocator locator,
             CancellationToken cancellationToken)
@@ -277,7 +291,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         /// Enables introspecting the entity types supported by this context.
         /// </summary>
         private class Introspector
-            : IEntitySearcher<AnyQuery, EntityType>, IEntityExpander<EntityTypeLocator, IEntity<ILocator>>
+            : IEntitySearcher<WildcardQuery, EntityType>, IEntityExpander<EntityTypeLocator, IEntity<ILocator>>
         {
             private readonly ICollection<RegisteredEntitySearcher> searchers;
 
@@ -291,7 +305,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             /// can then be expanded to list actual entities.
             /// </summary>
             public Task<IEnumerable<EntityType>> SearchAsync( // TODO: test
-                AnyQuery query,
+                WildcardQuery query,
                 CancellationToken cancellationToken)
             {
                 return Task.FromResult<IEnumerable<EntityType>>(this.searchers
@@ -310,12 +324,12 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 // Look for a suitable searcher.
                 //
                 var searcher = this.searchers.Where(s =>
-                    s.EntityType == typeLocator.Type && s.QueryType == typeof(AnyQuery));
+                    s.EntityType == typeLocator.Type && s.QueryType == typeof(WildcardQuery));
                 if (searcher.Any())
                 {
                     return searcher
                         .First()
-                        .SearchAsync(AnyQuery.Instance, cancellationToken);
+                        .SearchAsync(WildcardQuery.Instance, cancellationToken);
                 }
                 else
                 {

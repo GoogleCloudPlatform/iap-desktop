@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     /// by the organization they belong to.
     /// </summary>
     public class ProjectWorkspace :
-        IEntitySearcher<AnyQuery, Organization>,
+        IEntitySearcher<WildcardQuery, Organization>,
         IEntityExpander<OrganizationLocator, Project>,
         IAsyncEntityAspectProvider<OrganizationLocator, Organization>,
         IAsyncEntityAspectProvider<ProjectLocator, Project>
@@ -339,7 +339,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         //----------------------------------------------------------------------
 
         public async Task<IEnumerable<Organization>> SearchAsync(
-            AnyQuery query,
+            WildcardQuery query,
             CancellationToken cancellationToken)
         {
             var state = await GetStateAsync(cancellationToken)

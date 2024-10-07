@@ -514,7 +514,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 .Build();
 
             var typeNames = (await context
-                .SearchAsync<AnyQuery, EntityType>(AnyQuery.Instance, CancellationToken.None)
+                .SearchAsync<WildcardQuery, EntityType>(WildcardQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false))
                 .Select(t => t.DisplayName);
 
@@ -535,7 +535,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 .Build();
 
             var bikeType = (await context
-                .SearchAsync<AnyQuery, EntityType>(AnyQuery.Instance, CancellationToken.None)
+                .SearchAsync<WildcardQuery, EntityType>(WildcardQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false))
                 .First(t => t.Type == typeof(Bike));
 
@@ -548,9 +548,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public async Task Introspect_Expand()
         {
-            var searcher = new Mock<IEntitySearcher<AnyQuery, Bike>>();
+            var searcher = new Mock<IEntitySearcher<WildcardQuery, Bike>>();
             searcher
-                .Setup(s => s.SearchAsync(AnyQuery.Instance, CancellationToken.None))
+                .Setup(s => s.SearchAsync(WildcardQuery.Instance, CancellationToken.None))
                 .ReturnsAsync(new[] {
                     new Bike("sample-bike1", new BikeLocator())
                 });
@@ -560,7 +560,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 .Build();
 
             var bikeType = (await context
-                .SearchAsync<AnyQuery, EntityType>(AnyQuery.Instance, CancellationToken.None)
+                .SearchAsync<WildcardQuery, EntityType>(WildcardQuery.Instance, CancellationToken.None)
                 .ConfigureAwait(false))
                 .First(t => t.Type == typeof(Bike));
 

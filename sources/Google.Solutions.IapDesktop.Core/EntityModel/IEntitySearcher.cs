@@ -51,9 +51,9 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     /// <summary>
     /// Pseudo-query that matches everything.
     /// </summary>
-    public class AnyQuery {
-        private AnyQuery() { }
+    public class WildcardQuery {
+        private WildcardQuery() { }
 
-        public static readonly AnyQuery Instance = new AnyQuery();
+        public static readonly WildcardQuery Instance = new WildcardQuery();
     }
 }
