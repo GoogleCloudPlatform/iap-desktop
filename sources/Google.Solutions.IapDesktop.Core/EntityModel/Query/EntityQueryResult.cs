@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -110,37 +109,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
     {
         public EntityQueryResult(IList<EntityQueryResultItem<TEntity>> list) : base(list)
         {
-        }
-    }
-
-    public sealed class ObservableEntityQueryResult<TEntity>
-        : ObservableCollection<EntityQueryResultItem<TEntity>>
-        where TEntity : IEntity<ILocator>
-    {
-        private readonly ISubscription propertyChanged;
-        private readonly ISubscription deleted;
-
-        public ObservableEntityQueryResult(
-            IList<EntityQueryResultItem<TEntity>> list,
-            IEventQueue eventQueue) : base(list)
-        {
-            this.propertyChanged = eventQueue.Subscribe<EntityPropertyChangedEvent>(
-                e => {
-                    // TODO: lookup, pass to covert to NPC.
-                });
-            this.deleted= eventQueue.Subscribe<EntityDeletedEvent>(
-                e => {
-                    // TODO: remove.
-                });
-        }
-
-        public void Dispose()
-        {
-            //
-            // Stop listening to events.
-            //
-            this.propertyChanged.Dispose();
-            this.deleted.Dispose();
         }
     }
 }
