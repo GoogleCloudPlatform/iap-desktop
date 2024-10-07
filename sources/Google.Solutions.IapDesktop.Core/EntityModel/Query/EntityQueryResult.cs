@@ -49,7 +49,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
         public class Item
         {
             private readonly Dictionary<Type, object?> aspects;
-            private readonly Dictionary<Type, DeriveAspectDelegate> derivedAspects;
 
             internal static async Task<Item> CreateAsync(
                 TEntity entity,
@@ -75,7 +74,16 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
             {
                 this.Entity = entity;
                 this.aspects = aspectValues;
-                this.derivedAspects = derivedAspects;
+
+                //
+                // Resolve derived aspects. By doing it here, we ensure
+                // that each derived aspect is only derived once, and that
+                // the result is memoized.
+                //
+                foreach (var derived in derivedAspects)
+                {
+                    this.aspects[derived.Key] = derived.Value(this.aspects);
+                }
             }
 
             internal Item(
@@ -98,10 +106,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
                 if (this.aspects.ContainsKey(typeof(TAspect)))
                 {
                     return this.aspects[typeof(TAspect)] as TAspect;
-                }
-                else if (this.derivedAspects.ContainsKey(typeof(TAspect)))
-                {
-                    return this.derivedAspects[typeof(TAspect)](this.aspects) as TAspect;
                 }
                 else
                 {

@@ -55,6 +55,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
 
                 Assert.AreSame(entity, item.Entity);
             }
+
             //------------------------------------------------------------------
             // Aspect.
             //------------------------------------------------------------------
@@ -97,6 +98,39 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
                     new Dictionary<Type, object?>());
 
                 Assert.Throws<ArgumentException>(() => item.Aspect<string>());
+            }
+
+            //------------------------------------------------------------------
+            // Aspect - derived.
+            //------------------------------------------------------------------
+
+            [Test]
+            public void Aspect_WhenDerived_ThenResultIsMemoized()
+            {
+                var aspects = new Dictionary<Type, object?>()
+                {
+                    { typeof(Version), new Version(1, 2) }
+                };
+
+                var deriveCalls = 0;
+                var derivedAspects = new Dictionary<Type, DeriveAspectDelegate>()
+                {
+                    { typeof(string), aspects =>
+                        {
+                            deriveCalls++;
+                            return aspects[typeof(Version)]?.ToString();
+                        }
+                    }
+                };
+
+                var item = new EntityQueryResult<EntityType>.Item(
+                    new EntityType(typeof(string)),
+                    aspects, 
+                    derivedAspects);
+
+                Assert.AreEqual("1.2", item.Aspect<string>()); // invocation #1
+                Assert.AreEqual("1.2", item.Aspect<string>()); // invocation #2
+                Assert.AreEqual(1, deriveCalls);
             }
         }
     }
