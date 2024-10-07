@@ -20,15 +20,19 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.IapDesktop.Core.ResourceModel;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 {
-    public class ProjectRepository : IProjectSettingsRepository
+    public class ProjectRepository :
+        IProjectSettingsRepository,
+        IProjectWorkspaceSettings
     {
         protected RegistryKey BaseKey { get; }
 
@@ -45,18 +49,36 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         {
             using (this.BaseKey.CreateSubKey(project.Name))
             { }
+
+            this.PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(nameof(this.Projects)));
         }
 
         public void RemoveProject(ProjectLocator project)
         {
             this.BaseKey.DeleteSubKeyTree(project.Name, false);
+            this.PropertyChanged?.Invoke(
+                this, 
+                new PropertyChangedEventArgs(nameof(this.Projects)));
         }
 
         public Task<IEnumerable<ProjectLocator>> ListProjectsAsync()
         {
-            var projects = this.BaseKey.GetSubKeyNames()
+            return Task.FromResult(this.Projects);
+        }
+
+        //---------------------------------------------------------------------
+        // IProjectWorkspaceSettings.
+        //---------------------------------------------------------------------
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public IEnumerable<ProjectLocator> Projects
+        {
+            get => this.BaseKey
+                .GetSubKeyNames()
                 .Select(projectId => new ProjectLocator(projectId));
-            return Task.FromResult(projects);
         }
 
         //---------------------------------------------------------------------

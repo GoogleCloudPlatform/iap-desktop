@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -43,8 +44,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             return new ProjectRepository(baseKey);
         }
 
+        //---------------------------------------------------------------------
+        // ListProjects.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void ListProjects_WhenNoProjectsAdded_ListProjectsReturnsEmptyList()
+        public void ListProjects_WhenNoProjectsAdded()
         {
             using (var repository = CreateProjectRepository())
             {
@@ -55,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void ListProjects_WhenProjectsAddedTwice_ListProjectsReturnsProjectOnce()
+        public void ListProjects_WhenProjectsAddedTwice()
         {
             using (var repository = CreateProjectRepository())
             {
@@ -70,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void ListProjects_WhenProjectsDeleted_ListProjectsExcludesProject()
+        public void ListProjects_WhenProjectsDeleted()
         {
             using (var repository = CreateProjectRepository())
             {
@@ -86,8 +91,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             }
         }
 
+        //---------------------------------------------------------------------
+        // AddProject.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void AddProject_WhenProjectExists_ThenReturnsKey()
+        public void AddProject_WhenProjectExists()
         {
             using (var repository = CreateProjectRepository())
             {
@@ -122,6 +131,67 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 {
                     Assert.IsNull(key);
                 }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // RemoveProject.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void RemoveProject_RaisesEvent()
+        {
+            using (var repository = CreateProjectRepository())
+            {
+                PropertyAssert.RaisesPropertyChangedNotification(
+                    repository,
+                    () => repository.RemoveProject(new ProjectLocator("test-123")),
+                    nameof(repository.Projects));
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Projects.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Projects_WhenNoProjectsAdded()
+        {
+            using (var repository = CreateProjectRepository())
+            {
+                Assert.IsFalse(repository.Projects.Any());
+            }
+        }
+
+        [Test]
+        public void Projects_WhenProjectsAddedTwice()
+        {
+            using (var repository = CreateProjectRepository())
+            {
+                repository.AddProject(new ProjectLocator("test-123"));
+                repository.AddProject(new ProjectLocator("test-123"));
+
+                var projects = repository.Projects;
+
+                Assert.AreEqual(1, projects.Count());
+                Assert.AreEqual("test-123", projects.First().ProjectId);
+            }
+        }
+
+        [Test]
+        public void Projects_WhenProjectsDeleted()
+        {
+            using (var repository = CreateProjectRepository())
+            {
+                repository.AddProject(new ProjectLocator("test-123"));
+                repository.AddProject(new ProjectLocator("test-456"));
+                repository.RemoveProject(new ProjectLocator("test-456"));
+                repository.RemoveProject(new ProjectLocator("test-456"));
+
+                var projects = repository.Projects;
+
+                Assert.AreEqual(1, projects.Count());
+                Assert.AreEqual("test-123", projects.First().ProjectId);
             }
         }
     }
