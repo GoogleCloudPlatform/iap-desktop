@@ -33,8 +33,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
         [Test]
         public void IsReadOnly()
         {
-            var result = (ICollection<EntityQueryResult<EntityType>.Item>) 
-                new EntityQueryResult<EntityType>(Array.Empty<EntityQueryResult<EntityType>.Item>());
+            var result = (ICollection<EntityQueryResultItem<EntityType>>) 
+                new EntityQueryResult<EntityType>(Array.Empty<EntityQueryResultItem<EntityType>>());
             Assert.IsTrue(result.IsReadOnly);
         }
 
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
             public void Entity()
             {
                 var entity = new EntityType(typeof(string));
-                var item = new EntityQueryResult<EntityType>.Item(
+                var item = new EntityQueryResultItem<EntityType>(
                     entity,
                     new Dictionary<Type, object?>());
 
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
                     { typeof(string), null }
                 };
 
-                var item = new EntityQueryResult<EntityType>.Item(
+                var item = new EntityQueryResultItem<EntityType>(
                     new EntityType(typeof(string)),
                     aspects);
 
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
                     { typeof(string), "test" }
                 };
 
-                var item = new EntityQueryResult<EntityType>.Item(
+                var item = new EntityQueryResultItem<EntityType>(
                     new EntityType(typeof(string)),
                     aspects);
 
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
             [Test]
             public void Aspect_WhenNotIncluded()
             {
-                var item = new EntityQueryResult<EntityType>.Item(
+                var item = new EntityQueryResultItem<EntityType>(
                     new EntityType(typeof(string)),
                     new Dictionary<Type, object?>());
 
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
                     }
                 };
 
-                var item = new EntityQueryResult<EntityType>.Item(
+                var item = new EntityQueryResultItem<EntityType>(
                     new EntityType(typeof(string)),
                     aspects, 
                     derivedAspects);

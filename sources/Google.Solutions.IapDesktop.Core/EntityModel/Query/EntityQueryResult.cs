@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -29,100 +30,117 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
 {
     /// <summary>
-    /// Result of an entity query.
+    /// An entity with associated aspects.
     /// </summary>
-    public class EntityQueryResult<TEntity> 
-        : ReadOnlyCollection<EntityQueryResult<TEntity>.Item>
-        where TEntity : IEntity<ILocator>
+    public class EntityQueryResultItem<TEntity>
     {
-        public EntityQueryResult(IList<Item> list) : base(list)
+        private readonly Dictionary<Type, object?> aspects;
+
+        internal static async Task<EntityQueryResultItem<TEntity>> CreateAsync(
+            TEntity entity,
+            Dictionary<Type, Task<object?>> aspectTasks,
+            Dictionary<Type, DeriveAspectDelegate> derivedAspects)
+        {
+            await Task
+                .WhenAll(aspectTasks.Values)
+                .ConfigureAwait(false);
+
+            return new EntityQueryResultItem<TEntity>(
+                entity,
+                aspectTasks.ToDictionary(
+                    item => item.Key,
+                    item => item.Value.Result),
+                derivedAspects);
+        }
+
+        internal EntityQueryResultItem(
+            TEntity entity,
+            Dictionary<Type, object?> aspectValues,
+            Dictionary<Type, DeriveAspectDelegate> derivedAspects)
+        {
+            this.Entity = entity;
+            this.aspects = aspectValues;
+
+            //
+            // Resolve derived aspects. By doing it here, we ensure
+            // that each derived aspect is only derived once, and that
+            // the result is memoized.
+            //
+            foreach (var derived in derivedAspects)
+            {
+                this.aspects[derived.Key] = derived.Value(this.aspects);
+            }
+        }
+
+        internal EntityQueryResultItem(
+            TEntity entity,
+            Dictionary<Type, object?> aspectValues)
+            : this(entity, aspectValues, new Dictionary<Type, DeriveAspectDelegate>())
         {
         }
 
         /// <summary>
-        /// An entity with associated aspects.
+        /// The entity itself.
         /// </summary>
-        public class Item
+        public TEntity Entity { get; }
+
+        /// <summary>
+        /// Get aspect for this entity.
+        /// </summary>
+        public TAspect? Aspect<TAspect>() where TAspect : class
         {
-            private readonly Dictionary<Type, object?> aspects;
-
-            internal static async Task<Item> CreateAsync(
-                TEntity entity,
-                Dictionary<Type, Task<object?>> aspectTasks,
-                Dictionary<Type, DeriveAspectDelegate> derivedAspects)
+            if (this.aspects.ContainsKey(typeof(TAspect)))
             {
-                await Task
-                    .WhenAll(aspectTasks.Values)
-                    .ConfigureAwait(false);
-
-                return new Item(
-                    entity,
-                    aspectTasks.ToDictionary(
-                        item => item.Key,
-                        item => item.Value.Result),
-                    derivedAspects);
+                return this.aspects[typeof(TAspect)] as TAspect;
             }
-
-            internal Item(
-                TEntity entity,
-                Dictionary<Type, object?> aspectValues,
-                Dictionary<Type, DeriveAspectDelegate> derivedAspects)
+            else
             {
-                this.Entity = entity;
-                this.aspects = aspectValues;
-
-                //
-                // Resolve derived aspects. By doing it here, we ensure
-                // that each derived aspect is only derived once, and that
-                // the result is memoized.
-                //
-                foreach (var derived in derivedAspects)
-                {
-                    this.aspects[derived.Key] = derived.Value(this.aspects);
-                }
-            }
-
-            internal Item(
-                TEntity entity,
-                Dictionary<Type, object?> aspectValues)
-                : this(entity, aspectValues, new Dictionary<Type, DeriveAspectDelegate>())
-            {
-            }
-
-            /// <summary>
-            /// The entity itself.
-            /// </summary>
-            public TEntity Entity { get; }
-
-            /// <summary>
-            /// Get aspect for this entity.
-            /// </summary>
-            public TAspect? Aspect<TAspect>() where TAspect : class
-            {
-                if (this.aspects.ContainsKey(typeof(TAspect)))
-                {
-                    return this.aspects[typeof(TAspect)] as TAspect;
-                }
-                else
-                {
-                    throw new ArgumentException(
-                        $"The query does not include aspect '${typeof(TAspect)}'");
-                }
+                throw new ArgumentException(
+                    $"The query does not include aspect '${typeof(TAspect)}'");
             }
         }
     }
 
-    public sealed class ObservableEntityQueryResult<TEntity>
-        : EntityQueryResult<TEntity>, IDisposable
+    /// <summary>
+    /// Result of an entity query.
+    /// </summary>
+    public class EntityQueryResult<TEntity>
+        : ReadOnlyCollection<EntityQueryResultItem<TEntity>>
         where TEntity : IEntity<ILocator>
     {
-        public ObservableEntityQueryResult(IList<Item> list) : base(list)
+        public EntityQueryResult(IList<EntityQueryResultItem<TEntity>> list) : base(list)
         {
+        }
+    }
+
+    public sealed class ObservableEntityQueryResult<TEntity>
+        : ObservableCollection<EntityQueryResultItem<TEntity>>
+        where TEntity : IEntity<ILocator>
+    {
+        private readonly ISubscription propertyChanged;
+        private readonly ISubscription deleted;
+
+        public ObservableEntityQueryResult(
+            IList<EntityQueryResultItem<TEntity>> list,
+            IEventQueue eventQueue) : base(list)
+        {
+            this.propertyChanged = eventQueue.Subscribe<EntityPropertyChangedEvent>(
+                e => {
+                    // TODO: lookup, pass to covert to NPC.
+                });
+            this.deleted= eventQueue.Subscribe<EntityDeletedEvent>(
+                e => {
+                    // TODO: remove.
+                });
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            //
+            // Stop listening to events.
+            //
+            this.propertyChanged.Dispose();
+            this.deleted.Dispose();
         }
     }
 }

@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
                     .ConfigureAwait(false);
             }
 
-            private async Task<IList<EntityQueryResult<TEntity>.Item>> ExecuteCoreAsync(
+            private async Task<IList<EntityQueryResultItem<TEntity>>> ExecuteCoreAsync(
                CancellationToken cancellationToken)
             {
                 //
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
                 // Kick of asynchronous queries for each aspects and entity.
                 //
                 return await Task.WhenAll(entities
-                    .Select(e => EntityQueryResult<TEntity>.Item.CreateAsync(
+                    .Select(e => EntityQueryResultItem<TEntity>.CreateAsync(
                         e,
                         this.aspects.ToDictionary(
                             item => item.Key,
