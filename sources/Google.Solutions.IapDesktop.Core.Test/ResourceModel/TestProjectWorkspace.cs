@@ -55,6 +55,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             var settings = new Mock<IProjectWorkspaceSettings>();
             var workspace = new ProjectWorkspace(
                 settings.Object,
+                new Mock<IAncestryCache>().Object,
                 new Mock<IResourceManagerClient>().Object);
 
             var organizations = await workspace
@@ -64,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
         }
 
         [Test]
-        public async Task SearchOrganizations_WhenCalledTwice_ThenUsesCache()
+        public async Task SearchOrganizations_WhenCalledTwice_ThenUsesCachedState()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
@@ -78,6 +79,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 
             var workspace = new ProjectWorkspace(
                 settings.Object,
+                new Mock<IAncestryCache>().Object,
                 resourceMamager.Object);
 
             // Search twice.
@@ -95,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
         }
 
         [Test]
-        public async Task SearchOrganizations_WhenSettingsChange_ThenInvalidatesCache()
+        public async Task SearchOrganizations_WhenSettingsChange_ThenInvalidatesCachedState()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
@@ -109,6 +111,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 
             var workspace = new ProjectWorkspace(
                 settings.Object,
+                new Mock<IAncestryCache>().Object,
                 resourceMamager.Object);
 
             // Search to load cache.
@@ -151,6 +154,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 
             var workspace = new ProjectWorkspace(
                 settings.Object,
+                new Mock<IAncestryCache>().Object,
                 resourceMamager.Object);
 
             var organizations = await workspace
@@ -171,7 +175,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             settings
                 .SetupGet(s => s.Projects)
                 .Returns(Enumerables.Scalar(SampleProject));
-            settings
+
+            var cache = new Mock<IAncestryCache>();
+            cache
                 .Setup(s => s.TryGetCachedAncestry(SampleProject, out org))
                 .Returns(true);
 
@@ -188,6 +194,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 
             var workspace = new ProjectWorkspace(
                 settings.Object,
+                cache.Object,
                 resourceMamager.Object);
 
             var organizations = await workspace
@@ -226,6 +233,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 
             var workspace = new ProjectWorkspace(
                 settings.Object,
+                new Mock<IAncestryCache>().Object,
                 resourceMamager.Object);
 
             var organizations = await workspace
@@ -246,7 +254,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             settings
                 .SetupGet(s => s.Projects)
                 .Returns(Enumerables.Scalar(SampleProject));
-            settings
+
+            var cache = new Mock<IAncestryCache>();
+            cache
                 .Setup(s => s.TryGetCachedAncestry(SampleProject, out org))
                 .Returns(true);
 
@@ -260,6 +270,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 
             var workspace = new ProjectWorkspace(
                 settings.Object,
+                cache.Object,
                 resourceMamager.Object);
 
             var organizations = await workspace
@@ -281,6 +292,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             var settings = new Mock<IProjectWorkspaceSettings>();
             var workspace = new ProjectWorkspace(
                 settings.Object,
+                new Mock<IAncestryCache>().Object,
                 new Mock<IResourceManagerClient>().Object);
 
             var aspect = await workspace
@@ -309,6 +321,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 
             var workspace = new ProjectWorkspace(
                 settings.Object,
+                new Mock<IAncestryCache>().Object,
                 resourceMamager.Object);
 
             var projects = await workspace
@@ -340,6 +353,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 
             var workspace = new ProjectWorkspace(
                 settings.Object,
+                new Mock<IAncestryCache>().Object,
                 resourceMamager.Object);
 
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
@@ -366,6 +380,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 
             var workspace = new ProjectWorkspace(
                 settings.Object,
+                new Mock<IAncestryCache>().Object,
                 resourceMamager.Object);
 
             var projects = await workspace
@@ -408,6 +423,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 
             var workspace = new ProjectWorkspace(
                 settings.Object,
+                new Mock<IAncestryCache>().Object,
                 resourceMamager.Object);
 
             var projects = await workspace
@@ -431,6 +447,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             var settings = new Mock<IProjectWorkspaceSettings>();
             var workspace = new ProjectWorkspace(
                 settings.Object,
+                new Mock<IAncestryCache>().Object,
                 new Mock<IResourceManagerClient>().Object);
 
             var aspect = await workspace

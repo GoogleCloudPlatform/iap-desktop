@@ -43,13 +43,14 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     /// Contains a user-selected set of projects, aggregated
     /// by the organization they belong to.
     /// </summary>
-    public class ProjectWorkspace :
+    public class ProjectWorkspace : 
         IEntitySearcher<WildcardQuery, Organization>,
         IEntityNavigator<OrganizationLocator, Project>,
         IAsyncEntityAspectProvider<OrganizationLocator, Organization>,
         IAsyncEntityAspectProvider<ProjectLocator, Project>
     {
         private readonly IProjectWorkspaceSettings settings;
+        private readonly IAncestryCache ancestryCache;
         private readonly IResourceManagerClient resourceManager;
 
         private readonly AsyncLock cacheLock = new AsyncLock();
@@ -58,9 +59,11 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
 
         public ProjectWorkspace(
             IProjectWorkspaceSettings settings,
+            IAncestryCache ancestryCache,
             IResourceManagerClient resourceManager)
         {
             this.settings = settings;
+            this.ancestryCache = ancestryCache;
             this.resourceManager = resourceManager;
 
             this.settings.PropertyChanged += (_, args) =>
@@ -123,6 +126,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         /// </summary>
         private static async Task<State> LoadStateAsync(
             IProjectWorkspaceSettings context,
+            IAncestryCache ancestryCache,
             IResourceManagerClient resourceManager,
             CancellationToken cancellationToken)
         {
@@ -159,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
                     //
                     // Add cached ancestry, if available.
                     //
-                    context.TryGetCachedAncestry(project.Locator, out project.OrganizationLocator);
+                    ancestryCache.TryGetCachedAncestry(project.Locator, out project.OrganizationLocator);
 
                     CoreTraceSource.Log.TraceVerbose(
                         "Successfully loaded project {0}", project.Locator);
@@ -258,6 +262,8 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
                 organizations[Organization.Default.Locator] = Organization.Default;
             }
 
+            //TODO: cache ancestry, test.
+
             return new State(
                 organizations,
                 projects.ToDictionary(
@@ -286,6 +292,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
                     //
                     this.cache = await LoadStateAsync(
                         this.settings,
+                        this.ancestryCache,
                         this.resourceManager,
                         cancellationToken)
                         .ConfigureAwait(false);
@@ -303,6 +310,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         {
             return LoadStateAsync(
                 this.settings,
+                this.ancestryCache,
                 this.resourceManager,
                 CancellationToken.None);
         }
@@ -363,13 +371,25 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     // Context.
     //----------------------------------------------------------------------
 
+    /// <summary>
+    /// Pesistent settings for a workspace.
+    /// </summary>
     public interface IProjectWorkspaceSettings : INotifyPropertyChanged
     {
         /// <summary>
         /// List of projects in this workspace.
         /// </summary>
+        /// <remarks>
+        /// Raises a PropertyChanged events when changed.
+        /// </remarks>
         IEnumerable<ProjectLocator> Projects { get; }
+    }
 
+    /// <summary>
+    /// Cache for project ancestry information.
+    /// </summary>
+    public interface IAncestryCache
+    {
         /// <summary>
         /// Get cached project's ancestry, in top-to-bottom order.
         /// 
