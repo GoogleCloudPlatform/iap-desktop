@@ -163,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
                     //
                     // Add cached ancestry, if available.
                     //
-                    ancestryCache.TryGetCachedAncestry(project.Locator, out project.OrganizationLocator);
+                    ancestryCache.TryGetAncestry(project.Locator, out project.OrganizationLocator);
 
                     CoreTraceSource.Log.TraceVerbose(
                         "Successfully loaded project {0}", project.Locator);
@@ -212,6 +212,14 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
                 // Amend ancestry (if available).
                 //
                 task.Project.OrganizationLocator = await task.Task.ConfigureAwait(false);
+
+                if (task.Project.OrganizationLocator != null)
+                {
+                    //
+                    // Cache ancestry information to speed up future lookups.
+                    //
+                    ancestryCache.SetAncestry(task.Project.Locator, task.Project.OrganizationLocator);
+                }
             }
 
             //
@@ -397,7 +405,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         /// doesn't have sufficient access to resolve the full ancestry.
         /// </summary>
         /// <returns>false if ancestry hasn't been set before</returns>
-        bool TryGetCachedAncestry(ProjectLocator project, out OrganizationLocator ancestry);
+        bool TryGetAncestry(ProjectLocator project, out OrganizationLocator ancestry);
 
         /// <summary>
         /// Cache project ancestry path, in top-to-bottom order.
@@ -405,6 +413,6 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         /// The ancestry path might be incomplete or empty if the current 
         /// doesn't have sufficient access to resolve the full ancestry.
         /// </summary>
-        void CacheAncestry(ProjectLocator project, out OrganizationLocator ancestry);
+        void SetAncestry(ProjectLocator project, OrganizationLocator ancestry);
     }
 }

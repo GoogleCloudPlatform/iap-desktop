@@ -152,9 +152,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
                 .Setup(r => r.GetProjectAsync(SampleProject, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new CrmProject());
 
+            var cache = new Mock<IAncestryCache>();
             var workspace = new ProjectWorkspace(
                 settings.Object,
-                new Mock<IAncestryCache>().Object,
+                cache.Object,
                 resourceMamager.Object);
 
             var organizations = await workspace
@@ -164,6 +165,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             Assert.AreEqual(
                 Organization.Default.Locator,
                 organizations.First().Locator);
+
+            cache.Verify(
+                c => c.SetAncestry(It.IsAny<ProjectLocator>(), It.IsAny<OrganizationLocator>()), 
+                Times.Never);
         }
 
         [Test]
@@ -178,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 
             var cache = new Mock<IAncestryCache>();
             cache
-                .Setup(s => s.TryGetCachedAncestry(SampleProject, out org))
+                .Setup(s => s.TryGetAncestry(SampleProject, out org))
                 .Returns(true);
 
             var resourceMamager = new Mock<IResourceManagerClient>();
@@ -213,6 +218,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
                     It.IsAny<ProjectLocator>(),
                     It.IsAny<CancellationToken>()),
                 Times.Never);
+            cache.Verify(
+                c => c.SetAncestry(It.IsAny<ProjectLocator>(), It.IsAny<OrganizationLocator>()),
+                Times.Never);
         }
 
         [Test]
@@ -231,9 +239,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
                 .Setup(r => r.FindOrganizationAsync(SampleProject, It.IsAny<CancellationToken>()))
                 .ReturnsAsync((OrganizationLocator?)null);
 
+            var cache = new Mock<IAncestryCache>();
             var workspace = new ProjectWorkspace(
                 settings.Object,
-                new Mock<IAncestryCache>().Object,
+                cache.Object,
                 resourceMamager.Object);
 
             var organizations = await workspace
@@ -243,6 +252,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             Assert.AreEqual(
                 Organization.Default.Locator,
                 organizations.First().Locator);
+
+            cache.Verify(
+                c => c.SetAncestry(It.IsAny<ProjectLocator>(), It.IsAny<OrganizationLocator>()),
+                Times.Never);
         }
 
         [Test]
@@ -257,7 +270,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 
             var cache = new Mock<IAncestryCache>();
             cache
-                .Setup(s => s.TryGetCachedAncestry(SampleProject, out org))
+                .Setup(s => s.TryGetAncestry(SampleProject, out org))
                 .Returns(true);
 
             var resourceMamager = new Mock<IResourceManagerClient>();
@@ -280,6 +293,52 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             Assert.AreEqual(
                 Organization.Default.Locator,
                 organizations.First().Locator);
+
+            cache.Verify(
+                c => c.SetAncestry(It.IsAny<ProjectLocator>(), It.IsAny<OrganizationLocator>()),
+                Times.Never);
+        }
+
+        [Test]
+        public async Task SearchOrganizations_ResolvesAndCachesAncestry()
+        {
+            var settings = new Mock<IProjectWorkspaceSettings>();
+            settings
+                .SetupGet(s => s.Projects)
+                .Returns(Enumerables.Scalar(SampleProject));
+
+            var org = new OrganizationLocator(1);
+            var resourceMamager = new Mock<IResourceManagerClient>();
+            resourceMamager
+                .Setup(r => r.GetProjectAsync(SampleProject, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CrmProject());
+            resourceMamager
+                .Setup(r => r.FindOrganizationAsync(SampleProject, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(org);
+            resourceMamager
+                .Setup(r => r.GetOrganizationAsync(org, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CrmOrganization()
+                {
+                    DisplayName = "Sample org"
+                });
+
+            var cache = new Mock<IAncestryCache>();
+            var workspace = new ProjectWorkspace(
+                settings.Object,
+                cache.Object,
+                resourceMamager.Object);
+
+            var organizations = await workspace
+                .SearchAsync(WildcardQuery.Instance, CancellationToken.None)
+                .ConfigureAwait(false);
+            CollectionAssert.IsNotEmpty(organizations);
+            Assert.AreEqual(
+                org,
+                organizations.First().Locator);
+
+            cache.Verify(
+                c => c.SetAncestry(SampleProject, org),
+                Times.Once);
         }
 
         //----------------------------------------------------------------------
