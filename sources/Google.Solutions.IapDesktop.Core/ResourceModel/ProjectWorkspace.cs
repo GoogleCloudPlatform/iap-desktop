@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     /// </summary>
     public class ProjectWorkspace :
         IEntitySearcher<WildcardQuery, Organization>,
-        IEntityExpander<OrganizationLocator, Project>,
+        IEntityNavigator<OrganizationLocator, Project>,
         IAsyncEntityAspectProvider<OrganizationLocator, Organization>,
         IAsyncEntityAspectProvider<ProjectLocator, Project>
     {
@@ -311,7 +311,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         // Projects.
         //----------------------------------------------------------------------
 
-        public async Task<IEnumerable<Project>> ExpandAsync(
+        public async Task<IEnumerable<Project>> ListDescendantsAsync(
             OrganizationLocator locator,
             CancellationToken cancellationToken)
         {

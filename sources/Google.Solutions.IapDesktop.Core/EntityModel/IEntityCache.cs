@@ -24,7 +24,7 @@ using Google.Solutions.Apis.Locator;
 namespace Google.Solutions.IapDesktop.Core.EntityModel
 {
     /// <summary>
-    /// Ancillary inteface that can be implemented by expanders,
+    /// Ancillary inteface that can be implemented by navigators,
     /// providers, and searchers that require cache invalidation.
     /// </summary>
     /// <remarks>
@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     }
 
     /// <summary>
-    /// Ancillary inteface that can be implemented by expanders,
+    /// Ancillary inteface that can be implemented by navigators,
     /// providers, and searchers that require cache invalidation.
     /// </summary>
     public interface IEntityCache<TLocator> : IEntityCache

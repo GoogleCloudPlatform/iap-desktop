@@ -291,11 +291,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
         }
 
         //----------------------------------------------------------------------
-        // Expand organizations.
+        // List organization descendants.
         //----------------------------------------------------------------------
 
         [Test]
-        public async Task ExpandOrganization_WhenProjectInaccessible()
+        public async Task ListDescendants_ByOrganization_WhenProjectInaccessible()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
@@ -312,7 +312,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
                 resourceMamager.Object);
 
             var projects = await workspace
-                .ExpandAsync(Organization.Default.Locator, CancellationToken.None)
+                .ListDescendantsAsync(Organization.Default.Locator, CancellationToken.None)
                 .ConfigureAwait(false);
 
             CollectionAssert.IsNotEmpty(projects);
@@ -322,7 +322,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
         }
 
         [Test]
-        public void ExpandOrganization_WhenReauthTriggered()
+        public void ListDescendants_ByOrganization_WhenReauthTriggered()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
@@ -344,12 +344,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 
             ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
                 () => workspace
-                    .ExpandAsync(Organization.Default.Locator, CancellationToken.None)
+                    .ListDescendantsAsync(Organization.Default.Locator, CancellationToken.None)
                     .Wait());
         }
 
         [Test]
-        public async Task ExpandOrganization_WhenAncestryInaccessible()
+        public async Task ListDescendants_ByOrganization_WhenAncestryInaccessible()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
@@ -369,7 +369,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
                 resourceMamager.Object);
 
             var projects = await workspace
-                .ExpandAsync(Organization.Default.Locator, CancellationToken.None)
+                .ListDescendantsAsync(Organization.Default.Locator, CancellationToken.None)
                 .ConfigureAwait(false);
 
             CollectionAssert.IsNotEmpty(projects);
@@ -380,7 +380,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
         }
 
         [Test]
-        public async Task ExpandOrganization()
+        public async Task ListDescendants_ByOrganization()
         {
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
@@ -411,7 +411,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
                 resourceMamager.Object);
 
             var projects = await workspace
-                .ExpandAsync(org, CancellationToken.None)
+                .ListDescendantsAsync(org, CancellationToken.None)
                 .ConfigureAwait(false);
 
             CollectionAssert.IsNotEmpty(projects);

@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
         {
             return new Query(
                 this.context,
-                ct => this.context.ExpandAsync<TEntity>(locator, ct));
+                ct => this.context.ListDescendantsAsync<TEntity>(locator, ct));
         }
 
         public class Query

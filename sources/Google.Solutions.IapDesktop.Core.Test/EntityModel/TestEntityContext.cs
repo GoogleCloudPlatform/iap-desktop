@@ -85,14 +85,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         public class ColorAspect { }
         public class ShapeAspect { }
 
-        private class Expander<TLocator, TEntity> 
-            : IEntityExpander<TLocator, TEntity>
+        private class Navigator<TLocator, TEntity> 
+            : IEntityNavigator<TLocator, TEntity>
             where TLocator : ILocator
             where TEntity : IEntity<ILocator>
         {
             private readonly ICollection<TEntity> entities;
 
-            public Expander(ICollection<TEntity> entities)
+            public Navigator(ICollection<TEntity> entities)
             {
                 this.entities = entities;
             }
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 throw new NotImplementedException();
             }
 
-            public Task<IEnumerable<TEntity>> ExpandAsync(
+            public Task<IEnumerable<TEntity>> ListDescendantsAsync(
                 TLocator locator, 
                 CancellationToken cancellationToken)
             {
@@ -144,23 +144,23 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         //--------------------------------------------------------------------
 
         [Test]
-        public void SupportsExpansion_WhenNoExpanderRegistered()
+        public void SupportsExpansion_WhenNoNavigatorRegistered()
         {
             var context = new EntityContext.Builder().Build();
-            Assert.IsFalse(context.SupportsExpansion(new CarLocator()));
-            Assert.IsFalse(context.SupportsExpansion<CarLocator>());
-            Assert.IsFalse(context.SupportsExpansion(typeof(string)));
+            Assert.IsFalse(context.SupportsDescendants(new CarLocator()));
+            Assert.IsFalse(context.SupportsDescendants<CarLocator>());
+            Assert.IsFalse(context.SupportsDescendants(typeof(string)));
         }
 
         [Test]
-        public void SupportsExpansion_WhenExpandersRegistered()
+        public void SupportsExpansion_WhenNavigatorRegistered()
         {
             var context = new EntityContext.Builder()
-                .AddExpander(new Mock<IEntityExpander<GarageLocator, Car>>().Object)
-                .AddExpander(new Mock<IEntityExpander<GarageLocator, Bike>>().Object)
+                .AddNavigator(new Mock<IEntityNavigator<GarageLocator, Car>>().Object)
+                .AddNavigator(new Mock<IEntityNavigator<GarageLocator, Bike>>().Object)
                 .Build();
-            Assert.IsTrue(context.SupportsExpansion(new GarageLocator()));
-            Assert.IsTrue(context.SupportsExpansion<GarageLocator>());
+            Assert.IsTrue(context.SupportsDescendants(new GarageLocator()));
+            Assert.IsTrue(context.SupportsDescendants<GarageLocator>());
         }
 
         //--------------------------------------------------------------------
@@ -238,75 +238,75 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         }
 
         //--------------------------------------------------------------------
-        // Expand.
+        // ListDescendant.
         //--------------------------------------------------------------------
 
         [Test]
-        public async Task Expand_WhenNoContainerRegisteredForLocator()
+        public async Task ListDescendants_WhenNoContainerRegisteredForLocator()
         {
             var context = new EntityContext.Builder()
-                .AddExpander(new Mock<IEntityExpander<GarageLocator, Car>>().Object)
+                .AddNavigator(new Mock<IEntityNavigator<GarageLocator, Car>>().Object)
                 .Build();
 
             CollectionAssert.IsEmpty(await context
-                .ExpandAsync<IEntity<ILocator>>(new BikeLocator(), CancellationToken.None)
+                .ListDescendantsAsync<IEntity<ILocator>>(new BikeLocator(), CancellationToken.None)
                 .ConfigureAwait(false));
         }
 
         [Test]
-        public async Task Expand_WhenNoContainerRegisteredForEntityType()
+        public async Task ListDescendants_WhenNoContainerRegisteredForEntityType()
         {
             var context = new EntityContext.Builder()
-                .AddExpander(new Mock<IEntityExpander<GarageLocator, Car>>().Object)
+                .AddNavigator(new Mock<IEntityNavigator<GarageLocator, Car>>().Object)
                 .Build();
 
             CollectionAssert.IsEmpty(await context
-                .ExpandAsync<Bike>(new CarLocator(), CancellationToken.None)
+                .ListDescendantsAsync<Bike>(new CarLocator(), CancellationToken.None)
                 .ConfigureAwait(false));
         }
 
         [Test]
-        public async Task Expand_WhenEntityTypeDoesNotMatch()
+        public async Task ListDescendants_WhenEntityTypeDoesNotMatch()
         {
-            var container = new Expander<GarageLocator, Car>(
+            var container = new Navigator<GarageLocator, Car>(
                 new[] {
                     new Car("c1", new CarLocator()), 
                     new Car("c2", new CarLocator()) 
                 });
             var context = new EntityContext.Builder()
-                .AddExpander(container)
+                .AddNavigator(container)
                 .Build();
 
             CollectionAssert.IsEmpty(await context
-                .ExpandAsync<Bike>(new CarLocator(), CancellationToken.None)
+                .ListDescendantsAsync<Bike>(new CarLocator(), CancellationToken.None)
                 .ConfigureAwait(false));
         }
 
         [Test]
-        public async Task Expand()
+        public async Task ListDescendants()
         {
-            var carContainer = new Expander<GarageLocator, Car>(
+            var carContainer = new Navigator<GarageLocator, Car>(
                 new[] {
                     new Car("c1", new CarLocator()),
                     new Car("c2", new CarLocator())
                 });
-            var bikeContainer = new Expander<GarageLocator, Bike>(
+            var bikeContainer = new Navigator<GarageLocator, Bike>(
                 new[] {
                     new Bike("b1", new BikeLocator())
                 });
             var context = new EntityContext.Builder()
-                .AddExpander(carContainer)
-                .AddExpander(bikeContainer)
+                .AddNavigator(carContainer)
+                .AddNavigator(bikeContainer)
                 .Build();
 
             Assert.AreEqual(2, (await context
-                .ExpandAsync<Car>(new GarageLocator(), CancellationToken.None)
+                .ListDescendantsAsync<Car>(new GarageLocator(), CancellationToken.None)
                 .ConfigureAwait(false)).Count);
             Assert.AreEqual(1, (await context
-                .ExpandAsync<Bike>(new GarageLocator(), CancellationToken.None)
+                .ListDescendantsAsync<Bike>(new GarageLocator(), CancellationToken.None)
                 .ConfigureAwait(false)).Count);
             Assert.AreEqual(3, (await context
-                .ExpandAsync<IVehicle>(new GarageLocator(), CancellationToken.None)
+                .ListDescendantsAsync<IVehicle>(new GarageLocator(), CancellationToken.None)
                 .ConfigureAwait(false)).Count);
         }
 
@@ -540,13 +540,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 .First(t => t.Type == typeof(Bike));
 
             Assert.AreEqual(0, (await context
-                .ExpandAsync<IEntity<ILocator>>(bikeType.Locator, CancellationToken.None)
+                .ListDescendantsAsync<IEntity<ILocator>>(bikeType.Locator, CancellationToken.None)
                 .ConfigureAwait(false))
                 .Count());
         }
 
         [Test]
-        public async Task Introspect_Expand()
+        public async Task Introspect_ListDescendants()
         {
             var searcher = new Mock<IEntitySearcher<WildcardQuery, Bike>>();
             searcher
@@ -565,7 +565,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 .First(t => t.Type == typeof(Bike));
 
             Assert.AreEqual(1, (await context
-                .ExpandAsync<IEntity<ILocator>>(bikeType.Locator, CancellationToken.None)
+                .ListDescendantsAsync<IEntity<ILocator>>(bikeType.Locator, CancellationToken.None)
                 .ConfigureAwait(false))
                 .Count());
         }

@@ -37,8 +37,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         {
             private readonly List<RegisteredEntityCache> entityCaches =
                 new List<RegisteredEntityCache>();
-            private readonly List<RegisteredEntityExpander> entityExpanders =
-                new List<RegisteredEntityExpander>();
+            private readonly List<RegisteredEntityNavigator> entityNavigators =
+                new List<RegisteredEntityNavigator>();
             private readonly List<RegisteredEntitySearcher> entitySearchers =
                 new List<RegisteredEntitySearcher>();
             private readonly List<RegisteredAspectProvider> aspectProviders =
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 new List<RegisteredAsyncAspectProvider>();
 
             private readonly MethodInfo addCacheCoreMethod;
-            private readonly MethodInfo addExpanderCoreMethod;
+            private readonly MethodInfo addNavigatorCoreMethod;
             private readonly MethodInfo addSearcherCoreMethod;
             private readonly MethodInfo addAspectProviderCoreMethod;
             private readonly MethodInfo addAsyncAspectProviderCoreMethod;
@@ -57,8 +57,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 this.addCacheCoreMethod = GetType().GetMethod(
                     nameof(AddCacheCore),
                     BindingFlags.Instance | BindingFlags.NonPublic);
-                this.addExpanderCoreMethod = GetType().GetMethod(
-                    nameof(AddExpanderCore),
+                this.addNavigatorCoreMethod = GetType().GetMethod(
+                    nameof(AddNavigatorCore),
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 this.addSearcherCoreMethod = GetType().GetMethod(
                     nameof(AddSearcherCore),
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 //
                 var introspector = new Introspector(this.entitySearchers);
                 AddSearcher(introspector);
-                AddExpander(introspector);
+                AddNavigator(introspector);
             }
 
             /// <summary>
@@ -100,19 +100,19 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                     locator => cache.Invalidate((TLocator)locator)));
             }
 
-            private void AddExpanderCore<TLocator, TEntity>(
-                IEntityExpander<TLocator, TEntity> expander)
+            private void AddNavigatorCore<TLocator, TEntity>(
+                IEntityNavigator<TLocator, TEntity> navigator)
                 where TLocator : ILocator
                 where TEntity : IEntity<ILocator>
             {
-                this.entityExpanders.Add(new RegisteredEntityExpander(
+                this.entityNavigators.Add(new RegisteredEntityNavigator(
                     typeof(TLocator),
                     typeof(TEntity),
                     async (locator, cancellationToken) =>
                     {
                         Debug.Assert(locator is TLocator);
-                        var result = await expander
-                            .ExpandAsync((TLocator)locator, cancellationToken)
+                        var result = await navigator
+                            .ListDescendantsAsync((TLocator)locator, cancellationToken)
                             .ConfigureAwait(false);
 
                         return result.Cast<IEntity<ILocator>>().ToList();
@@ -186,18 +186,18 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 return this;
             }
 
-            public Builder AddExpander(IEntityExpander expander)
+            public Builder AddNavigator(IEntityNavigator navigator)
             {
                 foreach (var genericInterface in GetGenericInterfaces(
-                    expander.GetType(),
-                    typeof(IEntityExpander<,>)))
+                    navigator.GetType(),
+                    typeof(IEntityNavigator<,>)))
                 {
-                    this.addExpanderCoreMethod
+                    this.addNavigatorCoreMethod
                         .MakeGenericMethod(genericInterface.GenericTypeArguments)
-                        .Invoke(this, new object[] { expander });
+                        .Invoke(this, new object[] { navigator });
                 }
 
-                if (expander is IEntityCache cache)
+                if (navigator is IEntityCache cache)
                 {
                     AddCache(cache);
                 }
@@ -258,11 +258,11 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                 return this;
             }
 
-            public Builder AddExpanders(IEnumerable<IEntityExpander> expander)
+            public Builder AddNavigators(IEnumerable<IEntityNavigator> navigator)
             {
-                foreach (var container in expander)
+                foreach (var container in navigator)
                 {
-                    AddExpander(container);
+                    AddNavigator(container);
                 }
 
                 return this;
@@ -291,7 +291,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             internal IDictionary<Type, LocatorConfiguration> BuildLocatorConfiguration()
             {
                 return Enumerable.Empty<Type>()
-                    .Concat(this.entityExpanders.Select(c => c.LocatorType))
+                    .Concat(this.entityNavigators.Select(c => c.LocatorType))
                     .Concat(this.aspectProviders.Select(c => c.LocatorType))
                     .Concat(this.asyncAspectProviders.Select(c => c.LocatorType))
                     .Distinct()
@@ -299,7 +299,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
                         type => type,
                         type => new LocatorConfiguration(
                             type,
-                            this.entityExpanders.Where(c => c.LocatorType == type).ToList(),
+                            this.entityNavigators.Where(c => c.LocatorType == type).ToList(),
                             this.aspectProviders.Where(c => c.LocatorType == type).ToList(),
                             this.asyncAspectProviders.Where(c => c.LocatorType == type).ToList()));
             }

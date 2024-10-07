@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
 {
     /// <summary>
     /// Provides a unified view over data exposed by multiple
-    /// entity expanders and aspect providers.
+    /// entity navigators and aspect providers.
     /// </summary>
     public partial class EntityContext
     {
@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         private readonly IDictionary<Type, LocatorConfiguration> locators;
 
         public EntityContext(IServiceCategoryProvider serviceProvider) : this(new Builder()
-            .AddExpanders(serviceProvider.GetServicesByCategory<IEntityExpander>())
+            .AddNavigators(serviceProvider.GetServicesByCategory<IEntityNavigator>())
             .AddSearchers(serviceProvider.GetServicesByCategory<IEntitySearcher>())
             .AddAspectProviders(serviceProvider.GetServicesByCategory<IEntityAspectProvider>()))
         {
@@ -59,13 +59,13 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         //--------------------------------------------------------------------
 
         /// <summary>
-        /// Check of there is any entity expander for this type of locator.
+        /// Check of there are any entity navigators for this type of locator.
         /// </summary>
-        public bool SupportsExpansion(Type locatorType)
+        public bool SupportsDescendants(Type locatorType)
         {
             if (this.locators.TryGetValue(locatorType, out var configuration))
             {
-                return configuration.Expanders.Any();
+                return configuration.Navigators.Any();
             }
             else
             {
@@ -74,19 +74,19 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         }
 
         /// <summary>
-        /// Check of there is any entity expander for this type of locator.
+        /// Check of there is any entity navigators for this type of locator.
         /// </summary>
-        public bool SupportsExpansion(ILocator locator)
+        public bool SupportsDescendants(ILocator locator)
         {
-            return SupportsExpansion(locator.GetType());
+            return SupportsDescendants(locator.GetType());
         }
 
         /// <summary>
-        /// Check of there is any entity expander for this type of locator.
+        /// Check of there is any entity navigators for this type of locator.
         /// </summary>
-        public bool SupportsExpansion<TLocator>() where TLocator : ILocator
+        public bool SupportsDescendants<TLocator>() where TLocator : ILocator
         {
-            return SupportsExpansion(typeof(TLocator));
+            return SupportsDescendants(typeof(TLocator));
         }
 
         /// <summary>
@@ -138,22 +138,22 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         }
 
         /// <summary>
-        /// Query all expanders that support the kind of locator and
+        /// Query all navigators that support the kind of locator and
         /// requested entity type, or a subtype thereof.
         /// </summary>
         /// <returns>
-        /// Empty if there is no expander for this type of entity.
+        /// Empty if there is no navigator for this type of entity.
         /// </returns>
-        public async Task<ICollection<TEntity>> ExpandAsync<TEntity>(
+        public async Task<ICollection<TEntity>> ListDescendantsAsync<TEntity>(
             ILocator locator,
             CancellationToken cancellationToken)
             where TEntity : IEntity<ILocator>
         {
             if (this.locators.TryGetValue(locator.GetType(), out var configuration))
             {
-                var listTasks = configuration.Expanders
+                var listTasks = configuration.Navigators
                     .Where(c => typeof(TEntity).IsAssignableFrom(c.EntityType))
-                    .Select(c => c.ExpandAsync(locator, cancellationToken))
+                    .Select(c => c.ListDescendantsAsync(locator, cancellationToken))
                     .ToList();
 
                 var listResults = await Task
@@ -291,7 +291,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         /// Enables introspecting the entity types supported by this context.
         /// </summary>
         private class Introspector
-            : IEntitySearcher<WildcardQuery, EntityType>, IEntityExpander<EntityTypeLocator, IEntity<ILocator>>
+            : IEntitySearcher<WildcardQuery, EntityType>, IEntityNavigator<EntityTypeLocator, IEntity<ILocator>>
         {
             private readonly ICollection<RegisteredEntitySearcher> searchers;
 
@@ -301,8 +301,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             }
 
             /// <summary>
-            /// List all searchable entity types. Individual entity types
-            /// can then be expanded to list actual entities.
+            /// List all searchable entity types. 
             /// </summary>
             public Task<IEnumerable<EntityType>> SearchAsync( // TODO: test
                 WildcardQuery query,
@@ -316,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             /// <summary>
             /// List entities of a certain type.
             /// </summary>
-            public Task<IEnumerable<IEntity<ILocator>>> ExpandAsync(
+            public Task<IEnumerable<IEntity<ILocator>>> ListDescendantsAsync(
                 EntityTypeLocator typeLocator,
                 CancellationToken cancellationToken)
             {
@@ -348,18 +347,18 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         internal readonly struct LocatorConfiguration
         {
             public Type LocatorType { get; }
-            public ICollection<RegisteredEntityExpander> Expanders { get; }
+            public ICollection<RegisteredEntityNavigator> Navigators { get; }
             public ICollection<RegisteredAspectProvider> AspectProviders { get; }
             public ICollection<RegisteredAsyncAspectProvider> AsyncAspectProviders { get; }
 
             public LocatorConfiguration(
                 Type locatorType,
-                ICollection<RegisteredEntityExpander> expanders,
+                ICollection<RegisteredEntityNavigator> navigators,
                 ICollection<RegisteredAspectProvider> aspectProviders,
                 ICollection<RegisteredAsyncAspectProvider> asyncAspectProviders)
             {
                 this.LocatorType = locatorType;
-                this.Expanders = expanders;
+                this.Navigators = navigators;
                 this.AspectProviders = aspectProviders;
                 this.AsyncAspectProviders = asyncAspectProviders;
 
@@ -392,24 +391,24 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             }
         }
 
-        internal readonly struct RegisteredEntityExpander
+        internal readonly struct RegisteredEntityNavigator
         {
-            public delegate Task<IEnumerable<IEntity<ILocator>>> ExpandAsyncDelegate(
+            public delegate Task<IEnumerable<IEntity<ILocator>>> ListDescendantsAsyncDelegate(
                 ILocator locator,
                 CancellationToken cancellationToken);
 
             public Type LocatorType { get; }
             public Type EntityType { get; }
-            public ExpandAsyncDelegate ExpandAsync { get; }
+            public ListDescendantsAsyncDelegate ListDescendantsAsync { get; }
 
-            public RegisteredEntityExpander(
+            public RegisteredEntityNavigator(
                 Type locatorType, 
                 Type entityType, 
-                ExpandAsyncDelegate listAsync)
+                ListDescendantsAsyncDelegate listAsync)
             {
                 this.LocatorType = locatorType;
                 this.EntityType = entityType;
-                this.ExpandAsync = listAsync;
+                this.ListDescendantsAsync = listAsync;
             }
         }
 

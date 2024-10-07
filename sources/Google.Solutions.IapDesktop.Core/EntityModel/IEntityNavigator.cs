@@ -27,39 +27,30 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Core.EntityModel
 {
     /// <summary>
-    /// Discovers child entities.
+    /// Discovers entities by their ancestry.
     /// </summary>
     /// <remarks>
     /// Implementing types must also implement
     /// the generic version of this interface.
     /// </remarks>
-    public interface IEntityExpander
+    public interface IEntityNavigator
     {
     }
 
     /// <summary>
-    /// Discovers child entities.
+    /// Discovers entities by their ancestry.
     /// </summary>
     /// <typeparam name="TLocator">Parent locator type</typeparam>
     /// <typeparam name="TEntity">Entity type</typeparam>
-    public interface IEntityExpander<TLocator, TEntity> : IEntityExpander
+    public interface IEntityNavigator<TLocator, TEntity> : IEntityNavigator
         where TLocator : ILocator
         where TEntity : IEntity<ILocator>
     {
         /// <summary>
         /// List direct descendents.
         /// </summary>
-        Task<IEnumerable<TEntity>> ExpandAsync(
+        Task<IEnumerable<TEntity>> ListDescendantsAsync(
             TLocator parent,
             CancellationToken cancellationToken);
-
-        //TODO: rename to IEntityNavigator.ListDescendantsAsync
-
-        /// <summary>
-        /// Delete an entity.
-        /// </summary>
-        //Task DeleteAsync(
-        //    TEntityLocator entity,
-        //    CancellationToken cancellation);
     }
 }
