@@ -71,8 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         {
             var key = this.projectRepository.OpenRegistryKey(
                 zone.ProjectId,
-                ZonePrefix + zone.Name,
-                true);
+                ZonePrefix + zone.Name);
 
             //
             // Return zone settings, applying project settings
@@ -90,8 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         {
             var key = this.projectRepository.OpenRegistryKey(
                 instance.ProjectId,
-                VmPrefix + instance.Name,
-                true);
+                VmPrefix + instance.Name);
 
             //
             // Return instance settings, applying zone and

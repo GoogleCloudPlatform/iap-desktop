@@ -405,7 +405,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         /// doesn't have sufficient access to resolve the full ancestry.
         /// </summary>
         /// <returns>false if ancestry hasn't been set before</returns>
-        bool TryGetAncestry(ProjectLocator project, out OrganizationLocator ancestry);
+        bool TryGetAncestry(ProjectLocator project, out OrganizationLocator? ancestry);
 
         /// <summary>
         /// Cache project ancestry path, in top-to-bottom order.
