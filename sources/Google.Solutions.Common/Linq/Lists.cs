@@ -19,27 +19,29 @@
 // under the License.
 //
 
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Google.Solutions.Common.Linq
 {
     /// <summary>
-    /// Utility methods for creating Enumerables.
+    /// Utility methods for creating lists.
     /// </summary>
-    public static class Enumerables
+    public static class Lists
     {
         /// <summary>
-        /// Create an enumerable for a nullable value.
+        /// Create an collection for a nullable value.
         /// </summary>
         /// <returns>
-        /// Empty enumerable if the object is null, a 
+        /// Empty collection if the object is null, a 
         /// single-element enumerable otherwise.
         /// </returns>
-        public static IEnumerable<T> FromNullable<T>(T? nullable) where T : class
+        public static IList<T> FromNullable<T>(T? nullable) where T : class
         {
             return nullable == null
-                ? Enumerable.Empty<T>()
+                ? Array.Empty<T>()
                 : new T[] { nullable };
         }
     }

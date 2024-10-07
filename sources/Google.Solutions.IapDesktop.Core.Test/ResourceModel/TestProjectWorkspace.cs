@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
-                .Returns(Enumerables.Scalar(SampleProject));
+                .Returns(Enumerables.FromNullable(SampleProject));
 
             var resourceMamager = new Mock<IResourceManagerClient>();
             resourceMamager
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
-                .Returns(Enumerables.Scalar(SampleProject));
+                .Returns(Enumerables.FromNullable(SampleProject));
 
             var resourceMamager = new Mock<IResourceManagerClient>();
             resourceMamager
@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
-                .Returns(Enumerables.Scalar(SampleProject));
+                .Returns(Enumerables.FromNullable(SampleProject));
 
             // Fail calls to load ancestry.
             var resourceMamager = new Mock<IResourceManagerClient>();
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
-                .Returns(Enumerables.Scalar(SampleProject));
+                .Returns(Enumerables.FromNullable(SampleProject));
 
             var cache = new Mock<IAncestryCache>();
             cache
@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
-                .Returns(Enumerables.Scalar(SampleProject));
+                .Returns(Enumerables.FromNullable(SampleProject));
 
             var resourceMamager = new Mock<IResourceManagerClient>();
             resourceMamager
@@ -266,7 +266,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
-                .Returns(Enumerables.Scalar(SampleProject));
+                .Returns(Enumerables.FromNullable(SampleProject));
 
             var cache = new Mock<IAncestryCache>();
             cache
@@ -305,7 +305,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
-                .Returns(Enumerables.Scalar(SampleProject));
+                .Returns(Enumerables.FromNullable(SampleProject));
 
             var org = new OrganizationLocator(1);
             var resourceMamager = new Mock<IResourceManagerClient>();
@@ -371,7 +371,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
-                .Returns(Enumerables.Scalar(SampleProject));
+                .Returns(Enumerables.FromNullable(SampleProject));
 
             var resourceMamager = new Mock<IResourceManagerClient>();
             resourceMamager
@@ -399,7 +399,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
-                .Returns(Enumerables.Scalar(SampleProject));
+                .Returns(Enumerables.FromNullable(SampleProject));
 
             // Trigger reauth.
             var resourceMamager = new Mock<IResourceManagerClient>();
@@ -427,7 +427,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
-                .Returns(Enumerables.Scalar(SampleProject));
+                .Returns(Enumerables.FromNullable(SampleProject));
 
             var resourceMamager = new Mock<IResourceManagerClient>();
             resourceMamager
@@ -459,7 +459,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
             var settings = new Mock<IProjectWorkspaceSettings>();
             settings
                 .SetupGet(s => s.Projects)
-                .Returns(Enumerables.Scalar(SampleProject));
+                .Returns(Enumerables.FromNullable(SampleProject));
 
             var org = new OrganizationLocator(1);
 

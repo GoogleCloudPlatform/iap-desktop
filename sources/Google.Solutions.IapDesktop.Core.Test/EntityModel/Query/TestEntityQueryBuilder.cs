@@ -52,6 +52,50 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
         }
 
         //----------------------------------------------------------------------
+        // Get.
+        //----------------------------------------------------------------------
+
+        [Test]
+        public async Task Get_WhenAspectNotFound()
+        {
+            var provider = new Mock<IEntityAspectProvider<CarLocator, Car>>();
+            var context = new EntityContext.Builder()
+                .AddAspectProvider(provider.Object)
+                .Build();
+
+            var cars = await context.Entities<Car>()
+                .Get(new CarLocator())
+                .ExecuteAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+            
+            CollectionAssert.IsEmpty(cars);
+
+            provider.Verify(p => p.QueryAspect(It.IsAny<CarLocator>()), Times.Once);
+        }
+
+        [Test]
+        public async Task Get()
+        {
+            var locator = new CarLocator();
+
+            var provider = new Mock<IEntityAspectProvider<CarLocator, Car>>();
+            provider
+                .Setup(p => p.QueryAspect(locator))
+                .Returns(new Car("car-1", locator));
+            var context = new EntityContext.Builder()
+                .AddAspectProvider(provider.Object)
+                .Build();
+
+            var cars = await context.Entities<Car>()
+                .Get(locator)
+                .ExecuteAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
+            CollectionAssert.IsNotEmpty(cars);
+            Assert.AreEqual("car-1", cars[0].Entity.DisplayName);
+        }
+
+        //----------------------------------------------------------------------
         // IncludeAspect.
         //----------------------------------------------------------------------
 

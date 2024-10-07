@@ -29,19 +29,19 @@ namespace Google.Solutions.Common.Test.Linq
     public class TestEnumerables
     {
         //----------------------------------------------------------------------
-        // Scalar.
+        // FromNullable.
         //----------------------------------------------------------------------
 
         [Test]
-        public void Scalar_WhenNull()
+        public void FromNullable_WhenNull()
         {
-            CollectionAssert.IsEmpty(Enumerables.Scalar<string>(null));
+            CollectionAssert.IsEmpty(Enumerables.FromNullable<string>(null));
         }
 
         [Test]
-        public void Scalar_WhenNotNull()
+        public void FromNullable_WhenNotNull()
         {
-            var e = Enumerables.Scalar<string>("test");
+            var e = Enumerables.FromNullable<string>("test");
             CollectionAssert.IsNotEmpty(e);
 
             Assert.AreEqual("test", e.First());

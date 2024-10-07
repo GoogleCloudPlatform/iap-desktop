@@ -278,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         /// Create a query builder for this context.
         /// </summary>
         public EntityQueryBuilder<TEntity> Entities<TEntity>()
-            where TEntity : IEntity<ILocator>
+            where TEntity : class, IEntity<ILocator>
         {
             return new EntityQueryBuilder<TEntity>(this);
         }

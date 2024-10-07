@@ -19,28 +19,32 @@
 // under the License.
 //
 
-using System.Collections.Generic;
+using Google.Solutions.Common.Linq;
+using NUnit.Framework;
 using System.Linq;
 
-namespace Google.Solutions.Common.Linq
+namespace Google.Solutions.Common.Test.Linq
 {
-    /// <summary>
-    /// Utility methods for creating Enumerables.
-    /// </summary>
-    public static class Enumerables
+    [TestFixture]
+    public class TestLists
     {
-        /// <summary>
-        /// Create an enumerable for a nullable value.
-        /// </summary>
-        /// <returns>
-        /// Empty enumerable if the object is null, a 
-        /// single-element enumerable otherwise.
-        /// </returns>
-        public static IEnumerable<T> FromNullable<T>(T? nullable) where T : class
+        //----------------------------------------------------------------------
+        // FromNullable.
+        //----------------------------------------------------------------------
+
+        [Test]
+        public void FromNullable_WhenNull()
         {
-            return nullable == null
-                ? Enumerable.Empty<T>()
-                : new T[] { nullable };
+            CollectionAssert.IsEmpty(Lists.FromNullable<string>(null));
+        }
+
+        [Test]
+        public void FromNullable_WhenNotNull()
+        {
+            var e = Lists.FromNullable<string>("test");
+            CollectionAssert.IsNotEmpty(e);
+
+            Assert.AreEqual("test", e.First());
         }
     }
 }

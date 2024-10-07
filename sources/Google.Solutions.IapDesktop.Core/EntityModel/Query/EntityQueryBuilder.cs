@@ -21,7 +21,6 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Linq;
-using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
     /// Allows idiomatic querying of an entity context.
     /// </summary>
     public class EntityQueryBuilder<TEntity>
-        where TEntity : IEntity<ILocator>
+        where TEntity : class, IEntity<ILocator>
     {
         private readonly EntityContext context;
 
@@ -70,6 +69,18 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
         public Query List()
         {
             return Search(WildcardQuery.Instance);
+        }
+
+        /// <summary>
+        /// Query a single entity.
+        /// </summary>
+        public Query Get(ILocator locator)
+        {
+            return new Query(
+                this.context,
+                async ct => Lists.FromNullable(await this.context
+                    .QueryAspectAsync<TEntity>(locator, ct)
+                    .ConfigureAwait(false)));
         }
 
         /// <summary>
@@ -124,6 +135,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
                 // Kick of asynchronous queries for each aspects and entity.
                 //
                 return await Task.WhenAll(entities
+                    .EnsureNotNull()
                     .Select(e => EntityQueryResultItem<TEntity>.CreateAsync(
                         e,
                         this.aspects.ToDictionary(
