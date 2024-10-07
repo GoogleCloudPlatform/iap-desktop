@@ -31,15 +31,11 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
     /// <summary>
     /// Result of an entity query.
     /// </summary>
-    public sealed class EntityQueryResult<TEntity> 
-        : ReadOnlyCollection<EntityQueryResult<TEntity>.Item>, IDisposable
+    public class EntityQueryResult<TEntity> 
+        : ReadOnlyCollection<EntityQueryResult<TEntity>.Item>
         where TEntity : IEntity<ILocator>
     {
         public EntityQueryResult(IList<Item> list) : base(list)
-        {
-        }
-
-        public void Dispose()
         {
         }
 
@@ -113,6 +109,20 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
                         $"The query does not include aspect '${typeof(TAspect)}'");
                 }
             }
+        }
+    }
+
+    public sealed class ObservableEntityQueryResult<TEntity>
+        : EntityQueryResult<TEntity>, IDisposable
+        where TEntity : IEntity<ILocator>
+    {
+        public ObservableEntityQueryResult(IList<Item> list) : base(list)
+        {
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }

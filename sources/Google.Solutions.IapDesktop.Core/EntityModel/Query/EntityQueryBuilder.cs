@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Linq;
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,6 +110,29 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
                     .ConfigureAwait(false);
             }
 
+            private async Task<IList<EntityQueryResult<TEntity>.Item>> ExecuteCoreAsync(
+               CancellationToken cancellationToken)
+            {
+                //
+                // Query entities.
+                //
+                var entities = await this
+                    .query(cancellationToken)
+                    .ConfigureAwait(false);
+
+                //
+                // Kick of asynchronous queries for each aspects and entity.
+                //
+                return await Task.WhenAll(entities
+                    .Select(e => EntityQueryResult<TEntity>.Item.CreateAsync(
+                        e,
+                        this.aspects.ToDictionary(
+                            item => item.Key,
+                            item => item.Value(e.Locator, cancellationToken)),
+                        this.derivedAspects))
+                    .ToList());
+            }
+
             /// <summary>
             /// Include an aspect in the query so that its value
             /// can later be accessed in EntityWithAspects.
@@ -156,27 +180,32 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
                 return this;
             }
 
+            /// <summary>
+            /// Execute query.
+            /// </summary>
+            /// <returns>
+            /// Snapshot of entities and their aspects.
+            /// </returns>
             public async Task<EntityQueryResult<TEntity>> ExecuteAsync(
                 CancellationToken cancellationToken)
             {
-                //
-                // Query entities.
-                //
-                var entities = await this
-                    .query(cancellationToken)
-                    .ConfigureAwait(false);
+                return new EntityQueryResult<TEntity>(
+                    await ExecuteCoreAsync(cancellationToken).ConfigureAwait(false));
+            }
 
-                //
-                // Kick of asynchronous queries for each aspects and entity.
-                //
-                return new EntityQueryResult<TEntity>(await Task.WhenAll(entities
-                    .Select(e => EntityQueryResult<TEntity>.Item.CreateAsync(
-                        e,
-                        this.aspects.ToDictionary(
-                            item => item.Key,
-                            item => item.Value(e.Locator, cancellationToken)),
-                        this.derivedAspects))
-                    .ToList()));
+            /// <summary>
+            /// Execute query.
+            /// </summary>
+            /// <returns>
+            /// Observable collection of entities and their aspects.
+            /// </returns>
+            public Task<ObservableEntityQueryResult<TEntity>> ExecuteObservableAsync(
+                CancellationToken cancellationToken)
+            {
+                // 1. Subscribe to eventqueue
+                //    pass subscription to observable collection for disposal.
+                // 
+                throw new NotImplementedException();
             }
         }
     }
