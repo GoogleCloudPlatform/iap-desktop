@@ -20,29 +20,29 @@
 //
 
 
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.EntityModel;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using static Google.Solutions.IapDesktop.Core.Test.EntityModel.TestEntityContext;
 
 namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
 {
     [TestFixture]
     public class TestEntityQueryBuilder
     {
-        public class CarLocator : VehicleLocator
+        public class CarLocator : ILocator
         {
-            public override string ResourceType => "car";
+            public string ResourceType => "car";
         }
 
-        public class Car : IVehicle, IEntity<VehicleLocator>
+        public class Car : IEntity<CarLocator>
         {
             public string DisplayName { get; }
 
-            public VehicleLocator Locator { get; }
+            public CarLocator Locator { get; }
 
             public Car(string displayName, CarLocator locator)
             {
