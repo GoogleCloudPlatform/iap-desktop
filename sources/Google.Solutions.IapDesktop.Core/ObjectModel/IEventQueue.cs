@@ -43,14 +43,28 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
         /// </summary>
         ISubscription Subscribe<TEvent>(
             Func<TEvent, Task> handler,
-            SubscriptionOptions subscriberReference = SubscriptionOptions.None);
+            SubscriptionOptions lifecycle = SubscriptionOptions.None);
+
+        /// <summary>
+        /// Subscribe to an event using an asynchronous handler.
+        /// </summary>
+        ISubscription Subscribe<TEvent>(
+            IAsyncSubscriber<TEvent> subscriber,
+            SubscriptionOptions lifecycle = SubscriptionOptions.None);
 
         /// <summary>
         /// Subscribe to an event using an synchronous handler.
         /// </summary>
         ISubscription Subscribe<TEvent>(
             Action<TEvent> handler,
-            SubscriptionOptions subscriberReference = SubscriptionOptions.None);
+            SubscriptionOptions lifecycle = SubscriptionOptions.None);
+
+        /// <summary>
+        /// Subscribe to an event using an synchronous handler.
+        /// </summary>
+        ISubscription Subscribe<TEvent>(
+            ISubscriber<TEvent> subscriber,
+            SubscriptionOptions lifecycle = SubscriptionOptions.None);
 
         /// <summary>
         /// Publish an event and wait for all subscribers to handle the event.
@@ -75,6 +89,22 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
         /// Use a weak reference for the subscriber.
         /// </summary>
         WeakSubscriberReference
+    }
+
+    /// <summary>
+    /// Synchonous subscriber.
+    /// </summary>
+    public interface ISubscriber<TEvent>
+    {
+        void Notify(TEvent ev);
+    }
+
+    /// <summary>
+    /// Synchonous subscriber.
+    /// </summary>
+    public interface IAsyncSubscriber<TEvent>
+    {
+        Task NotifyAsync(TEvent ev);
     }
 
     /// <summary>
