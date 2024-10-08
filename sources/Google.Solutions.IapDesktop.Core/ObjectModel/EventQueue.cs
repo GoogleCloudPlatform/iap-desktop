@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
             }
         }
 
-        internal IEnumerable<Subscription<TEvent>> GetSubscriptions<TEvent>()
+        internal IEnumerable<ISubscription<TEvent>> GetSubscriptions<TEvent>()
         {
             lock (this.subscriptionsLock)
             {
@@ -69,12 +69,12 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
                     // Create a snapshot that remains valid when
                     // we leave the lock.
                     //
-                    return new List<Subscription<TEvent>>(
-                        subscriptions.OfType<Subscription<TEvent>>());
+                    return new List<ISubscription<TEvent>>(
+                        subscriptions.OfType<ISubscription<TEvent>>());
                 }
                 else
                 {
-                    return Enumerable.Empty<Subscription<TEvent>>();
+                    return Enumerable.Empty<ISubscription<TEvent>>();
                 }
             }
         }
@@ -83,7 +83,9 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
         // IEventQueue.
         //---------------------------------------------------------------------
 
-        public ISubscription Subscribe<TEvent>(Func<TEvent, Task> handler)
+        public ISubscription Subscribe<TEvent>(
+            Func<TEvent, Task> handler,
+            SubscriptionOptions lifecycle = SubscriptionOptions.None)
         {
             lock (this.subscriptionsLock)
             {
@@ -93,20 +95,31 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
                     this.subscriptionsByEvent.Add(typeof(TEvent), subscriptions);
                 }
 
-                var subsciption = new Subscription<TEvent>(this, handler);
-                subscriptions.Add(subsciption);
+                ISubscription<TEvent> subsciption;
+                if (lifecycle == SubscriptionOptions.WeakSubscriberReference)
+                {
+                    subsciption = new WeakSubscription<TEvent>(handler);
+                }
+                else
+                {
+                    subsciption = new Subscription<TEvent>(this, handler);
+                }
 
+                subscriptions.Add(subsciption);
                 return subsciption;
             }
         }
 
-        public ISubscription Subscribe<TEvent>(Action<TEvent> handler)
+        public ISubscription Subscribe<TEvent>(
+            Action<TEvent> handler,
+            SubscriptionOptions lifecycle = SubscriptionOptions.None)
         {
             return Subscribe<TEvent>(e =>
             {
                 handler(e);
                 return Task.CompletedTask;
-            });
+            },
+            lifecycle);
         }
 
         public Task PublishAsync<TEvent>(TEvent eventObject)
@@ -152,7 +165,15 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
         // Inner classes.
         //---------------------------------------------------------------------
 
-        internal sealed class Subscription<TEvent> : ISubscription
+        internal interface ISubscription<TEvent> : ISubscription
+        {
+            Task InvokeAsync(TEvent e);
+        }
+
+        /// <summary>
+        /// Normal subscription that remains valid until disposed.
+        /// </summary>
+        internal sealed class Subscription<TEvent> : ISubscription<TEvent>
         {
             private bool unsubscribed = false;
             private readonly EventQueue queue;
@@ -185,6 +206,37 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
                 Debug.Assert(removed);
 
                 this.unsubscribed = true;
+            }
+        }
+
+        /// <summary>
+        /// Weak subscription that remains valid until the callback
+        /// delegate is garbage-collected.
+        /// </summary>
+        internal sealed class WeakSubscription<TEvent> : ISubscription<TEvent>
+        {
+            private readonly WeakReference<Func<TEvent, Task>> callback;
+
+            public WeakSubscription(Func<TEvent, Task> callback)
+            {
+                this.callback = new WeakReference<Func<TEvent, Task>>(
+                    callback.ExpectNotNull(nameof(callback)));
+            }
+
+            public Task InvokeAsync(TEvent e)
+            {
+                if (this.callback.TryGetTarget(out var target))
+                {
+                    return target.Invoke(e);
+                }
+                else
+                {
+                    return Task.CompletedTask;
+                }
+            }
+
+            public void Dispose()
+            {
             }
         }
     }

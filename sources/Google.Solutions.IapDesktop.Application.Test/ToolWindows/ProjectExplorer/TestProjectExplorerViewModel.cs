@@ -891,13 +891,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             // Capture event handlers that the view model will register.
             Action<SessionStartedEvent>? sessionStartedEventHandler = null;
-            eventQueue.Setup(e => e.Subscribe(
-                    It.IsAny<Action<SessionStartedEvent>>()))
+            eventQueue
+                .Setup(e => e.Subscribe(
+                    It.IsAny<Action<SessionStartedEvent>>(),
+                    SubscriptionOptions.None))
                 .Callback<Action<SessionStartedEvent>>(e => sessionStartedEventHandler = e);
 
             Action<SessionEndedEvent>? sessionEndedEventHandler = null;
-            eventQueue.Setup(e => e.Subscribe(
-                    It.IsAny<Action<SessionEndedEvent>>()))
+            eventQueue
+                .Setup(e => e.Subscribe(
+                    It.IsAny<Action<SessionEndedEvent>>(),
+                    SubscriptionOptions.None))
                 .Callback<Action<SessionEndedEvent>>(e => sessionEndedEventHandler = e);
 
             var viewModel = CreateViewModel(
@@ -1019,7 +1023,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             Func<InstanceStateChangedEvent, Task>? eventHandler = null;
             eventQueue
-                .Setup(e => e.Subscribe(It.IsAny<Func<InstanceStateChangedEvent, Task>>()))
+                .Setup(e => e.Subscribe(
+                    It.IsAny<Func<InstanceStateChangedEvent, Task>>(),
+                    SubscriptionOptions.None))
                 .Callback<Func<InstanceStateChangedEvent, Task>>(e => eventHandler = e);
 
             var computeClient = CreateComputeEngineClient();

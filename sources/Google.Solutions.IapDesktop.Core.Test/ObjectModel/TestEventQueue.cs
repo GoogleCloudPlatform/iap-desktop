@@ -40,11 +40,35 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
         //---------------------------------------------------------------------
 
         [Test]
-        public void Subscribe()
+        public void Subscribe_StrongSubscriberReference()
         {
             var queue = new EventQueue(new Mock<ISynchronizeInvoke>().Object);
-            using (queue.Subscribe<EventOne>(e => { }))
-            using (queue.Subscribe<EventOne>(e => { }))
+            using (queue.Subscribe<EventOne>(e => { }, SubscriptionOptions.None))
+            {
+                var sub = queue.GetSubscriptions<EventOne>().First();
+                Assert.IsInstanceOf<EventQueue.Subscription<EventOne>>(sub);
+            }
+        }
+
+        [Test]
+        public void Subscribe_WeakSubscriberReference()
+        {
+            var queue = new EventQueue(new Mock<ISynchronizeInvoke>().Object);
+            using (queue.Subscribe<EventOne>(e => { }, SubscriptionOptions.WeakSubscriberReference))
+            {
+                var sub = queue.GetSubscriptions<EventOne>().First();
+                Assert.IsInstanceOf<EventQueue.WeakSubscription<EventOne>>(sub);
+            }
+        }
+
+        [Test]
+        public void Subscribe(
+            [Values(SubscriptionOptions.None, SubscriptionOptions.WeakSubscriberReference)]
+            SubscriptionOptions options)
+        {
+            var queue = new EventQueue(new Mock<ISynchronizeInvoke>().Object);
+            using (queue.Subscribe<EventOne>(e => { }, options))
+            using (queue.Subscribe<EventOne>(e => { }, options))
             {
                 Assert.AreEqual(2, queue.GetSubscriptions<EventOne>().Count());
                 Assert.AreEqual(0, queue.GetSubscriptions<EventTwo>().Count());

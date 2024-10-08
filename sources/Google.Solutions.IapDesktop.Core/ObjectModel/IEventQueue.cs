@@ -39,16 +39,18 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
     public interface IEventQueue
     {
         /// <summary>
-        /// Subscribe to an event using an asynchronous handler
-        /// until the subscription is disposed.
+        /// Subscribe to an event using an asynchronous handler.
         /// </summary>
-        ISubscription Subscribe<TEvent>(Func<TEvent, Task> handler);
+        ISubscription Subscribe<TEvent>(
+            Func<TEvent, Task> handler,
+            SubscriptionOptions subscriberReference = SubscriptionOptions.None);
 
         /// <summary>
-        /// Subscribe to an event using an synchronous handler
-        /// until the subscription is disposed.
+        /// Subscribe to an event using an synchronous handler.
         /// </summary>
-        ISubscription Subscribe<TEvent>(Action<TEvent> handler);
+        ISubscription Subscribe<TEvent>(
+            Action<TEvent> handler,
+            SubscriptionOptions subscriberReference = SubscriptionOptions.None);
 
         /// <summary>
         /// Publish an event and wait for all subscribers to handle the event.
@@ -59,6 +61,20 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
         /// Publish an event without awaiting subcribers.
         /// </summary>
         void Publish<TEvent>(TEvent eventObject);
+    }
+
+    public enum SubscriptionOptions
+    {
+        /// <summary>
+        /// Use default behavior and keep the subscriber alive until 
+        /// the subscription is disposed.
+        /// </summary>
+        None,
+
+        /// <summary>
+        /// Use a weak reference for the subscriber.
+        /// </summary>
+        WeakSubscriberReference
     }
 
     public interface ISubscription : IDisposable
