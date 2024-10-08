@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUsingGaiaSessionAndInRole_ThenAuthenticationWithMetadataSucceeds(
+        public async Task Gaia_WhenInRole_ThenAuthenticationWithMetadataSucceeds(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> authorization)
@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task WhenUsingGaiaSessionAndInRole_ThenAuthenticationWithOsLoginSucceeds(
+        public async Task Gaia_WhenInRole_ThenAuthenticationWithOsLoginSucceeds(
             [Values(SshKeyType.Rsa3072)] SshKeyType keyType,
             [LinuxInstance(EnableOsLogin = true)] ResourceTask<InstanceLocator> instance,
             [Credential(Roles = new [] {
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task WhenUsingGaiaSessionAndNotInRole_ThenAuthenticationWithOsLoginFails(
+        public async Task Gaia_WhenNotInRole_ThenAuthenticationWithOsLoginFails(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance(EnableOsLogin = true)] ResourceTask<InstanceLocator> instance,
             [Credential(Roles = new [] {
@@ -214,7 +214,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUsingWorkforceSessionAndInRole_ThenAuthenticationWithMetadataSucceeds(
+        public async Task Workforce_WhenInRole_ThenAuthenticationWithMetadataSucceeds(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instance,
             [Credential(
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task WhenUsingWorkforceSessionAndInRole_ThenAuthenticationWithOsLoginSucceeds(
+        public async Task Workforce_WhenInRole_ThenAuthenticationWithOsLoginSucceeds(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance(EnableOsLogin = true)] ResourceTask<InstanceLocator> instance,
             [Credential(

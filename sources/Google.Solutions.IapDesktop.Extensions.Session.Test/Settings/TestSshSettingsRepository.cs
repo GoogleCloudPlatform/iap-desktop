@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenKeyEmpty_ThenIsPropagateLocaleEnabledIsTrue()
+        public void IsPropagateLocaleEnabled_WhenKeyEmpty()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSchemaVersionIsOld_ThenPublicKeyTypeIsRsa()
+        public void PublicKeyType_WhenSchemaVersionIsOld_ThenPublicKeyTypeIsRsa()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenSchemaVersionIsNew_ThenPublicKeyTypeIsEcdsa()
+        public void PublicKeyType_WhenSchemaVersionIsNew_ThenPublicKeyTypeIsEcdsa()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenPublicKeyTypeInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
+        public void PublicKeyType_WhenPublicKeyTypeInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenPublicKeyTypeValidAndUserPolicySet_ThenPolicyWins()
+        public void PublicKeyType_WhenPublicKeyTypeValidAndUserPolicySet_ThenPolicyWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenPublicKeyTypeValidAndMachinePolicySet_ThenPolicyWins()
+        public void PublicKeyType_WhenPublicKeyTypeValidAndMachinePolicySet_ThenPolicyWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
@@ -194,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenPublicKeyTypeValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
+        public void PublicKeyType_WhenPublicKeyTypeValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
@@ -221,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenKeyEmpty_ThenPublicKeyValidityIs30days()
+        public void PublicKeyValidity_WhenKeyEmpty_ThenPublicKeyValidityIs30days()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -237,7 +237,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenPublicKeyValidityInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
+        public void PublicKeyValidity_WhenPublicKeyValidityInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -256,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenPublicKeyValidityValidAndUserPolicySet_ThenPolicyWins()
+        public void PublicKeyValidity_WhenPublicKeyValidityValidAndUserPolicySet_ThenPolicyWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
@@ -278,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenPublicKeyValidityValidAndMachinePolicySet_ThenPolicyWins()
+        public void PublicKeyValidity_WhenPublicKeyValidityValidAndMachinePolicySet_ThenPolicyWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
@@ -300,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenPublicKeyValidityValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
+        public void PublicKeyValidity_WhenPublicKeyValidityValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
@@ -327,7 +327,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenKeyEmpty_ThenUsePersistentKeyIsTrue()
+        public void UsePersistentKey_WhenKeyEmpty()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {

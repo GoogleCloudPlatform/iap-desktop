@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUnmanagedKeyIsInvalid_ThenParseThrowsArgumentException()
+        public void Parse_WhenUnmanagedKeyIsInvalid_ThenParseThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => MetadataAuthorizedPublicKey.Parse(
                 "xxx"));
@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenManagedKeyIsInvalid_ThenParseThrowsArgumentException()
+        public void Parse_WhenManagedKeyIsInvalid_ThenParseThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => MetadataAuthorizedPublicKey.Parse(
                 "login:ssh-rsa key username google-ssh {"));
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenKeyIsUnmanaged_ThenParseReturnsUnmanagedKey()
+        public void Parse_WhenKeyIsUnmanaged_ThenParseReturnsUnmanagedKey()
         {
             var line = "login:ssh-rsa key user";
             var key = MetadataAuthorizedPublicKey.Parse(line);
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenKeyIsUnmanagedButUsernameIsGoogleSsh_ThenParseReturnsUnmanagedKey()
+        public void Parse_WhenKeyIsUnmanagedButUsernameIsGoogleSsh_ThenParseReturnsUnmanagedKey()
         {
             var line = "login:ssh-rsa key google-ssh";
             var key = MetadataAuthorizedPublicKey.Parse(line);
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenKeyIsManagedEcdsaKey_ThenParseReturnsManagedKey()
+        public void Parse_WhenKeyIsManagedEcdsaKey_ThenParseReturnsManagedKey()
         {
             var line = "login:ecdsa-sha2-nistp256 AAAA google-ssh {\"userName\":" +
               "\"ldap@machine.com\",\"expireOn\":\"2015-11-01T10:43:01+0000\"}";
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenKeyIsManagedRsaKey_ThenParseReturnsManagedKey()
+        public void Parse_WhenKeyIsManagedRsaKey_ThenParseReturnsManagedKey()
         {
             var line = "login:ssh-rsa key google-ssh {\"userName\":\"username@example.com\"," +
                 "\"expireOn\":\"2021-01-15T15:22:35+0000\"}";
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenKeySerialized_ThenTimestampHasNoMilliseconds()
+        public void ToString_WhenKeySerialized_ThenTimestampHasNoMilliseconds()
         {
             var key = new ManagedMetadataAuthorizedPublicKey(
                 "login",
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenOtherIsNull_ThenEqualsReturnsFalse()
+        public void Equals_WhenOtherIsNull_ThenEqualsReturnsFalse()
         {
             var key = new UnmanagedMetadataAuthorizedPublicKey(
                 "bob",
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenKeysEquivalent_ThenEqualsReturnsTrue()
+        public void Equals_WhenKeysEquivalent_ThenEqualsReturnsTrue()
         {
             var key1 = new UnmanagedMetadataAuthorizedPublicKey(
                 "bob",
@@ -181,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenKeysEquivalentExceptForEmail_ThenEqualsReturnsTrue()
+        public void Equals_WhenKeysEquivalentExceptForEmail_ThenEqualsReturnsTrue()
         {
             var key1 = new UnmanagedMetadataAuthorizedPublicKey(
                 "bob",
@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenKeysEquivalentButOneIsManaged_ThenEqualsReturnsTrue()
+        public void Equals_WhenKeysEquivalentButOneIsManaged_ThenEqualsReturnsTrue()
         {
             var key1 = new UnmanagedMetadataAuthorizedPublicKey(
                 "bob",

@@ -38,8 +38,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
     {
         private static readonly Uri SampleCallbackUrl = new Uri("http://example.com/callback");
 
+        //----------------------------------------------------------------------
+        // GetCredentials.
+        //----------------------------------------------------------------------
+
         [Test]
-        public async Task WhenServerReturnsEmptyResult_ThenGetCredentialsReturnsEmptyCredentials()
+        public async Task GetCredentials_WhenServerReturnsEmptyResult_ThenGetCredentialsReturnsEmptyCredentials()
         {
             var adapter = new Mock<IExternalRestClient>();
             adapter
@@ -59,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         }
 
         [Test]
-        public void WhenServerRequestFails_ThenGetCredentialsThrowsException()
+        public void GetCredentials_WhenServerRequestFails_ThenGetCredentialsThrowsException()
         {
             var adapter = new Mock<IExternalRestClient>();
             adapter
@@ -75,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         }
 
         [Test]
-        public void WhenServerReturnsInvalidResponse_ThenGetCredentialsThrowsException()
+        public void GetCredentials_WhenServerReturnsInvalidResponse_ThenGetCredentialsThrowsException()
         {
             var adapter = new Mock<IExternalRestClient>();
             adapter
@@ -91,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         }
 
         [Test]
-        public void WhenServerRequestTimesOut_ThenGetCredentialsThrowsException()
+        public void GetCredentials_WhenServerRequestTimesOut_ThenGetCredentialsThrowsException()
         {
             var adapter = new Mock<IExternalRestClient>();
             adapter
@@ -107,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         }
 
         [Test]
-        public async Task WhenServerReturnsResult_ThenGetCredentialsReturnsCredentials()
+        public async Task GetCredentials_WhenServerReturnsResult_ThenGetCredentialsReturnsCredentials()
         {
             var adapter = new Mock<IExternalRestClient>();
             adapter

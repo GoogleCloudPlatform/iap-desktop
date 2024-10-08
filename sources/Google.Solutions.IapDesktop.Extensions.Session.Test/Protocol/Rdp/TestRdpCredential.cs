@@ -33,14 +33,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDomainSet_ThenToStringReturnsBackslashNotation()
+        public void ToString_WhenDomainSet()
         {
             var credential = new RdpCredential("user", "domain", new SecureString());
             Assert.AreEqual("domain\\user", credential.ToString());
         }
 
         [Test]
-        public void WhenUserNullOrEmpty_ThenToStringReturnsEmpty()
+        public void ToString_WhenUserNullOrEmpty()
         {
             Assert.AreEqual(
                 "(empty)",
@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         }
 
         [Test]
-        public void WhenDomainNullOrEmpty_ThenToStringReturnsUser()
+        public void ToString_WhenDomainNullOrEmpty()
         {
             Assert.AreEqual(
                 "user",

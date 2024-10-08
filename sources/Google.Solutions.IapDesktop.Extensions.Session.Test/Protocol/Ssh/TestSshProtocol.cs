@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTargetHasNoTraits_ThenIsAvailableReturnsFalse()
+        public void IsAvailable_WhenTargetHasNoTraits()
         {
             var target = new Mock<IProtocolTarget>();
             target
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenTargetHasTrait_ThenIsAvailableReturnsTrue()
+        public void IsAvailable_WhenTargetHasTrait()
         {
             var target = new Mock<IProtocolTarget>();
             target
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToStringReturnsName()
+        public void ToString_ReturnsName()
         {
             Assert.AreEqual("SSH", SshProtocol.Protocol.ToString());
         }

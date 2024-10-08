@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSsmsNotAvailable_ThenExecutableThrowsException()
+        public void Executable_WhenSsmsNotAvailable()
         {
             var client = new SsmsClient(null);
             string path;
@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         }
 
         [Test]
-        public void WhenSsmsNotAvailable_ThenIsAvailableIsNull()
+        public void IsAvailable_WhenSsmsNotAvailable()
         {
             var client = new SsmsClient(null);
             Assert.IsFalse(client.IsAvailable);
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNlaDisabledAndUsernameEmpty_ThenFormatArgumentsReturnsStringForSqlAuth(
+        public void FormatArguments_WhenNlaDisabledAndUsernameEmpty_ThenFormatArgumentsReturnsStringForSqlAuth(
             [Values("", " ", null)] string emptyish)
         {
             var transport = new Mock<ITransport>();
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         }
 
         [Test]
-        public void WhenNlaDisabledAndUsernameSet_ThenFormatArgumentsReturnsStringForSqlAuth()
+        public void FormatArguments_WhenNlaDisabledAndUsernameSet_ThenFormatArgumentsReturnsStringForSqlAuth()
         {
             var transport = new Mock<ITransport>();
             transport.SetupGet(t => t.Target).Returns(SampleInstance);
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         }
 
         [Test]
-        public void WhenNlaDisabledAndUsernameInvalid_ThenFormatArgumentsThrowsException(
+        public void FormatArguments_WhenNlaDisabledAndUsernameInvalid_ThenFormatArgumentsThrowsException(
             [Values("user\"", "''")] string username)
         {
             var transport = new Mock<ITransport>();
@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         }
 
         [Test]
-        public void WhenNlaEnabled_ThenFormatArgumentsReturnsStringForWindowsAuth()
+        public void FormatArguments_WhenNlaEnabled_ThenFormatArgumentsReturnsStringForWindowsAuth()
         {
             var transport = new Mock<ITransport>();
             transport.SetupGet(t => t.Target).Returns(SampleInstance);

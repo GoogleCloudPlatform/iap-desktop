@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void NextSmallerFontReturnsSmallerFont()
+        public void NextLargerFont_NextSmallerFontReturnsSmallerFont()
         {
             using (var font = new TerminalFont(TerminalFont.DefaultFontFamily, 10f))
             {
@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenMinSizeReached_NextSmallerFontKeepsSize()
+        public void NextLargerFont_WhenMinSizeReached_NextSmallerFontKeepsSize()
         {
             var font = new TerminalFont(TerminalFont.DefaultFontFamily, 10f);
             for (var i = 0; i < 10; i++)
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenMaxSizeReached_NextLargerFontKeepsSize()
+        public void NextLargerFont_WhenMaxSizeReached_NextLargerFontKeepsSize()
         {
             var font = new TerminalFont(TerminalFont.DefaultFontFamily, 40f);
             for (var i = 0; i < 10; i++)
@@ -73,14 +73,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenFontNotFound_ThenIsValidFontReturnsFalse()
+        public void IsValidFont_WhenFontNotFound()
         {
             Assert.IsFalse(TerminalFont.IsValidFont(string.Empty));
             Assert.IsFalse(TerminalFont.IsValidFont("doesnotexist"));
         }
 
         [Test]
-        public void WhenFontNotMonospaced_ThenIsValidFontReturnsFalse()
+        public void IsValidFont_WhenFontNotMonospaced()
         {
             using (var font = new Font(FontFamily.GenericSansSerif, 10))
             {

@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNodeUnsupported_ThenIsConnectionSettingsAvailableReturnsFalse()
+        public void IsConnectionSettingsAvailable_WhenNodeUnsupported()
         {
             var service = CreateConnectionSettingsService();
 
@@ -98,8 +98,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 new Mock<IProjectModelCloudNode>().Object));
         }
 
+        //---------------------------------------------------------------------
+        // GetConnectionSettings.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenNodeUnsupported_ThenGetConnectionSettingsRaisesArgumentException()
+        public void GetConnectionSettings_WhenNodeUnsupported()
         {
             var service = CreateConnectionSettingsService();
 
@@ -108,11 +112,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         //---------------------------------------------------------------------
-        // Project.
+        // GetConnectionSettings - Project.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenReadingProjectSettings_ThenExistingProjectSettingIsVisible()
+        public void GetConnectionSettings_WhenReadingProjectSettings_ThenExistingProjectSettingIsVisible()
         {
             var service = CreateConnectionSettingsService();
             var projectNode = CreateProjectNode();
@@ -122,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenChangingProjectSetting_ThenSettingIsSaved()
+        public void GetConnectionSettings_WhenChangingProjectSetting_ThenSettingIsSaved()
         {
             var service = CreateConnectionSettingsService();
             var projectNode = CreateProjectNode();
@@ -136,11 +140,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         //---------------------------------------------------------------------
-        // Zone.
+        // GetConnectionSettings  - Zone.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenReadingZoneSettings_ThenExistingProjectSettingIsVisible()
+        public void GetConnectionSettings_WhenReadingZoneSettings_ThenExistingProjectSettingIsVisible()
         {
             var service = CreateConnectionSettingsService();
             var zoneNode = CreateZoneNode();
@@ -150,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenChangingZoneSetting_ThenSettingIsSaved()
+        public void GetConnectionSettings_WhenChangingZoneSetting_ThenSettingIsSaved()
         {
             var service = CreateConnectionSettingsService();
             var zoneNode = CreateZoneNode();
@@ -164,11 +168,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         //---------------------------------------------------------------------
-        // VM.
+        // GetConnectionSettings - VM.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenReadingVmInstanceSettings_ThenExistingProjectSettingIsVisible()
+        public void GetConnectionSettings_WhenReadingVmInstanceSettings_ThenExistingProjectSettingIsVisible()
         {
             var service = CreateConnectionSettingsService();
             var vmNode = CreateVmInstanceNode();
@@ -178,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenChangingVmInstanceSetting_ThenSettingIsSaved()
+        public void GetConnectionSettings_WhenChangingVmInstanceSetting_ThenSettingIsSaved()
         {
             var service = CreateConnectionSettingsService();
             var vmNode = CreateVmInstanceNode();
@@ -192,11 +196,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         //---------------------------------------------------------------------
-        // Inheritance.
+        // GetConnectionSettings - Inheritance.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsernameSetInProject_ProjectValueIsInheritedDownToVm(
+        public void GetConnectionSettings_WhenUsernameSetInProject_ProjectValueIsInheritedDownToVm(
             [Values("user", null)]
                 string username)
         {
@@ -213,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenUsernameSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
+        public void GetConnectionSettings_WhenUsernameSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
             var service = CreateConnectionSettingsService();
 
@@ -236,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenPortSetInProject_ProjectValueIsInheritedDownToVm()
+        public void GetConnectionSettings_WhenPortSetInProject_ProjectValueIsInheritedDownToVm()
         {
             var service = CreateConnectionSettingsService();
 
@@ -251,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenPortSetInZoneAndResetInVm_ZoneVmValueApplies()
+        public void GetConnectionSettings_WhenPortSetInZoneAndResetInVm_ZoneVmValueApplies()
         {
             var service = CreateConnectionSettingsService();
 
@@ -271,7 +275,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenPortSetInProjectAndResetInVm_ZoneVmValueApplies()
+        public void GetConnectionSettings_WhenPortSetInProjectAndResetInVm_ZoneVmValueApplies()
         {
             var service = CreateConnectionSettingsService();
 
@@ -291,11 +295,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         //---------------------------------------------------------------------
-        // Filtering.
+        // GetConnectionSettings - Filtering.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInstanceIsWindows_ThenSettingsContainRdpAndAppSettings()
+        public void GetConnectionSettings_WhenInstanceIsWindows_ThenSettingsContainRdpAndAppSettings()
         {
             var service = CreateConnectionSettingsService();
             var vmNode = CreateVmInstanceNode(true);
@@ -315,7 +319,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenInstanceIsLinux_ThenSettingsContainSshAndAppSettings()
+        public void GetConnectionSettings_WhenInstanceIsLinux_ThenSettingsContainSshAndAppSettings()
         {
             var service = CreateConnectionSettingsService();
             var vmNode = CreateVmInstanceNode(false);

@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUshortQueryParameterMissing_ThenTryGetParameterReturnsFalse()
+        public void TryGetParameter_WhenUshortQueryParameterMissing_ThenTryGetParameterReturnsFalse()
         {
             var url = new IapRdpUrl(SampleLocator, new NameValueCollection());
 
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         }
 
         [Test]
-        public void WhenUshortQueryParameterIsNullOrEmpty_ThenTryGetParameterReturnsFalse(
+        public void TryGetParameter_WhenUshortQueryParameterIsNullOrEmpty_ThenTryGetParameterReturnsFalse(
             [Values(null, "", " ")] string emptyValue)
         {
             var queryParameters = new NameValueCollection
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         }
 
         [Test]
-        public void WhenUshortQueryParameterOutOfRange_ThenTryGetParameterReturnsFalse(
+        public void TryGetParameter_WhenUshortQueryParameterOutOfRange_ThenTryGetParameterReturnsFalse(
             [Values("-1", "999999999")] string wrongValue)
         {
             var queryParameters = new NameValueCollection
@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         }
 
         [Test]
-        public void WhenUshortQueryParameterValid_ThenTryGetParameterReturnsTrue()
+        public void TryGetParameter_WhenUshortQueryParameterValid_ThenTryGetParameterReturnsTrue()
         {
             var queryParameters = new NameValueCollection
             {
@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenStringQueryParameterMissing_ThenTryGetParameterReturnsFalse()
+        public void TryGetParameter_WhenStringQueryParameterMissing_ThenTryGetParameterReturnsFalse()
         {
             var url = new IapRdpUrl(SampleLocator, new NameValueCollection());
 
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         }
 
         [Test]
-        public void WhenStringQueryParameterIsNullOrEmpty_ThenTryGetParameterReturnsFalse(
+        public void TryGetParameter_WhenStringQueryParameterIsNullOrEmpty_ThenTryGetParameterReturnsFalse(
             [Values(null, "", " ")] string emptyValue)
         {
             var queryParameters = new NameValueCollection
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         }
 
         [Test]
-        public void WhenStringQueryParameterValid_ThenTryGetParameterReturnsTrue()
+        public void TryGetParameter_WhenStringQueryParameterValid_ThenTryGetParameterReturnsTrue()
         {
             var queryParameters = new NameValueCollection
             {
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenEnumQueryParameterMissing_ThenTryGetParameterReturnsFalse()
+        public void TryGetParameter_WhenEnumQueryParameterMissing_ThenTryGetParameterReturnsFalse()
         {
             var url = new IapRdpUrl(SampleLocator, new NameValueCollection());
 
@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         }
 
         [Test]
-        public void WhenEnumQueryParameterIsNullOrEmpty_ThenTryGetParameterReturnsFalse(
+        public void TryGetParameter_WhenEnumQueryParameterIsNullOrEmpty_ThenTryGetParameterReturnsFalse(
             [Values(null, "", " ")] string emptyValue)
         {
             var queryParameters = new NameValueCollection
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         }
 
         [Test]
-        public void WhenEnumQueryParameterOutOfRange_ThenTryGetParameterReturnsFalse(
+        public void TryGetParameter_WhenEnumQueryParameterOutOfRange_ThenTryGetParameterReturnsFalse(
             [Values("-1", "999999999")] string wrongValue)
         {
             var queryParameters = new NameValueCollection
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         }
 
         [Test]
-        public void WhenEnumQueryParameterValid_ThenTryGetParameterReturnsTrue()
+        public void TryGetParameter_WhenEnumQueryParameterValid_ThenTryGetParameterReturnsTrue()
         {
             var queryParameters = new NameValueCollection
             {
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenQueryParameterMissing_ThenApplyLeavesOriginalValue()
+        public void ApplyUrlParameterIfSet_WhenQueryParameterMissing_ThenApplyLeavesOriginalValue()
         {
             var parameters = new RdpParameters
             {
@@ -196,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         }
 
         [Test]
-        public void WhenQueryParameterIsNullOrEmpty_ThenApplyLeavesOriginalValue(
+        public void ApplyUrlParameterIfSet_WhenQueryParameterIsNullOrEmpty_ThenApplyLeavesOriginalValue(
             [Values(null, "", " ")] string emptyValue)
         {
             var parameters = new RdpParameters
@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         }
 
         [Test]
-        public void WhenQueryParameterOutOfRange_ThenApplyLeavesOriginalValue(
+        public void ApplyUrlParameterIfSet_WhenQueryParameterOutOfRange_ThenApplyLeavesOriginalValue(
             [Values("-1", "999999999")] string wrongValue)
         {
             var parameters = new RdpParameters
@@ -242,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         }
 
         [Test]
-        public void WhenQueryParameterValid_ThenApplyReplacesOriginalValue()
+        public void ApplyUrlParameterIfSet_WhenQueryParameterValid_ThenApplyReplacesOriginalValue()
         {
             var parameters = new RdpParameters
             {
