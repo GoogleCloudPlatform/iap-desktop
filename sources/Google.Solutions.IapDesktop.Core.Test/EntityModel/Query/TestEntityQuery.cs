@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
 {
     [TestFixture]
-    public class EntityQuery
+    public class TestEntityQuery
     {
         public class CarLocator : ILocator
         {

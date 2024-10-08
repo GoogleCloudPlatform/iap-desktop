@@ -20,86 +20,11 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
 {
-    /// <summary>
-    /// An entity with associated aspects.
-    /// </summary>
-    public class EntityQueryResultItem<TEntity>
-    {
-        private readonly Dictionary<Type, object?> aspects;
-
-        internal static async Task<EntityQueryResultItem<TEntity>> CreateAsync(
-            TEntity entity,
-            Dictionary<Type, Task<object?>> aspectTasks,
-            Dictionary<Type, DeriveAspectDelegate> derivedAspects)
-        {
-            await Task
-                .WhenAll(aspectTasks.Values)
-                .ConfigureAwait(false);
-
-            return new EntityQueryResultItem<TEntity>(
-                entity,
-                aspectTasks.ToDictionary(
-                    item => item.Key,
-                    item => item.Value.Result),
-                derivedAspects);
-        }
-
-        internal EntityQueryResultItem(
-            TEntity entity,
-            Dictionary<Type, object?> aspectValues,
-            Dictionary<Type, DeriveAspectDelegate> derivedAspects)
-        {
-            this.Entity = entity;
-            this.aspects = aspectValues;
-
-            //
-            // Resolve derived aspects. By doing it here, we ensure
-            // that each derived aspect is only derived once, and that
-            // the result is memoized.
-            //
-            foreach (var derived in derivedAspects)
-            {
-                this.aspects[derived.Key] = derived.Value(this.aspects);
-            }
-        }
-
-        internal EntityQueryResultItem(
-            TEntity entity,
-            Dictionary<Type, object?> aspectValues)
-            : this(entity, aspectValues, new Dictionary<Type, DeriveAspectDelegate>())
-        {
-        }
-
-        /// <summary>
-        /// The entity itself.
-        /// </summary>
-        public TEntity Entity { get; }
-
-        /// <summary>
-        /// Get aspect for this entity.
-        /// </summary>
-        public TAspect? Aspect<TAspect>() where TAspect : class
-        {
-            if (this.aspects.ContainsKey(typeof(TAspect)))
-            {
-                return this.aspects[typeof(TAspect)] as TAspect;
-            }
-            else
-            {
-                throw new ArgumentException(
-                    $"The query does not include aspect '${typeof(TAspect)}'");
-            }
-        }
-    }
-
     /// <summary>
     /// Result of an entity query.
     /// </summary>
