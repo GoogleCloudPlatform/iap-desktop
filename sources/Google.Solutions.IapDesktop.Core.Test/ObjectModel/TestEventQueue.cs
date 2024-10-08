@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
                 queue.Subscribe<EventOne>(e => { invoked = true; });
             sub.Dispose();
 
-            sub.Invoke(new EventOne());
+            sub.InvokeAsync(new EventOne());
             Assert.IsFalse(invoked);
         }
 

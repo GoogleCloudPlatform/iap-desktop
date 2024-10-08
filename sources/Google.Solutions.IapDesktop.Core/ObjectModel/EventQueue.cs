@@ -32,46 +32,6 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.ObjectModel
 {
-    /// <summary>
-    /// Publishes events to subscribers.
-    /// 
-    /// There are multiple differences to regular C#/CLR events:
-    /// 
-    /// * Events can be emitted from any thread, but subscribers
-    ///   are guaranteed to be invoked on a specific thread, 
-    ///   effectively resulting in queueing semantics.
-    /// * Event handlers can be asynchronous.
-    /// * Subscribing to an event doesn't keep the source alive.
-    /// 
-    /// </summary>
-    public interface IEventQueue
-    {
-        /// <summary>
-        /// Subscribe to an event using an asynchronous handler
-        /// until the subscription is disposed.
-        /// </summary>
-        ISubscription Subscribe<TEvent>(Func<TEvent, Task> handler);
-
-        /// <summary>
-        /// Subscribe to an event using an synchronous handler
-        /// until the subscription is disposed.
-        /// </summary>
-        ISubscription Subscribe<TEvent>(Action<TEvent> handler);
-
-        /// <summary>
-        /// Publish an event and wait for all subscribers to handle the event.
-        /// </summary>
-        Task PublishAsync<TEvent>(TEvent eventObject);
-
-        /// <summary>
-        /// Publish an event without awaiting subcribers.
-        /// </summary>
-        void Publish<TEvent>(TEvent eventObject);
-    }
-
-    public interface ISubscription : IDisposable
-    { }
-
     public class EventQueue : IEventQueue
     {
         private readonly ISynchronizeInvoke invoker;
@@ -165,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
                     foreach (var subscriber in GetSubscriptions<TEvent>())
                     {
                         await subscriber
-                            .Invoke(eventObject)
+                            .InvokeAsync(eventObject)
                             .ConfigureAwait(true); // Stay on thread!
                     }
                 });
@@ -206,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
                 this.callback = callback.ExpectNotNull(nameof(callback));
             }
 
-            public Task Invoke(TEvent e)
+            public Task InvokeAsync(TEvent e)
             {
                 if (this.unsubscribed)
                 {
