@@ -7,6 +7,11 @@
     <Platforms>x64;x86;ARM64</Platforms>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="ToolWindows\Download\**" />
+    <EmbeddedResource Remove="ToolWindows\Download\**" />
+    <None Remove="ToolWindows\Download\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Castle.Core" Version="5.1.1" />
     <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.11" />
     <PackageReference Include="Google.Apis" Version="1.68.0" />
@@ -50,8 +55,5 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="obj\x86\Release\.NETFramework,Version=v4.6.2.AssemblyAttributes.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ToolWindows\Download\" />
   </ItemGroup>
 </Project>
