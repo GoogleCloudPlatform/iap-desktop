@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
 
         public bool Equals(EntityTypeLocator? other)
         {
-            return other != null && other.Type == this.Type;
+            return other is object && other.Type == this.Type;
         }
 
         public static bool operator ==(EntityTypeLocator? obj1, EntityTypeLocator? obj2)

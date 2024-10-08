@@ -69,11 +69,11 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     }
 
     /// <summary>
-    /// Indicates that an entity was deleted.
+    /// Indicates that an entity was removed.
     /// </summary>
-    public class EntityDeletedEvent : EntityEvent
+    public class EntityRemovedEvent : EntityEvent
     {
-        public EntityDeletedEvent(ILocator locator) : base(locator)
+        public EntityRemovedEvent(ILocator locator) : base(locator)
         {
         }
     }

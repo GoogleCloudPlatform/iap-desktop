@@ -154,7 +154,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
             return new EntityQueryResult<TEntity>(
                 await ExecuteCoreAsync(cancellationToken).ConfigureAwait(false));
         }
-
         /// <summary>
         /// Builder class for queries.
         /// </summary>

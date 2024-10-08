@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Linq;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,7 +74,18 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
         internal EntityQueryResultItem(
             TEntity entity,
             Dictionary<Type, object?> aspectValues)
-            : this(entity, aspectValues, new Dictionary<Type, DeriveAspectDelegate>())
+            : this(
+                  entity, 
+                  aspectValues, 
+                  new Dictionary<Type, DeriveAspectDelegate>())
+        {
+        }
+
+        internal EntityQueryResultItem(TEntity entity)
+            : this(
+                  entity, new 
+                  Dictionary<Type, object?>(), 
+                  new Dictionary<Type, DeriveAspectDelegate>())
         {
         }
 
@@ -94,6 +107,20 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
             {
                 throw new ArgumentException(
                     $"The query does not include aspect '${typeof(TAspect)}'");
+            }
+        }
+
+        /// <summary>
+        /// Notify the entity and any aspects that implement
+        /// ISubscriber<EntityPropertyChangedEvent>> of an event.
+        /// </summary>
+        internal void Notify(EntityPropertyChangedEvent ev)
+        {
+            foreach (var subscriber in this.aspects.Values
+                .ConcatItem(this.Entity)
+                .OfType<ISubscriber<EntityPropertyChangedEvent>>())
+            {
+                subscriber.Notify(ev);
             }
         }
     }
