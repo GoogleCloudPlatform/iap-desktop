@@ -895,7 +895,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .Setup(e => e.Subscribe(
                     It.IsAny<Action<SessionStartedEvent>>(),
                     SubscriptionOptions.None))
-                .Callback<Action<SessionStartedEvent>>(e => sessionStartedEventHandler = e);
+                .Callback<Action<SessionStartedEvent>, SubscriptionOptions>((e, _) => sessionStartedEventHandler = e);
 
             Action<SessionEndedEvent>? sessionEndedEventHandler = null;
             eventQueue
@@ -1026,7 +1026,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .Setup(e => e.Subscribe(
                     It.IsAny<Func<InstanceStateChangedEvent, Task>>(),
                     SubscriptionOptions.None))
-                .Callback<Func<InstanceStateChangedEvent, Task>>(e => eventHandler = e);
+                .Callback<Func<InstanceStateChangedEvent, Task>, SubscriptionOptions>((e, _) => eventHandler = e);
 
             var computeClient = CreateComputeEngineClient();
             var viewModel = CreateViewModel(
