@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Test.ToolWindows.Insta
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoUpdateAvailable_ThenExecuteReturns(
+        public void Execute_WhenNoUpdateAvailable(
             [Values(ReleaseTrack.Critical, ReleaseTrack.Normal)]
             ReleaseTrack followedTrack)
         {
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Test.ToolWindows.Insta
         }
 
         [Test]
-        public void WhenUpdateAvailable_ThenExecuteShowsDialog(
+        public void Execute_WhenUpdateAvailable_ThenExecuteShowsDialog(
             [Values(ReleaseTrack.Critical, ReleaseTrack.Normal)]
             ReleaseTrack followedTrack)
         {
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Test.ToolWindows.Insta
         }
 
         [Test]
-        public void WhenCanaryUpdateAvailable_ThenExecuteShowsDialog()
+        public void Execute_WhenCanaryUpdateAvailable_ThenExecuteShowsDialog()
         {
             var install = new Mock<IInstall>();
             install
