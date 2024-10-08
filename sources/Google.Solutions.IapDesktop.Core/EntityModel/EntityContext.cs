@@ -303,7 +303,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             /// <summary>
             /// List all searchable entity types. 
             /// </summary>
-            public Task<IEnumerable<EntityType>> SearchAsync( // TODO: test
+            public Task<IEnumerable<EntityType>> SearchAsync(
                 WildcardQuery query,
                 CancellationToken cancellationToken)
             {
