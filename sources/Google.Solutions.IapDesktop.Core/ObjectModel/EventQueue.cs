@@ -28,56 +28,21 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.ObjectModel
 {
-    /// <summary>
-    /// Publishes events to subscribers.
-    /// 
-    /// There are multiple differences to regular C#/CLR events:
-    /// 
-    /// * Events can be emitted from any thread, but subscribers
-    ///   are guaranteed to be invoked on a specific thread, 
-    ///   effectively resulting in queueing semantics.
-    /// * Event handlers can be asynchronous.
-    /// * Subscribing to an event doesn't keep the source alive.
-    /// 
-    /// </summary>
-    public interface IEventQueue
-    {
-        /// <summary>
-        /// Subscribe to an event using an asynchronous handler
-        /// until the subscription is disposed.
-        /// </summary>
-        ISubscription Subscribe<TEvent>(Func<TEvent, Task> handler);
-
-        /// <summary>
-        /// Subscribe to an event using an synchronous handler
-        /// until the subscription is disposed.
-        /// </summary>
-        ISubscription Subscribe<TEvent>(Action<TEvent> handler);
-
-        /// <summary>
-        /// Publish an event and wait for all subscribers to handle the event.
-        /// </summary>
-        Task PublishAsync<TEvent>(TEvent eventObject);
-
-        /// <summary>
-        /// Publish an event without awaiting subcribers.
-        /// </summary>
-        void Publish<TEvent>(TEvent eventObject);
-    }
-
-    public interface ISubscription : IDisposable
-    { }
-
     public class EventQueue : IEventQueue
     {
         private readonly ISynchronizeInvoke invoker;
         private readonly object subscriptionsLock;
         private readonly IDictionary<Type, List<ISubscription>> subscriptionsByEvent;
 
+        /// <summary>
+        /// Create an event queue.
+        /// </summary>
+        /// <param name="invoker">Invoker to use for publishing events</param>
         public EventQueue(ISynchronizeInvoke invoker)
         {
             this.invoker = invoker.ExpectNotNull(nameof(invoker));
@@ -123,7 +88,9 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
         // IEventQueue.
         //---------------------------------------------------------------------
 
-        public ISubscription Subscribe<TEvent>(Func<TEvent, Task> handler)
+        public ISubscription Subscribe<TEvent>(
+            Func<TEvent, Task> handler,
+            SubscriptionOptions lifecycle = SubscriptionOptions.None)
         {
             lock (this.subscriptionsLock)
             {
@@ -133,20 +100,31 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
                     this.subscriptionsByEvent.Add(typeof(TEvent), subscriptions);
                 }
 
-                var subsciption = new Subscription<TEvent>(this, handler);
-                subscriptions.Add(subsciption);
+                Subscription<TEvent> subsciption;
+                if (lifecycle == SubscriptionOptions.WeakSubscriberReference)
+                {
+                    subsciption = new WeakSubscription<TEvent>(this, handler);
+                }
+                else
+                {
+                    subsciption = new StrongSubscription<TEvent>(this, handler);
+                }
 
+                subscriptions.Add(subsciption);
                 return subsciption;
             }
         }
 
-        public ISubscription Subscribe<TEvent>(Action<TEvent> handler)
+        public ISubscription Subscribe<TEvent>(
+            Action<TEvent> handler,
+            SubscriptionOptions lifecycle = SubscriptionOptions.None)
         {
             return Subscribe<TEvent>(e =>
             {
                 handler(e);
                 return Task.CompletedTask;
-            });
+            },
+            lifecycle);
         }
 
         public Task PublishAsync<TEvent>(TEvent eventObject)
@@ -165,15 +143,12 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
                     foreach (var subscriber in GetSubscriptions<TEvent>())
                     {
                         await subscriber
-                            .Invoke(eventObject)
+                            .InvokeAsync(eventObject)
                             .ConfigureAwait(true); // Stay on thread!
                     }
                 });
         }
 
-        /// <summary>
-        /// Publish an event without awaiting subcribers.
-        /// </summary>
         public void Publish<TEvent>(TEvent eventObject)
         {
             _ = PublishAsync(eventObject)
@@ -185,30 +160,33 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
                             "One or more subscribers failed to handle an event: " + t.Exception);
                         CoreTraceSource.Log.TraceError(t.Exception);
                     },
-                    TaskContinuationOptions.OnlyOnFaulted);
+                    CancellationToken.None,
+                    TaskContinuationOptions.OnlyOnFaulted,
+                    TaskScheduler.Default);
         }
 
         //---------------------------------------------------------------------
         // Inner classes.
         //---------------------------------------------------------------------
 
-        internal sealed class Subscription<TEvent> : ISubscription
+        /// <summary>
+        /// Base class for subscriptions.
+        /// </summary>
+        internal abstract class Subscription<TEvent> : ISubscription
         {
-            private bool unsubscribed = false;
+            private bool disposed = false;
             private readonly EventQueue queue;
-            private readonly Func<TEvent, Task> callback;
 
-            public Subscription(
-                EventQueue queue,
-                Func<TEvent, Task> callback)
+            protected Subscription(EventQueue queue)
             {
                 this.queue = queue.ExpectNotNull(nameof(queue));
-                this.callback = callback.ExpectNotNull(nameof(callback));
             }
 
-            public Task Invoke(TEvent e)
+            protected abstract Task InvokeCoreAsync(TEvent e);
+
+            public Task InvokeAsync(TEvent e)
             {
-                if (this.unsubscribed)
+                if (this.disposed)
                 {
                     //
                     // Subscription is stale, ignore.
@@ -216,15 +194,81 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
                     return Task.CompletedTask;
                 }
 
-                return this.callback.Invoke(e);
+                return InvokeCoreAsync(e);
             }
 
             public void Dispose()
             {
-                var removed = this.queue.Unsubscribe<TEvent>(this);
-                Debug.Assert(removed);
+                if (!this.disposed)
+                {
+                    var removed = this.queue.Unsubscribe<TEvent>(this);
+                    Debug.Assert(removed);
 
-                this.unsubscribed = true;
+                    this.disposed = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Normal subscription that uses a strong reference to the subscriber.
+        /// </summary>
+        internal sealed class StrongSubscription<TEvent> : Subscription<TEvent>
+        {
+            private readonly Func<TEvent, Task> callback;
+
+            public StrongSubscription(
+                EventQueue queue,
+                Func<TEvent, Task> callback)
+                : base(queue)
+            {
+                this.callback = callback.ExpectNotNull(nameof(callback));
+            }
+
+            protected override Task InvokeCoreAsync(TEvent e)
+            {
+                return this.callback.Invoke(e);
+            }
+        }
+
+        /// <summary>
+        /// Weak subscription that avoids keeping the subscriber alive.
+        /// </summary>
+        internal sealed class WeakSubscription<TEvent> : Subscription<TEvent>
+        {
+            private readonly WeakReference<Func<TEvent, Task>> callback;
+
+            public WeakSubscription(
+                EventQueue queue, 
+                Func<TEvent, Task> callback)
+                : base(queue)
+            {
+                this.callback = new WeakReference<Func<TEvent, Task>>(
+                    callback.ExpectNotNull(nameof(callback)));
+            }
+
+            protected override Task InvokeCoreAsync(TEvent e)
+            {
+                if (this.callback.TryGetTarget(out var target))
+                {
+                    return target.Invoke(e);
+                }
+                else
+                {
+                    //
+                    // The subscriber is gone, remove this subscription
+                    // so that the list of subscriber doesn't grow unbounded.
+                    //
+                    Dispose();
+                    return Task.CompletedTask;
+                }
+            }
+
+            /// <summary>
+            /// For testing only: Simulate that the subscriber was GC'ed.
+            /// </summary>
+            internal void SimulateSubscriberWasGarbageCollected()
+            {
+                this.callback.SetTarget(null!);
             }
         }
     }

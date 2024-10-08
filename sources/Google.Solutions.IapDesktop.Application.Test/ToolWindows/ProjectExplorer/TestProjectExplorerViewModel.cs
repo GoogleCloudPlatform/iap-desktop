@@ -891,14 +891,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             // Capture event handlers that the view model will register.
             Action<SessionStartedEvent>? sessionStartedEventHandler = null;
-            eventQueue.Setup(e => e.Subscribe(
-                    It.IsAny<Action<SessionStartedEvent>>()))
-                .Callback<Action<SessionStartedEvent>>(e => sessionStartedEventHandler = e);
+            eventQueue
+                .Setup(e => e.Subscribe(
+                    It.IsAny<Action<SessionStartedEvent>>(),
+                    SubscriptionOptions.None))
+                .Callback<Action<SessionStartedEvent>, SubscriptionOptions>((e, _) => sessionStartedEventHandler = e);
 
             Action<SessionEndedEvent>? sessionEndedEventHandler = null;
-            eventQueue.Setup(e => e.Subscribe(
-                    It.IsAny<Action<SessionEndedEvent>>()))
-                .Callback<Action<SessionEndedEvent>>(e => sessionEndedEventHandler = e);
+            eventQueue
+                .Setup(e => e.Subscribe(
+                    It.IsAny<Action<SessionEndedEvent>>(),
+                    SubscriptionOptions.None))
+                .Callback<Action<SessionEndedEvent>, SubscriptionOptions>((e, _) => sessionEndedEventHandler = e);
 
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
@@ -1019,8 +1023,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             Func<InstanceStateChangedEvent, Task>? eventHandler = null;
             eventQueue
-                .Setup(e => e.Subscribe(It.IsAny<Func<InstanceStateChangedEvent, Task>>()))
-                .Callback<Func<InstanceStateChangedEvent, Task>>(e => eventHandler = e);
+                .Setup(e => e.Subscribe(
+                    It.IsAny<Func<InstanceStateChangedEvent, Task>>(),
+                    SubscriptionOptions.None))
+                .Callback<Func<InstanceStateChangedEvent, Task>, SubscriptionOptions>((e, _) => eventHandler = e);
 
             var computeClient = CreateComputeEngineClient();
             var viewModel = CreateViewModel(
