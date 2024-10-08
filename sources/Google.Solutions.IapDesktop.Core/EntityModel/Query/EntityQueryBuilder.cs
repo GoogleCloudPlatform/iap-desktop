@@ -205,20 +205,6 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
                     await ExecuteCoreAsync(cancellationToken).ConfigureAwait(false));
             }
 
-            /// <summary>
-            /// Execute query.
-            /// </summary>
-            /// <returns>
-            /// Observable collection of entities and their aspects.
-            /// </returns>
-            public Task<ObservableEntityQueryResult<TEntity>> ExecuteObservableAsync(
-                CancellationToken cancellationToken)
-            {
-                // 1. Subscribe to eventqueue
-                //    pass subscription to observable collection for disposal.
-                // 
-                throw new NotImplementedException();
-            }
         }
     }
 }
