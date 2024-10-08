@@ -902,7 +902,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .Setup(e => e.Subscribe(
                     It.IsAny<Action<SessionEndedEvent>>(),
                     SubscriptionOptions.None))
-                .Callback<Action<SessionEndedEvent>>(e => sessionEndedEventHandler = e);
+                .Callback<Action<SessionEndedEvent>, SubscriptionOptions>((e, _) => sessionEndedEventHandler = e);
 
             var viewModel = CreateViewModel(
                 CreateComputeEngineClient().Object,
