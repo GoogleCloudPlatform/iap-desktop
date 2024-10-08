@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             using (queue.Subscribe<EventOne>(e => { }, SubscriptionOptions.None))
             {
                 var sub = queue.GetSubscriptions<EventOne>().First();
-                Assert.IsInstanceOf<EventQueue.Subscription<EventOne>>(sub);
+                Assert.IsInstanceOf<EventQueue.StrongSubscription<EventOne>>(sub);
             }
         }
 
@@ -80,10 +80,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
         //---------------------------------------------------------------------
 
         [Test]
-        public void Unsubscribe()
+        public void Unsubscribe(
+            [Values(SubscriptionOptions.None, SubscriptionOptions.WeakSubscriberReference)]
+            SubscriptionOptions options)
         {
             var queue = new EventQueue(new Mock<ISynchronizeInvoke>().Object);
-            using (queue.Subscribe<EventOne>(e => { }))
+            using (queue.Subscribe<EventOne>(e => { }, options))
             {
                 Assert.AreEqual(1, queue.GetSubscriptions<EventOne>().Count());
             }
@@ -92,13 +94,15 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
         }
 
         [Test]
-        public void Unsubscribe_WhenSubscriptionDisposed()
+        public void Unsubscribe_WhenSubscriptionDisposed(
+            [Values(SubscriptionOptions.None, SubscriptionOptions.WeakSubscriberReference)]
+            SubscriptionOptions options)
         {
             var queue = new EventQueue(new Mock<ISynchronizeInvoke>().Object);
 
             var invoked = false;
             var sub = (EventQueue.Subscription<EventOne>)
-                queue.Subscribe<EventOne>(e => { invoked = true; });
+                queue.Subscribe<EventOne>(e => { invoked = true; }, options);
             sub.Dispose();
 
             sub.InvokeAsync(new EventOne());
@@ -136,6 +140,32 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             {
                 ExceptionAssert.ThrowsAggregateException<ApplicationException>(
                     () => queue.PublishAsync(new EventOne()).Wait());
+            }
+        }
+
+        [Test]
+        public void PublishAsync_WhenWeakSubscriberWasGarbageCollected()
+        {
+            var invoker = new Mock<ISynchronizeInvoke>();
+            invoker.SetupGet(i => i.InvokeRequired).Returns(false);
+
+            var queue = new EventQueue(invoker.Object);
+
+            var invoked = false;
+            using (queue.Subscribe<EventOne>(
+                e => { invoked = true; }, 
+                SubscriptionOptions.WeakSubscriberReference))
+            {
+                queue.GetSubscriptions<EventOne>()
+                    .Cast<EventQueue.WeakSubscription<EventOne>>()
+                    .First()
+                    .SimulateSubscriberWasGarbageCollected();
+
+                var t = queue.PublishAsync(new EventOne());
+
+                // Susbcription auto-removed.
+                Assert.AreEqual(0, queue.GetSubscriptions<EventOne>().Count());
+                Assert.IsFalse(invoked);
             }
         }
 

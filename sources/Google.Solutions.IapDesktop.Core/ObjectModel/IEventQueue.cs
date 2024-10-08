@@ -77,6 +77,9 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
         WeakSubscriberReference
     }
 
+    /// <summary>
+    /// Event subscription. Disposing the object removes the subscription.
+    /// </summary>
     public interface ISubscription : IDisposable
     { }
 }
