@@ -40,7 +40,13 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         private readonly IDictionary<Type, List<RegisteredEntitySearcher>> searchers;
         private readonly IDictionary<Type, LocatorConfiguration> locators;
 
-        public EntityContext(IServiceCategoryProvider serviceProvider) : this(new Builder()
+        /// <summary>
+        /// Queue for receiving entity-related events. Used for observable results.
+        /// </summary>
+        internal IEventQueue EventQueue { get; }
+
+        public EntityContext(IServiceCategoryProvider serviceProvider) : this(
+            new Builder(serviceProvider.GetService<IEventQueue>())
             .AddNavigators(serviceProvider.GetServicesByCategory<IEntityNavigator>())
             .AddSearchers(serviceProvider.GetServicesByCategory<IEntitySearcher>())
             .AddAspectProviders(serviceProvider.GetServicesByCategory<IEntityAspectProvider>()))
@@ -49,6 +55,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
 
         private EntityContext(Builder builder)
         {
+            this.EventQueue = builder.EventQueue;
             this.locators = builder.BuildLocatorConfiguration();
             this.caches = builder.BuildCaches();
             this.searchers = builder.BuildSearchers();

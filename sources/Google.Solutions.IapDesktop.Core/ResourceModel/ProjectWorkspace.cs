@@ -270,8 +270,6 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
                 organizations[Organization.Default.Locator] = Organization.Default;
             }
 
-            //TODO: cache ancestry, test.
-
             return new State(
                 organizations,
                 projects.ToDictionary(

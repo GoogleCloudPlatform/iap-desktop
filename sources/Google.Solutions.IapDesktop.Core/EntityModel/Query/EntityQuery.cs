@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Linq;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -154,6 +155,27 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
             return new EntityQueryResult<TEntity>(
                 await ExecuteCoreAsync(cancellationToken).ConfigureAwait(false));
         }
+
+        /// <summary>
+        /// Execute query.
+        /// </summary>
+        /// <returns>
+        /// Observable collection of entities and their aspects.
+        /// </returns>
+        public async Task<ObservableEntityQueryResult<TEntity>> ExecuteObservableAsync(
+            CancellationToken cancellationToken)
+        {
+            var results = await ExecuteCoreAsync(cancellationToken)
+                .ConfigureAwait(true); // Return to caller context.
+
+            //
+            // Return an observable result that's tied to the caller's context.
+            //
+            return new ObservableEntityQueryResult<TEntity>(
+                results,
+                this.context.EventQueue);
+        }
+
         /// <summary>
         /// Builder class for queries.
         /// </summary>

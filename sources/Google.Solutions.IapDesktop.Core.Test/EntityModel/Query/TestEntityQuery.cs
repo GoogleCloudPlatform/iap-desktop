@@ -22,6 +22,7 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.EntityModel;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -62,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
             searcher
                 .Setup(s => s.SearchAsync(WildcardQuery.Instance, CancellationToken.None))
                 .ReturnsAsync(new[] { new Car("car-1", new CarLocator()) });
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddSearcher(searcher.Object)
                 .Build();
 
@@ -85,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
                 .ReturnsAsync(new[] { new Car("car-1", new CarLocator()) });
 
             var stringProvider = new Mock<IEntityAspectProvider<CarLocator, string>>();
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddSearcher(searcher.Object)
                 .AddAspectProvider(stringProvider.Object)
                 .Build();
@@ -112,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
 
             var stringProvider = new Mock<IEntityAspectProvider<CarLocator, string>>();
             var versionProvider = new Mock<IEntityAspectProvider<CarLocator, Version>>();
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddSearcher(searcher.Object)
                 .AddAspectProvider(stringProvider.Object)
                 .AddAspectProvider(versionProvider.Object)
@@ -148,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
                 .Setup(p => p.QueryAspect(It.IsAny<CarLocator>()))
                 .Returns(new Version(1, 2));
 
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddSearcher(searcher.Object)
                 .AddAspectProvider(versionProvider.Object)
                 .Build();
@@ -163,6 +164,33 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
             Assert.AreEqual("1.2", cars[0].Aspect<string>());
         }
 
+        //----------------------------------------------------------------------
+        // ExecuteObservable.
+        //----------------------------------------------------------------------
+
+        [Test]
+        public async Task ExecuteObservable_TiesResultToCurrentThread()
+        {
+            var searcher = new Mock<IEntitySearcher<WildcardQuery, Car>>();
+            searcher
+                .Setup(s => s.SearchAsync(WildcardQuery.Instance, CancellationToken.None))
+                .ReturnsAsync(new[] { new Car("car-1", new CarLocator()) });
+
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
+                .AddSearcher(searcher.Object)
+                .Build();
+
+            var threadId = Environment.CurrentManagedThreadId;
+            var cars = await context.Entities<Car>()
+                .List()
+                .IncludeAspect<Version, string>(v => v?.ToString())
+                .ExecuteObservableAsync(CancellationToken.None)
+                .ConfigureAwait(true);
+
+            CollectionAssert.IsNotEmpty(cars);
+            cars.IsAssociatedWithThread(threadId);
+        }
+
         [TestFixture]
         public class Builder
         {
@@ -174,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
             public async Task Get_WhenAspectNotFound()
             {
                 var provider = new Mock<IEntityAspectProvider<CarLocator, Car>>();
-                var context = new EntityContext.Builder()
+                var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                     .AddAspectProvider(provider.Object)
                     .Build();
 
@@ -197,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
                 provider
                     .Setup(p => p.QueryAspect(locator))
                     .Returns(new Car("car-1", locator));
-                var context = new EntityContext.Builder()
+                var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                     .AddAspectProvider(provider.Object)
                     .Build();
 

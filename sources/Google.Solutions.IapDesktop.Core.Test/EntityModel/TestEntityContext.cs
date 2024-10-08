@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.EntityModel;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -108,15 +109,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
             {
                 return Task.FromResult<IEnumerable<TEntity>>(this.entities);
             }
-
-            public Task<ICollection<TEntity>> SearchAsync(
-                string query, 
-                CancellationToken cancellationToken)
-            {
-                return Task.FromResult<ICollection<TEntity>>(this.entities
-                    .Where(e => e.DisplayName.Contains(query))
-                    .ToList());
-            }
         }
 
         private class Searcher<TEntity> : IEntitySearcher<string, TEntity> 
@@ -146,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public void SupportsExpansion_WhenNoNavigatorRegistered()
         {
-            var context = new EntityContext.Builder().Build();
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object).Build();
             Assert.IsFalse(context.SupportsDescendants(new CarLocator()));
             Assert.IsFalse(context.SupportsDescendants<CarLocator>());
             Assert.IsFalse(context.SupportsDescendants(typeof(string)));
@@ -155,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public void SupportsExpansion_WhenNavigatorRegistered()
         {
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddNavigator(new Mock<IEntityNavigator<GarageLocator, Car>>().Object)
                 .AddNavigator(new Mock<IEntityNavigator<GarageLocator, Bike>>().Object)
                 .Build();
@@ -170,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public void SupportsAspect_WhenNoProviderRegisteredForLocator()
         {
-            var context = new EntityContext.Builder().Build();
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object).Build();
             Assert.IsFalse(context.SupportsAspect<CarLocator, Car>());
             Assert.IsFalse(context.SupportsAspect<CarLocator, ColorAspect>());
         }
@@ -178,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public void SupportsAspect_WhenNoProviderRegisteredForAspect()
         {
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddAspectProvider(new Mock<IEntityAspectProvider<CarLocator, Car>>().Object)
                 .Build();
             Assert.IsFalse(context.SupportsAspect<CarLocator, ShapeAspect>());
@@ -188,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public void SupportsAspect_WhenProviderRegistered()
         {
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddAspectProvider(new Mock<IEntityAspectProvider<CarLocator, Car>>().Object)
                 .AddAspectProvider(new Mock<IEntityAspectProvider<CarLocator, ColorAspect>>().Object)
                 .Build();
@@ -199,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public void SupportsAspect_WhenAsyncProviderRegistered()
         {
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddAspectProvider(new Mock<IAsyncEntityAspectProvider<CarLocator, Car>>().Object)
                 .Build();
             Assert.IsTrue(context.SupportsAspect<CarLocator, Car>());
@@ -212,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public void Invalidate_WhenNoCachesRegisteredForLocator()
         {
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddCache(new Mock<IEntityCache>().Object)
                 .AddCache(new Mock<IEntityCache<CarLocator>>().Object)
                 .Build();
@@ -225,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         {
             var cache1 = new Mock<IEntityCache<CarLocator>>();
             var cache2 = new Mock<IEntityCache<CarLocator>>();
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddCache(cache1.Object)
                 .AddCache(cache2.Object)
                 .Build();
@@ -244,7 +236,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public async Task ListDescendants_WhenNoContainerRegisteredForLocator()
         {
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddNavigator(new Mock<IEntityNavigator<GarageLocator, Car>>().Object)
                 .Build();
 
@@ -256,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public async Task ListDescendants_WhenNoContainerRegisteredForEntityType()
         {
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddNavigator(new Mock<IEntityNavigator<GarageLocator, Car>>().Object)
                 .Build();
 
@@ -273,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                     new Car("c1", new CarLocator()), 
                     new Car("c2", new CarLocator()) 
                 });
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddNavigator(container)
                 .Build();
 
@@ -294,7 +286,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 new[] {
                     new Bike("b1", new BikeLocator())
                 });
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddNavigator(carContainer)
                 .AddNavigator(bikeContainer)
                 .Build();
@@ -317,7 +309,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public async Task Search_WhenNoContainerRegisteredForEntityType()
         {
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddSearcher(new Mock<IEntitySearcher<string, Car>>().Object)
                 .Build();
 
@@ -329,7 +321,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public async Task Search_WhenNoContainerRegisteredForQueryType()
         {
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddSearcher(new Mock<IEntitySearcher<string, Car>>().Object)
                 .Build();
 
@@ -351,7 +343,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 new[] {
                     new Bike("sample-bike1", new BikeLocator())
                 });
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddSearcher(carSearcher)
                 .AddSearcher(bikeSearcher)
                 .Build();
@@ -378,7 +370,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 new[] {
                     new Bike("sample-bike1", new BikeLocator())
                 });
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddSearcher(carSearcher)
                 .AddSearcher(bikeSearcher)
                 .Build();
@@ -401,7 +393,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public void QueryAspect_WhenNoProviderRegistered()
         {
-            var context = new EntityContext.Builder().Build();
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object).Build();
 
             Assert.IsNull(context.QueryAspect<ColorAspect>(new CarLocator()));
         }
@@ -409,7 +401,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public void QueryAspect_WhenNoProviderRegisteredForAspectType()
         {
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddAspectProvider(new Mock<IEntityAspectProvider<CarLocator, ShapeAspect>>().Object)
                 .Build();
 
@@ -419,7 +411,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public void QueryAspect_WhenProviderReturnsNull()
         {
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddAspectProvider(new Mock<IEntityAspectProvider<CarLocator, ShapeAspect>>().Object)
                 .Build();
             Assert.IsNull(context.QueryAspect<ShapeAspect>(new CarLocator()));
@@ -433,7 +425,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 .Setup(p => p.QueryAspect(It.IsAny<CarLocator>()))
                 .Returns(new ShapeAspect());
 
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddAspectProvider(provider.Object)
                 .Build();
             Assert.IsNotNull(context.QueryAspect<ShapeAspect>(new CarLocator()));
@@ -446,7 +438,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public async Task QueryAspectAsync_WhenNoProviderRegistered()
         {
-            var context = new EntityContext.Builder().Build();
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object).Build();
 
             Assert.IsNull(await context
                 .QueryAspectAsync<ColorAspect>(new CarLocator(), CancellationToken.None)
@@ -456,7 +448,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         [Test]
         public async Task QueryAspectAsync_WhenNoProviderRegisteredForAspectType()
         {
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddAspectProvider(new Mock<IEntityAspectProvider<CarLocator, ShapeAspect>>().Object)
                 .Build();
 
@@ -473,7 +465,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 .Setup(p => p.QueryAspect(It.IsAny<CarLocator>()))
                 .Returns(new ShapeAspect());
 
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddAspectProvider(provider.Object)
                 .Build();
             Assert.IsNotNull(await context
@@ -489,7 +481,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 .Setup(p => p.QueryAspectAsync(It.IsAny<CarLocator>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ShapeAspect());
 
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddAspectProvider(provider.Object)
                 .Build();
             Assert.IsNotNull(await context
@@ -509,7 +501,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 new[] {
                     new Bike("sample-bike1", new BikeLocator())
                 });
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddSearcher(bikeSearcher)
                 .Build();
 
@@ -530,7 +522,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                 new[] {
                     new Bike("sample-bike1", new BikeLocator())
                 });
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddSearcher(bikeSearcher)
                 .Build();
 
@@ -542,7 +534,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
             Assert.AreEqual(0, (await context
                 .ListDescendantsAsync<IEntity<ILocator>>(bikeType.Locator, CancellationToken.None)
                 .ConfigureAwait(false))
-                .Count());
+                .Count);
         }
 
         [Test]
@@ -555,7 +547,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
                     new Bike("sample-bike1", new BikeLocator())
                 });
 
-            var context = new EntityContext.Builder()
+            var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddSearcher(searcher.Object)
                 .Build();
 
@@ -567,7 +559,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
             Assert.AreEqual(1, (await context
                 .ListDescendantsAsync<IEntity<ILocator>>(bikeType.Locator, CancellationToken.None)
                 .ConfigureAwait(false))
-                .Count());
+                .Count);
         }
 
         //--------------------------------------------------------------------
@@ -578,19 +570,19 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         public void Builder_WhenMultipleProvidersRegisteredForSameAspect()
         {
             Assert.Throws<InvalidOperationException>(
-                () => new EntityContext.Builder()
+                () => new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddAspectProvider(new Mock<IEntityAspectProvider<CarLocator, ColorAspect>>().Object)
                 .AddAspectProvider(new Mock<IEntityAspectProvider<CarLocator, ColorAspect>>().Object)
                 .Build());
 
             Assert.Throws<InvalidOperationException>(
-                () => new EntityContext.Builder()
+                () => new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddAspectProvider(new Mock<IEntityAspectProvider<CarLocator, ColorAspect>>().Object)
                 .AddAspectProvider(new Mock<IAsyncEntityAspectProvider<CarLocator, ColorAspect>>().Object)
                 .Build());
 
             Assert.Throws<InvalidOperationException>(
-                () => new EntityContext.Builder()
+                () => new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddAspectProvider(new Mock<IAsyncEntityAspectProvider<CarLocator, ColorAspect>>().Object)
                 .AddAspectProvider(new Mock<IAsyncEntityAspectProvider<CarLocator, ColorAspect>>().Object)
                 .Build());

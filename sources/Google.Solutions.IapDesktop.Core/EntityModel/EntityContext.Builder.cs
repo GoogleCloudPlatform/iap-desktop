@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -52,8 +53,12 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             private readonly MethodInfo addAspectProviderCoreMethod;
             private readonly MethodInfo addAsyncAspectProviderCoreMethod;
 
-            public Builder()
+            public IEventQueue EventQueue { get; }
+
+            public Builder(IEventQueue eventQueue)
             {
+                this.EventQueue = eventQueue;
+
                 this.addCacheCoreMethod = GetType().GetMethod(
                     nameof(AddCacheCore),
                     BindingFlags.Instance | BindingFlags.NonPublic);

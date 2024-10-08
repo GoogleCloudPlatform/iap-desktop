@@ -19,7 +19,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
     /// delivers events).
     /// </remarks>
     public sealed class ObservableEntityQueryResult<TEntity>
-        : ObservableCollection<EntityQueryResultItem<TEntity>> // TODO: test
+        : ObservableCollection<EntityQueryResultItem<TEntity>>
         where TEntity : IEntity<ILocator>
     {
         private readonly ISubscription propertyChanged;
@@ -30,11 +30,13 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
 #endif
 
         [Conditional("DEBUG")]
-        private void CheckIsRunningOnRightThread() 
-        { 
-            Debug.Assert(
-                this.threadId == Environment.CurrentManagedThreadId,
-                "Result must not be accessed from an arbitrary thread context");
+        internal void IsAssociatedWithThread(int managedThreadId) 
+        {
+            if (this.threadId != managedThreadId)
+            {
+                throw new InvalidOperationException(
+                    "Result must not be accessed from an arbitrary thread context");
+            }
         }
 
         public ObservableEntityQueryResult(
@@ -53,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
 
             this.propertyChanged = eventQueue.Subscribe<EntityPropertyChangedEvent>(
                 e => {
-                    CheckIsRunningOnRightThread();
+                    IsAssociatedWithThread(Environment.CurrentManagedThreadId);
                     this
                         .FirstOrDefault(i => i.Entity.Locator.Equals(e.Locator))?
                         .Notify(e);
@@ -67,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
                     // So we don't need to worry about concurrent modifications
                     // or locking here.
                     //
-                    CheckIsRunningOnRightThread();
+                    IsAssociatedWithThread(Environment.CurrentManagedThreadId);
 
                     //
                     // Remove the corresponding item from this
@@ -84,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
 
         public new IEnumerator<EntityQueryResultItem<TEntity>> GetEnumerator()
         {
-            CheckIsRunningOnRightThread();
+            IsAssociatedWithThread(Environment.CurrentManagedThreadId);
             return base.GetEnumerator();
         }
 
