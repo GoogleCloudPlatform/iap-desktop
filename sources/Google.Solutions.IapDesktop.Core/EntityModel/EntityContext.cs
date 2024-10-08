@@ -277,10 +277,10 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         /// <summary>
         /// Create a query builder for this context.
         /// </summary>
-        public EntityQueryBuilder<TEntity> Entities<TEntity>()
+        public EntityQuery<TEntity>.Builder Entities<TEntity>()
             where TEntity : class, IEntity<ILocator>
         {
-            return new EntityQueryBuilder<TEntity>(this);
+            return new EntityQuery<TEntity>.Builder(this);
         }
 
         //--------------------------------------------------------------------

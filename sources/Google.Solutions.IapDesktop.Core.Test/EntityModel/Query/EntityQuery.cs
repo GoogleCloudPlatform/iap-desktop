@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
 {
     [TestFixture]
-    public class TestEntityQueryBuilder
+    public class EntityQuery
     {
         public class CarLocator : ILocator
         {
@@ -49,50 +49,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
                 this.DisplayName = displayName;
                 this.Locator = locator;
             }
-        }
-
-        //----------------------------------------------------------------------
-        // Get.
-        //----------------------------------------------------------------------
-
-        [Test]
-        public async Task Get_WhenAspectNotFound()
-        {
-            var provider = new Mock<IEntityAspectProvider<CarLocator, Car>>();
-            var context = new EntityContext.Builder()
-                .AddAspectProvider(provider.Object)
-                .Build();
-
-            var cars = await context.Entities<Car>()
-                .Get(new CarLocator())
-                .ExecuteAsync(CancellationToken.None)
-                .ConfigureAwait(false);
-            
-            CollectionAssert.IsEmpty(cars);
-
-            provider.Verify(p => p.QueryAspect(It.IsAny<CarLocator>()), Times.Once);
-        }
-
-        [Test]
-        public async Task Get()
-        {
-            var locator = new CarLocator();
-
-            var provider = new Mock<IEntityAspectProvider<CarLocator, Car>>();
-            provider
-                .Setup(p => p.QueryAspect(locator))
-                .Returns(new Car("car-1", locator));
-            var context = new EntityContext.Builder()
-                .AddAspectProvider(provider.Object)
-                .Build();
-
-            var cars = await context.Entities<Car>()
-                .Get(locator)
-                .ExecuteAsync(CancellationToken.None)
-                .ConfigureAwait(false);
-
-            CollectionAssert.IsNotEmpty(cars);
-            Assert.AreEqual("car-1", cars[0].Entity.DisplayName);
         }
 
         //----------------------------------------------------------------------
@@ -205,6 +161,54 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
 
             CollectionAssert.IsNotEmpty(cars);
             Assert.AreEqual("1.2", cars[0].Aspect<string>());
+        }
+
+        [TestFixture]
+        public class Builder
+        {
+            //------------------------------------------------------------------
+            // Get.
+            //------------------------------------------------------------------
+
+            [Test]
+            public async Task Get_WhenAspectNotFound()
+            {
+                var provider = new Mock<IEntityAspectProvider<CarLocator, Car>>();
+                var context = new EntityContext.Builder()
+                    .AddAspectProvider(provider.Object)
+                    .Build();
+
+                var cars = await context.Entities<Car>()
+                    .Get(new CarLocator())
+                    .ExecuteAsync(CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                CollectionAssert.IsEmpty(cars);
+
+                provider.Verify(p => p.QueryAspect(It.IsAny<CarLocator>()), Times.Once);
+            }
+
+            [Test]
+            public async Task Get()
+            {
+                var locator = new CarLocator();
+
+                var provider = new Mock<IEntityAspectProvider<CarLocator, Car>>();
+                provider
+                    .Setup(p => p.QueryAspect(locator))
+                    .Returns(new Car("car-1", locator));
+                var context = new EntityContext.Builder()
+                    .AddAspectProvider(provider.Object)
+                    .Build();
+
+                var cars = await context.Entities<Car>()
+                    .Get(locator)
+                    .ExecuteAsync(CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                CollectionAssert.IsNotEmpty(cars);
+                Assert.AreEqual("car-1", cars[0].Entity.DisplayName);
+            }
         }
     }
 }
