@@ -27,7 +27,6 @@ using Google.Solutions.Mvvm.Input;
 using Google.Solutions.Platform.Interop;
 using MSTSCLib;
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -43,7 +42,7 @@ namespace Google.Solutions.Terminal.Controls
     /// a smooth full-screen experience and uses a state machine
     /// to ensure reliable operation.
     /// </summary>
-    public partial class RdpClient : UserControl
+    public partial class RdpClient : ClientBase
     {
         private const string WebAuthnPlugin = "webauthn.dll";
 
@@ -58,8 +57,6 @@ namespace Google.Solutions.Terminal.Controls
         private readonly IMsRdpClientAdvancedSettings6 clientAdvancedSettings;
         private readonly IMsRdpClientSecuredSettings clientSecuredSettings;
         private readonly IMsRdpExtendedSettings clientExtendedSettings;
-
-        private ConnectionState state = ConnectionState.NotConnected;
 
         private readonly DeferredCallback deferResize;
         private Form? parentForm = null;
@@ -83,22 +80,22 @@ namespace Google.Solutions.Terminal.Controls
             //
             // Hook up events.
             //
-            this.client.OnConnecting += new System.EventHandler(OnConnecting);
-            this.client.OnConnected += new System.EventHandler(OnConnected);
-            this.client.OnLoginComplete += new System.EventHandler(OnLoginComplete);
-            this.client.OnDisconnected += new AxMSTSCLib.IMsTscAxEvents_OnDisconnectedEventHandler(OnDisconnected);
-            this.client.OnRequestGoFullScreen += new System.EventHandler(OnRequestGoFullScreen);
-            this.client.OnRequestLeaveFullScreen += new System.EventHandler(OnRequestLeaveFullScreen);
-            this.client.OnFatalError += new AxMSTSCLib.IMsTscAxEvents_OnFatalErrorEventHandler(OnFatalError);
-            this.client.OnWarning += new AxMSTSCLib.IMsTscAxEvents_OnWarningEventHandler(OnWarning);
-            this.client.OnRemoteDesktopSizeChange += new AxMSTSCLib.IMsTscAxEvents_OnRemoteDesktopSizeChangeEventHandler(OnRemoteDesktopSizeChange);
-            this.client.OnRequestContainerMinimize += new System.EventHandler(OnRequestContainerMinimize);
-            this.client.OnAuthenticationWarningDisplayed += new System.EventHandler(OnAuthenticationWarningDisplayed);
-            this.client.OnLogonError += new AxMSTSCLib.IMsTscAxEvents_OnLogonErrorEventHandler(OnLogonError);
-            this.client.OnFocusReleased += new AxMSTSCLib.IMsTscAxEvents_OnFocusReleasedEventHandler(OnFocusReleased);
-            this.client.OnServiceMessageReceived += new AxMSTSCLib.IMsTscAxEvents_OnServiceMessageReceivedEventHandler(OnServiceMessageReceived);
-            this.client.OnAutoReconnected += new System.EventHandler(OnAutoReconnected);
-            this.client.OnAutoReconnecting2 += new AxMSTSCLib.IMsTscAxEvents_OnAutoReconnecting2EventHandler(OnAutoReconnecting2);
+            this.client.OnConnecting += new System.EventHandler(OnRdpConnecting);
+            this.client.OnConnected += new System.EventHandler(OnRdpConnected);
+            this.client.OnLoginComplete += new System.EventHandler(OnRdpLoginComplete);
+            this.client.OnDisconnected += new AxMSTSCLib.IMsTscAxEvents_OnDisconnectedEventHandler(OnRdpDisconnected);
+            this.client.OnRequestGoFullScreen += new System.EventHandler(OnRdpRequestGoFullScreen);
+            this.client.OnRequestLeaveFullScreen += new System.EventHandler(OnRdpRequestLeaveFullScreen);
+            this.client.OnFatalError += new AxMSTSCLib.IMsTscAxEvents_OnFatalErrorEventHandler(OnRdpFatalError);
+            this.client.OnWarning += new AxMSTSCLib.IMsTscAxEvents_OnWarningEventHandler(OnRdpWarning);
+            this.client.OnRemoteDesktopSizeChange += new AxMSTSCLib.IMsTscAxEvents_OnRemoteDesktopSizeChangeEventHandler(OnRdpRemoteDesktopSizeChange);
+            this.client.OnRequestContainerMinimize += new System.EventHandler(OnRdpRequestContainerMinimize);
+            this.client.OnAuthenticationWarningDisplayed += new System.EventHandler(OnRdpAuthenticationWarningDisplayed);
+            this.client.OnLogonError += new AxMSTSCLib.IMsTscAxEvents_OnLogonErrorEventHandler(OnRdpLogonError);
+            this.client.OnFocusReleased += new AxMSTSCLib.IMsTscAxEvents_OnFocusReleasedEventHandler(OnRdpFocusReleased);
+            this.client.OnServiceMessageReceived += new AxMSTSCLib.IMsTscAxEvents_OnServiceMessageReceivedEventHandler(OnRdpServiceMessageReceived);
+            this.client.OnAutoReconnected += new System.EventHandler(OnRdpAutoReconnected);
+            this.client.OnAutoReconnecting2 += new AxMSTSCLib.IMsTscAxEvents_OnAutoReconnecting2EventHandler(OnRdpAutoReconnecting2);
 
             this.Controls.Add(this.client);
             ((System.ComponentModel.ISupportInitialize)(this.client)).EndInit();
@@ -167,118 +164,20 @@ namespace Google.Solutions.Terminal.Controls
             };
         }
 
-        //---------------------------------------------------------------------
-        // State tracking.
-        //
-        // Many MSTSCAX operations only work reliably when the control is in
-        // a certain state, but the control won't reliably tell us which state
-        // it is in. Thus, we maintain a state machine to track the control's
-        // state.
-        //---------------------------------------------------------------------
-
-        /// <summary>
-        /// Connection state has changed.
-        /// </summary>
-        public event EventHandler? StateChanged;
-
-        /// <summary>
-        /// Connection closed abnormally.
-        /// </summary>
-        public event EventHandler<ExceptionEventArgs>? ConnectionFailed;
-
-        /// <summary>
-        /// Connection closed normally.
-        /// </summary>
-        public event EventHandler<ConnectionClosedEventArgs>? ConnectionClosed;
-
         /// <summary>
         /// The server authentication warning has been displayed.
         /// </summary>
         public event EventHandler? ServerAuthenticationWarningDisplayed;
 
-        private void ExpectState(ConnectionState expectedState)
-        {
-            if (this.State != expectedState)
-            {
-                throw new InvalidOperationException($"Operation is not allowed in state {this.State}");
-            }
-        }
-
-        /// <summary>
-        /// Current state of the connection.
-        /// </summary>
-        [Browsable(true)]
-        public ConnectionState State
-        {
-            get => this.state;
-            private set
-            {
-                Debug.Assert(!this.InvokeRequired);
-                if (this.state != value)
-                {
-                    this.state = value;
-                    this.StateChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
-        public enum ConnectionState
-        {
-            /// <summary>
-            /// Client not connected yet or an existing connection has 
-            /// been lost.
-            /// </summary>
-            NotConnected,
-
-            /// <summary>
-            /// Client is in the process of connecting.
-            /// </summary>
-            Connecting,
-
-            /// <summary>
-            /// Client connected, but user log on hasn't completed yet.
-            /// </summary>
-            Connected,
-
-            /// <summary>
-            /// Client is disconnecting.
-            /// </summary>
-            Disconnecting,
-
-            /// <summary>
-            /// User logged on, session is ready to use.
-            /// </summary>
-            LoggedOn
-        }
 
         /// <summary>
         /// Wait until a certain state has been reached. Mainly
         /// intended for testing.
         /// </summary>
-        internal async Task AwaitStateAsync(ConnectionState state)
+        internal override async Task AwaitStateAsync(ConnectionState state)
         {
-            Debug.Assert(!this.InvokeRequired);
-
-            if (this.State == state)
-            {
-                return;
-            }
-
-            var completionSource = new TaskCompletionSource<ConnectionState>();
-
-            void onStateChanged(object sender, EventArgs args)
-            {
-                if (this.State == state)
-                {
-                    this.StateChanged -= onStateChanged;
-                    completionSource.SetResult(this.State);
-                }
-            }
-
-            this.StateChanged += onStateChanged;
-
-            await completionSource
-                .Task
+            await base
+                .AwaitStateAsync(state)
                 .ConfigureAwait(true);
 
             //
@@ -316,7 +215,7 @@ namespace Google.Solutions.Terminal.Controls
                 // Veto this event as it might cause the ActiveX to crash.
                 //
                 TerminalTraceSource.Log.TraceVerbose(
-                    "RemoteDesktopPane: Aborting FormClosing because control is in connecting");
+                    "RdpCLient: Aborting FormClosing because control is in connecting");
 
                 args.Cancel = true;
                 return;
@@ -328,7 +227,7 @@ namespace Google.Solutions.Terminal.Controls
                 // window.
                 //
                 TerminalTraceSource.Log.TraceVerbose(
-                    "RemoteDesktopPane: Aborting FormClosing because control is full-screen");
+                    "RdpCLient: Aborting FormClosing because control is full-screen");
 
                 args.Cancel = true;
                 return;
@@ -343,25 +242,21 @@ namespace Google.Solutions.Terminal.Controls
                 try
                 {
                     TerminalTraceSource.Log.TraceVerbose(
-                        "RemoteDesktopPane: Disconnecting because form is closing");
+                        "RdpCLient: Disconnecting because form is closing");
 
                     //
                     // NB. This does not trigger an OnDisconnected event.
                     //
                     this.client.Disconnect();
 
-                    this.ConnectionClosed?.Invoke(
-                        this,
-                        new ConnectionClosedEventArgs(DisconnectReason.FormClosed));
-
-                    this.State = ConnectionState.NotConnected;
+                    OnConnectionClosed(DisconnectReason.FormClosed);
                 }
                 catch (Exception e)
                 {
                     TerminalTraceSource.Log.TraceVerbose(
-                        "RemoteDesktopPane: Disconnecting failed");
+                        "RdpCLient: Disconnecting failed");
 
-                    this.ConnectionFailed?.Invoke(this, new ExceptionEventArgs(e));
+                    OnConnectionFailed(e);
                 }
             }
 
@@ -495,7 +390,7 @@ namespace Google.Solutions.Terminal.Controls
                 }
                 else if (
                     this.State == ConnectionState.Connecting ||
-                    this.state == ConnectionState.Connected)
+                    this.State == ConnectionState.Connected)
                 {
                     //
                     // It's not safe to resize now, but it will
@@ -556,7 +451,7 @@ namespace Google.Solutions.Terminal.Controls
                 //
                 // Revert to classic, reconnect-based resizing.
                 //
-                this.State = ConnectionState.Connecting;
+                base.OnBeforeConnect();
                 this.client.Reconnect((uint)newSize.Width, (uint)newSize.Height);
             }
         }
@@ -565,7 +460,7 @@ namespace Google.Solutions.Terminal.Controls
         // RDP callbacks.
         //---------------------------------------------------------------------
 
-        private void OnFatalError(
+        private void OnRdpFatalError(
             object sender,
             IMsTscAxEvents_OnFatalErrorEvent args)
         {
@@ -576,15 +471,11 @@ namespace Google.Solutions.Terminal.Controls
                 //
                 this.ContainerFullScreen = false;
 
-                this.ConnectionFailed?.Invoke(
-                    this,
-                    new ExceptionEventArgs(new RdpFatalException(args.errorCode)));
-
-                this.State = ConnectionState.NotConnected;
+                OnConnectionFailed(new RdpFatalException(args.errorCode));
             }
         }
 
-        private void OnLogonError(
+        private void OnRdpLogonError(
             object sender,
             IMsTscAxEvents_OnLogonErrorEvent args)
         {
@@ -599,24 +490,20 @@ namespace Google.Solutions.Terminal.Controls
 
                 if (!e.IsIgnorable)
                 {
-                    this.ConnectionFailed?.Invoke(
-                        this,
-                        new ExceptionEventArgs(e));
-
-                    this.State = ConnectionState.NotConnected;
+                    OnConnectionFailed(e);
                 }
             }
         }
 
-        private void OnLoginComplete(object sender, EventArgs e)
+        private void OnRdpLoginComplete(object sender, EventArgs e)
         {
             using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                this.State = ConnectionState.LoggedOn;
+                base.OnAfterLogin();
             }
         }
 
-        private void OnDisconnected(
+        private void OnRdpDisconnected(
             object sender,
             IMsTscAxEvents_OnDisconnectedEvent args)
         {
@@ -637,7 +524,7 @@ namespace Google.Solutions.Terminal.Controls
                 // 
                 this.MainWindow?.Focus();
 
-                this.State = ConnectionState.Disconnecting;
+                base.OnBeforeDisconnect();
 
                 if (this.State != ConnectionState.Connecting && e.IsTimeout)
                 {
@@ -648,56 +535,46 @@ namespace Google.Solutions.Terminal.Controls
                     // NB. The same error code can occur during the initial connection,
                     // but then it should be treated as an error.
                     //
-                    this.ConnectionClosed?.Invoke(
-                        this,
-                        new ConnectionClosedEventArgs(DisconnectReason.Timeout));
+                    OnConnectionClosed(DisconnectReason.Timeout);
                 }
                 else if (e.IsUserDisconnectedRemotely)
                 {
                     //
                     // User signed out or clicked Start > Disconnect. 
                     //
-                    this.ConnectionClosed?.Invoke(
-                        this,
-                        new ConnectionClosedEventArgs(DisconnectReason.DisconnectedByUser));
+                    OnConnectionClosed(DisconnectReason.DisconnectedByUser);
                 }
                 else if (e.IsUserDisconnectedLocally)
                 {
                     //
                     // User clicked X in the connection bar or aborted a reconnect.
                     //
-                    this.ConnectionClosed?.Invoke(
-                        this,
-                        new ConnectionClosedEventArgs(DisconnectReason.DisconnectedByUser));
+                    OnConnectionClosed(DisconnectReason.DisconnectedByUser);
                 }
                 else if (e.IsLogonAborted)
                 {
                     //
                     // User canceled the logon prompt.
                     //
-                    this.ConnectionClosed?.Invoke(
-                        this,
-                        new ConnectionClosedEventArgs(DisconnectReason.DisconnectedByUser));
+                    OnConnectionClosed(DisconnectReason.DisconnectedByUser);
                 }
                 else if (!e.IsIgnorable)
                 {
-                    this.ConnectionFailed?.Invoke(this, new ExceptionEventArgs(e));
+                    OnConnectionFailed(e);
                 }
-
-                this.State = ConnectionState.NotConnected;
             }
         }
 
-        private void OnConnected(object sender, EventArgs e)
+        private void OnRdpConnected(object sender, EventArgs e)
         {
             using (TerminalTraceSource.Log.TraceMethod()
                 .WithParameters(this.client.ConnectedStatusText))
             {
-                this.State = ConnectionState.Connected;
+                base.OnAfterConnect();
             }
         }
 
-        private void OnConnecting(object sender, EventArgs e)
+        private void OnRdpConnecting(object sender, EventArgs e)
         {
             Debug.Assert(this.State == ConnectionState.Connecting);
 
@@ -705,7 +582,7 @@ namespace Google.Solutions.Terminal.Controls
             { }
         }
 
-        private void OnAuthenticationWarningDisplayed(object sender, EventArgs _)
+        private void OnRdpAuthenticationWarningDisplayed(object sender, EventArgs _)
         {
             Debug.Assert(this.State == ConnectionState.Connecting);
 
@@ -715,7 +592,7 @@ namespace Google.Solutions.Terminal.Controls
             }
         }
 
-        private void OnWarning(
+        private void OnRdpWarning(
             object sender,
             IMsTscAxEvents_OnWarningEvent args)
         {
@@ -723,7 +600,7 @@ namespace Google.Solutions.Terminal.Controls
             { }
         }
 
-        private void OnAutoReconnecting2(
+        private void OnRdpAutoReconnecting2(
             object sender,
             IMsTscAxEvents_OnAutoReconnecting2Event args)
         {
@@ -745,21 +622,21 @@ namespace Google.Solutions.Terminal.Controls
                     e.Message,
                     args.networkAvailable);
 
-                this.State = ConnectionState.Connecting;
+                base.OnBeforeConnect();
             }
         }
 
-        private void OnAutoReconnected(object sender, EventArgs e)
+        private void OnRdpAutoReconnected(object sender, EventArgs e)
         {
             Debug.Assert(this.State == ConnectionState.Connecting);
 
             using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                this.State = ConnectionState.LoggedOn;
+                base.OnAfterLogin();
             }
         }
 
-        private void OnFocusReleased(
+        private void OnRdpFocusReleased(
             object sender,
             IMsTscAxEvents_OnFocusReleasedEvent e)
         {
@@ -775,7 +652,7 @@ namespace Google.Solutions.Terminal.Controls
             }
         }
 
-        private void OnRemoteDesktopSizeChange(
+        private void OnRdpRemoteDesktopSizeChange(
             object sender,
             IMsTscAxEvents_OnRemoteDesktopSizeChangeEvent e)
         {
@@ -788,7 +665,7 @@ namespace Google.Solutions.Terminal.Controls
             { }
         }
 
-        private void OnServiceMessageReceived(
+        private void OnRdpServiceMessageReceived(
             object sender,
             IMsTscAxEvents_OnServiceMessageReceivedEvent e)
         {
@@ -796,7 +673,7 @@ namespace Google.Solutions.Terminal.Controls
             { }
         }
 
-        private void OnRequestGoFullScreen(object sender, EventArgs e)
+        private void OnRdpRequestGoFullScreen(object sender, EventArgs e)
         {
             Debug.Assert(
                 this.State == ConnectionState.Connected ||
@@ -814,7 +691,7 @@ namespace Google.Solutions.Terminal.Controls
             this.ContainerFullScreen = true;
         }
 
-        private void OnRequestLeaveFullScreen(object sender, EventArgs e)
+        private void OnRdpRequestLeaveFullScreen(object sender, EventArgs e)
         {
             Debug.Assert(
                 this.State == ConnectionState.LoggedOn ||
@@ -823,7 +700,7 @@ namespace Google.Solutions.Terminal.Controls
             this.ContainerFullScreen = false;
         }
 
-        private void OnRequestContainerMinimize(object sender, EventArgs e)
+        private void OnRdpRequestContainerMinimize(object sender, EventArgs e)
         {
             using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
@@ -856,7 +733,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         public Form? MainWindow { get; set; }
 
-        public void Connect()
+        public override void Connect()
         {
             Debug.Assert(!this.client.IsDisposed);
 
@@ -923,7 +800,7 @@ namespace Google.Solutions.Terminal.Controls
             //
             // Reset state in case we're connecting for the second time.
             //
-            this.State = ConnectionState.Connecting;
+            base.OnBeforeConnect();
             this.client.FullScreen = false;
             this.client.Size = this.Size;
             this.client.DesktopHeight = this.Size.Height;
@@ -1068,9 +945,9 @@ namespace Google.Solutions.Terminal.Controls
         }
 
         /// <summary>
-        /// Simulate keys to type a piece of text.
+        /// Simulate key strokes to send a piece of text.
         /// </summary>
-        public void SendText(string text)
+        public override void SendText(string text)
         {
             if (string.IsNullOrEmpty(text))
             {
@@ -1323,23 +1200,6 @@ namespace Google.Solutions.Terminal.Controls
             {
                 this.Bounds = bounds;
             }
-        }
-
-        public class ConnectionClosedEventArgs : EventArgs
-        {
-            internal ConnectionClosedEventArgs(DisconnectReason reason)
-            {
-                this.Reason = reason;
-            }
-
-            public DisconnectReason Reason { get; }
-        }
-
-        public enum DisconnectReason
-        {
-            Timeout,
-            DisconnectedByUser,
-            FormClosed
         }
     }
 }
