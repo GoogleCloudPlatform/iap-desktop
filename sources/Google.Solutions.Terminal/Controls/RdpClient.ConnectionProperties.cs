@@ -24,7 +24,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
+namespace Google.Solutions.Terminal.Controls
 {
     public partial class RdpClient
     {

@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 
 #pragma warning disable CS9197 // Reference kind modifier of parameter doesn't match
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
+namespace Google.Solutions.Terminal.Controls
 {
     /// <summary>
     /// MsRdpClientNonScriptable5 that uses a modified/fixed signature.

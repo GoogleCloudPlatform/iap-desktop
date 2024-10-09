@@ -19,12 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
+namespace Google.Solutions.Terminal.Controls
 {
-    public partial class RdpDiagnosticsWindow : Form
+    /// <summary>
+    /// For testing only.
+    /// </summary>
+    internal partial class RdpDiagnosticsWindow : Form
     {
         public RdpDiagnosticsWindow()
         {

@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using Google.Solutions.IapDesktop.Extensions.Session.Properties;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Terminal.Controls;
 using Google.Solutions.Tsc;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp

@@ -257,6 +257,12 @@
                 Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Settings.dll"
                 Vital="yes"/>
               <File
+                Id="FileGoogleSolutionsTerminalDll"
+                Name="Google.Solutions.Terminal.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Terminal.dll"
+                Vital="yes"/>
+              <File
                 Id="FileGoogleSolutionsTscDll"
                 Name="Google.Solutions.Tsc.dll"
                 DiskId="1"

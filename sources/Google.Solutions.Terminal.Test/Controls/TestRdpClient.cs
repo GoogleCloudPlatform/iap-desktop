@@ -20,8 +20,8 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Terminal.Controls;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
@@ -32,7 +32,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
+namespace Google.Solutions.Terminal.Test.Controls
 {
     [TestFixture]
     [RequiresInteraction]
@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
     {
         private const string InvalidServer = "8.8.8.8";
 
-        protected RdpDiagnosticsWindow CreateWindow()
+        private static RdpDiagnosticsWindow CreateWindow()
         {
             var window = new RdpDiagnosticsWindow();
             window.Client.MainWindow = window;

@@ -25,7 +25,7 @@ using System.Text;
 
 #pragma warning disable CA1032 // Implement standard exception constructors
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
+namespace Google.Solutions.Terminal.Controls
 {
     public abstract class RdpException : ApplicationException
     {

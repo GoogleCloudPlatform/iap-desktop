@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Terminal.Controls;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;

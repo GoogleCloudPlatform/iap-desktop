@@ -19,7 +19,13 @@
 // under the License.
 //
 
-using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Google.Solutions.Terminal.Test")]
-[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Session.Test")]
+using System.Diagnostics;
+
+namespace Google.Solutions.Terminal
+{
+    public static class TerminalTraceSource
+    {
+        public static readonly TraceSource Log = new TraceSource(typeof(TerminalTraceSource).Namespace);
+    }
+}

@@ -14,7 +14,6 @@
     <PackageReference Include="Google.Apis.CloudOSLogin.v1" Version="1.68.0.3272" />
     <PackageReference Include="Google.Apis.Compute.v1" Version="1.68.0.3470" />
     <PackageReference Include="Google.Apis.Core" Version="1.68.0" />
-    <PackageReference Include="Google.Solutions.Tsc" Version="9.0.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding" Version="4.3.0" />
@@ -104,6 +103,7 @@
     <ProjectReference Include="..\Google.Solutions.Platform\Google.Solutions.Platform.csproj" />
     <ProjectReference Include="..\Google.Solutions.Settings\Google.Solutions.Settings.csproj" />
     <ProjectReference Include="..\Google.Solutions.Ssh\Google.Solutions.Ssh.csproj" />
+    <ProjectReference Include="..\Google.Solutions.Terminal\Google.Solutions.Terminal.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Controls\VirtualTerminal.resx">

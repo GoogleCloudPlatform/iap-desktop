@@ -9,9 +9,19 @@
   <ItemGroup>
     <PackageReference Include="Google.Solutions.ThirdParty.Terminal" Version="1.19.10821" />
     <PackageReference Include="Google.Solutions.IcuShim" Version="1.0.0.2" />
+    <PackageReference Include="Google.Solutions.Tsc" Version="9.0.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Mvvm\Google.Solutions.Mvvm.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Controls\RdpClient.ConnectionProperties.cs" />
+    <Compile Update="Controls\RdpClient.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\RdpDiagnosticsWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

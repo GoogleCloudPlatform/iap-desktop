@@ -22,7 +22,6 @@
 using AxMSTSCLib;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Input;
 using Google.Solutions.Platform.Interop;
@@ -37,7 +36,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
+namespace Google.Solutions.Terminal.Controls
 {
     /// <summary>
     /// Wrapper control for the native RDP client. Implements
@@ -195,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         /// <summary>
         /// The server authentication warning has been displayed.
         /// </summary>
-        internal event EventHandler? ServerAuthenticationWarningDisplayed;
+        public event EventHandler? ServerAuthenticationWarningDisplayed;
 
         private void ExpectState(ConnectionState expectedState)
         {
@@ -316,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 //
                 // Veto this event as it might cause the ActiveX to crash.
                 //
-                ApplicationTraceSource.Log.TraceVerbose(
+                TerminalTraceSource.Log.TraceVerbose(
                     "RemoteDesktopPane: Aborting FormClosing because control is in connecting");
 
                 args.Cancel = true;
@@ -328,7 +327,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 // Veto this event as it would leave an orphaned full-screen
                 // window.
                 //
-                ApplicationTraceSource.Log.TraceVerbose(
+                TerminalTraceSource.Log.TraceVerbose(
                     "RemoteDesktopPane: Aborting FormClosing because control is full-screen");
 
                 args.Cancel = true;
@@ -343,7 +342,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 //
                 try
                 {
-                    ApplicationTraceSource.Log.TraceVerbose(
+                    TerminalTraceSource.Log.TraceVerbose(
                         "RemoteDesktopPane: Disconnecting because form is closing");
 
                     //
@@ -359,7 +358,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 }
                 catch (Exception e)
                 {
-                    ApplicationTraceSource.Log.TraceVerbose(
+                    TerminalTraceSource.Log.TraceVerbose(
                         "RemoteDesktopPane: Disconnecting failed");
 
                     this.ConnectionFailed?.Invoke(this, new ExceptionEventArgs(e));
@@ -457,7 +456,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         private void PerformDeferredResize(IDeferredCallbackContext context)
         {
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 if (this.client.Size == this.Size)
                 {
@@ -551,7 +550,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             }
             catch (COMException e) when (e.HResult == (int)HRESULT.E_UNEXPECTED)
             {
-                ApplicationTraceSource.Log.TraceWarning(
+                TerminalTraceSource.Log.TraceWarning(
                     "Adjusting desktop size (w/o) reconnect failed.");
 
                 //
@@ -570,7 +569,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             object sender,
             IMsTscAxEvents_OnFatalErrorEvent args)
         {
-            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(args.errorCode))
+            using (TerminalTraceSource.Log.TraceMethod().WithParameters(args.errorCode))
             {
                 //
                 // Make sure to leave full-screen mode.
@@ -591,7 +590,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         {
             var e = new RdpLogonException(args.lError);
 
-            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e))
+            using (TerminalTraceSource.Log.TraceMethod().WithParameters(e))
             {
                 //
                 // Make sure to leave full-screen mode.
@@ -611,7 +610,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         private void OnLoginComplete(object sender, EventArgs e)
         {
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 this.State = ConnectionState.LoggedOn;
             }
@@ -625,7 +624,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     args.discReason,
                     this.client.GetErrorDescription((uint)args.discReason, 0));
 
-            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e.Message))
+            using (TerminalTraceSource.Log.TraceMethod().WithParameters(e.Message))
             {
                 //
                 // Make sure to leave full-screen mode, otherwise
@@ -691,7 +690,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         private void OnConnected(object sender, EventArgs e)
         {
-            using (ApplicationTraceSource.Log.TraceMethod()
+            using (TerminalTraceSource.Log.TraceMethod()
                 .WithParameters(this.client.ConnectedStatusText))
             {
                 this.State = ConnectionState.Connected;
@@ -702,7 +701,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         {
             Debug.Assert(this.State == ConnectionState.Connecting);
 
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             { }
         }
 
@@ -710,7 +709,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         {
             Debug.Assert(this.State == ConnectionState.Connecting);
 
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 this.ServerAuthenticationWarningDisplayed?.Invoke(this, EventArgs.Empty);
             }
@@ -720,7 +719,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             object sender,
             IMsTscAxEvents_OnWarningEvent args)
         {
-            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(args.warningCode))
+            using (TerminalTraceSource.Log.TraceMethod().WithParameters(args.warningCode))
             { }
         }
 
@@ -733,13 +732,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 this.State == ConnectionState.Connected ||
                 this.State == ConnectionState.LoggedOn);
 
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 var e = new RdpDisconnectedException(
                     args.disconnectReason,
                     this.client.GetErrorDescription((uint)args.disconnectReason, 0));
 
-                ApplicationTraceSource.Log.TraceVerbose(
+                TerminalTraceSource.Log.TraceVerbose(
                     "Reconnect attempt {0}/{1} - {2} - {3}",
                     args.attemptCount,
                     args.maxAttemptCount,
@@ -754,7 +753,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         {
             Debug.Assert(this.State == ConnectionState.Connecting);
 
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 this.State = ConnectionState.LoggedOn;
             }
@@ -766,7 +765,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         {
             Debug.Assert(this.MainWindow != null);
 
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 //
                 // Release focus and move it to the main window. This ensures
@@ -785,7 +784,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                 this.State == ConnectionState.Connected ||
                 this.State == ConnectionState.LoggedOn);
 
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             { }
         }
 
@@ -793,7 +792,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             object sender,
             IMsTscAxEvents_OnServiceMessageReceivedEvent e)
         {
-            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e.serviceMessage))
+            using (TerminalTraceSource.Log.TraceMethod().WithParameters(e.serviceMessage))
             { }
         }
 
@@ -826,7 +825,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 
         private void OnRequestContainerMinimize(object sender, EventArgs e)
         {
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 Debug.Assert(fullScreenForm != null);
 
@@ -885,12 +884,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
                     try
                     {
                         this.clientAdvancedSettings.PluginDlls = webauthnPluginPath;
-                        ApplicationTraceSource.Log.TraceInformation(
+                        TerminalTraceSource.Log.TraceInformation(
                             "Loaded RDP plugin {0}", webauthnPluginPath);
                     }
                     catch (Exception e)
                     {
-                        ApplicationTraceSource.Log.TraceWarning(
+                        TerminalTraceSource.Log.TraceWarning(
                             "Loading RDP plugin {0} failed: {1}",
                             webauthnPluginPath,
                             e.Message);
@@ -1045,7 +1044,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         {
             Debug.Assert(this.State == ConnectionState.LoggedOn);
 
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 //
                 // The RDP control sometimes swallows the first key combination
@@ -1062,7 +1061,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
         {
             Debug.Assert(this.State == ConnectionState.LoggedOn);
 
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
                 SendVirtualKey(Keys.Control | Keys.Shift | Keys.Escape);
             }
