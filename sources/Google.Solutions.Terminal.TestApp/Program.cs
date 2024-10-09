@@ -71,12 +71,12 @@ namespace Google.Solutions.Terminal.TestApp
                         null,
                         control.Dimensions);
 
-                    process.PseudoConsole!.OutputAvailable += (_, args) =>
+                    process.PseudoTerminal!.OutputAvailable += (_, args) =>
                     {
                         Debug.WriteLine($"PTY: {args.Data}");
                     };
 
-                    control.Device = process.PseudoConsole;
+                    control.Device = process.PseudoTerminal;
 
                     process.Resume();
                 };

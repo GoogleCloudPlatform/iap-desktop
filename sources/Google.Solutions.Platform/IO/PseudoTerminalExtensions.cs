@@ -31,43 +31,43 @@ namespace Google.Solutions.Platform.IO
     public static class PseudoTerminalExtensions
     {
         /// <summary>
-        /// Wrap a pseudo-console so that all callbacks are forced
+        /// Wrap a pseudo-terminal so that all callbacks are forced
         /// onto a synchronization context.
         /// </summary>
-        public static IPseudoConsole BindToSynchronizationContext(
-            this IPseudoConsole console,
+        public static IPseudoTerminal BindToSynchronizationContext(
+            this IPseudoTerminal console,
             SynchronizationContext callbackContext)
         {
-            return new SynchronizationContextBoundPseudoConsole(
+            return new SynchronizationContextBoundPseudoTerminal(
                 console,
                 callbackContext);
         }
 
-        private class SynchronizationContextBoundPseudoConsole : IPseudoConsole
+        private class SynchronizationContextBoundPseudoTerminal : IPseudoTerminal
         {
-            private readonly IPseudoConsole console;
+            private readonly IPseudoTerminal target;
             private readonly SynchronizationContext callbackContext;
 
-            public SynchronizationContextBoundPseudoConsole(
-                IPseudoConsole console,
+            public SynchronizationContextBoundPseudoTerminal(
+                IPseudoTerminal target,
                 SynchronizationContext context)
             {
-                this.console = console.ExpectNotNull(nameof(console));
+                this.target = target.ExpectNotNull(nameof(target));
                 this.callbackContext = context.ExpectNotNull(nameof(context));
 
-                this.console.OutputAvailable += OnOutputAvailable;
-                this.console.FatalError += OnFatalError;
-                this.console.Disconnected += OnDisconnected;
+                this.target.OutputAvailable += OnOutputAvailable;
+                this.target.FatalError += OnFatalError;
+                this.target.Disconnected += OnDisconnected;
             }
 
-            private void OnFatalError(object sender, PseudoConsoleErrorEventArgs args)
+            private void OnFatalError(object sender, PseudoTerminalErrorEventArgs args)
             {
                 this.callbackContext.Send(
                     _ => this.FatalError?.Invoke(this, args),
                     null);
             }
 
-            private void OnOutputAvailable(object sender, PseudoConsoleDataEventArgs args)
+            private void OnOutputAvailable(object sender, PseudoTerminalDataEventArgs args)
             {
                 this.callbackContext.Send(
                     _ => this.OutputAvailable?.Invoke(this, args),
@@ -81,47 +81,47 @@ namespace Google.Solutions.Platform.IO
             }
 
             //---------------------------------------------------------------------
-            // IPseudoConsole.
+            // IPseudoTermina.
             //---------------------------------------------------------------------
 
-            public event EventHandler<PseudoConsoleDataEventArgs>? OutputAvailable;
-            public event EventHandler<PseudoConsoleErrorEventArgs>? FatalError;
+            public event EventHandler<PseudoTerminalDataEventArgs>? OutputAvailable;
+            public event EventHandler<PseudoTerminalErrorEventArgs>? FatalError;
             public event EventHandler<EventArgs>? Disconnected;
 
             public bool IsClosed
             {
-                get => this.console.IsClosed;
+                get => this.target.IsClosed;
             }
 
             public Task ResizeAsync(
-                PseudoConsoleSize size,
+                PseudoTerminalSize size,
                 CancellationToken cancellationToken)
             {
-                return this.console.ResizeAsync(size, cancellationToken);
+                return this.target.ResizeAsync(size, cancellationToken);
             }
 
             public Task WriteAsync(string data, CancellationToken cancellationToken)
             {
-                return this.console.WriteAsync(data, cancellationToken);
+                return this.target.WriteAsync(data, cancellationToken);
             }
 
             public Task DrainAsync()
             {
-                return this.console.DrainAsync();
+                return this.target.DrainAsync();
             }
 
             public Task CloseAsync()
             {
-                return this.console.CloseAsync();
+                return this.target.CloseAsync();
             }
 
             public void Dispose()
             {
-                this.console.OutputAvailable -= OnOutputAvailable;
-                this.console.FatalError -= OnFatalError;
-                this.console.Disconnected -= OnDisconnected;
+                this.target.OutputAvailable -= OnOutputAvailable;
+                this.target.FatalError -= OnFatalError;
+                this.target.Disconnected -= OnDisconnected;
 
-                this.console.Dispose();
+                this.target.Dispose();
             }
         }
     }

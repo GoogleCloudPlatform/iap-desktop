@@ -38,7 +38,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void OnTerminalDisposed_WhenTerminalDisposed_DisposesDevice()
         {
-            var device = new Mock<IPseudoConsole>();
+            var device = new Mock<IPseudoTerminal>();
             var virtualTerminal = new VirtualTerminal()
             {
                 Device = device.Object,
@@ -56,7 +56,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void OnTerminalUserInput_WritesToDevice()
         {
-            var device = new Mock<IPseudoConsole>();
+            var device = new Mock<IPseudoTerminal>();
             using (var virtualTerminal = new VirtualTerminal()
             {
                 Device = device.Object,
@@ -74,7 +74,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void OnTerminalUserInput_WhenDeviceIsClosed_ThenDoesNotWriteToDevice()
         {
-            var device = new Mock<IPseudoConsole>();
+            var device = new Mock<IPseudoTerminal>();
             device.SetupGet(d => d.IsClosed).Returns(true);
 
             using (var virtualTerminal = new VirtualTerminal()
@@ -94,7 +94,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void OnTerminalUserInput_WhenDeviceFails_ThenRaisesEvent()
         {
-            var device = new Mock<IPseudoConsole>();
+            var device = new Mock<IPseudoTerminal>();
             device
                 .Setup(d => d.WriteAsync(
                     It.IsAny<string>(),
@@ -123,17 +123,17 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void OnTerminalDimensionsChanged_ResizesDevice()
         {
-            var device = new Mock<IPseudoConsole>();
+            var device = new Mock<IPseudoTerminal>();
             using (var virtualTerminal = new VirtualTerminal()
             {
                 Device = device.Object,
             })
             {
-                virtualTerminal.Dimensions = new PseudoConsoleSize(81, 25);
+                virtualTerminal.Dimensions = new PseudoTerminalSize(81, 25);
             }
 
             device.Verify(d => d.ResizeAsync(
-                    It.Is<PseudoConsoleSize>(s => s.Width == 81),
+                    It.Is<PseudoTerminalSize>(s => s.Width == 81),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }
@@ -141,7 +141,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void OnTerminalDimensionsChanged_WhenDeviceIsClosed_ThenDoesNotResizeDevice()
         {
-            var device = new Mock<IPseudoConsole>();
+            var device = new Mock<IPseudoTerminal>();
             device.SetupGet(d => d.IsClosed).Returns(true);
 
             using (var virtualTerminal = new VirtualTerminal()
@@ -149,11 +149,11 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Device = device.Object,
             })
             {
-                virtualTerminal.Dimensions = new PseudoConsoleSize(81, 25);
+                virtualTerminal.Dimensions = new PseudoTerminalSize(81, 25);
             }
 
             device.Verify(d => d.ResizeAsync(
-                    It.IsAny<PseudoConsoleSize>(),
+                    It.IsAny<PseudoTerminalSize>(),
                     It.IsAny<CancellationToken>()),
                 Times.Never);
         }
@@ -161,10 +161,10 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void OnTerminalDimensionsChanged_WhenDeviceResizeFails_ThenRaisesEvent()
         {
-            var device = new Mock<IPseudoConsole>();
+            var device = new Mock<IPseudoTerminal>();
             device
                 .Setup(d => d.ResizeAsync(
-                    It.IsAny<PseudoConsoleSize>(),
+                    It.IsAny<PseudoTerminalSize>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ArgumentException("mock"));
 
@@ -176,7 +176,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Exception exception = null;
                 virtualTerminal.DeviceError += (_, args) => exception = args.Exception;
 
-                virtualTerminal.Dimensions = new PseudoConsoleSize(81, 25);
+                virtualTerminal.Dimensions = new PseudoTerminalSize(81, 25);
 
                 Assert.IsNotNull(exception);
                 Assert.IsInstanceOf<ArgumentException>(exception);
@@ -190,7 +190,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void OnDeviceError_RaisesEvent()
         {
-            var device = new Mock<IPseudoConsole>();
+            var device = new Mock<IPseudoTerminal>();
             using (var virtualTerminal = new VirtualTerminal()
             {
                 Device = device.Object,
@@ -201,7 +201,7 @@ namespace Google.Solutions.Terminal.Test.Controls
 
                 device.Raise(
                     d => d.FatalError += null, 
-                    new PseudoConsoleErrorEventArgs(new ArgumentException()));
+                    new PseudoTerminalErrorEventArgs(new ArgumentException()));
 
                 Assert.IsNotNull(exception);
                 Assert.IsInstanceOf<ArgumentException>(exception);
@@ -215,7 +215,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void OnDeviceDisconnected_ClosesDevice()
         {
-            var device = new Mock<IPseudoConsole>();
+            var device = new Mock<IPseudoTerminal>();
             using (var virtualTerminal = new VirtualTerminal()
             {
                 Device = device.Object,
@@ -237,7 +237,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void OnDeviceOutput_RaisesEvent()
         {
-            var device = new Mock<IPseudoConsole>();
+            var device = new Mock<IPseudoTerminal>();
             using (var virtualTerminal = new VirtualTerminal()
             {
                 Device = device.Object,
@@ -246,7 +246,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 string data = string.Empty;
                 virtualTerminal.Output += (_, args) => data += args.Data;
 
-                device.Raise(d => d.OutputAvailable += null, new PseudoConsoleDataEventArgs("data"));
+                device.Raise(d => d.OutputAvailable += null, new PseudoTerminalDataEventArgs("data"));
 
                 Assert.AreEqual("data", data);
             }
@@ -255,7 +255,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void OnDeviceOutput_WhenDeviceReportsEof_ThenRaisesEvent()
         {
-            var device = new Mock<IPseudoConsole>();
+            var device = new Mock<IPseudoTerminal>();
             using (var virtualTerminal = new VirtualTerminal()
             {
                 Device = device.Object,
@@ -264,7 +264,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 var deviceClosed = false;
                 virtualTerminal.DeviceClosed += (_, args) => deviceClosed = true;
 
-                device.Raise(d => d.OutputAvailable += null, PseudoConsoleDataEventArgs.Eof);
+                device.Raise(d => d.OutputAvailable += null, PseudoTerminalDataEventArgs.Eof);
 
                 Assert.IsTrue(deviceClosed);
             }

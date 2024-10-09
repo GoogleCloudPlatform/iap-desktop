@@ -27,17 +27,17 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Platform.IO
 {
     /// <summary>
-    /// A pseudo-console that accepts and produces VT/xterm-formatted
+    /// A pseudo-terminal or pty that accepts and produces VT/xterm-formatted
     /// input and output.
     /// </summary>
-    public interface IPseudoConsole : IDisposable
+    public interface IPseudoTerminal : IDisposable
     {
         /// <summary>
         /// Raised when output is available.
         /// 
         /// The event can be delivered on any thread.
         /// </summary>
-        event EventHandler<PseudoConsoleDataEventArgs>? OutputAvailable;
+        event EventHandler<PseudoTerminalDataEventArgs>? OutputAvailable;
 
         /// <summary>
         /// Raised when a fatal error occured. After a fatal error,
@@ -45,7 +45,7 @@ namespace Google.Solutions.Platform.IO
         /// 
         /// The event can be delivered on any thread
         /// </summary>
-        event EventHandler<PseudoConsoleErrorEventArgs>? FatalError;
+        event EventHandler<PseudoTerminalErrorEventArgs>? FatalError;
 
         /// <summary>
         /// Raised when the console was disconnected.
@@ -64,7 +64,7 @@ namespace Google.Solutions.Platform.IO
         /// Adjust the size of the current session.
         /// </summary>
         Task ResizeAsync(
-            PseudoConsoleSize dimensions,
+            PseudoTerminalSize dimensions,
             CancellationToken cancellationToken);
 
         /// <summary>
@@ -89,11 +89,11 @@ namespace Google.Solutions.Platform.IO
     /// <summary>
     /// Size of a console, in characters.
     /// </summary>
-    public readonly struct PseudoConsoleSize
+    public readonly struct PseudoTerminalSize
     {
-        public static readonly PseudoConsoleSize Default = new PseudoConsoleSize(80, 24);
+        public static readonly PseudoTerminalSize Default = new PseudoTerminalSize(80, 24);
 
-        public PseudoConsoleSize(ushort width, ushort height)
+        public PseudoTerminalSize(ushort width, ushort height)
         {
             Debug.Assert(width > 0 && height > 0);
 
@@ -115,7 +115,7 @@ namespace Google.Solutions.Platform.IO
     /// <summary>
     /// Event data for console data.
     /// </summary>
-    public class PseudoConsoleDataEventArgs : EventArgs
+    public class PseudoTerminalDataEventArgs : EventArgs
     {
         /// <summary>
         /// Xterm-encoded data.
@@ -124,12 +124,12 @@ namespace Google.Solutions.Platform.IO
 
         public bool IsEof { get; private set; }
 
-        public static PseudoConsoleDataEventArgs Eof = new PseudoConsoleDataEventArgs(string.Empty)
+        public static PseudoTerminalDataEventArgs Eof = new PseudoTerminalDataEventArgs(string.Empty)
         {
             IsEof = true
         };
 
-        public PseudoConsoleDataEventArgs(string data)
+        public PseudoTerminalDataEventArgs(string data)
         {
             this.Data = data;
         }
@@ -138,11 +138,11 @@ namespace Google.Solutions.Platform.IO
     /// <summary>
     /// Event data for a console error.
     /// </summary>
-    public class PseudoConsoleErrorEventArgs : EventArgs
+    public class PseudoTerminalErrorEventArgs : EventArgs
     {
         public Exception Exception { get; }
 
-        public PseudoConsoleErrorEventArgs(Exception exception)
+        public PseudoTerminalErrorEventArgs(Exception exception)
         {
             this.Exception = exception;
         }

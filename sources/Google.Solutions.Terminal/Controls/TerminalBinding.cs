@@ -28,15 +28,15 @@ using System.Threading;
 namespace Google.Solutions.Terminal.Controls
 {
     /// <summary>
-    /// Connection between a Terminal and a Pty device.
+    /// Connection between a Terminal and a Pty.
     /// </summary>
-    internal class TerminalDeviceBinding : IDisposable
+    internal class TerminalBinding : IDisposable
     {
         private readonly VirtualTerminal terminal;
 
-        internal IPseudoConsole Device { get; }
+        internal IPseudoTerminal Device { get; }
 
-        public TerminalDeviceBinding(VirtualTerminal terminal, IPseudoConsole device)
+        public TerminalBinding(VirtualTerminal terminal, IPseudoTerminal device)
         {
             this.terminal = terminal.ExpectNotNull(nameof(terminal));
             this.Device = device.ExpectNotNull(nameof(device));
@@ -108,7 +108,7 @@ namespace Google.Solutions.Terminal.Controls
             }
         }
 
-        private void OnDeviceError(object sender, PseudoConsoleErrorEventArgs args)
+        private void OnDeviceError(object sender, PseudoTerminalErrorEventArgs args)
         {
             //
             // The device encountered an error.
@@ -116,7 +116,7 @@ namespace Google.Solutions.Terminal.Controls
             this.terminal.ReceiveError(args.Exception);
         }
 
-        private void OnDeviceOutput(object sender, PseudoConsoleDataEventArgs args)
+        private void OnDeviceOutput(object sender, PseudoTerminalDataEventArgs args)
         {
             //
             // The device produced some output. Forward to the terminal

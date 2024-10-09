@@ -39,7 +39,7 @@ namespace Google.Solutions.Platform.Dispatch
     /// 
     /// Note: Pseudo consoles don't work properly in NUnit tests!
     /// </summary>
-    public class Win32PseudoConsole : DisposableBase, IPseudoConsole
+    public class Win32PseudoConsole : DisposableBase, IPseudoTerminal
     {
         /// <summary>
         /// Encoding used by terminal, which is always UTF-8 (not UCS-2!) 
@@ -55,7 +55,7 @@ namespace Google.Solutions.Platform.Dispatch
         internal AnonymousPipe OutputPipe { get; }
         internal PseudoConsoleHandle Handle { get; }
 
-        public Win32PseudoConsole(PseudoConsoleSize size)
+        public Win32PseudoConsole(PseudoTerminalSize size)
         {
             var stdin = new AnonymousPipe();
             var stdout = new AnonymousPipe();
@@ -76,7 +76,7 @@ namespace Google.Solutions.Platform.Dispatch
                         out var handle);
                     if (hresult.Failed())
                     {
-                        throw PseudoConsoleException.FromHresult(
+                        throw PseudoTerminalException.FromHresult(
                             hresult,
                             "Failed to create pseudo console");
                     }
@@ -97,7 +97,7 @@ namespace Google.Solutions.Platform.Dispatch
                 }
                 catch (EntryPointNotFoundException)
                 {
-                    throw new PseudoConsoleException(
+                    throw new PseudoTerminalException(
                         "This feature requires Windows 10 version 1809 or newer");
                 }
             }
@@ -132,7 +132,7 @@ namespace Google.Solutions.Platform.Dispatch
                     {
                         this.OutputAvailable?.Invoke(
                             this,
-                            new PseudoConsoleDataEventArgs(new string(buffer, 0, charsRead)));
+                            new PseudoTerminalDataEventArgs(new string(buffer, 0, charsRead)));
                     }
                 }
                 catch (Exception) when (this.IsDisposed)
@@ -141,7 +141,7 @@ namespace Google.Solutions.Platform.Dispatch
                 {
                     this.FatalError?.Invoke(
                         this,
-                        new PseudoConsoleErrorEventArgs(e));
+                        new PseudoTerminalErrorEventArgs(e));
                 }
             }
         }
@@ -158,16 +158,16 @@ namespace Google.Solutions.Platform.Dispatch
         // IPseudoTerminal.
         //---------------------------------------------------------------------
 
-        public event EventHandler<PseudoConsoleDataEventArgs>? OutputAvailable;
+        public event EventHandler<PseudoTerminalDataEventArgs>? OutputAvailable;
 
-        public event EventHandler<PseudoConsoleErrorEventArgs>? FatalError;
+        public event EventHandler<PseudoTerminalErrorEventArgs>? FatalError;
 
         public event EventHandler<EventArgs>? Disconnected;
 
         public bool IsClosed { get; private set; }
 
         public Task ResizeAsync(
-            PseudoConsoleSize size,
+            PseudoTerminalSize size,
             CancellationToken cancellationToken)
         {
             ExpectNotClosed();
@@ -183,7 +183,7 @@ namespace Google.Solutions.Platform.Dispatch
                     });
                 if (hresult.Failed())
                 {
-                    throw PseudoConsoleException.FromHresult(
+                    throw PseudoTerminalException.FromHresult(
                         hresult,
                         "Failed to resize pseudo console");
                 }

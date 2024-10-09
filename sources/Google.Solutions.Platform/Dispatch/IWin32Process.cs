@@ -101,8 +101,8 @@ namespace Google.Solutions.Platform.Dispatch
         IWtsSession Session { get; }
 
         /// <summary>
-        /// Pseudo-console for this process, if any.
+        /// Pseudo-terminal for this process, if any.
         /// </summary>
-        IPseudoConsole? PseudoConsole { get; }
+        IPseudoTerminal? PseudoTerminal { get; }
     }
 }

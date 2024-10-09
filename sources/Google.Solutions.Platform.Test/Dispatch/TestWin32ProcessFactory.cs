@@ -66,7 +66,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 Assert.IsNotNull(process.Handle);
                 Assert.IsFalse(process.Handle.IsInvalid);
                 Assert.IsNull(process.Job);
-                Assert.IsNull(process.PseudoConsole);
+                Assert.IsNull(process.PseudoTerminal);
 
                 process.Terminate(1);
             }
@@ -103,7 +103,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             Assert.Throws<DispatchException>(() => factory.CreateProcessWithPseudoConsole(
                 "doesnotexist.exe",
                 null,
-                PseudoConsoleSize.Default));
+                PseudoTerminalSize.Default));
         }
 
         [Test]
@@ -114,14 +114,14 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var process = factory.CreateProcessWithPseudoConsole(
                 CmdExe,
                 null,
-                PseudoConsoleSize.Default))
+                PseudoTerminalSize.Default))
             {
                 Assert.IsNotNull(process.Handle);
                 Assert.IsFalse(process.Handle.IsInvalid);
                 Assert.IsNull(process.Job);
 
-                Assert.IsNotNull(process.PseudoConsole);
-                Assert.IsFalse(process.PseudoConsole!.IsClosed);
+                Assert.IsNotNull(process.PseudoTerminal);
+                Assert.IsFalse(process.PseudoTerminal!.IsClosed);
 
                 process.Terminate(1);
             }
@@ -142,7 +142,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 () => factory.CreateProcessWithPseudoConsole(
                     CmdExe,
                     null,
-                    PseudoConsoleSize.Default));
+                    PseudoTerminalSize.Default));
 
             Assert.IsNotNull(createdProcess);
             Assert.IsTrue(((Win32Process)createdProcess!).IsDisposed);
