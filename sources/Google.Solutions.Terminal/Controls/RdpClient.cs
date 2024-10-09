@@ -81,22 +81,22 @@ namespace Google.Solutions.Terminal.Controls
             //
             // Hook up events.
             //
-            this.client.OnConnecting += new System.EventHandler(OnConnecting);
-            this.client.OnConnected += new System.EventHandler(OnConnected);
-            this.client.OnLoginComplete += new System.EventHandler(OnLoginComplete);
-            this.client.OnDisconnected += new AxMSTSCLib.IMsTscAxEvents_OnDisconnectedEventHandler(OnDisconnected);
-            this.client.OnRequestGoFullScreen += new System.EventHandler(OnRequestGoFullScreen);
-            this.client.OnRequestLeaveFullScreen += new System.EventHandler(OnRequestLeaveFullScreen);
-            this.client.OnFatalError += new AxMSTSCLib.IMsTscAxEvents_OnFatalErrorEventHandler(OnFatalError);
-            this.client.OnWarning += new AxMSTSCLib.IMsTscAxEvents_OnWarningEventHandler(OnWarning);
-            this.client.OnRemoteDesktopSizeChange += new AxMSTSCLib.IMsTscAxEvents_OnRemoteDesktopSizeChangeEventHandler(OnRemoteDesktopSizeChange);
-            this.client.OnRequestContainerMinimize += new System.EventHandler(OnRequestContainerMinimize);
-            this.client.OnAuthenticationWarningDisplayed += new System.EventHandler(OnAuthenticationWarningDisplayed);
-            this.client.OnLogonError += new AxMSTSCLib.IMsTscAxEvents_OnLogonErrorEventHandler(OnLogonError);
-            this.client.OnFocusReleased += new AxMSTSCLib.IMsTscAxEvents_OnFocusReleasedEventHandler(OnFocusReleased);
-            this.client.OnServiceMessageReceived += new AxMSTSCLib.IMsTscAxEvents_OnServiceMessageReceivedEventHandler(OnServiceMessageReceived);
-            this.client.OnAutoReconnected += new System.EventHandler(OnAutoReconnected);
-            this.client.OnAutoReconnecting2 += new AxMSTSCLib.IMsTscAxEvents_OnAutoReconnecting2EventHandler(OnAutoReconnecting2);
+            this.client.OnConnecting += new System.EventHandler(OnRdpConnecting);
+            this.client.OnConnected += new System.EventHandler(OnRdpConnected);
+            this.client.OnLoginComplete += new System.EventHandler(OnRdpLoginComplete);
+            this.client.OnDisconnected += new AxMSTSCLib.IMsTscAxEvents_OnDisconnectedEventHandler(OnRdpDisconnected);
+            this.client.OnRequestGoFullScreen += new System.EventHandler(OnRdpRequestGoFullScreen);
+            this.client.OnRequestLeaveFullScreen += new System.EventHandler(OnRdpRequestLeaveFullScreen);
+            this.client.OnFatalError += new AxMSTSCLib.IMsTscAxEvents_OnFatalErrorEventHandler(OnRdpFatalError);
+            this.client.OnWarning += new AxMSTSCLib.IMsTscAxEvents_OnWarningEventHandler(OnRdpWarning);
+            this.client.OnRemoteDesktopSizeChange += new AxMSTSCLib.IMsTscAxEvents_OnRemoteDesktopSizeChangeEventHandler(OnRdpRemoteDesktopSizeChange);
+            this.client.OnRequestContainerMinimize += new System.EventHandler(OnRdpRequestContainerMinimize);
+            this.client.OnAuthenticationWarningDisplayed += new System.EventHandler(OnRdpAuthenticationWarningDisplayed);
+            this.client.OnLogonError += new AxMSTSCLib.IMsTscAxEvents_OnLogonErrorEventHandler(OnRdpLogonError);
+            this.client.OnFocusReleased += new AxMSTSCLib.IMsTscAxEvents_OnFocusReleasedEventHandler(OnRdpFocusReleased);
+            this.client.OnServiceMessageReceived += new AxMSTSCLib.IMsTscAxEvents_OnServiceMessageReceivedEventHandler(OnRdpServiceMessageReceived);
+            this.client.OnAutoReconnected += new System.EventHandler(OnRdpAutoReconnected);
+            this.client.OnAutoReconnecting2 += new AxMSTSCLib.IMsTscAxEvents_OnAutoReconnecting2EventHandler(OnRdpAutoReconnecting2);
 
             this.Controls.Add(this.client);
             ((System.ComponentModel.ISupportInitialize)(this.client)).EndInit();
@@ -463,7 +463,7 @@ namespace Google.Solutions.Terminal.Controls
         // RDP callbacks.
         //---------------------------------------------------------------------
 
-        private void OnFatalError(
+        private void OnRdpFatalError(
             object sender,
             IMsTscAxEvents_OnFatalErrorEvent args)
         {
@@ -480,7 +480,7 @@ namespace Google.Solutions.Terminal.Controls
             }
         }
 
-        private void OnLogonError(
+        private void OnRdpLogonError(
             object sender,
             IMsTscAxEvents_OnLogonErrorEvent args)
         {
@@ -502,7 +502,7 @@ namespace Google.Solutions.Terminal.Controls
             }
         }
 
-        private void OnLoginComplete(object sender, EventArgs e)
+        private void OnRdpLoginComplete(object sender, EventArgs e)
         {
             using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
@@ -510,7 +510,7 @@ namespace Google.Solutions.Terminal.Controls
             }
         }
 
-        private void OnDisconnected(
+        private void OnRdpDisconnected(
             object sender,
             IMsTscAxEvents_OnDisconnectedEvent args)
         {
@@ -574,7 +574,7 @@ namespace Google.Solutions.Terminal.Controls
             }
         }
 
-        private void OnConnected(object sender, EventArgs e)
+        private void OnRdpConnected(object sender, EventArgs e)
         {
             using (TerminalTraceSource.Log.TraceMethod()
                 .WithParameters(this.client.ConnectedStatusText))
@@ -583,7 +583,7 @@ namespace Google.Solutions.Terminal.Controls
             }
         }
 
-        private void OnConnecting(object sender, EventArgs e)
+        private void OnRdpConnecting(object sender, EventArgs e)
         {
             Debug.Assert(this.State == ConnectionState.Connecting);
 
@@ -591,7 +591,7 @@ namespace Google.Solutions.Terminal.Controls
             { }
         }
 
-        private void OnAuthenticationWarningDisplayed(object sender, EventArgs _)
+        private void OnRdpAuthenticationWarningDisplayed(object sender, EventArgs _)
         {
             Debug.Assert(this.State == ConnectionState.Connecting);
 
@@ -601,7 +601,7 @@ namespace Google.Solutions.Terminal.Controls
             }
         }
 
-        private void OnWarning(
+        private void OnRdpWarning(
             object sender,
             IMsTscAxEvents_OnWarningEvent args)
         {
@@ -609,7 +609,7 @@ namespace Google.Solutions.Terminal.Controls
             { }
         }
 
-        private void OnAutoReconnecting2(
+        private void OnRdpAutoReconnecting2(
             object sender,
             IMsTscAxEvents_OnAutoReconnecting2Event args)
         {
@@ -635,7 +635,7 @@ namespace Google.Solutions.Terminal.Controls
             }
         }
 
-        private void OnAutoReconnected(object sender, EventArgs e)
+        private void OnRdpAutoReconnected(object sender, EventArgs e)
         {
             Debug.Assert(this.State == ConnectionState.Connecting);
 
@@ -645,7 +645,7 @@ namespace Google.Solutions.Terminal.Controls
             }
         }
 
-        private void OnFocusReleased(
+        private void OnRdpFocusReleased(
             object sender,
             IMsTscAxEvents_OnFocusReleasedEvent e)
         {
@@ -661,7 +661,7 @@ namespace Google.Solutions.Terminal.Controls
             }
         }
 
-        private void OnRemoteDesktopSizeChange(
+        private void OnRdpRemoteDesktopSizeChange(
             object sender,
             IMsTscAxEvents_OnRemoteDesktopSizeChangeEvent e)
         {
@@ -674,7 +674,7 @@ namespace Google.Solutions.Terminal.Controls
             { }
         }
 
-        private void OnServiceMessageReceived(
+        private void OnRdpServiceMessageReceived(
             object sender,
             IMsTscAxEvents_OnServiceMessageReceivedEvent e)
         {
@@ -682,7 +682,7 @@ namespace Google.Solutions.Terminal.Controls
             { }
         }
 
-        private void OnRequestGoFullScreen(object sender, EventArgs e)
+        private void OnRdpRequestGoFullScreen(object sender, EventArgs e)
         {
             Debug.Assert(
                 this.State == ConnectionState.Connected ||
@@ -700,7 +700,7 @@ namespace Google.Solutions.Terminal.Controls
             this.ContainerFullScreen = true;
         }
 
-        private void OnRequestLeaveFullScreen(object sender, EventArgs e)
+        private void OnRdpRequestLeaveFullScreen(object sender, EventArgs e)
         {
             Debug.Assert(
                 this.State == ConnectionState.LoggedOn ||
@@ -709,7 +709,7 @@ namespace Google.Solutions.Terminal.Controls
             this.ContainerFullScreen = false;
         }
 
-        private void OnRequestContainerMinimize(object sender, EventArgs e)
+        private void OnRdpRequestContainerMinimize(object sender, EventArgs e)
         {
             using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
