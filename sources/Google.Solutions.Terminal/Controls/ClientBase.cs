@@ -23,6 +23,7 @@ using Google.Solutions.Mvvm.Controls;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -66,6 +67,20 @@ namespace Google.Solutions.Terminal.Controls
         /// Simulate key strokes to send a piece of text.
         /// </summary>
         public abstract void SendText(string text);
+
+        protected ClientBase()
+        {
+#if DEBUG
+            var stateLabel = new Label()
+            {
+                AutoSize = true,
+                BackColor = Color.Black,
+                ForeColor = Color.White,
+            };
+            this.Controls.Add(stateLabel);
+            this.StateChanged += (_, args) => stateLabel.Text = this.State.ToString();
+#endif
+        }
 
         //---------------------------------------------------------------------
         // State tracking.
