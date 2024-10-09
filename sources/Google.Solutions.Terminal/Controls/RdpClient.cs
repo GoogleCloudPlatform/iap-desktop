@@ -251,8 +251,6 @@ namespace Google.Solutions.Terminal.Controls
                     this.client.Disconnect();
 
                     OnConnectionClosed(DisconnectReason.FormClosed);
-
-                    this.State = ConnectionState.NotConnected;
                 }
                 catch (Exception e)
                 {
@@ -454,7 +452,7 @@ namespace Google.Solutions.Terminal.Controls
                 //
                 // Revert to classic, reconnect-based resizing.
                 //
-                this.State = ConnectionState.Connecting;
+                base.OnBeforeConnect();
                 this.client.Reconnect((uint)newSize.Width, (uint)newSize.Height);
             }
         }
@@ -475,8 +473,6 @@ namespace Google.Solutions.Terminal.Controls
                 this.ContainerFullScreen = false;
 
                 OnConnectionFailed(new RdpFatalException(args.errorCode));
-
-                this.State = ConnectionState.NotConnected;
             }
         }
 
@@ -496,8 +492,6 @@ namespace Google.Solutions.Terminal.Controls
                 if (!e.IsIgnorable)
                 {
                     OnConnectionFailed(e);
-
-                    this.State = ConnectionState.NotConnected;
                 }
             }
         }
@@ -506,7 +500,7 @@ namespace Google.Solutions.Terminal.Controls
         {
             using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                this.State = ConnectionState.LoggedOn;
+                base.OnAfterLogin();
             }
         }
 
@@ -531,7 +525,7 @@ namespace Google.Solutions.Terminal.Controls
                 // 
                 this.MainWindow?.Focus();
 
-                this.State = ConnectionState.Disconnecting;
+                base.OnBeforeDisconnect();
 
                 if (this.State != ConnectionState.Connecting && e.IsTimeout)
                 {
@@ -569,8 +563,6 @@ namespace Google.Solutions.Terminal.Controls
                 {
                     OnConnectionFailed(e);
                 }
-
-                this.State = ConnectionState.NotConnected;
             }
         }
 
@@ -579,7 +571,7 @@ namespace Google.Solutions.Terminal.Controls
             using (TerminalTraceSource.Log.TraceMethod()
                 .WithParameters(this.client.ConnectedStatusText))
             {
-                this.State = ConnectionState.Connected;
+                base.OnAfterConnect();
             }
         }
 
@@ -631,7 +623,7 @@ namespace Google.Solutions.Terminal.Controls
                     e.Message,
                     args.networkAvailable);
 
-                this.State = ConnectionState.Connecting;
+                base.OnBeforeConnect();
             }
         }
 
@@ -641,7 +633,7 @@ namespace Google.Solutions.Terminal.Controls
 
             using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                this.State = ConnectionState.LoggedOn;
+                base.OnAfterLogin();
             }
         }
 
@@ -809,7 +801,7 @@ namespace Google.Solutions.Terminal.Controls
             //
             // Reset state in case we're connecting for the second time.
             //
-            this.State = ConnectionState.Connecting;
+            base.OnBeforeConnect();
             this.client.FullScreen = false;
             this.client.Size = this.Size;
             this.client.DesktopHeight = this.Size.Height;

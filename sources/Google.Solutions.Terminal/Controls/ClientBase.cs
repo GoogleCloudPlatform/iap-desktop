@@ -78,7 +78,7 @@ namespace Google.Solutions.Terminal.Controls
         public ConnectionState State
         {
             get => this.state;
-            protected set
+            private set // Modified via OnXxx methods.
             {
                 Debug.Assert(!this.InvokeRequired);
                 if (this.state != value)
@@ -129,9 +129,16 @@ namespace Google.Solutions.Terminal.Controls
                 .ConfigureAwait(true);
         }
 
+        protected void OnBeforeConnect()
+        {
+            this.State = ConnectionState.Connecting;
+        }
+
         protected void OnConnectionFailed(Exception e)
         {
             this.ConnectionFailed?.Invoke(this, new ExceptionEventArgs(e));
+
+            this.State = ConnectionState.NotConnected;
         }
 
         protected void OnConnectionClosed(DisconnectReason reason)
@@ -139,6 +146,23 @@ namespace Google.Solutions.Terminal.Controls
             this.ConnectionClosed?.Invoke(
                 this,
                 new ConnectionClosedEventArgs(reason));
+
+            this.State = ConnectionState.NotConnected;
+        }
+
+        protected void OnAfterConnect()
+        {
+            this.State = ConnectionState.Connected;
+        }
+
+        protected void OnAfterLogin()
+        {
+            this.State = ConnectionState.LoggedOn;
+        }
+
+        protected void OnBeforeDisconnect()
+        {
+            this.State = ConnectionState.Disconnecting;
         }
 
         //---------------------------------------------------------------------
