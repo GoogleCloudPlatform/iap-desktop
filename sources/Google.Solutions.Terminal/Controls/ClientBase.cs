@@ -71,6 +71,10 @@ namespace Google.Solutions.Terminal.Controls
         protected ClientBase()
         {
 #if DEBUG
+            //
+            // Show label in top-right corner that indicates the current state.
+            //
+
             var stateLabel = new Label()
             {
                 AutoSize = true,
