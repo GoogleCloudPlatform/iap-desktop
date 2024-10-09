@@ -26,7 +26,7 @@ namespace Google.Solutions.Terminal.Controls
     /// <summary>
     /// Color table for a virtual terminal.
     /// </summary>
-    public struct TerminalColors
+    public struct VirtualTerminalColors
     {
         public Color Black { get; set; }
         public Color Red { get; set; }
@@ -76,9 +76,9 @@ namespace Google.Solutions.Terminal.Controls
         /// used by the Windows Terminal.
         /// <see cref="https://learn.microsoft.com/en-us/windows/terminal/customize-settings/color-schemes"/>
         /// </summary>
-        public static TerminalColors Default
+        public static VirtualTerminalColors Default
         {
-            get => new TerminalColors()
+            get => new VirtualTerminalColors()
             {
                 Black = Color.FromArgb(0x0C, 0x0C, 0x0C),
                 Red = Color.FromArgb(0xC5, 0x0F, 0x1F),

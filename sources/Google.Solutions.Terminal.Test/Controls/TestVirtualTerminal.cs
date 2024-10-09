@@ -376,7 +376,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             Action action)
         {
             var receiveBuffer = new StringBuilder();
-            void AccumulateData(object sender, TerminalInputEventArgs args)
+            void AccumulateData(object sender, VirtualTerminalInputEventArgs args)
             {
                 receiveBuffer.Append(args.Data);
             }

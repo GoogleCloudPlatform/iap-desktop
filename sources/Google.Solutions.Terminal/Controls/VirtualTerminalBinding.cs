@@ -30,13 +30,16 @@ namespace Google.Solutions.Terminal.Controls
     /// <summary>
     /// Connection between a Terminal and a Pty.
     /// </summary>
-    internal class TerminalBinding : IDisposable
+    internal class VirtualTerminalBinding : IDisposable
     {
         private readonly VirtualTerminal terminal;
 
+        /// <summary>
+        /// Pty to read from and write to.
+        /// </summary>
         internal IPseudoTerminal Device { get; }
 
-        public TerminalBinding(VirtualTerminal terminal, IPseudoTerminal device)
+        public VirtualTerminalBinding(VirtualTerminal terminal, IPseudoTerminal device)
         {
             this.terminal = terminal.ExpectNotNull(nameof(terminal));
             this.Device = device.ExpectNotNull(nameof(device));
@@ -66,7 +69,7 @@ namespace Google.Solutions.Terminal.Controls
             }
         }
 
-        private async void OnTerminalUserInput(object sender, TerminalInputEventArgs args)
+        private async void OnTerminalUserInput(object sender, VirtualTerminalInputEventArgs args)
         {
             //
             // The user hit keystrokes in the terminal. Forward this to the device

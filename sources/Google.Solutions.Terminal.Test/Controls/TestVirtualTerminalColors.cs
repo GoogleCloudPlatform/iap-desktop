@@ -1,4 +1,5 @@
-﻿// Copyright 2024 Google LLC
+﻿//
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -18,22 +19,37 @@
 // under the License.
 //
 
-using Google.Solutions.Platform.Interop;
+
 using Google.Solutions.Terminal.Controls;
 using NUnit.Framework;
 
 namespace Google.Solutions.Terminal.Test.Controls
 {
-
     [TestFixture]
-    public class TestTerminalException
+    public class TestVirtualTerminalColors
     {
         [Test]
-        public void FromHresult()
+        public void Default_ToNative()
         {
-            var e = TerminalException.FromHresult(HRESULT.E_UNEXPECTED, "message");
-            StringAssert.Contains("message", e.Message);
-            StringAssert.Contains("0x8000FFFF", e.Message);
+            var colorTable = new uint[] { 
+                0x0C0C0C, 
+                0x1F0FC5, 
+                0x0EA113,
+                0x009CC1, 
+                0xDA3700, 
+                0x981788, 
+                0xDD963A,
+                0xCCCCCC, 
+                0x767676,
+                0x5648E7,
+                0x0CC616,
+                0xA5F1F9,
+                0xFF783B, 
+                0x9E00B4, 
+                0xD6D661, 
+                0xF2F2F2 };
+
+            CollectionAssert.AreEqual(colorTable, VirtualTerminalColors.Default.ToNative());
         }
     }
 }

@@ -25,22 +25,22 @@ using System.Runtime.InteropServices;
 
 namespace Google.Solutions.Terminal.Controls
 {
-    public class TerminalException : Exception
+    public class VirtualTerminalException : Exception
     {
-        internal TerminalException(string message) : base(message)
+        internal VirtualTerminalException(string message) : base(message)
         {
         }
 
-        internal TerminalException(string message, Exception innerException)
+        internal VirtualTerminalException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
-        internal static TerminalException FromHresult(
+        internal static VirtualTerminalException FromHresult(
             HRESULT hresult,
             string message)
         {
-            return new TerminalException(
+            return new VirtualTerminalException(
                 $"{message} (HRESULT 0x{hresult:X})",
                 new ExternalException(message, (int)hresult));
         }
