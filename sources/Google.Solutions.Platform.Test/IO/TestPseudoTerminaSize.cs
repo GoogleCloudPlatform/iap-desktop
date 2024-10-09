@@ -25,12 +25,12 @@ using NUnit.Framework;
 namespace Google.Solutions.Platform.Test.IO
 {
     [TestFixture]
-    public class TestPseudoConsoleSize
+    public class TestPseudoTerminaSize
     {
         [Test]
         public void ToString_ReturnsSize()
         {
-            Assert.AreEqual("80x24", new PseudoConsoleSize(80, 24).ToString());
+            Assert.AreEqual("80x24", new PseudoTerminalSize(80, 24).ToString());
         }
     }
 }

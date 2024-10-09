@@ -53,7 +53,7 @@ namespace Google.Solutions.Platform.Dispatch
         IWin32Process CreateProcessWithPseudoConsole(
             string executable,
             string? arguments,
-            PseudoConsoleSize pseudoConsoleSize);
+            PseudoTerminalSize pseudoConsoleSize);
 
         /// <summary>
         /// Start a new process as a different user.
@@ -151,7 +151,7 @@ namespace Google.Solutions.Platform.Dispatch
         public IWin32Process CreateProcessWithPseudoConsole(
             string executable,
             string? arguments,
-            PseudoConsoleSize pseudoConsoleSize)
+            PseudoTerminalSize pseudoConsoleSize)
         {
             using (PlatformTraceSource.Log.TraceMethod()
                 .WithParameters(executable, arguments))
@@ -244,7 +244,7 @@ namespace Google.Solutions.Platform.Dispatch
                             new SafeProcessHandle(processInfo.hProcess, true),
                             new SafeThreadHandle(processInfo.hThread, true))
                         {
-                            PseudoConsole = pseudoConsole
+                            PseudoTerminal = pseudoConsole
                         };
 
                         process.Exited += (_, __) =>

@@ -42,10 +42,10 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var process = factory.CreateProcessWithPseudoConsole(
                 "powershell.exe",
                 null,
-                PseudoConsoleSize.Default))
+                PseudoTerminalSize.Default))
             {
-                Assert.IsNotNull(process.PseudoConsole);
-                var pty = process.PseudoConsole!;
+                Assert.IsNotNull(process.PseudoTerminal);
+                var pty = process.PseudoTerminal!;
 
                 var output = new StringBuilder();
                 pty.OutputAvailable += (_, args) =>
@@ -82,10 +82,10 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var process = factory.CreateProcessWithPseudoConsole(
                 "powershell.exe",
                 null,
-                PseudoConsoleSize.Default))
+                PseudoTerminalSize.Default))
             {
-                Assert.IsNotNull(process.PseudoConsole);
-                var pty = process.PseudoConsole!;
+                Assert.IsNotNull(process.PseudoTerminal);
+                var pty = process.PseudoTerminal!;
 
                 var eventRaised = false;
                 pty.Disconnected += (_, __) => eventRaised = true;
@@ -105,7 +105,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         [Test]
         public async Task Close_KeepsStreamOpen()
         {
-            using (var pty = new Win32PseudoConsole(new PseudoConsoleSize(80, 24)))
+            using (var pty = new Win32PseudoConsole(new PseudoTerminalSize(80, 24)))
             {
                 Assert.IsFalse(pty.IsClosed);
 
@@ -132,10 +132,10 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var process = factory.CreateProcessWithPseudoConsole(
                 "powershell.exe",
                 null,
-                PseudoConsoleSize.Default))
+                PseudoTerminalSize.Default))
             {
-                Assert.IsNotNull(process.PseudoConsole);
-                using (var pty = process.PseudoConsole!)
+                Assert.IsNotNull(process.PseudoTerminal);
+                using (var pty = process.PseudoTerminal!)
                 {
                 }
             }
@@ -144,7 +144,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         [Test]
         public void Dispose_ClosesStreams()
         {
-            var pty = new Win32PseudoConsole(new PseudoConsoleSize(80, 24));
+            var pty = new Win32PseudoConsole(new PseudoTerminalSize(80, 24));
             pty.Dispose();
 
             Assert.IsTrue(pty.IsClosed);

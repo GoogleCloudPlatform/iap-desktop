@@ -20,20 +20,30 @@
 //
 
 using Google.Solutions.Platform.Interop;
-using Google.Solutions.Platform.IO;
-using NUnit.Framework;
+using System;
+using System.IO;
+using System.Runtime.InteropServices;
 
-namespace Google.Solutions.Platform.Test.IO
+namespace Google.Solutions.Platform.IO
 {
-    [TestFixture]
-    public class TestPseudoConsoleException
+    public class PseudoTerminalException : IOException
     {
-        [Test]
-        public void FromHresult()
+        public PseudoTerminalException(string message) : base(message)
         {
-            var e = PseudoConsoleException.FromHresult(HRESULT.E_UNEXPECTED, "message");
-            StringAssert.Contains("message", e.Message);
-            StringAssert.Contains("0x8000FFFF", e.Message);
+        }
+
+        public PseudoTerminalException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+
+        internal static PseudoTerminalException FromHresult(
+            HRESULT hresult,
+            string message)
+        {
+            return new PseudoTerminalException(
+                $"{message} (HRESULT 0x{hresult:X})",
+                new ExternalException(message, (int)hresult));
         }
     }
 }

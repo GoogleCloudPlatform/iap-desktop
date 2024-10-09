@@ -175,14 +175,14 @@ namespace Google.Solutions.Terminal.Test.Controls
         {
             using (var form = TerminalForm.Create())
             {
-                form.VirtualTerminal.Device = new Mock<IPseudoConsole>().Object;
+                form.VirtualTerminal.Device = new Mock<IPseudoTerminal>().Object;
                 form.Show();
 
                 string receivedData = string.Empty;
                 form.VirtualTerminal.Output += (_, args) => receivedData += args.Data;
 
                 // Change device.
-                form.VirtualTerminal.Device = new Mock<IPseudoConsole>().Object;
+                form.VirtualTerminal.Device = new Mock<IPseudoTerminal>().Object;
 
                 form.Close();
 
@@ -195,13 +195,13 @@ namespace Google.Solutions.Terminal.Test.Controls
         {
             using (var form = TerminalForm.Create())
             {
-                var device = new Mock<IPseudoConsole>();
+                var device = new Mock<IPseudoTerminal>();
 
                 form.VirtualTerminal.Device = device.Object;
                 form.Show();
 
                 // Change device.
-                form.VirtualTerminal.Device = new Mock<IPseudoConsole>().Object;
+                form.VirtualTerminal.Device = new Mock<IPseudoTerminal>().Object;
 
                 form.Close();
 
@@ -212,7 +212,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [Test]
         public void Device_WhenDisposed_ThenDisposesDevice()
         {
-            var device = new Mock<IPseudoConsole>();
+            var device = new Mock<IPseudoTerminal>();
 
             using (var form = TerminalForm.Create())
             {

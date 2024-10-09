@@ -48,8 +48,8 @@ namespace Google.Solutions.Terminal.Controls
         private IntPtr terminalHwnd;
         private SubclassCallback? terminalSubclass;
 
-        private PseudoConsoleSize dimensions;
-        private TerminalDeviceBinding? deviceBinding;
+        private PseudoTerminalSize dimensions;
+        private TerminalBinding? deviceBinding;
 
         private readonly NativeMethods.WriteCallback writeCallback;
         private readonly NativeMethods.ScrollCallback scrollCallback;
@@ -180,7 +180,7 @@ namespace Google.Solutions.Terminal.Controls
         /// <summary>
         /// Get or set dimensions of terminal (in characters).
         /// </summary>
-        public PseudoConsoleSize Dimensions
+        public PseudoTerminalSize Dimensions
         {
             get => this.dimensions;
             internal set
@@ -195,7 +195,7 @@ namespace Google.Solutions.Terminal.Controls
         /// <summary>
         /// Get or set the device to interact with.
         /// </summary>
-        public IPseudoConsole? Device
+        public IPseudoTerminal? Device
         {
             get => this.deviceBinding?.Device;
             set
@@ -211,7 +211,7 @@ namespace Google.Solutions.Terminal.Controls
 
                 if (value != null)
                 {
-                    this.deviceBinding = new TerminalDeviceBinding(
+                    this.deviceBinding = new TerminalBinding(
                         this, 
                         value);
                 }
@@ -508,7 +508,7 @@ namespace Google.Solutions.Terminal.Controls
                 Debug.Assert(dimensions.X <= ushort.MaxValue);
                 Debug.Assert(dimensions.Y <= ushort.MaxValue);
 
-                this.Dimensions = new PseudoConsoleSize(
+                this.Dimensions = new PseudoTerminalSize(
                     (ushort)dimensions.X, 
                     (ushort)dimensions.Y);
 

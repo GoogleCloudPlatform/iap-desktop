@@ -140,7 +140,7 @@ namespace Google.Solutions.Platform.Dispatch
 
         public IWin32Job? Job { get; internal set; }
 
-        public IPseudoConsole? PseudoConsole { get; internal set; }
+        public IPseudoTerminal? PseudoTerminal { get; internal set; }
 
         public bool IsRunning
         {
@@ -291,7 +291,7 @@ namespace Google.Solutions.Platform.Dispatch
             this.process.Close();
 
             this.processExitedWaitHandle.Unregister(this.WaitHandle);
-            this.PseudoConsole?.Dispose();
+            this.PseudoTerminal?.Dispose();
         }
 
         //---------------------------------------------------------------------
