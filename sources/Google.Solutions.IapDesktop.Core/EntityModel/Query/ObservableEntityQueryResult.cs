@@ -50,13 +50,15 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
 #endif
 
         [Conditional("DEBUG")]
-        internal void IsAssociatedWithThread(int managedThreadId) 
+        internal void IsAssociatedWithThread(int managedThreadId)
         {
+#if DEBUG
             if (this.threadId != managedThreadId)
             {
                 throw new InvalidOperationException(
                     "Result must not be accessed from an arbitrary thread context");
             }
+#endif
         }
 
         public ObservableEntityQueryResult(
