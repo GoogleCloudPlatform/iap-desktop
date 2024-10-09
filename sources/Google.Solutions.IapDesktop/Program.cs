@@ -68,6 +68,7 @@ using Google.Solutions.Platform.Security;
 using Google.Solutions.Platform.Security.Cryptography;
 using Google.Solutions.Settings.Collection;
 using Google.Solutions.Ssh;
+using Google.Solutions.Terminal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -95,6 +96,7 @@ namespace Google.Solutions.IapDesktop
             CommonTraceSource.Log,
             IapTraceSource.Log,
             SshTraceSource.Log,
+            TerminalTraceSource.Log,
             ApplicationTraceSource.Log,
             CoreTraceSource.Log,
         };
