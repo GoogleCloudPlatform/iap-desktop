@@ -28,14 +28,14 @@ namespace Google.Solutions.Terminal.Controls
     /// <summary>
     /// Event data for terminal input events.
     /// </summary>
-    public class TerminalInputEventArgs : EventArgs
+    public class VirtualTerminalInputEventArgs : EventArgs
     {
         /// <summary>
         /// Xterm-encoded data.
         /// </summary>
         public string Data { get; }
 
-        internal TerminalInputEventArgs(string data)
+        internal VirtualTerminalInputEventArgs(string data)
         {
             this.Data = data.ExpectNotNull(nameof(data));
         }
@@ -49,14 +49,14 @@ namespace Google.Solutions.Terminal.Controls
     /// <summary>
     /// Event data for terminal output events.
     /// </summary>
-    public class TerminalOutputEventArgs : EventArgs
+    public class VirtualTerminalOutputEventArgs : EventArgs
     {
         /// <summary>
         /// Xterm-encoded data.
         /// </summary>
         public string Data { get; }
 
-        internal TerminalOutputEventArgs(string data)
+        internal VirtualTerminalOutputEventArgs(string data)
         {
             this.Data = data.ExpectNotNull(nameof(data));
         }
@@ -70,9 +70,9 @@ namespace Google.Solutions.Terminal.Controls
     /// <summary>
     /// Event data for terminal error events.
     /// </summary>
-    public class TerminalErrorEventArgs : ExceptionEventArgs
+    public class VirtualTerminalErrorEventArgs : ExceptionEventArgs
     {
-        internal TerminalErrorEventArgs(Exception e) : base(e)
+        internal VirtualTerminalErrorEventArgs(Exception e) : base(e)
         {
         }
 

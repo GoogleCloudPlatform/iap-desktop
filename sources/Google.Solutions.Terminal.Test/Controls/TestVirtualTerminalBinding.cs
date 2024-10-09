@@ -29,7 +29,7 @@ using System.Threading;
 namespace Google.Solutions.Terminal.Test.Controls
 {
     [TestFixture]
-    public class TestTerminalDeviceBinding
+    public class TestVirtualTerminalBinding
     {
         //---------------------------------------------------------------------
         // OnTerminalDisposed.

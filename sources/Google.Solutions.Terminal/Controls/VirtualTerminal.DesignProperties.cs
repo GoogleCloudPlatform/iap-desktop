@@ -32,7 +32,7 @@ namespace Google.Solutions.Terminal.Controls
         private float selectionBackgroundAlpha = .5f;
         private CaretStyle caretStyle = CaretStyle.BlinkingBlockDefault;
         private Font font = new Font(new FontFamily(DefaultFontFamily), DefaultFontSize);
-        private TerminalColors terminalColors = TerminalColors.Default;
+        private VirtualTerminalColors terminalColors = VirtualTerminalColors.Default;
 
         [Category("Appearance")]
         public Color SelectionBackColor
@@ -79,7 +79,7 @@ namespace Google.Solutions.Terminal.Controls
         }
 
         [Category("Appearance")]
-        public TerminalColors TerminalColors
+        public VirtualTerminalColors TerminalColors
         {
             get => this.terminalColors;
             set

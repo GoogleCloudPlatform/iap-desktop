@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
-using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Interop;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Platform.IO;
@@ -34,7 +33,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.Terminal.Controls
 {
     /// <summary>
-    /// Windows Terminal.
+    /// A virtual terminal based on the Windows Terminal aka "Cascadia".
     /// </summary>
     public partial class VirtualTerminal : UserControl
     {
@@ -49,7 +48,7 @@ namespace Google.Solutions.Terminal.Controls
         private SubclassCallback? terminalSubclass;
 
         private PseudoTerminalSize dimensions;
-        private TerminalBinding? deviceBinding;
+        private VirtualTerminalBinding? deviceBinding;
 
         private readonly NativeMethods.WriteCallback writeCallback;
         private readonly NativeMethods.ScrollCallback scrollCallback;
@@ -124,7 +123,7 @@ namespace Google.Solutions.Terminal.Controls
                 out this.terminal);
             if (hr != 0)
             {
-                throw TerminalException.FromHresult(
+                throw VirtualTerminalException.FromHresult(
                     hr,
                     "Allocating a terminal failed");
             }
@@ -211,7 +210,7 @@ namespace Google.Solutions.Terminal.Controls
 
                 if (value != null)
                 {
-                    this.deviceBinding = new TerminalBinding(
+                    this.deviceBinding = new VirtualTerminalBinding(
                         this, 
                         value);
                 }
@@ -277,17 +276,17 @@ namespace Google.Solutions.Terminal.Controls
         /// <summary>
         /// Terminal is about to receive (and display) new data.
         /// </summary>
-        public event EventHandler<TerminalOutputEventArgs>? Output;
+        public event EventHandler<VirtualTerminalOutputEventArgs>? Output;
 
         /// <summary>
         /// Terminal received user input that needs to be sent to the device.
         /// </summary>
-        public event EventHandler<TerminalInputEventArgs>? UserInput;
+        public event EventHandler<VirtualTerminalInputEventArgs>? UserInput;
 
         /// <summary>
         /// The device has failed.
         /// </summary>
-        public event EventHandler<TerminalErrorEventArgs>? DeviceError;
+        public event EventHandler<VirtualTerminalErrorEventArgs>? DeviceError;
 
         /// <summary>
         /// Device has been closed, this might be because the user ended the
@@ -340,7 +339,7 @@ namespace Google.Solutions.Terminal.Controls
             //
             data = data.Replace("\r\n", "\r");
 
-            this.UserInput?.Invoke(this, new TerminalInputEventArgs(data));
+            this.UserInput?.Invoke(this, new VirtualTerminalInputEventArgs(data));
         }
 
         /// <summary>
@@ -359,12 +358,12 @@ namespace Google.Solutions.Terminal.Controls
                 NativeMethods.TerminalSendOutput(this.terminal, data);
             }
 
-            this.Output?.Invoke(this, new TerminalOutputEventArgs(data));
+            this.Output?.Invoke(this, new VirtualTerminalOutputEventArgs(data));
         }
 
         protected virtual void OnDeviceError(Exception e)
         {
-            this.DeviceError?.Invoke(this, new TerminalErrorEventArgs(e));
+            this.DeviceError?.Invoke(this, new VirtualTerminalErrorEventArgs(e));
         }
 
         protected virtual void OnDeviceClosed()
@@ -500,7 +499,7 @@ namespace Google.Solutions.Terminal.Controls
                     out var dimensions);
                 if (hr != 0)
                 {
-                    throw TerminalException.FromHresult(
+                    throw VirtualTerminalException.FromHresult(
                         hr, 
                         "Adjusting terminal size failed");
                 }
