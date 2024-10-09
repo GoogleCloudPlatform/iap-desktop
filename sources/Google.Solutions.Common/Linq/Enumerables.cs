@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,26 +19,28 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Microsoft.Win32;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Application.Profile.Settings
+namespace Google.Solutions.Common.Linq
 {
     /// <summary>
-    /// Registry-backed repository for Project-related settings.
+    /// Utility methods for creating Enumerables.
     /// </summary>
-    public interface IProjectSettingsRepository : IProjectRepository
+    public static class Enumerables
     {
         /// <summary>
-        /// Open registry key for storing project-related settings.
+        /// Create an enumerable for a nullable value.
         /// </summary>
-        /// <exception cref="KeyNotFoundException">When project not found</exception>
-        RegistryKey OpenRegistryKey(string projectId);
-
-        /// <summary>
-        /// Create or open registry subkey for storing project-related settings.
-        /// </summary>
-        /// <exception cref="KeyNotFoundException">When project not found</exception>
-        RegistryKey OpenRegistryKey(string projectId, string subkey);
+        /// <returns>
+        /// Empty enumerable if the object is null, a 
+        /// single-element enumerable otherwise.
+        /// </returns>
+        public static IEnumerable<T> FromNullable<T>(T? nullable) where T : class
+        {
+            return nullable == null
+                ? Enumerable.Empty<T>()
+                : new T[] { nullable };
+        }
     }
 }

@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,26 +19,24 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Microsoft.Win32;
+using Google.Solutions.Apis.Locator;
 
-namespace Google.Solutions.IapDesktop.Application.Profile.Settings
+namespace Google.Solutions.IapDesktop.Core.EntityModel
 {
     /// <summary>
-    /// Registry-backed repository for Project-related settings.
+    /// An entity that can be looked up by a locator.
     /// </summary>
-    public interface IProjectSettingsRepository : IProjectRepository
+    public interface IEntity<out TLocator> where TLocator : ILocator
     {
         /// <summary>
-        /// Open registry key for storing project-related settings.
+        /// Display name, might differ from the name
+        /// used in the locator.
         /// </summary>
-        /// <exception cref="KeyNotFoundException">When project not found</exception>
-        RegistryKey OpenRegistryKey(string projectId);
+        string DisplayName { get; }
 
         /// <summary>
-        /// Create or open registry subkey for storing project-related settings.
+        /// Locator for this item.
         /// </summary>
-        /// <exception cref="KeyNotFoundException">When project not found</exception>
-        RegistryKey OpenRegistryKey(string projectId, string subkey);
+        TLocator Locator { get; }
     }
 }

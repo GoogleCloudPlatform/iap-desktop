@@ -20,16 +20,26 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.IapDesktop.Core.ResourceModel;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 {
-    public class ProjectRepository : IProjectSettingsRepository
+    public class ProjectRepository :
+        IProjectSettingsRepository,
+        IProjectWorkspaceSettings,
+        IAncestryCache
     {
+        /// <summary>
+        /// Multi-SZ value to store ancestry information.
+        /// </summary>
+        internal const string AncestryValueName = "Ancestry";
+
         protected RegistryKey BaseKey { get; }
 
         public ProjectRepository(RegistryKey baseKey)
@@ -45,18 +55,73 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         {
             using (this.BaseKey.CreateSubKey(project.Name))
             { }
+
+            this.PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(nameof(this.Projects)));
         }
 
         public void RemoveProject(ProjectLocator project)
         {
             this.BaseKey.DeleteSubKeyTree(project.Name, false);
+            this.PropertyChanged?.Invoke(
+                this, 
+                new PropertyChangedEventArgs(nameof(this.Projects)));
         }
 
         public Task<IEnumerable<ProjectLocator>> ListProjectsAsync()
         {
-            var projects = this.BaseKey.GetSubKeyNames()
+            return Task.FromResult(this.Projects);
+        }
+
+        //---------------------------------------------------------------------
+        // IProjectWorkspaceSettings.
+        //---------------------------------------------------------------------
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public IEnumerable<ProjectLocator> Projects
+        {
+            get => this.BaseKey
+                .GetSubKeyNames()
                 .Select(projectId => new ProjectLocator(projectId));
-            return Task.FromResult(projects);
+        }
+
+        //---------------------------------------------------------------------
+        // IAncestryCache.
+        //---------------------------------------------------------------------
+
+        public void SetAncestry(
+            ProjectLocator project,
+            OrganizationLocator ancestry)
+        {
+            using (var key = OpenRegistryKey(project.Name))
+            {
+                key.SetValue(
+                    AncestryValueName,
+                    new[] { ancestry.ToString() },
+                    RegistryValueKind.MultiString);
+            }
+        }
+
+        public bool TryGetAncestry(
+            ProjectLocator project, 
+            out OrganizationLocator? ancestry)
+        {
+            using (var key = OpenRegistryKey(project.Name))
+            {
+                if (key.GetValue(AncestryValueName, null) is string[] value &&
+                    value.Length > 0 &&
+                    OrganizationLocator.TryParse(value[0], out ancestry))
+                {
+                    return true;
+                }
+                else
+                {
+                    ancestry = null;
+                    return false;
+                }
+            }
         }
 
         //---------------------------------------------------------------------
@@ -65,22 +130,15 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
         public RegistryKey OpenRegistryKey(string projectId)
         {
-            return this.BaseKey.OpenSubKey(projectId, true);
+            var key = this.BaseKey.OpenSubKey(projectId, true);
+            return key ?? throw new KeyNotFoundException(projectId);
         }
 
-        public RegistryKey OpenRegistryKey(string projectId, string subkey, bool create)
+        public RegistryKey OpenRegistryKey(string projectId, string subkey)
         {
-            // Make sure the parent key actually exists.
             using (var parentKey = OpenRegistryKey(projectId))
             {
-                if (parentKey == null)
-                {
-                    throw new KeyNotFoundException(projectId);
-                }
-
-                return create
-                ? parentKey.CreateSubKey(subkey, true)
-                : parentKey.OpenSubKey(subkey, true);
+                return parentKey.CreateSubKey(subkey, true);
             }
         }
 

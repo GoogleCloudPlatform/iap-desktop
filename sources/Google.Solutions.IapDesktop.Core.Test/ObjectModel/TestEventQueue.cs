@@ -32,8 +32,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
     [TestFixture]
     public class TestEventQueue
     {
-        private class EventOne { }
-        private class EventTwo { }
+        public class EventOne { }
+        public class EventTwo { }
 
         //---------------------------------------------------------------------
         // Subscribe.
@@ -114,18 +114,20 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
         //---------------------------------------------------------------------
 
         [Test]
-        public void PublishAsync_WhenInvokeNotRequired()
+        public void PublishAsync_InvokesSubscriber()
         {
             var invoker = new Mock<ISynchronizeInvoke>();
             invoker.SetupGet(i => i.InvokeRequired).Returns(false);
 
             var queue = new EventQueue(invoker.Object);
 
-            var invoked = false;
-            using (queue.Subscribe<EventOne>(e => { invoked = true; }))
+            var subscriber = new Mock<IAsyncSubscriber<EventOne>>();
+            using (queue.Subscribe(subscriber.Object))
             {
-                var t = queue.PublishAsync(new EventOne());
-                Assert.IsTrue(invoked);
+                var ev = new EventOne();
+                var t = queue.PublishAsync(ev);
+
+                subscriber.Verify(s => s.NotifyAsync(ev), Times.Once);
             }
         }
 
@@ -172,6 +174,24 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
         //---------------------------------------------------------------------
         // Publish.
         //---------------------------------------------------------------------
+
+        [Test]
+        public void Publish_InvokesSubscriber()
+        {
+            var invoker = new Mock<ISynchronizeInvoke>();
+            invoker.SetupGet(i => i.InvokeRequired).Returns(false);
+
+            var queue = new EventQueue(invoker.Object);
+
+            var subscriber = new Mock<ISubscriber<EventOne>>();
+            using (queue.Subscribe(subscriber.Object))
+            {
+                var ev = new EventOne();
+                queue.Publish(ev);
+
+                subscriber.Verify(s => s.Notify(ev), Times.Once);
+            }
+        }
 
         [Test]
         public void Publish_WhenSubscriberThrowsException()

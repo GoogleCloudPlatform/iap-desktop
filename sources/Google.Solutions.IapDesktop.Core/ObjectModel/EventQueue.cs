@@ -127,6 +127,20 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
             lifecycle);
         }
 
+        public ISubscription Subscribe<TEvent>(
+            IAsyncSubscriber<TEvent> subscriber,
+            SubscriptionOptions lifecycle = SubscriptionOptions.None)
+        {
+            return Subscribe<TEvent>(subscriber.NotifyAsync, lifecycle);
+        }
+
+        public ISubscription Subscribe<TEvent>(
+            ISubscriber<TEvent> subscriber,
+            SubscriptionOptions lifecycle = SubscriptionOptions.None)
+        {
+            return Subscribe<TEvent>(subscriber.Notify, lifecycle);
+        }
+
         public Task PublishAsync<TEvent>(TEvent eventObject)
         {
             return this.invoker.InvokeAsync(async () =>

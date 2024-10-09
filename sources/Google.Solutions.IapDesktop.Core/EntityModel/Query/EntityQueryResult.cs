@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,26 +19,21 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Microsoft.Win32;
+using Google.Solutions.Apis.Locator;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
-namespace Google.Solutions.IapDesktop.Application.Profile.Settings
+namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
 {
     /// <summary>
-    /// Registry-backed repository for Project-related settings.
+    /// Result of an entity query.
     /// </summary>
-    public interface IProjectSettingsRepository : IProjectRepository
+    public class EntityQueryResult<TEntity>
+        : ReadOnlyCollection<EntityQueryResultItem<TEntity>>
+        where TEntity : IEntity<ILocator>
     {
-        /// <summary>
-        /// Open registry key for storing project-related settings.
-        /// </summary>
-        /// <exception cref="KeyNotFoundException">When project not found</exception>
-        RegistryKey OpenRegistryKey(string projectId);
-
-        /// <summary>
-        /// Create or open registry subkey for storing project-related settings.
-        /// </summary>
-        /// <exception cref="KeyNotFoundException">When project not found</exception>
-        RegistryKey OpenRegistryKey(string projectId, string subkey);
+        public EntityQueryResult(IList<EntityQueryResultItem<TEntity>> list) : base(list)
+        {
+        }
     }
 }

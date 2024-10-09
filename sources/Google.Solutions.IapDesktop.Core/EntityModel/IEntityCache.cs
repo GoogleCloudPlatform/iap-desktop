@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,26 +19,32 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.ProjectModel;
-using Microsoft.Win32;
+using Google.Solutions.Apis.Locator;
 
-namespace Google.Solutions.IapDesktop.Application.Profile.Settings
+namespace Google.Solutions.IapDesktop.Core.EntityModel
 {
     /// <summary>
-    /// Registry-backed repository for Project-related settings.
+    /// Ancillary inteface that can be implemented by navigators,
+    /// providers, and searchers that require cache invalidation.
     /// </summary>
-    public interface IProjectSettingsRepository : IProjectRepository
+    /// <remarks>
+    /// Implementing types must also implement
+    /// the generic version of this interface.
+    /// </remarks>
+    public interface IEntityCache
+    {
+    }
+
+    /// <summary>
+    /// Ancillary inteface that can be implemented by navigators,
+    /// providers, and searchers that require cache invalidation.
+    /// </summary>
+    public interface IEntityCache<TLocator> : IEntityCache
+        where TLocator : ILocator
     {
         /// <summary>
-        /// Open registry key for storing project-related settings.
+        /// Invalidate cache.
         /// </summary>
-        /// <exception cref="KeyNotFoundException">When project not found</exception>
-        RegistryKey OpenRegistryKey(string projectId);
-
-        /// <summary>
-        /// Create or open registry subkey for storing project-related settings.
-        /// </summary>
-        /// <exception cref="KeyNotFoundException">When project not found</exception>
-        RegistryKey OpenRegistryKey(string projectId, string subkey);
+        void Invalidate(TLocator locator);
     }
 }
