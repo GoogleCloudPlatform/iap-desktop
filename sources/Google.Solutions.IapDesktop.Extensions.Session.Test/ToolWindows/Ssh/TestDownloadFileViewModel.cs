@@ -63,14 +63,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoFileSelected_ThenIsDownloadButtonEnabledReturnsFalse()
+        public void IsDownloadButtonEnabled_WhenNoFileSelected_ThenIsDownloadButtonEnabledReturnsFalse()
         {
             var viewModel = new DownloadFileViewModel(CreateFileSystem().Object);
             Assert.IsFalse(viewModel.IsDownloadButtonEnabled.Value);
         }
 
         [Test]
-        public void WhenDirectorySelected_ThenIsDownloadButtonEnabledReturnsFalse()
+        public void IsDownloadButtonEnabled_WhenDirectorySelected_ThenIsDownloadButtonEnabledReturnsFalse()
         {
             var viewModel = new DownloadFileViewModel(CreateFileSystem().Object);
             viewModel.SelectedFiles.Value = new[]
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public void WhenLinkSelected_ThenIsDownloadButtonEnabledReturnsFalse()
+        public void IsDownloadButtonEnabled_WhenLinkSelected_ThenIsDownloadButtonEnabledReturnsFalse()
         {
             var viewModel = new DownloadFileViewModel(CreateFileSystem().Object);
             viewModel.SelectedFiles.Value = new[]
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public void WhenMultipleFilesSelected_ThenIsDownloadButtonEnabledReturnsTrue()
+        public void IsDownloadButtonEnabled_WhenMultipleFilesSelected_ThenIsDownloadButtonEnabledReturnsTrue()
         {
             var viewModel = new DownloadFileViewModel(CreateFileSystem().Object);
             viewModel.SelectedFiles.Value = new[]

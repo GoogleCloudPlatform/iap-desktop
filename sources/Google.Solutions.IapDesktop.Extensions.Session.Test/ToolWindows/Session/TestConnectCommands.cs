@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public void LaunchRdpUrlIsEnabled()
+        public void LaunchRdpUrl_IsEnabled()
         {
             var urlCommands = new UrlCommands();
             CreateConnectCommands(
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task LaunchRdpUrlCommandConnectsInstance()
+        public async Task LaunchRdpUrl_ConnectsInstance()
         {
             var context = new Mock<ISessionContext<RdpCredential, RdpParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenApplicableAndVmRunning_ThenToolbarActivateOrConnectInstanceIsEnabled(
+        public void ToolbarActivateOrConnect_WhenApplicableAndVmRunning_ThenToolbarActivateOrConnectInstanceIsEnabled(
             [Values(
                 OperatingSystems.Windows,
                 OperatingSystems.Linux)] OperatingSystems os)
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void WhenApplicableButVmNotRunning_ThenToolbarActivateOrConnectInstanceIsDisabled(
+        public void ToolbarActivateOrConnect_WhenApplicableButVmNotRunning_ThenToolbarActivateOrConnectInstanceIsDisabled(
             [Values(
                 OperatingSystems.Windows,
                 OperatingSystems.Linux)] OperatingSystems os)
@@ -158,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void WhenNotApplicable_ThenToolbarActivateOrConnectInstanceIsDisabled()
+        public void ToolbarActivateOrConnect_WhenNotApplicable_ThenToolbarActivateOrConnectInstanceIsDisabled()
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task WhenInstanceSupportsRdp_ThenToolbarActivateOrConnectInstanceUsesRdp()
+        public async Task ToolbarActivateOrConnect_WhenInstanceSupportsRdp_ThenToolbarActivateOrConnectInstanceUsesRdp()
         {
             var context = new Mock<ISessionContext<RdpCredential, RdpParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task WhenInstanceSupportsSsh_ThenToolbarActivateOrConnectInstanceUsesSsh()
+        public async Task ToolbarActivateOrConnect_WhenInstanceSupportsSsh_ThenToolbarActivateOrConnectInstanceUsesSsh()
         {
             var context = new Mock<ISessionContext<ISshCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
@@ -258,7 +258,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenApplicableAndVmRunning_ThenContextMenuActivateOrConnectInstanceIsEnabled(
+        public void ContextMenuActivateOrConnect_WhenApplicableAndVmRunning_ThenContextMenuActivateOrConnectInstanceIsEnabled(
             [Values(
                 OperatingSystems.Windows,
                 OperatingSystems.Linux)] OperatingSystems os)
@@ -279,7 +279,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void WhenApplicableButVmNotRunning_ThenContextMenuActivateOrConnectInstanceIsDisabled(
+        public void ContextMenuActivateOrConnect_WhenApplicableButVmNotRunning_ThenContextMenuActivateOrConnectInstanceIsDisabled(
             [Values(
                 OperatingSystems.Windows,
                 OperatingSystems.Linux)] OperatingSystems os)
@@ -300,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void WhenNotApplicable_ThenContextMenuActivateOrConnectInstanceIsUnavailable()
+        public void ContextMenuActivateOrConnect_WhenNotApplicable_ThenContextMenuActivateOrConnectInstanceIsUnavailable()
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
@@ -320,7 +320,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task WhenInstanceSupportsRdp_ThenContextMenuActivateOrConnectInstanceUsesRdp()
+        public async Task ContextMenuActivateOrConnect_WhenInstanceSupportsRdp_ThenContextMenuActivateOrConnectInstanceUsesRdp()
         {
             var context = new Mock<ISessionContext<RdpCredential, RdpParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
@@ -359,7 +359,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task WhenInstanceSupportsSsh_ThenContextMenuActivateOrConnectInstanceUsesSsh()
+        public async Task ContextMenuActivateOrConnect_WhenInstanceSupportsSsh_ThenContextMenuActivateOrConnectInstanceUsesSsh()
         {
             var context = new Mock<ISessionContext<ISshCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
@@ -400,7 +400,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenApplicableAndVmRunning_ThenContextMenuConnectAsUserIsEnabled()
+        public void ContextMenuConnectAsUser_WhenApplicableAndVmRunning_ThenContextMenuConnectAsUserIsEnabled()
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
@@ -418,7 +418,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void WhenApplicableButVmNotRunning_ThenContextMenuConnectAsUserIsDisabled()
+        public void ContextMenuConnectAsUser_WhenApplicableButVmNotRunning_ThenContextMenuConnectAsUserIsDisabled()
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
@@ -436,7 +436,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void WhenNotApplicable_ThenConnectRdpAsUserIsUnavailable()
+        public void ContextMenuConnectAsUser_WhenNotApplicable_ThenConnectRdpAsUserIsUnavailable()
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
@@ -463,7 +463,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task ContextMenuConnectAsUserDisallowsPersistentCredentialsAndForcesNewConnection()
+        public async Task ContextMenuConnectAsUser_ContextMenuConnectAsUserDisallowsPersistentCredentialsAndForcesNewConnection()
         {
             var context = new Mock<ISessionContext<RdpCredential, RdpParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
@@ -518,7 +518,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenApplicableAndVmRunning_ThenContextConnectSshInNewTerminalIsEnabled()
+        public void ContextConnectSshInNewTerminal_WhenApplicableAndVmRunning_ThenContextConnectSshInNewTerminalIsEnabled()
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
@@ -536,7 +536,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void WhenApplicableButVmNotRunning_ThenContextConnectSshInNewTerminalIsDisabled()
+        public void ContextConnectSshInNewTerminal_WhenApplicableButVmNotRunning_ThenContextConnectSshInNewTerminalIsDisabled()
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
@@ -554,7 +554,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void WhenNotApplicable_ThenContextConnectSshInNewTerminalIsUnavailable()
+        public void ContextConnectSshInNewTerminal_WhenNotApplicable_ThenContextConnectSshInNewTerminalIsUnavailable()
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
@@ -581,7 +581,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task ContextMenuConnectSshInNewTerminalForcesNewConnection()
+        public async Task ContextConnectSshInNewTerminal_ForcesNewConnection()
         {
             var context = new Mock<ISessionContext<ISshCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
@@ -622,7 +622,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenApplicable_ThenDuplicateSessionIsEnabled()
+        public void DuplicateSession_WhenApplicable_ThenDuplicateSessionIsEnabled()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);
@@ -636,7 +636,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void WhenNotApplicable_ThenDuplicateSessionIsDisabled()
+        public void DuplicateSession_WhenNotApplicable_ThenDuplicateSessionIsDisabled()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);
@@ -650,7 +650,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task DuplicateSessionForcesNewConnection()
+        public async Task DuplicateSession_ForcesNewConnection()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);

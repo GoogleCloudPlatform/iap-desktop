@@ -70,11 +70,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         //---------------------------------------------------------------------
-        // ExecuteAsync.
+        // Execute.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task ExecuteSetsActiveNode()
+        public async Task Execute_SetsActiveNode()
         {
             var workspace = new Mock<IProjectWorkspace>();
             var sessionBroker = new Mock<ISessionBroker>();
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenRdpSessionFound_ThenExecuteDoesNotCreateNewSession()
+        public async Task Execute_WhenRdpSessionFound_ThenExecuteDoesNotCreateNewSession()
         {
             var contextFactory = new Mock<ISessionContextFactory>();
             var sessionBroker = new Mock<ISessionBroker>();
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task WhenNoRdpSessionFound_ThenExecuteCreatesNewSession()
+        public async Task Execute_WhenNoRdpSessionFound_ThenExecuteCreatesNewSession()
         {
             var instance = CreateInstanceNode(OperatingSystems.Windows).Object;
 
@@ -182,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSshSessionFoundAndForceNewIsFalse_ThenExecuteDoesNotCreateNewSession()
+        public async Task Execute_WhenSshSessionFoundAndForceNewIsFalse_ThenExecuteDoesNotCreateNewSession()
         {
             var context = new Mock<ISessionContext<ISshCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task WhenSshSessionFoundAndForceNewIsTrue_ThenExecuteCreatesNewSession()
+        public async Task Execute_WhenSshSessionFoundAndForceNewIsTrue_ThenExecuteCreatesNewSession()
         {
             var instance = CreateInstanceNode(OperatingSystems.Linux).Object;
 
@@ -268,7 +268,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task WhenNoSshSessionFound_ThenExecuteCreatesNewSession()
+        public async Task Execute_WhenNoSshSessionFound_ThenExecuteCreatesNewSession()
         {
             var instance = CreateInstanceNode(OperatingSystems.Linux).Object;
 

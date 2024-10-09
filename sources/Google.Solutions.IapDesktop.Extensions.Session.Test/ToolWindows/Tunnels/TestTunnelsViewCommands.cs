@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Tunnel
         //---------------------------------------------------------------------
 
         [Test]
-        public void WindowMenuOpenIsEnabled()
+        public void WindowMenuOpen_IsEnabled()
         {
             var context = new Mock<IMainWindow>();
 

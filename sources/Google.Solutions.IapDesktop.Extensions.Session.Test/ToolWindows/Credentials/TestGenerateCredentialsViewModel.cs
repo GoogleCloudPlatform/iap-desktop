@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsernameIsEmpty_ThenIsUsernameReservedReturnsFalse()
+        public void IsUsernameReserved_WhenUsernameIsEmpty()
         {
             var viewModel = new NewCredentialsViewModel()
             {
@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         }
 
         [Test]
-        public void WhenUsernameIsNotReserved_ThenIsUsernameReservedReturnsFalse()
+        public void IsUsernameReserved_WhenUsernameIsNotReserved()
         {
             var viewModel = new NewCredentialsViewModel()
             {
@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         }
 
         [Test]
-        public void WhenUsernameIsReserved_ThenIsUsernameReservedReturnsTrue()
+        public void IsUsernameReserved_WhenUsernameIsReserved()
         {
             var viewModel = new NewCredentialsViewModel()
             {
@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsernameIsEmpty_ThenIsOkButtonEnabledReturnsFalse()
+        public void IsOkButtonEnabled_WhenUsernameIsEmpty()
         {
             var viewModel = new NewCredentialsViewModel()
             {
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         }
 
         [Test]
-        public void WhenUsernameIsNotReserved_ThenIsOkButtonEnabledReturnsTrue()
+        public void IsOkButtonEnabled_WhenUsernameIsNotReserved()
         {
             var viewModel = new NewCredentialsViewModel()
             {
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
         }
 
         [Test]
-        public void WhenUsernameIsReserved_ThenIsOkButtonEnabledReturnsFalse()
+        public void IsOkButtonEnabled_WhenUsernameIsReserved()
         {
             var viewModel = new NewCredentialsViewModel()
             {
