@@ -166,16 +166,6 @@ namespace Google.Solutions.Terminal.Controls
         }
 
         /// <summary>
-        /// Connection closed abnormally.
-        /// </summary>
-        public event EventHandler<ExceptionEventArgs>? ConnectionFailed;
-
-        /// <summary>
-        /// Connection closed normally.
-        /// </summary>
-        public event EventHandler<ConnectionClosedEventArgs>? ConnectionClosed;
-
-        /// <summary>
         /// The server authentication warning has been displayed.
         /// </summary>
         public event EventHandler? ServerAuthenticationWarningDisplayed;
@@ -260,9 +250,7 @@ namespace Google.Solutions.Terminal.Controls
                     //
                     this.client.Disconnect();
 
-                    this.ConnectionClosed?.Invoke(
-                        this,
-                        new ConnectionClosedEventArgs(DisconnectReason.FormClosed));
+                    OnConnectionClosed(DisconnectReason.FormClosed);
 
                     this.State = ConnectionState.NotConnected;
                 }
@@ -271,7 +259,7 @@ namespace Google.Solutions.Terminal.Controls
                     TerminalTraceSource.Log.TraceVerbose(
                         "RemoteDesktopPane: Disconnecting failed");
 
-                    this.ConnectionFailed?.Invoke(this, new ExceptionEventArgs(e));
+                    OnConnectionFailed(e);
                 }
             }
 
@@ -486,9 +474,7 @@ namespace Google.Solutions.Terminal.Controls
                 //
                 this.ContainerFullScreen = false;
 
-                this.ConnectionFailed?.Invoke(
-                    this,
-                    new ExceptionEventArgs(new RdpFatalException(args.errorCode)));
+                OnConnectionFailed(new RdpFatalException(args.errorCode));
 
                 this.State = ConnectionState.NotConnected;
             }
@@ -509,9 +495,7 @@ namespace Google.Solutions.Terminal.Controls
 
                 if (!e.IsIgnorable)
                 {
-                    this.ConnectionFailed?.Invoke(
-                        this,
-                        new ExceptionEventArgs(e));
+                    OnConnectionFailed(e);
 
                     this.State = ConnectionState.NotConnected;
                 }
@@ -558,40 +542,32 @@ namespace Google.Solutions.Terminal.Controls
                     // NB. The same error code can occur during the initial connection,
                     // but then it should be treated as an error.
                     //
-                    this.ConnectionClosed?.Invoke(
-                        this,
-                        new ConnectionClosedEventArgs(DisconnectReason.Timeout));
+                    OnConnectionClosed(DisconnectReason.Timeout);
                 }
                 else if (e.IsUserDisconnectedRemotely)
                 {
                     //
                     // User signed out or clicked Start > Disconnect. 
                     //
-                    this.ConnectionClosed?.Invoke(
-                        this,
-                        new ConnectionClosedEventArgs(DisconnectReason.DisconnectedByUser));
+                    OnConnectionClosed(DisconnectReason.DisconnectedByUser);
                 }
                 else if (e.IsUserDisconnectedLocally)
                 {
                     //
                     // User clicked X in the connection bar or aborted a reconnect.
                     //
-                    this.ConnectionClosed?.Invoke(
-                        this,
-                        new ConnectionClosedEventArgs(DisconnectReason.DisconnectedByUser));
+                    OnConnectionClosed(DisconnectReason.DisconnectedByUser);
                 }
                 else if (e.IsLogonAborted)
                 {
                     //
                     // User canceled the logon prompt.
                     //
-                    this.ConnectionClosed?.Invoke(
-                        this,
-                        new ConnectionClosedEventArgs(DisconnectReason.DisconnectedByUser));
+                    OnConnectionClosed(DisconnectReason.DisconnectedByUser);
                 }
                 else if (!e.IsIgnorable)
                 {
-                    this.ConnectionFailed?.Invoke(this, new ExceptionEventArgs(e));
+                    OnConnectionFailed(e);
                 }
 
                 this.State = ConnectionState.NotConnected;
@@ -1233,23 +1209,6 @@ namespace Google.Solutions.Terminal.Controls
             {
                 this.Bounds = bounds;
             }
-        }
-
-        public class ConnectionClosedEventArgs : EventArgs
-        {
-            internal ConnectionClosedEventArgs(DisconnectReason reason)
-            {
-                this.Reason = reason;
-            }
-
-            public DisconnectReason Reason { get; }
-        }
-
-        public enum DisconnectReason
-        {
-            Timeout,
-            DisconnectedByUser,
-            FormClosed
         }
     }
 }

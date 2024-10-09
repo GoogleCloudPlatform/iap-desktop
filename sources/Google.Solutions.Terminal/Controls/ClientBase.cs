@@ -19,11 +19,13 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Google.Solutions.Terminal.Controls.RdpClient;
 
 namespace Google.Solutions.Terminal.Controls
 {
@@ -43,6 +45,33 @@ namespace Google.Solutions.Terminal.Controls
         /// Simulate key strokes to send a piece of text.
         /// </summary>
         public abstract void SendText(string text);
+
+
+        //---------------------------------------------------------------------
+        // Connection events.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Connection closed abnormally.
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? ConnectionFailed;
+
+        /// <summary>
+        /// Connection closed normally.
+        /// </summary>
+        public event EventHandler<ConnectionClosedEventArgs>? ConnectionClosed;
+
+        protected void OnConnectionFailed(Exception e)
+        {
+            this.ConnectionFailed?.Invoke(this, new ExceptionEventArgs(e));
+        }
+
+        protected void OnConnectionClosed(DisconnectReason reason)
+        {
+            this.ConnectionClosed?.Invoke(
+                this,
+                new ConnectionClosedEventArgs(reason));
+        }
 
         //---------------------------------------------------------------------
         // State tracking.
@@ -149,6 +178,23 @@ namespace Google.Solutions.Terminal.Controls
             /// User logged on, session is ready to use.
             /// </summary>
             LoggedOn
+        }
+
+        public class ConnectionClosedEventArgs : EventArgs
+        {
+            internal ConnectionClosedEventArgs(DisconnectReason reason)
+            {
+                this.Reason = reason;
+            }
+
+            public DisconnectReason Reason { get; }
+        }
+
+        public enum DisconnectReason
+        {
+            Timeout,
+            DisconnectedByUser,
+            FormClosed
         }
     }
 }
