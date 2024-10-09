@@ -23,6 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Text;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Terminal.Controls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -1129,7 +1130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
             {
                 // NB. This does not work for any combining characters, but
                 // that's ok since this method is for testing only.
-                var ch = KeyUtil.CharFromKeyCode(keyCode);
+                var ch = KeyboardUtil.CharFromKeyCode(keyCode);
                 if (ch.Length >= 1)
                 {
                     OnKeyPress(new KeyPressEventArgs(ch[0]));

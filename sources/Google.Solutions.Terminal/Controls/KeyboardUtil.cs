@@ -23,12 +23,17 @@ using Google.Solutions.Mvvm.Interop;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Terminal.Controls
 {
-    internal static class KeyboardUtil
+    public static class KeyboardUtil // TODO: Make internal once it's no longer used in Session project
     {
+        /// <summary>
+        /// Generate a WM_KEYDOWN/WM_CHAR/WM_KEYUp message sequence.
+        /// </summary>
+        /// <remarks>Uses the current keyboard state.</remarks>
         public static IEnumerable<Message> ToMessageSequence(
             IntPtr hwnd,
             Keys key)
@@ -50,7 +55,6 @@ namespace Google.Solutions.Terminal.Controls
                 WParam = new IntPtr(virtualKeyCode),
             };
 
-
             yield return new Message()
             {
                 HWnd = hwnd,
@@ -59,7 +63,6 @@ namespace Google.Solutions.Terminal.Controls
                 WParam = new IntPtr(virtualKeyCode),
             };
 
-
             yield return new Message()
             {
                 HWnd = hwnd,
@@ -67,6 +70,35 @@ namespace Google.Solutions.Terminal.Controls
                 LParam = new IntPtr((scanCode & 0xFF) << 16),
                 WParam = new IntPtr(virtualKeyCode),
             };
+        }
+
+        /// <summary>
+        /// Map a virtual key to a char.
+        /// </summary>
+        /// <remarks>Uses the current keyboard state and layout.</remarks>
+        public static string CharFromKeyCode(Keys key)
+        {
+            var keyboardState = new byte[255];
+            if (!NativeMethods.GetKeyboardState(keyboardState))
+            {
+                return "";
+            }
+
+            var virtualKeyCode = (uint)key;
+            var scanCode = NativeMethods.MapVirtualKey(virtualKeyCode, 0);
+            var inputLocaleIdentifier = NativeMethods.GetKeyboardLayout(0);
+
+            var result = new StringBuilder(10);
+            _ = NativeMethods.ToUnicodeEx(
+                virtualKeyCode,
+                scanCode,
+                keyboardState,
+                result,
+                (int)result.Capacity,
+                0,
+                inputLocaleIdentifier);
+
+            return result.ToString();
         }
 
         //---------------------------------------------------------------------
@@ -80,6 +112,19 @@ namespace Google.Solutions.Terminal.Controls
 
             [DllImport("user32.dll")]
             internal static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+            [DllImport("user32.dll")]
+            internal static extern IntPtr GetKeyboardLayout(uint idThread);
+
+            [DllImport("user32.dll")]
+            internal static extern int ToUnicodeEx(
+                uint wVirtKey,
+                uint wScanCode,
+                byte[] lpKeyState,
+                [Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pwszBuff,
+                int cchBuff,
+                uint wFlags,
+                IntPtr dwhkl);
         }
     }
 }
