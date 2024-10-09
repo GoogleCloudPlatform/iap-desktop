@@ -43,7 +43,7 @@ namespace Google.Solutions.Terminal.Controls
     /// a smooth full-screen experience and uses a state machine
     /// to ensure reliable operation.
     /// </summary>
-    public partial class RdpClient : UserControl
+    public partial class RdpClient : ClientBase
     {
         private const string WebAuthnPlugin = "webauthn.dll";
 
@@ -58,8 +58,6 @@ namespace Google.Solutions.Terminal.Controls
         private readonly IMsRdpClientAdvancedSettings6 clientAdvancedSettings;
         private readonly IMsRdpClientSecuredSettings clientSecuredSettings;
         private readonly IMsRdpExtendedSettings clientExtendedSettings;
-
-        private ConnectionState state = ConnectionState.NotConnected;
 
         private readonly DeferredCallback deferResize;
         private Form? parentForm = null;
@@ -167,20 +165,6 @@ namespace Google.Solutions.Terminal.Controls
             };
         }
 
-        //---------------------------------------------------------------------
-        // State tracking.
-        //
-        // Many MSTSCAX operations only work reliably when the control is in
-        // a certain state, but the control won't reliably tell us which state
-        // it is in. Thus, we maintain a state machine to track the control's
-        // state.
-        //---------------------------------------------------------------------
-
-        /// <summary>
-        /// Connection state has changed.
-        /// </summary>
-        public event EventHandler? StateChanged;
-
         /// <summary>
         /// Connection closed abnormally.
         /// </summary>
@@ -196,89 +180,15 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         public event EventHandler? ServerAuthenticationWarningDisplayed;
 
-        private void ExpectState(ConnectionState expectedState)
-        {
-            if (this.State != expectedState)
-            {
-                throw new InvalidOperationException($"Operation is not allowed in state {this.State}");
-            }
-        }
-
-        /// <summary>
-        /// Current state of the connection.
-        /// </summary>
-        [Browsable(true)]
-        public ConnectionState State
-        {
-            get => this.state;
-            private set
-            {
-                Debug.Assert(!this.InvokeRequired);
-                if (this.state != value)
-                {
-                    this.state = value;
-                    this.StateChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
-        public enum ConnectionState
-        {
-            /// <summary>
-            /// Client not connected yet or an existing connection has 
-            /// been lost.
-            /// </summary>
-            NotConnected,
-
-            /// <summary>
-            /// Client is in the process of connecting.
-            /// </summary>
-            Connecting,
-
-            /// <summary>
-            /// Client connected, but user log on hasn't completed yet.
-            /// </summary>
-            Connected,
-
-            /// <summary>
-            /// Client is disconnecting.
-            /// </summary>
-            Disconnecting,
-
-            /// <summary>
-            /// User logged on, session is ready to use.
-            /// </summary>
-            LoggedOn
-        }
 
         /// <summary>
         /// Wait until a certain state has been reached. Mainly
         /// intended for testing.
         /// </summary>
-        internal async Task AwaitStateAsync(ConnectionState state)
+        internal override async Task AwaitStateAsync(ConnectionState state)
         {
-            Debug.Assert(!this.InvokeRequired);
-
-            if (this.State == state)
-            {
-                return;
-            }
-
-            var completionSource = new TaskCompletionSource<ConnectionState>();
-
-            void onStateChanged(object sender, EventArgs args)
-            {
-                if (this.State == state)
-                {
-                    this.StateChanged -= onStateChanged;
-                    completionSource.SetResult(this.State);
-                }
-            }
-
-            this.StateChanged += onStateChanged;
-
-            await completionSource
-                .Task
+            await base
+                .AwaitStateAsync(state)
                 .ConfigureAwait(true);
 
             //
@@ -495,7 +405,7 @@ namespace Google.Solutions.Terminal.Controls
                 }
                 else if (
                     this.State == ConnectionState.Connecting ||
-                    this.state == ConnectionState.Connected)
+                    this.State == ConnectionState.Connected)
                 {
                     //
                     // It's not safe to resize now, but it will
@@ -856,7 +766,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         public Form? MainWindow { get; set; }
 
-        public void Connect()
+        public override void Connect()
         {
             Debug.Assert(!this.client.IsDisposed);
 
@@ -1068,9 +978,9 @@ namespace Google.Solutions.Terminal.Controls
         }
 
         /// <summary>
-        /// Simulate keys to type a piece of text.
+        /// Simulate key strokes to send a piece of text.
         /// </summary>
-        public void SendText(string text)
+        public override void SendText(string text)
         {
             if (string.IsNullOrEmpty(text))
             {
