@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void RootIsDirectory()
+        public void Root_IsDirectory()
         {
             using (var fs = CreateFileSystem())
             {
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenServerReturnsUnorderedList_ThenListFilesReturnsOrderedList()
+        public async Task ListFiles_WhenServerReturnsUnorderedList_ThenListFilesReturnsOrderedList()
         {
             using (var fs = CreateFileSystem(
                 CreateFile("dir-2", FilePermissions.Directory),
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenFileIsDotLink_ThenListFilesIgnoresFile()
+        public async Task ListFiles_WhenFileIsDotLink_ThenListFilesIgnoresFile()
         {
             using (var fs = CreateFileSystem(
                 CreateFile(".", FilePermissions.SymbolicLink),
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenFileStartsWithDot_ThenListFilesAppliesAttribute()
+        public async Task ListFiles_WhenFileStartsWithDot_ThenListFilesAppliesAttribute()
         {
             using (var fs = CreateFileSystem(
                 CreateFile(".hidden", FilePermissions.OtherRead)))
@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenFileIsSymlink_ThenListFilesAppliesAttribute()
+        public async Task ListFiles_WhenFileIsSymlink_ThenListFilesAppliesAttribute()
         {
             using (var fs = CreateFileSystem(
                 CreateFile("symlink", FilePermissions.SymbolicLink)))
@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenFileIsDevice_ThenListFilesAppliesAttribute(
+        public async Task ListFiles_WhenFileIsDevice_ThenListFilesAppliesAttribute(
             [Values(
                 FilePermissions.Socket,
                 FilePermissions.Fifo,
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenFileIsExecutable_ThenFileTypeIsSpecial()
+        public void TranslateFileType_WhenFileIsExecutable_ThenFileTypeIsSpecial()
         {
             using (var fs = CreateFileSystem())
             {
@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public void WheFileIsSymlink_ThenFileTypeIsIsSpecial()
+        public void TranslateFileType_WhenFileIsSymlink_ThenFileTypeIsIsSpecial()
         {
             using (var fs = CreateFileSystem())
             {
@@ -211,7 +211,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public void WheFileIsConfigFile_ThenFileTypeIsSpecial()
+        public void TranslateFileType_WhenFileIsConfigFile_ThenFileTypeIsSpecial()
         {
             using (var fs = CreateFileSystem())
             {
@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public void WhenFileIsDirectory_ThenFileTypeIsDirectory()
+        public void TranslateFileType_WhenFileIsDirectory_ThenFileTypeIsDirectory()
         {
             using (var fs = CreateFileSystem())
             {
@@ -244,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public void WheFileNameContainsInvalidCharacters_ThenFileTypeIsPlain(
+        public void TranslateFileType_WhenFileNameContainsInvalidCharacters_ThenFileTypeIsPlain(
             [Values("file?", "<file", "COM1", "file.")] string fileName)
         {
             using (var fs = CreateFileSystem())

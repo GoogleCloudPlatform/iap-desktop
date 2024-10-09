@@ -210,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed(
+        public async Task Connect_WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
             var sshCredential = new PlatformCredential(
@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenWrongPort_ThenErrorIsShownAndWindowIsClosed(
+        public async Task Connect_WhenWrongPort_ThenErrorIsShownAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
             var sshCredential = new PlatformCredential(
@@ -280,7 +280,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenKeyUnknown_ThenErrorIsShownAndWindowIsClosed(
+        public async Task Connect_WhenKeyUnknown_ThenErrorIsShownAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
@@ -314,7 +314,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenAuthenticationSucceeds_ThenConnectionSuceededEventEventIsFired(
+        public async Task Connect_WhenAuthenticationSucceeds_ThenConnectionSuceededEventEventIsFired(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
@@ -344,7 +344,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSendingExit_ThenDisconnectedEventIsFiredAndWindowIsClosed(
+        public async Task Disonnect_WhenSendingExit_ThenDisconnectedEventIsFiredAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
@@ -367,7 +367,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenSendingCtrlD_ThenDisconnectedEventIsFiredAndWindowIsClosed(
+        public async Task Disonnect_WhenSendingCtrlD_ThenDisconnectedEventIsFiredAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
@@ -390,7 +390,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenClosingPane_ThenDisposeDoesNotHang(
+        public async Task Disonnect_WhenClosingPane_ThenDisposeDoesNotHang(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
@@ -418,7 +418,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenPastingMultiLineTextFromClipboard_ThenLineEndingsAreConverted(
+        public async Task Clipboard_WhenPastingMultiLineTextFromClipboard_ThenLineEndingsAreConverted(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -454,7 +454,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenConnected_ThenPseudoterminalHasRightSize(
+        public async Task Send_WhenConnected_ThenPseudoterminalHasRightSize(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -481,7 +481,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenConnected_ThenPseudoterminalHasRightEncoding(
+        public async Task Send_WhenConnected_ThenPseudoterminalHasRightEncoding(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -512,7 +512,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenSendingBackspace_ThenLastCharacterIsRemoved(
+        public async Task Send_WhenSendingBackspace_ThenLastCharacterIsRemoved(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -543,7 +543,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenUsingHomeAndEnd_ThenCursorJumpsToPosition(
+        public async Task Send_WhenUsingHomeAndEnd_ThenCursorJumpsToPosition(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -581,7 +581,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenUsingCtrlAAndCtrlE_ThenCursorJumpsToPosition(
+        public async Task Send_WhenUsingCtrlAAndCtrlE_ThenCursorJumpsToPosition(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -619,7 +619,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenUsingAlt_ThenInputIsNotInterpretedAsKeySequence(
+        public async Task Send_WhenUsingAlt_ThenInputIsNotInterpretedAsKeySequence(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -646,7 +646,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenTerminalSettingsChange_ThenSettingsAreReapplied(
+        public async Task Send_WhenTerminalSettingsChange_ThenSettingsAreReapplied(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {

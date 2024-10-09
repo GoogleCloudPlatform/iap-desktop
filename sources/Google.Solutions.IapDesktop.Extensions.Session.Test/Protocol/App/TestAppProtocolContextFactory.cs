@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTargetUnsupported_ThenCreateContextThrowsException()
+        public void CreateContext_WhenTargetUnsupported_ThenCreateContextThrowsException()
         {
             var factory = new AppProtocolContextFactory(
                 CreateProtocol(true),
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         }
 
         [Test]
-        public void WhenClientUnavailable_ThenCreateContextThrowsException()
+        public void CreateContext_WhenClientUnavailable_ThenCreateContextThrowsException()
         {
             var factory = new AppProtocolContextFactory(
                 CreateProtocol(false),
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenFlagsUnsupported_ThenCreateContextThrowsException()
+        public void CreateContext_WhenFlagsUnsupported_ThenCreateContextThrowsException()
         {
             var settings = new ConnectionSettings(SampleLocator);
             var settingsService = CreateSettingsService(settings);
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         }
 
         [Test]
-        public async Task WhenFlagsClear_ThenCreateContextUsesNoNetworkCredentials()
+        public async Task CreateContext_WhenFlagsClear_ThenCreateContextUsesNoNetworkCredentials()
         {
             var settings = new ConnectionSettings(SampleLocator);
             var settingsService = CreateSettingsService(settings);
@@ -158,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
 
 
         [Test]
-        public async Task WhenTryUseRdpNetworkCredentialsIsSetButNoCredentialsFound_ThenCreateContextUsesNoNetworkCredentials()
+        public async Task CreateContext_WhenTryUseRdpNetworkCredentialsIsSetButNoCredentialsFound_ThenCreateContextUsesNoNetworkCredentials()
         {
             var settings = new ConnectionSettings(SampleLocator);
             var settingsService = CreateSettingsService(settings);
@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         }
 
         [Test]
-        public async Task WhenTryUseRdpNetworkCredentials_ThenCreateContextUsesRdpNetworkCredentials()
+        public async Task CreateContext_WhenTryUseRdpNetworkCredentials_ThenCreateContextUsesRdpNetworkCredentials()
         {
             var settings = new ConnectionSettings(SampleLocator);
             settings.RdpUsername.Value = "user";
@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task CreateContextAppliesSettings()
+        public async Task CreateContext_AppliesSettings()
         {
             var settings = new ConnectionSettings(SampleLocator);
             settings.AppUsername.Value = "user";

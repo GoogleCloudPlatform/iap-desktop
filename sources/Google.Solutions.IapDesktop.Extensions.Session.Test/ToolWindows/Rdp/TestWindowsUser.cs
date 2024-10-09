@@ -44,13 +44,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         // IsUserPrincipalName.
         //---------------------------------------------------------------------
 
-        public void WhenNameIsValid_ThenIsUserPrincipalNameReturnsTrue(
+        public void IsUserPrincipalName_WhenNameIsValid(
             [Values("user@domain.com", "a@b.c")] string upn)
         {
             Assert.IsTrue(WindowsUser.IsUserPrincipalName(upn));
         }
 
-        public void WhenNameIsInvalid_ThenIsUserPrincipalNameReturnsFalse(
+        public void IsUserPrincipalNameWhenNameIsInvalid(
             [Values("user@", "@user", "a.b@c")] string upn)
         {
             Assert.IsFalse(WindowsUser.IsUserPrincipalName(upn));
@@ -60,13 +60,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         // IsLocalUsername.
         //---------------------------------------------------------------------
 
-        public void WhenNameIsValid__ThenIsNetbiosUsernameReturnsTrue(
+        public void IsLocalUsername_WhenNameIsValid(
             [Values("user", "u")] string name)
         {
             Assert.IsTrue(WindowsUser.IsLocalUsername(name));
         }
 
-        public void WhenNameIsInvalid_ThenIsNetbiosUsernameReturnsFalse(
+        public void IsLocalUsername_WhenNameIsInvalid(
             [Values("DOMAIN\\user", "u12345678901234567890", "user@domain.tld")] string name)
         {
             Assert.IsFalse(WindowsUser.IsLocalUsername(name));
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenEmailCompliant_ThenSuggestFromGoogleEmailAddressReturnsName()
+        public void SuggestUsername_WhenEmailCompliant_ThenReturnsName()
         {
             Assert.AreEqual(
                 "bob.b",
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         }
 
         [Test]
-        public void WhenEmailTooLong_ThenSuggestFromGoogleEmailAddressReturnsName()
+        public void SuggestUsername_WhenEmailTooLong_ThenReturnsName()
         {
             Assert.AreEqual(
                 "bob01234567890123456",
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         }
 
         [Test]
-        public void WhenEmailNull_ThenSuggestFromGoogleEmailAddressReturnsDefault()
+        public void SuggestUsername_WhenEmailNull_ThenReturnsDefault()
         {
             Assert.AreEqual(
                 Environment.UserName,
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
         }
 
         [Test]
-        public void WhenEmailInvalid_ThenSuggestFromGoogleEmailAddressReturnsDefault()
+        public void SuggestUsername_WhenEmailInvalid_ThenReturnsDefault()
         {
             Assert.AreEqual(
                 Environment.UserName,

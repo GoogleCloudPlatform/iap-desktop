@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenReceivedTextContainsCrlf_ThenOutputSpansTwoRows()
+        public void ReceiveData_WhenReceivedTextContainsCrlf_ThenOutputSpansTwoRows()
         {
             this.terminal.ReceiveData("sample\r\ntext");
 
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPastingClipboardContentWithCrlf_ThenTerminalSendsClipboardContentWithNewline()
+        public void Clipboard_WhenPastingClipboardContentWithCrlf_ThenTerminalSendsClipboardContentWithNewline()
         {
             ClipboardUtil.SetText("sample\r\ntext");
 
@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenEnablingBracketedMode_ThenPastedTextIsBracketed()
+        public void Clipboard_WhenEnablingBracketedMode_ThenPastedTextIsBracketed()
         {
             //
             // NB. This test requires a patched version of vtnetcore. If it fails,
@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCtrlVIsEnabled_ThenTypingCtrlVSendsClipboardContent()
+        public void Clipboard_WhenCtrlVIsEnabled_ThenTypingCtrlVSendsClipboardContent()
         {
             ClipboardUtil.SetText("sample\r\ntext");
 
@@ -151,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenCtrlVIsDisabled_ThenTypingCtrlVSendsKeystroke()
+        public void Clipboard_WhenCtrlVIsDisabled_ThenTypingCtrlVSendsKeystroke()
         {
             ClipboardUtil.SetText("sample\r\ntext");
 
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenShiftInsertIsEnabled_ThenTypingShiftInsertSendsClipboardContent()
+        public void Clipboard_WhenShiftInsertIsEnabled_ThenTypingShiftInsertSendsClipboardContent()
         {
             ClipboardUtil.SetText("sample\r\ntext");
 
@@ -177,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenShiftInsertIsDisabled_ThenTypingShiftInsertSendsKeystroke()
+        public void Clipboard_WhenShiftInsertIsDisabled_ThenTypingShiftInsertSendsKeystroke()
         {
             ClipboardUtil.SetText("sample\r\ntext");
 
@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCtrlCIsEnabledAndTextSelected_ThenTypingCtrlCSetsClipboardContentAndClearsSelection()
+        public void Clipboard_WhenCtrlCIsEnabledAndTextSelected_ThenTypingCtrlCSetsClipboardContentAndClearsSelection()
         {
             this.terminal.ReceiveData(
                 "first line\r\n" +
@@ -209,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenCtrlCIsEnabledButNoTextSelected_ThenTypingCtrlCSendsKeystroke()
+        public void Clipboard_WhenCtrlCIsEnabledButNoTextSelected_ThenTypingCtrlCSendsKeystroke()
         {
             this.terminal.ReceiveData(
                 "first line\r\n" +
@@ -226,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenCtrlCIsDisabledAndTextSelected_ThenTypingCtrlCClearsSelection()
+        public void Clipboard_WhenCtrlCIsDisabledAndTextSelected_ThenTypingCtrlCClearsSelection()
         {
             this.terminal.ReceiveData(
                 "first line\r\n" +
@@ -243,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenCtrlCIsDisabledAndNoTextSelected_ThenTypingCtrlCSendsKeystroke()
+        public void Clipboard_WhenCtrlCIsDisabledAndNoTextSelected_ThenTypingCtrlCSendsKeystroke()
         {
             this.terminal.ReceiveData(
                 "first line\r\n" +
@@ -264,7 +264,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenCtrlInsertIsEnabledAndTextSelected_ThenTypingCtrlInsertSetsClipboardContentAndClearsSelection()
+        public void Clipboard_WhenCtrlInsertIsEnabledAndTextSelected_ThenTypingCtrlInsertSetsClipboardContentAndClearsSelection()
         {
             this.terminal.ReceiveData(
                 "first line\r\n" +
@@ -281,7 +281,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenCtrlInsertIsEnabledButNoTextSelected_ThenTypingCtrlInsertSendsKeystroke()
+        public void Clipboard_WhenCtrlInsertIsEnabledButNoTextSelected_ThenTypingCtrlInsertSendsKeystroke()
         {
             this.terminal.ReceiveData(
                 "first line\r\n" +
@@ -298,7 +298,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenCtrlInsertIsDisabledAndTextSelected_ThenTypingCtrlInsertClearsSelection()
+        public void Clipboard_WhenCtrlInsertIsDisabledAndTextSelected_ThenTypingCtrlInsertClearsSelection()
         {
             this.terminal.ReceiveData(
                 "first line\r\n" +
@@ -315,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenCtrlInsertIsDisabledAndNoTextSelected_ThenTypingCtrlInsertSendsKeystroke()
+        public void Clipboard_WhenCtrlInsertIsDisabledAndNoTextSelected_ThenTypingCtrlInsertSendsKeystroke()
         {
             this.terminal.ReceiveData(
                 "first line\r\n" +
@@ -355,7 +355,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenCtrlAEnabledAndCursorAtEnd_ThenTypingCtrlASelectsAllText()
+        public void SelectText_WhenCtrlAEnabledAndCursorAtEnd_ThenTypingCtrlASelectsAllText()
         {
             var textStraddlingViewPort = GenerateText(100, 20);
             this.terminal.ReceiveData(textStraddlingViewPort);
@@ -371,7 +371,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenCtrlAEnabledAndCursorNotAtEnd_ThenTypingCtrlASelectsAllText()
+        public void SelectText_WhenCtrlAEnabledAndCursorNotAtEnd_ThenTypingCtrlASelectsAllText()
         {
             var textStraddlingViewPort = GenerateText(100, 20);
             this.terminal.ReceiveData(textStraddlingViewPort);
@@ -388,7 +388,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenCtrlAEnabledAndCursorNotAtEnd_ThenTypingCtrlACtrlCCopiesTimmedTextToClipboard()
+        public void SelectText_WhenCtrlAEnabledAndCursorNotAtEnd_ThenTypingCtrlACtrlCCopiesTimmedTextToClipboard()
         {
             var textSmallerThanViewPort = GenerateText(3, 20);
             this.terminal.ReceiveData(textSmallerThanViewPort);
@@ -407,7 +407,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenCtrlAEnabledAndScrolledToTop_ThenTypingCtrlASelectsAllText()
+        public void SelectText_WhenCtrlAEnabledAndScrolledToTop_ThenTypingCtrlASelectsAllText()
         {
             var textStraddlingViewPort = GenerateText(100, 20);
             this.terminal.ReceiveData(textStraddlingViewPort);
@@ -424,7 +424,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenCtrlADisbled_ThenTypingCtrlASendsKeystroke()
+        public void SelectText_WhenCtrlADisbled_ThenTypingCtrlASendsKeystroke()
         {
             var textStraddlingViewPort = GenerateText(100, 20);
             this.terminal.ReceiveData(textStraddlingViewPort);
@@ -441,7 +441,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenShiftLeftRightEnabled_ThenTypingShiftLeftStartsSelection()
+        public void SelectText_WhenShiftLeftRightEnabled_ThenTypingShiftLeftStartsSelection()
         {
             this.terminal.ReceiveData("0123456789");
 
@@ -469,7 +469,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenShiftLeftRightEnabled_ThenTypingShiftRightStartsSelection()
+        public void SelectText_WhenShiftLeftRightEnabled_ThenTypingShiftRightStartsSelection()
         {
             this.terminal.ReceiveData("0123456789");
 
@@ -497,7 +497,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenShiftLeftRightEnabled_ThenTypingShiftLeftOrRightExtendsSelectionBeyondCurrentRow()
+        public void SelectText_WhenShiftLeftRightEnabled_ThenTypingShiftLeftOrRightExtendsSelectionBeyondCurrentRow()
         {
             this.terminal.ReceiveData(
                 "abcde\r\n" +
@@ -528,7 +528,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenShiftLeftRightDisabled_ThenTypingShiftLeftSendsKeystroke()
+        public void SelectText_WhenShiftLeftRightDisabled_ThenTypingShiftLeftSendsKeystroke()
         {
             this.terminal.EnableShiftLeftRight = false;
             this.terminal.SimulateKey(Keys.Shift | Keys.Left);
@@ -538,7 +538,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenShiftLeftRightDisabled_ThenTypingShiftRightSendsKeystroke()
+        public void SelectText_WhenShiftLeftRightDisabled_ThenTypingShiftRightSendsKeystroke()
         {
             this.terminal.EnableShiftLeftRight = false;
             this.terminal.SimulateKey(Keys.Shift | Keys.Right);
@@ -552,7 +552,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenShiftUpDownEnabled_ThenTypingUpOrDownExtendsSelectionBeyondCurrentRow()
+        public void SelectText_WhenShiftUpDownEnabled_ThenTypingUpOrDownExtendsSelectionBeyondCurrentRow()
         {
             this.terminal.ReceiveData(
                 "abcde\r\n" +
@@ -587,7 +587,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenShiftUpDownDisabled_ThenTypingShiftDownSendsKeystroke()
+        public void SelectText_WhenShiftUpDownDisabled_ThenTypingShiftDownSendsKeystroke()
         {
             this.terminal.EnableShiftUpDown = false;
             this.terminal.SimulateKey(Keys.Shift | Keys.Down);
@@ -597,7 +597,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenShiftUpDownDisabled_ThenTypingShiftUpSendsKeystroke()
+        public void SelectText_WhenShiftUpDownDisabled_ThenTypingShiftUpSendsKeystroke()
         {
             this.terminal.EnableShiftUpDown = false;
             this.terminal.SimulateKey(Keys.Shift | Keys.Up);
@@ -611,7 +611,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenTextSelected_ThenTypingClearsSelectionAndSendsKey()
+        public void SelectText_WhenTextSelected_ThenTypingClearsSelectionAndSendsKey()
         {
             var textStraddlingViewPort = GenerateText(3, 20);
             this.terminal.ReceiveData(textStraddlingViewPort);
@@ -626,7 +626,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenTextSelected_ThenTypingEnterClearsSelectionWithoutSendingKey()
+        public void SelectText_WhenTextSelected_ThenTypingEnterClearsSelectionWithoutSendingKey()
         {
             var textStraddlingViewPort = GenerateText(3, 20);
             this.terminal.ReceiveData(textStraddlingViewPort);
@@ -645,7 +645,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenControlLeftRightEnabled_ThenTypingControlLeftSendsJumpWordKeystroke()
+        public void Navigate_WhenControlLeftRightEnabled_ThenTypingControlLeftSendsJumpWordKeystroke()
         {
             this.terminal.EnableCtrlLeftRight = true;
             this.terminal.SimulateKey(Keys.Control | Keys.Left);
@@ -654,7 +654,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenControlLeftRightDisabled_ThenTypingControlLeftSendsKeystroke()
+        public void Navigate_WhenControlLeftRightDisabled_ThenTypingControlLeftSendsKeystroke()
         {
             this.terminal.EnableCtrlLeftRight = true;
             this.terminal.SimulateKey(Keys.Control | Keys.Right);
@@ -663,7 +663,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenControlLeftRightDisabled_ThenTypingControlRightSendsKeystroke()
+        public void Navigate_WhenControlLeftRightDisabled_ThenTypingControlRightSendsKeystroke()
         {
             this.terminal.EnableCtrlLeftRight = false;
             this.terminal.SimulateKey(Keys.Control | Keys.Right);
@@ -673,7 +673,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenControlLeftRightDisabled_ThenTypingControlKeftSendsKeystroke()
+        public void Navigate_WhenControlLeftRightDisabled_ThenTypingControlKeftSendsKeystroke()
         {
             this.terminal.EnableCtrlLeftRight = false;
             this.terminal.SimulateKey(Keys.Control | Keys.Left);
@@ -687,7 +687,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenControlUpDownEnabledAndTerminalFull_ThenTypingControlUpScrollsUpOneLine()
+        public void Scroll_WhenControlUpDownEnabledAndTerminalFull_ThenTypingControlUpScrollsUpOneLine()
         {
             var textStraddlingViewPort = GenerateText(100, 20);
             this.terminal.ReceiveData(textStraddlingViewPort);
@@ -703,7 +703,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenControlUpDownEnabledAndTerminalNotFull_ThenTypingControlUpIsIgnored()
+        public void Scroll_WhenControlUpDownEnabledAndTerminalNotFull_ThenTypingControlUpIsIgnored()
         {
             var textNotEnoughToFillViewPort = GenerateText(3, 20);
             this.terminal.ReceiveData(textNotEnoughToFillViewPort);
@@ -718,7 +718,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenControlUpDownEnabledAndTerminalFull_ThenTypingControlDownScrollsUpOneLine()
+        public void Scroll_WhenControlUpDownEnabledAndTerminalFull_ThenTypingControlDownScrollsUpOneLine()
         {
             var textStraddlingViewPort = GenerateText(100, 20);
             this.terminal.ReceiveData(textStraddlingViewPort);
@@ -734,7 +734,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenControlUpDownEnabledAndTerminalScrolledToEnd_ThenTypingControlDownIsIgnored()
+        public void Scroll_WhenControlUpDownEnabledAndTerminalScrolledToEnd_ThenTypingControlDownIsIgnored()
         {
             var textStraddlingViewPort = GenerateText(100, 20);
             this.terminal.ReceiveData(textStraddlingViewPort);
@@ -749,7 +749,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenControlUpDownDisabled_ThenTypingControlUpSendsKeystroke()
+        public void Scroll_WhenControlUpDownDisabled_ThenTypingControlUpSendsKeystroke()
         {
             this.terminal.EnableCtrlUpDown = false;
             this.terminal.SimulateKey(Keys.Control | Keys.Up);
@@ -759,7 +759,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenControlUpDownDisabled_ThenTypingControlDownSendsKeystroke()
+        public void Scroll_WhenControlUpDownDisabled_ThenTypingControlDownSendsKeystroke()
         {
             this.terminal.EnableCtrlUpDown = false;
             this.terminal.SimulateKey(Keys.Control | Keys.Down);
@@ -773,7 +773,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenControlHomeEndEnabledAndTerminalFull_ThenTypingControlHomeScrollsToTop()
+        public void Scroll_WhenControlHomeEndEnabledAndTerminalFull_ThenTypingControlHomeScrollsToTop()
         {
             var textStraddlingViewPort = GenerateText(100, 20);
             this.terminal.ReceiveData(textStraddlingViewPort);
@@ -788,7 +788,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenControlHomeEndEnabledAndTerminalNotFull_ThenTypingControlHomeIsIgnored()
+        public void Scroll_WhenControlHomeEndEnabledAndTerminalNotFull_ThenTypingControlHomeIsIgnored()
         {
             var textNotEnoughToFillViewPort = GenerateText(3, 20);
             this.terminal.ReceiveData(textNotEnoughToFillViewPort);
@@ -803,7 +803,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenControlHomeEndEnabledAndTerminalScrolledToTop_ThenTypingControlDownScrollsToEnd()
+        public void Scroll_WhenControlHomeEndEnabledAndTerminalScrolledToTop_ThenTypingControlDownScrollsToEnd()
         {
             var textStraddlingViewPort = GenerateText(100, 20);
             this.terminal.ReceiveData(textStraddlingViewPort);
@@ -821,7 +821,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenControlHomeEndEnabledAndTerminalScrolledToEnd_ThenTypingControlDownIsIgnored()
+        public void Scroll_WhenControlHomeEndEnabledAndTerminalScrolledToEnd_ThenTypingControlDownIsIgnored()
         {
             var textStraddlingViewPort = GenerateText(100, 20);
             this.terminal.ReceiveData(textStraddlingViewPort);
@@ -836,7 +836,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenControlHomeEndDisabled_ThenTypingControlHomeSendsKeystroke()
+        public void Scroll_WhenControlHomeEndDisabled_ThenTypingControlHomeSendsKeystroke()
         {
             this.terminal.EnableCtrlHomeEnd = false;
             this.terminal.SimulateKey(Keys.Control | Keys.Home);
@@ -846,7 +846,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenControlHomeEndDisabled_ThenTypingControlEndSendsKeystroke()
+        public void Scroll_WhenControlHomeEndDisabled_ThenTypingControlEndSendsKeystroke()
         {
             this.terminal.EnableCtrlHomeEnd = false;
             this.terminal.SimulateKey(Keys.Control | Keys.End);
@@ -860,7 +860,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPositionHitsRowThatIsAllWhitespace_ThenSelectWordIsWhitespace()
+        public void SelectWord_WhenPositionHitsRowThatIsAllWhitespace_ThenSelectWordIsWhitespace()
         {
             this.terminal.ReceiveData("\r\n\r\n\r\n\r\n\r\n\r\n");
             this.terminal.SelectWord(6, 3);
@@ -870,7 +870,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenPositionHitsWhitespaceBetweenWords_ThenSelectWordReturnsWhitespace()
+        public void SelectWord_WhenPositionHitsWhitespaceBetweenWords_ThenSelectWordReturnsWhitespace()
         {
             this.terminal.ReceiveData("first  second");
 
@@ -882,7 +882,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenPositionHitsWord_ThenSelectWordReturnsWord()
+        public void SelectWord_WhenPositionHitsWord_ThenSelectWordReturnsWord()
         {
             this.terminal.ReceiveData("first second third");
 
@@ -897,7 +897,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenPositionHitsWordThatExtendsToEndOfBuffer_ThenSelectWordReturnsWord()
+        public void SelectWord_WhenPositionHitsWordThatExtendsToEndOfBuffer_ThenSelectWordReturnsWord()
         {
             var lineOfA = new string('a', this.terminal.Columns);
             this.terminal.ReceiveData(lineOfA + "\r\n" + lineOfA);
@@ -910,7 +910,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenPositionHitsWordThatExtendsToPartsOfNextLine_ThenSelectWordReturnsWord()
+        public void SelectWord_WhenPositionHitsWordThatExtendsToPartsOfNextLine_ThenSelectWordReturnsWord()
         {
             var lineOfA = new string('a', this.terminal.Columns);
             this.terminal.ReceiveData(lineOfA + "b c");
@@ -923,7 +923,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenPositionHitsWordThatExtendsToEntireNextLine_ThenSelectWordReturnsWord()
+        public void SelectWord_WhenPositionHitsWordThatExtendsToEntireNextLine_ThenSelectWordReturnsWord()
         {
             var lineOfA = new string('a', this.terminal.Columns);
             this.terminal.ReceiveData(lineOfA + "\r\n" + lineOfA + " b c");
@@ -936,7 +936,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenPositionHitsWordThatExtendsToStartOfBuffer_ThenSelectWordReturnsWord()
+        public void SelectWord_WhenPositionHitsWordThatExtendsToStartOfBuffer_ThenSelectWordReturnsWord()
         {
             var lineOfA = new string('a', this.terminal.Columns);
             this.terminal.ReceiveData(lineOfA + "b c");
@@ -946,7 +946,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenPositionHitsWordThatExtendsToEntirePreviousLine_ThenSelectWordReturnsWord()
+        public void SelectWord_WhenPositionHitsWordThatExtendsToEntirePreviousLine_ThenSelectWordReturnsWord()
         {
             var lineOfA = new string('a', this.terminal.Columns);
             this.terminal.ReceiveData("xxx yy zz\r\n" + lineOfA + "b c");
@@ -956,7 +956,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenPositionHitsWordThatExtendsToPartsOfPreviousLine_ThenSelectWordReturnsWord()
+        public void SelectWord_WhenPositionHitsWordThatExtendsToPartsOfPreviousLine_ThenSelectWordReturnsWord()
         {
             var lineOfA = new string('a', this.terminal.Columns - 2);
             this.terminal.ReceiveData("x " + lineOfA + "b c");
@@ -966,7 +966,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenPositionHitsLastWord_ThenSelectWordReturnsWord()
+        public void SelectWord_WhenPositionHitsLastWord_ThenSelectWordReturnsWord()
         {
             this.terminal.ReceiveData("first second third");
 
@@ -981,7 +981,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenPositionHitsFirstWord_ThenSelectWordReturnsWord()
+        public void SelectWord_WhenPositionHitsFirstWord_ThenSelectWordReturnsWord()
         {
             this.terminal.ReceiveData("first second third");
 
@@ -1000,7 +1000,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenReceivedDataContainsSingleHighReversed9QuotationMark_ThenCharacterIsKept()
+        public void Unicode_WhenReceivedDataContainsSingleHighReversed9QuotationMark_ThenCharacterIsKept()
         {
             // NB. \u201b "embeds" \u1b, which is the Escape character.
             var text = $"abc\u201bxyz";
@@ -1011,7 +1011,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [Test]
-        public void WhenReceivedDataContainsInvalidUnicodeSequence_ThenCharacterIsIgnored()
+        public void Unicode_WhenReceivedDataContainsInvalidUnicodeSequence_ThenCharacterIsIgnored()
         {
             var text = $"abc{this.Esc}\u0090\u0091xyz";
             this.terminal.ReceiveData(text);
@@ -1024,14 +1024,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         // Colors
         //---------------------------------------------------------------------
 
-        public void WhenTerminalBackgroundColorSet_ThenColorsAreUpdated()
+        public void Colors_WhenTerminalBackgroundColorSet_ThenColorsAreUpdated()
         {
             this.terminal.TerminalBackgroundColor = Color.Aquamarine;
             Assert.AreEqual(Color.Aquamarine, this.terminal.TerminalBackgroundColor);
             Assert.AreEqual(Color.White, this.terminal.TerminalForegroundColor);
             Assert.AreEqual(Color.White, this.terminal.TerminalCaretColor);
         }
-        public void WhenTerminalForegroundColorSet_ThenColorsAreUpdated()
+        public void Colors_WhenTerminalForegroundColorSet_ThenColorsAreUpdated()
         {
             this.terminal.TerminalBackgroundColor = Color.Aquamarine;
             Assert.AreEqual(Color.Black, this.terminal.TerminalBackgroundColor);

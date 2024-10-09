@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenContextOfWrongType_ThenQueryStateReturnsUnavailable()
+        public void IsAvailable_WhenContextOfWrongType_ThenQueryStateReturnsUnavailable()
         {
             var command = new ConnectAppProtocolWithoutClientCommand(
                 new SynchronousJobService(),
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         }
 
         [Test]
-        public void WhenContextIsInstance_ThenQueryStateReturnsEnabled()
+        public void IsAvailable_WhenContextIsInstance_ThenQueryStateReturnsEnabled()
         {
             var command = new ConnectAppProtocolWithoutClientCommand(
                 new SynchronousJobService(),
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task ExecuteShowsBalloon()
+        public async Task Execute_ShowsBalloon()
         {
             var notifyDialog = new Mock<INotifyDialog>();
 

@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenKeyMalformed_ThenConstructorThrowsException()
+        public void Constructor_WhenKeyMalformed_ThenThrowsException()
         {
             Assert.Throws<FormatException>(
                 () => new OsLoginCertificateSigner(
@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenKeyValid_ThenConstructorSucceeds()
+        public void Constructor_WhenKeyValid_ThenConstructorSucceeds()
         {
             using (var signer = new OsLoginCertificateSigner(
                 new Mock<IAsymmetricKeySigner>().Object,

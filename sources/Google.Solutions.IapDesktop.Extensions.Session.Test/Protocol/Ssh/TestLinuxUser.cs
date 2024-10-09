@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenSessionUsernameIsEmail_ThenSuggestUsernameGeneratesUsername()
+        public void SuggestUsername_WhenSessionUsernameIsEmail_ThenSuggestUsernameGeneratesUsername()
         {
             var session = CreateSession("j@ex.ample");
             var username = LinuxUser.SuggestUsername(session);
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenSessionUsernameNotAnEmail_ThenSuggestUsernameGeneratesUsername()
+        public void SuggestUsername_WhenSessionUsernameNotAnEmail_ThenSuggestUsernameGeneratesUsername()
         {
             var session = CreateSession("NOTANEMAILADDRESS");
             var username = LinuxUser.SuggestUsername(session);
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenSessionUsernameTooLong_ThenSuggestUsernameStripsUsername()
+        public void SuggestUsername_WhenSessionUsernameTooLong_ThenSuggestUsernameStripsUsername()
         {
             var session = CreateSession("ABCDEFGHIJKLMNOPQRSTUVWXYZabcxyz0@ex.ample");
             var username = LinuxUser.SuggestUsername(session);
@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenUsernameContainsInvalidChars_ThenSuggestUsernameReplacesChars()
+        public void SuggestUsername_WhenUsernameContainsInvalidChars_ThenSuggestUsernameReplacesChars()
         {
             var session = CreateSession("1+9@ex.ample");
             var username = LinuxUser.SuggestUsername(session);
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenUsernameContainsUpperCaseChars_ThenSuggestUsernameReplacesChars()
+        public void SuggestUsername_WhenUsernameContainsUpperCaseChars_ThenSuggestUsernameReplacesChars()
         {
             var session = CreateSession("ABC@ex.ample");
             var username = LinuxUser.SuggestUsername(session);
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [TestCase("some@user", false)]
         [TestCase("", false)]
         [TestCase("thisusernameexceedsthemaximumsize", false)]
-        public void WhenLinuxUserIsValidated_ThenReturnCorrectValidationResult(string userName, bool expectedValid)
+        public void IsValidUsername_WhenLinuxUserIsValidated(string userName, bool expectedValid)
         {
             Assert.AreEqual(LinuxUser.IsValidUsername(userName), expectedValid);
         }

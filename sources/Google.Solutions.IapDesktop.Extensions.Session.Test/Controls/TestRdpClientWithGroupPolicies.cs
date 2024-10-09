@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [WindowsFormsTest]
-        public async Task WhenNlaDisabledAndServerRequiresNla_ThenErrorIsShownAndWindowIsClosed(
+        public async Task Connect_WhenNlaDisabledAndServerRequiresNla_ThenErrorIsShownAndWindowIsClosed(
             [WindowsInstance] ResourceTask<InstanceLocator> instanceTask,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> authTask)
         {
@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [WindowsFormsTest]
-        public Task WhenMinEncryptionLevelSetToLow_ThenConnectionSucceeds(
+        public Task Connect_WhenMinEncryptionLevelSetToLow(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v MinEncryptionLevel /d 1 /f | Out-Default
             ")] ResourceTask<InstanceLocator> instanceTask,
@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [WindowsFormsTest]
-        public Task WhenMinEncryptionLevelSetToHigh_ThenConnectionSucceeds(
+        public Task Connect_WhenMinEncryptionLevelSetToHigh(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v MinEncryptionLevel /d 3 /f | Out-Default
             ")] ResourceTask<InstanceLocator> instanceTask,
@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [WindowsFormsTest]
-        public Task WhenSecurityLayserSetToRdp_ThenConnectionSucceeds(
+        public Task Connect_WhenSecurityLayserSetToRdp(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v SecurityLayer /d 0 /f | Out-Default
             ")] ResourceTask<InstanceLocator> instanceTask,
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [WindowsFormsTest]
-        public Task WhenSecurityLayserSetToNegotiate_ThenConnectionSucceeds(
+        public Task Connect_WhenSecurityLayserSetToNegotiate(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v SecurityLayer /d 1 /f | Out-Default
             ")] ResourceTask<InstanceLocator> instanceTask,
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [WindowsFormsTest]
-        public Task WhenSecurityLayserSetToSsl_ThenConnectionSucceeds(
+        public Task Connect_WhenSecurityLayserSetToSsl(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v SecurityLayer /d 2 /f | Out-Default
             ")] ResourceTask<InstanceLocator> instanceTask,
@@ -182,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [WindowsFormsTest]
-        public Task WhenRequireUserAuthenticationForRemoteConnectionsByNlaEnabled_ThenConnectionSucceeds(
+        public Task Connect_WhenRequireUserAuthenticationForRemoteConnectionsByNlaEnabled(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v UserAuthentication /d 1 /f | Out-Default
             ")] ResourceTask<InstanceLocator> instanceTask,
@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [WindowsFormsTest]
-        public Task WhenRequireUserAuthenticationForRemoteConnectionsByNlaDisabled_ThenConnectionSucceeds(
+        public Task Connect_WhenRequireUserAuthenticationForRemoteConnectionsByNlaDisabled(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v UserAuthentication /d 0 /f | Out-Default
             ")] ResourceTask<InstanceLocator> instanceTask,
@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [WindowsFormsTest]
-        public Task WhenLocalResourceRedirectionDisabled_ThenConnectionSucceeds(
+        public Task Connect_WhenLocalResourceRedirectionDisabled(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v fDisableClip /d 1 /f | Out-Default
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v fDisableLPT /d 1 /f | Out-Default
@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [WindowsFormsTest]
-        public async Task WhenRestrictedAdminModeEnabled_ThenConnectionSucceeds(
+        public async Task Connect_WhenRestrictedAdminModeEnabled(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\System\CurrentControlSet\Control\Lsa"" /t REG_DWORD /v DisableRestrictedAdmin /d 0 /f | Out-Default
             ")] ResourceTask<InstanceLocator> instanceTask,

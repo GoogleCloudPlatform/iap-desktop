@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProfileContainsMultipleAccounts_ThenLookupUsernamePrimary()
+        public void LookupUsername_WhenProfileContainsMultipleAccounts_ThenLookupUsernamePrimary()
         {
             var loginProfile = new LoginProfile()
             {
@@ -96,18 +96,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenProfileContainsNoAccount_ThenLookupUsernameThrowsException()
+        public void LookupUsername_WhenProfileContainsNoAccount_ThenLookupUsernameThrowsException()
         {
             Assert.Throws<InvalidOsLoginProfileException>(
                 () => OsLoginProfile.LookupUsername(new LoginProfile()));
         }
 
         //---------------------------------------------------------------------
-        // AuthorizeKeyAsync.
+        // AuthorizeKey.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenArgumentsIncomplete_ThenAuthorizeKeyAsyncThrowsArgumentException()
+        public void AuthorizeKey_WhenArgumentsIncomplete_ThenAuthorizeKeyAsyncThrowsArgumentException()
         {
             var profile = new OsLoginProfile(
                 new Mock<IOsLoginClient>().Object,
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void WhenValidityIsZeroOrNegative_ThenAuthorizeKeyAsyncThrowsArgumentException()
+        public void AuthorizeKey_WhenValidityIsZeroOrNegative_ThenAuthorizeKeyAsyncThrowsArgumentException()
         {
             var profile = new OsLoginProfile(
                 new Mock<IOsLoginClient>().Object,
@@ -150,11 +150,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         //---------------------------------------------------------------------
-        // AuthorizeKeyAsync - Gaia.
+        // AuthorizeKey - Gaia.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUsingGaiaSession_ThenAuthorizeImportsKey()
+        public async Task AuthorizeKey_WhenUsingGaiaSession_ThenAuthorizeImportsKey()
         {
             var client = new Mock<IOsLoginClient>();
             client
@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task WhenUsingWorkforceSession_ThenAuthorizeSignsKey()
+        public async Task AuthorizeKey_WhenUsingWorkforceSession_ThenAuthorizeSignsKey()
         {
             var client = new Mock<IOsLoginClient>();
             client
@@ -237,11 +237,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         //---------------------------------------------------------------------
-        // ListAuthorizedKeysAsync.
+        // ListAuthorizedKeys.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenProfileIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
+        public async Task ListAuthorizedKeys_WhenProfileIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
         {
             var client = new Mock<IOsLoginClient>();
             client.Setup(a => a.GetLoginProfileAsync(
@@ -263,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task WhenProfileContainsInvalidKeys_ThenListAuthorizedKeysIgnoresThem()
+        public async Task ListAuthorizedKeys_WhenProfileContainsInvalidKeys_ThenListAuthorizedKeysIgnoresThem()
         {
             var client = new Mock<IOsLoginClient>();
             client.Setup(a => a.GetLoginProfileAsync(
@@ -319,7 +319,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task WhenProfileContainsKeyWithExpiryDate_ThenExpiryDateIsConverted()
+        public async Task ListAuthorizedKeys_WhenProfileContainsKeyWithExpiryDate_ThenExpiryDateIsConverted()
         {
             var firstOfJan = new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
@@ -360,11 +360,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         //---------------------------------------------------------------------
-        // DeleteAuthorizedKeyAsync.
+        // DeleteAuthorizedKey.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenKeyValid_ThenDeleteAuthorizedKeyDeletesKey()
+        public async Task DeleteAuthorizedKey_WhenKeyValid_ThenDeleteAuthorizedKeyDeletesKey()
         {
             var client = new Mock<IOsLoginClient>();
             client.Setup(a => a.GetLoginProfileAsync(

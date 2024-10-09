@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenKeyEmpty_ThenDefaultsAreProvided()
+        public void GetSettings_WhenKeyEmpty_ThenDefaultsAreProvided()
         {
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new TerminalSettingsRepository(baseKey);
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void WhenSettingsChanged_ThenEventIsFired()
+        public void SetSettings_WhenSettingsChanged_ThenEventIsFired()
         {
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
             var repository = new TerminalSettingsRepository(baseKey);

@@ -33,7 +33,6 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows
 {
     [TestFixture]
-
     [Apartment(ApartmentState.STA)]
     public class TestSessionPaneBase
     {
@@ -49,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows
         }
 
         [Test]
-        public void WhenContextCommandsSet_ThenCommandsAreBoundToContextMenu()
+        public void ContextMenu_WhenContextCommandsSet_ThenCommandsAreBoundToContextMenu()
         {
             var commands = new CommandContainer<ISession>(
                 ToolStripItemDisplayStyle.Text,
@@ -81,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows
         }
 
         [Test]
-        public void WhenContextCommandsSet_ThenSettingCommandsAgainCausesException()
+        public void ContextMenu_WhenContextCommandsSet_ThenSettingCommandsAgainCausesException()
         {
             var commands = new CommandContainer<ISession>(
                 ToolStripItemDisplayStyle.Text,
@@ -104,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows
         }
 
         [Test]
-        public void WhenContextCommandsSet_ThenDefaultCloseMenuIsReplaced()
+        public void ContextMenu_WhenContextCommandsSet_ThenDefaultCloseMenuIsReplaced()
         {
             using (var window = new SessionPane())
             {

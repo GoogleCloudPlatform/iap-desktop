@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenDataReceived_ThenEventFires(
+        public async Task OnDataReceived_WhenDataReceived_ThenEventFires(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -204,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenConectionLostErrorReceived_ThenEventFires(
+        public async Task OnError_WhenConectionLostErrorReceived_ThenEventFires(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -252,7 +252,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenConectionFailedErrorReceived_ThenEventFires(
+        public async Task OnError_WhenConectionFailedErrorReceived_ThenEventFires(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -292,11 +292,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         //---------------------------------------------------------------------
-        // ConnectAsync.
+        // Connect.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenConnectionSucceeds_ThenEventFires(
+        public async Task Connect_WhenConnectionSucceeds_ThenEventFires(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
@@ -336,7 +336,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenConnectionFails_ThenEventFires(
+        public async Task Connect_WhenConnectionFails_ThenEventFires(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var authorizationSource = CreateAuthorizationMock();
@@ -399,7 +399,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDropContainsFilesAndDirectories_ThenOnlyFilesAreAccepted()
+        public void GetDroppableFiles_WhenDropContainsFilesAndDirectories_ThenOnlyFilesAreAccepted()
         {
             var existingFile = Assembly.GetExecutingAssembly().Location;
             var dropData = new string[]
@@ -419,7 +419,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenNoFileSelected_ThenDownloadIsCancelled(
+        public async Task DownloadFiles_WhenNoFileSelected_ThenDownloadIsCancelled(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -467,7 +467,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenFileExists_ThenDownloadShowsConfirmationPrompt(
+        public async Task DownloadFiles_WhenFileExists_ThenDownloadShowsConfirmationPrompt(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -540,7 +540,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         }
 
         [Test]
-        public async Task WhenQuarantineScanFails_ThenDownloadShowsErrorDialog(
+        public async Task DownloadFiles_WhenQuarantineScanFails_ThenDownloadShowsErrorDialog(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -611,7 +611,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
 
 
         [Test]
-        public async Task WhenNoConflictsFound_ThenDownloadSucceeds(
+        public async Task DownloadFiles_WhenNoConflictsFound_ThenDownloadSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -670,7 +670,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenFileExistsAndOverwriteDenied_ThenUploadIsCancelled(
+        public async Task UploadFiles_WhenFileExistsAndOverwriteDenied_ThenUploadIsCancelled(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {

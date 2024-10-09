@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [WindowsFormsTest]
-        public async Task WhenWindowClosed_ThenControlRaisesEvent()
+        public async Task Close_RaisesEvent()
         {
             using (var window = CreateWindow())
             {
@@ -262,7 +262,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [WindowsFormsTest]
-        public async Task WhenServerInvalid_ThenControlRaisesEvent()
+        public async Task Connect_WhenServerInvalid_ThenRaisesEvent()
         {
             using (var window = CreateWindow())
             {
@@ -288,6 +288,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
                 window.Close();
             }
         }
-
     }
 }

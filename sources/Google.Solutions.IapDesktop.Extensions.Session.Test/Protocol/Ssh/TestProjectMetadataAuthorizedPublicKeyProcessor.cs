@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenValueIsTruthy_ThenIsOsLoginEnabledReturnsTrue(
+        public async Task IsOsLoginEnabled_WhenValueIsTruthy_ThenIsOsLoginEnabledReturnsTrue(
             [Values("Y", "y\n", "True ", " 1 ")] string truthyValue)
         {
             var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task WhenValueIsNotTruthy_ThenIsOsLoginEnabledReturnsFalse(
+        public async Task IsOsLoginEnabled_WhenValueIsNotTruthy_ThenIsOsLoginEnabledReturnsFalse(
             [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
         {
             var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenValueIsTruthy_ThenIsOsLoginWithSecurityKeyEnabledReturnsTrue(
+        public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsTruthy(
             [Values("Y", "y\n", "True ", " 1 ")] string truthyValue)
         {
             var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task WhenValueIsNotTruthy_ThenIsOsLoginWithSecurityKeyEnabledReturnsFalse(
+        public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsNotTruthy(
             [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
         {
             var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
@@ -163,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             Assert.IsFalse(processor.IsOsLoginWithSecurityKeyEnabled);
         }
         [Test]
-        public async Task WhenValueIsMissing_ThenIsOsLoginWithSecurityKeyEnabledReturnsFalse()
+        public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsMissing()
         {
             var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
                     CreateComputeEngineClientMock(SampleLocator, new Metadata()).Object,
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenMetadataIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
+        public async Task ListAuthorizedKeys_WhenMetadataIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
         {
             var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
                     CreateComputeEngineClientMock(SampleLocator, new Metadata()).Object,
@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task WhenMetadataItemIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
+        public async Task ListAuthorizedKeys_WhenMetadataItemIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
         {
             var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
                     CreateComputeEngineClientMock(
@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task WhenMetadataContainsKeys_ThenListAuthorizedKeysReturnsList()
+        public async Task ListAuthorizedKeys_WhenMetadataContainsKeys_ThenListAuthorizedKeysReturnsList()
         {
             var metadata = new Metadata();
             metadata.Add(
@@ -252,7 +252,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task WhenMetadataContainsButMethodDoesNotMatch_ThenListAuthorizedKeysReturnsEmptyList()
+        public async Task ListAuthorizedKeys_WhenMetadataContainsButMethodDoesNotMatch_ThenListAuthorizedKeysReturnsEmptyList()
         {
             var metadata = new Metadata();
             metadata.Add(
@@ -283,11 +283,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         //---------------------------------------------------------------------
-        // RemoveAuthorizedKeyAsync.
+        // RemoveAuthorizedKey.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenKeyFound_ThenRemoveAuthorizedKeyUpdatesMetadata()
+        public async Task RemoveAuthorizedKey_WhenKeyFound_ThenRemoveAuthorizedKeyUpdatesMetadata()
         {
             var bobsKey = new UnmanagedMetadataAuthorizedPublicKey(
                 "bob",

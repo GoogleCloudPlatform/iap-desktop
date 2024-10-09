@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Test.ToolWindows.Profi
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProfileIsDefault_ThenExecuteTerminatesSessionAndClosesWindow()
+        public void Execute_WhenProfileIsDefault_ThenExecuteTerminatesSessionAndClosesWindow()
         {
             var session = new Mock<IOidcSession>();
             var authorization = new Mock<IAuthorization>();
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Test.ToolWindows.Profi
         }
 
         [Test]
-        public void WhenProfileIsNotDefaultAndUserDecidesToKeepProfile_ThenExecuteTerminatesSessionAndClosesWindow()
+        public void Execute_WhenProfileIsNotDefaultAndUserDecidesToKeepProfile_ThenExecuteTerminatesSessionAndClosesWindow()
         {
             var session = new Mock<IOidcSession>();
             var authorization = new Mock<IAuthorization>();

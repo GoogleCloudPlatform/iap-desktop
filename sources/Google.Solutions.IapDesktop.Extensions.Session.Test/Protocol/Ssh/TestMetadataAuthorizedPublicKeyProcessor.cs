@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenMetadataHasExpiredKeys_ThenAddPublicKeyToMetadataRemovesExpiredKeys()
+        public void AddPublicKeyToMetadata_WhenMetadataHasExpiredKeys_ThenAddPublicKeyToMetadataRemovesExpiredKeys()
         {
             var expiredKey = new ManagedMetadataAuthorizedPublicKey(
                 "alice-expired",
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenMetadataHasExpiredKeys_ThenRemoveAuthorizedKeyLeavesThemAsIs()
+        public void RemovePublicKeyFromMetadata_WhenMetadataHasExpiredKeys_ThenRemoveAuthorizedKeyLeavesThemAsIs()
         {
             var expiredKey = new ManagedMetadataAuthorizedPublicKey(
                 "alice-expired",

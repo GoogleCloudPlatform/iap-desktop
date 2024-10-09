@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenPublicKeyAuthEnabled_ThenCreateSshSessionContextUsesPlatformCredential()
+        public async Task CreateSshSessionContext_WhenPublicKeyAuthEnabled_ThenCreateSshSessionContextUsesPlatformCredential()
         {
             var settings = new ConnectionSettings(SampleLocator);
             settings.SshPort.Value = 2222;
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task WhenPublicKeyAuthDisabled_ThenCreateSshSessionContextUsesPasswordCredential(
+        public async Task CreateSshSessionContext_WhenPublicKeyAuthDisabled_ThenCreateSshSessionContextUsesPasswordCredential(
             [Values("user", "", null)] string username)
         {
             var settings = new ConnectionSettings(SampleLocator);
@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task CreateSshSessionContextUsesSshSettings()
+        public async Task CreateSshSessionContext_UsesSshSettings()
         {
             var sshSettingsRepository = CreateSshSettingsRepository(true, TimeSpan.FromDays(4));
             var settingsService = new Mock<IConnectionSettingsService>();
@@ -250,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task WhenUsePersistentKeyIsTrue_ThenCreateSshSessionContextOpensSshKey()
+        public async Task CreateSshSessionContext_WhenUsePersistentKeyIsTrue_ThenCreateSshSessionContextOpensSshKey()
         {
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService
@@ -291,7 +291,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task WhenUsePersistentKeyIsFalse_ThenCreateSshSessionContextUsesEphemeralKey()
+        public async Task CreateSshSessionContext_WhenUsePersistentKeyIsFalse_ThenCreateSshSessionContextUsesEphemeralKey()
         {
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService

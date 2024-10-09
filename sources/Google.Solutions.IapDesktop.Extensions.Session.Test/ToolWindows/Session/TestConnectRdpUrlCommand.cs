@@ -45,11 +45,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             new NameValueCollection());
 
         //---------------------------------------------------------------------
-        // ExecuteAsync.
+        // Execute.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSessionFound_ThenExecuteDoesNotCreateNewSession()
+        public async Task Execute_WhenSessionFound_ThenExecuteDoesNotCreateNewSession()
         {
             var sessionBroker = new Mock<ISessionBroker>();
             var session = (ISession)new Mock<IRdpSession>().Object;
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task WhenNoSessionFound_ThenExecuteCreatesNewSession()
+        public async Task Execute_WhenNoSessionFound_ThenExecuteCreatesNewSession()
         {
             var context = new Mock<ISessionContext<RdpCredential, RdpParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
