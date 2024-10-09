@@ -36,8 +36,7 @@ namespace Google.Solutions.Terminal.Controls
     /// reliably tell us which state it is in), but applies to other clients
     /// as well.
     ///
-    /// Thus, we maintain a state machine to track the control's
-    /// state.
+    /// Thus, we maintain a state machine to track the control's state.
     /// </summary>
     public abstract class ClientBase : UserControl
     {
@@ -94,7 +93,8 @@ namespace Google.Solutions.Terminal.Controls
         {
             if (this.State != expectedState)
             {
-                throw new InvalidOperationException($"Operation is not allowed in state {this.State}");
+                throw new InvalidOperationException(
+                    $"Operation is not allowed in state {this.State}");
             }
         }
 
