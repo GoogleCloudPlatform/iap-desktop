@@ -27,7 +27,6 @@ using Google.Solutions.Mvvm.Input;
 using Google.Solutions.Platform.Interop;
 using MSTSCLib;
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -216,7 +215,7 @@ namespace Google.Solutions.Terminal.Controls
                 // Veto this event as it might cause the ActiveX to crash.
                 //
                 TerminalTraceSource.Log.TraceVerbose(
-                    "RemoteDesktopPane: Aborting FormClosing because control is in connecting");
+                    "RdpCLient: Aborting FormClosing because control is in connecting");
 
                 args.Cancel = true;
                 return;
@@ -228,7 +227,7 @@ namespace Google.Solutions.Terminal.Controls
                 // window.
                 //
                 TerminalTraceSource.Log.TraceVerbose(
-                    "RemoteDesktopPane: Aborting FormClosing because control is full-screen");
+                    "RdpCLient: Aborting FormClosing because control is full-screen");
 
                 args.Cancel = true;
                 return;
@@ -243,7 +242,7 @@ namespace Google.Solutions.Terminal.Controls
                 try
                 {
                     TerminalTraceSource.Log.TraceVerbose(
-                        "RemoteDesktopPane: Disconnecting because form is closing");
+                        "RdpCLient: Disconnecting because form is closing");
 
                     //
                     // NB. This does not trigger an OnDisconnected event.
@@ -255,7 +254,7 @@ namespace Google.Solutions.Terminal.Controls
                 catch (Exception e)
                 {
                     TerminalTraceSource.Log.TraceVerbose(
-                        "RemoteDesktopPane: Disconnecting failed");
+                        "RdpCLient: Disconnecting failed");
 
                     OnConnectionFailed(e);
                 }
