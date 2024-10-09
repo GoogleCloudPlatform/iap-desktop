@@ -23,7 +23,6 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Security;
-using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp;
 using Google.Solutions.Mvvm.Controls;
@@ -41,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
     [UsesCloudResources]
     [RequiresRdp]
     [Apartment(ApartmentState.STA)]
-    public class TestRdpClientWithGroupPolicies
+    public class TestRdpWithGroupPolicies
     {
         private static async Task<RdpCredential> GenerateRdpCredentialAsync(
             InstanceLocator instance)
