@@ -25,31 +25,28 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Google.Solutions.Terminal.Controls.RdpClient;
 
 namespace Google.Solutions.Terminal.Controls
 {
     /// <summary>
     /// Base class for terminal clients.
+    /// 
+    /// Some operations only work reliably when the control is in a certain
+    /// state. In particular, this applies to the MSTSCAX client (which won't
+    /// reliably tell us which state it is in), but applies to other clients
+    /// as well.
+    ///
+    /// Thus, we maintain a state machine to track the control's
+    /// state.
     /// </summary>
     public abstract class ClientBase : UserControl
     {
         private ConnectionState state = ConnectionState.NotConnected;
 
         /// <summary>
-        /// Connect to server.
+        /// Connection state has changed.
         /// </summary>
-        public abstract void Connect();
-
-        /// <summary>
-        /// Simulate key strokes to send a piece of text.
-        /// </summary>
-        public abstract void SendText(string text);
-
-
-        //---------------------------------------------------------------------
-        // Connection events.
-        //---------------------------------------------------------------------
+        public event EventHandler? StateChanged;
 
         /// <summary>
         /// Connection closed abnormally.
@@ -61,34 +58,19 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         public event EventHandler<ConnectionClosedEventArgs>? ConnectionClosed;
 
-        protected void OnConnectionFailed(Exception e)
-        {
-            this.ConnectionFailed?.Invoke(this, new ExceptionEventArgs(e));
-        }
+        /// <summary>
+        /// Connect to server.
+        /// </summary>
+        public abstract void Connect();
 
-        protected void OnConnectionClosed(DisconnectReason reason)
-        {
-            this.ConnectionClosed?.Invoke(
-                this,
-                new ConnectionClosedEventArgs(reason));
-        }
+        /// <summary>
+        /// Simulate key strokes to send a piece of text.
+        /// </summary>
+        public abstract void SendText(string text);
 
         //---------------------------------------------------------------------
         // State tracking.
-        //
-        // Some operations only work reliably when the control is in a certain
-        // state. In particular, this applies to the MSTSCAX client (which won't
-        // reliably tell us which state it is in), but applies to other clients
-        // as well.
-        //
-        // Thus, we maintain a state machine to track the control's
-        // state.
         //---------------------------------------------------------------------
-
-        /// <summary>
-        /// Connection state has changed.
-        /// </summary>
-        public event EventHandler? StateChanged;
 
         /// <summary>
         /// Current state of the connection.
@@ -145,6 +127,18 @@ namespace Google.Solutions.Terminal.Controls
             await completionSource
                 .Task
                 .ConfigureAwait(true);
+        }
+
+        protected void OnConnectionFailed(Exception e)
+        {
+            this.ConnectionFailed?.Invoke(this, new ExceptionEventArgs(e));
+        }
+
+        protected void OnConnectionClosed(DisconnectReason reason)
+        {
+            this.ConnectionClosed?.Invoke(
+                this,
+                new ConnectionClosedEventArgs(reason));
         }
 
         //---------------------------------------------------------------------
