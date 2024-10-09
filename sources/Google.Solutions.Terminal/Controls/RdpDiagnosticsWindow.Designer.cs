@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
+namespace Google.Solutions.Terminal.Controls
 {
     partial class RdpDiagnosticsWindow
     {
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             this.fullScreenButton = new System.Windows.Forms.Button();
             this.connectButton = new System.Windows.Forms.Button();
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
-            this.rdpClient = new Google.Solutions.IapDesktop.Extensions.Session.Controls.RdpClient();
+            this.rdpClient = new Google.Solutions.Terminal.Controls.RdpClient();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         private System.Windows.Forms.SplitContainer splitContainer;
         private System.Windows.Forms.Button connectButton;
         private System.Windows.Forms.PropertyGrid propertyGrid;
-        private Session.Controls.RdpClient rdpClient;
+        private RdpClient rdpClient;
         private System.Windows.Forms.Button fullScreenButton;
     }
 }

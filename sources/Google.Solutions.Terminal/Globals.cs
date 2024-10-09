@@ -22,3 +22,4 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Google.Solutions.Terminal.Test")]
+[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Session.Test")]

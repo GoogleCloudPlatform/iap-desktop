@@ -36,6 +36,7 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Settings.Collection;
+using Google.Solutions.Terminal.Controls;
 using System;
 using System.Data;
 using System.Diagnostics;
