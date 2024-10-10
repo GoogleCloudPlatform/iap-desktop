@@ -27,6 +27,7 @@ using Google.Solutions.Mvvm.Input;
 using Google.Solutions.Platform.Interop;
 using MSTSCLib;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -731,6 +732,7 @@ namespace Google.Solutions.Terminal.Controls
         /// In case of an MDI environment, this should be the outmost 
         /// window, not the direct parent window.
         /// </summary>
+        [Browsable(false)]
         public Form? MainWindow { get; set; }
 
         public override void Connect()
@@ -1023,7 +1025,7 @@ namespace Google.Solutions.Terminal.Controls
         /// This property should only be changes from within RDP
         /// callbacks.
         /// </summary>
-        public bool ContainerFullScreen
+        internal bool ContainerFullScreen
         {
             get => fullScreenForm != null && fullScreenForm.Visible;
             private set
@@ -1127,6 +1129,7 @@ namespace Google.Solutions.Terminal.Controls
         /// <summary>
         /// Check if the client is currently in full-screen mode.
         /// </summary>
+        [Browsable(false)]
         public bool IsFullScreen
         {
             get
@@ -1146,6 +1149,7 @@ namespace Google.Solutions.Terminal.Controls
         /// Check if the current state is suitable for entering
         /// full-screen mode.
         /// </summary>
+        [Browsable(false)]
         public bool CanEnterFullScreen
         {
             get => this.State == ConnectionState.LoggedOn && !IsFullScreenFormVisible;

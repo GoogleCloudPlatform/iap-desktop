@@ -93,7 +93,7 @@ namespace Google.Solutions.Terminal.Controls
         /// <summary>
         /// Current state of the connection.
         /// </summary>
-        [Browsable(true)]
+        [Browsable(false)]
         public ConnectionState State
         {
             get => this.state;

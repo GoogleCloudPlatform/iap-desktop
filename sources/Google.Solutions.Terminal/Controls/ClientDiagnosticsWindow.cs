@@ -44,7 +44,7 @@ namespace Google.Solutions.Terminal.Controls
             SuspendLayout();
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
             this.AutoScaleMode = AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(1024, 768);
+            this.ClientSize = new System.Drawing.Size(1400, 1000);
             this.Text = typeof(TClient).Name;
 
             //
@@ -53,7 +53,7 @@ namespace Google.Solutions.Terminal.Controls
             var splitContainer = new SplitContainer()
             {
                 Dock = DockStyle.Fill,
-                SplitterDistance = 350
+                SplitterDistance = 450
             };
             splitContainer.BeginInit();
             this.Controls.Add(splitContainer);
