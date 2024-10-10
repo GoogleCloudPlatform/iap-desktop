@@ -28,11 +28,14 @@ namespace Google.Solutions.Terminal.Controls
 {
     public partial class RdpClient
     {
+        private const string RdpCategory = "Remote Desktop";
+
         /// <summary>
         /// Server to connect to.
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public string? Server
         {
             get => this.client.Server;
@@ -48,6 +51,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public ushort ServerPort
         {
             get => (ushort)this.client.AdvancedSettings7.RDPPort;
@@ -63,6 +67,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public string? Domain
         {
             get => this.client.Domain;
@@ -78,6 +83,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public string? Username
         {
             get => this.client.UserName;
@@ -93,6 +99,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public string? Password
         {
             get => "*";
@@ -108,6 +115,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public TimeSpan ConnectionTimeout
         {
             get => TimeSpan.FromSeconds(this.clientAdvancedSettings.singleConnectionTimeout);
@@ -131,6 +139,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public bool EnableAdminMode
         {
             get => this.clientAdvancedSettings.ConnectToAdministerServer;
@@ -146,6 +155,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public bool EnableNetworkLevelAuthentication
         {
             get => this.clientAdvancedSettings.EnableCredSspSupport;
@@ -169,6 +179,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public uint ServerAuthenticationLevel
         {
             get => this.clientAdvancedSettings.AuthenticationLevel;
@@ -184,6 +195,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public bool EnableCredentialPrompt
         {
             get => this.clientNonScriptable.AllowPromptingForCredentials;
@@ -219,6 +231,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public bool EnableRestrictedAdminMode
         {
             get
@@ -251,6 +264,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public bool EnableRemoteCredentialGuard
         {
             get
@@ -283,6 +297,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public bool EnableConnectionBar
         {
             get => this.clientAdvancedSettings.DisplayConnectionBar;
@@ -298,6 +313,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public bool EnableConnectionBarMinimizeButton
         {
             get => this.clientAdvancedSettings.ConnectionBarShowMinimizeButton;
@@ -313,6 +329,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public bool EnableConnectionBarPin
         {
             get => this.clientAdvancedSettings.PinConnectionBar;
@@ -328,6 +345,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public string ConnectionBarText
         {
             get => this.clientNonScriptable.ConnectionBarText;
@@ -347,6 +365,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public bool EnableClipboardRedirection
         {
             get => this.clientAdvancedSettings.RedirectClipboard;
@@ -362,6 +381,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public bool EnablePrinterRedirection
         {
             get => this.clientAdvancedSettings.RedirectPrinters;
@@ -377,6 +397,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public bool EnableSmartCardRedirection
         {
             get => this.clientAdvancedSettings.RedirectSmartCards;
@@ -392,6 +413,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public bool EnableDriveRedirection
         {
             get => this.clientAdvancedSettings.RedirectDrives;
@@ -407,6 +429,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public bool EnableDeviceRedirection
         {
             get => this.clientAdvancedSettings.RedirectDevices;
@@ -422,6 +445,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public bool EnablePortRedirection
         {
             get => this.clientAdvancedSettings.RedirectPorts;
@@ -434,6 +458,7 @@ namespace Google.Solutions.Terminal.Controls
 
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public bool EnableWebAuthnRedirection { get; set; }
 
         //---------------------------------------------------------------------
@@ -442,6 +467,7 @@ namespace Google.Solutions.Terminal.Controls
 
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public Keys FocusHotKey
         {
             //
@@ -462,6 +488,7 @@ namespace Google.Solutions.Terminal.Controls
 
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public Keys FullScreenHotKey
         {
             //
@@ -482,6 +509,7 @@ namespace Google.Solutions.Terminal.Controls
 
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public int KeyboardHookMode
         {
             get => this.clientSecuredSettings.KeyboardHookMode;
@@ -505,6 +533,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public int AudioRedirectionMode
         {
             get => this.clientSecuredSettings.AudioRedirectionMode;
@@ -520,6 +549,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public int ColorDepth
         {
             get => this.client.ColorDepth;
@@ -535,6 +565,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
         public bool EnableDpiScaling { get; set; }
     }
 }

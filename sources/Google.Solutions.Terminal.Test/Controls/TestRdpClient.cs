@@ -41,9 +41,9 @@ namespace Google.Solutions.Terminal.Test.Controls
     {
         private const string InvalidServer = "8.8.8.8";
 
-        private static RdpDiagnosticsWindow CreateWindow()
+        private static ClientDiagnosticsWindow<RdpClient> CreateWindow()
         {
-            var window = new RdpDiagnosticsWindow();
+            var window = new ClientDiagnosticsWindow<RdpClient>(new RdpClient());
             window.Client.MainWindow = window;
             window.Client.Username = ".\\admin";
             window.Client.Password = "admin";

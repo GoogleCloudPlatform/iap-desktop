@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             var instance = await instanceTask;
             var auth = await authTask;
 
-            using (var window = new RdpDiagnosticsWindow())
+            using (var window = new ClientDiagnosticsWindow<RdpClient>(new RdpClient()))
             using (var tunnel = IapTransport.ForRdp(instance, auth))
             {
                 var rdpCredential = await
@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             var instance = await instanceTask;
             var auth = await authTask;
 
-            using (var window = new RdpDiagnosticsWindow())
+            using (var window = new ClientDiagnosticsWindow<RdpClient>(new RdpClient()))
             using (var tunnel = IapTransport.ForRdp(instance, auth))
             {
                 var rdpCredential = await
@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [WindowsFormsTest]
-        public Task Connect_WhenSecurityLayserSetToRdp(
+        public Task Connect_WhenSecurityLayerSetToRdp(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v SecurityLayer /d 0 /f | Out-Default
             ")] ResourceTask<InstanceLocator> instanceTask,
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [WindowsFormsTest]
-        public Task Connect_WhenSecurityLayserSetToNegotiate(
+        public Task Connect_WhenSecurityLayerSetToNegotiate(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v SecurityLayer /d 1 /f | Out-Default
             ")] ResourceTask<InstanceLocator> instanceTask,
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         }
 
         [WindowsFormsTest]
-        public Task Connect_WhenSecurityLayserSetToSsl(
+        public Task Connect_WhenSecurityLayerSetToSsl(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v SecurityLayer /d 2 /f | Out-Default
             ")] ResourceTask<InstanceLocator> instanceTask,
@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             var instance = await instanceTask;
             var auth = await authTask;
 
-            using (var window = new RdpDiagnosticsWindow())
+            using (var window = new ClientDiagnosticsWindow<RdpClient>(new RdpClient()))
             using (var tunnel = IapTransport.ForRdp(instance, auth))
             {
                 var rdpCredential = await

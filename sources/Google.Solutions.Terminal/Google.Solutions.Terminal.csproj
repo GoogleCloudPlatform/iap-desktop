@@ -19,9 +19,6 @@
     <Compile Update="Controls\RdpClient.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Controls\RdpDiagnosticsWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
   </ItemGroup>
 
 </Project>
