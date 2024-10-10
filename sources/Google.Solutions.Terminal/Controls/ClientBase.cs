@@ -39,7 +39,7 @@ namespace Google.Solutions.Terminal.Controls
     ///
     /// Thus, we maintain a state machine to track the control's state.
     /// </summary>
-    public abstract class ClientBase : UserControl
+    public abstract class ClientBase : ParentedUserControl
     {
         private ConnectionState state = ConnectionState.NotConnected;
 
@@ -87,7 +87,7 @@ namespace Google.Solutions.Terminal.Controls
         }
 
         //---------------------------------------------------------------------
-        // State tracking.
+        // Connection state tracking.
         //---------------------------------------------------------------------
 
         /// <summary>

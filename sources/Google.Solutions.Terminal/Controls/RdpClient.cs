@@ -60,7 +60,6 @@ namespace Google.Solutions.Terminal.Controls
         private readonly IMsRdpExtendedSettings clientExtendedSettings;
 
         private readonly DeferredCallback deferResize;
-        private Form? parentForm = null;
 
         private int keysSent = 0;
 
@@ -132,44 +131,12 @@ namespace Google.Solutions.Terminal.Controls
             this.clientAdvancedSettings.ContainerHandledFullScreen = 1;
 
             this.clientExtendedSettings = (IMsRdpExtendedSettings)this.client.GetOcx();
-
-            //
-            // As a user control, we don't get a FormClosing event,
-            // so attach to the parent form. The parent form might change
-            // during a docking operation.
-            //
-            this.VisibleChanged += (_, __) =>
-            {
-                if (this.parentForm == null && FindForm() is Form form)
-                {
-                    this.parentForm = form;
-                    this.parentForm.FormClosing += OnFormClosing;
-
-                    this.client.ContainingControl = this.parentForm;
-                }
-            };
-            this.ParentChanged += (_, __) =>
-            {
-                if (this.parentForm != null)
-                {
-                    this.parentForm.FormClosing -= OnFormClosing;
-                }
-
-                if (this.Parent?.FindForm() is Form newParent)
-                {
-                    this.parentForm = newParent;
-                    this.parentForm.FormClosing += OnFormClosing;
-
-                    this.client.ContainingControl = this.parentForm;
-                }
-            };
         }
 
         /// <summary>
         /// The server authentication warning has been displayed.
         /// </summary>
         public event EventHandler? ServerAuthenticationWarningDisplayed;
-
 
         /// <summary>
         /// Wait until a certain state has been reached. Mainly
@@ -189,6 +156,11 @@ namespace Google.Solutions.Terminal.Controls
                 .ConfigureAwait(true);
         }
 
+        protected override void OnCurrentParentFormChanged()
+        {
+            this.client.ContainingControl = this.CurrentParentForm;
+        }
+
         //---------------------------------------------------------------------
         // Closing & disposing.
         //---------------------------------------------------------------------
@@ -201,7 +173,7 @@ namespace Google.Solutions.Terminal.Controls
             this.deferResize.Dispose();
         }
 
-        protected void OnFormClosing(object sender, FormClosingEventArgs args)
+        protected override void OnFormClosing(object sender, FormClosingEventArgs args)
         {
             if (this.State == ConnectionState.Disconnecting)
             {
@@ -1040,7 +1012,7 @@ namespace Google.Solutions.Terminal.Controls
                 else if (value)
                 {
                     Debug.Assert(this.fullScreenContext != null);
-                    Debug.Assert(this.parentForm != null);
+                    Debug.Assert(this.CurrentParentForm != null);
 
                     //
                     // Enter full-screen.
@@ -1063,7 +1035,7 @@ namespace Google.Solutions.Terminal.Controls
                         //
                         fullScreenForm = new Form()
                         {
-                            Icon = this.parentForm!.Icon,
+                            Icon = this.CurrentParentForm!.Icon,
                             FormBorderStyle = FormBorderStyle.None,
                             StartPosition = FormStartPosition.Manual,
                             TopMost = true,
