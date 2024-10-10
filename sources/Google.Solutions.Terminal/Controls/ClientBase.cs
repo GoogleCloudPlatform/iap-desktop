@@ -97,7 +97,7 @@ namespace Google.Solutions.Terminal.Controls
         public ConnectionState State
         {
             get => this.state;
-            private set // Modified via OnXxx methods.
+            private set // Only to be mutated by OnXxx methods.
             {
                 Debug.Assert(!this.InvokeRequired);
                 if (this.state != value)

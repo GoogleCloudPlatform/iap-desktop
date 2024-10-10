@@ -37,9 +37,11 @@ namespace Google.Solutions.Terminal.Controls
             //
             // Close handle to process.
             //
-            Debug.Assert(this.process != null);
-            this.process?.Dispose();
-            this.process = null;
+            if (this.process != null)
+            {
+                this.process?.Dispose();
+                this.process = null;
+            }
         }
 
         //---------------------------------------------------------------------

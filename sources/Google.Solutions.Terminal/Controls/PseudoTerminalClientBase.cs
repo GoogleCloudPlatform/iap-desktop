@@ -123,10 +123,17 @@ namespace Google.Solutions.Terminal.Controls
             //
             // Connect the terminal to the (new) pty.
             //
-            this.Terminal.Device = ConnectCore(this.Terminal.Dimensions);
+            try
+            {
+                this.Terminal.Device = ConnectCore(this.Terminal.Dimensions);
 
-            OnAfterConnect();
-            OnAfterLogin();
+                OnAfterConnect();
+                OnAfterLogin();
+            }
+            catch (Exception e)
+            {
+                OnConnectionFailed(e);
+            }
         }
 
         public override void SendText(string text)

@@ -39,6 +39,16 @@ namespace Google.Solutions.Terminal.Controls
 
         public ToolStripMenuItem ClientMenu { get; }
 
+        private void ShowError(string caption, Exception e)
+        {
+            MessageBox.Show(
+                this,
+                e.FullMessage(),
+                caption,
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+
         public ClientDiagnosticsWindow(TClient client)
         {
             this.Client = client;
@@ -103,18 +113,17 @@ namespace Google.Solutions.Terminal.Controls
                         method.Invoke(client, null);
                     }
                     catch (Exception e)
-                    { 
-                        MessageBox.Show(this, 
-                            e.FullMessage(), 
-                            "Error",
-                            MessageBoxButtons.OK, 
-                            MessageBoxIcon.Warning);
+                    {
+                        ShowError("The command failed", e);
                     }
                 };
             }
 
             splitContainer.EndInit();
             ResumeLayout(false);
+
+            client.ConnectionFailed += (_, args)
+                => ShowError("Connection failed", args.Exception);
         }
     }
 }
