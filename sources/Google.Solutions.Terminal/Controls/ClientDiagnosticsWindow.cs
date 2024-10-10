@@ -30,7 +30,7 @@ namespace Google.Solutions.Terminal.Controls
     /// 
     /// For testing only.
     /// </summary>
-    internal class ClientDiagnosticsWindow<TClient> : Form
+    public class ClientDiagnosticsWindow<TClient> : Form
         where TClient : ClientBase
     {
         public TClient Client { get; }
@@ -88,7 +88,8 @@ namespace Google.Solutions.Terminal.Controls
             // Add menu item for each public parameter-less method.
             //
             foreach (var method in client.GetType()
-                .GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
+                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .Where(m => typeof(ClientBase).IsAssignableFrom(m.DeclaringType))
                 .Where(m => !m.IsSpecialName)
                 .Where(m => !m.GetParameters().Any()))
                 
