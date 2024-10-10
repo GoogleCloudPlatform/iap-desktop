@@ -1022,7 +1022,7 @@ namespace Google.Solutions.Terminal.Controls
         /// <summary>
         /// Gets or sets full-scren mode for the containing window.
         /// 
-        /// This property should only be changes from within RDP
+        /// This property should only be changed from within RDP
         /// callbacks.
         /// </summary>
         internal bool ContainerFullScreen
