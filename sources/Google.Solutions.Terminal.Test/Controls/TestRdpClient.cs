@@ -43,7 +43,6 @@ namespace Google.Solutions.Terminal.Test.Controls
 
         private static ClientDiagnosticsWindow<RdpClient> CreateWindow()
         {
-            //var window = new RdpDiagnosticsWindow();
             var window = new ClientDiagnosticsWindow<RdpClient>(new RdpClient());
             window.Client.MainWindow = window;
             window.Client.Username = ".\\admin";

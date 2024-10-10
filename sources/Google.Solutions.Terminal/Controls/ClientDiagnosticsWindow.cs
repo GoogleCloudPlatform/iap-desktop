@@ -26,6 +26,8 @@ using System.Windows.Forms;
 namespace Google.Solutions.Terminal.Controls
 {
     /// <summary>
+    /// Simple window that shows a client and its properties.
+    /// 
     /// For testing only.
     /// </summary>
     internal class ClientDiagnosticsWindow<TClient> : Form
@@ -51,7 +53,7 @@ namespace Google.Solutions.Terminal.Controls
             var splitContainer = new SplitContainer()
             {
                 Dock = DockStyle.Fill,
-                SplitterDistance = 300
+                SplitterDistance = 350
             };
             splitContainer.BeginInit();
             this.Controls.Add(splitContainer);
