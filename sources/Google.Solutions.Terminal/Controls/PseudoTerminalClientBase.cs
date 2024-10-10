@@ -1,5 +1,4 @@
-﻿using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Util;
+﻿using Google.Solutions.Common.Util;
 using Google.Solutions.Platform.IO;
 using System;
 using System.ComponentModel;
@@ -9,7 +8,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.Terminal.Controls
 {
     /// <summary>
-    /// Base class for a client that connexts a virtual terminal 
+    /// Base class for a client that connects a virtual terminal 
     /// to a pseudo-terminal.
     /// </summary>
     public abstract class PseudoTerminalClientBase : ClientBase
@@ -40,9 +39,10 @@ namespace Google.Solutions.Terminal.Controls
                 this.State == ConnectionState.Connecting ||
                 this.State == ConnectionState.Connected ||
                 this.State == ConnectionState.LoggedOn);
+
             //
-            // Propate event so that the hosting form can show
-            // some kind of error message.
+            // Propagate event so that the hosting form can show
+            // an error message.
             //
             if (IsCausedByConnectionTimeout(e.Exception))
             {
@@ -57,11 +57,9 @@ namespace Google.Solutions.Terminal.Controls
         private void OnDeviceClosed(object sender, EventArgs e)
         {
             //
-            // Orderly close.
+            // This is an orderly close.
             //
-            OnConnectionClosed(
-                // TODO: DisconnectReason.FormClosed 
-                DisconnectReason.DisconnectedByUser);
+            OnConnectionClosed(DisconnectReason.DisconnectedByUser);
         }
 
         //----------------------------------------------------------------------

@@ -8,6 +8,11 @@
     <Platforms>x64;x86;ARM64</Platforms>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="ToolWindows\Download\**" />
+    <EmbeddedResource Remove="ToolWindows\Download\**" />
+    <None Remove="ToolWindows\Download\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.11" />
     <PackageReference Include="Google.Apis" Version="1.68.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
@@ -214,8 +219,5 @@
     <EmbeddedResource Include="Properties\DefaultAppProtocols\mysql-tunnel.iapc" />
     <EmbeddedResource Include="Properties\DefaultAppProtocols\postgres-tunnel.iapc" />
     <EmbeddedResource Include="Properties\DefaultAppProtocols\sqlserver-tunnel.iapc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ToolWindows\Download\" />
   </ItemGroup>
 </Project>

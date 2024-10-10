@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -96,7 +98,18 @@ namespace Google.Solutions.Terminal.Controls
             {
                 this.ClientMenu.DropDownItems.Add(method.Name).Click += (_, __) =>
                 {
-                    method.Invoke(client, null);
+                    try
+                    {
+                        method.Invoke(client, null);
+                    }
+                    catch (Exception e)
+                    { 
+                        MessageBox.Show(this, 
+                            e.FullMessage(), 
+                            "Error",
+                            MessageBoxButtons.OK, 
+                            MessageBoxIcon.Warning);
+                    }
                 };
             }
 

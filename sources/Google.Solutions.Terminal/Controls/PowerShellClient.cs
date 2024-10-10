@@ -8,7 +8,7 @@ namespace Google.Solutions.Terminal.Controls
     /// <summary>
     /// Client for a local Powershell process.
     /// </summary>
-    public class PowerShellClient : PseudoTerminalClientBase
+    public class PowerShellClient : PseudoTerminalClientBase // TODO: test
     {
         private IWin32Process? process = null;
 

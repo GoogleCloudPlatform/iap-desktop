@@ -55,18 +55,6 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [WindowsFormsTest]
-        public void ShowTestUi()
-        {
-            using (var window = CreateWindow())
-            {
-                window.Client.ConnectionFailed += (_, args)
-                    => MessageBox.Show(window, args.Exception.FullMessage());
-
-                window.ShowDialog();
-            }
-        }
-
-        [WindowsFormsTest]
         public async Task ResizeWindow()
         {
             using (var window = CreateWindow())
