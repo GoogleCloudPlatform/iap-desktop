@@ -6,11 +6,17 @@ using System.Diagnostics;
 namespace Google.Solutions.Terminal.Controls
 {
     /// <summary>
-    /// Client for a local Powershell process.
+    /// Client for a local shell.
     /// </summary>
-    public class PowerShellClient : PseudoTerminalClientBase // TODO: test
+    public class LocalShellClient : PseudoTerminalClientBase
     {
         private IWin32Process? process = null;
+        private readonly string shellProgram;
+
+        public LocalShellClient(string shellProgram)
+        {
+            this.shellProgram = shellProgram;
+        }
 
         protected override IPseudoTerminal ConnectCore(
             PseudoTerminalSize initialSize)
@@ -19,7 +25,7 @@ namespace Google.Solutions.Terminal.Controls
 
             var processFactory = new Win32ProcessFactory();
             this.process = processFactory.CreateProcessWithPseudoConsole(
-                "powershell.exe",
+                this.shellProgram,
                 null,
                 initialSize);
 

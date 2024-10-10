@@ -38,7 +38,7 @@ namespace Google.Solutions.Terminal.TestApp
             }
             else
             {
-                var psClient = new PowerShellClient();
+                var psClient = new LocalShellClient("powershell.exe");
                 psClient.Terminal.ForeColor = Color.LightGray;
                 psClient.Terminal.BackColor = Color.Black;
 

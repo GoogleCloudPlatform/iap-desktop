@@ -167,5 +167,27 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Assert.AreEqual(1, connectionClosedEvents);
             }
         }
+
+        //----------------------------------------------------------------------
+        // SendText.
+        //----------------------------------------------------------------------
+
+        [WindowsFormsTest]
+        public void SendText_WhenNotLoggedOn()
+        {
+
+            using (var form = new Form())
+            {
+                var pty = new Mock<IPseudoTerminal>();
+                var client = new SampleClient(_ => pty.Object);
+                form.Controls.Add(client);
+                form.Show();
+
+                Assert.AreEqual(ClientBase.ConnectionState.NotConnected, client.State);
+
+                Assert.Throws<InvalidOperationException>(
+                    () => client.SendText("test"));
+            }
+        }
     }
 }
