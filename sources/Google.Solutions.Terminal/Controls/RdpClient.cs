@@ -61,6 +61,8 @@ namespace Google.Solutions.Terminal.Controls
 
         private readonly DeferredCallback deferResize;
 
+        private bool reconnectPending = false;
+
         private int keysSent = 0;
 
         public RdpClient()
@@ -537,6 +539,14 @@ namespace Google.Solutions.Terminal.Controls
                 {
                     OnConnectionFailed(e);
                 }
+
+                if (this.reconnectPending)
+                {
+                    //
+                    // This disconnect is part of a "reconnect" sequence.
+                    //
+                    Connect();
+                }
             }
         }
 
@@ -728,6 +738,10 @@ namespace Google.Solutions.Terminal.Controls
         [Browsable(false)]
         public Form? MainWindow { get; set; }
 
+        /// <summary>
+        /// Connect to server.
+        /// </summary>
+        /// <remarks>Errors are reported via events, not exceptions</remarks>
         public override void Connect()
         {
             Debug.Assert(!this.client.IsDisposed);
@@ -735,6 +749,12 @@ namespace Google.Solutions.Terminal.Controls
             ExpectState(ConnectionState.NotConnected);
             Precondition.ExpectNotEmpty(this.Server, nameof(this.Server));
             Precondition.ExpectNotEmpty(this.Server, nameof(this.Username));
+
+            //
+            // Clear reconnect flag so that it doesn't cause multiple
+            // reconnects in sequence.
+            //
+            this.reconnectPending = false;
 
             if (this.EnableWebAuthnRedirection)
             {
@@ -809,6 +829,27 @@ namespace Google.Solutions.Terminal.Controls
             {
                 this.OnConnectionFailed(e);
             }
+        }
+
+        /// <summary>
+        /// Disconnect and connect again.
+        /// </summary>
+        /// <remarks>Errors are reported via events, not exceptions</remarks>
+        public void Reconnect()
+        {
+            Debug.Assert(this.State == ConnectionState.LoggedOn);
+            if (this.State != ConnectionState.LoggedOn)
+            {
+                return;
+            }
+
+            //
+            // Set reconnect flag and disconnect. This triggers
+            // an Disconnected event, which in turn should trigger
+            // a new connection.
+            //
+            this.reconnectPending = true;
+            this.client.Disconnect();
         }
 
         //---------------------------------------------------------------------
