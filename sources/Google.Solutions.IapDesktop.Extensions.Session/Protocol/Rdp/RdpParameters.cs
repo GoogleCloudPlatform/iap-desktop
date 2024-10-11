@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         public RdpColorDepth ColorDepth { get; set; } = RdpColorDepth._Default;
         public RdpAudioMode AudioMode { get; set; } = RdpAudioMode._Default;
         public RdpNetworkLevelAuthentication NetworkLevelAuthentication { get; set; } = RdpNetworkLevelAuthentication._Default;
-        public RdpUserAuthenticationBehavior UserAuthenticationBehavior { get; set; } = RdpUserAuthenticationBehavior._Default;
+        public RdpAutomaticLogin UserAuthenticationBehavior { get; set; } = RdpAutomaticLogin._Default;
         public RdpRedirectClipboard RedirectClipboard { get; set; } = RdpRedirectClipboard._Default;
         public RdpRedirectPrinter RedirectPrinter { get; set; } = RdpRedirectPrinter._Default;
         public RdpRedirectSmartCard RedirectSmartCard { get; set; } = RdpRedirectSmartCard._Default;
@@ -136,13 +136,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         _Default = Enabled
     }
 
-    public enum RdpUserAuthenticationBehavior
+    /// <summary>
+    /// Controls whether IAP Desktop engages in trying to
+    /// automatically log on the user, or whether to hand off
+    /// authentication to the RDP control entirely.
+    /// </summary>
+    public enum RdpAutomaticLogin
     {
-        PromptOnFailure = 0,
-        AbortOnFailure = 1,
+        /// <summary>
+        /// Allow users to enter new credentials when saved
+        /// credentials are missing or invalid.
+        /// </summary>
+        Enabled = 0,
+
+        /// <summary>
+        /// Abort when saved credentials are missing or invalid.
+        /// </summary>
+        /// <remarks>
+        /// This is a legacy setting that shouldn't be used anymore.
+        /// </remarks>
+        [Browsable(false)]
+        LegacyAbortOnFailure = 1,
+
+        /// <summary>
+        /// Ignore saved credentials and always prompt, matches the
+        /// "Always prompt for password upon connection" server-side
+        /// group policy.
+        /// </summary>
+        Disabled = 2,
 
         [Browsable(false)]
-        _Default = PromptOnFailure
+        _Default = Enabled
     }
 
     public enum RdpCredentialGenerationBehavior
