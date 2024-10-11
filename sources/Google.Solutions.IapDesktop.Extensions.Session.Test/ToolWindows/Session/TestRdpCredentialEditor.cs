@@ -442,10 +442,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task AmendCredentials_WhenAutomaticLoginDisabled_ThenAmendCredentialsReturns()
+        public async Task AmendCredentials_WhenAutomaticLogonDisabled_ThenAmendCredentialsReturns()
         {
             var settings = new ConnectionSettings(SampleInstance);
-            settings.RdpAutomaticLogin.Value = RdpAutomaticLogin.Disabled;
+            settings.RdpAutomaticLogon.Value = RdpAutomaticLogon.Disabled;
 
             var editor = new RdpCredentialEditor(
                 null,

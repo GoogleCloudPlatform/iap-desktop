@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         public RdpColorDepth ColorDepth { get; set; } = RdpColorDepth._Default;
         public RdpAudioMode AudioMode { get; set; } = RdpAudioMode._Default;
         public RdpNetworkLevelAuthentication NetworkLevelAuthentication { get; set; } = RdpNetworkLevelAuthentication._Default;
-        public RdpAutomaticLogin UserAuthenticationBehavior { get; set; } = RdpAutomaticLogin._Default;
+        public RdpAutomaticLogon UserAuthenticationBehavior { get; set; } = RdpAutomaticLogon._Default;
         public RdpRedirectClipboard RedirectClipboard { get; set; } = RdpRedirectClipboard._Default;
         public RdpRedirectPrinter RedirectPrinter { get; set; } = RdpRedirectPrinter._Default;
         public RdpRedirectSmartCard RedirectSmartCard { get; set; } = RdpRedirectSmartCard._Default;
@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
     /// automatically log on the user, or whether to hand off
     /// authentication to the RDP control entirely.
     /// </summary>
-    public enum RdpAutomaticLogin
+    public enum RdpAutomaticLogon
     {
         /// <summary>
         /// Allow users to enter new credentials when saved

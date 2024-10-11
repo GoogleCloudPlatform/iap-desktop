@@ -262,17 +262,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
                 switch (viewModel.Parameters.UserAuthenticationBehavior)
                 {
-                    case RdpAutomaticLogin.Enabled:
+                    case RdpAutomaticLogon.Enabled:
                         this.rdpClient.EnableCredentialPrompt = true;
                         this.rdpClient.Password = viewModel.Credential.Password?.AsClearText() ?? string.Empty;
                         break;
 
-                    case RdpAutomaticLogin.Disabled:
+                    case RdpAutomaticLogon.Disabled:
                         this.rdpClient.EnableCredentialPrompt = true;
                         // Leave password blank.
                         break;
 
-                    case RdpAutomaticLogin.LegacyAbortOnFailure:
+                    case RdpAutomaticLogon.LegacyAbortOnFailure:
                         this.rdpClient.EnableCredentialPrompt = false;
                         this.rdpClient.Password = viewModel.Credential.Password?.AsClearText() ?? string.Empty;
                         break;

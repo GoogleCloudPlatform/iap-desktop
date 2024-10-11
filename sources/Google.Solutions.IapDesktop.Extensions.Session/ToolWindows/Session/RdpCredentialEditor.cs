@@ -272,8 +272,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 //
                 return;
             }
-            else if (this.Settings.RdpAutomaticLogin.Value
-                == RdpAutomaticLogin.Disabled)
+            else if (this.Settings.RdpAutomaticLogon.Value
+                == RdpAutomaticLogon.Disabled)
             {
                 //
                 // Don't even try to collect credentials, because the

@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             context.Parameters.ColorDepth = settings.RdpColorDepth.Value;
             context.Parameters.AudioMode = settings.RdpAudioMode.Value;
             context.Parameters.NetworkLevelAuthentication = settings.RdpNetworkLevelAuthentication.Value;
-            context.Parameters.UserAuthenticationBehavior = settings.RdpAutomaticLogin.Value;
+            context.Parameters.UserAuthenticationBehavior = settings.RdpAutomaticLogon.Value;
             context.Parameters.RedirectClipboard = settings.RdpRedirectClipboard.Value;
             context.Parameters.RedirectPrinter = settings.RdpRedirectPrinter.Value;
             context.Parameters.RedirectSmartCard = settings.RdpRedirectSmartCard.Value;
