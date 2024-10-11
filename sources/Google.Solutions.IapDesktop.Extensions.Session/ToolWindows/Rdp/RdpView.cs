@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                         break;
                 }
 
-                switch (viewModel.Parameters.UserAuthenticationBehavior) // TODO: test
+                switch (viewModel.Parameters.UserAuthenticationBehavior)
                 {
                     case RdpAutomaticLogin.Enabled:
                         this.rdpClient.EnableCredentialPrompt = true;
