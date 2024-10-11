@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Terminal.Controls;
 using Google.Solutions.Testing.Apis;
@@ -272,6 +271,31 @@ namespace Google.Solutions.Terminal.Test.Controls
 
                 Assert.NotNull(eventArgs);
                 Assert.IsInstanceOf<RdpDisconnectedException>(eventArgs!.Exception);
+
+                window.Close();
+            }
+        }
+
+        [WindowsFormsTest]
+        public async Task Logoff()
+        {
+            using (var window = CreateWindow())
+            {
+                window.Show();
+
+                //
+                // Connect.
+                //
+                window.Client.Connect();
+                await window.Client
+                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .ConfigureAwait(true);
+
+                window.Client.Logoff();
+
+                await window.Client
+                    .AwaitStateAsync(RdpClient.ConnectionState.NotConnected)
+                    .ConfigureAwait(true);
 
                 window.Close();
             }

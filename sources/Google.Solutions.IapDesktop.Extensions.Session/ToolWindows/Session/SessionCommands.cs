@@ -45,6 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             this.Close = new CloseCommand();
             this.ShowSecurityScreen = new ShowSecurityScreenCommand();
             this.ShowTaskManager = new ShowTaskManagerCommand();
+            this.Logoff = new LogoffCommand();
             this.TypeClipboardText = new TypeClipboardTextCommand();
             this.DownloadFiles = new DownloadFilesCommand();
             this.UploadFiles = new UploadFilesCommand();
@@ -61,6 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         public IContextCommand<ISession> Close { get; }
         public IContextCommand<ISession> ShowSecurityScreen { get; }
         public IContextCommand<ISession> ShowTaskManager { get; }
+        public IContextCommand<ISession> Logoff { get; }
         public IContextCommand<ISession> TypeClipboardText { get; }
         public IContextCommand<ISession> DownloadFiles { get; }
         public IContextCommand<ISession> UploadFiles { get; }
@@ -275,6 +277,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             {
                 var rdpSession = (IRdpSession)session;
                 rdpSession.ShowTaskManager();
+            }
+        }
+
+        private class LogoffCommand : SessionCommandBase
+        {
+            public LogoffCommand()
+                : base("Sign o&ut")
+            {
+            }
+
+            protected override bool IsEnabled(ISession session)
+            {
+                return session != null &&
+                    session is IRdpSession rdpSession &&
+                    rdpSession.IsConnected;
+            }
+
+            public override void Execute(ISession session)
+            {
+                var rdpSession = (IRdpSession)session;
+                rdpSession.Logoff();
             }
         }
 

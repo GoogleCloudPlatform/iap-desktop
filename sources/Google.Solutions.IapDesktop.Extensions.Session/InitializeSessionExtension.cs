@@ -301,6 +301,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             menu.AddCommand(sessionCommands.TypeClipboardText);
             menu.AddCommand(sessionCommands.ShowSecurityScreen);
             menu.AddCommand(sessionCommands.ShowTaskManager);
+            menu.AddCommand(sessionCommands.Logoff);
             menu.AddSeparator();
             menu.AddCommand(sessionCommands.Close);
             menu.AddCommand(sessionCommands.CloseAll);

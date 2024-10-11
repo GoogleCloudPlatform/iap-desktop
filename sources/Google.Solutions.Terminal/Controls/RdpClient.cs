@@ -894,13 +894,13 @@ namespace Google.Solutions.Terminal.Controls
         public void ShowSecurityScreen()
         {
             Debug.Assert(this.State == ConnectionState.LoggedOn);
+            if (this.State != ConnectionState.LoggedOn)
+            {
+                return;
+            }
 
             using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                //
-                // The RDP control sometimes swallows the first key combination
-                // that is sent. So start by a harmless ESC.
-                //
                 SendVirtualKey(Keys.Control | Keys.Alt | Keys.Delete);
             }
         }
@@ -911,6 +911,10 @@ namespace Google.Solutions.Terminal.Controls
         public void ShowTaskManager()
         {
             Debug.Assert(this.State == ConnectionState.LoggedOn);
+            if (this.State != ConnectionState.LoggedOn)
+            {
+                return;
+            }
 
             using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
@@ -919,10 +923,60 @@ namespace Google.Solutions.Terminal.Controls
         }
 
         /// <summary>
+        /// Log off user (as opposed to disconnecting the session).
+        /// </summary>
+        /// <remarks>
+        /// There's no API to log off the user programatically, so
+        /// we have to make a best-effort attempt of initiating a logoff
+        /// by sending keystrokes.
+        /// </remarks>
+        public void Logoff()
+        {
+            Debug.Assert(this.State == ConnectionState.LoggedOn);
+            if (this.State != ConnectionState.LoggedOn)
+            {
+                return;
+            }
+
+            using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                SendVirtualKey(Keys.Control | Keys.Alt | Keys.Delete);
+
+                //
+                // We have to wait a bit before we can send the next 
+                // keys.
+                //
+                DeferredCallback? deferredCallback = null;
+                deferredCallback = new DeferredCallback(
+                    ctx =>
+                    {
+                        // 
+                        // Select the second option on the list.
+                        //
+                        // NB. Navigating to the second item is slightly
+                        // better than sending an Alt+S, because accelerators
+                        // might vary by display language.
+                        //
+                        SendVirtualKey(Keys.Down);
+                        SendVirtualKey(Keys.Enter);
+                        deferredCallback?.Dispose();
+                    },
+                    TimeSpan.FromSeconds(1));
+                deferredCallback.Schedule();
+            }
+        }
+
+        /// <summary>
         /// Simulate key strokes to send a piece of text.
         /// </summary>
         public override void SendText(string text)
         {
+            Debug.Assert(this.State == ConnectionState.LoggedOn);
+            if (this.State != ConnectionState.LoggedOn)
+            {
+                return;
+            }
+
             if (string.IsNullOrEmpty(text))
             {
                 return;

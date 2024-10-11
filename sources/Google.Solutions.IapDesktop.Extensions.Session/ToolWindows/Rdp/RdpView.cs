@@ -547,6 +547,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             this.rdpClient.ShowTaskManager();
         }
 
+        public void Logoff()
+        {
+            this.rdpClient.Logoff();
+        }
+
         public void SendText(string text)
         {
             this.rdpClient.SendText(text);
