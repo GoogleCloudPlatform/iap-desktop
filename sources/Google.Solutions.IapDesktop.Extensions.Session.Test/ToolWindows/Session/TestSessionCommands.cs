@@ -296,6 +296,44 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         //---------------------------------------------------------------------
+        // Logoff.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Logoff_WhenApplicable_ThenLogoffIsEnabled()
+        {
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
+
+            var connectedSession = new Mock<IRdpSession>();
+            connectedSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                sessionCommands.Logoff.QueryState(connectedSession.Object));
+        }
+
+        [Test]
+        public void Logoff_WhenNotApplicable_ThenLogoffIsDisabled()
+        {
+            var sessionCommands = new SessionCommands(
+                new Mock<ISessionBroker>().Object);
+
+            var closedSession = new Mock<IRdpSession>();
+            closedSession.SetupGet(s => s.IsConnected).Returns(false);
+
+            var sshSession = new Mock<ISshTerminalSession>();
+            sshSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.Logoff.QueryState(closedSession.Object));
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.Logoff.QueryState(sshSession.Object));
+        }
+
+        //---------------------------------------------------------------------
         // TypeClipboardText.
         //---------------------------------------------------------------------
 
