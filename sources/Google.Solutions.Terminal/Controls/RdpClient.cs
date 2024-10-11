@@ -846,7 +846,7 @@ namespace Google.Solutions.Terminal.Controls
             //
             // Set reconnect flag and disconnect. This triggers
             // an Disconnected event, which in turn should trigger
-            // a new connection.
+            // a new connection attempt.
             //
             this.reconnectPending = true;
             this.client.Disconnect();
