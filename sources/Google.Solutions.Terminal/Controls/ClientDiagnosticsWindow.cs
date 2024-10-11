@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -30,12 +32,22 @@ namespace Google.Solutions.Terminal.Controls
     /// 
     /// For testing only.
     /// </summary>
-    internal class ClientDiagnosticsWindow<TClient> : Form
+    public class ClientDiagnosticsWindow<TClient> : Form
         where TClient : ClientBase
     {
         public TClient Client { get; }
 
         public ToolStripMenuItem ClientMenu { get; }
+
+        private void ShowError(string caption, Exception e)
+        {
+            MessageBox.Show(
+                this,
+                e.FullMessage(),
+                caption,
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
 
         public ClientDiagnosticsWindow(TClient client)
         {
@@ -88,19 +100,30 @@ namespace Google.Solutions.Terminal.Controls
             // Add menu item for each public parameter-less method.
             //
             foreach (var method in client.GetType()
-                .GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
+                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .Where(m => typeof(ClientBase).IsAssignableFrom(m.DeclaringType))
                 .Where(m => !m.IsSpecialName)
                 .Where(m => !m.GetParameters().Any()))
                 
             {
                 this.ClientMenu.DropDownItems.Add(method.Name).Click += (_, __) =>
                 {
-                    method.Invoke(client, null);
+                    try
+                    {
+                        method.Invoke(client, null);
+                    }
+                    catch (Exception e)
+                    {
+                        ShowError("The command failed", e);
+                    }
                 };
             }
 
             splitContainer.EndInit();
             ResumeLayout(false);
+
+            client.ConnectionFailed += (_, args)
+                => ShowError("Connection failed", args.Exception);
         }
     }
 }
