@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSwitchingToCloudNode_ThenListIsDisabled()
+        public async Task SwitchToModel_WhenCloudNode_ThenListIsDisabled()
         {
             var viewModel = CreateViewModel(PackageInventoryType.InstalledPackages);
 
@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
         }
 
         [Test]
-        public async Task WhenSwitchingToProjectNode_ThenListIsPopulated(
+        public async Task SwitchToModel_WhenProjectNode_ThenListIsPopulated(
             [Values(
                 PackageInventoryType.AvailablePackages,
                 PackageInventoryType.InstalledPackages)]  PackageInventoryType type)
@@ -196,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
         }
 
         [Test]
-        public async Task WhenSwitchingToZoneNode_ThenListIsPopulated(
+        public async Task SwitchToModel_WhenZoneNode_ThenListIsPopulated(
             [Values(
                 PackageInventoryType.AvailablePackages,
                 PackageInventoryType.InstalledPackages)]  PackageInventoryType type)
@@ -224,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
         }
 
         [Test]
-        public async Task WhenSwitchingToInstanceNodeWithInventory_ThenListIsPopulated(
+        public async Task SwitchToModel_WhenInstanceNodeWithInventory_ThenListIsPopulated(
             [Values(
                 PackageInventoryType.AvailablePackages,
                 PackageInventoryType.InstalledPackages)]  PackageInventoryType type)
@@ -253,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
         }
 
         [Test]
-        public async Task WhenSwitchingToInstanceNodeWithoutInventory_ThenListIsPopulated(
+        public async Task SwitchToModel_WhenInstanceNodeWithoutInventory_ThenListIsPopulated(
             [Values(
                 PackageInventoryType.AvailablePackages,
                 PackageInventoryType.InstalledPackages)] PackageInventoryType type)
@@ -288,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenLoaded_ThenFilteredPackagesContainsAllPackages()
+        public async Task FilteredPackages_WhenLoaded_ThenContainsAllPackages()
         {
             var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
@@ -302,7 +302,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
         }
 
         [Test]
-        public async Task WhenFilterHasMultipleTerms_ThenFilteredPackagesContainsPackagesThatMatchAllTerms()
+        public async Task FilteredPackages_WhenFilterHasMultipleTerms_ThenContainsPackagesThatMatchAllTerms()
         {
             var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
@@ -318,7 +318,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
         }
 
         [Test]
-        public async Task WhenFilterIsReset_ThenFilteredPackagesContainsAllPackages()
+        public async Task FilteredPackages_WhenFilterIsReset_ThenContainsAllPackages()
         {
             var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));

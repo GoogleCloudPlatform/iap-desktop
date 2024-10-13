@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         public const ushort ConsolePort = 1;
 
         [Test]
-        public async Task WhenLoadAsyncCompletes_ThenOutputContainsExistingData(
+        public async Task Load(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -67,8 +67,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             StringAssert.Contains("Finished running startup scripts", model.Output);
         }
 
+        //---------------------------------------------------------------------
+        // Tail.
+        //---------------------------------------------------------------------
+
         [Test]
-        public async Task WhenTailing_ThenCancelStopsTask()
+        public async Task Tail_WhenCancelled()
         {
             var stream = new Mock<IAsyncReader<string>>();
             stream.Setup(s => s.ReadAsync(
@@ -104,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         }
 
         [Test]
-        public async Task WhenApiThrowsException_ThenMessageIsTailedToOutput()
+        public async Task Tail_WhenApiThrowsException_ThenMessageIsTailedToOutput()
         {
             var stream = new Mock<IAsyncReader<string>>();
             stream.Setup(s => s.ReadAsync(

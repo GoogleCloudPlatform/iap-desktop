@@ -28,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
     public class TestWuaPackageType
     {
         [Test]
-        public void WhenCategoryIdUnknown_ThenFromCategoryIdReturnsNull()
+        public void FromCategoryId_WhenCategoryIdUnknown()
         {
             var type = WuaPackageType.FromCategoryId(
                 "145233b6-2d99-4f56-ba70-3748c1b6fdbd");
@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         }
 
         [Test]
-        public void WhenCategoryIdInvalid_ThenFromCategoryIdReturnsNull()
+        public void FromCategoryId_WhenCategoryIdInvalid()
         {
             var type = WuaPackageType.FromCategoryId("145233b");
 
@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         }
 
         [Test]
-        public void WhenCategoryIdKnown_ThenFromCategoryIdReturnsType()
+        public void FromCategoryId_WhenCategoryIdKnown()
         {
             var type = WuaPackageType.FromCategoryId(
                 "cd5ffd1e-e932-4e3a-bf74-18bf0b1bbd83");
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         }
 
         [Test]
-        public void WhenAllCategoryIdsUnknown_ThenMaxCriticalityIsNonCritical()
+        public void MaxCriticality_WhenAllCategoryIdsUnknown()
         {
             var criticality = WuaPackageType.MaxCriticality(new[]
                 {
@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         }
 
         [Test]
-        public void WhenSomeCategoryIdsCritical_ThenMaxCriticalityIsCritical()
+        public void MaxCriticality_WhenSomeCategoryIdsCritical()
         {
             var criticality = WuaPackageType.MaxCriticality(new[]
                 {

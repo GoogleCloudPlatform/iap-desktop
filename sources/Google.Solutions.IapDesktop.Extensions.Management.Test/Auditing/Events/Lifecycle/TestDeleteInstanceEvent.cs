@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
     public class TestDeleteInstanceEvent : ApplicationFixtureBase
     {
         [Test]
-        public void WhenSeverityIsInfo_ThenFieldsAreExtracted()
+        public void ToEvent_WhenSeverityIsInfo()
         {
             var json = @"
             {
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenSeverityIsError_ThenFieldsAreExtracted()
+        public void ToEvent_WhenSeverityIsError()
         {
             var json = @"
                 {

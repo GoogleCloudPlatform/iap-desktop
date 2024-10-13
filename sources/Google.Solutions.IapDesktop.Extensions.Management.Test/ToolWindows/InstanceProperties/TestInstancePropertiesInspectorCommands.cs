@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenApplicable_ThenContextMenuOpenIsEnabled()
+        public void ContextMenuOpen_WhenApplicable()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new InstancePropertiesInspectorCommands(toolWindowHost.Object);
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         }
 
         [Test]
-        public void WhenNotApplicable_ThenContextMenuOpenIsUnavailable()
+        public void ContextMenuOpen_WhenNotApplicable()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new InstancePropertiesInspectorCommands(toolWindowHost.Object);
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenApplicable_ThenToolbarOpenIsEnabled()
+        public void ToolbarOpen_WhenApplicable()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new InstancePropertiesInspectorCommands(toolWindowHost.Object);
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         }
 
         [Test]
-        public void WhenNotApplicable_ThenToolbarOpenIsDisabled()
+        public void ToolbarOpen_WhenNotApplicable()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new InstancePropertiesInspectorCommands(toolWindowHost.Object);
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         //---------------------------------------------------------------------
 
         [Test]
-        public void WindowMenuOpenIsEnabled()
+        public void WindowMenuOpen_IsEnabled()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var context = new Mock<IMainWindow>();

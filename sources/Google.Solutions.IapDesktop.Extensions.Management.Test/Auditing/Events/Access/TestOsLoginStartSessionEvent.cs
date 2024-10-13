@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
     public class TestOsLoginStartSessionEvent : ApplicationFixtureBase
     {
         [Test]
-        public void When2faMethodsAvailable_ThenFieldsAreExtracted(
+        public void ToEvent_When2faMethodsAvailable(
             [Values("v1", "v1beta")] string version)
         {
             var json = @"
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void When2faMethodsUnavailable_ThenFieldsAreExtracted()
+        public void ToEvent_When2faMethodsUnavailable()
         {
             var json = @"
                 {

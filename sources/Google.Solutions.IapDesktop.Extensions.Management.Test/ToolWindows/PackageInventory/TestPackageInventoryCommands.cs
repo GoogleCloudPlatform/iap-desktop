@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenApplicable_ThenContextMenuOpenInstalledPackagesIsEnabled()
+        public void ContextMenuOpenInstalledPackages_WhenApplicable()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new PackageInventoryCommands(toolWindowHost.Object);
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
         }
 
         [Test]
-        public void WhenNotApplicable_ThenContextMenuOpenInstalledPackagesIsUnavailable()
+        public void ContextMenuOpenInstalledPackages_WhenNotApplicable()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new PackageInventoryCommands(toolWindowHost.Object);
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenApplicable_ThenContextMenuOpenAvailablePackagesIsEnabled()
+        public void ContextMenuOpenAvailablePackages_WhenApplicable()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new PackageInventoryCommands(toolWindowHost.Object);
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
         }
 
         [Test]
-        public void WhenNotApplicable_ThenContextMenuOpenAvailablePackagesIsUnavailable()
+        public void ContextMenuOpenAvailablePackages_WhenNotApplicable()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new PackageInventoryCommands(toolWindowHost.Object);
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
         //---------------------------------------------------------------------
 
         [Test]
-        public void WindowMenuOpenInstalledPackagesEnabled()
+        public void WindowMenuOpenInstalledPackages()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var context = new Mock<IMainWindow>();
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
         //---------------------------------------------------------------------
 
         [Test]
-        public void WindowMenuOpenAvailablePackagesEnabled()
+        public void WindowMenuOpenAvailablePackages()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var context = new Mock<IMainWindow>();

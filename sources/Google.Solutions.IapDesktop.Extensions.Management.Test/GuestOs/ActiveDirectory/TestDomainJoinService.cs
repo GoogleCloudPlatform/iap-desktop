@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
         { }
 
         [Test]
-        public async Task WhenStreamReadReturnsNoMatch_ThenAwaitMessageKeepsPolling()
+        public async Task AwaitMessage_WhenStreamReadReturnsNoMatch_ThenAwaitMessageKeepsPolling()
         {
             var operationId = Guid.NewGuid();
 
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenResetCancelled_ThenJoinDomainRestoresStartupScripts()
+        public void JoinDomain_WhenResetCancelled_ThenJoinDomainRestoresStartupScripts()
         {
             var adapter = new Mock<IComputeEngineClient>();
             adapter
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
         }
 
         [Test]
-        public void WhenJoinResponseContainsError_ThenJoinDomainThrowsException()
+        public void JoinDomain_WhenJoinResponseContainsError_ThenJoinDomainThrowsException()
         {
             var operationId = Guid.NewGuid();
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");

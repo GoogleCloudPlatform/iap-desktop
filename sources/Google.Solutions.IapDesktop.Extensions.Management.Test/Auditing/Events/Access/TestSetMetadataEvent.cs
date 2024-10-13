@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
     public class TestSetMetadataEvent : ApplicationFixtureBase
     {
         [Test]
-        public void WhenOperationIsFirstAndRecordContainsWindowsKeys_ThenFieldsAreExtracted()
+        public void ToEvent_WhenOperationIsFirstAndRecordContainsWindowsKeys()
         {
             var json = @"
              {
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenOperationIsLastAndRecordContainsWindowsKeys_ThenFieldsAreExtracted()
+        public void ToEvent_WhenOperationIsLastAndRecordContainsWindowsKeys()
         {
             var json = @"
              {
@@ -187,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenOperationIsLastAndRecordContainsSshKeys_ThenFieldsAreExtracted()
+        public void ToEvent_WhenOperationIsLastAndRecordContainsSshKeys()
         {
             var json = @"
              {
@@ -256,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenSeverityIsError_ThenFieldsAreExtracted()
+        public void ToEvent_WhenSeverityIsError()
         {
             var json = @"
              {
@@ -334,7 +334,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenRecordContainsOtherMetadataKeys_ThenIsResetWindowsUserEventReturnsFalse()
+        public void ToEvent_WhenRecordContainsOtherMetadataKeys_ThenIsResetWindowsUserEventReturnsFalse()
         {
             var json = @"
              {

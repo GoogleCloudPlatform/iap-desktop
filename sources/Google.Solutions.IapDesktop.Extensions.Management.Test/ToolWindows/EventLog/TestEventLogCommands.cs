@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenApplicable_ThenContextMenuOpenIsEnabled()
+        public void ContextMenuOpen_WhenApplicable()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new EventLogCommands(toolWindowHost.Object);
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
         }
 
         [Test]
-        public void WhenNotApplicable_ThenContextMenuOpenIsUnavailable()
+        public void ContextMenuOpen_WhenNotApplicable()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new EventLogCommands(toolWindowHost.Object);
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
         //---------------------------------------------------------------------
 
         [Test]
-        public void WindowMenuOpenIsEnabled()
+        public void WindowMenuOpen_IsEnabled()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var context = new Mock<IMainWindow>();

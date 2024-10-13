@@ -28,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
     public class TestZypperPatch
     {
         [Test]
-        public void WhenFullyInitialized_ThenIPackagePropertiesAreSet()
+        public void Properties_WhenFullyInitialized()
         {
             var package = (IPackage)new ZypperPatch(
                 "title",
@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         }
 
         [Test]
-        public void WhenBarelyInitialized_ThenIPackagePropertiesAreSet()
+        public void Properties_WhenBarelyInitialized()
         {
             var package = (IPackage)new ZypperPatch(
                 "title",

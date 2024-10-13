@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenVmRunning_ThenContextMenuOpenCom1IsEnabled()
+        public void ContextMenuOpenCom1_WhenVmRunning_ThenIsEnabled()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new SerialOutputCommands(toolWindowHost.Object);
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         }
 
         [Test]
-        public void WhenVmStopped_ThenContextMenuOpenCom1IsDisabled()
+        public void ContextMenuOpenCom1_WhenVmStopped_ThenIsDisabled()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new SerialOutputCommands(toolWindowHost.Object);
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         }
 
         [Test]
-        public void WhenNotApplicable_ThenContextMenuOpenCom1IsUnavailable()
+        public void ContextMenuOpenCom1_WhenNotApplicable_ThenIsUnavailable()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new SerialOutputCommands(toolWindowHost.Object);
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         //---------------------------------------------------------------------
 
         [Test]
-        public void WindowMenuOpenCom1IsEnabled()
+        public void WindowMenuOpenCom1_IsEnabled()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var context = new Mock<IMainWindow>();
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         //---------------------------------------------------------------------
 
         [Test]
-        public void WindowMenuOpenCom2IsEnabled()
+        public void WindowMenuOpenCom3_IsEnabled()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var context = new Mock<IMainWindow>();
@@ -115,11 +115,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         }
 
         //---------------------------------------------------------------------
-        // WindowMenuOpenCom1.
+        // WindowMenuOpenCom3.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WindowMenuOpenCom4IsEnabled()
+        public void WindowMenuOpenCom4_IsEnabled()
         {
             var toolWindowHost = new Mock<IToolWindowHost>();
             var context = new Mock<IMainWindow>();

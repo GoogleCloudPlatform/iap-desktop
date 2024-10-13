@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
     public class TestAuditLogRecord : ApplicationFixtureBase
     {
         [Test]
-        public void WhenJsonContainsAuditLogRecord_ThenAuditLogRecordIsDeserialized()
+        public void Deserialize_WhenJsonContainsAuditLogRecord()
         {
             var json = @"
                  {
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
         }
 
         [Test]
-        public void WhenJsonContainsMetadata_ThenMetadataIsDeserialized()
+        public void Deserialize_WhenJsonContainsMetadata()
         {
             var json = @"
                  {
@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
         }
 
         [Test]
-        public void WhenJsonContainsRequest_ThenRequestIsDeserialized()
+        public void Deserialize_WhenJsonContainsRequest()
         {
             var json = @"
                  {
@@ -198,10 +198,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
             Assert.AreEqual(false, auditLog.Request?["canIpForward"]?.Value<bool>());
         }
 
-
-
         [Test]
-        public void WhenJsonContainsResponse_ThenResponseIsDeserialized()
+        public void Deserialize_WhenJsonContainsResponse()
         {
             var json = @"
                  {

@@ -49,11 +49,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                         "-Body 99";
 
         //---------------------------------------------------------------------
-        // GetInstanceInventoryAsync
+        // GetInstanceInventory.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenInstanceDoesNotExist_ThenGetInstanceInventoryAsyncReturnsNull(
+        public async Task GetInstanceInventory_WhenInstanceDoesNotExist_ThenReturnsNull(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var computeClient = new ComputeEngineClient(
@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         }
 
         [Test]
-        public async Task WhenInstanceHasInventoryData_ThenGetInstanceInventoryAsyncSucceeds(
+        public async Task GetInstanceInventory_WhenInstanceHasInventoryData_ThenSucceeds(
             [WindowsInstance(
                 InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         }
 
         [Test]
-        public async Task WhenUserNotInRole_ThenGetInstanceInventoryAsyncThrowsResourceAccessDeniedException(
+        public async Task GetInstanceInventory_WhenUserNotInRole_ThenThrowsResourceAccessDeniedException(
             [WindowsInstance(
                 InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
@@ -116,11 +116,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         }
 
         //---------------------------------------------------------------------
-        // ListProjectInventoryAsync
+        // ListProjectInventory.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenAtLeastOneInstanceHasInventoryData_ThenListProjectInventoryAsyncSucceeds(
+        public async Task ListProjectInventory_WhenAtLeastOneInstanceHasInventoryData_ThenSucceeds(
             [WindowsInstance(
                 InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         }
 
         [Test]
-        public async Task WhenOsMismatches_ThenListProjectInventoryAsyncExcludesInstance(
+        public async Task ListProjectInventory_WhenOsMismatches_ThenExcludesInstance(
             [WindowsInstance(
                 InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         }
 
         [Test]
-        public async Task WhenUserNotInRole_ThenListProjectInventoryAsyncThrowsResourceAccessDeniedException(
+        public async Task ListProjectInventory_WhenUserNotInRole_ThenThrowsResourceAccessDeniedException(
             [WindowsInstance(
                 InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
@@ -191,11 +191,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         }
 
         //---------------------------------------------------------------------
-        // ListZoneInventoryAsync
+        // ListZoneInventory.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenAtLeastOneInstanceHasInventoryData_ThenListZoneInventoryAsyncSucceeds(
+        public async Task ListZoneInventory_WhenAtLeastOneInstanceHasInventoryData_ThenSucceeds(
             [WindowsInstance(
                 InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
@@ -220,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         }
 
         [Test]
-        public async Task WhenOsMismatches_ThenListZoneInventoryAsyncExcludesInstance(
+        public async Task ListZoneInventory_WhenOsMismatches_ThenExcludesInstance(
             [WindowsInstance(
                 InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         }
 
         [Test]
-        public async Task WhenUserNotInRole_ThenListZoneInventoryAsyncThrowsResourceAccessDeniedException(
+        public async Task ListZoneInventory_WhenUserNotInRole_ThenThrowsResourceAccessDeniedException(
             [WindowsInstance(
                 InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)

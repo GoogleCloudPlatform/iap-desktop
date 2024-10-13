@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
     public class TestOsLoginCheckPolicyEvent : ApplicationFixtureBase
     {
         [Test]
-        public void WhenCheckSucceeded_ThenFieldsAreExtracted(
+        public void ToEvent_WhenCheckSucceeded(
             [Values("v1", "v1beta")] string version)
         {
             var json = @"
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenLegacyLogRecordLacksTopLevelLabels_ThenFieldsAreExtracted()
+        public void ToEvent_WhenLegacyLogRecordLacksTopLevelLabels()
         {
             var json = @"
                 {
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenCheckFailed_ThenFieldsAreExtracted()
+        public void ToEvent_WhenCheckFailed()
         {
             var json = @"
                 {
@@ -228,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenCheckFailedAndResponsMissing_ThenFieldsAreExtracted()
+        public void ToEvent_WhenCheckFailedAndResponsMissing()
         {
             var json = @"
                 {

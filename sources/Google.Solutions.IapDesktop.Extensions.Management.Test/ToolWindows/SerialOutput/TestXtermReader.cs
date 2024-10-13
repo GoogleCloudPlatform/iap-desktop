@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
     public class TestXtermReader : ApplicationFixtureBase
     {
         [Test]
-        public async Task WhenStreamContainsPlainTextOnly_ThenTextIsReturnedVerbatim()
+        public async Task Read_WhenStreamContainsPlainTextOnly_ThenTextIsReturnedVerbatim()
         {
             var input = new[]
             {
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         }
 
         [Test]
-        public async Task WhenStreamContainsAnsiTokens_ThenTokensAreFilteredOut()
+        public async Task Read_WhenStreamContainsAnsiTokens_ThenTokensAreFilteredOut()
         {
             var input = new[]
             {
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         }
 
         [Test]
-        public async Task WhenStreamContainsImproperlyTerminatedTokens_ThenTokensAreIgnored()
+        public async Task Read_WhenStreamContainsImproperlyTerminatedTokens_ThenTokensAreIgnored()
         {
             var input = new[]
             {
@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         }
 
         [Test]
-        public async Task WhenStreamContainsTruncatedTokens_ThenTokensAreFilteredOut()
+        public async Task Read_WhenStreamContainsTruncatedTokens_ThenTokensAreFilteredOut()
         {
             var input = new[]
             {

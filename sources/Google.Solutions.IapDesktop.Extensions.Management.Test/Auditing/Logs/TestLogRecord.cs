@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
     public class TestLogRecord : ApplicationFixtureBase
     {
         [Test]
-        public void WhenSystemEventJsonValid_ThenFieldsAreDeserialized()
+        public void Deserialize_WhenSystemEventJsonValid()
         {
             var json = @"
                  {
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
         }
 
         [Test]
-        public void WhenFirstActivityEventJsonValid_ThenFieldsAreDeserialized()
+        public void Deserialize_WhenFirstActivityEventJsonValid()
         {
             var json = @"
                  {
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
         }
 
         [Test]
-        public void WhenLastActivityEventJsonValid_ThenFieldsAreDeserialized()
+        public void Deserialize_WhenLastActivityEventJsonValid()
         {
             var json = @"
             {

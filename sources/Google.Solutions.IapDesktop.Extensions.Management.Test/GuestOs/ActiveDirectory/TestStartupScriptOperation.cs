@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenGuardKeyExists_ThenReplaceStartupScriptThrowsException()
+        public void ReplaceStartupScript_WhenGuardKeyExists()
         {
             var guardKeyName = "guard";
             var metadata = new Metadata()
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
         }
 
         [Test]
-        public async Task WhenMetadataEmpty_ThenReplaceStartupScriptSwapsScripts()
+        public async Task ReplaceStartupScript_WhenMetadataEmpty_ThenSwapsScripts()
         {
             var metadata = new Metadata();
 
@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
         }
 
         [Test]
-        public async Task WhenGuardKeyDoesNotExist_ThenReplaceStartupScriptSwapsScripts()
+        public async Task ReplaceStartupScript_WhenGuardKeyDoesNotExist_ThenSwapsScripts()
         {
             var metadata = new Metadata()
             {
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenGuardKeyExists_ThenSetMetadataUpdatesMetadata()
+        public async Task SetMetadata_WhenGuardKeyExists_ThenSetMetadataUpdatesMetadata()
         {
             var guardKeyName = "guard";
             var metadata = new Metadata()
@@ -201,12 +201,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                 new[] { "foo", guardKeyName },
                 metadata.Items.Select(i => i.Key).ToList());
         }
+
         //---------------------------------------------------------------------
         // RestoreStartupScripts.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenStartupScriptReplaced_ThenRestoreStartupScriptsRestoresMetadata()
+        public async Task RestoreStartupScripts_WhenStartupScriptReplaced()
         {
             var metadata = new Metadata()
             {
