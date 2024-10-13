@@ -316,6 +316,14 @@ namespace Google.Solutions.Terminal.Test.Controls
                     .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
+                int connectionClosedEvents = 0;
+                ClientBase.DisconnectReason expectedReason = ClientBase.DisconnectReason.ReconnectInitiatedByUser;
+                window.Client.ConnectionClosed += (_, args) =>
+                {
+                    connectionClosedEvents++;
+                    Assert.AreEqual(expectedReason, args.Reason);
+                };
+
                 for (int i = 0; i < 5; i++)
                 {
                     window.Client.Reconnect();
@@ -328,6 +336,9 @@ namespace Google.Solutions.Terminal.Test.Controls
                         .ConfigureAwait(true);
                 }
 
+                Assert.AreEqual(5, connectionClosedEvents);
+
+                expectedReason = ClientBase.DisconnectReason.FormClosed;
                 window.Close();
             }
         }

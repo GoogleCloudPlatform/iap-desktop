@@ -503,7 +503,19 @@ namespace Google.Solutions.Terminal.Controls
 
                 base.OnBeforeDisconnect();
 
-                if (this.State != ConnectionState.Connecting && e.IsTimeout)
+                if (this.reconnectPending)
+                {
+                    //
+                    // This disconnect is part of a "reconnect" sequence. 
+                    //
+                    OnConnectionClosed(DisconnectReason.ReconnectInitiatedByUser);
+
+                    //
+                    // Trigger the reconnect.
+                    //
+                    Connect();
+                }
+                else if (this.State != ConnectionState.Connecting && e.IsTimeout)
                 {
                     //
                     // An already-established connection timed out, this is common when
@@ -512,7 +524,7 @@ namespace Google.Solutions.Terminal.Controls
                     // NB. The same error code can occur during the initial connection,
                     // but then it should be treated as an error.
                     //
-                    OnConnectionClosed(DisconnectReason.Timeout);
+                    OnConnectionClosed(DisconnectReason.SessionTimeout);
                 }
                 else if (e.IsUserDisconnectedRemotely)
                 {
@@ -538,14 +550,6 @@ namespace Google.Solutions.Terminal.Controls
                 else if (!e.IsIgnorable)
                 {
                     OnConnectionFailed(e);
-                }
-
-                if (this.reconnectPending)
-                {
-                    //
-                    // This disconnect is part of a "reconnect" sequence.
-                    //
-                    Connect();
                 }
             }
         }

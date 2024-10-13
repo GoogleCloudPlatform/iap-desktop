@@ -259,9 +259,25 @@ namespace Google.Solutions.Terminal.Controls
 
         public enum DisconnectReason
         {
-            Timeout,
+            /// <summary>
+            /// The session timed out and was disconnected by the server.
+            /// </summary>
+            SessionTimeout,
+
+            /// <summary>
+            /// The session was disconnected by the user.
+            /// </summary>
             DisconnectedByUser,
-            FormClosed
+
+            /// <summary>
+            /// The user closed the window/form that controlled the session.
+            /// </summary>
+            FormClosed,
+
+            /// <summary>
+            /// The user requested the session to be reconnected.
+            /// </summary>
+            ReconnectInitiatedByUser,
         }
     }
 }

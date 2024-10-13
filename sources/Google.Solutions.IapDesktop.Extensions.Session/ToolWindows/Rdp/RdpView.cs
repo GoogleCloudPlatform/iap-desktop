@@ -330,14 +330,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             }
         }
 
-        private void Reconnect()
-        {
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
-            {
-                this.rdpClient.Connect();
-            }
-        }
-
         public bool IsConnected
         {
             get =>
@@ -386,6 +378,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 .ContinueWith(_ => { });
         }
 
+<<<<<<< HEAD
+=======
+        [SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "")]
+        private async void reconnectButton_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                try
+                {
+                    //
+                    // Occasionally, reconnecting fails with a non-descriptive
+                    // E_FAIL error. There isn't much to do about it, so treat
+                    // it as fatal error and close the window.
+                    //
+                    UpdateLayout(LayoutMode.Wait);
+
+                    this.rdpClient.Connect();
+                }
+                catch (Exception ex)
+                {
+                    await ShowErrorAndCloseAsync("Failed to reconnect", ex)
+                        .ConfigureAwait(true);
+                }
+            }
+        }
+
+>>>>>>> 4650ba2e (Add Reconnect command... but wait animation not shown)
         //---------------------------------------------------------------------
         // RDP callbacks.
         //---------------------------------------------------------------------
@@ -394,6 +413,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             switch (e.Reason)
             {
+                case ClientBase.DisconnectReason.ReconnectInitiatedByUser:
+                    //
+                    // User initiated a reconnect -- leave everything as is.
+                    //
+                    break;
+
                 case RdpClient.DisconnectReason.FormClosed:
                     //
                     // User closed the form.
@@ -502,6 +527,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         public void Logoff()
         {
             this.rdpClient.Logoff();
+        }
+
+        public void Reconnect()
+        {
+            // TODO: This triggers rdpClient_ConnectionClosed, breaking the flow!
+            //       Use different DisconnectReason?
+            this.rdpClient.Reconnect(); 
         }
 
         public void SendText(string text)

@@ -36,6 +36,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         void Logoff();
 
+        void Reconnect();
+
         void SendText(string text);
 
         bool CanEnterFullScreen { get; }
