@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
         {
             public IapOverview(HelpClient helpClient)
                 : base(
-                      "&IAP TCP forwarding overview",
+                      "About &IAP TCP forwarding",
                       HelpTopics.IapOverview,
                       helpClient)
             {
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
         {
             public CreateIapFirewallRule(HelpClient helpClient)
                 : base(
-                      "How to create a &firewall rule for IAP",
+                      "How to set up a &firewall rule for IAP",
                       HelpTopics.CreateIapFirewallRule,
                       helpClient)
             {
@@ -135,8 +135,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
         {
             public IapAccess(HelpClient helpClient)
                 : base(
-                      "How to &grant permissions to use IAP",
+                      "How to &grant access to IAP",
                       HelpTopics.IapAccess,
+                      helpClient)
+            {
+            }
+        }
+
+        [MenuCommand(typeof(HelpMenu), Rank = 0x302)]
+        [Service]
+        public class SshBestPractices : OpenHelpCommand
+        {
+            public SshBestPractices(HelpClient helpClient)
+                : base(
+                      "&Best practices for securing SSH access",
+                      HelpTopics.SshBestPractices,
                       helpClient)
             {
             }

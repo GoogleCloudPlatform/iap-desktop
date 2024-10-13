@@ -67,5 +67,8 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
             "Troubleshooting sign-in issues",
             $"https://googlecloudplatform.github.io/iap-desktop/troubleshooting-signin/?{GaParameters}");
 
+        public static readonly IHelpTopic SshBestPractices = new HelpTopic(
+            "Best practices for securing SSH access",
+            "https://cloud.google.com/compute/docs/connect/ssh-best-practices");
     }
 }
