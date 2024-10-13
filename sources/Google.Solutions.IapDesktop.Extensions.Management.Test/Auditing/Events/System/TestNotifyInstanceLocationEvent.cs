@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
     public class TestNotifyInstanceLocationEvent : ApplicationFixtureBase
     {
         [Test]
-        public void WhenRecordContainsNodeType_ThenFieldsAreExtracted()
+        public void ToEvent_WhenRecordContainsNodeType()
         {
             var json = @"
              {
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenRecordContainsNodeTypeButLacksLabels_ThenFieldsAreExtracted()
+        public void ToEvent_WhenRecordContainsNodeTypeButLacksLabels()
         {
             var json = @"
              {
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenRecordLacksNodeType_ThenFieldsAreExtracted()
+        public void ToEvent_WhenRecordLacksNodeType()
         {
             var json = @"
              {

@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
     public class TestSetCommonInstanceMetadataEvent : ApplicationFixtureBase
     {
         [Test]
-        public void WhenOperationIsFirst_ThenFieldsAreExtracted()
+        public void ToEvent_WhenOperationIsFirst()
         {
             var json = @"
                 {
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenOperationIsLastAndLacksModifiedFields_ThenFieldsAreExtracted()
+        public void ToEvent_WhenOperationIsLastAndLacksModifiedFields()
         {
             var json = @"
                 {
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
 
         [Test]
-        public void WhenOperationIsLastAndIncludesModifiedFields_ThenFieldsAreExtracted()
+        public void ToEvent_WhenOperationIsLastAndIncludesModifiedFields()
         {
             var json = @"
                 {
@@ -231,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenSeverityIsError_ThenFieldsAreExtracted()
+        public void ToEvent_WhenSeverityIsError()
         {
             var json = @"
                 {

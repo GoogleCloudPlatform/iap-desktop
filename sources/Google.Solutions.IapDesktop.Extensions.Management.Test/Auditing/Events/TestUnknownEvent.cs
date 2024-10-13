@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
     public class TestUnknownEvent : ApplicationFixtureBase
     {
         [Test]
-        public void WhenSeverityIsNotice_ThenFieldsAreExtracted()
+        public void ToEvent_WhenSeverityIsNotice()
         {
             var json = @"
             {
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenSeverityIsError_ThenFieldsAreExtracted()
+        public void ToEvent_WhenSeverityIsError()
         {
             Assert.Inconclusive();
         }

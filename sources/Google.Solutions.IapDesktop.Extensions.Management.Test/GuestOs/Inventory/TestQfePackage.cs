@@ -29,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
     public class TestQfePackage
     {
         [Test]
-        public void WhenFullyInitialized_ThenIPackagePropertiesAreSet()
+        public void Properties_WhenFullyInitialized()
         {
             var package = (IPackage)new QfePackage(
                 "http://uri",
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         }
 
         [Test]
-        public void WhenBarelyInitialized_ThenIPackagePropertiesAreSet()
+        public void Properties_WhenBarelyInitialized()
         {
             var package = (IPackage)new QfePackage(
                 "not.a.url",

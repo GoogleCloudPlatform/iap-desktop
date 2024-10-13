@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenInstanceUsesStartupScript_ThenAwaitHelloMessageSucceeds(
+        public async Task AwaitMessage_Hello_WhenInstanceUsesStartupScript(
             [DomainJoinWindowsInstance] ResourceTask<InstanceLocator> instanceTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenInstanceUsesStartupScript_ThenJoinFailsBecausePasswordCannotBeDecrypted(
+        public async Task AwaitMessage_JoinResponse_WhenInstanceUsesStartupScript(
             [DomainJoinWindowsInstance] ResourceTask<InstanceLocator> instanceTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<IAuthorization> auth)
         {

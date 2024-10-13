@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenNotBlocked_ThenEnableControlsTailing(
+        public async Task Tailing_WhenNotBlocked_ThenEnableControlsTailing(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         }
 
         [Test]
-        public async Task WhenBlocked_ThenEnableHasNoImpactOnTailing(
+        public async Task Tailing_WhenBlocked_ThenEnableHasNoImpactOnTailing(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         }
 
         [Test]
-        public async Task WhenEnabled_ThenBlockControlsTailing(
+        public async Task Tailing_WhenEnabled_ThenBlockControlsTailing(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSwitchingToCloudNode_ThenControlsAreDisabled(
+        public async Task SwitchToModel_WhenCloudNode_ThenControlsAreDisabled(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
             var viewModel = CreateViewModel(await auth);
@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             StringAssert.Contains(SerialOutputViewModel.DefaultWindowTitle, viewModel.WindowTitle);
         }
         [Test]
-        public async Task WhenSwitchingToStoppedInstanceNode_ThenControlsAreDisabled(
+        public async Task SwitchToModel_WhenStoppedInstanceNode_ThenControlsAreDisabled(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         }
 
         [Test]
-        public async Task WhenSwitchingToRunningInstanceNode_ThenOutputIsPopulated(
+        public async Task SwitchToModel_WhenRunningInstanceNode_ThenOutputIsPopulated(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -203,12 +203,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
             StringAssert.Contains(SerialOutputViewModel.DefaultWindowTitle, viewModel.WindowTitle);
             StringAssert.Contains(instanceLocator.Name, viewModel.WindowTitle);
-        }
-
-        [Test]
-        public void WhenSwitchingPort_ThenOutputIsPopulated()
-        {
-            Assert.Inconclusive();
         }
     }
 }

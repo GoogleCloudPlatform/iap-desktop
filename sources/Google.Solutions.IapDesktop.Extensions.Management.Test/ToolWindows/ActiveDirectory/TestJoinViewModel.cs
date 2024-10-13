@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Act
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenDomainNameLacksDots_ThenIsDomainNameInvalidRetunsFalse()
+        public void IsDomainNameInvalid_WhenDomainNameLacksDots()
         {
             var vm = new JoinViewModel();
 
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Act
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenComputerNameTooLong_ThenIsComputerNameInvalidRetunsFalse()
+        public void IsComputerNameInvalid_WhenComputerNameTooLong()
         {
             var vm = new JoinViewModel();
 
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Act
         }
 
         [Test]
-        public void WhenComputerNameNotAlphanumeric_ThenIsComputerNameInvalidRetunsFalse()
+        public void IsComputerNameInvalid_WhenComputerNameNotAlphanumeric()
         {
             var vm = new JoinViewModel();
 

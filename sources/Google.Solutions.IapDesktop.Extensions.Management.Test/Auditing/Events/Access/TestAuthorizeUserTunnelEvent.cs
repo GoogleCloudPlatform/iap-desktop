@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
     public class TestAuthorizeUserTunnelEvent : ApplicationFixtureBase
     {
         [Test]
-        public void WhenSeverityIsInfo_ThenFieldsAreExtracted()
+        public void ToEvent_WhenSeverityIsInfo()
         {
             var json = @"
               {
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
 
         [Test]
-        public void WhenMetadataContainsAccessLevel_ThenFieldsAreExtracted()
+        public void ToEvent_WhenMetadataContainsAccessLevel()
         {
             var json = @"
               {
@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenSeverityIsError_ThenFieldsAreExtracted()
+        public void ToEvent_WhenSeverityIsError()
         {
             var json = @"
              {
@@ -323,7 +323,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenFieldContentsAreMissing_ThenFieldsAreExtracted()
+        public void ToEvent_WhenFieldContentsAreMissing()
         {
             var json = @"
              {
@@ -385,7 +385,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenRecordIsFromIapWeb_ThenIsAuthorizeUserEventReturnsFalse()
+        public void ToEvent_WhenRecordIsFromIapWeb_ThenIsAuthorizeUserEventReturnsFalse()
         {
             var json = @"
              {
@@ -452,7 +452,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenAuthenticatedUsingWorkforceIdentitzFederation_ThenFieldsAreExtracted()
+        public void ToEvent_WhenAuthenticatedUsingWorkforceIdentitzFederation()
         {
             var json = @"
              {

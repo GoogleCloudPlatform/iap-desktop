@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
     public class TestEventFactory : ApplicationFixtureBase
     {
         [Test]
-        public void WhenRecordIsLegacyRecord_ThenFromRecordThrowsArgumentException()
+        public void FromRecord_WhenRecordIsLegacyRecord()
         {
             var json = @"
                 {

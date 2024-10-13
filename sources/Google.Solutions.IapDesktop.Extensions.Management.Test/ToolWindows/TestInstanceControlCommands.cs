@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInstanceStartable_ThenContextMenuStartIsEnabled()
+        public void ContextMenuStart_WhenInstanceStartable()
         {
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
         }
 
         [Test]
-        public void WhenInstanceNotStartable_ThenContextMenuStartIsDisabled()
+        public void ContextMenuStart_WhenInstanceNotStartable()
         {
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInstanceResumeable_ThenContextMenuResumeIsEnabled()
+        public void ContextMenuResume_WhenInstanceResumeable()
         {
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
         }
 
         [Test]
-        public void WhenInstanceNotResumeable_ThenContextMenuResumeIsDisabled()
+        public void ContextMenuResume_WhenInstanceNotResumeable()
         {
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInstanceStopable_ThenContextMenuStopIsEnabled()
+        public void ContextMenuStop_WhenInstanceStoppable()
         {
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
         }
 
         [Test]
-        public void WhenInstanceNotStopable_ThenContextMenuStopIsDisabled()
+        public void ContextMenuStop_WhenInstanceNotStoppable()
         {
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInstanceSuspendable_ThenContextMenuSuspendIsEnabled()
+        public void ContextMenuSuspend_WhenInstanceSuspendable()
         {
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
         }
 
         [Test]
-        public void WhenInstanceNotSuspendable_ThenContextMenuSuspendIsDisabled()
+        public void ContextMenuSuspend_WhenInstanceNotSuspendable()
         {
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInstanceResetable_ThenContextMenuResetIsEnabled()
+        public void ContextMenuReset_WhenInstanceResetable()
         {
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
@@ -207,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
         }
 
         [Test]
-        public void WhenInstanceNotResetable_ThenContextMenuResetIsDisabled()
+        public void ContextMenuReset_WhenInstanceNotResetable()
         {
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
@@ -225,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNotApplicable_ThenContextMenuXxxIsUnavailable(
+        public void ContextMenuXxx_WhenNotApplicable_ThenContextMenuXxxIsUnavailable(
             [Values(
                 InstanceControlCommand.Start,
                 InstanceControlCommand.Stop,
@@ -248,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
         }
 
         [Test]
-        public async Task WhenNotConfirmed_ThenContextMenuXxxDoesNothing(
+        public async Task ContextMenuXxx_WhenNotConfirmed_ThenContextMenuXxxDoesNothing(
             [Values(
                 InstanceControlCommand.Start,
                 InstanceControlCommand.Stop,
@@ -288,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
         }
 
         [Test]
-        public async Task WhenConfirmed_ThenContextMenuXxxControlsInstance(
+        public async Task ContextMenuXxx_WhenConfirmed_ThenContextMenuXxxControlsInstance(
             [Values(
                 InstanceControlCommand.Start,
                 InstanceControlCommand.Stop,
@@ -333,7 +333,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInstanceIsWindowsAndRunning_ThenContextMenuJoinToActiveDirectoryIsEnabled()
+        public void ContextMenuJoinToActiveDirectory_WhenInstanceIsWindowsAndRunning_ThenIsEnabled()
         {
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
@@ -348,7 +348,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
         }
 
         [Test]
-        public void WhenInstanceIsWindowsButNotRunning_ThenContextMenuJoinToActiveDirectoryIsDisabled()
+        public void ContextMenuJoinToActiveDirectory_WhenInstanceIsWindowsButNotRunning_ThenIsDisabled()
         {
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
@@ -363,7 +363,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
         }
 
         [Test]
-        public void WhenNotApplicable_ThenContextMenuJoinToActiveDirectoryIsUnavailable()
+        public void ContextMenuJoinToActiveDirectory_WhenNotApplicable_ThenIsUnavailable()
         {
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);

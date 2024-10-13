@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
     public class TestPackageInventoryModel : ApplicationFixtureBase
     {
         [Test]
-        public async Task WhenGuestAttributesDisabledByPolicy_ThenPackageListIsEmpty()
+        public async Task Packages_WhenGuestAttributesDisabledByPolicy_ThenIsEmpty()
         {
             var packageInventory = new Mock<IGuestOsInventory>();
             packageInventory.Setup(s => s.GetInstanceInventoryAsync(

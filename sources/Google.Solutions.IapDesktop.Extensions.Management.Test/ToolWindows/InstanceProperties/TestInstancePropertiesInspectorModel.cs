@@ -42,8 +42,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");
 
+        //---------------------------------------------------------------------
+        // Load.
+        //---------------------------------------------------------------------
+
         [Test]
-        public async Task WhenLoadAsyncCompletes_ThenPropertiesArePopulated(
+        public async Task Load(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -78,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         }
 
         [Test]
-        public async Task WhenGuestAttributesDisabledByPolicy_ThenOsPropertiesAreNull(
+        public async Task Load_WhenGuestAttributesDisabledByPolicy_ThenOsPropertiesAreNull(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -118,8 +122,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             Assert.IsNull(model.OperatingSystemVersion);
         }
 
+        //---------------------------------------------------------------------
+        // Constructor.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenMetadataIsEmpty_ThenDefaultsAreApplied()
+        public void Constructor_WhenMetadataIsEmpty_ThenDefaultsAreApplied()
         {
             var project = new Project();
             var instance = new Instance();
@@ -136,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         }
 
         [Test]
-        public void WhenGuestOsFieldsAreNull_ThenDefaultsAreApplied()
+        public void Constructor_WhenGuestOsFieldsAreNull_ThenDefaultsAreApplied()
         {
             var model = new InstancePropertiesInspectorModel(
                 SampleLocator,
@@ -161,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         }
 
         [Test]
-        public void WhenFlagSetInCommonInstanceMetadataAndInstanceMetadata_ThenInstanceMetadataPrevails()
+        public void Constructor_WhenFlagSetInCommonInstanceMetadataAndInstanceMetadata_ThenInstanceMetadataPrevails()
         {
             var project = new Project()
             {
@@ -235,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         }
 
         [Test]
-        public void WhenFlagSetInInstanceMetadataOnly_ThenInstanceMetadataPrevails()
+        public void Constructor_WhenFlagSetInInstanceMetadataOnly_ThenInstanceMetadataPrevails()
         {
             var project = new Project();
             var instance = new Instance
@@ -271,6 +279,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             Assert.AreEqual(FeatureFlag.Enabled, model.OsLogin2FA);
             Assert.AreEqual(FeatureFlag.Enabled, model.OsLoginWithSecurityKey);
         }
+
+        //---------------------------------------------------------------------
+        // InternalZonalDnsName.
+        //---------------------------------------------------------------------
 
         [Test]
         public void InternalZonalDnsName()

@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
     public class TestInsertInstanceEvent : ApplicationFixtureBase
     {
         [Test]
-        public void WhenSeverityIsNotice_ThenFieldsAreExtracted()
+        public void ToEvent_WhenSeverityIsNotice()
         {
             var json = @"
              {
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenSeverityIsError_ThenFieldsAreExtracted()
+        public void ToEvent_WhenSeverityIsError()
         {
             var json = @"
                {

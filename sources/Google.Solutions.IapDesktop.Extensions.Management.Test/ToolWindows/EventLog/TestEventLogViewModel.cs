@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSwitchingToCloudNode_ThenListIsDisabled()
+        public async Task SwitchToModel_WhenCloudNode_ThenListIsDisabled()
         {
             var node = new Mock<IProjectModelCloudNode>();
 
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
         }
 
         [Test]
-        public async Task WhenSwitchingToProjectNode_ThenListIsPopulated()
+        public async Task SwitchToModel_WhenProjectNode_ThenListIsPopulated()
         {
             var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
@@ -205,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
         }
 
         [Test]
-        public async Task WhenSwitchingToZoneNode_ThenListIsPopulated()
+        public async Task SwitchToModel_WhenZoneNode_ThenListIsPopulated()
         {
             var node = new Mock<IProjectModelZoneNode>();
             node.SetupGet(n => n.Zone).Returns(new ZoneLocator("project-1", "zone-1"));
@@ -231,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
         }
 
         [Test]
-        public async Task WhenSwitchingToInstanceNode_ThenListIsPopulated()
+        public async Task SwitchToModel_WhenInstanceNode_ThenListIsPopulated()
         {
             var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
@@ -258,7 +258,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
         }
 
         [Test]
-        public async Task WhenSwitchingNodes_ThenSelectionIsCleared()
+        public async Task SwitchToModel_WhenSwitchingNodes_ThenSelectionIsCleared()
         {
             var node1 = new Mock<IProjectModelInstanceNode>();
             node1
@@ -294,7 +294,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenChangingIsIncludeSystemEventsButtonChecked_ThenEventListIsUpdated()
+        public async Task IsIncludeSystemEventsButtonChecked_WhenChanged_ThenEventListIsUpdated()
         {
             var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
@@ -316,7 +316,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
         }
 
         [Test]
-        public async Task WhenChangingIsIncludeLifecycleEventsButtonChecked_ThenEventListIsUpdated()
+        public async Task IsIncludeLifecycleEventsButtonChecked_WhenChanged_ThenEventListIsUpdated()
         {
             var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
@@ -338,7 +338,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
         }
 
         [Test]
-        public async Task WhenChangingTimeframe_ThenReloadIsTriggered()
+        public async Task SelectedTimeframeIndex_WhenChanged_ThenReloadIsTriggered()
         {
             var jobService = new SynchronousJobService();
 

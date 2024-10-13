@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
     public class TestGuestTerminateEvent : ApplicationFixtureBase
     {
         [Test]
-        public void WhenSeverityIsInfo_ThenFieldsAreExtracted()
+        public void ToEvent_WhenSeverityIsInfo()
         {
             var json = @"
                  {

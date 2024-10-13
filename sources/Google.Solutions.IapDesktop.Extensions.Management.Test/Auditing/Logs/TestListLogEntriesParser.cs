@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
     public class TestListLogEntriesParser : ApplicationFixtureBase
     {
         [Test]
-        public void WhenPageIsEmpty_ThenReadPageReturnsEmptySequence()
+        public void Read_WhenPageIsEmpty()
         {
             var json = @"{}";
 
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
         }
 
         [Test]
-        public void WhenPageHasDataAndNextPageToken_ThenReadPageReturnsToken()
+        public void Read_WhenPageHasDataAndNextPageToken()
         {
             var json = @"
                 {
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
         }
 
         [Test]
-        public void WhenPageOnlyHasNextPageToken_ThenReadPageReturnsToken()
+        public void Read_WhenPageOnlyHasNextPageToken()
         {
             var json = @"
                 {
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
         }
 
         [Test]
-        public void WhenStreamContainsTwoRecords_ThenReadReportsTwoEvents()
+        public void Read_WhenStreamContainsTwoRecords_ThenReadReportsTwoEvents()
         {
             var json = @"
                 {
@@ -234,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
         }
 
         [Test]
-        public void WhenStreamContainsAnUnknownRecord_ThenReadReportsUnknownEvent()
+        public void Read_WhenStreamContainsAnUnknownRecord_ThenReadReportsUnknownEvent()
         {
             var json = @"{
                 'entries': [ {
@@ -340,7 +340,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
         }
 
         [Test]
-        public void WhenStreamContainsObjectInsteadOfArry_ThenNoEventsAreReported()
+        public void Read_WhenStreamContainsObjectInsteadOfArray()
         {
             var json = @"
             {

@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
     public class TestOsLoginContinueSessionEven : ApplicationFixtureBase
     {
         [Test]
-        public void WhenChallengePending_ThenFieldsAreExtracted(
+        public void ToEvent_WhenChallengePending(
             [Values("v1", "v1beta")] string version)
         {
             var json = @"
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void WhenAuthenticated_ThenFieldsAreExtracted()
+        public void ToEvent_WhenAuthenticated()
         {
             var json = @"
                 {

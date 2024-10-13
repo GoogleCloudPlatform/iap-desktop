@@ -42,11 +42,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
     public class TestAuditLogClient : ApplicationFixtureBase
     {
         //---------------------------------------------------------------------
-        // ProcessInstanceEventsAsync
+        // ProcessInstanceEvents.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUserNotInRole_ThenProcessInstanceEventsThrowsException(
+        public async Task ProcessInstanceEvents_WhenUserNotInRole_ThenThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> auth)
         {
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
         }
 
         [Test]
-        public async Task WhenUserInViewerRole_ThenProcessInstanceEventsInvokesProcessor(
+        public async Task ProcessInstanceEvents_WhenUserInViewerRole_ThenInvokesProcessor(
             [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<IAuthorization> auth)
         {
             var startDate = DateTime.UtcNow.AddDays(-3);
@@ -98,11 +98,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
         }
 
         //---------------------------------------------------------------------
-        // Filter string.
+        // CreateFilterString.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenMethodAndSeveritiesSpecified_ThenCreateFilterStringAddsCriteria()
+        public void CreateFilterString_WhenMethodAndSeveritiesSpecified_ThenAddsCriteria()
         {
             var filter = AuditLogClient.CreateFilterString(
                 null,
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
         }
 
         [Test]
-        public void WhenMethodAndSeveritiesNotSpecified_ThenCreateFilterStringSkipsCriteria()
+        public void CreateFilterString_WhenMethodAndSeveritiesNotSpecified_ThenSkipsCriteria()
         {
             var filter = AuditLogClient.CreateFilterString(
                 null,
@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
         }
 
         [Test]
-        public void WhenMethodAndSeveritiesEmpty_ThenCreateFilterStringSkipsCriteria()
+        public void CreateFilterString_WhenMethodAndSeveritiesEmpty_ThenSkipsCriteria()
         {
             var filter = AuditLogClient.CreateFilterString(
                 null,
@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
         }
 
         [Test]
-        public void WhenInstanceIdSpecified_ThenCreateFilterStringAddsCriteria()
+        public void CreateFilterString_WhenInstanceIdSpecified_ThenAddsCriteria()
         {
             var filter = AuditLogClient.CreateFilterString(
                 null,
@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
         }
 
         [Test]
-        public void WhenZonesSpecified_ThenCreateFilterStringAddsCriteria()
+        public void CreateFilterString_WhenZonesSpecified_ThenAddsCriteria()
         {
             var filter = AuditLogClient.CreateFilterString(
                 new[] { "us-central1-a" },

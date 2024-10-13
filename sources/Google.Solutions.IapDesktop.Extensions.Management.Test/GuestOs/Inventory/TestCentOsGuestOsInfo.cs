@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             };
 
         [Test]
-        public void WhenGuestAttributesEmpty_ThenFromGuestAttributesReturnsDefaults()
+        public void FromGuestAttributes_WhenGuestAttributesEmpty_ThenReturnsDefaults()
         {
             var attributes = GuestOsInfo.FromGuestAttributes(
                 SampleLocator,
@@ -182,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         }
 
         [Test]
-        public void WhenGuestAttributesPopulated_ThenOsInfoAttributesAreSet()
+        public void FromGuestAttributes_WhenGuestAttributesPopulated_ThenOsInfoAttributesAreSet()
         {
             var attributes = GuestOsInfo.FromGuestAttributes(SampleLocator, SampleAttributes);
 
@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         }
 
         [Test]
-        public void WhenGuestAttributesContainInstalledPackages_ThenInstalledPackagesAttributeIsSet()
+        public void FromGuestAttributes_WhenGuestAttributesContainInstalledPackages_ThenInstalledPackagesAttributeIsSet()
         {
             var attributes = GuestOsInfo.FromGuestAttributes(SampleLocator, SampleAttributes);
 
@@ -223,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         }
 
         [Test]
-        public void WhenGuestAttributesContainInstalledPackages_ThenAvailablePackagesAttributeIsSet()
+        public void FromGuestAttributes_WhenGuestAttributesContainInstalledPackages_ThenAvailablePackagesAttributeIsSet()
         {
             var attributes = GuestOsInfo.FromGuestAttributes(SampleLocator, SampleAttributes);
 

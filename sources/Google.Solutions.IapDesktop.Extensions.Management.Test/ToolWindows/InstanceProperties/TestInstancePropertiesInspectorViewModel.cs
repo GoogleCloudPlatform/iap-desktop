@@ -74,11 +74,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         }
 
         //---------------------------------------------------------------------
-        // Model switching.
+        // SwitchToModel.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSwitchingToCloudNode_ThenInspectedObjectIsNull()
+        public async Task SwitchToModel_WhenCloudNode_ThenInspectedObjectIsNull()
         {
             var viewModel = CreateInstanceDetailsViewModel();
 
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         }
 
         [Test]
-        public async Task WhenSwitchingToProjectNode_ThenInspectedObjectIsNull()
+        public async Task SwitchToModel_WhenProjectNode_ThenInspectedObjectIsNull()
         {
             var viewModel = CreateInstanceDetailsViewModel();
 
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         }
 
         [Test]
-        public async Task WhenSwitchingToZoneNode_ThenInspectedObjectIsNull()
+        public async Task SwitchToModel_WhenZoneNode_ThenInspectedObjectIsNull()
         {
             var viewModel = CreateInstanceDetailsViewModel();
 
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         }
 
         [Test]
-        public async Task WhenSwitchingToInstanceNode_ThenInspectedObjectIsSet()
+        public async Task SwitchToModel_WhenInstanceNode_ThenInspectedObjectIsSet()
         {
             var viewModel = CreateInstanceDetailsViewModel();
 
@@ -157,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
         }
 
         [Test]
-        public async Task WhenSwitchingToInstanceNodeAndLoadFails_ThenInspectedObjectIsNull()
+        public async Task SwitchToModel_WhenInstanceNodeAndLoadFails_ThenInspectedObjectIsNull()
         {
             var viewModel = CreateInstanceDetailsViewModel();
 
