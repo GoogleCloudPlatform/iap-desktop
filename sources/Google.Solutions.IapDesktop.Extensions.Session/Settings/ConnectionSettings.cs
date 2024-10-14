@@ -90,9 +90,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 RdpConnectionBarState._Default);
             this.RdpAuthenticationLevel = store.Read<RdpAuthenticationLevel>(
                 "AuthenticationLevel",
-                "Server authentication",
-                "Require server authentication when connecting.",
-                Categories.RdpSecurity,
+                null,
+                null,
+                null,
                 Protocol.Rdp.RdpAuthenticationLevel._Default);
             this.RdpColorDepth = store.Read<RdpColorDepth>(
                 "ColorDepth",
@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 Protocol.Rdp.RdpRedirectWebAuthn._Default);
             this.RdpHookWindowsKeys = store.Read<RdpHookWindowsKeys>(
                 "RdpHookWindowsKeys",
-                "Windows shortcuts",
+                "Apply Windows shortcuts",
                 "Enable Windows shortcuts (like Win+R)",
                 Categories.RdpResources,
                 Protocol.Rdp.RdpHookWindowsKeys._Default);

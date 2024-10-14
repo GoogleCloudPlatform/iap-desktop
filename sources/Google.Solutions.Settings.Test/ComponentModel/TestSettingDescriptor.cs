@@ -21,6 +21,8 @@
 
 using Google.Solutions.Settings.ComponentModel;
 using NUnit.Framework;
+using System;
+using System.Drawing;
 
 namespace Google.Solutions.Settings.Test.ComponentModel
 {
@@ -94,6 +96,32 @@ namespace Google.Solutions.Settings.Test.ComponentModel
             descriptor.ResetValue(setting);
             Assert.IsTrue(setting.IsDefault);
             Assert.IsFalse(descriptor.ShouldSerializeValue(setting));
+        }
+
+        //--------------------------------------------------------------------
+        // Converter.
+        //--------------------------------------------------------------------
+
+        [Test]
+        public void Converter_WhenEnum()
+        {
+            var setting = DictionarySettingsStore
+                .Empty()
+                .Read<StringComparison>("key", null, null, null, StringComparison.Ordinal);
+
+            var descriptor = new SettingDescriptor(setting);
+            Assert.IsInstanceOf<EnumDisplayNameConverter>(descriptor.Converter);
+        }
+
+        [Test]
+        public void Converter_WhenString()
+        {
+            var setting = DictionarySettingsStore
+                .Empty()
+                .Read<string>("key", "display name", "description", "category", "default");
+
+            var descriptor = new SettingDescriptor(setting);
+            Assert.IsNotInstanceOf<EnumDisplayNameConverter>(descriptor.Converter);
         }
     }
 }

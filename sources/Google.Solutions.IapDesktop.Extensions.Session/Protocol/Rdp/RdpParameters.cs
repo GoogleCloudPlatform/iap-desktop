@@ -83,8 +83,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
     public enum RdpConnectionBarState
     {
+        [Description("Auto hide")]
         AutoHide = 0,
+
+        [Description("Pinned")]
         Pinned = 1,
+
+        [Description("Hide")]
         Off = 2,
 
         [Browsable(false)]
@@ -109,8 +114,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
     public enum RdpColorDepth
     {
+        [Description("High color (16 bit)")]
         HighColor = 0,
+
+        [Description("True color (24 bit)")]
         TrueColor = 1,
+
+        [Description("Highest quality (32 bit)")]
         DeepColor = 2,
 
         [Browsable(false)]
@@ -119,8 +129,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
     public enum RdpAudioMode
     {
+        [Description("Play on this computer")]
         PlayLocally = 0,
+
+        [Description("Play on server")]
         PlayOnServer = 1,
+
+        [Description("Do not play")]
         DoNotPlay = 2,
 
         [Browsable(false)]
@@ -248,10 +263,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         //
         // NB. Values correspond to IMsRdpClientSecuredSettings::KeyboardHookMode.
         //
+        [Description("On this computer")]
         Disabled = 0,
-        Enabled = 1,
-        FullScreenOnly = 2,
 
+        [Description("On server")]
+        Enabled = 1,
+
+        [Description("Only in full-screen mode")]
+        FullScreenOnly = 2,
 
         [Browsable(false)]
         _Default = FullScreenOnly
@@ -271,11 +290,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         /// <summary>
         /// Normal user session, might consume a CAL.
         /// </summary>
+        [Description("Normal user-session")] 
         User = 0,
 
         /// <summary>
         /// Admin session, equivalent to "mstsc /admin".
         /// </summary>
+        [Description("RDS admin-session")]
         Admin = 1,
 
         [Browsable(false)]
@@ -284,7 +305,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
     public enum RdpDpiScaling
     {
+        [Description("Disabled (100%)")]
         Disabled = 0,
+
+        [Description("Same as this computer")]
         Enabled = 1,
 
         [Browsable(false)]
