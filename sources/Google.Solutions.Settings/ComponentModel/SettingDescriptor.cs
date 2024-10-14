@@ -22,6 +22,10 @@
 using Google.Solutions.Common.Util;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
 
 namespace Google.Solutions.Settings.ComponentModel
 {
@@ -52,7 +56,7 @@ namespace Google.Solutions.Settings.ComponentModel
         {
             get => this.setting.Key;
         }
-
+        
         /// <summary>
         /// Human-readable name of the setting.
         /// </summary>
@@ -132,6 +136,80 @@ namespace Google.Solutions.Settings.ComponentModel
         public override bool ShouldSerializeValue(object component)
         {
             return !this.setting.IsDefault;
+        }
+
+        public override TypeConverter Converter
+        {
+            get
+            {
+                if (this.setting.ValueType.IsEnum)
+                {
+                    return new EnumSettingConverter(this.setting.ValueType);
+                }
+                else
+                {
+                    return base.Converter;
+                }
+            }
+        }
+
+        private class EnumSettingConverter : EnumConverter // TODO: test
+        {
+            public EnumSettingConverter(Type type) : base(type)
+            {
+                Debug.Assert(type
+                    .GetMembers()
+                    .SelectMany(m => m.GetCustomAttributes<DescriptionAttribute>())
+                    .GroupBy(m => m.Description)
+                    .Max(g => g.Count()) == 1,
+                    "Type contains duplicate display names");
+            }
+
+            public override bool CanConvertTo(
+                ITypeDescriptorContext context, 
+                Type destinationType)
+            {
+                return destinationType == typeof(string);
+            }
+
+            public override object ConvertTo(
+                ITypeDescriptorContext context, 
+                CultureInfo culture, 
+                object value,
+                Type destinationType)
+            {
+                if (destinationType == typeof(string))
+                {
+                    //
+                    // Lookup attribute by symbol name.
+                    //
+                    return this.EnumType
+                        .GetMember(value.ToString())
+                        .FirstOrDefault()?
+                        .GetCustomAttribute<DescriptionAttribute>()?
+                        .Description;
+                }
+                else
+                {
+                    return base.ConvertTo(context, culture, value, destinationType);
+                }
+            }
+
+            public override object ConvertFrom(
+                ITypeDescriptorContext context, 
+                CultureInfo culture, 
+                object value)
+            {
+                //
+                // Lookup symbol name by attribute value.
+                //
+                return Enum.Parse(this.EnumType,
+                    this.EnumType
+                    .GetMembers()
+                    .Where(m => Equals(m.GetCustomAttribute<DescriptionAttribute>()?.Description, value))
+                    .First()
+                    .Name);
+            }
         }
     }
 }
