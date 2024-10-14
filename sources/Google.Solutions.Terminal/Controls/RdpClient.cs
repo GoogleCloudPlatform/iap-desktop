@@ -964,8 +964,14 @@ namespace Google.Solutions.Terminal.Controls
                         // better than sending an Alt+S, because accelerators
                         // might vary by display language.
                         //
-                        SendVirtualKey(Keys.Down);
-                        SendVirtualKey(Keys.Enter); // TODO: Catch exception
+                        try
+                        {
+                            SendVirtualKey(Keys.Down);
+                            SendVirtualKey(Keys.Enter);
+                        }
+                        catch
+                        { }
+
                         deferredCallback?.Dispose();
                     },
                     TimeSpan.FromSeconds(1));
@@ -1163,7 +1169,7 @@ namespace Google.Solutions.Terminal.Controls
         /// Check if the client is currently in full-screen mode.
         /// </summary>
         [Browsable(false)]
-        public bool IsFullScreen
+        public override bool IsFullScreen
         {
             get
             {

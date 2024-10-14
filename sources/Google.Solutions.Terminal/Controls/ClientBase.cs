@@ -98,12 +98,21 @@ namespace Google.Solutions.Terminal.Controls
             this.StateChanged += (_, args) =>
             {
                 this.statePanel.State = this.State;
-                this.statePanel.Visible = 
+                this.statePanel.Visible = !this.IsFullScreen && (
                     this.State == ConnectionState.NotConnected ||
                     this.State == ConnectionState.Disconnecting ||
-                    this.State == ConnectionState.Connecting;
+                    this.State == ConnectionState.Connecting);
             };
             this.statePanel.ConnectButtonClicked += (_, args) => Connect();
+        }
+
+        /// <summary>
+        /// Check if the client is currently in full-screen mode.
+        /// </summary>
+        [Browsable(false)]
+        public virtual bool IsFullScreen
+        { 
+            get => false; 
         }
 
         //---------------------------------------------------------------------
