@@ -68,16 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         public bool IsClosing { get; private set; } = false;
 
-        internal enum LayoutMode
-        {
-            Normal,
-            Reconnect,
-            Wait
-        }
-
-        internal LayoutMode Mode { get; private set; }
-
-        private void UpdateLayout(LayoutMode mode)
+        private void UpdateLayout()
         {
             if (this.rdpClient == null)
             {
@@ -89,29 +80,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             // in sync programmatically.
             //
             this.rdpClient.Size = this.Size;
-
-            //
-            // Resize the overlay pane to cover the OCX.
-            //
-            this.overlayPanel.Location = Point.Empty;
-            this.overlayPanel.Size = this.Size;
-
-            //
-            // Center the other panels.
-            //
-            this.waitPanel.Location = new Point(
-                (this.Size.Width - this.waitPanel.Width) / 2,
-                (this.Size.Height - this.waitPanel.Height) / 2);
-
-            this.reconnectPanel.Location = new Point(
-                (this.Size.Width - this.reconnectPanel.Width) / 2,
-                (this.Size.Height - this.reconnectPanel.Height) / 2);
-
-            this.overlayPanel.Visible = mode == LayoutMode.Reconnect || mode == LayoutMode.Wait;
-            this.waitPanel.Visible = mode == LayoutMode.Wait;
-            this.reconnectPanel.Visible = mode == LayoutMode.Reconnect;
-
-            this.Mode = mode;
         }
 
         private bool IsRdsSessionHostRedirectionError(Exception e)
@@ -227,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
                 SuspendLayout();
                 this.theme?.ApplyTo(this);
-                UpdateLayout(LayoutMode.Wait);
+                UpdateLayout();
                 ResumeLayout();
 
                 this.rdpClient!.MainWindow = (Form)this.MainWindow;
@@ -366,8 +334,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                UpdateLayout(LayoutMode.Wait);
-
                 this.rdpClient.Connect();
             }
         }
@@ -401,7 +367,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             //
             // Rearrange controls based on new size.
             //
-            UpdateLayout(this.Mode);
+            UpdateLayout();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -418,28 +384,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             _ = this.eventService
                 .PublishAsync(new SessionEndedEvent(this.Instance))
                 .ContinueWith(_ => { });
-        }
-
-        [SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "")]
-        private async void reconnectButton_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
-            {
-                try
-                {
-                    //
-                    // Occasionally, reconnecting fails with a non-descriptive
-                    // E_FAIL error. There isn't much to do about it, so treat
-                    // it as fatal error and close the window.
-                    //
-                    Reconnect();
-                }
-                catch (Exception ex)
-                {
-                    await ShowErrorAndCloseAsync("Failed to reconnect", ex)
-                        .ConfigureAwait(true);
-                }
-            }
         }
 
         //---------------------------------------------------------------------
@@ -467,7 +411,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                     //
                     // Something else - allow user to reconnect.
                     //
-                    UpdateLayout(LayoutMode.Reconnect);
                     break;
             }
         }
@@ -488,12 +431,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 _ = this.eventService
                     .PublishAsync(new SessionStartedEvent(this.Instance))
                     .ContinueWith(_ => { });
-            }
-
-            if (this.rdpClient.State == RdpClient.ConnectionState.Connected ||
-                this.rdpClient.State == RdpClient.ConnectionState.LoggedOn)
-            {
-                UpdateLayout(LayoutMode.Normal);
             }
         }
 

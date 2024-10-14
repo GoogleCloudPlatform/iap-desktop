@@ -47,10 +47,10 @@ namespace Google.Solutions.Mvvm.Controls
 
         public static void CenterHorizontally(
             this Control control,
-            Form form)
+            Control parent)
         {
             control.Location = new Point(
-                (form.Width - control.Width) / 2,
+                (parent.Width - control.Width) / 2,
                 control.Location.Y);
         }
 

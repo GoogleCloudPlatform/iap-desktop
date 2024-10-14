@@ -175,6 +175,8 @@ namespace Google.Solutions.Terminal.Controls
 
         protected override void OnFormClosing(object sender, FormClosingEventArgs args)
         {
+            base.OnFormClosing(sender, args);
+
             if (this.State == ConnectionState.Disconnecting)
             {
                 //
@@ -595,7 +597,26 @@ namespace Google.Solutions.Terminal.Controls
                     e.Message,
                     args.networkAvailable);
 
-                base.OnBeforeConnect();
+                if (args.networkAvailable)
+                {
+                    //
+                    // The control is about to connect again.
+                    //
+                    base.OnBeforeConnect();
+                }
+                else
+                {
+                    //
+                    // We're now in a limbo state in which the control
+                    // might try to connect again, but it might also
+                    // be stuck showing a message that the network 
+                    // has been lost. If the user cancels, then
+                    // the Disconnect procedure is initiated.
+                    //
+                    // Either way, it's best to leave the state
+                    // as is to avoid becoming stuck in Connecting state.
+                    //
+                }
             }
         }
 
@@ -780,7 +801,14 @@ namespace Google.Solutions.Terminal.Controls
             this.client.DesktopHeight = this.Size.Height;
             this.client.DesktopWidth = this.Size.Width;
 
-            this.client.Connect();
+            try
+            {
+                this.client.Connect();
+            }
+            catch (Exception e)
+            {
+                this.OnConnectionFailed(e);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -957,8 +985,14 @@ namespace Google.Solutions.Terminal.Controls
                         // better than sending an Alt+S, because accelerators
                         // might vary by display language.
                         //
-                        SendVirtualKey(Keys.Down);
-                        SendVirtualKey(Keys.Enter);
+                        try
+                        {
+                            SendVirtualKey(Keys.Down);
+                            SendVirtualKey(Keys.Enter);
+                        }
+                        catch
+                        { }
+
                         deferredCallback?.Dispose();
                     },
                     TimeSpan.FromSeconds(1));
@@ -1156,7 +1190,7 @@ namespace Google.Solutions.Terminal.Controls
         /// Check if the client is currently in full-screen mode.
         /// </summary>
         [Browsable(false)]
-        public bool IsFullScreen
+        public override bool IsFullScreen
         {
             get
             {
