@@ -780,7 +780,14 @@ namespace Google.Solutions.Terminal.Controls
             this.client.DesktopHeight = this.Size.Height;
             this.client.DesktopWidth = this.Size.Width;
 
-            this.client.Connect();// TODO: Catch exception, raise event
+            try
+            {
+                this.client.Connect();
+            }
+            catch (Exception e)
+            {
+                this.OnConnectionFailed(e);
+            }
         }
 
         //---------------------------------------------------------------------

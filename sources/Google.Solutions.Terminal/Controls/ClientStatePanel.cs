@@ -112,6 +112,12 @@ namespace Google.Solutions.Terminal.Controls
                         this.connectButton.Visible = false;
                         break;
 
+                    case ClientBase.ConnectionState.Disconnecting:
+                        this.stateLabel.Text = "Disconnecting...";
+                        this.progressBar.Visible = false;
+                        this.connectButton.Visible = false;
+                        break;
+
                     default:
                         this.progressBar.Visible = false;
                         break;
