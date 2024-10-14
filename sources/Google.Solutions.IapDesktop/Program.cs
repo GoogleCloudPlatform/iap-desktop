@@ -331,7 +331,7 @@ namespace Google.Solutions.IapDesktop
 
 #if DEBUG
             ApplicationTraceSource.Log.Switch.Level = SourceLevels.Verbose;
-            //SshTraceSources.Default.Switch.Level = SourceLevels.Verbose;
+            TerminalTraceSource.Log.Switch.Level = SourceLevels.Verbose;
 #endif
 
             //

@@ -371,28 +371,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 .ContinueWith(_ => { });
         }
 
-        [SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "")]
-        private async void reconnectButton_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
-            {
-                try
-                {
-                    //
-                    // Occasionally, reconnecting fails with a non-descriptive
-                    // E_FAIL error. There isn't much to do about it, so treat
-                    // it as fatal error and close the window.
-                    //
-                    Reconnect();
-                }
-                catch (Exception ex)
-                {
-                    await ShowErrorAndCloseAsync("Failed to reconnect", ex)
-                        .ConfigureAwait(true);
-                }
-            }
-        }
-
         //---------------------------------------------------------------------
         // RDP callbacks.
         //---------------------------------------------------------------------

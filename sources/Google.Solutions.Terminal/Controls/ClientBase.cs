@@ -69,6 +69,7 @@ namespace Google.Solutions.Terminal.Controls
         public abstract void SendText(string text);
 
         private readonly ClientStatePanel statePanel;
+
         protected ClientBase()
         {
 #if DEBUG

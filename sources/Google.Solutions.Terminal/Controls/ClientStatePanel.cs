@@ -38,6 +38,10 @@ namespace Google.Solutions.Terminal.Controls
         private readonly LinearProgressBar progressBar;
         private readonly Button connectButton;
 
+        /// <summary>
+        /// Raised when a user clicks the Connect button that's
+        /// shown when the client isn't connected.
+        /// </summary>
         public event EventHandler? ConnectButtonClicked;
 
         public ClientStatePanel()

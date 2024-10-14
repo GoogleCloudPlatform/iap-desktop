@@ -597,7 +597,26 @@ namespace Google.Solutions.Terminal.Controls
                     e.Message,
                     args.networkAvailable);
 
-                base.OnBeforeConnect();
+                if (args.networkAvailable)
+                {
+                    //
+                    // The control is about to connect again.
+                    //
+                    base.OnBeforeConnect();
+                }
+                else
+                {
+                    //
+                    // This is a limbo state in which the control
+                    // might try to connect again, but it might also
+                    // be stuck showing a message that the network 
+                    // has been lost. If the user cancels, then
+                    // the Disconnect procedure is initiated.
+                    //
+                    // Either way, it's best to leave the state
+                    // as is to avoid becoming stack in Connecting state.
+                    //
+                }
             }
         }
 
