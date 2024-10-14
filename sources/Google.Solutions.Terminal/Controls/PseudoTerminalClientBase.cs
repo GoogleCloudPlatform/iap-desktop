@@ -67,7 +67,7 @@ namespace Google.Solutions.Terminal.Controls
             //
             if (IsCausedByConnectionTimeout(e.Exception))
             {
-                OnConnectionClosed(DisconnectReason.Timeout);
+                OnConnectionClosed(DisconnectReason.SessionTimeout);
             }
             else
             {

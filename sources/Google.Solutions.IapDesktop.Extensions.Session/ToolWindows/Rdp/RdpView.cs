@@ -330,14 +330,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             }
         }
 
-        private void Reconnect()
-        {
-            using (ApplicationTraceSource.Log.TraceMethod().WithoutParameters())
-            {
-                this.rdpClient.Connect();
-            }
-        }
-
         public bool IsConnected
         {
             get =>
@@ -394,6 +386,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         {
             switch (e.Reason)
             {
+                case ClientBase.DisconnectReason.ReconnectInitiatedByUser:
+                    //
+                    // User initiated a reconnect -- leave everything as is.
+                    //
+                    break;
+
                 case RdpClient.DisconnectReason.FormClosed:
                     //
                     // User closed the form.
@@ -502,6 +500,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         public void Logoff()
         {
             this.rdpClient.Logoff();
+        }
+
+        public void Reconnect()
+        {
+            this.rdpClient.Reconnect(); 
         }
 
         public void SendText(string text)
