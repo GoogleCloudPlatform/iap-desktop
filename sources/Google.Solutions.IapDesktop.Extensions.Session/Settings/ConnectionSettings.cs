@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 Protocol.Rdp.RdpRedirectWebAuthn._Default);
             this.RdpHookWindowsKeys = store.Read<RdpHookWindowsKeys>(
                 "RdpHookWindowsKeys",
-                "Windows shortcuts",
+                "Apply Windows shortcuts",
                 "Enable Windows shortcuts (like Win+R)",
                 Categories.RdpResources,
                 Protocol.Rdp.RdpHookWindowsKeys._Default);

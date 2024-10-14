@@ -103,14 +103,20 @@ namespace Google.Solutions.Settings.ComponentModel
                     value))
                 .FirstOrDefault();
 
-            if (member == null)
+            if (member != null)
             {
-                throw new ArgumentOutOfRangeException(
-                    $"'{value}' is not a valid valiue");
+                //
+                // We found the member that matches the description.
+                //
+                return Enum.Parse(this.EnumType, member.Name);
             }
             else
             {
-                return Enum.Parse(this.EnumType, member.Name);
+                //
+                // The member might not have a description attribute,
+                // so try to parse directly.
+                //
+                return Enum.Parse(this.EnumType, value.ToString());
             }
         }
     }

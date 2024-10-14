@@ -107,7 +107,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
         //----------------------------------------------------------------------
 
         [Test]
-        public void ConvertTo_WhenDescriptionPresent()
+        public void ConvertTo_WhenMemberHasDescription()
         {
             var converter = new EnumDisplayNameConverter(typeof(EnumWithDescriptions));
             Assert.AreEqual(
@@ -120,7 +120,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
         }
 
         [Test]
-        public void ConvertTo_WhenDescriptionNotPresent()
+        public void ConvertTo_WhenMemberLacksDescription()
         {
             var converter = new EnumDisplayNameConverter(typeof(EnumWithDescriptions));
             Assert.AreEqual(
@@ -149,10 +149,22 @@ namespace Google.Solutions.Settings.Test.ComponentModel
         //----------------------------------------------------------------------
 
         [Test]
+        public void ConvertFrom_WhenMemberLacksDescription()
+        {
+            var converter = new EnumDisplayNameConverter(typeof(EnumWithDescriptions));
+            Assert.AreEqual(
+                EnumWithDescriptions.Many,
+                converter.ConvertFrom(
+                    new Mock<ITypeDescriptorContext>().Object,
+                    CultureInfo.InvariantCulture,
+                    "Many"));
+        }
+
+        [Test]
         public void ConvertFrom_WhenDescriptionNotFound()
         {
             var converter = new EnumDisplayNameConverter(typeof(EnumWithDescriptions));
-            Assert.Throws<ArgumentOutOfRangeException>(
+            Assert.Throws<ArgumentException>(
                 () => converter.ConvertFrom(
                     new Mock<ITypeDescriptorContext>().Object,
                     CultureInfo.InvariantCulture,
