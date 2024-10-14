@@ -175,6 +175,8 @@ namespace Google.Solutions.Terminal.Controls
 
         protected override void OnFormClosing(object sender, FormClosingEventArgs args)
         {
+            base.OnFormClosing(sender, args);
+
             if (this.State == ConnectionState.Disconnecting)
             {
                 //
