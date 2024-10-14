@@ -780,7 +780,7 @@ namespace Google.Solutions.Terminal.Controls
             this.client.DesktopHeight = this.Size.Height;
             this.client.DesktopWidth = this.Size.Width;
 
-            this.client.Connect();
+            this.client.Connect();// TODO: Catch exception, raise event
         }
 
         //---------------------------------------------------------------------
@@ -958,7 +958,7 @@ namespace Google.Solutions.Terminal.Controls
                         // might vary by display language.
                         //
                         SendVirtualKey(Keys.Down);
-                        SendVirtualKey(Keys.Enter);
+                        SendVirtualKey(Keys.Enter); // TODO: Catch exception
                         deferredCallback?.Dispose();
                     },
                     TimeSpan.FromSeconds(1));

@@ -68,6 +68,7 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         public abstract void SendText(string text);
 
+        private readonly ClientStatePanel statePanel;
         protected ClientBase()
         {
 #if DEBUG
@@ -84,6 +85,24 @@ namespace Google.Solutions.Terminal.Controls
             this.Controls.Add(stateLabel);
             this.StateChanged += (_, args) => stateLabel.Text = this.State.ToString();
 #endif
+            //
+            // Show an overlay panel whenever the client is not connected.
+            //
+            this.statePanel = new ClientStatePanel();
+            this.Controls.Add(this.statePanel);
+            
+            this.Resize += (_, args) =>
+            {
+                this.statePanel.Size = this.Size;
+            };
+            this.StateChanged += (_, args) =>
+            {
+                this.statePanel.State = this.State;
+                this.statePanel.Visible = 
+                    this.State == ConnectionState.NotConnected ||
+                    this.State == ConnectionState.Connecting;
+            };
+            this.statePanel.ConnectButtonClicked += (_, args) => Connect();
         }
 
         //---------------------------------------------------------------------

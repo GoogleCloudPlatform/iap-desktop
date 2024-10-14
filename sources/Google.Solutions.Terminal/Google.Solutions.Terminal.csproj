@@ -16,9 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Controls\RdpClient.ConnectionProperties.cs" />
-    <Compile Update="Controls\RdpClient.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="Controls\RdpClient.cs" />
   </ItemGroup>
 
 </Project>
