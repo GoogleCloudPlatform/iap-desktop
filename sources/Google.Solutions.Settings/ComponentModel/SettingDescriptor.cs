@@ -144,71 +144,12 @@ namespace Google.Solutions.Settings.ComponentModel
             {
                 if (this.setting.ValueType.IsEnum)
                 {
-                    return new EnumSettingConverter(this.setting.ValueType);
+                    return new EnumDisplayNameConverter(this.setting.ValueType);
                 }
                 else
                 {
                     return base.Converter;
                 }
-            }
-        }
-
-        private class EnumSettingConverter : EnumConverter // TODO: test
-        {
-            public EnumSettingConverter(Type type) : base(type)
-            {
-                Debug.Assert(type
-                    .GetMembers()
-                    .SelectMany(m => m.GetCustomAttributes<DescriptionAttribute>())
-                    .GroupBy(m => m.Description)
-                    .Max(g => g.Count()) == 1,
-                    "Type contains duplicate display names");
-            }
-
-            public override bool CanConvertTo(
-                ITypeDescriptorContext context, 
-                Type destinationType)
-            {
-                return destinationType == typeof(string);
-            }
-
-            public override object ConvertTo(
-                ITypeDescriptorContext context, 
-                CultureInfo culture, 
-                object value,
-                Type destinationType)
-            {
-                if (destinationType == typeof(string))
-                {
-                    //
-                    // Lookup attribute by symbol name.
-                    //
-                    return this.EnumType
-                        .GetMember(value.ToString())
-                        .FirstOrDefault()?
-                        .GetCustomAttribute<DescriptionAttribute>()?
-                        .Description;
-                }
-                else
-                {
-                    return base.ConvertTo(context, culture, value, destinationType);
-                }
-            }
-
-            public override object ConvertFrom(
-                ITypeDescriptorContext context, 
-                CultureInfo culture, 
-                object value)
-            {
-                //
-                // Lookup symbol name by attribute value.
-                //
-                return Enum.Parse(this.EnumType,
-                    this.EnumType
-                    .GetMembers()
-                    .Where(m => Equals(m.GetCustomAttribute<DescriptionAttribute>()?.Description, value))
-                    .First()
-                    .Name);
             }
         }
     }
