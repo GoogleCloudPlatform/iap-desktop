@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                 var rdpParameters = new RdpParameters()
                 {
                     AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
-                    UserAuthenticationBehavior = RdpUserAuthenticationBehavior.AbortOnFailure
+                    UserAuthenticationBehavior = RdpAutomaticLogon.LegacyAbortOnFailure
                 };
 
                 var broker = new SessionFactory(

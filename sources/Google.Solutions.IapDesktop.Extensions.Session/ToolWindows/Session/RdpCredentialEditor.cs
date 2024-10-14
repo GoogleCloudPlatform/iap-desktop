@@ -272,6 +272,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 //
                 return;
             }
+            else if (this.Settings.RdpAutomaticLogon.Value
+                == RdpAutomaticLogon.Disabled)
+            {
+                //
+                // Don't even try to collect credentials, because the
+                // RDP control needs to prompt again anyway.
+                //
+                return;
+            }
             else if (allowedBehavior == RdpCredentialGenerationBehavior.Force &&
                 await IsGrantedPermissionToCreateWindowsCredentialsAsync()
                     .ConfigureAwait(true))

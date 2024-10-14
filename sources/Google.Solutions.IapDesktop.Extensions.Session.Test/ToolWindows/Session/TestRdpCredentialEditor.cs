@@ -441,6 +441,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 .ConfigureAwait(false);
         }
 
+        [Test]
+        public async Task AmendCredentials_WhenAutomaticLogonDisabled_ThenAmendCredentialsReturns()
+        {
+            var settings = new ConnectionSettings(SampleInstance);
+            settings.RdpAutomaticLogon.Value = RdpAutomaticLogon.Disabled;
+
+            var editor = new RdpCredentialEditor(
+                null,
+                settings,
+                new Mock<IAuthorization>().Object,
+                new Mock<IJobService>().Object,
+                new Mock<IWindowsCredentialGenerator>().Object,
+                new Mock<ITaskDialog>().Object,
+                new Mock<ICredentialDialog>().Object,
+                new MockWindowActivator<NewCredentialsView, NewCredentialsViewModel, IDialogTheme>(),
+                new MockWindowActivator<ShowCredentialsView, ShowCredentialsViewModel, IDialogTheme>());
+
+            Assert.IsNull(editor.Settings.RdpUsername.Value);
+
+            await editor
+                .AmendCredentialsAsync(RdpCredentialGenerationBehavior._Default)
+                .ConfigureAwait(false);
+        }
+
         //---------------------------------------------------------------------
         // AmendCredentials - Force.
         //---------------------------------------------------------------------

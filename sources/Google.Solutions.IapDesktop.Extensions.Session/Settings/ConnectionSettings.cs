@@ -106,12 +106,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 "Redirect audio when playing on server.",
                 Categories.RdpResources,
                 Protocol.Rdp.RdpAudioMode._Default);
-            this.RdpUserAuthenticationBehavior = store.Read<RdpUserAuthenticationBehavior>(
+            this.RdpAutomaticLogon = store.Read<RdpAutomaticLogon>(
                 "RdpUserAuthenticationBehavior",
-                null, // Hidden.
-                null, // Hidden.
-                null, // Hidden.
-                Protocol.Rdp.RdpUserAuthenticationBehavior._Default);
+                "Automatic logon",
+                "Log on automatically using saved credentials if possible. Disable if the VM " +
+                    "is configured to always prompt for passwords upon connection (a server-side " +
+                    "group policy)",
+                Categories.RdpSecurity,
+                Protocol.Rdp.RdpAutomaticLogon._Default);
             this.RdpNetworkLevelAuthentication = store.Read<RdpNetworkLevelAuthentication>(
                 "NetworkLevelAuthentication",
                 "Network level authentication",
@@ -291,7 +293,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         public ISetting<RdpAuthenticationLevel> RdpAuthenticationLevel { get; }
         public ISetting<RdpColorDepth> RdpColorDepth { get; }
         public ISetting<RdpAudioMode> RdpAudioMode { get; }
-        public ISetting<RdpUserAuthenticationBehavior> RdpUserAuthenticationBehavior { get; }
+        public ISetting<RdpAutomaticLogon> RdpAutomaticLogon { get; }
         public ISetting<RdpNetworkLevelAuthentication> RdpNetworkLevelAuthentication { get; }
         public ISetting<int> RdpConnectionTimeout { get; }
         public ISetting<int> RdpPort { get; }
@@ -336,7 +338,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.RdpRedirectDevice,
             this.RdpRedirectWebAuthn,
 
-            this.RdpUserAuthenticationBehavior,
+            this.RdpAutomaticLogon,
             this.RdpNetworkLevelAuthentication,
             this.RdpAuthenticationLevel,
             this.RdpRestrictedAdminMode,

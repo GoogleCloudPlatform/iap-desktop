@@ -239,7 +239,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 this.rdpClient.Domain = viewModel.Credential!.Domain;
                 this.rdpClient.Username = viewModel.Credential.User;
                 this.rdpClient.ServerPort = viewModel.Port!.Value;
-                this.rdpClient.Password = viewModel.Credential.Password?.AsClearText() ?? string.Empty;
                 this.rdpClient.ConnectionTimeout = viewModel.Parameters.ConnectionTimeout;
                 this.rdpClient.EnableAdminMode = viewModel.Parameters.SessionType == RdpSessionType.Admin;
 
@@ -261,8 +260,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                         break;
                 }
 
-                this.rdpClient.EnableCredentialPrompt =
-                    (viewModel.Parameters.UserAuthenticationBehavior == RdpUserAuthenticationBehavior.PromptOnFailure);
+                switch (viewModel.Parameters.UserAuthenticationBehavior)
+                {
+                    case RdpAutomaticLogon.Enabled:
+                        this.rdpClient.EnableCredentialPrompt = true;
+                        this.rdpClient.Password = viewModel.Credential.Password?.AsClearText() ?? string.Empty;
+                        break;
+
+                    case RdpAutomaticLogon.Disabled:
+                        this.rdpClient.EnableCredentialPrompt = true;
+                        // Leave password blank.
+                        break;
+
+                    case RdpAutomaticLogon.LegacyAbortOnFailure:
+                        this.rdpClient.EnableCredentialPrompt = false;
+                        this.rdpClient.Password = viewModel.Credential.Password?.AsClearText() ?? string.Empty;
+                        break;
+                }
+
                 this.rdpClient.EnableNetworkLevelAuthentication =
                     (viewModel.Parameters.NetworkLevelAuthentication != RdpNetworkLevelAuthentication.Disabled);
                 this.rdpClient.EnableRestrictedAdminMode =
