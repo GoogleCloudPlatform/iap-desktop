@@ -90,9 +90,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 RdpConnectionBarState._Default);
             this.RdpAuthenticationLevel = store.Read<RdpAuthenticationLevel>(
                 "AuthenticationLevel",
-                "Server authentication",
-                "Require server authentication when connecting.",
-                Categories.RdpSecurity,
+                null,
+                null,
+                null,
                 Protocol.Rdp.RdpAuthenticationLevel._Default);
             this.RdpColorDepth = store.Read<RdpColorDepth>(
                 "ColorDepth",
