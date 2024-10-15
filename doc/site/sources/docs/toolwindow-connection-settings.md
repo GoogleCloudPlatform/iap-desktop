@@ -112,6 +112,28 @@ These settings control the display settings for Remote Desktop.
         <td>Controls the behavior of the connection bar that's shown when you set the Remote Desktop session to full-screen.</td>
         <td>Auto hide</td>
     </tr>
+    <tr>
+        <td>Display resolution</td>
+        <td>
+            Controls the screen resolution and size of the remote desktop.
+            <ul>
+                <li><b>Adjust automatically</b>: Adjust the size and resolution to fit the IAP Desktop window.</li>
+                <li><b>Same as this computer</b>: Use the same size and resolution as the current monitor on your local computer.</li>
+            </ul>
+        </td>
+        <td>Adjust automatically</td>
+    </tr>
+    <tr>
+        <td>Display scaling</td>
+        <td>
+            Controls whether to scale the size of texts, fonts, and apps on the remote desktop.
+            <ul>
+                <li><b>Same as this computer</b>: Use the same scaling setting as your local computer.</li>
+                <li><b>Disabled (100%)</b>: Disable scaling and show  texts, fonts, and apps at their regular size.</li>
+            </ul>
+        </td>
+        <td>Disabled (100%)</td>
+    </tr>
 </table>
 
 ## Remote Desktop Resources
