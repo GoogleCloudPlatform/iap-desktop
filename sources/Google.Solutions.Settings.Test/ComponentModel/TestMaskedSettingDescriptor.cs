@@ -33,7 +33,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
         //----------------------------------------------------------------------
 
         [Test]
-        public void GetValue_ReturnsMaskedString()
+        public void GetValue_WhenNotEmpty()
         {
             var setting = DictionarySettingsStore
                 .Empty()
@@ -42,7 +42,32 @@ namespace Google.Solutions.Settings.Test.ComponentModel
 
             var descriptor = new MaskedSettingDescriptor(setting);
 
-            Assert.AreEqual("********", descriptor.GetValue(setting));
+            Assert.AreEqual("******", descriptor.GetValue(setting));
+        }
+
+        [Test]
+        public void GetValue_WhenEmpty()
+        {
+            var setting = DictionarySettingsStore
+                .Empty()
+                .Read<SecureString>("key", "display name", "description", "category", null);
+            setting.SetClearTextValue(string.Empty);
+
+            var descriptor = new MaskedSettingDescriptor(setting);
+
+            Assert.AreEqual(string.Empty, descriptor.GetValue(setting));
+        }
+
+        [Test]
+        public void GetValue_WhenNull()
+        {
+            var setting = DictionarySettingsStore
+                .Empty()
+                .Read<SecureString>("key", "display name", "description", "category", null);
+
+            var descriptor = new MaskedSettingDescriptor(setting);
+
+            Assert.IsNull(descriptor.GetValue(setting));
         }
 
         //----------------------------------------------------------------------
