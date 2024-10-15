@@ -214,12 +214,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 "Scale remote display to match local scaling settings.",
                 Categories.RdpDisplay,
                 Protocol.Rdp.RdpDpiScaling._Default);
-            this.RdpDisplayResolution = store.Read<RdpDisplayResolution>(
+            this.RdpDesktopSize = store.Read<RdpDesktopSize>(
                 "DesktopSize",
                 "Display resolution",
                 "Display resolution of remote desktop.",
                 Categories.RdpDisplay,
-                Protocol.Rdp.RdpDisplayResolution._Default);
+                Protocol.Rdp.RdpDesktopSize._Default);
 
             //
             // SSH Settings.
@@ -315,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         public ISetting<RdpRestrictedAdminMode> RdpRestrictedAdminMode { get; }
         public ISetting<RdpSessionType> RdpSessionType { get; }
         public ISetting<RdpDpiScaling> RdpDpiScaling { get; }
-        public ISetting<RdpDisplayResolution> RdpDisplayResolution { get; private set; }
+        public ISetting<RdpDesktopSize> RdpDesktopSize { get; private set; }
 
         internal IEnumerable<ISetting> RdpSettings => new ISetting[]
         {
@@ -333,7 +333,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
             this.RdpColorDepth,
             this.RdpConnectionBar,
-            this.RdpDisplayResolution,
+            this.RdpDesktopSize,
             this.RdpDpiScaling,
 
             this.RdpAudioMode,

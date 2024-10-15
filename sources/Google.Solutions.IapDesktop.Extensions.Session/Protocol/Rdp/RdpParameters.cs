@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         public RdpRestrictedAdminMode RestrictedAdminMode { get; set; } = RdpRestrictedAdminMode._Default;
         public RdpSessionType SessionType { get; set; } = RdpSessionType._Default;
         public RdpDpiScaling DpiScaling { get; set; } = RdpDpiScaling._Default;
-        public RdpDisplayResolution DisplayResolution { get; set; } = RdpDisplayResolution._Default;
+        public RdpDesktopSize DesktopSize { get; set; } = RdpDesktopSize._Default;
 
 
         /// <summary>
@@ -99,10 +99,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
     }
 
 
-    public enum RdpDisplayResolution
+    public enum RdpDesktopSize
     {
         [Description("Same as this computer")]
-        FullScreen = 1,
+        ScreenSize = 1,
 
         [Description("Adjust automatically")]
         AutoAdjust = 2,

@@ -567,5 +567,13 @@ namespace Google.Solutions.Terminal.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Category(RdpCategory)]
         public bool EnableDpiScaling { get; set; }
+
+        /// <summary>
+        /// Auto-resize remote desktop to fit client size.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
+        public bool EnableAutoResize { get; set; } = true;
     }
 }

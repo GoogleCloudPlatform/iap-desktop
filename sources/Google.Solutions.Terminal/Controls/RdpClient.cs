@@ -400,6 +400,14 @@ namespace Google.Solutions.Terminal.Controls
             //
             this.client.Size = newSize;
 
+            if (!this.EnableAutoResize)
+            {
+                //
+                // Leave remote desktop size as-is.
+                //
+                return;
+            }
+
             //
             // Resize the session.
             //
@@ -822,8 +830,26 @@ namespace Google.Solutions.Terminal.Controls
             base.OnBeforeConnect();
             this.client.FullScreen = false;
             this.client.Size = this.Size;
-            this.client.DesktopHeight = this.Size.Height;
-            this.client.DesktopWidth = this.Size.Width;
+
+            if (this.EnableAutoResize)
+            {
+                //
+                // Size to fit.
+                //
+                this.client.DesktopHeight = this.Size.Height;
+                this.client.DesktopWidth = this.Size.Width;
+            }
+            else
+            {
+                //
+                // Set to current screen's resolution, which means
+                // the desktop size is the same in full-screen and
+                // regular mode.
+                //
+                var screenSize = Screen.GetBounds(this);
+                this.client.DesktopHeight = screenSize.Height;
+                this.client.DesktopWidth = screenSize.Width;
+            }
 
             try
             {

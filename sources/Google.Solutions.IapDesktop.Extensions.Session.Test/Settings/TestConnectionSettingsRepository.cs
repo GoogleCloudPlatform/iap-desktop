@@ -196,6 +196,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.IsTrue(settings.RdpRedirectWebAuthn.IsDefault);
             Assert.IsTrue(settings.RdpRestrictedAdminMode.IsDefault);
             Assert.IsTrue(settings.RdpSessionType.IsDefault);
+            Assert.IsTrue(settings.RdpDesktopSize.IsDefault);
         }
 
         [Test]
@@ -286,6 +287,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.IsTrue(settings.RdpRestrictedAdminMode.IsDefault);
             Assert.IsTrue(settings.RdpSessionType.IsDefault);
             Assert.IsTrue(settings.RdpDpiScaling.IsDefault);
+            Assert.IsTrue(settings.RdpDesktopSize.IsDefault);
         }
 
         [Test]
@@ -312,6 +314,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             originalSettings.RdpPort.Value = 13389;
             originalSettings.RdpTransport.Value = SessionTransportType.Vpc;
             originalSettings.RdpDpiScaling.Value = RdpDpiScaling.Disabled;
+            originalSettings.RdpDesktopSize.Value = RdpDesktopSize.ScreenSize;
 
             repository.SetInstanceSettings(originalSettings);
 
@@ -332,6 +335,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.AreEqual(13389, settings.RdpPort.Value);
             Assert.AreEqual(SessionTransportType.Vpc, settings.RdpTransport.Value);
             Assert.AreEqual(RdpDpiScaling.Disabled, settings.RdpDpiScaling.Value);
+            Assert.AreEqual(RdpDesktopSize.ScreenSize, settings.RdpDesktopSize.Value);
         }
 
         [Test]
