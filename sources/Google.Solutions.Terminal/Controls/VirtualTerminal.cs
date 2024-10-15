@@ -553,6 +553,20 @@ namespace Google.Solutions.Terminal.Controls
             base.OnBackColorChanged(e);
         }
 
+        protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
+        {
+            if (e.KeyCode == Keys.Tab)
+            {
+                //
+                // Process TAB as a normal input key instead of moving
+                // the focus away from this control.
+                //
+                e.IsInputKey = true;
+            }
+
+            base.OnPreviewKeyDown(e);
+        }
+
         //---------------------------------------------------------------------
         // Terminal subclass.
         //---------------------------------------------------------------------
