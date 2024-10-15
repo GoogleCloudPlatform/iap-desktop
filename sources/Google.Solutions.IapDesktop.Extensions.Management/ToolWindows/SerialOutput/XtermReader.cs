@@ -38,9 +38,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
         /// Regex patterns for control sequences that are being sanitized.
         /// </summary>
         private static readonly string[] ControlSequencePatterns = new[] {
-            "\u001b\\[2J",     // Clear the screen.
-            "\u001b\\[01;01H", // Set cursor position to the top-left corner.
-            "\u001b\\[=3h",    // Set the terminal to a application keypad mode.
+            "\u001b\\[2J",                  // Clear the screen.
+            "\u001b\\[[A-K]",               // Common VT-52 sequences.
+            "\u001b\\[\\d{1,2};\\d{1,2}H",  // Set cursor position.
+            "\u001b\\[=3h",                 // Set the terminal to a application keypad mode.
+            "\u001b\\[\\d{1,2}m",           // Set Foreground or background colors.
         };
 
         private static readonly Regex allControlSequencePatterns = new Regex(
@@ -59,6 +61,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
 
         public async Task<string> ReadAsync(CancellationToken token)
         {
+            //
+            // NB. It's possible that a control sequence straddles
+            //     two chunks. But as we're operating on a best-effort
+            //     basis, it's okay to ignore that.
+            //
             var chunk = await this.reader
                 .ReadAsync(token)
                 .ConfigureAwait(false);

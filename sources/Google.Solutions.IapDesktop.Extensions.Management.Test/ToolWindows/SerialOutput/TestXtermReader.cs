@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         {
             var input = new[]
             {
-                "\u001B[2Jsome text\u001B",
+                "\u001b[H\u001b[37m\u001b[40m\u001b[1m\u001B[2Jsome text\u001B",
                 "[2J\u001B[2J",
                 " and more text\u001B[2J"
             };
