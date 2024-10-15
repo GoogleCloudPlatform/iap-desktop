@@ -56,9 +56,18 @@ namespace Google.Solutions.Settings.ComponentModel
 
         public override object GetValue(object component)
         {
-            return this.setting.IsDefault
-                ? null
-                : "********";
+            var value = base.GetValue(component);
+            if (value is SecureString secureString) 
+            {
+                //
+                // Return masked value, retaining the original length.
+                //
+                return new string('*', secureString.Length);
+            }
+            else
+            {
+                return value;
+            }
         }
 
         public override void SetValue(object component, object value)
