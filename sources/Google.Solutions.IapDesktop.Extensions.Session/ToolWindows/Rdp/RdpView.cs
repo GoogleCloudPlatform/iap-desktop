@@ -295,6 +295,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 //
                 this.rdpClient.EnableDpiScaling =
                     viewModel.Parameters.DpiScaling == RdpDpiScaling.Enabled;
+                this.rdpClient.EnableAutoResize =
+                    viewModel.Parameters.DesktopSize == RdpDesktopSize.AutoAdjust;
 
                 switch (viewModel.Parameters.ColorDepth)
                 {

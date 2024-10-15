@@ -54,10 +54,12 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [WindowsFormsTest]
-        public async Task ResizeWindow()
+        public async Task ResizeWindow(
+            [Values(true, false)] bool enableAutoResize)
         {
             using (var window = CreateWindow())
             {
+                window.Client.EnableAutoResize = enableAutoResize;
                 window.Show();
 
                 //
@@ -96,10 +98,12 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [WindowsFormsTest]
-        public async Task MinimizeAndRestoreFullScreenWindow()
+        public async Task MinimizeAndRestoreFullScreenWindow(
+            [Values(true, false)] bool enableAutoResize)
         {
             using (var window = CreateWindow())
             {
+                window.Client.EnableAutoResize = enableAutoResize;
                 window.Show();
 
                 //
@@ -151,10 +155,12 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [WindowsFormsTest]
-        public async Task EnterAndLeaveFullscreen()
+        public async Task EnterAndLeaveFullscreen(
+            [Values(true, false)] bool enableAutoResize)
         {
             using (var window = CreateWindow())
             {
+                window.Client.EnableAutoResize = enableAutoResize;
                 window.Show();
 
                 //
@@ -171,6 +177,9 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Assert.IsFalse(window.Client.IsFullScreen);
                 Assert.IsTrue(window.Client.CanEnterFullScreen);
                 Assert.IsTrue(window.Client.TryEnterFullScreen(null));
+
+                await Task.Delay(TimeSpan.FromSeconds(1));
+
                 Assert.IsTrue(window.Client.IsFullScreen);
                 Assert.IsFalse(window.Client.CanEnterFullScreen);
 
