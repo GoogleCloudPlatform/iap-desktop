@@ -807,17 +807,35 @@ namespace Google.Solutions.Terminal.Controls
             // NB. Values must be uint-typed.
             // NB. The factors must be reapplied when the session
             //     is resized.
+            // NB. When auto-resizing is off and the app is running in
+            //     high-DPI mode, the control automatically applies a
+            //     factor > 1. This behavior might interfere with
+            //     what the user has configured, so it's best to always
+            //     set the factor explicitly.
             //
-            if (this.DesktopScaleFactor is var desktopFactor &&
-                desktopFactor != DefaultScaleFactor)
+            // Given the inter-dependence between local DPI settings,
+            // EnableAutoResize and EnableDpiScaling, we must consider
+            // (and verify) all of the following combinations:
+            // 
+            // Local DPI EnableAutoResize EnableDpiScaling
+            // --------- ---------------- ----------------
+            //       100 On               On
+            //       100 On               Off
+            //       100 Off              On
+            //       100 Off              Off
+            //     > 100 On               On
+            //     > 100 On               Off
+            //     > 100 Off              On
+            //     > 100 Off              Off
+            // 
+            if (this.DesktopScaleFactor is var desktopFactor)
             {
                 this.clientExtendedSettings.set_Property(
                     "DesktopScaleFactor",
                     desktopFactor);
             }
 
-            if (this.DeviceScaleFactor is var deviceFactor &&
-                deviceFactor != DefaultScaleFactor)
+            if (this.DeviceScaleFactor is var deviceFactor)
             {
                 this.clientExtendedSettings.set_Property(
                     "DeviceScaleFactor",
