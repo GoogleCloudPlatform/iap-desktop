@@ -54,8 +54,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
                 .ConfigureAwait(false);
             newOutput = newOutput.Replace("\n", "\r\n");
 
+            //
             // Add to buffer so that we do not lose the data when model
             // switching occurs.
+            //
             this.buffer.Append(newOutput);
 
             return newOutput;
@@ -68,16 +70,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
             ushort portNumber,
             CancellationToken token)
         {
+            //
             // The serial port log can contain VT100 control sequences, but
             // they are limited to trivial command such as "clear screen". 
             // As there is not much value in preserving these, use an
             // AnsiTextReader to filter out all escape sequences.
-
+            //
             var stream = new XtermReader(
                 adapter.GetSerialPortOutput(instanceLocator, portNumber));
             var model = new SerialOutputModel(displayName, stream);
 
+            //
             // Read all existing output.
+            //
             while (await model.ReadAndBufferAsync(token).ConfigureAwait(false) != string.Empty)
             {
             }
@@ -143,8 +148,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
                     }
                     catch (TaskCanceledException)
                     {
+                        //
                         // Do not let the exception escape, instead handle the cancellation
                         // in the next iteration.
+                        //
                     }
                 }
             });

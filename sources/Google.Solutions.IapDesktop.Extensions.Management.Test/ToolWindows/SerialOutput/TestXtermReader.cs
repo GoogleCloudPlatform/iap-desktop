@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -21,19 +21,49 @@
 
 using Google.Solutions.Common.Text;
 using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOutput;
-using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.SerialOutput
 {
     [TestFixture]
-    public class TestXtermReader : ApplicationFixtureBase
+    public class TestXtermReader
     {
+        private class EnumerationReader<T> : IAsyncReader<T> where T : class
+        {
+            private readonly IEnumerator<T> enumerator;
+
+            public EnumerationReader(IEnumerable<T> e)
+            {
+                this.enumerator = e.GetEnumerator();
+            }
+
+            public void Dispose()
+            {
+                this.enumerator.Dispose();
+            }
+
+            public Task<T> ReadAsync(CancellationToken token)
+            {
+                if (!this.enumerator.MoveNext())
+                {
+                    return Task.FromResult<T>(null!);
+                }
+                else
+                {
+                    return Task.FromResult(this.enumerator.Current);
+                }
+            }
+        }
+
+        //----------------------------------------------------------------------
+        // Read.
+        //----------------------------------------------------------------------
+
         [Test]
-        public async Task Read_WhenStreamContainsPlainTextOnly_ThenTextIsReturnedVerbatim()
+        public async Task Read_WhenStreamContainsPlainTextOnly()
         {
             var input = new[]
             {
@@ -62,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         }
 
         [Test]
-        public async Task Read_WhenStreamContainsAnsiTokens_ThenTokensAreFilteredOut()
+        public async Task Read_WhenStreamContainsControlSequences()
         {
             var input = new[]
             {
@@ -74,12 +104,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             var reader = new XtermReader(new EnumerationReader<string>(input));
 
             Assert.AreEqual(
-                "some text",
+                "some text\u001b",
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
             Assert.AreEqual(
-                "",
+                "[2J",
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
@@ -91,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         }
 
         [Test]
-        public async Task Read_WhenStreamContainsImproperlyTerminatedTokens_ThenTokensAreIgnored()
+        public async Task Read_WhenStreamContainsImproperlyTerminatedControlSequences()
         {
             var input = new[]
             {
@@ -104,17 +134,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             var reader = new XtermReader(new EnumerationReader<string>(input));
 
             Assert.AreEqual(
-                "some text",
+                "some text\u001b",
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
             Assert.AreEqual(
-                "",
+                "[2J",
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
             Assert.AreEqual(
-                "",
+                "\u001b[01;01\u001b",
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
@@ -126,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
         }
 
         [Test]
-        public async Task Read_WhenStreamContainsTruncatedTokens_ThenTokensAreFilteredOut()
+        public async Task Read_WhenStreamContainsTruncatedControlSequences()
         {
             var input = new[]
             {
@@ -136,37 +166,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             var reader = new XtermReader(new EnumerationReader<string>(input));
 
             Assert.AreEqual(
-                "[2Jsome text",
+                input[0],
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
         }
-
-        private class EnumerationReader<T> : IAsyncReader<T> where T : class
-        {
-            private readonly IEnumerator<T> enumerator;
-
-            public EnumerationReader(IEnumerable<T> e)
-            {
-                this.enumerator = e.GetEnumerator();
-            }
-
-            public void Dispose()
-            {
-                this.enumerator.Dispose();
-            }
-
-            public Task<T> ReadAsync(CancellationToken token)
-            {
-                if (!this.enumerator.MoveNext())
-                {
-                    return Task.FromResult<T>(null!);
-                }
-                else
-                {
-                    return Task.FromResult(this.enumerator.Current);
-                }
-            }
-        }
     }
 }
+
