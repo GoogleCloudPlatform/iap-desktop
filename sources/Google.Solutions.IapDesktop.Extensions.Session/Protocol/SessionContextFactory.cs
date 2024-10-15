@@ -168,6 +168,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             context.Parameters.RestrictedAdminMode = settings.RdpRestrictedAdminMode.Value;
             context.Parameters.SessionType = settings.RdpSessionType.Value;
             context.Parameters.DpiScaling = settings.RdpDpiScaling.Value;
+            context.Parameters.DisplayResolution = settings.RdpDisplayResolution.Value;
 
             return context;
         }
