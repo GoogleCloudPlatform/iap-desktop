@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     /// Contains a user-selected set of projects, aggregated
     /// by the organization they belong to.
     /// </summary>
-    public class ProjectWorkspace : 
+    public class ProjectWorkspace :
         IEntitySearcher<WildcardQuery, Organization>,
         IEntityNavigator<OrganizationLocator, Project>,
         IAsyncEntityAspectProvider<OrganizationLocator, Organization>,

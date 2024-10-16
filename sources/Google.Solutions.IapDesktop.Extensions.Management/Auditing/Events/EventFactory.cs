@@ -103,14 +103,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
                 Debug.Assert(e.Category == EventCategory.Lifecycle);
                 return e;
             }
-            else if (record.ProtoPayload?.MethodName != null && 
+            else if (record.ProtoPayload?.MethodName != null &&
                 systemEvents.TryGetValue(record.ProtoPayload.MethodName, out var sysFunc))
             {
                 var e = sysFunc(record);
                 Debug.Assert(e.Category == EventCategory.System);
                 return e;
             }
-            else if (record.ProtoPayload?.MethodName != null && 
+            else if (record.ProtoPayload?.MethodName != null &&
                 accessEvents.TryGetValue(record.ProtoPayload.MethodName, out var accessFunc))
             {
                 var e = accessFunc(record);

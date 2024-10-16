@@ -84,7 +84,7 @@ namespace Google.Solutions.Terminal.Controls
             };
             this.panel.Controls.Add(this.connectButton);
             this.connectButton.CenterHorizontally(this.panel);
-            this.connectButton.Click += (sender, args) 
+            this.connectButton.Click += (sender, args)
                 => this.ConnectButtonClicked?.Invoke(sender, args);
 
             this.State = ClientBase.ConnectionState.NotConnected;

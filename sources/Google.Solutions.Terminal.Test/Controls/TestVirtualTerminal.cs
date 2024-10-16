@@ -19,10 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.IO;
 using Google.Solutions.Terminal.Controls;
-using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -178,7 +176,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.VirtualTerminal.Device = new Mock<IPseudoTerminal>().Object;
                 form.Show();
 
-                string receivedData = string.Empty;
+                var receivedData = string.Empty;
                 form.VirtualTerminal.Output += (_, args) => receivedData += args.Data;
 
                 // Change device.

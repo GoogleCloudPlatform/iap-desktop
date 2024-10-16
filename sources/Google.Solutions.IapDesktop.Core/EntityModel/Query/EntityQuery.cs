@@ -21,7 +21,6 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Linq;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;

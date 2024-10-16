@@ -211,7 +211,7 @@ namespace Google.Solutions.Terminal.Controls
                 if (value != null)
                 {
                     this.deviceBinding = new VirtualTerminalBinding(
-                        this, 
+                        this,
                         value);
                 }
             }
@@ -229,7 +229,7 @@ namespace Google.Solutions.Terminal.Controls
         {
             if (this.InvokeRequired)
             {
-                this.Invoke(((Action)(() => OnOutputReceived(data))));
+                Invoke(((Action)(() => OnOutputReceived(data))));
             }
             else
             {
@@ -244,7 +244,7 @@ namespace Google.Solutions.Terminal.Controls
         {
             if (this.InvokeRequired)
             {
-                this.Invoke(((Action)(() => OnDeviceError(e))));
+                Invoke(((Action)(() => OnDeviceError(e))));
             }
             else
             {
@@ -259,7 +259,7 @@ namespace Google.Solutions.Terminal.Controls
         {
             if (this.InvokeRequired)
             {
-                this.Invoke(((Action)(() => OnDeviceClosed())));
+                Invoke(((Action)(() => OnDeviceClosed())));
             }
             else
             {
@@ -454,7 +454,7 @@ namespace Google.Solutions.Terminal.Controls
                 // Draw a placeholder where the terminal would appear.
                 //
                 e.Graphics.DrawRectangle(
-                    SystemPens.Highlight, 
+                    SystemPens.Highlight,
                     this.Bounds);
                 TextRenderer.DrawText(
                     e.Graphics,
@@ -500,7 +500,7 @@ namespace Google.Solutions.Terminal.Controls
                 if (hr != 0)
                 {
                     throw VirtualTerminalException.FromHresult(
-                        hr, 
+                        hr,
                         "Adjusting terminal size failed");
                 }
 
@@ -508,7 +508,7 @@ namespace Google.Solutions.Terminal.Controls
                 Debug.Assert(dimensions.Y <= ushort.MaxValue);
 
                 this.Dimensions = new PseudoTerminalSize(
-                    (ushort)dimensions.X, 
+                    (ushort)dimensions.X,
                     (ushort)dimensions.Y);
 
                 Debug.Assert(this.Dimensions.Width > 0);
@@ -660,7 +660,7 @@ namespace Google.Solutions.Terminal.Controls
                         NativeMethods.TerminalSetCursorVisible(terminalHandle, true);
                         this.caretBlinkTimer.Start();
 
-                        if (IsAcceleratorForCopyingCurrentSelection((Keys)keyParams.VirtualKey) && 
+                        if (IsAcceleratorForCopyingCurrentSelection((Keys)keyParams.VirtualKey) &&
                             NativeMethods.TerminalIsSelectionActive(terminalHandle))
                         {
                             //
@@ -672,7 +672,7 @@ namespace Google.Solutions.Terminal.Controls
                             // NB. We must not pass this key event to the terminal.
                             //
                             this.ignoreWmCharBecauseOfAccelerator = true;
-                            this.selectionToCopyInKeyUp = 
+                            this.selectionToCopyInKeyUp =
                                 NativeMethods.TerminalGetSelection(terminalHandle);
                         }
                         else if (IsAcceleratorForPasting((Keys)keyParams.VirtualKey))
@@ -771,7 +771,7 @@ namespace Google.Solutions.Terminal.Controls
                                 // actually missed.
                                 //
                                 NativeMethods.TerminalSetCursorVisible(
-                                    terminalHandle, 
+                                    terminalHandle,
                                     true);
                                 NativeMethods.TerminalSendKeyEvent(
                                     terminalHandle,
@@ -789,7 +789,7 @@ namespace Google.Solutions.Terminal.Controls
                                 keyParams.Flags,
                                 false);
                         }
-                            
+
                         break;
                     }
 
@@ -802,7 +802,7 @@ namespace Google.Solutions.Terminal.Controls
                             //
                         }
                         else
-                        { 
+                        {
                             var charParams = new WmCharParams(m);
                             NativeMethods.TerminalSendCharEvent(
                                 terminalHandle,
@@ -849,7 +849,7 @@ namespace Google.Solutions.Terminal.Controls
                             //
                             // Translate delta to the number of lines (+/-) to scroll.
                             //
-                            var linesDelta = 
+                            var linesDelta =
                                 delta / 120 * SystemInformation.MouseWheelScrollLines;
 
                             var currentValue = this.scrollBar.Value;
@@ -859,7 +859,7 @@ namespace Google.Solutions.Terminal.Controls
                                 // Scrolling up.
                                 //
                                 this.scrollBar.Value = Math.Max(
-                                    this.scrollBar.Minimum, 
+                                    this.scrollBar.Minimum,
                                     currentValue - linesDelta);
                             }
                             else
@@ -868,15 +868,15 @@ namespace Google.Solutions.Terminal.Controls
                                 // Scrolling down.
                                 //
                                 this.scrollBar.Value = Math.Min(
-                                    this.scrollBar.Maximum, 
+                                    this.scrollBar.Maximum,
                                     currentValue - linesDelta);
                             }
 
                             NativeMethods.TerminalUserScroll(
-                                terminalHandle, 
+                                terminalHandle,
                                 this.scrollBar.Value);
                         }
-                            
+
                         break;
                     }
 
@@ -900,11 +900,11 @@ namespace Google.Solutions.Terminal.Controls
             Debug.Assert(!this.InvokeRequired, "Must be called on GUI thread");
 
             var subclass = Invariant.ExpectNotNull(
-                this.terminalSubclass, 
+                this.terminalSubclass,
                 "Subclass");
 
             foreach (var message in KeyboardUtil.ToMessageSequence(
-                subclass.WindowHandle, 
+                subclass.WindowHandle,
                 keyCode))
             {
                 var m = message;

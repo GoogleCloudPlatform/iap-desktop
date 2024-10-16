@@ -75,16 +75,16 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
             TEntity entity,
             Dictionary<Type, object?> aspectValues)
             : this(
-                  entity, 
-                  aspectValues, 
+                  entity,
+                  aspectValues,
                   new Dictionary<Type, DeriveAspectDelegate>())
         {
         }
 
         internal EntityQueryResultItem(TEntity entity)
             : this(
-                  entity, new 
-                  Dictionary<Type, object?>(), 
+                  entity, new
+                  Dictionary<Type, object?>(),
                   new Dictionary<Type, DeriveAspectDelegate>())
         {
         }

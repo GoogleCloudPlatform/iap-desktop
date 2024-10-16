@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Threading;
 using Google.Solutions.Apis.Locator;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.EntityModel
 {
@@ -51,7 +51,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
     /// <summary>
     /// Pseudo-query that matches everything.
     /// </summary>
-    public class WildcardQuery {
+    public class WildcardQuery
+    {
         private WildcardQuery() { }
 
         public static readonly WildcardQuery Instance = new WildcardQuery();

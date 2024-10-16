@@ -374,9 +374,9 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 get => this.ProjectNode;
             }
 
-            internal override bool CanReload 
+            internal override bool CanReload
             {
-                get => true; 
+                get => true;
             }
 
             protected override async Task<IEnumerable<ViewModelNode>> LoadChildrenAsync(
@@ -431,12 +431,12 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 this.IsExpanded = true;
             }
 
-            public override IProjectModelNode ModelNode 
+            public override IProjectModelNode ModelNode
             {
                 get => this.ZoneNode;
             }
 
-            internal override bool CanReload 
+            internal override bool CanReload
             {
                 get => false;
             }

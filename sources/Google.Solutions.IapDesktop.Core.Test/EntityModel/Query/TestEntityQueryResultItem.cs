@@ -19,14 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Core.EntityModel.Query;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.EntityModel;
+using Google.Solutions.IapDesktop.Core.EntityModel.Query;
+using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using Moq;
-using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
 
 namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
 {

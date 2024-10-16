@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             internal override bool CanReload { get; }
 
             protected override Task<IEnumerable<ProjectExplorerViewModel.ViewModelNode>> LoadChildrenAsync(
-                bool forceReload, 
+                bool forceReload,
                 CancellationToken token)
             {
                 return Task.FromResult(

@@ -210,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             // Qfe
             Assert.AreEqual(10, attributes.InstalledPackages?.QfePackages.Count);
             Assert.AreEqual(
-                "http://support.microsoft.com/?kbid=4552930", 
+                "http://support.microsoft.com/?kbid=4552930",
                 attributes.InstalledPackages?.QfePackages?[0].Caption);
             Assert.AreEqual("Update", attributes.InstalledPackages?.QfePackages[0].Description);
             Assert.AreEqual("KB4552930", attributes.InstalledPackages?.QfePackages[0].HotFixID);

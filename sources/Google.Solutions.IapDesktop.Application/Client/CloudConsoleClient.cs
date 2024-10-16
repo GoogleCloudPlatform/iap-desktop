@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Application.Client
 
         public void OpenVmInstanceLogDetails(string projectId, string insertId, DateTime? timestamp)
         {
-            if (timestamp  == null)
+            if (timestamp == null)
             {
                 timestamp = DateTime.UtcNow;
             }

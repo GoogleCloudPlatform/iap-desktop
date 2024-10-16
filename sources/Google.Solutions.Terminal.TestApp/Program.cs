@@ -19,11 +19,11 @@
 // under the License.
 //
 
+using Google.Solutions.Terminal.Controls;
 using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Google.Solutions.Terminal.Controls;
 
 namespace Google.Solutions.Terminal.TestApp
 {

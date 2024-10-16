@@ -21,8 +21,6 @@
 
 using Google.Solutions.Apis.Locator;
 using NUnit.Framework;
-using System;
-using System.IO;
 
 namespace Google.Solutions.Apis.Test.Locator
 {

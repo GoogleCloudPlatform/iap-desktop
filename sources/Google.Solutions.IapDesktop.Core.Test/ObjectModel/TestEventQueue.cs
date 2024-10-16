@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 
             var invoked = false;
             using (queue.Subscribe<EventOne>(
-                e => { invoked = true; }, 
+                e => { invoked = true; },
                 SubscriptionOptions.WeakSubscriberReference))
             {
                 queue.GetSubscriptions<EventOne>()

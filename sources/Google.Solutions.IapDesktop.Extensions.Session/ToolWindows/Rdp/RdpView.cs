@@ -506,7 +506,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         public void Reconnect()
         {
-            this.rdpClient.Reconnect(); 
+            this.rdpClient.Reconnect();
         }
 
         public void SendText(string text)

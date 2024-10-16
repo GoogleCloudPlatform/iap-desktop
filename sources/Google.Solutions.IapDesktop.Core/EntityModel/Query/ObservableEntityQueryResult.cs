@@ -76,7 +76,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
             //
 
             this.propertyChanged = eventQueue.Subscribe<EntityPropertyChangedEvent>(
-                e => {
+                e =>
+                {
                     IsAssociatedWithThread(Environment.CurrentManagedThreadId);
                     this
                         .FirstOrDefault(i => i.Entity.Locator.Equals(e.Locator))?
@@ -84,7 +85,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
                 },
                 SubscriptionOptions.WeakSubscriberReference);
             this.deleted = eventQueue.Subscribe<EntityRemovedEvent>(
-                e => {
+                e =>
+                {
                     // 
                     // NB. The EventQueue delivers callbacks on a designated
                     // thread which should be the same as the caller's thread.
@@ -100,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
                     if (this.FirstOrDefault(i => i.Entity.Locator.Equals(e.Locator))
                         is EntityQueryResultItem<TEntity> item)
                     {
-                        this.Remove(item);
+                        Remove(item);
                     }
                 },
                 SubscriptionOptions.WeakSubscriberReference);

@@ -104,7 +104,7 @@ namespace Google.Solutions.Terminal.Controls
                 .Where(m => typeof(ClientBase).IsAssignableFrom(m.DeclaringType))
                 .Where(m => !m.IsSpecialName)
                 .Where(m => !m.GetParameters().Any()))
-                
+
             {
                 this.ClientMenu.DropDownItems.Add(method.Name).Click += (_, __) =>
                 {

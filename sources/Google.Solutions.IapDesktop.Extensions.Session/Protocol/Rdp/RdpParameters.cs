@@ -308,7 +308,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         /// <summary>
         /// Normal user session, might consume a CAL.
         /// </summary>
-        [Description("Normal user-session")] 
+        [Description("Normal user-session")]
         User = 0,
 
         /// <summary>

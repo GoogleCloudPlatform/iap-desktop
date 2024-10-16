@@ -38,7 +38,7 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             Assert.IsTrue(CreateInstance().ResourceType.EndsWith("s"));
         }
-    
+
         //---------------------------------------------------------------------
         // ToString.
         //---------------------------------------------------------------------

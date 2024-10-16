@@ -252,7 +252,7 @@ namespace Google.Solutions.IapDesktop.Core.ObjectModel
             private readonly WeakReference<Func<TEvent, Task>> callback;
 
             public WeakSubscription(
-                EventQueue queue, 
+                EventQueue queue,
                 Func<TEvent, Task> callback)
                 : base(queue)
             {

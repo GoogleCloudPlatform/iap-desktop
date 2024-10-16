@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         {
             this.BaseKey.DeleteSubKeyTree(project.Name, false);
             this.PropertyChanged?.Invoke(
-                this, 
+                this,
                 new PropertyChangedEventArgs(nameof(this.Projects)));
         }
 
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         }
 
         public bool TryGetAncestry(
-            ProjectLocator project, 
+            ProjectLocator project,
             out OrganizationLocator? ancestry)
         {
             using (var key = OpenRegistryKey(project.Name))

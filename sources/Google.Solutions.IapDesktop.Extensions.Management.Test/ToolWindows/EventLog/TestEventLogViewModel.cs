@@ -165,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
             var node = new Mock<IProjectModelCloudNode>();
 
             var viewModel = CreateViewModel(
-                new SynchronousJobService(), 
+                new SynchronousJobService(),
                 new AuditLogClientMock());
 
             await viewModel
@@ -342,7 +342,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
         {
             var jobService = new SynchronousJobService();
 
-            var viewModel = CreateViewModel (
+            var viewModel = CreateViewModel(
                 jobService,
                 new AuditLogClientMock());
 

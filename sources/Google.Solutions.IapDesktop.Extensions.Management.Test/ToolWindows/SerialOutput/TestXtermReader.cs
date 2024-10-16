@@ -23,8 +23,8 @@ using Google.Solutions.Common.Text;
 using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOutput;
 using NUnit.Framework;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.SerialOutput
 {

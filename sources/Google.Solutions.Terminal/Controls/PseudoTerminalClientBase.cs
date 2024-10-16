@@ -159,7 +159,7 @@ namespace Google.Solutions.Terminal.Controls
             {
                 try
                 {
-                    this.Terminal.Device = await 
+                    this.Terminal.Device = await
                         ConnectCoreAsync(this.Terminal.Dimensions)
                         .ConfigureAwait(true); // Back to caller thread.
 

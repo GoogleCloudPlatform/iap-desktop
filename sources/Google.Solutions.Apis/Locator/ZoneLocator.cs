@@ -57,7 +57,7 @@ namespace Google.Solutions.Apis.Locator
             }
             else
             {
-                locator = null; 
+                locator = null;
                 return false;
             }
         }

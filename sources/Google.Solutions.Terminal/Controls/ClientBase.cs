@@ -91,7 +91,7 @@ namespace Google.Solutions.Terminal.Controls
             //
             this.statePanel = new ClientStatePanel();
             this.Controls.Add(this.statePanel);
-            
+
             this.Resize += (_, args) =>
             {
                 this.statePanel.Size = this.Size;
@@ -112,8 +112,8 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         [Browsable(false)]
         public virtual bool IsFullScreen
-        { 
-            get => false; 
+        {
+            get => false;
         }
 
         //---------------------------------------------------------------------

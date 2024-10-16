@@ -26,7 +26,6 @@ using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;

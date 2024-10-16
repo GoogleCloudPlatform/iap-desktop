@@ -188,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
         /// Empty if there is no searcher for this type of query or entity.
         /// </returns>
         public async Task<ICollection<TEntity>> SearchAsync<TQuery, TEntity>(
-            TQuery query, 
+            TQuery query,
             CancellationToken cancellationToken)
             where TEntity : IEntity<ILocator>
         {
@@ -409,8 +409,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             public ListDescendantsAsyncDelegate ListDescendantsAsync { get; }
 
             public RegisteredEntityNavigator(
-                Type locatorType, 
-                Type entityType, 
+                Type locatorType,
+                Type entityType,
                 ListDescendantsAsyncDelegate listAsync)
             {
                 this.LocatorType = locatorType;
@@ -470,8 +470,8 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
             public QueryAspectAsyncDelegate QueryAspectAsync { get; }
 
             public RegisteredAsyncAspectProvider(
-                Type locatorType, 
-                Type aspectType, 
+                Type locatorType,
+                Type aspectType,
                 QueryAspectAsyncDelegate queryAspectAsync)
             {
                 this.LocatorType = locatorType;
