@@ -24,6 +24,7 @@ using Google.Solutions.Platform.IO;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Terminal.Controls
@@ -144,16 +145,29 @@ namespace Google.Solutions.Terminal.Controls
             //
             // Connect the terminal to the (new) pty.
             //
-            try
-            {
-                this.Terminal.Device = ConnectCore(this.Terminal.Dimensions);
+            _ = ContinueConnectAysnc();
 
-                OnAfterConnect();
-                OnAfterLogin();
-            }
-            catch (Exception e)
+            async Task ContinueConnectAysnc()
             {
-                OnConnectionFailed(e);
+                try
+                {
+                    this.Terminal.Device = await 
+                        ConnectCoreAsync(this.Terminal.Dimensions)
+                        .ConfigureAwait(true); // Back to caller thread.
+
+                    //
+                    // The distinction between the Connected and LoggedOn 
+                    // states isn't relevant for Pty clients, so we skip
+                    // straight to LoggedOn.
+                    //
+
+                    OnAfterConnect();
+                    OnAfterLogin();
+                }
+                catch (Exception e)
+                {
+                    OnConnectionFailed(e);
+                }
             }
         }
 
@@ -170,7 +184,7 @@ namespace Google.Solutions.Terminal.Controls
         /// <summary>
         /// Create a pty.
         /// </summary>
-        protected abstract IPseudoTerminal ConnectCore(
+        protected abstract Task<IPseudoTerminal> ConnectCoreAsync(
             PseudoTerminalSize initialSize);
 
         /// <summary>

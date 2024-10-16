@@ -23,6 +23,7 @@ using Google.Solutions.Platform.Dispatch;
 using Google.Solutions.Platform.IO;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Terminal.Controls
 {
@@ -39,7 +40,7 @@ namespace Google.Solutions.Terminal.Controls
             this.shellProgram = shellProgram;
         }
 
-        protected override IPseudoTerminal ConnectCore(
+        protected override Task<IPseudoTerminal> ConnectCoreAsync(
             PseudoTerminalSize initialSize)
         {
             Debug.Assert(this.process == null);
@@ -56,7 +57,7 @@ namespace Google.Solutions.Terminal.Controls
             //
 
             Debug.Assert(this.process.PseudoTerminal != null);
-            return this.process.PseudoTerminal!;
+            return Task.FromResult(this.process.PseudoTerminal!);
         }
 
         private void CloseProcess()

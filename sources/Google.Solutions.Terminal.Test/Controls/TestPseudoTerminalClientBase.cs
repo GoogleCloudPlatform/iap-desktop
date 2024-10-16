@@ -25,6 +25,7 @@ using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Terminal.Test.Controls
@@ -43,9 +44,10 @@ namespace Google.Solutions.Terminal.Test.Controls
                 this.connectCore = connectCore;
             }
 
-            protected override IPseudoTerminal ConnectCore(PseudoTerminalSize initialSize)
+            protected override Task<IPseudoTerminal> ConnectCoreAsync(
+                PseudoTerminalSize initialSize)
             {
-                return this.connectCore(initialSize);
+                return Task.FromResult(this.connectCore(initialSize));
             }
 
             protected override bool IsCausedByConnectionTimeout(Exception e)
