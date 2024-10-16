@@ -77,10 +77,18 @@ namespace Google.Solutions.Terminal.Controls
 
         private void OnDeviceClosed(object sender, EventArgs e)
         {
+            Debug.Assert(this.Terminal.Device != null);
+
             //
             // This is an orderly close.
             //
             OnConnectionClosed(DisconnectReason.DisconnectedByUser);
+
+            //
+            // Dispose the device as it might use unmanaged resources.
+            //
+            this.Terminal.Device!.Dispose();
+            this.Terminal.Device = null;
         }
 
         //----------------------------------------------------------------------

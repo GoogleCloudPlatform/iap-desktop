@@ -81,7 +81,7 @@ namespace Google.Solutions.Platform.IO
             }
 
             //---------------------------------------------------------------------
-            // IPseudoTermina.
+            // IPseudoTerminal.
             //---------------------------------------------------------------------
 
             public event EventHandler<PseudoTerminalDataEventArgs>? OutputAvailable;
