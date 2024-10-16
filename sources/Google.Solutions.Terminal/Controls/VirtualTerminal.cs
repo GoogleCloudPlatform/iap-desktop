@@ -25,6 +25,7 @@ using Google.Solutions.Mvvm.Interop;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Platform.IO;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -229,7 +230,18 @@ namespace Google.Solutions.Terminal.Controls
         {
             if (this.InvokeRequired)
             {
-                Invoke(((Action)(() => OnOutputReceived(data))));
+                try
+                {
+                    Invoke(((Action)(() => OnOutputReceived(data))));
+                }
+                catch (InvalidAsynchronousStateException) when (this.IsDisposed)
+                {
+                    //
+                    // We hit a (unavoidable) race condition where the
+                    // window was being disposed during the call. We can
+                    // just ignore that.
+                    //
+                }
             }
             else
             {
@@ -244,7 +256,18 @@ namespace Google.Solutions.Terminal.Controls
         {
             if (this.InvokeRequired)
             {
-                Invoke(((Action)(() => OnDeviceError(e))));
+                try
+                { 
+                    Invoke(((Action)(() => OnDeviceError(e))));
+                }
+                catch (InvalidAsynchronousStateException) when (this.IsDisposed)
+                {
+                    //
+                    // We hit a (unavoidable) race condition where the
+                    // window was being disposed during the call. We can
+                    // just ignore that.
+                    //
+                }
             }
             else
             {
@@ -259,7 +282,18 @@ namespace Google.Solutions.Terminal.Controls
         {
             if (this.InvokeRequired)
             {
-                Invoke(((Action)(() => OnDeviceClosed())));
+                try
+                { 
+                    Invoke(((Action)(() => OnDeviceClosed())));
+                }
+                catch (InvalidAsynchronousStateException) when (this.IsDisposed)
+                {
+                    //
+                    // We hit a (unavoidable) race condition where the
+                    // window was being disposed during the call. We can
+                    // just ignore that.
+                    //
+                }
             }
             else
             {
@@ -350,6 +384,14 @@ namespace Google.Solutions.Terminal.Controls
         {
             if (this.DesignMode)
             {
+                return;
+            }
+
+            if (this.IsDisposed)
+            {
+                //
+                // It's not safe to touch the control anymore.
+                //
                 return;
             }
 
@@ -522,6 +564,7 @@ namespace Google.Solutions.Terminal.Controls
         {
             this.terminalSubclass?.Dispose();
             this.terminal?.Dispose();
+
             base.DestroyHandle();
         }
 
