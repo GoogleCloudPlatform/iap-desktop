@@ -55,16 +55,33 @@ namespace Google.Solutions.Ssh
         /// </summary>
         public async Task CloseAsync()
         {
+            if (this.IsClosed)
+            {
+                return;
+            }
+
             //
             // Switch to worker thread and dispose.
             //
-            await this.Connection.RunSendOperationAsync(c =>
+            try
             {
-                using (c.Session.AsBlocking())
+                await this.Connection.RunSendOperationAsync(c =>
                 {
-                    Dispose();
-                }
-            });
+                    using (c.Session.AsBlocking())
+                    {
+                        Dispose();
+                    }
+                });
+            }
+            catch (SshConnectionClosedException)
+            {
+                //
+                // Connection closed already. This can happen
+                // if the connection was disconnected by the
+                // server, and the channel is being disposed
+                // as a result of that.
+                //
+            }
         }
 
         public void Dispose()

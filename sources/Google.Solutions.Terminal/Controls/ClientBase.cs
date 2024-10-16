@@ -145,9 +145,14 @@ namespace Google.Solutions.Terminal.Controls
                 if (this.state != value)
                 {
                     this.state = value;
-                    this.StateChanged?.Invoke(this, EventArgs.Empty);
+                    OnStateChanged();
                 }
             }
+        }
+
+        protected virtual void OnStateChanged()
+        {
+            this.StateChanged?.Invoke(this, EventArgs.Empty);
         }
 
         protected void ExpectState(ConnectionState expectedState)
@@ -230,7 +235,7 @@ namespace Google.Solutions.Terminal.Controls
         // Inner types.
         //---------------------------------------------------------------------
 
-        public enum ConnectionState
+        public enum ConnectionState // TODO: move up to namespace
         {
             /// <summary>
             /// Client not connected yet or an existing connection has 

@@ -11,5 +11,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Terminal\Google.Solutions.Terminal.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+  </ItemGroup>
 
 </Project>

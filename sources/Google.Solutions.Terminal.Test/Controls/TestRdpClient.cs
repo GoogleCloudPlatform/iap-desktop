@@ -23,6 +23,7 @@ using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Terminal.Controls;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
+using Microsoft.VisualBasic;
 using NUnit.Framework;
 using System;
 using System.Linq;
@@ -40,13 +41,25 @@ namespace Google.Solutions.Terminal.Test.Controls
     {
         private const string InvalidServer = "8.8.8.8";
 
+        private static string? serverName;
+        private static string? username;
+        private static string? password;
+
+        [OneTimeSetUp]
+        public static void CollectCredentials()
+        {
+            serverName = Interaction.InputBox("RDP server");
+            username = Interaction.InputBox("RDP username");
+            password = Interaction.InputBox("RDP password");
+        }
+
         private static ClientDiagnosticsWindow<RdpClient> CreateWindow()
         {
             var window = new ClientDiagnosticsWindow<RdpClient>(new RdpClient());
             window.Client.MainWindow = window;
-            window.Client.Username = ".\\admin";
-            window.Client.Password = "admin";
-            window.Client.Server = Dns.GetHostEntry("rdptesthost")
+            window.Client.Username = $".\\{username}";
+            window.Client.Password = password;
+            window.Client.Server = Dns.GetHostEntry(serverName)
                 .AddressList
                 .First()
                 .ToString();

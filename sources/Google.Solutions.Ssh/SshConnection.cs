@@ -191,7 +191,7 @@ namespace Google.Solutions.Ssh
         {
             if (!this.IsConnected)
             {
-                throw new SshException("Connection is closed");
+                throw new SshConnectionClosedException();
             }
 
             lock (this.sendQueue)

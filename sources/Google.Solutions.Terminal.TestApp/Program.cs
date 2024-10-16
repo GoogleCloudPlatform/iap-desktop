@@ -19,22 +19,86 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Security;
+using Google.Solutions.Ssh;
 using Google.Solutions.Terminal.Controls;
+using Microsoft.VisualBasic;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Terminal.TestApp
 {
     public static class Program
     {
-        private static ClientBase CreateClient(string? commandLineSwitch)
+        /// <summary>
+        /// SSH client that uses password authentication.
+        /// </summary>
+        private class SimpleSshShellClient : SshShellClient, IKeyboardInteractiveHandler
         {
-
-            if (commandLineSwitch == "/rdp")
+            public SimpleSshShellClient()
             {
-                return new RdpClient();
+                this.KeyboardInteractiveHandler = this;
+            }
+
+            [Browsable(true)]
+            [Category(SshCategory)]
+            public string? Username { get; set; }
+
+            [Browsable(true)]
+            [Category(SshCategory)]
+            public string? Password { get; set; }
+
+            public override ISshCredential? Credential 
+            { 
+                get => this.Username != null
+                    ? new StaticPasswordCredential(
+                        this.Username, 
+                        SecureStringExtensions.FromClearText(this.Password))
+                    : null;
+                set => throw new InvalidOperationException();
+            }
+
+            public string? Prompt(string caption, string instruction, string prompt, bool echo)
+            {
+                return Interaction.InputBox(
+                    $"Caption: {caption}\nPrompt: {prompt}",
+                    caption);
+            }
+
+            public IPasswordCredential PromptForCredentials(string username)
+            {
+                var password = Interaction.InputBox($"Enter password for {username}");
+                return new StaticPasswordCredential(username, password);
+            }
+        }
+
+        private static ClientBase CreateClient(string[] args)
+        {
+            if (args.FirstOrDefault() == "/rdp")
+            {
+                var client = new RdpClient();
+                if (args.Skip(1).FirstOrDefault() is string server)
+                {
+                    client.Server = server;
+                }
+
+                return client;
+            }
+            else if (args.FirstOrDefault() == "/ssh")
+            {
+                var client = new SimpleSshShellClient();
+                if (args.Skip(1).FirstOrDefault() is string server)
+                {
+                    client.ServerEndpoint = new IPEndPoint(
+                        IPAddress.Parse(server),
+                        22);
+                }
+
+                return client;
             }
             else
             {
@@ -49,7 +113,7 @@ namespace Google.Solutions.Terminal.TestApp
         [STAThread]
         public static void Main(string[] args)
         {
-            using (var form = new ClientDiagnosticsWindow<ClientBase>(CreateClient(args.FirstOrDefault())))
+            using (var form = new ClientDiagnosticsWindow<ClientBase>(CreateClient(args)))
             {
                 Application.Run(form);
             }

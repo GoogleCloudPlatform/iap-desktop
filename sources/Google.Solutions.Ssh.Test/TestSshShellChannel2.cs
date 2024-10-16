@@ -140,5 +140,47 @@ namespace Google.Solutions.Ssh.Test
                 }
             }
         }
+
+        [Test]
+        public async Task Close_WhenInvokedTwice(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance)
+                .ConfigureAwait(false);
+            var credential = await CreateAsymmetricKeyCredentialAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
+
+            using (var connection = new SshConnection(
+                endpoint,
+                credential,
+                new KeyboardInteractiveHandler(),
+                new SynchronizationContext()))
+            {
+                connection.JoinWorkerThreadOnDispose = true;
+
+                await connection
+                    .ConnectAsync()
+                    .ConfigureAwait(false);
+
+                using (var channel = await connection
+                    .OpenShellAsync(
+                        TerminalSize.Default,
+                        "xterm",
+                        null)
+                    .ConfigureAwait(false))
+                {
+                    await channel
+                        .CloseAsync()
+                        .ConfigureAwait(false);
+
+                    await channel
+                        .CloseAsync()
+                        .ConfigureAwait(false);
+                }
+            }
+        }
     }
 }
