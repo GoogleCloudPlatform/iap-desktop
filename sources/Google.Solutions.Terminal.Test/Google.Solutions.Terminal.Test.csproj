@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Google.Solutions.Terminal\Google.Solutions.Terminal.csproj" />
     <ProjectReference Include="..\Google.Solutions.Testing.Apis\Google.Solutions.Testing.Apis.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+  </ItemGroup>
 </Project>

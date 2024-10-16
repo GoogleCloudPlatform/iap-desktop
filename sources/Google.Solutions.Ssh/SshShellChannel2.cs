@@ -92,17 +92,27 @@ namespace Google.Solutions.Ssh
             //
             // Switch to worker thread and write to channel.
             //
+            try
+            {
+                await this.Connection
+                    .RunSendOperationAsync(_ =>
+                    {
+                        Debug.Assert(this.Connection.IsRunningOnWorkerThread);
 
-            await this.Connection
-                .RunSendOperationAsync(_ =>
-                {
-                    Debug.Assert(this.Connection.IsRunningOnWorkerThread);
-
-                    this.nativeChannel.ResizePseudoTerminal(
-                        dimensions.Width,
-                        dimensions.Height);
-                })
-                .ConfigureAwait(false);
+                        this.nativeChannel.ResizePseudoTerminal(
+                            dimensions.Width,
+                            dimensions.Height);
+                    })
+                    .ConfigureAwait(false);
+            }
+            catch (SshConnectionClosedException)
+            {
+                //
+                // Connection closed already. This can happen
+                // if the connection was disconnected by the
+                // server, and the client has't caught up to that.
+                //
+            }
         }
 
         public async Task WriteAsync(
