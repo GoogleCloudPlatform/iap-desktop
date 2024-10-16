@@ -19,200 +19,198 @@
 // under the License.
 //
 
-using System;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Google.Solutions.Apis.Locator;
 using Newtonsoft.Json;
+using System;
+using System.Text.RegularExpressions;
 
 namespace Google.Solutions.Apis.Locator
 {
-	
-		public class ImageLocator : ComputeEngineLocator, IEquatable<ImageLocator>
-		{
-            public override string ResourceType => "images";
-            
-            [JsonConstructor]
-		    public ImageLocator(string projectId, string name)
-                : base(projectId, name)
+
+    public class ImageLocator : ComputeEngineLocator, IEquatable<ImageLocator>
+    {
+        public override string ResourceType => "images";
+
+        [JsonConstructor]
+        public ImageLocator(string projectId, string name)
+            : base(projectId, name)
+        {
+        }
+
+        public ImageLocator(ProjectLocator project, string name)
+            : base(project.ProjectId, name)
+        {
+        }
+
+        public static bool TryParse(string path, out ImageLocator? locator)
+        {
+            path = StripUrlPrefix(path);
+
+            var match = new Regex("(?:/compute/beta/)?projects/(.*)/global/images/(.*)")
+                .Match(path);
+            if (match.Success)
             {
+                locator = new ImageLocator(
+                    match.Groups[1].Value,
+                    match.Groups[2].Value);
+                return true;
+            }
+            else
+            {
+                locator = null;
+                return false;
+            }
+        }
+
+        public static ImageLocator Parse(string path)
+        {
+            if (TryParse(path, out var locator))
+            {
+                return locator!;
+            }
+            else
+            {
+                throw new ArgumentException($"'{path}' is not a valid global resource locator");
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return
+                this.ProjectId.GetHashCode() ^
+                this.Name.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return $"projects/{this.ProjectId}/global/{this.ResourceType}/{this.Name}";
+        }
+
+        public bool Equals(ImageLocator? other)
+        {
+            return other is object &&
+                this.Name == other.Name &&
+                this.ProjectId == other.ProjectId;
+        }
+
+        public override bool Equals(ComputeEngineLocator? other)
+        {
+            return other is ImageLocator locator && Equals(locator);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is ImageLocator locator && Equals(locator);
+        }
+
+        public static bool operator ==(ImageLocator? obj1, ImageLocator? obj2)
+        {
+            if (obj1 is null)
+            {
+                return obj2 is null;
             }
 
-            public ImageLocator(ProjectLocator project, string name)
-                : base(project.ProjectId, name)
+            return obj1.Equals(obj2);
+        }
+
+        public static bool operator !=(ImageLocator? obj1, ImageLocator? obj2)
+        {
+            return !(obj1 == obj2);
+        }
+
+    }
+
+
+    public class LicenseLocator : ComputeEngineLocator, IEquatable<LicenseLocator>
+    {
+        public override string ResourceType => "licenses";
+
+        [JsonConstructor]
+        public LicenseLocator(string projectId, string name)
+            : base(projectId, name)
+        {
+        }
+
+        public LicenseLocator(ProjectLocator project, string name)
+            : base(project.ProjectId, name)
+        {
+        }
+
+        public static bool TryParse(string path, out LicenseLocator? locator)
+        {
+            path = StripUrlPrefix(path);
+
+            var match = new Regex("(?:/compute/beta/)?projects/(.*)/global/licenses/(.*)")
+                .Match(path);
+            if (match.Success)
             {
+                locator = new LicenseLocator(
+                    match.Groups[1].Value,
+                    match.Groups[2].Value);
+                return true;
+            }
+            else
+            {
+                locator = null;
+                return false;
+            }
+        }
+
+        public static LicenseLocator Parse(string path)
+        {
+            if (TryParse(path, out var locator))
+            {
+                return locator!;
+            }
+            else
+            {
+                throw new ArgumentException($"'{path}' is not a valid global resource locator");
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return
+                this.ProjectId.GetHashCode() ^
+                this.Name.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return $"projects/{this.ProjectId}/global/{this.ResourceType}/{this.Name}";
+        }
+
+        public bool Equals(LicenseLocator? other)
+        {
+            return other is object &&
+                this.Name == other.Name &&
+                this.ProjectId == other.ProjectId;
+        }
+
+        public override bool Equals(ComputeEngineLocator? other)
+        {
+            return other is LicenseLocator locator && Equals(locator);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is LicenseLocator locator && Equals(locator);
+        }
+
+        public static bool operator ==(LicenseLocator? obj1, LicenseLocator? obj2)
+        {
+            if (obj1 is null)
+            {
+                return obj2 is null;
             }
 
-            public static bool TryParse(string path, out ImageLocator? locator)
-            {
-                path = StripUrlPrefix(path);
+            return obj1.Equals(obj2);
+        }
 
-                var match = new Regex("(?:/compute/beta/)?projects/(.*)/global/images/(.*)")
-                    .Match(path);
-                if (match.Success)
-                {
-                    locator = new ImageLocator(
-                        match.Groups[1].Value,
-                        match.Groups[2].Value);
-                    return true;
-                }
-                else
-                {
-                    locator = null;
-                    return false;
-                }
-            }
+        public static bool operator !=(LicenseLocator? obj1, LicenseLocator? obj2)
+        {
+            return !(obj1 == obj2);
+        }
 
-            public static ImageLocator Parse(string path)
-            {
-                if (TryParse(path, out var locator))
-                {
-                    return locator!;
-                }
-                else
-                {
-                    throw new ArgumentException($"'{path}' is not a valid global resource locator");
-                }
-            }
+    }
 
-            public override int GetHashCode()
-            {
-                return
-                    this.ProjectId.GetHashCode() ^
-                    this.Name.GetHashCode();
-            }
-
-            public override string ToString()
-            {
-                return $"projects/{this.ProjectId}/global/{this.ResourceType}/{this.Name}";
-            }
-
-            public bool Equals(ImageLocator? other)
-            {
-                return other is object &&
-                    this.Name == other.Name &&
-                    this.ProjectId == other.ProjectId;
-            }
-
-            public override bool Equals(ComputeEngineLocator? other)
-            {
-                return other is ImageLocator locator && Equals(locator);
-            }
-
-            public override bool Equals(object? obj)
-            {
-                return obj is ImageLocator locator && Equals(locator);
-            }
-
-            public static bool operator ==(ImageLocator? obj1, ImageLocator? obj2)
-            {
-                if (obj1 is null)
-                {
-                    return obj2 is null;
-                }
-
-                return obj1.Equals(obj2);
-            }
-
-            public static bool operator !=(ImageLocator? obj1, ImageLocator? obj2)
-            {
-                return !(obj1 == obj2);
-            }
-
-		}
-
-	
-		public class LicenseLocator : ComputeEngineLocator, IEquatable<LicenseLocator>
-		{
-            public override string ResourceType => "licenses";
-            
-            [JsonConstructor]
-		    public LicenseLocator(string projectId, string name)
-                : base(projectId, name)
-            {
-            }
-
-            public LicenseLocator(ProjectLocator project, string name)
-                : base(project.ProjectId, name)
-            {
-            }
-
-            public static bool TryParse(string path, out LicenseLocator? locator)
-            {
-                path = StripUrlPrefix(path);
-
-                var match = new Regex("(?:/compute/beta/)?projects/(.*)/global/licenses/(.*)")
-                    .Match(path);
-                if (match.Success)
-                {
-                    locator = new LicenseLocator(
-                        match.Groups[1].Value,
-                        match.Groups[2].Value);
-                    return true;
-                }
-                else
-                {
-                    locator = null;
-                    return false;
-                }
-            }
-
-            public static LicenseLocator Parse(string path)
-            {
-                if (TryParse(path, out var locator))
-                {
-                    return locator!;
-                }
-                else
-                {
-                    throw new ArgumentException($"'{path}' is not a valid global resource locator");
-                }
-            }
-
-            public override int GetHashCode()
-            {
-                return
-                    this.ProjectId.GetHashCode() ^
-                    this.Name.GetHashCode();
-            }
-
-            public override string ToString()
-            {
-                return $"projects/{this.ProjectId}/global/{this.ResourceType}/{this.Name}";
-            }
-
-            public bool Equals(LicenseLocator? other)
-            {
-                return other is object &&
-                    this.Name == other.Name &&
-                    this.ProjectId == other.ProjectId;
-            }
-
-            public override bool Equals(ComputeEngineLocator? other)
-            {
-                return other is LicenseLocator locator && Equals(locator);
-            }
-
-            public override bool Equals(object? obj)
-            {
-                return obj is LicenseLocator locator && Equals(locator);
-            }
-
-            public static bool operator ==(LicenseLocator? obj1, LicenseLocator? obj2)
-            {
-                if (obj1 is null)
-                {
-                    return obj2 is null;
-                }
-
-                return obj1.Equals(obj2);
-            }
-
-            public static bool operator !=(LicenseLocator? obj1, LicenseLocator? obj2)
-            {
-                return !(obj1 == obj2);
-            }
-
-		}
-
-	}
+}

@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Syst
                 //
                 // The node type is unqualified, e.g. "n1-node-96-624".
                 //
-                if (base.LogRecord.ProtoPayload?.Metadata != null && 
+                if (base.LogRecord.ProtoPayload?.Metadata != null &&
                     base.LogRecord.ProtoPayload.Metadata.ContainsKey("nodeType") &&
                     base.LogRecord.Resource?.Labels != null &&
                     base.LogRecord.Resource.Labels.ContainsKey("project_id") &&

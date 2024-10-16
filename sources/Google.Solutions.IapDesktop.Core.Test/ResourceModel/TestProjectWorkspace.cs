@@ -19,24 +19,23 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2.Responses;
+using Google.Solutions.Apis;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Linq;
-using Google.Solutions.Apis;
+using Google.Solutions.IapDesktop.Core.EntityModel;
+using Google.Solutions.IapDesktop.Core.ResourceModel;
+using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Apis.Auth.OAuth2.Responses;
-using Google.Solutions.Testing.Apis;
-using Google.Solutions.IapDesktop.Core.EntityModel;
-using System.ComponentModel;
-using Google.Solutions.IapDesktop.Core.ResourceModel;
-
-using CrmProject = Google.Apis.CloudResourceManager.v1.Data.Project;
 using CrmOrganization = Google.Apis.CloudResourceManager.v1.Data.Organization;
+using CrmProject = Google.Apis.CloudResourceManager.v1.Data.Project;
 
 namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
 {
@@ -167,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ResourceModel
                 organizations.First().Locator);
 
             cache.Verify(
-                c => c.SetAncestry(It.IsAny<ProjectLocator>(), It.IsAny<OrganizationLocator>()), 
+                c => c.SetAncestry(It.IsAny<ProjectLocator>(), It.IsAny<OrganizationLocator>()),
                 Times.Never);
         }
 

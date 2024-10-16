@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         public class ColorAspect { }
         public class ShapeAspect { }
 
-        private class Navigator<TLocator, TEntity> 
+        private class Navigator<TLocator, TEntity>
             : IEntityNavigator<TLocator, TEntity>
             where TLocator : ILocator
             where TEntity : IEntity<ILocator>
@@ -104,14 +104,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
             }
 
             public Task<IEnumerable<TEntity>> ListDescendantsAsync(
-                TLocator locator, 
+                TLocator locator,
                 CancellationToken cancellationToken)
             {
                 return Task.FromResult<IEnumerable<TEntity>>(this.entities);
             }
         }
 
-        private class Searcher<TEntity> : IEntitySearcher<string, TEntity> 
+        private class Searcher<TEntity> : IEntitySearcher<string, TEntity>
             where TEntity : IEntity<ILocator>
         {
             private readonly ICollection<TEntity> entities;
@@ -262,8 +262,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel
         {
             var container = new Navigator<GarageLocator, Car>(
                 new[] {
-                    new Car("c1", new CarLocator()), 
-                    new Car("c2", new CarLocator()) 
+                    new Car("c1", new CarLocator()),
+                    new Car("c2", new CarLocator())
                 });
             var context = new EntityContext.Builder(new Mock<IEventQueue>().Object)
                 .AddNavigator(container)

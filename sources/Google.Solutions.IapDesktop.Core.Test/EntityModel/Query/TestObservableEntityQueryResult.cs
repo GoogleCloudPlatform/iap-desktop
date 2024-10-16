@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
             // Irrelevant event.
             eventHandler!(new EntityRemovedEvent(new EntityTypeLocator(typeof(int))));
             Assert.AreEqual(1, result.Count);
-            
+
             // Matching event.
             eventHandler!(new EntityRemovedEvent(new EntityTypeLocator(typeof(string))));
             Assert.AreEqual(0, result.Count);

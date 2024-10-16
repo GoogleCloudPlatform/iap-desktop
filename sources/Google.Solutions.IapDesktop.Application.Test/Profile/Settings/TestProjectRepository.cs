@@ -203,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 using (var key = repository.OpenRegistryKey(SampleProject.Name))
                 {
                     Assert.AreEqual(
-                        RegistryValueKind.MultiString, 
+                        RegistryValueKind.MultiString,
                         key.GetValueKind(ProjectRepository.AncestryValueName));
                 }
             }

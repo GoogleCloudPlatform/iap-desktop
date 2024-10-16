@@ -60,7 +60,7 @@ namespace Google.Solutions.Apis.Test.Locator
                 "/policy-1/accessLevels/level-1",
                 out var _));
             Assert.IsFalse(AccessLevelLocator.TryParse(
-                "/", 
+                "/",
                 out var _));
         }
 

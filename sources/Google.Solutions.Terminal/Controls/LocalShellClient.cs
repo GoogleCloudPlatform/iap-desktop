@@ -79,7 +79,7 @@ namespace Google.Solutions.Terminal.Controls
         protected override void OnAfterConnect()
         {
             base.OnAfterConnect();
-            
+
             Debug.Assert(this.process != null);
             this.process!.Resume();
         }

@@ -56,7 +56,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             {
                 var control = new SampleForm();
                 form.Controls.Add(control);
-                
+
                 form.Show();
                 Application.DoEvents();
 

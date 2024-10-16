@@ -57,7 +57,7 @@ namespace Google.Solutions.Settings.ComponentModel
         public override object GetValue(object component)
         {
             var value = base.GetValue(component);
-            if (value is SecureString secureString) 
+            if (value is SecureString secureString)
             {
                 //
                 // Return masked value, retaining the original length.

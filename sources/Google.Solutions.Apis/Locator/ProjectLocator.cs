@@ -20,7 +20,6 @@
 //
 
 using System;
-using System.IO;
 using System.Text.RegularExpressions;
 
 namespace Google.Solutions.Apis.Locator

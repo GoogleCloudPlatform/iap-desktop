@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.EntityModel.Query
         [Test]
         public void IsReadOnly()
         {
-            var result = (ICollection<EntityQueryResultItem<EntityType>>) 
+            var result = (ICollection<EntityQueryResultItem<EntityType>>)
                 new EntityQueryResult<EntityType>(Array.Empty<EntityQueryResultItem<EntityType>>());
             Assert.IsTrue(result.IsReadOnly);
         }

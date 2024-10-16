@@ -82,7 +82,8 @@ namespace Google.Solutions.Terminal.Controls
         /// Invoked when the current parent form is closed.
         /// </summary>
         protected virtual void OnFormClosing(
-            object sender, 
-            FormClosingEventArgs args) { }
+            object sender,
+            FormClosingEventArgs args)
+        { }
     }
 }

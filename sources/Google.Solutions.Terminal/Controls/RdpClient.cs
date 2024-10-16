@@ -875,7 +875,7 @@ namespace Google.Solutions.Terminal.Controls
             }
             catch (Exception e)
             {
-                this.OnConnectionFailed(e);
+                OnConnectionFailed(e);
             }
         }
 

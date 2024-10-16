@@ -19,12 +19,8 @@
 // under the License.
 //
 
-using Google.Apis.Logging.v2.Data;
-using Google.Solutions.Apis;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Runtime;
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
@@ -35,12 +31,10 @@ using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Settings.Collection;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 {
@@ -120,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
             // NB. Only consider instances that have already bee loaded.
             //
             eventQueue.Subscribe<SessionStartedEvent>(
-                e => 
+                e =>
                 {
                     if (FindLoadedInstance(e.Instance) is InstanceViewModelNode instance)
                     {
@@ -175,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
         private InstanceViewModelNode? FindLoadedInstance(
             InstanceLocator locator)
         {
-            
+
             return this.RootNode.LoadedDescendents
                 .OfType<InstanceViewModelNode>()
                 .FirstOrDefault(i => Equals(i.Locator, locator));

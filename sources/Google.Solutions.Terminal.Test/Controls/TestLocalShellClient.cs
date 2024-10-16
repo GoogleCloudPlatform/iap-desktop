@@ -44,7 +44,7 @@ namespace Google.Solutions.Terminal.Test.Controls
 
                 Assert.AreEqual(ClientBase.ConnectionState.NotConnected, client.State);
 
-                int connectionFailedEvents = 0;
+                var connectionFailedEvents = 0;
                 client.ConnectionFailed += (_, args) => connectionFailedEvents++;
 
                 client.Connect();

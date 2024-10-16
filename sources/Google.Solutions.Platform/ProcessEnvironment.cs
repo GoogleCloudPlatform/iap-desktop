@@ -67,8 +67,8 @@ namespace Google.Solutions.Platform
                 // If IsWow64Process2 didn't work, or isn't available,
                 // then it's unlikely that we're running on ARM hardware.
                 //
-                return Environment.Is64BitOperatingSystem 
-                    ? Architecture.X64 
+                return Environment.Is64BitOperatingSystem
+                    ? Architecture.X64
                     : Architecture.X86;
             }
         }
@@ -82,7 +82,7 @@ namespace Google.Solutions.Platform
             get
             {
                 try
-                { 
+                {
                     if (NativeMethods.IsWow64Process2(
                         Process.GetCurrentProcess().Handle,
                         out var processMachine,
@@ -92,7 +92,7 @@ namespace Google.Solutions.Platform
                         {
                             if (nativeMachine == NativeMethods.IMAGE_FILE_MACHINE_ARM64 &&
                                 "amd64".Equals(
-                                    Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE"), 
+                                    Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE"),
                                     StringComparison.OrdinalIgnoreCase))
                             {
                                 //

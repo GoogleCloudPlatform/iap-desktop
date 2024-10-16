@@ -22,7 +22,6 @@
 using Google.Solutions.Settings.ComponentModel;
 using NUnit.Framework;
 using System;
-using System.Drawing;
 
 namespace Google.Solutions.Settings.Test.ComponentModel
 {

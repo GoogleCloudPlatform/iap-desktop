@@ -22,10 +22,6 @@
 using Google.Solutions.Common.Util;
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
 
 namespace Google.Solutions.Settings.ComponentModel
 {
@@ -56,7 +52,7 @@ namespace Google.Solutions.Settings.ComponentModel
         {
             get => this.setting.Key;
         }
-        
+
         /// <summary>
         /// Human-readable name of the setting.
         /// </summary>

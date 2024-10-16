@@ -200,7 +200,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 virtualTerminal.DeviceError += (_, args) => exception = args.Exception;
 
                 device.Raise(
-                    d => d.FatalError += null, 
+                    d => d.FatalError += null,
                     new PseudoTerminalErrorEventArgs(new ArgumentException()));
 
                 Assert.IsNotNull(exception);
@@ -221,7 +221,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Device = device.Object,
             })
             {
-                bool deviceClosedEventRaised = false;
+                var deviceClosedEventRaised = false;
                 virtualTerminal.DeviceClosed += (_, args) => deviceClosedEventRaised = true;
 
                 device.Raise(d => d.Disconnected += null, EventArgs.Empty);
@@ -243,7 +243,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Device = device.Object,
             })
             {
-                string data = string.Empty;
+                var data = string.Empty;
                 virtualTerminal.Output += (_, args) => data += args.Data;
 
                 device.Raise(d => d.OutputAvailable += null, new PseudoTerminalDataEventArgs("data"));

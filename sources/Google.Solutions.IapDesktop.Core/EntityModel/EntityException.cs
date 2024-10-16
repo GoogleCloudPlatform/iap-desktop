@@ -23,7 +23,7 @@ using Google.Solutions.Apis.Locator;
 using System;
 
 namespace Google.Solutions.IapDesktop.Core.EntityModel
-{ 
+{
     /// <summary>
     /// Indicates that a requested entity was not found.
     /// </summary>
@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
 
         protected EntityException(
             string message,
-            ILocator locator) 
+            ILocator locator)
             : base(message)
         {
             this.Locator = locator;

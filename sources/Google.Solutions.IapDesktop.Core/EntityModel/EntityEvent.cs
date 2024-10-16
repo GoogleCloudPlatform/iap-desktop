@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Core.EntityModel
 
         public EntityPropertyChangedEvent(
             ILocator locator,
-            Type aspect, 
+            Type aspect,
             string? propertyName) : base(locator)
         {
             this.Aspect = aspect;

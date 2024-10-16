@@ -89,7 +89,7 @@ namespace Google.Solutions.Terminal.Test.Controls
 
                 Assert.AreEqual(ClientBase.ConnectionState.NotConnected, client.State);
 
-                int connectionFailedEvents = 0;
+                var connectionFailedEvents = 0;
                 client.ConnectionFailed += (_, args) => connectionFailedEvents++;
 
                 client.Connect();
@@ -135,7 +135,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 client.Connect();
                 Assert.AreEqual(ClientBase.ConnectionState.LoggedOn, client.State);
 
-                int connectionFailedEvents = 0;
+                var connectionFailedEvents = 0;
                 client.ConnectionFailed += (_, args) => connectionFailedEvents++;
 
                 pty.Raise(p => p.FatalError += null, new PseudoTerminalErrorEventArgs(new Exception("mock")));
@@ -160,7 +160,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 client.Connect();
                 Assert.AreEqual(ClientBase.ConnectionState.LoggedOn, client.State);
 
-                int connectionClosedEvents = 0;
+                var connectionClosedEvents = 0;
                 client.ConnectionClosed += (_, args) => connectionClosedEvents++;
 
                 pty.Raise(p => p.Disconnected += null, EventArgs.Empty);
