@@ -142,7 +142,7 @@ if ($ManifestType -eq "Version") {
 
     $Manifest = @"
 ManifestType: "version"
-ManifestVersion: 1.9.0
+ManifestVersion: 1.6.0
 PackageIdentifier: Google.IAPDesktop
 PackageVersion: '$($SharedProperties.ProductVersion)'
 
@@ -157,7 +157,7 @@ elseif ($ManifestType -eq "DefaultLocale") {
 
     $Manifest = @"
 ManifestType: "defaultLocale"
-ManifestVersion: 1.9.0
+ManifestVersion: 1.6.0
 PackageIdentifier: Google.IAPDesktop
 PackageVersion: '$($SharedProperties.ProductVersion)'
 PackageLocale: en-US
@@ -192,7 +192,7 @@ elseif ($ManifestType -eq "Installer") {
 
 $Manifest = @"
 ManifestType: installer
-ManifestVersion: 1.9.0
+ManifestVersion: 1.6.0
 PackageIdentifier: Google.IAPDesktop
 PackageVersion: '$($SharedProperties.ProductVersion)'
 
