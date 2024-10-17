@@ -22,12 +22,27 @@
 POWERSHELL = powershell -NoProfile -ExecutionPolicy Unrestricted
 CREATE_MANIFEST = $(POWERSHELL) $(MAKEDIR)\..\..\sources\scripts\create-winget-manifest.ps1
 
-winget-manifests:
+default: winget-manifests clone-repo
+
+public-folder:
     if not exist $(MAKEDIR)\public \
         md $(MAKEDIR)\public
 
-	$(CREATE_MANIFEST) -ManifestType Version > $(MAKEDIR)\public\IAPDesktop.yaml
-	$(CREATE_MANIFEST) -ManifestType DefaultLocale > $(MAKEDIR)\public\IAPDesktop.locale.en-US.yaml
-	$(CREATE_MANIFEST) -ManifestType Installer > $(MAKEDIR)\public\IAPDesktop.installer.yaml
+winget-manifests: public-folder
+    if not exist $(MAKEDIR)\public\manifest \
+        md $(MAKEDIR)\public\manifest
 
-	winget validate --manifest $(MAKEDIR)\public
+	$(CREATE_MANIFEST) -ManifestType Version > $(MAKEDIR)\public\manifest\IAPDesktop.yaml
+	$(CREATE_MANIFEST) -ManifestType DefaultLocale > $(MAKEDIR)\public\manifest\IAPDesktop.locale.en-US.yaml
+	$(CREATE_MANIFEST) -ManifestType Installer > $(MAKEDIR)\public\manifest\IAPDesktop.installer.yaml
+
+	winget validate --manifest $(MAKEDIR)\public\manifest
+
+clone-repo: public-folder
+	if not exist $(MAKEDIR)\public\winget-pkgs \
+		git clone --depth 1 https://github.com/microsoft/winget-pkgs.git $(MAKEDIR)\public\winget-pkgs
+
+	cd $(MAKEDIR)\public\winget-pkgs
+	git fetch
+	git checkout origin/master
+	cd $(MAKEDIR)

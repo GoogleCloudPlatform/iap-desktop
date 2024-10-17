@@ -27,6 +27,7 @@
 Param(
     [Parameter(Mandatory=$False)][string]$ReleaseUrl = "https://api.github.com/repos/GoogleCloudPlatform/iap-desktop/releases/latest",
 
+    [Parameter(Mandatory=$False)]
     [ValidateSet('Version','DefaultLocale','Installer')]
     [string]$ManifestType = "Version"
 )
@@ -139,7 +140,7 @@ if ($ManifestType -eq "Version") {
     # Version manifest.
     #
 
-    @"
+    $Manifest = @"
 ManifestType: "version"
 ManifestVersion: 1.9.0
 PackageIdentifier: Google.IAPDesktop
@@ -154,7 +155,7 @@ elseif ($ManifestType -eq "DefaultLocale") {
     # Manifest for default locale.
     #
 
-    @"
+    $Manifest = @"
 ManifestType: "defaultLocale"
 ManifestVersion: 1.9.0
 PackageIdentifier: Google.IAPDesktop
@@ -211,7 +212,7 @@ AppsAndFeaturesEntries:
 Installers:
 "@
 
-foreach ($MsiAsset in $MsiAssets) {
+    foreach ($MsiAsset in $MsiAssets) {
     $MsiFile = $MsiFiles[$MsiAsset.id]
 
     $Architecture = Get-MsiArchitecture $MsiFile
@@ -225,11 +226,14 @@ foreach ($MsiAsset in $MsiAssets) {
   InstallerUrl: $($MsiAsset.browser_download_url)
   InstallerSha256: $($Hash.Hash)
 "@
-}
-
-$Manifest
+    }
 }
 
 else {
     throw "The manifest type is not supported"
 }
+
+#
+# Write to stdout.
+#
+$Manifest
