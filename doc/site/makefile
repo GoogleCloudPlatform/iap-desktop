@@ -19,6 +19,10 @@
 # under the License.
 #
 
+#------------------------------------------------------------------------------
+# mkdocs targets
+#------------------------------------------------------------------------------
+
 serve: release-notes
 	@echo "========================================================"
 	@echo "=== Serving site                                     ==="
@@ -40,3 +44,20 @@ install:
 	@echo "========================================================"
     
     python -m pip install mkdocs-material
+
+#------------------------------------------------------------------------------
+# WinGet targets
+#------------------------------------------------------------------------------
+
+POWERSHELL = powershell -NoProfile -ExecutionPolicy Unrestricted
+CREATE_MANIFEST = $(POWERSHELL) $(MAKEDIR)\..\..\sources\scripts\create-winget-manifest.ps1
+
+winget-manifests:
+    if not exist $(MAKEDIR)\winget \
+        md $(MAKEDIR)\winget
+
+	$(CREATE_MANIFEST) -ManifestType Version > $(MAKEDIR)\winget\IAPDesktop.yaml
+	$(CREATE_MANIFEST) -ManifestType DefaultLocale > $(MAKEDIR)\winget\IAPDesktop.locale.en-US.yaml
+	$(CREATE_MANIFEST) -ManifestType Installer > $(MAKEDIR)\winget\IAPDesktop.installer.yaml
+
+	winget validate --manifest $(MAKEDIR)\winget

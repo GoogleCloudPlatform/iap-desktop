@@ -159,9 +159,9 @@ ManifestType: "defaultLocale"
 ManifestVersion: 1.9.0
 PackageIdentifier: Google.IAPDesktop
 PackageVersion: '$($SharedProperties.ProductVersion)'
+PackageLocale: en-US
 
 PackageName: IAP Desktop
-DefaultLocale: "en-US"
 Author: GoogleCloudPlatform
 Publisher: Google LLC
 PublisherUrl: https://github.com/$GithubRepository
