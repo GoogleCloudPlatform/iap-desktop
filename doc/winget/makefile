@@ -19,5 +19,15 @@
 # under the License.
 #
 
-public/
-release-notes.md
+POWERSHELL = powershell -NoProfile -ExecutionPolicy Unrestricted
+CREATE_MANIFEST = $(POWERSHELL) $(MAKEDIR)\..\..\sources\scripts\create-winget-manifest.ps1
+
+winget-manifests:
+    if not exist $(MAKEDIR)\public \
+        md $(MAKEDIR)\public
+
+	$(CREATE_MANIFEST) -ManifestType Version > $(MAKEDIR)\public\IAPDesktop.yaml
+	$(CREATE_MANIFEST) -ManifestType DefaultLocale > $(MAKEDIR)\public\IAPDesktop.locale.en-US.yaml
+	$(CREATE_MANIFEST) -ManifestType Installer > $(MAKEDIR)\public\IAPDesktop.installer.yaml
+
+	winget validate --manifest $(MAKEDIR)\public
