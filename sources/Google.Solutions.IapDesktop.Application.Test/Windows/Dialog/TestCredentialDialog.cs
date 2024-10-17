@@ -171,9 +171,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
         //---------------------------------------------------------------------
 
         [Test]
-        public void PackCredential()
+        public void PackCredential_WhenDomainEmpty(
+            [Values("user", "domain\\user", "user@domain")] string user)
         {
-            var empty = new NetworkCredential("user", "password");
+            var empty = new NetworkCredential(user, "password");
             using (var packed = new CredentialDialog.PackedCredential(empty))
             {
                 Assert.IsNotNull(packed.Handle);
@@ -181,7 +182,42 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
 
                 var unpacked = packed.Unpack();
 
-                Assert.AreEqual("user", unpacked.UserName);
+                Assert.AreEqual(user, unpacked.UserName);
+                Assert.AreEqual("", unpacked.Domain);
+                Assert.AreEqual("password", unpacked.Password);
+            }
+        }
+
+        [Test]
+        public void PackCredential_WhenUsernameContainsDomainAndDomainNotEmpty(
+            [Values("domain\\user", "user@domain")] string user)
+        {
+            var empty = new NetworkCredential(user, "password", "otherdomain");
+            using (var packed = new CredentialDialog.PackedCredential(empty))
+            {
+                Assert.IsNotNull(packed.Handle);
+                Assert.IsTrue(packed.Size > 0);
+
+                var unpacked = packed.Unpack();
+
+                Assert.AreEqual(user, unpacked.UserName);
+                Assert.AreEqual("", unpacked.Domain);
+                Assert.AreEqual("password", unpacked.Password);
+            }
+        }
+
+        [Test]
+        public void PackCredential_WhenDomainNotEmpty()
+        {
+            var empty = new NetworkCredential("user", "password", "domain");
+            using (var packed = new CredentialDialog.PackedCredential(empty))
+            {
+                Assert.IsNotNull(packed.Handle);
+                Assert.IsTrue(packed.Size > 0);
+
+                var unpacked = packed.Unpack();
+
+                Assert.AreEqual("domain\\user", unpacked.UserName);
                 Assert.AreEqual("", unpacked.Domain);
                 Assert.AreEqual("password", unpacked.Password);
             }

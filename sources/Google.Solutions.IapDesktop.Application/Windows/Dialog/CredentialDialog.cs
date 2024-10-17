@@ -229,11 +229,32 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
 
             public PackedCredential(NetworkCredential inputCredential)
             {
+                var username = inputCredential.UserName;
+                var password = inputCredential.Password;
+
+                if (!string.IsNullOrEmpty(inputCredential.Domain) &&
+                    !string.IsNullOrEmpty(username) &&
+                    !username.Contains("\\") &&
+                    !username.Contains("@"))
+                {
+                    //
+                    // The input credential specifies a domain. 
+                    // CredPackAuthenticationBuffer doesn't let us
+                    // pass that domain, so we need to
+                    // prepend it to the username in NetBIOS format.
+                    //
+                    // NB. If the username also contains a domain
+                    //     (domain\user or user@domain), then we let
+                    //     that take precedence.
+                    //
+                    username = $"{inputCredential.Domain}\\{username}";
+                }
+
                 uint bufferSize = 0;
                 if (!NativeMethods.CredPackAuthenticationBuffer(
                     NativeMethods.CRED_PACK_PROTECTED_CREDENTIALS,
-                    inputCredential.UserName,
-                    inputCredential.Password,
+                    username,
+                    password,
                     IntPtr.Zero,
                     ref bufferSize) && bufferSize == 0)
                 {
@@ -245,8 +266,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
 
                 if (!NativeMethods.CredPackAuthenticationBuffer(
                     NativeMethods.CRED_PACK_PROTECTED_CREDENTIALS,
-                    inputCredential.UserName,
-                    inputCredential.Password,
+                    username,
+                    password,
                     this.buffer.DangerousGetHandle(),
                     ref bufferSize))
                 {
