@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options;
+using Google.Solutions.Testing.Apis.Platform;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Drawing;
@@ -31,16 +32,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
     [TestFixture]
     public class TestTerminalOptionsViewModel
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private static readonly RegistryKey hkcu = RegistryKey
-            .OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-
         private static TerminalSettingsRepository CreateTerminalSettingsRepository()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
-
-            return new TerminalSettingsRepository(baseKey);
+            return new TerminalSettingsRepository(
+                RegistryKeyPath.ForCurrentTest().CreateKey());
         }
 
         //---------------------------------------------------------------------

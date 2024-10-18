@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Settings;
+using Google.Solutions.Testing.Apis.Platform;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
@@ -36,16 +37,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
     public class TestConnectionSettingsViewModel
     {
         private const string SampleProjectId = "project-1";
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private static readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
 
         private static ConnectionSettingsService CreateConnectionSettingsService()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
-
-            var projectRepository = new ProjectRepository(hkcu.CreateSubKey(TestKeyPath));
+            var projectRepository = new ProjectRepository(
+                RegistryKeyPath.ForCurrentTest().CreateKey());
             var settingsRepository = new ConnectionSettingsRepository(projectRepository);
 
             // Set some initial project settings.

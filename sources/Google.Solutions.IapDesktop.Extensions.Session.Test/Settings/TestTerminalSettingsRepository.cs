@@ -19,8 +19,10 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
+using Google.Solutions.Testing.Apis.Platform;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Drawing;
@@ -31,66 +33,59 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
     public class TestTerminalSettingsRepository
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-        }
-
         [Test]
         public void GetSettings_WhenKeyEmpty_ThenDefaultsAreProvided()
         {
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var repository = new TerminalSettingsRepository(baseKey);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var repository = new TerminalSettingsRepository(keyPath.CreateKey());
 
-            var settings = repository.GetSettings();
+                var settings = repository.GetSettings();
 
-            Assert.IsTrue(settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value);
-            Assert.IsFalse(settings.IsSelectAllUsingCtrlAEnabled.Value);
-            Assert.IsTrue(settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value);
-            Assert.IsTrue(settings.IsSelectUsingShiftArrrowEnabled.Value);
-            Assert.IsTrue(settings.IsQuoteConvertionOnPasteEnabled.Value);
-            Assert.IsTrue(settings.IsNavigationUsingControlArrrowEnabled.Value);
-            Assert.IsTrue(settings.IsScrollingUsingCtrlUpDownEnabled.Value);
-            Assert.IsTrue(settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
-            Assert.AreEqual(TerminalFont.DefaultFontFamily, settings.FontFamily.Value);
-            Assert.AreEqual(
-                TerminalFont.DefaultSize,
-                TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.Value));
-            Assert.AreEqual(
-                TerminalSettingsRepository.DefaultBackgroundColor.ToArgb(),
-                settings.BackgroundColorArgb.Value);
-            Assert.AreEqual(
-                Color.White.ToArgb(),
-                settings.ForegroundColorArgb.Value);
+                Assert.IsTrue(settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value);
+                Assert.IsFalse(settings.IsSelectAllUsingCtrlAEnabled.Value);
+                Assert.IsTrue(settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value);
+                Assert.IsTrue(settings.IsSelectUsingShiftArrrowEnabled.Value);
+                Assert.IsTrue(settings.IsQuoteConvertionOnPasteEnabled.Value);
+                Assert.IsTrue(settings.IsNavigationUsingControlArrrowEnabled.Value);
+                Assert.IsTrue(settings.IsScrollingUsingCtrlUpDownEnabled.Value);
+                Assert.IsTrue(settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
+                Assert.AreEqual(TerminalFont.DefaultFontFamily, settings.FontFamily.Value);
+                Assert.AreEqual(
+                    TerminalFont.DefaultSize,
+                    TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.Value));
+                Assert.AreEqual(
+                    TerminalSettingsRepository.DefaultBackgroundColor.ToArgb(),
+                    settings.BackgroundColorArgb.Value);
+                Assert.AreEqual(
+                    Color.White.ToArgb(),
+                    settings.ForegroundColorArgb.Value);
+            }
         }
 
         [Test]
         public void SetSettings_WhenSettingsChanged_ThenEventIsFired()
         {
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var repository = new TerminalSettingsRepository(baseKey);
-
-            var eventFired = false;
-            repository.SettingsChanged += (sender, args) =>
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
-                Assert.AreSame(repository, sender);
-                Assert.IsTrue(args.Data.IsSelectAllUsingCtrlAEnabled.Value);
-                eventFired = true;
-            };
+                var repository = new TerminalSettingsRepository(keyPath.CreateKey());
 
-            var settings = repository.GetSettings();
-            Assert.IsFalse(settings.IsSelectAllUsingCtrlAEnabled.Value);
-            settings.IsSelectAllUsingCtrlAEnabled.Value = true;
+                var eventFired = false;
+                repository.SettingsChanged += (sender, args) =>
+                {
+                    Assert.AreSame(repository, sender);
+                    Assert.IsTrue(args.Data.IsSelectAllUsingCtrlAEnabled.Value);
+                    eventFired = true;
+                };
 
-            repository.SetSettings(settings);
+                var settings = repository.GetSettings();
+                Assert.IsFalse(settings.IsSelectAllUsingCtrlAEnabled.Value);
+                settings.IsSelectAllUsingCtrlAEnabled.Value = true;
 
-            Assert.IsTrue(eventFired);
+                repository.SetSettings(settings);
+
+                Assert.IsTrue(eventFired);
+            }
         }
     }
 }

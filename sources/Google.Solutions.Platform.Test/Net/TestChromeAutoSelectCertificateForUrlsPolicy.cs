@@ -21,6 +21,7 @@
 
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Testing.Apis.Cryptography;
+using Google.Solutions.Testing.Apis.Platform;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
@@ -32,10 +33,6 @@ namespace Google.Solutions.Platform.Test.Net
     [TestFixture]
     public class TestChromeAutoSelectCertificateForUrlsPolicy
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-
-        private RegistryKey? key;
-
         //
         // New-SelfSignedCertificate `
         //  -DnsName "example.org" `
@@ -65,14 +62,6 @@ namespace Google.Solutions.Platform.Test.Net
                 -----END CERTIFICATE-----
                 ");
 
-        [SetUp]
-        public void SetUp()
-        {
-            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.key = hkcu.CreateSubKey(TestKeyPath);
-        }
-
         //---------------------------------------------------------------------
 
         [Test]
@@ -97,43 +86,52 @@ namespace Google.Solutions.Platform.Test.Net
         [Test]
         public void Build_WhenKeyContainsJunkValues_ThenBuilderIgnoresJunkValues()
         {
-            this.key!.SetValue("1", "{'pattern': 'https://[*.]example.org', 'filter':{}}");
-            this.key.SetValue("2", "{'pattern': 'https://[*.]example.com', 'filter':{}}");
-            this.key.SetValue("junk", 1);
-            this.key.SetValue("-3", "junk");
+            using (var key = RegistryKeyPath.ForCurrentTest().CreateKey())
+            {
+                key.SetValue("1", "{'pattern': 'https://[*.]example.org', 'filter':{}}");
+                key.SetValue("2", "{'pattern': 'https://[*.]example.com', 'filter':{}}");
+                key.SetValue("junk", 1);
+                key.SetValue("-3", "junk");
 
-            var policy = new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
-                .AddGroupPolicy(this.key)
-                .Build();
-            Assert.AreEqual(2, policy.Entries.Count);
+                var policy = new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
+                    .AddGroupPolicy(key)
+                    .Build();
+                Assert.AreEqual(2, policy.Entries.Count);
+            }
         }
 
         [Test]
         public void Build_WhenKeyContainsMalformedValues_ThenBuilderIgnoresJunkValues()
         {
-            this.key!.SetValue("1", "{'pattern': 'https://[*.]example.org', 'filter':{}}");
-            this.key.SetValue("2", "{'pattern': 'https://[*.]example.com', 'filter':{"); // Syntax error.
+            using (var key = RegistryKeyPath.ForCurrentTest().CreateKey())
+            {
+                key.SetValue("1", "{'pattern': 'https://[*.]example.org', 'filter':{}}");
+                key.SetValue("2", "{'pattern': 'https://[*.]example.com', 'filter':{"); // Syntax error.
 
-            var policy = new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
-                .AddGroupPolicy(this.key)
-                .Build();
-            Assert.AreEqual(1, policy.Entries.Count);
+                var policy = new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
+                    .AddGroupPolicy(key)
+                    .Build();
+                Assert.AreEqual(1, policy.Entries.Count);
+            }
         }
 
         [Test]
         public void Build_WhenKeyContainsSelectors_ThenBuilderEvaluatesSelectors()
         {
-            this.key!.SetValue("11",
-                "{'pattern': 'https://[*.]example.org', 'filter':{'SUBJECT': {'CN': 'example.org'}}}");
-            this.key.SetValue("20",
-                "{'pattern': 'https://[*.]example.com', 'filter':{'SUBJECT': {'CN': 'example.com'}}}");
+            using (var key = RegistryKeyPath.ForCurrentTest().CreateKey())
+            {
+                key.SetValue("11",
+                    "{'pattern': 'https://[*.]example.org', 'filter':{'SUBJECT': {'CN': 'example.org'}}}");
+                key.SetValue("20",
+                    "{'pattern': 'https://[*.]example.com', 'filter':{'SUBJECT': {'CN': 'example.com'}}}");
 
-            var policy = new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
-                .AddGroupPolicy(this.key)
-                .Build();
+                var policy = new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
+                    .AddGroupPolicy(key)
+                    .Build();
 
-            Assert.IsTrue(policy.IsApplicable(new Uri("https://www.example.org"), ExampleOrgCertificate));
-            Assert.IsFalse(policy.IsApplicable(new Uri("https://www.example.com"), ExampleOrgCertificate));
+                Assert.IsTrue(policy.IsApplicable(new Uri("https://www.example.org"), ExampleOrgCertificate));
+                Assert.IsFalse(policy.IsApplicable(new Uri("https://www.example.com"), ExampleOrgCertificate));
+            }
         }
     }
 }

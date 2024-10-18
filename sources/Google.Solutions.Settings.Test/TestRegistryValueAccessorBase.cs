@@ -20,6 +20,7 @@
 //
 
 
+using Google.Solutions.Testing.Apis.Platform;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
@@ -28,18 +29,6 @@ namespace Google.Solutions.Settings.Test
 {
     public abstract class TestRegistryValueAccessorBase<T>
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-        }
-
         private protected static RegistryValueAccessor<T> CreateAccessor(string valueName)
         {
             return RegistryValueAccessor.Create<T>(valueName);
@@ -49,11 +38,6 @@ namespace Google.Solutions.Settings.Test
 
         protected abstract void WriteIncompatibleValue(RegistryKey key, string name);
 
-        protected RegistryKey CreateKey()
-        {
-            return this.hkcu.CreateSubKey(TestKeyPath);
-        }
-
         //---------------------------------------------------------------------
         // TryRead.
         //---------------------------------------------------------------------
@@ -61,7 +45,7 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void TryRead_WhenValueNotSet_ThenTryReadReturnsFalse()
         {
-            using (var key = CreateKey())
+            using (var key = RegistryKeyPath.ForCurrentTest().CreateKey())
             {
                 var accessor = CreateAccessor("test");
 
@@ -72,7 +56,7 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public virtual void TryRead_WhenValueSet_ThenTryReadReturnsTrue()
         {
-            using (var key = CreateKey())
+            using (var key = RegistryKeyPath.ForCurrentTest().CreateKey())
             {
                 var accessor = CreateAccessor("test");
                 accessor.Write(key, this.SampleData);
@@ -85,7 +69,7 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void TryRead_WhenValueHasWrongKind_ThenTryReadThrowsException()
         {
-            using (var key = CreateKey())
+            using (var key = RegistryKeyPath.ForCurrentTest().CreateKey())
             {
                 var accessor = CreateAccessor("test");
                 WriteIncompatibleValue(key, accessor.Name);
@@ -102,7 +86,7 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void Delete_WhenValueNotSet_ThenDeleteReturns()
         {
-            using (var key = CreateKey())
+            using (var key = RegistryKeyPath.ForCurrentTest().CreateKey())
             {
                 var accessor = CreateAccessor("test");
                 accessor.Delete(key);
@@ -113,7 +97,7 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void Delete_WhenValueSet_ThenDeleteDeletesValue()
         {
-            using (var key = CreateKey())
+            using (var key = RegistryKeyPath.ForCurrentTest().CreateKey())
             {
                 var accessor = CreateAccessor("test");
                 accessor.Write(key, this.SampleData);

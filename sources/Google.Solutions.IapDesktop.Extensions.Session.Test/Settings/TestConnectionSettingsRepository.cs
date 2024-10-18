@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
-using Microsoft.Win32;
+using Google.Solutions.Testing.Apis.Platform;
 using NUnit.Framework;
 using System.Collections.Generic;
 
@@ -34,15 +34,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
     [TestFixture]
     public class TestConnectionSettingsRepository
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private static readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
         private static ProjectRepository CreateProjectRepository()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            return new ProjectRepository(hkcu.CreateSubKey(TestKeyPath));
+            return new ProjectRepository(
+                RegistryKeyPath.ForCurrentTest().CreateKey());
         }
 
         //---------------------------------------------------------------------
