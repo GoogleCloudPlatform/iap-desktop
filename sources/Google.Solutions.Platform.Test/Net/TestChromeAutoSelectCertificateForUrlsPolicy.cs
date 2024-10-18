@@ -21,6 +21,7 @@
 
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Testing.Apis.Cryptography;
+using Google.Solutions.Testing.Apis.Platform;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
@@ -68,9 +69,7 @@ namespace Google.Solutions.Platform.Test.Net
         [SetUp]
         public void SetUp()
         {
-            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.key = hkcu.CreateSubKey(TestKeyPath);
+            this.key = RegistryKeys.CreateTemporary();
         }
 
         //---------------------------------------------------------------------
