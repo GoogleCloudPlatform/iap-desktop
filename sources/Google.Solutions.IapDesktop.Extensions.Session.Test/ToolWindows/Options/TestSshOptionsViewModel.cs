@@ -24,7 +24,7 @@ using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options;
 using Google.Solutions.Ssh.Cryptography;
-using Microsoft.Win32;
+using Google.Solutions.Testing.Apis.Platform;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -34,27 +34,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
     [TestFixture]
     public class TestSshOptionsViewModel
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";
-
-        private readonly RegistryKey hkcu = RegistryKey
-            .OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-
         private SshSettingsRepository CreateSettingsRepository(
             IDictionary<string, object>? policies = null)
         {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.hkcu.DeleteSubKeyTree(TestMachinePolicyKeyPath, false);
+            var settingsKey = RegistryKeyPath
+                .ForCurrentTest(RegistryKeyPath.KeyType.Settings)
+                .CreateKey();
 
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var policyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath);
+            var policyKey = RegistryKeyPath
+                .ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy)
+                .CreateKey();
+
             foreach (var policy in policies.EnsureNotNull())
             {
                 policyKey.SetValue(policy.Key, policy.Value);
             }
 
             return new SshSettingsRepository(
-                baseKey,
+                settingsKey,
                 policyKey,
                 null,
                 UserProfile.SchemaVersion.Current);
