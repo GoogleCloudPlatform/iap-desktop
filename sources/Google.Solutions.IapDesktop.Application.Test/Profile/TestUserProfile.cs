@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
+using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -30,20 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
     [TestFixture]
     public class TestUserProfile : ApplicationFixtureBase
     {
-        private const string TestProfilesKeyPath = @"Software\Google\__Test";
         private const string TestProfileName = "__Test";
-
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(TestProfilesKeyPath, false);
-            using (this.hkcu.CreateSubKey(TestProfilesKeyPath, false))
-            { }
-        }
 
         //---------------------------------------------------------------------
         // IsValidProfileName.
@@ -95,61 +83,76 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         [Test]
         public void SchemaVersion_WhenDefaultProfileDoesNotExist_ThenSchemaVersionIsCurrent()
         {
-            var install = new Install(TestProfilesKeyPath);
-
-            using (var profile = install.OpenProfile(null))
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
-                Assert.AreNotEqual(UserProfile.SchemaVersion.Initial, profile.Version);
-                Assert.AreEqual(UserProfile.SchemaVersion.Current, profile.Version);
+                var install = new Install(keyPath.Path);
+
+                using (var profile = install.OpenProfile(null))
+                {
+                    Assert.AreNotEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                    Assert.AreEqual(UserProfile.SchemaVersion.Current, profile.Version);
+                }
             }
         }
 
         [Test]
         public void SchemaVersion_WhenDefaultProfileExistsWithoutVersion_ThenSchemaVersionIsInitial()
         {
-            var install = new Install(TestProfilesKeyPath);
-
-            this.hkcu.CreateSubKey($@"{install.BaseKeyPath}\1.0");
-            using (var profile = install.OpenProfile(null))
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
-                Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                var install = new Install(keyPath.Path);
+
+                keyPath.CreateKey().CreateSubKey("1.0");
+                
+                using (var profile = install.OpenProfile(null))
+                {
+                    Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                }
             }
         }
 
         [Test]
         public void SchemaVersion_WhenNewProfileCreated_ThenSchemaVersionIsCurrent()
         {
-            var install = new Install(TestProfilesKeyPath);
-
-            using (var profile = install.CreateProfile(TestProfileName))
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
-                Assert.AreNotEqual(UserProfile.SchemaVersion.Initial, profile.Version);
-                Assert.AreEqual(UserProfile.SchemaVersion.Current, profile.Version);
+                var install = new Install(keyPath.Path);
+
+                using (var profile = install.CreateProfile(TestProfileName))
+                {
+                    Assert.AreNotEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                    Assert.AreEqual(UserProfile.SchemaVersion.Current, profile.Version);
+                }
             }
         }
 
         [Test]
         public void SchemaVersion_WhenProfileLacksVersionValue_ThenSchemaVersionIsOne()
         {
-            var install = new Install(TestProfilesKeyPath);
-
-            using (var profile = install.CreateProfile(TestProfileName))
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
-                profile.SettingsKey.DeleteValue("SchemaVersion");
-                Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                var install = new Install(keyPath.Path);
+                using (var profile = install.CreateProfile(TestProfileName))
+                {
+                    profile.SettingsKey.DeleteValue("SchemaVersion");
+                    Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                }
             }
         }
 
         [Test]
         public void SchemaVersion_WhenProfileVersionInvalid_ThenSchemaVersionIsOne()
         {
-            var install = new Install(TestProfilesKeyPath);
-
-            using (var profile = install.CreateProfile(TestProfileName))
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
-                profile.SettingsKey.DeleteValue("SchemaVersion");
-                profile.SettingsKey.SetValue("SchemaVersion", "junk");
-                Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                var install = new Install(keyPath.Path);
+
+                using (var profile = install.CreateProfile(TestProfileName))
+                {
+                    profile.SettingsKey.DeleteValue("SchemaVersion");
+                    profile.SettingsKey.SetValue("SchemaVersion", "junk");
+                    Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                }
             }
         }
     }

@@ -35,6 +35,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.Platform.Security.Cryptography;
 using Google.Solutions.Settings.Collection;
 using Google.Solutions.Testing.Apis;
+using Google.Solutions.Testing.Apis.Platform;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
@@ -62,16 +63,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
 
         private SshSettingsRepository CreateSshSettingsRepository()
         {
-            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-            hkcu.DeleteSubKeyTree(@"Software\Google\__Test", false);
-
             return new SshSettingsRepository(
-                hkcu.CreateSubKey(@"Software\Google\__Test"),
+                RegistryKeyPath.ForCurrentTest().CreateKey(),
                 null,
                 null,
                 UserProfile.SchemaVersion.Current);
         }
-
 
         private static Mock<IRdpCredentialEditorFactory> CreateRdpCredentialEditorFactoryMock()
         {
