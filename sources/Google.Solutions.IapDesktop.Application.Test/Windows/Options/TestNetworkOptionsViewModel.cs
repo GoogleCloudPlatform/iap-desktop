@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
     [TestFixture]
     public class TestNetworkOptionsViewModel : ApplicationFixtureBase
     {
-        private ApplicationSettingsRepository CreateSettingsRepository(
+        private static ApplicationSettingsRepository CreateSettingsRepository(
             RegistryKey settingsKey,
             IDictionary<string, object>? policies = null)
         {

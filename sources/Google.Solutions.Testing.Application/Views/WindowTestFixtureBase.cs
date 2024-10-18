@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Settings.Collection;
+using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -41,8 +42,6 @@ namespace Google.Solutions.Testing.Application.Views
     [Timeout(10 * 60 * 1000)]
     public class WindowTestFixtureBase : ApplicationFixtureBase
     {
-        protected const string TestKeyPath = @"Software\Google\__Test";
-
         private MockExceptionDialog? exceptionDialog;
         private ServiceRegistry? serviceRegistry;
         private IServiceProvider? serviceProvider;
@@ -85,19 +84,16 @@ namespace Google.Solutions.Testing.Application.Views
         [SetUp]
         public void SetUp()
         {
-            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            var settingsKeyPath = RegistryKeyPath.ForCurrentTest();
 
             var mainForm = new TestMainForm();
             this.eventService = new EventQueue(mainForm);
 
             var registry = new ServiceRegistry();
-            registry.AddSingleton<IProjectRepository>(new ProjectRepository(
-                hkcu.CreateSubKey(TestKeyPath)));
-            registry.AddSingleton(new ToolWindowStateRepository(
-                hkcu.CreateSubKey(TestKeyPath)));
+            registry.AddSingleton<IProjectRepository>(new ProjectRepository(settingsKeyPath.CreateKey()));
+            registry.AddSingleton(new ToolWindowStateRepository(settingsKeyPath.CreateKey()));
             registry.AddSingleton<IRepository<IApplicationSettings>>(new ApplicationSettingsRepository(
-                hkcu.CreateSubKey(TestKeyPath),
+                settingsKeyPath.CreateKey(),
                 null,
                 null,
                 UserProfile.SchemaVersion.Current));

@@ -40,6 +40,7 @@ using Google.Solutions.Settings.Collection;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Testing.Apis.Integration;
+using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
 using Microsoft.Win32;
@@ -169,12 +170,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         [SetUp]
         public void SetUpTerminalSettingsRepository()
         {
-            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
+            var settingsKeyPath = RegistryKeyPath.ForCurrentTest();
+
             this.ServiceRegistry.AddSingleton<ITerminalSettingsRepository>(
-                new TerminalSettingsRepository(hkcu.CreateSubKey(TestKeyPath)));
+                new TerminalSettingsRepository(settingsKeyPath.CreateKey()));
             this.ServiceRegistry.AddSingleton<IRepository<ISshSettings>>(
                 new SshSettingsRepository(
-                    hkcu.CreateSubKey(TestKeyPath),
+                    settingsKeyPath.CreateKey(),
                     null,
                     null,
                     UserProfile.SchemaVersion.Current));
