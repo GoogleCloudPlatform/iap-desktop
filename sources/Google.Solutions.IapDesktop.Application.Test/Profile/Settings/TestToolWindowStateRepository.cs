@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -30,49 +31,42 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
     [TestFixture]
     public class TestToolWindowStateRepository : ApplicationFixtureBase
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-        }
-
         [Test]
         public void GetSettings_WhenKeyEmpty()
         {
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var repository = new ToolWindowStateRepository(baseKey);
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var repository = new ToolWindowStateRepository(settingsPath.CreateKey());
 
-            var settings = repository.GetSetting(
-                "Sample1",
-                DockState.Unknown);
+                var settings = repository.GetSetting(
+                    "Sample1",
+                    DockState.Unknown);
 
-            Assert.AreEqual(DockState.Unknown, settings.DockState.Value);
-            Assert.AreEqual(DockState.Unknown, settings.DockState.DefaultValue);
+                Assert.AreEqual(DockState.Unknown, settings.DockState.Value);
+                Assert.AreEqual(DockState.Unknown, settings.DockState.DefaultValue);
+            }
         }
 
         [Test]
         public void GetSettings_WhenSettingsSaved()
         {
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var repository = new ToolWindowStateRepository(baseKey);
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var repository = new ToolWindowStateRepository(settingsPath.CreateKey());
 
-            var settings = repository.GetSetting(
+                var settings = repository.GetSetting(
                 "Sample1",
                 DockState.Unknown);
 
-            settings.DockState.Value = DockState.Float;
-            repository.SetSetting(settings);
+                settings.DockState.Value = DockState.Float;
+                repository.SetSetting(settings);
 
-            settings = repository.GetSetting(
-                "Sample1",
-                DockState.Unknown);
+                settings = repository.GetSetting(
+                    "Sample1",
+                    DockState.Unknown);
 
-            Assert.AreEqual(DockState.Float, settings.DockState.Value);
+                Assert.AreEqual(DockState.Float, settings.DockState.Value);
+            }
         }
     }
 }

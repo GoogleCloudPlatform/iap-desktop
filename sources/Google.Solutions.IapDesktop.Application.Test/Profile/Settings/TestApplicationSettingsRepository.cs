@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -31,29 +32,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
     [TestFixture]
     public class TestApplicationSettingsRepository : ApplicationFixtureBase
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";
-        private const string TestUserPolicyKeyPath = @"Software\Google\__TestUserPolicy";
-
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.hkcu.DeleteSubKeyTree(TestMachinePolicyKeyPath, false);
-            this.hkcu.DeleteSubKeyTree(TestUserPolicyKeyPath, false);
-        }
-
         [Test]
         public void GetSettings_WhenKeyEmpty_ThenDefaultsAreProvided()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
                     null,
                     UserProfile.SchemaVersion.Current);
@@ -71,10 +56,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void GetSettings_WhenSettingsSaved_ThenSettingsCanBeRead()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
                     null,
                     UserProfile.SchemaVersion.Current);
@@ -104,10 +89,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void ProxyUrl_WhenProxyUrlInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
                     null,
                     UserProfile.SchemaVersion.Current);
@@ -123,18 +108,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void ProxyUrl_WhenProxyUrlValidAndUserPolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey,
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Current);
 
-                settingsKey.SetValue("ProxyUrl", "http://setting");
-                userPolicyKey.SetValue("ProxyUrl", "http://userpolicy");
+                settingsPath.CreateKey().SetValue("ProxyUrl", "http://setting");
+                userPolicyPath.CreateKey().SetValue("ProxyUrl", "http://userpolicy");
 
                 var settings = repository.GetSettings();
 
@@ -145,18 +130,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void ProxyUrl_WhenProxyUrlValidAndMachinePolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey,
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Current);
 
-                settingsKey.SetValue("ProxyUrl", "http://setting");
-                machinePolicyKey.SetValue("ProxyUrl", "http://machinepolicy");
+                settingsPath.CreateKey().SetValue("ProxyUrl", "http://setting");
+                machinePolicyPath.CreateKey().SetValue("ProxyUrl", "http://machinepolicy");
 
                 var settings = repository.GetSettings();
 
@@ -167,19 +152,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void ProxyUrl_WhenProxyUrlValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey,
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Current);
 
-                settingsKey.SetValue("ProxyUrl", "http://setting");
-                userPolicyKey.SetValue("ProxyUrl", "http://userpolicy");
-                machinePolicyKey.SetValue("ProxyUrl", "http://machinepolicy");
+                settingsPath.CreateKey().SetValue("ProxyUrl", "http://setting");
+                userPolicyPath.CreateKey().SetValue("ProxyUrl", "http://userpolicy");
+                machinePolicyPath.CreateKey().SetValue("ProxyUrl", "http://machinepolicy");
 
                 var settings = repository.GetSettings();
 
@@ -194,10 +179,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void ProxyPacUrl_WhenProxyPacUrlInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
                     null,
                     UserProfile.SchemaVersion.Current);
@@ -213,18 +198,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void ProxyPacUrl_WhenProxyPacUrlValidAndUserPolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey,
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Current);
 
-                settingsKey.SetValue("ProxyPacUrl", "http://setting");
-                userPolicyKey.SetValue("ProxyPacUrl", "http://userpolicy");
+                settingsPath.CreateKey().SetValue("ProxyPacUrl", "http://setting");
+                userPolicyPath.CreateKey().SetValue("ProxyPacUrl", "http://userpolicy");
 
                 var settings = repository.GetSettings();
 
@@ -235,18 +220,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void ProxyPacUrl_WhenProxyPacUrlValidAndMachinePolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey,
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Current);
 
-                settingsKey.SetValue("ProxyPacUrl", "http://setting");
-                machinePolicyKey.SetValue("ProxyPacUrl", "http://machinepolicy");
+                settingsPath.CreateKey().SetValue("ProxyPacUrl", "http://setting");
+                machinePolicyPath.CreateKey().SetValue("ProxyPacUrl", "http://machinepolicy");
 
                 var settings = repository.GetSettings();
 
@@ -257,19 +242,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void ProxyPacUrl_WhenProxyPacUrlValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey,
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Current);
 
-                settingsKey.SetValue("ProxyPacUrl", "http://setting");
-                userPolicyKey.SetValue("ProxyPacUrl", "http://userpolicy");
-                machinePolicyKey.SetValue("ProxyPacUrl", "http://machinepolicy");
+                settingsPath.CreateKey().SetValue("ProxyPacUrl", "http://setting");
+                userPolicyPath.CreateKey().SetValue("ProxyPacUrl", "http://userpolicy");
+                machinePolicyPath.CreateKey().SetValue("ProxyPacUrl", "http://machinepolicy");
 
                 var settings = repository.GetSettings();
 
@@ -284,15 +269,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void IsUpdateCheckEnabled_WhenIsUpdateCheckEnabledValid_ThenSettingWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
                     null,
                     UserProfile.SchemaVersion.Current);
 
-                settingsKey.SetValue("IsUpdateCheckEnabled", 0);
+                settingsPath.CreateKey().SetValue("IsUpdateCheckEnabled", 0);
 
                 var settings = repository.GetSettings();
                 Assert.IsFalse(settings.IsUpdateCheckEnabled.Value);
@@ -303,18 +288,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void IsUpdateCheckEnabled_WhenIsUpdateCheckEnabledValidAndUserPolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey,
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Current);
 
-                settingsKey.SetValue("IsUpdateCheckEnabled", 1);
-                userPolicyKey.SetValue("IsUpdateCheckEnabled", 0);
+                settingsPath.CreateKey().SetValue("IsUpdateCheckEnabled", 1);
+                userPolicyPath.CreateKey().SetValue("IsUpdateCheckEnabled", 0);
 
                 var settings = repository.GetSettings();
                 Assert.IsFalse(settings.IsUpdateCheckEnabled.Value);
@@ -325,18 +310,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void IsUpdateCheckEnabled_WhenIsUpdateCheckEnabledValidAndMachinePolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey,
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Current);
 
-                settingsKey.SetValue("IsUpdateCheckEnabled", 1);
-                machinePolicyKey.SetValue("IsUpdateCheckEnabled", 0);
+                settingsPath.CreateKey().SetValue("IsUpdateCheckEnabled", 1);
+                machinePolicyPath.CreateKey().SetValue("IsUpdateCheckEnabled", 0);
 
                 var settings = repository.GetSettings();
                 Assert.IsFalse(settings.IsUpdateCheckEnabled.Value);
@@ -347,19 +332,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void IsUpdateCheckEnabled_WhenIsUpdateCheckEnabledValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey,
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Current);
 
-                settingsKey.SetValue("IsUpdateCheckEnabled", 1);
-                userPolicyKey.SetValue("IsUpdateCheckEnabled", 1);
-                machinePolicyKey.SetValue("IsUpdateCheckEnabled", 0);
+                settingsPath.CreateKey().SetValue("IsUpdateCheckEnabled", 1);
+                userPolicyPath.CreateKey().SetValue("IsUpdateCheckEnabled", 1);
+                machinePolicyPath.CreateKey().SetValue("IsUpdateCheckEnabled", 0);
 
                 var settings = repository.GetSettings();
                 Assert.IsFalse(settings.IsUpdateCheckEnabled.Value);
@@ -372,12 +357,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsPolicyPresent_WhenMachineAndUserPolicyKeysAreNull_ThenIsPolicyPresentReturnsFalse()
+        public void IsPolicyPresent_WhenMachineAnduserPolicyKeysAreNull_ThenIsPolicyPresentReturnsFalse()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
                     null,
                     UserProfile.SchemaVersion.Current);
@@ -389,12 +374,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void IsPolicyPresent_WhenMachinePolicyKeyExists_ThenIsPolicyPresentReturnsTrue()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
-                    policyKey,
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
                     null,
                     UserProfile.SchemaVersion.Current);
 
@@ -403,15 +388,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void IsPolicyPresent_WhenUserPolicyKeyExists_ThenIsPolicyPresentReturnsTrue()
+        public void IsPolicyPresent_WhenuserPolicyKeyExists_ThenIsPolicyPresentReturnsTrue()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
-                    policyKey,
+                    userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Current);
 
                 Assert.IsTrue(repository.IsPolicyPresent);
@@ -425,13 +410,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void IsTelemetryEnabled_WhenSchemaVersion240_ThenIsTelemetryEnabledDefaultsToTrue()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
-                    policyKey,
+                    userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Version240);
 
                 Assert.IsTrue(repository.GetSettings().IsTelemetryEnabled.Value);
@@ -443,13 +428,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             [Values(UserProfile.SchemaVersion.Initial, UserProfile.SchemaVersion.Version229)]
             UserProfile.SchemaVersion schemaVersion)
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new ApplicationSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
-                    policyKey,
+                    userPolicyPath.CreateKey(),
                     schemaVersion);
 
                 Assert.IsFalse(repository.GetSettings().IsTelemetryEnabled.Value);
