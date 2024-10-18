@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Ssh.Cryptography;
+using Google.Solutions.Testing.Apis.Platform;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
@@ -32,29 +33,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
     public class TestSshSettingsRepository
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";
-        private const string TestUserPolicyKeyPath = @"Software\Google\__TestUserPolicy";
-
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.hkcu.DeleteSubKeyTree(TestMachinePolicyKeyPath, false);
-            this.hkcu.DeleteSubKeyTree(TestUserPolicyKeyPath, false);
-        }
-
         [Test]
         public void WhenSettingsSaved_ThenSettingsCanBeRead()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
                 var repository = new SshSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
                     null,
                     UserProfile.SchemaVersion.Current);
@@ -79,10 +64,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void IsPropagateLocaleEnabled_WhenKeyEmpty()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
                 var repository = new SshSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
                     null,
                     UserProfile.SchemaVersion.Current);
@@ -99,10 +84,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void PublicKeyType_WhenSchemaVersionIsOld_ThenPublicKeyTypeIsRsa()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
                 var repository = new SshSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
                     null,
                     UserProfile.SchemaVersion.Initial);
@@ -116,10 +101,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void PublicKeyType_WhenSchemaVersionIsNew_ThenPublicKeyTypeIsEcdsa()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
                 var repository = new SshSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
                     null,
                     UserProfile.SchemaVersion.Version229);
@@ -133,10 +118,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void PublicKeyType_WhenPublicKeyTypeInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
                 var repository = new SshSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
                     null,
                     UserProfile.SchemaVersion.Current);
@@ -152,18 +137,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void PublicKeyType_WhenPublicKeyTypeValidAndUserPolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new SshSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey,
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Current);
 
-                settingsKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp256, RegistryValueKind.DWord);
-                userPolicyKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp384, RegistryValueKind.DWord);
+                settingsPath.CreateKey().SetValue("PublicKeyType", SshKeyType.EcdsaNistp256, RegistryValueKind.DWord);
+                userPolicyPath.CreateKey().SetValue("PublicKeyType", SshKeyType.EcdsaNistp384, RegistryValueKind.DWord);
 
                 var settings = repository.GetSettings();
 
@@ -174,18 +159,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void PublicKeyType_WhenPublicKeyTypeValidAndMachinePolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new SshSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey,
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Current);
 
-                settingsKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp256, RegistryValueKind.DWord);
-                machinePolicyKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp521, RegistryValueKind.DWord);
+                settingsPath.CreateKey().SetValue("PublicKeyType", SshKeyType.EcdsaNistp256, RegistryValueKind.DWord);
+                machinePolicyPath.CreateKey().SetValue("PublicKeyType", SshKeyType.EcdsaNistp521, RegistryValueKind.DWord);
 
                 var settings = repository.GetSettings();
 
@@ -196,19 +181,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void PublicKeyType_WhenPublicKeyTypeValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new SshSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey,
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Current);
 
-                settingsKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp256, RegistryValueKind.DWord);
-                userPolicyKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp384, RegistryValueKind.DWord);
-                machinePolicyKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp521, RegistryValueKind.DWord);
+                settingsPath.CreateKey().SetValue("PublicKeyType", SshKeyType.EcdsaNistp256, RegistryValueKind.DWord);
+                userPolicyPath.CreateKey().SetValue("PublicKeyType", SshKeyType.EcdsaNistp384, RegistryValueKind.DWord);
+                machinePolicyPath.CreateKey().SetValue("PublicKeyType", SshKeyType.EcdsaNistp521, RegistryValueKind.DWord);
 
                 var settings = repository.GetSettings();
 
@@ -223,10 +208,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void PublicKeyValidity_WhenKeyEmpty_ThenPublicKeyValidityIs30days()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
                 var repository = new SshSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
                     null,
                     UserProfile.SchemaVersion.Current);
@@ -239,10 +224,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void PublicKeyValidity_WhenPublicKeyValidityInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
                 var repository = new SshSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
                     null,
                     UserProfile.SchemaVersion.Current);
@@ -258,18 +243,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void PublicKeyValidity_WhenPublicKeyValidityValidAndUserPolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new SshSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey,
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Current);
 
-                settingsKey.SetValue("PublicKeyValidity", 60);
-                userPolicyKey.SetValue("PublicKeyValidity", 2 * 60);
+                settingsPath.CreateKey().SetValue("PublicKeyValidity", 60);
+                userPolicyPath.CreateKey().SetValue("PublicKeyValidity", 2 * 60);
 
                 var settings = repository.GetSettings();
 
@@ -280,18 +265,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void PublicKeyValidity_WhenPublicKeyValidityValidAndMachinePolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new SshSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey,
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Current);
 
-                settingsKey.SetValue("PublicKeyValidity", 60);
-                machinePolicyKey.SetValue("PublicKeyValidity", 3 * 60);
+                settingsPath.CreateKey().SetValue("PublicKeyValidity", 60);
+                machinePolicyPath.CreateKey().SetValue("PublicKeyValidity", 3 * 60);
 
                 var settings = repository.GetSettings();
 
@@ -302,19 +287,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void PublicKeyValidity_WhenPublicKeyValidityValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new SshSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey,
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Current);
 
-                settingsKey.SetValue("PublicKeyValidity", 60);
-                userPolicyKey.SetValue("PublicKeyValidity", 2 * 60);
-                machinePolicyKey.SetValue("PublicKeyValidity", 3 * 60);
+                settingsPath.CreateKey().SetValue("PublicKeyValidity", 60);
+                userPolicyPath.CreateKey().SetValue("PublicKeyValidity", 2 * 60);
+                machinePolicyPath.CreateKey().SetValue("PublicKeyValidity", 3 * 60);
 
                 var settings = repository.GetSettings();
 
@@ -329,10 +314,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void UsePersistentKey_WhenKeyEmpty()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
                 var repository = new SshSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
                     null,
                     UserProfile.SchemaVersion.Current);
