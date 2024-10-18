@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.Settings;
+using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using Moq;
@@ -38,24 +39,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
     [TestFixture]
     public class TestNetworkOptionsViewModel : ApplicationFixtureBase
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-
-        private RegistryKey CreateSettingsKey()
-        {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-
-            this.hkcu.DeleteSubKeyTree(TestMachinePolicyKeyPath, false);
-            return this.hkcu.CreateSubKey(TestKeyPath);
-        }
-
-        private ApplicationSettingsRepository CreateSettingsRepository(
+        private static ApplicationSettingsRepository CreateSettingsRepository(
             RegistryKey settingsKey,
             IDictionary<string, object>? policies = null)
         {
+            var policyKey = RegistryKeyPath
+                .ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy)
+                .CreateKey();
 
-            var policyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath);
             foreach (var policy in policies.EnsureNotNull())
             {
                 policyKey.SetValue(policy.Key, policy.Value);
@@ -75,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void Proxy_WhenNoProxyConfigured()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var viewModel = new NetworkOptionsViewModel(
@@ -104,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void Proxy_WhenCustomProxyConfigured()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var settings = settingsRepository.GetSettings();
@@ -132,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void Proxy_WhenCustomProxyConfiguredButInvalid()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 // Store an invalid URL.
                 settingsKey.SetValue("ProxyUrl", "123", RegistryValueKind.String);
@@ -159,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void Proxy_WhenCustomProxyConfiguredByPolicy()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(
                     settingsKey,
@@ -189,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void Proxy_WhenEnablingCustomProxy_ThenProxyHostAndPortSetToDefaults()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var viewModel = new NetworkOptionsViewModel(
@@ -215,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void Proxy_WhenDisablingCustomProxy_ThenProxyHostAndPortAreCleared()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var viewModel = new NetworkOptionsViewModel(
@@ -248,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void ProxyAutoConfiguration_WhenProxyAutoconfigConfigured()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var settings = settingsRepository.GetSettings();
@@ -276,7 +267,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void ProxyAutoConfiguration_WhenProxyAutoconfigConfiguredButInvalid()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 // Store an invalid URL.
                 settingsKey.SetValue("ProxyPacUrl", "123", RegistryValueKind.String);
@@ -303,7 +294,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void ProxyAutoConfiguration_WhenProxyAutoconfigConfiguredByPolicy()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(
                     settingsKey,
@@ -333,7 +324,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void ProxyAutoConfiguration_WhenEnablingProxyAutoconfig_ThenProxyHostAndPortSetToDefaults()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var viewModel = new NetworkOptionsViewModel(
@@ -359,7 +350,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void ProxyAutoConfiguration_WhenDisablingProxyAutoconfig_ThenProxyHostAndPortAreCleared()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var viewModel = new NetworkOptionsViewModel(
@@ -391,7 +382,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void ProxyAuthentication_WhenProxyAuthConfigured()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var settings = settingsRepository.GetSettings();
@@ -418,7 +409,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void ProxyAuthentication_WhenEnablingProxyAuth_ThenProxyUsernameSetToDefault()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var viewModel = new NetworkOptionsViewModel(
@@ -438,7 +429,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void ProxyAuthentication_WhenDisablingProxyAuth_ThenProxyUsernameAndPasswordAreCleared()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var viewModel = new NetworkOptionsViewModel(
@@ -465,7 +456,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void ApplyChanges_WhenProxyServerInvalid_ThenApplyChangesThrowsArgumentException()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var viewModel = new NetworkOptionsViewModel(
@@ -484,7 +475,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void ApplyChanges_WhenProxyPortIsZero_ThenApplyChangesThrowsArgumentException()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var viewModel = new NetworkOptionsViewModel(
@@ -503,7 +494,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void ApplyChanges_WhenProxyPortIsOutOfBounds_ThenApplyChangesThrowsArgumentException()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var viewModel = new NetworkOptionsViewModel(
@@ -522,7 +513,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void ApplyChanges_WhenProxyAutoconfigUrlInvalid_ThenApplyChangesThrowsArgumentException()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var viewModel = new NetworkOptionsViewModel(
@@ -540,7 +531,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public void ApplyChanges_WhenProxyAuthIncomplete_ThenApplyChangesThrowsArgumentException()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var viewModel = new NetworkOptionsViewModel(
@@ -560,7 +551,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public async Task ApplyChanges_WhenEnablingCustomProxy_ThenProxyAdapterIsUpdated()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var proxyAdapter = new Mock<IHttpProxyAdapter>();
@@ -581,7 +572,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public async Task ApplyChanges_WhenEnablingOrDisablingCustomProxy_ThenSettingsAreSaved()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var viewModel = new NetworkOptionsViewModel(
@@ -627,7 +618,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public async Task ApplyChanges_WhenEnablingOrDisablingProxyAutoconfig_ThenSettingsAreSaved()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var viewModel = new NetworkOptionsViewModel(
@@ -670,7 +661,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         [Test]
         public async Task ApplyChanges_ClearsDirtyFlag()
         {
-            using (var settingsKey = CreateSettingsKey())
+            using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
                 var settingsRepository = CreateSettingsRepository(settingsKey);
                 var viewModel = new NetworkOptionsViewModel(

@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Settings.Collection;
+using Google.Solutions.Testing.Apis.Platform;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -30,37 +31,6 @@ namespace Google.Solutions.Settings.Test.Collection
     [TestFixture]
     public class TestGroupPolicyAwareRepository
     {
-        private const string KeyPath = @"Software\Google\__Test";
-        private const string UserPolicyKeyPath = @"Software\Google\__TestUserPolicy";
-        private const string MachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";
-
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(KeyPath, false);
-            this.hkcu.DeleteSubKeyTree(UserPolicyKeyPath, false);
-            this.hkcu.DeleteSubKeyTree(MachinePolicyKeyPath, false);
-        }
-
-        protected RegistryKey CreateKey()
-        {
-            return this.hkcu.CreateSubKey(KeyPath);
-        }
-
-        protected RegistryKey CreateUserPolicyKey()
-        {
-            return this.hkcu.CreateSubKey(UserPolicyKeyPath);
-        }
-
-        protected RegistryKey CreateMachinePolicyKey()
-        {
-            return this.hkcu.CreateSubKey(MachinePolicyKeyPath);
-        }
-
         private class EmptyCollection : ISettingsCollection
         {
             public IEnumerable<ISetting> Settings => Enumerable.Empty<ISetting>();
@@ -91,45 +61,61 @@ namespace Google.Solutions.Settings.Test.Collection
         [Test]
         public void IsPolicyPresent_MachinePolicyNull_UserPolicyNull()
         {
-            var repository = new SampleRepository(
-                CreateKey(),
-                null,
-                null);
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            {
+                var repository = new SampleRepository(
+                    settingsPath.CreateKey(),
+                    null,
+                    null);
 
-            Assert.IsFalse(repository.IsPolicyPresent);
+                Assert.IsFalse(repository.IsPolicyPresent);
+            }
         }
 
         [Test]
         public void IsPolicyPresent_MachinePolicyExists_UserPolicyNull()
         {
-            var repository = new SampleRepository(
-                CreateKey(),
-                CreateMachinePolicyKey(),
-                null);
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            {
+                var repository = new SampleRepository(
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    null);
 
-            Assert.IsTrue(repository.IsPolicyPresent);
+                Assert.IsTrue(repository.IsPolicyPresent);
+            }
         }
 
         [Test]
         public void IsPolicyPresent_MachinePolicyNull_UserPolicyExists()
         {
-            var repository = new SampleRepository(
-                CreateKey(),
-                null,
-                CreateUserPolicyKey());
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
+            {
+                var repository = new SampleRepository(
+                    settingsPath.CreateKey(),
+                    null,
+                    userPolicyPath.CreateKey());
 
-            Assert.IsTrue(repository.IsPolicyPresent);
+                Assert.IsTrue(repository.IsPolicyPresent);
+            }
         }
 
         [Test]
         public void IsPolicyPresent_MachinePolicyExists_UserPolicyExists()
         {
-            var repository = new SampleRepository(
-                CreateKey(),
-                CreateMachinePolicyKey(),
-                CreateUserPolicyKey());
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
+            {
+                var repository = new SampleRepository(
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey());
 
-            Assert.IsTrue(repository.IsPolicyPresent);
+                Assert.IsTrue(repository.IsPolicyPresent);
+            }
         }
     }
 }

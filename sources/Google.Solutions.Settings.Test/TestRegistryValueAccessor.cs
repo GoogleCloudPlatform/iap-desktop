@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Security;
+using Google.Solutions.Testing.Apis.Platform;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Security;
@@ -86,7 +87,7 @@ namespace Google.Solutions.Settings.Test
             [Test]
             public override void TryRead_WhenValueSet_ThenTryReadReturnsTrue()
             {
-                using (var key = CreateKey())
+                using (var key = RegistryKeyPath.ForCurrentTest().CreateKey())
                 {
                     var accessor = CreateAccessor("test");
                     accessor.Write(key, this.SampleData);

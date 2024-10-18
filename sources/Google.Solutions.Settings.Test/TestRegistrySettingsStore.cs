@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Testing.Apis.Platform;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
@@ -28,23 +29,6 @@ namespace Google.Solutions.Settings.Test
     [TestFixture]
     public class TestRegistrySettingsStore
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-        }
-
-        protected RegistryKey CreateKey()
-        {
-            return this.hkcu.CreateSubKey(TestKeyPath);
-        }
-
         //---------------------------------------------------------------------
         // Read.
         //---------------------------------------------------------------------
@@ -52,7 +36,8 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void Read_WhenTypeUnsupported_ThenReadThrowsException()
         {
-            using (var key = new RegistrySettingsStore(CreateKey()))
+            using (var key = new RegistrySettingsStore(
+                RegistryKeyPath.ForCurrentTest().CreateKey()))
             {
                 Assert.Throws<ArgumentException>(
                     () => key.Read<uint>("test", "test", null, null, 0));
@@ -66,7 +51,8 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void IsSpecified_WhenValueExists_ThenIsSpecifiedIsTrue()
         {
-            using (var key = new RegistrySettingsStore(CreateKey()))
+            using (var key = new RegistrySettingsStore(
+                RegistryKeyPath.ForCurrentTest().CreateKey()))
             {
                 //
                 // Read non-existing value.
@@ -92,7 +78,8 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void IsDefault_WhenValueExists_ThenValueIsNotDefault()
         {
-            using (var key = new RegistrySettingsStore(CreateKey()))
+            using (var key = new RegistrySettingsStore(
+                RegistryKeyPath.ForCurrentTest().CreateKey()))
             {
                 //
                 // Read non-existing value.
@@ -121,7 +108,8 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void SetValue_WhenCustomValidationFails_ThenSetValueThrowsException()
         {
-            using (var key = new RegistrySettingsStore(CreateKey()))
+            using (var key = new RegistrySettingsStore(
+                RegistryKeyPath.ForCurrentTest().CreateKey()))
             {
                 //
                 // Read non-existing value.
@@ -153,7 +141,8 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void Write_WhenValueIsDefault_ThenWriteDeletesValue()
         {
-            using (var key = new RegistrySettingsStore(CreateKey()))
+            using (var key = new RegistrySettingsStore(
+                RegistryKeyPath.ForCurrentTest().CreateKey()))
             {
                 var setting = key.Read("test", "test", null, null, 0);
 
@@ -187,7 +176,7 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void Clear_RemovesAllRegistryValues()
         {
-            using (var key = CreateKey())
+            using (var key = RegistryKeyPath.ForCurrentTest().CreateKey())
             {
                 key.SetValue("foo", 1);
                 key.SetValue("bar", 1);

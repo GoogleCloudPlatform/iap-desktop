@@ -20,9 +20,11 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
+using Google.Solutions.Testing.Apis.Platform;
 using Microsoft.Win32;
 using NUnit.Framework;
 
@@ -31,19 +33,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
     [TestFixture]
     public class TestProjectExplorerSettings
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-
         private static ApplicationSettingsRepository CreateSettingsRepository()
         {
-            using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
-            {
-                hkcu.DeleteSubKeyTree(TestKeyPath, false);
-                return new ApplicationSettingsRepository(
-                    hkcu.CreateSubKey(TestKeyPath),
-                    null,
-                    null,
-                    UserProfile.SchemaVersion.Current);
-            }
+            return new ApplicationSettingsRepository(
+                RegistryKeyPath.ForCurrentTest().CreateKey(),
+                null,
+                null,
+                UserProfile.SchemaVersion.Current);
         }
 
         //---------------------------------------------------------------------

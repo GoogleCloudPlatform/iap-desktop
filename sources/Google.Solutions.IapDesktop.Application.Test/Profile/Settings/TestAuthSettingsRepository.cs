@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Settings;
+using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -32,41 +33,35 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
     [TestFixture]
     public class TestAuthSettingsRepository : ApplicationFixtureBase
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-        }
-
         [Test]
         public void GetSettings_WhenBaseKeyIsEmpty_SettingsAreEmpty()
         {
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var repository = new AuthSettingsRepository(baseKey);
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var repository = new AuthSettingsRepository(settingsPath.CreateKey());
+                var settings = repository.GetSettings();
 
-            var settings = repository.GetSettings();
-
-            Assert.IsNull(settings.Credentials.Value);
+                Assert.IsNull(settings.Credentials.Value);
+            }
         }
 
         [Test]
         public void GetSettings_WhenSettingsSaved_GetSettingsReturnsData()
         {
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var repository = new AuthSettingsRepository(baseKey);
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var repository = new AuthSettingsRepository(settingsPath.CreateKey());
 
-            var originalSettings = repository.GetSettings();
-            originalSettings.Credentials.Value = SecureStringExtensions.FromClearText("secure");
-            repository.SetSettings(originalSettings);
+                var originalSettings = repository.GetSettings();
+                originalSettings.Credentials.Value = SecureStringExtensions.FromClearText("secure");
+                repository.SetSettings(originalSettings);
 
-            var settings = repository.GetSettings();
+                var settings = repository.GetSettings();
 
-            Assert.AreEqual(
-                "secure",
-                settings.Credentials.GetClearTextValue());
+                Assert.AreEqual(
+                    "secure",
+                    settings.Credentials.GetClearTextValue());
+            }
         }
 
         //---------------------------------------------------------------------
@@ -77,16 +72,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         public void TryRead_WhenBlobNullOrEmpty_ThenTryReadReturnsFalse(
             [Values(null, "", "{")] string value)
         {
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var repository = new AuthSettingsRepository(baseKey);
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var repository = new AuthSettingsRepository(settingsPath.CreateKey());
 
-            // Store value.
-            var originalSettings = repository.GetSettings();
-            originalSettings.Credentials.Value = SecureStringExtensions.FromClearText(value);
-            repository.SetSettings(originalSettings);
+                // Store value.
+                var originalSettings = repository.GetSettings();
+                originalSettings.Credentials.Value = SecureStringExtensions.FromClearText(value);
+                repository.SetSettings(originalSettings);
 
-            // Read.
-            Assert.IsFalse(repository.TryRead(out var _));
+                // Read.
+                Assert.IsFalse(repository.TryRead(out var _));
+            }
         }
 
         [Test]
@@ -102,23 +99,26 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 'Issued':'2023-07-29T09:15:08.643+10:00',
                 'IssuedUtc':'2023-07-28T23:15:08.643Z'
                 }";
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var repository = new AuthSettingsRepository(baseKey);
 
-            // Store value.
-            var originalSettings = repository.GetSettings();
-            originalSettings.Credentials.Value = SecureStringExtensions.FromClearText(value);
-            repository.SetSettings(originalSettings);
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var repository = new AuthSettingsRepository(settingsPath.CreateKey());
 
-            // Read.
-            Assert.IsTrue(repository.TryRead(out var offlineCredential));
+                // Store value.
+                var originalSettings = repository.GetSettings();
+                originalSettings.Credentials.Value = SecureStringExtensions.FromClearText(value);
+                repository.SetSettings(originalSettings);
 
-            Assert.IsNotNull(offlineCredential);
-            Assert.AreEqual("rt", offlineCredential!.RefreshToken);
-            Assert.AreEqual("idt", offlineCredential.IdToken);
-            Assert.AreEqual(
-                "https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/userinfo.email openid",
-                offlineCredential.Scope);
+                // Read.
+                Assert.IsTrue(repository.TryRead(out var offlineCredential));
+
+                Assert.IsNotNull(offlineCredential);
+                Assert.AreEqual("rt", offlineCredential!.RefreshToken);
+                Assert.AreEqual("idt", offlineCredential.IdToken);
+                Assert.AreEqual(
+                    "https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/userinfo.email openid",
+                    offlineCredential.Scope);
+            }
         }
 
         [Test]
@@ -128,22 +128,25 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 'refresh_token':'rt',
                 'scope': 'openid'
                 }";
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var repository = new AuthSettingsRepository(baseKey);
 
-            // Store value.
-            var originalSettings = repository.GetSettings();
-            originalSettings.Credentials.Value = SecureStringExtensions.FromClearText(value);
-            repository.SetSettings(originalSettings);
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var repository = new AuthSettingsRepository(settingsPath.CreateKey());
 
-            // Read.
-            Assert.IsTrue(repository.TryRead(out var offlineCredential));
+                // Store value.
+                var originalSettings = repository.GetSettings();
+                originalSettings.Credentials.Value = SecureStringExtensions.FromClearText(value);
+                repository.SetSettings(originalSettings);
 
-            Assert.IsNotNull(offlineCredential);
-            Assert.AreEqual(OidcIssuer.Gaia, offlineCredential!.Issuer);
-            Assert.AreEqual("rt", offlineCredential.RefreshToken);
-            Assert.IsNull(offlineCredential.IdToken);
-            Assert.AreEqual("openid", offlineCredential.Scope);
+                // Read.
+                Assert.IsTrue(repository.TryRead(out var offlineCredential));
+
+                Assert.IsNotNull(offlineCredential);
+                Assert.AreEqual(OidcIssuer.Gaia, offlineCredential!.Issuer);
+                Assert.AreEqual("rt", offlineCredential.RefreshToken);
+                Assert.IsNull(offlineCredential.IdToken);
+                Assert.AreEqual("openid", offlineCredential.Scope);
+            }
         }
 
         [Test]
@@ -154,22 +157,25 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 'issuer': 'sts',
                 'scope': 'openid'
                 }";
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var repository = new AuthSettingsRepository(baseKey);
 
-            // Store value.
-            var originalSettings = repository.GetSettings();
-            originalSettings.Credentials.Value = SecureStringExtensions.FromClearText(value);
-            repository.SetSettings(originalSettings);
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var repository = new AuthSettingsRepository(settingsPath.CreateKey());
 
-            // Read.
-            Assert.IsTrue(repository.TryRead(out var offlineCredential));
+                // Store value.
+                var originalSettings = repository.GetSettings();
+                originalSettings.Credentials.Value = SecureStringExtensions.FromClearText(value);
+                repository.SetSettings(originalSettings);
 
-            Assert.IsNotNull(offlineCredential);
-            Assert.AreEqual(OidcIssuer.Sts, offlineCredential!.Issuer);
-            Assert.AreEqual("rt", offlineCredential.RefreshToken);
-            Assert.IsNull(offlineCredential.IdToken);
-            Assert.AreEqual("openid", offlineCredential.Scope);
+                // Read.
+                Assert.IsTrue(repository.TryRead(out var offlineCredential));
+
+                Assert.IsNotNull(offlineCredential);
+                Assert.AreEqual(OidcIssuer.Sts, offlineCredential!.Issuer);
+                Assert.AreEqual("rt", offlineCredential.RefreshToken);
+                Assert.IsNull(offlineCredential.IdToken);
+                Assert.AreEqual("openid", offlineCredential.Scope);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -179,47 +185,51 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void Write_GaiaOfflineCredential()
         {
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var repository = new AuthSettingsRepository(baseKey);
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var repository = new AuthSettingsRepository(settingsPath.CreateKey());
 
-            // Write.
-            repository.Write(new OidcOfflineCredential(
-                OidcIssuer.Gaia,
-                "openid",
-                "rt",
-                "idt"));
+                // Write.
+                repository.Write(new OidcOfflineCredential(
+                    OidcIssuer.Gaia,
+                    "openid",
+                    "rt",
+                    "idt"));
 
-            // Read again.
-            Assert.IsTrue(repository.TryRead(out var offlineCredential));
+                // Read again.
+                Assert.IsTrue(repository.TryRead(out var offlineCredential));
 
-            Assert.IsNotNull(offlineCredential);
-            Assert.AreEqual(OidcIssuer.Gaia, offlineCredential!.Issuer);
-            Assert.AreEqual("rt", offlineCredential.RefreshToken);
-            Assert.AreEqual("idt", offlineCredential.IdToken);
-            Assert.AreEqual("openid", offlineCredential.Scope);
+                Assert.IsNotNull(offlineCredential);
+                Assert.AreEqual(OidcIssuer.Gaia, offlineCredential!.Issuer);
+                Assert.AreEqual("rt", offlineCredential.RefreshToken);
+                Assert.AreEqual("idt", offlineCredential.IdToken);
+                Assert.AreEqual("openid", offlineCredential.Scope);
+            }
         }
 
         [Test]
         public void Write_StsOfflineCredential()
         {
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var repository = new AuthSettingsRepository(baseKey);
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var repository = new AuthSettingsRepository(settingsPath.CreateKey());
 
-            // Write.
-            repository.Write(new OidcOfflineCredential(
-                OidcIssuer.Sts,
-                "openid",
-                "rt",
-                null));
+                // Write.
+                repository.Write(new OidcOfflineCredential(
+                    OidcIssuer.Sts,
+                    "openid",
+                    "rt",
+                    null));
 
-            // Read again.
-            Assert.IsTrue(repository.TryRead(out var offlineCredential));
+                // Read again.
+                Assert.IsTrue(repository.TryRead(out var offlineCredential));
 
-            Assert.IsNotNull(offlineCredential);
-            Assert.AreEqual(OidcIssuer.Sts, offlineCredential!.Issuer);
-            Assert.AreEqual("rt", offlineCredential.RefreshToken);
-            Assert.IsNull(offlineCredential.IdToken);
-            Assert.AreEqual("openid", offlineCredential.Scope);
+                Assert.IsNotNull(offlineCredential);
+                Assert.AreEqual(OidcIssuer.Sts, offlineCredential!.Issuer);
+                Assert.AreEqual("rt", offlineCredential.RefreshToken);
+                Assert.IsNull(offlineCredential.IdToken);
+                Assert.AreEqual("openid", offlineCredential.Scope);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -229,16 +239,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void Clear()
         {
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var repository = new AuthSettingsRepository(baseKey);
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var repository = new AuthSettingsRepository(settingsPath.CreateKey());
 
-            // Write & clear.
-            repository.Write(new OidcOfflineCredential(
-                OidcIssuer.Gaia, "openid", "rt", "idt"));
-            repository.Clear();
+                // Write & clear.
+                repository.Write(new OidcOfflineCredential(
+                    OidcIssuer.Gaia, "openid", "rt", "idt"));
+                    repository.Clear();
 
-            // Read again.
-            Assert.IsFalse(repository.TryRead(out var _));
+                // Read again.
+                Assert.IsFalse(repository.TryRead(out var _));
+            }
         }
     }
 }

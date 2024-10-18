@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Testing.Apis.Platform;
 using Microsoft.Win32;
 using NUnit.Framework;
 
@@ -26,28 +27,16 @@ namespace Google.Solutions.Settings.Test
 {
     public abstract class RegistrySettingsStoreBase
     {
-        private const string KeyPath = @"Software\Google\__Test";
-        private const string PolicyKeyPath = @"Software\Google\__TestPolicy";
-
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
+        protected RegistrySettingsStore CreateSettingsStore()
         {
-            this.hkcu.DeleteSubKeyTree(KeyPath, false);
-            this.hkcu.DeleteSubKeyTree(PolicyKeyPath, false);
+            return new RegistrySettingsStore(
+                RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey());
         }
 
-        protected RegistrySettingsStore CreateSettingsKey()
+        protected RegistrySettingsStore CreatePolicyStore()
         {
-            return new RegistrySettingsStore(this.hkcu.CreateSubKey(KeyPath));
-        }
-
-        protected RegistrySettingsStore CreatePolicySettingsKey()
-        {
-            return new RegistrySettingsStore(this.hkcu.CreateSubKey(PolicyKeyPath));
+            return new RegistrySettingsStore(
+                RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy).CreateKey());
         }
     }
 }

@@ -21,7 +21,7 @@
 
 
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
-using Microsoft.Win32;
+using Google.Solutions.Testing.Apis.Platform;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
@@ -29,27 +29,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
     [TestFixture]
     public class TestThemeSettingsRepository
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-        }
-
         [Test]
         public void GetSettings_WhenKeyEmpty_ThenDefaultsAreProvided()
         {
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var repository = new ThemeSettingsRepository(baseKey);
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var repository = new ThemeSettingsRepository(settingsPath.CreateKey());
 
-            var settings = repository.GetSettings();
+                var settings = repository.GetSettings();
 
-            Assert.AreEqual(ApplicationTheme._Default, settings.Theme.Value);
-            Assert.AreEqual(ScalingMode.SystemDpiAware, settings.ScalingMode.Value);
+                Assert.AreEqual(ApplicationTheme._Default, settings.Theme.Value);
+                Assert.AreEqual(ScalingMode.SystemDpiAware, settings.ScalingMode.Value);
+            }
         }
     }
 }

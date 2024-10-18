@@ -22,6 +22,7 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Testing.Apis;
+using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -34,19 +35,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
     [TestFixture]
     public class TestProjectRepository : ApplicationFixtureBase
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser, RegistryView.Default);
-
         private static readonly ProjectLocator SampleProject
             = new ProjectLocator("test-123");
 
         private ProjectRepository CreateProjectRepository()
         {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            return new ProjectRepository(baseKey);
+            return new ProjectRepository(RegistryKeyPath.ForCurrentTest().CreateKey());
         }
 
         //---------------------------------------------------------------------
