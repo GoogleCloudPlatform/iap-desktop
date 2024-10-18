@@ -43,12 +43,11 @@ namespace Google.Solutions.Testing.Apis.Platform
         /// Create a temporary registry key based on the
         /// name of the currently executing test.
         /// </summary>
-        public static RegistryKeyPath ForCurrentTest()
+        public static RegistryKeyPath ForCurrentTest(KeyType keyType = KeyType.UserPolicy)
         {
             var currentTest = TestContext.CurrentContext.Test;
             var path = new RegistryKeyPath(
-                @"Software\Google\__Test\" +
-                $"{currentTest.ClassName}.{currentTest.Name}");
+                @$"Software\Google\__Test\{keyType}\{currentTest.ClassName}.{currentTest.Name}");
             path.Delete();
             return path;
         }
@@ -66,6 +65,13 @@ namespace Google.Solutions.Testing.Apis.Platform
         public void Dispose()
         {
             Delete();
+        }
+
+        public enum KeyType
+        {
+            Settings,
+            UserPolicy,
+            MachinePolicy
         }
     }
 }

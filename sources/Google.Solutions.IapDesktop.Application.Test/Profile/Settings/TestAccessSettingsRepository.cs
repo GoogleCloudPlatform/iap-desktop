@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
+using Google.Solutions.Testing.Apis.Platform;
 using Microsoft.Win32;
 using NUnit.Framework;
 
@@ -29,28 +30,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
     [TestFixture]
     public class TestAccessSettingsRepository
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";
-        private const string TestUserPolicyKeyPath = @"Software\Google\__TestUserPolicy";
-
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.hkcu.DeleteSubKeyTree(TestMachinePolicyKeyPath, false);
-            this.hkcu.DeleteSubKeyTree(TestUserPolicyKeyPath, false);
-        }
-
         [Test]
         public void GetSettings_WhenKeyEmpty_ThenDefaultsAreProvided()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
-                var repository = new AccessSettingsRepository(settingsKey, null, null);
+                var repository = new AccessSettingsRepository(
+                    settingsPath.CreateKey(),
+                    null,
+                    null);
 
                 var settings = repository.GetSettings();
 
@@ -66,9 +54,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void GetSettings_WhenSettingsSaved_ThenSettingsCanBeRead()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
-                var repository = new AccessSettingsRepository(settingsKey, null, null);
+                var repository = new AccessSettingsRepository(
+                    settingsPath.CreateKey(),
+                    null,
+                    null);
 
                 var settings = repository.GetSettings();
                 settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
@@ -91,14 +82,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void PrivateServiceConnectEndpoint_WhenPrivateServiceConnectEndpointValid_ThenSettingWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
                 var repository = new AccessSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
                     null);
 
-                settingsKey.SetValue("PrivateServiceConnectEndpoint", "psc");
+                settingsPath.CreateKey().SetValue("PrivateServiceConnectEndpoint", "psc");
 
                 var settings = repository.GetSettings();
                 Assert.AreEqual("psc", settings.PrivateServiceConnectEndpoint.Value);
@@ -109,17 +100,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void PrivateServiceConnectEndpoint_WhenPrivateServiceConnectEndpointValidAndUserPolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new AccessSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey);
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey());
 
-                settingsKey.SetValue("PrivateServiceConnectEndpoint", "psc");
-                userPolicyKey.SetValue("PrivateServiceConnectEndpoint", "psc-user");
+                settingsPath.CreateKey().SetValue("PrivateServiceConnectEndpoint", "psc");
+                userPolicyPath.CreateKey().SetValue("PrivateServiceConnectEndpoint", "psc-user");
 
                 var settings = repository.GetSettings();
                 Assert.AreEqual("psc-user", settings.PrivateServiceConnectEndpoint.Value);
@@ -130,17 +121,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void PrivateServiceConnectEndpoint_WhenPrivateServiceConnectEndpointValidAndMachinePolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new AccessSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey);
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey());
 
-                settingsKey.SetValue("PrivateServiceConnectEndpoint", "psc");
-                machinePolicyKey.SetValue("PrivateServiceConnectEndpoint", "psc-machine");
+                settingsPath.CreateKey().SetValue("PrivateServiceConnectEndpoint", "psc");
+                machinePolicyPath.CreateKey().SetValue("PrivateServiceConnectEndpoint", "psc-machine");
 
                 var settings = repository.GetSettings();
                 Assert.AreEqual("psc-machine", settings.PrivateServiceConnectEndpoint.Value);
@@ -151,18 +142,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void PrivateServiceConnectEndpoint_WhenPrivateServiceConnectEndpointValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new AccessSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey);
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey());
 
-                settingsKey.SetValue("PrivateServiceConnectEndpoint", "psc");
-                userPolicyKey.SetValue("PrivateServiceConnectEndpoint", "psc-user");
-                machinePolicyKey.SetValue("PrivateServiceConnectEndpoint", "psc-machine");
+                settingsPath.CreateKey().SetValue("PrivateServiceConnectEndpoint", "psc");
+                userPolicyPath.CreateKey().SetValue("PrivateServiceConnectEndpoint", "psc-user");
+                machinePolicyPath.CreateKey().SetValue("PrivateServiceConnectEndpoint", "psc-machine");
 
                 var settings = repository.GetSettings();
                 Assert.AreEqual("psc-machine", settings.PrivateServiceConnectEndpoint.Value);
@@ -177,14 +168,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void IsDeviceCertificateAuthenticationEnabled_WhenIsDeviceCertificateAuthenticationEnabledValid_ThenSettingWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
                 var repository = new AccessSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
                     null);
 
-                settingsKey.SetValue("IsDeviceCertificateAuthenticationEnabled", 1);
+                settingsPath.CreateKey().SetValue("IsDeviceCertificateAuthenticationEnabled", 1);
 
                 var settings = repository.GetSettings();
                 Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.Value);
@@ -195,17 +186,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void IsDeviceCertificateAuthenticationEnabled_WhenIsDeviceCertificateAuthenticationEnabledValidAndUserPolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new AccessSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey);
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey());
 
-                settingsKey.SetValue("IsDeviceCertificateAuthenticationEnabled", 0);
-                userPolicyKey.SetValue("IsDeviceCertificateAuthenticationEnabled", 1);
+                settingsPath.CreateKey().SetValue("IsDeviceCertificateAuthenticationEnabled", 0);
+                userPolicyPath.CreateKey().SetValue("IsDeviceCertificateAuthenticationEnabled", 1);
 
                 var settings = repository.GetSettings();
                 Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.Value);
@@ -216,17 +207,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void IsDeviceCertificateAuthenticationEnabled_WhenIsDeviceCertificateAuthenticationEnabledValidAndMachinePolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new AccessSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey);
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey());
 
-                settingsKey.SetValue("IsDeviceCertificateAuthenticationEnabled", 0);
-                machinePolicyKey.SetValue("IsDeviceCertificateAuthenticationEnabled", 1);
+                settingsPath.CreateKey().SetValue("IsDeviceCertificateAuthenticationEnabled", 0);
+                machinePolicyPath.CreateKey().SetValue("IsDeviceCertificateAuthenticationEnabled", 1);
 
                 var settings = repository.GetSettings();
                 Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.Value);
@@ -237,18 +228,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void IsDeviceCertificateAuthenticationEnabled_WhenIsDeviceCertificateAuthenticationEnabledValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new AccessSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey);
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey());
 
-                settingsKey.SetValue("IsDeviceCertificateAuthenticationEnabled", 0);
-                userPolicyKey.SetValue("IsDeviceCertificateAuthenticationEnabled", 0);
-                machinePolicyKey.SetValue("IsDeviceCertificateAuthenticationEnabled", 1);
+                settingsPath.CreateKey().SetValue("IsDeviceCertificateAuthenticationEnabled", 0);
+                userPolicyPath.CreateKey().SetValue("IsDeviceCertificateAuthenticationEnabled", 0);
+                machinePolicyPath.CreateKey().SetValue("IsDeviceCertificateAuthenticationEnabled", 1);
 
                 var settings = repository.GetSettings();
                 Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.Value);
@@ -263,14 +254,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void ConnectionLimit_WhenConnectionLimitValid_ThenSettingWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
                 var repository = new AccessSettingsRepository(
-                    settingsKey,
+                    settingsPath.CreateKey(),
                     null,
                     null);
 
-                settingsKey.SetValue("ConnectionLimit", 8);
+                settingsPath.CreateKey().SetValue("ConnectionLimit", 8);
 
                 var settings = repository.GetSettings();
                 Assert.AreEqual(8, settings.ConnectionLimit.Value);
@@ -285,12 +276,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void WorkforcePoolProvider_WhenWorkforcePoolProviderValid_ThenSettingWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
-                var repository = new AccessSettingsRepository(settingsKey, null, null);
+                var repository = new AccessSettingsRepository(
+                    settingsPath.CreateKey(),
+                    null,
+                    null);
 
                 var provider = new WorkforcePoolProviderLocator("global", "pool", "provider");
-                settingsKey.SetValue("WorkforcePoolProvider", provider.ToString());
+                settingsPath.CreateKey().SetValue("WorkforcePoolProvider", provider.ToString());
 
                 var settings = repository.GetSettings();
                 Assert.AreEqual(provider.ToString(), settings.WorkforcePoolProvider.Value);
@@ -301,19 +295,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void WorkforcePoolProvider_WhenWorkforcePoolProviderValidAndUserPolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new AccessSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey);
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey());
 
                 var provider = new WorkforcePoolProviderLocator("global", "pool", "provider");
                 var userProvider = new WorkforcePoolProviderLocator("global", "pool", "user-provider");
-                settingsKey.SetValue("WorkforcePoolProvider", provider.ToString());
-                userPolicyKey.SetValue("WorkforcePoolProvider", userProvider.ToString());
+                settingsPath.CreateKey().SetValue("WorkforcePoolProvider", provider.ToString());
+                userPolicyPath.CreateKey().SetValue("WorkforcePoolProvider", userProvider.ToString());
 
                 var settings = repository.GetSettings();
                 Assert.AreEqual(userProvider.ToString(), settings.WorkforcePoolProvider.Value);
@@ -324,19 +318,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void WorkforcePoolProvider_WhenWorkforcePoolProviderValidAndMachinePolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new AccessSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey);
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey());
 
                 var provider = new WorkforcePoolProviderLocator("global", "pool", "provider");
                 var machineProvider = new WorkforcePoolProviderLocator("global", "pool", "machine-provider");
-                settingsKey.SetValue("WorkforcePoolProvider", provider.ToString());
-                machinePolicyKey.SetValue("WorkforcePoolProvider", machineProvider.ToString());
+                settingsPath.CreateKey().SetValue("WorkforcePoolProvider", provider.ToString());
+                machinePolicyPath.CreateKey().SetValue("WorkforcePoolProvider", machineProvider.ToString());
 
                 var settings = repository.GetSettings();
                 Assert.AreEqual(machineProvider.ToString(), settings.WorkforcePoolProvider.Value);
@@ -347,21 +341,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void WorkforcePoolProvider_WhenWorkforcePoolProviderValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
                 var repository = new AccessSettingsRepository(
-                    settingsKey,
-                    machinePolicyKey,
-                    userPolicyKey);
+                    settingsPath.CreateKey(),
+                    machinePolicyPath.CreateKey(),
+                    userPolicyPath.CreateKey());
 
                 var provider = new WorkforcePoolProviderLocator("global", "pool", "provider");
                 var userProvider = new WorkforcePoolProviderLocator("global", "pool", "user-provider");
                 var machineProvider = new WorkforcePoolProviderLocator("global", "pool", "machine-provider");
-                settingsKey.SetValue("WorkforcePoolProvider", provider.ToString());
-                userPolicyKey.SetValue("WorkforcePoolProvider", userProvider.ToString());
-                machinePolicyKey.SetValue("WorkforcePoolProvider", machineProvider.ToString());
+                settingsPath.CreateKey().SetValue("WorkforcePoolProvider", provider.ToString());
+                userPolicyPath.CreateKey().SetValue("WorkforcePoolProvider", userProvider.ToString());
+                machinePolicyPath.CreateKey().SetValue("WorkforcePoolProvider", machineProvider.ToString());
 
                 var settings = repository.GetSettings();
                 Assert.AreEqual(machineProvider.ToString(), settings.WorkforcePoolProvider.Value);
@@ -376,9 +370,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void IsPolicyPresent_WhenMachineAndUserPolicyKeysAreNull_ThenIsPolicyPresentReturnsFalse()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
-                var repository = new AccessSettingsRepository(settingsKey, null, null);
+                var repository = new AccessSettingsRepository(
+                    settingsPath.CreateKey(),
+                    null,
+                    null);
 
                 Assert.IsFalse(repository.IsPolicyPresent);
             }
@@ -387,10 +384,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void IsPolicyPresent_WhenMachinePolicyKeyExists_ThenIsPolicyPresentReturnsTrue()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
             {
-                var repository = new AccessSettingsRepository(settingsKey, policyKey, null);
+                var repository = new AccessSettingsRepository(
+                    settingsPath.CreateKey(), 
+                    machinePolicyPath.CreateKey(),
+                    null);
 
                 Assert.IsTrue(repository.IsPolicyPresent);
             }
@@ -399,10 +399,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         [Test]
         public void IsPolicyPresent_WhenUserPolicyKeyExists_ThenIsPolicyPresentReturnsTrue()
         {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))
             {
-                var repository = new AccessSettingsRepository(settingsKey, null, policyKey);
+                var repository = new AccessSettingsRepository(
+                    settingsPath.CreateKey(),
+                    null,
+                    userPolicyPath.CreateKey());
 
                 Assert.IsTrue(repository.IsPolicyPresent);
             }
