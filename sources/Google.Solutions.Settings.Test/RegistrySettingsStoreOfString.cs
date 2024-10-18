@@ -34,7 +34,7 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void IsSpecified_WhenValueChanged()
         {
-            using (var key = CreateSettingsKey())
+            using (var key = CreateSettingsStore())
             {
                 var setting = key.Read(
                     "test",
@@ -66,7 +66,7 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void Read_WhenRegistryValueDoesNotExist_ThenUsesDefaults()
         {
-            using (var key = CreateSettingsKey())
+            using (var key = CreateSettingsStore())
             {
                 var setting = key.Read(
                     "test",
@@ -90,7 +90,7 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void Read_WhenRegistryValueExists_ThenUsesValue()
         {
-            using (var key = CreateSettingsKey())
+            using (var key = CreateSettingsStore())
             {
                 key.BackingKey.SetValue("test", "red");
 
@@ -120,7 +120,7 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void Save_WhenSettingIsNonNull()
         {
-            using (var key = CreateSettingsKey())
+            using (var key = CreateSettingsStore())
             {
                 var setting = key.Read(
                     "test",
@@ -140,7 +140,7 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void Save_WhenSettingIsDefaultValue_ThenResetsRegistry()
         {
-            using (var key = CreateSettingsKey())
+            using (var key = CreateSettingsStore())
             {
                 key.BackingKey.SetValue("test", "red");
 
@@ -166,7 +166,7 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void SetValue_WhenValuelsDefault_ThenSucceedsAndSettingIsNotDirty()
         {
-            using (var key = CreateSettingsKey())
+            using (var key = CreateSettingsStore())
             {
                 var setting = key.Read(
                     "test",
@@ -187,7 +187,7 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void SetValue_WhenValueAndDefaultAreNull_ThenSucceedsAndSettingIsNotDirty()
         {
-            using (var key = CreateSettingsKey())
+            using (var key = CreateSettingsStore())
             {
                 var setting = key.Read<string>(
                     "test",
@@ -207,7 +207,7 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void SetValue_WhenValueDiffersFromDefault_ThenSucceedsAndSettingIsDirty()
         {
-            using (var key = CreateSettingsKey())
+            using (var key = CreateSettingsStore())
             {
                 var setting = key.Read(
                     "test",
@@ -231,7 +231,7 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void SetAnyValue_WhenValueIsNull_ThenResetsToDefault()
         {
-            using (var key = CreateSettingsKey())
+            using (var key = CreateSettingsStore())
             {
                 var setting = key.Read(
                     "test",
@@ -252,7 +252,7 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void SetAnyValue_WhenValueIsOfWrongType_ThenThrowsException()
         {
-            using (var key = CreateSettingsKey())
+            using (var key = CreateSettingsStore())
             {
                 var setting = (IAnySetting)key.Read(
                     "test",
@@ -273,8 +273,8 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void Policy_WhenPolicyIsEmpty_ThenPolicyIsIgnored()
         {
-            using (var key = CreateSettingsKey())
-            using (var policyKey = CreatePolicySettingsKey())
+            using (var key = CreateSettingsStore())
+            using (var policyKey = CreatePolicyStore())
             {
                 var mergedKey = new MergedSettingsStore(
                     new[] { key, policyKey },
@@ -298,8 +298,8 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void Policy_WhenPolicyInvalid_ThenPolicyIsIgnored()
         {
-            using (var key = CreateSettingsKey())
-            using (var policyKey = CreatePolicySettingsKey())
+            using (var key = CreateSettingsStore())
+            using (var policyKey = CreatePolicyStore())
             {
                 var mergedKey = new MergedSettingsStore(
                     new[] { key, policyKey },
@@ -324,8 +324,8 @@ namespace Google.Solutions.Settings.Test
         [Test]
         public void Policy_WhenPolicyNotEmpty_ThenSettingIsMerged()
         {
-            using (var key = CreateSettingsKey())
-            using (var policyKey = CreatePolicySettingsKey())
+            using (var key = CreateSettingsStore())
+            using (var policyKey = CreatePolicyStore())
             {
                 var mergedKey = new MergedSettingsStore(
                     new[] { key, policyKey },
