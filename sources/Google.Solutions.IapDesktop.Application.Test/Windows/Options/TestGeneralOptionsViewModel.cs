@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.Platform.Net;
 using Google.Solutions.Settings.Collection;
+using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using Moq;
@@ -41,25 +42,24 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
     [TestFixture]
     public class TestGeneralOptionsViewModel : ApplicationFixtureBase
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-
         private IRepository<IApplicationSettings> CreateSettingsRepository(
             IDictionary<string, object>? policies = null)
         {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.hkcu.DeleteSubKeyTree(TestMachinePolicyKeyPath, false);
+            var settingsKey = RegistryKeyPath
+                .ForCurrentTest(RegistryKeyPath.KeyType.Settings)
+                .CreateKey();
 
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var policyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath);
+            var policyKey = RegistryKeyPath
+                .ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy)
+                .CreateKey();
+
             foreach (var policy in policies.EnsureNotNull())
             {
                 policyKey.SetValue(policy.Key, policy.Value);
             }
 
             return new ApplicationSettingsRepository(
-                baseKey,
+                settingsKey,
                 policyKey,
                 null,
                 UserProfile.SchemaVersion.Current);

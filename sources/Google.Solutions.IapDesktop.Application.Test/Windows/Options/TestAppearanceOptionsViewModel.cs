@@ -21,7 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
-using Microsoft.Win32;
+using Google.Solutions.Testing.Apis.Platform;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
@@ -30,17 +30,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
     [TestFixture]
     public class TestAppearanceOptionsViewModel
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
         private ThemeSettingsRepository CreateSettingsRepository()
         {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-
-            return new ThemeSettingsRepository(baseKey);
+            return new ThemeSettingsRepository(RegistryKeyPath
+                .ForCurrentTest(RegistryKeyPath.KeyType.Settings)
+                .CreateKey());
         }
 
         //---------------------------------------------------------------------

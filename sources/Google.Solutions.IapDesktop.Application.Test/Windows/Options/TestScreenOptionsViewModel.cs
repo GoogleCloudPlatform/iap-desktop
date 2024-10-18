@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
+using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -34,18 +35,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
     [TestFixture]
     public class TestScreenOptionsViewModel : ApplicationFixtureBase
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
         private ApplicationSettingsRepository CreateSettingsRepository()
         {
-            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
+            var settingsKey = RegistryKeyPath
+                .ForCurrentTest(RegistryKeyPath.KeyType.Settings)
+                .CreateKey();
 
             return new ApplicationSettingsRepository(
-                baseKey,
+                settingsKey,
                 null,
                 null,
                 UserProfile.SchemaVersion.Current);
