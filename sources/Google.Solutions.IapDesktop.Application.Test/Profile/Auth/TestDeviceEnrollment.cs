@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Profile.Auth;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Platform.Security.Cryptography;
 using Google.Solutions.Testing.Apis.Cryptography;
+using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using Moq;
@@ -118,15 +119,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
             QMtVvGZ0U6Ra
             -----END CERTIFICATE-----";
 
-        private const string TestKeyPath = @"Software\Google\__Test";
-
         private static AccessSettingsRepository CreateSettingsRepository()
         {
-            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            var settingsKey = hkcu.CreateSubKey(TestKeyPath);
-
-            return new AccessSettingsRepository(settingsKey, null, null);
+            return new AccessSettingsRepository(
+                RegistryKeyPath.ForCurrentTest().CreateKey(),
+                null, 
+                null);
         }
 
         //---------------------------------------------------------------------

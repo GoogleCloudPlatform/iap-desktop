@@ -19,29 +19,53 @@
 // under the License.
 //
 
+using Google.Apis.Iam.v1.Data;
 using Microsoft.Win32;
 using NUnit.Framework;
+using System;
 
 namespace Google.Solutions.Testing.Apis.Platform
 {
-    public static class RegistryKeys
+    public sealed class RegistryKeyPath : IDisposable
     {
+        private static readonly RegistryKey Hkcu = RegistryKey.OpenBaseKey(
+            RegistryHive.CurrentUser,
+            RegistryView.Default);
+
+        public string Path { get; }
+
+        private RegistryKeyPath(string path)
+        {
+            this.Path = path;
+        }
+
         /// <summary>
         /// Create a temporary registry key based on the
         /// name of the currently executing test.
         /// </summary>
-        public static RegistryKey CreateTemporary()
+        public static RegistryKeyPath ForCurrentTest()
         {
             var currentTest = TestContext.CurrentContext.Test;
-            var keyPath =
+            var path = new RegistryKeyPath(
                 @"Software\Google\__Test\" +
-                $"{currentTest.ClassName}.{currentTest.Name}";
+                $"{currentTest.ClassName}.{currentTest.Name}");
+            path.Delete();
+            return path;
+        }
 
-            using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
-            {
-                hkcu.DeleteSubKeyTree(keyPath, false);
-                return hkcu.CreateSubKey(keyPath);
-            }
+        public void Delete()
+        {
+            Hkcu.DeleteSubKeyTree(this.Path, false);
+        }
+
+        public RegistryKey CreateKey()
+        {
+            return Hkcu.CreateSubKey(this.Path);
+        }
+
+        public void Dispose()
+        {
+            Delete();
         }
     }
 }

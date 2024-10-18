@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.Platform;
+using Google.Solutions.Testing.Apis.Platform;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
@@ -33,18 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
     [TestFixture]
     public class TestInstall
     {
-        private const string TestBaseKeyPath = @"Software\Google\__Test";
         private const string TestProfileName = "__Test";
-
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser,
-            RegistryView.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.hkcu.DeleteSubKeyTree(TestBaseKeyPath, false);
-        }
 
         //---------------------------------------------------------------------
         // UserAgent.
@@ -73,8 +63,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void CurrentVersion()
         {
-            var install = new Install(TestBaseKeyPath);
-            Assert.AreNotEqual(0, install.CurrentVersion.Major);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
+                Assert.AreNotEqual(0, install.CurrentVersion.Major);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -84,13 +77,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void UniqueId()
         {
-            var install = new Install(TestBaseKeyPath);
-            Assert.IsNotNull(install.UniqueId);
-            Assert.AreEqual(16, install.UniqueId.Length);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
+                Assert.IsNotNull(install.UniqueId);
+                Assert.AreEqual(16, install.UniqueId.Length);
 
-            Assert.AreEqual(
-                install.UniqueId,
-                new Install(TestBaseKeyPath).UniqueId);
+                Assert.AreEqual(
+                    install.UniqueId,
+                    new Install(keyPath.Path).UniqueId);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -100,8 +96,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void BaseKeyPath()
         {
-            var install = new Install(TestBaseKeyPath);
-            Assert.AreEqual(TestBaseKeyPath, install.BaseKeyPath);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
+                Assert.AreEqual(keyPath.Path, install.BaseKeyPath);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -111,10 +110,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void BaseDirectory()
         {
-            var install = new Install(TestBaseKeyPath);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
 
-            Assert.IsNotNull(install.BaseDirectory);
-            Assert.IsTrue(Directory.Exists(install.BaseDirectory));
+                Assert.IsNotNull(install.BaseDirectory);
+                Assert.IsTrue(Directory.Exists(install.BaseDirectory));
+            }
         }
 
         //---------------------------------------------------------------------
@@ -124,33 +126,43 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void InitialVersion_WhenFreshlyInstalled_ThenInitialVersionIsCurrentVersion()
         {
-            var install = new Install(TestBaseKeyPath);
-            Assert.AreEqual(install.CurrentVersion, install.InitialVersion);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
+                Assert.AreEqual(install.CurrentVersion, install.InitialVersion);
+            }
         }
 
         [Test]
         public void InitialVersion_WhenKeyMissing_ThenInitialVersionIsCurrentVersion()
         {
-            var install = new Install(TestBaseKeyPath);
-            this.hkcu.DeleteSubKeyTree(TestBaseKeyPath, false);
-            Assert.AreEqual(install.CurrentVersion, install.InitialVersion);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
+                keyPath.Delete();
+
+                Assert.AreEqual(install.CurrentVersion, install.InitialVersion);
+            }
         }
 
         [Test]
         public void InitialVersion_WhenUpgraded_ThenInitialVersionOldestVersionEverInstalled()
         {
-            var install = new Install(TestBaseKeyPath);
-
-            using (var key = this.hkcu.CreateSubKey(TestBaseKeyPath))
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
-                key.SetValue(
-                    "InstalledVersionHistory",
-                    new string[] { "0.0.3.0", "0.0.1.0", "0.0.2.0" },
-                    RegistryValueKind.MultiString);
-            }
+                var install = new Install(keyPath.Path);
 
-            Assert.AreNotEqual(install.CurrentVersion, install.InitialVersion);
-            Assert.AreEqual(new Version(0, 0, 1, 0), install.InitialVersion);
+                using (var key = keyPath.CreateKey())
+                {
+                    key.SetValue(
+                        "InstalledVersionHistory",
+                        new string[] { "0.0.3.0", "0.0.1.0", "0.0.2.0" },
+                        RegistryValueKind.MultiString);
+                }
+
+                Assert.AreNotEqual(install.CurrentVersion, install.InitialVersion);
+                Assert.AreEqual(new Version(0, 0, 1, 0), install.InitialVersion);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -160,32 +172,42 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void PreviousVersion_WhenFreshlyInstalled_ThenPreviousVersionIsNull()
         {
-            var install = new Install(TestBaseKeyPath);
-            Assert.IsNull(install.PreviousVersion);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
+                Assert.IsNull(install.PreviousVersion);
+            }
         }
 
         [Test]
         public void PreviousVersion_WhenKeyMissing_ThenPreviousVersionIsNull()
         {
-            var install = new Install(TestBaseKeyPath);
-            this.hkcu.DeleteSubKeyTree(TestBaseKeyPath, false);
-            Assert.IsNull(install.PreviousVersion);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
+                keyPath.Delete();
+
+                Assert.IsNull(install.PreviousVersion);
+            }
         }
 
         [Test]
         public void PreviousVersion_WhenUpgraded_ThenPreviousVersionIsSet()
         {
-            var install = new Install(TestBaseKeyPath);
-
-            using (var key = this.hkcu.CreateSubKey(TestBaseKeyPath))
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
-                key.SetValue(
-                    "InstalledVersionHistory",
-                    new string[] { install.CurrentVersion.ToString(), "0.0.3.0", "0.0.1.0", "0.0.2.0" },
-                    RegistryValueKind.MultiString);
-            }
+                var install = new Install(keyPath.Path);
 
-            Assert.AreEqual(new Version(0, 0, 3, 0), install.PreviousVersion);
+                using (var key = keyPath.CreateKey())
+                {
+                    key.SetValue(
+                        "InstalledVersionHistory",
+                        new string[] { install.CurrentVersion.ToString(), "0.0.3.0", "0.0.1.0", "0.0.2.0" },
+                        RegistryValueKind.MultiString);
+                }
+
+                Assert.AreEqual(new Version(0, 0, 3, 0), install.PreviousVersion);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -213,29 +235,38 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void CreateProfile_WhenProfileNameIsNotValid_ThenCreateProfileThrowsException()
         {
-            var install = new Install(TestBaseKeyPath);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
 
-            Assert.Throws<ArgumentException>(() => install.CreateProfile("Föö"));
+                Assert.Throws<ArgumentException>(() => install.CreateProfile("Föö"));
+            }
         }
 
         [Test]
         public void CreateProfile_WhenProfileNameIsNull_ThenCreateProfileThrowsException()
         {
-            var install = new Install(TestBaseKeyPath);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
 
-            Assert.Throws<ArgumentException>(() => install.CreateProfile(null!));
+                Assert.Throws<ArgumentException>(() => install.CreateProfile(null!));
+            }
         }
 
         [Test]
         public void CreateProfile_WhenProfileExists_ThenCreateProfileOpensProfile()
         {
-            var install = new Install(TestBaseKeyPath);
-
-            install.CreateProfile(TestProfileName);
-            using (var profile = install.CreateProfile(TestProfileName))
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
-                Assert.IsNotNull(profile);
-                Assert.AreEqual(TestProfileName, profile.Name);
+                var install = new Install(keyPath.Path);
+
+                install.CreateProfile(TestProfileName);
+                using (var profile = install.CreateProfile(TestProfileName))
+                {
+                    Assert.IsNotNull(profile);
+                    Assert.AreEqual(TestProfileName, profile.Name);
+                }
             }
         }
 
@@ -246,45 +277,57 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void OpenProfile_WhenProfileNameIsNotValid_ThenOpenProfileThrowsException()
         {
-            var install = new Install(TestBaseKeyPath);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
 
-            Assert.Throws<ArgumentException>(() => install.OpenProfile("Föö"));
+                Assert.Throws<ArgumentException>(() => install.OpenProfile("Föö"));
+            }
         }
 
         [Test]
         public void OpenProfile_WhenProfileDoesNotExist_ThenOpenProfileThrowsException()
         {
-            var install = new Install(TestBaseKeyPath);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
 
-            Assert.Throws<ProfileNotFoundException>(
+                Assert.Throws<ProfileNotFoundException>(
                 () => install.OpenProfile("This does not exist"));
+            }
         }
 
         [Test]
         public void OpenProfile_WhenProfileExists_ThenOpenProfileOpensProfile()
         {
-            var install = new Install(TestBaseKeyPath);
-
-            using (install.CreateProfile(TestProfileName))
-            { }
-
-            using (var profile = install.OpenProfile(TestProfileName))
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
-                Assert.IsNotNull(profile);
-                Assert.AreEqual(TestProfileName, profile.Name);
-                Assert.IsFalse(profile.IsDefault);
-                Assert.IsNotNull(profile.SettingsKey);
+                var install = new Install(keyPath.Path);
+
+                using (install.CreateProfile(TestProfileName))
+                { }
+
+                using (var profile = install.OpenProfile(TestProfileName))
+                {
+                    Assert.IsNotNull(profile);
+                    Assert.AreEqual(TestProfileName, profile.Name);
+                    Assert.IsFalse(profile.IsDefault);
+                    Assert.IsNotNull(profile.SettingsKey);
+                }
             }
         }
 
         [Test]
         public void OpenProfile_WhenProfileNameIsNullThenOpenProfileReturnsDefaultProfile()
         {
-            var install = new Install(TestBaseKeyPath);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
 
-            var profile = install.OpenProfile(null);
-            Assert.AreEqual("Default", profile.Name);
-            Assert.IsTrue(profile.IsDefault);
+                var profile = install.OpenProfile(null);
+                Assert.AreEqual("Default", profile.Name);
+                Assert.IsTrue(profile.IsDefault);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -294,23 +337,29 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void DeleteProfile_WhenProfileDoesNotExist_ThenDeleteProfileDoesNothing()
         {
-            var install = new Install(TestBaseKeyPath);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
 
-            install.DeleteProfile("This does not exist");
+                install.DeleteProfile("This does not exist");
+            }
         }
 
         [Test]
         public void DeleteProfile_WhenProfileExists_ThenDeleteProfileDeletesProfile()
         {
-            var install = new Install(TestBaseKeyPath);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
 
-            using (install.CreateProfile(TestProfileName))
-            { }
+                using (install.CreateProfile(TestProfileName))
+                { }
 
-            install.DeleteProfile(TestProfileName);
+                install.DeleteProfile(TestProfileName);
 
-            Assert.Throws<ProfileNotFoundException>(
-                () => install.OpenProfile(TestProfileName));
+                Assert.Throws<ProfileNotFoundException>(
+                    () => install.OpenProfile(TestProfileName));
+            }
         }
 
         //---------------------------------------------------------------------
@@ -320,45 +369,56 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void ListProfiles_WhenProfileCreated_ThenListProfilesIncludesProfile()
         {
-            var install = new Install(TestBaseKeyPath);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
 
-            using (install.CreateProfile(TestProfileName))
-            { }
+                using (install.CreateProfile(TestProfileName))
+                { }
 
-            var list = install.Profiles;
+                var list = install.Profiles;
 
-            Assert.IsNotNull(list);
-            CollectionAssert.Contains(list, TestProfileName);
+                Assert.IsNotNull(list);
+                CollectionAssert.Contains(list, TestProfileName);
+            }
         }
 
         [Test]
         public void ListProfiles_WhenDefaultProfileCreated_ThenListProfilesIncludesDefaultProfile()
         {
-            var install = new Install(TestBaseKeyPath);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
 
-            using (install.OpenProfile(null))
-            { }
+                using (install.OpenProfile(null))
+                { }
 
-            var list = install.Profiles;
+                var list = install.Profiles;
 
-            Assert.IsNotNull(list);
-            CollectionAssert.Contains(list, "Default");
+                Assert.IsNotNull(list);
+                CollectionAssert.Contains(list, "Default");
+            }
         }
 
         [Test]
         public void ListProfiles_WhenNonProfileKeysPresent_ThenListProfilesIgnoresKeys()
         {
-            var install = new Install(TestBaseKeyPath);
+            using (var keyPath = RegistryKeyPath.ForCurrentTest())
+            {
+                var install = new Install(keyPath.Path);
 
-            this.hkcu.CreateSubKey($"{install.BaseKeyPath}\\________Notaprofile", true);
+                keyPath
+                    .CreateKey()
+                    .CreateSubKey($"{install.BaseKeyPath}\\________Notaprofile", true);
 
-            using (install.OpenProfile(null))
-            { }
+                using (install.OpenProfile(null))
+                { }
 
-            var list = install.Profiles;
+                var list = install.Profiles;
 
-            Assert.IsNotNull(list);
-            Assert.IsFalse(list.Any(p => p.EndsWith("Notaprofile", StringComparison.OrdinalIgnoreCase)));
+                Assert.IsNotNull(list);
+                Assert.IsFalse(list.Any(p => p.EndsWith("Notaprofile", StringComparison.OrdinalIgnoreCase)));
+            }
         }
     }
 }
