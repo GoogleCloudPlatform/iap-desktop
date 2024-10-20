@@ -23,8 +23,10 @@
 
 namespace Google.Solutions.Ssh
 {
-    public readonly struct TerminalSize
+    public readonly struct TerminalSize // TODO: Replace with PseudoTerminalDimensions
     {
+        public static readonly TerminalSize Default = new TerminalSize(80, 24);
+
         public readonly ushort Columns;
         public readonly ushort Rows;
 
