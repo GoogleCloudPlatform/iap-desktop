@@ -20,11 +20,11 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Threading;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,6 +34,15 @@ namespace Google.Solutions.Ssh
     public class SshConnection : SshWorkerThread
     {
         private readonly Queue<SendOperation> sendQueue = new Queue<SendOperation>();
+
+        /// <summary>
+        /// Task that is completed after the SSH connection has
+        /// been established.
+        /// </summary>
+        /// <remarks>
+        /// Force continuations to run asycnhronously so that they
+        /// don't block the worker thread.
+        /// </remarks>
         private readonly TaskCompletionSource<int> connectionCompleted
             = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
 
@@ -44,6 +53,15 @@ namespace Google.Solutions.Ssh
         private readonly LinkedList<SshChannelBase> channels
             = new LinkedList<SshChannelBase>();
 
+        private readonly SynchronizationContext callbackContext; // TODO: remove syncctx
+
+        /// <summary>
+        /// Create a connection.
+        /// </summary>
+        /// <remarks>
+        /// Keyboard handler callbacks are delivered on the designated
+        /// synchronization context.
+        /// </remarks>
         public SshConnection(
             IPEndPoint endpoint,
             ISshCredential credential,
@@ -52,9 +70,11 @@ namespace Google.Solutions.Ssh
             : base(
                   endpoint,
                   credential,
-                  keyboardHandler,
-                  callbackContext)
+                  new SynchronizedKeyboardInteractiveHandler(
+                      keyboardHandler, 
+                      callbackContext))
         {
+            this.callbackContext = callbackContext;
         }
 
         //---------------------------------------------------------------------
@@ -66,7 +86,7 @@ namespace Google.Solutions.Ssh
             //
             // Complete task on callback context.
             //
-            this.CallbackContext.Post(() => this.connectionCompleted.SetResult(0));
+            this.connectionCompleted.SetResult(0);
         }
 
         private protected override void OnConnectionError(Exception exception)
@@ -107,7 +127,7 @@ namespace Google.Solutions.Ssh
                 //
                 this.sendQueue.Dequeue();
 
-                this.CallbackContext.Post(() => packet.CompletionSource.SetResult(0));
+                packet.CompletionSource.SetResult(0);
 
                 if (this.sendQueue.Count == 0)
                 {
@@ -299,7 +319,58 @@ namespace Google.Solutions.Ssh
                         var channel = new SshShellChannel(
                             this,
                             nativeChannel,
-                            terminal);
+                            new SynchronizedTextTerminal(terminal, this.callbackContext));
+
+                        this.channels.AddLast(channel);
+
+                        return channel;
+                    }
+                })
+                .ConfigureAwait(false);
+        }
+
+        public async Task<SshShellChannel2> OpenShellAsync(
+            TerminalSize initialSize,
+            string terminalType,
+            CultureInfo? locale)
+        {
+            IEnumerable<EnvironmentVariable>? environmentVariables = null;
+            if (locale != null)
+            {
+                //
+                // Format language so that Linux understands it.
+                //
+                var languageFormatted = locale.Name.Replace('-', '_');
+                environmentVariables = new[]
+                {
+                    //
+                    // Try to pass locale - but do not fail the connection if
+                    // the server rejects it.
+                    //
+                    new EnvironmentVariable(
+                        "LC_ALL",
+                        $"{languageFormatted}.UTF-8",
+                        false)
+                };
+            }
+
+            return await RunSendOperationAsync(
+                session =>
+                {
+                    Debug.Assert(this.IsRunningOnWorkerThread);
+
+                    using (session.Session.AsBlocking())
+                    {
+                        var nativeChannel = session.OpenShellChannel(
+                            LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
+                            terminalType,
+                            initialSize.Columns,
+                            initialSize.Rows,
+                            environmentVariables);
+
+                        var channel = new SshShellChannel2(
+                            this,
+                            nativeChannel);
 
                         this.channels.AddLast(channel);
 
@@ -342,7 +413,13 @@ namespace Google.Solutions.Ssh
             internal SendOperation(Action<Libssh2AuthenticatedSession> operation)
             {
                 this.Operation = operation;
-                this.CompletionSource = new TaskCompletionSource<uint>();
+
+                //
+                // Force continuations to run asycnhronously so that they
+                // don't block the worker thread.
+                //
+                this.CompletionSource = new TaskCompletionSource<uint>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
             }
         }
     }

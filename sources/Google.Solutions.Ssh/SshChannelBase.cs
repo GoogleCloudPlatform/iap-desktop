@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh
 {
@@ -30,7 +31,7 @@ namespace Google.Solutions.Ssh
     /// </summary>
     public abstract class SshChannelBase : IDisposable
     {
-        private bool closed = false;
+        public bool IsClosed { get; private set; } = false;
 
         public abstract SshConnection Connection { get; }
 
@@ -49,6 +50,23 @@ namespace Google.Solutions.Ssh
         /// </summary>
         protected abstract void Close();
 
+        /// <summary>
+        /// Close handles. Can be called from any thread.
+        /// </summary>
+        public async Task CloseAsync()
+        {
+            //
+            // Switch to worker thread and dispose.
+            //
+            await this.Connection.RunSendOperationAsync(c =>
+            {
+                using (c.Session.AsBlocking())
+                {
+                    Dispose();
+                }
+            });
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -61,10 +79,10 @@ namespace Google.Solutions.Ssh
             {
                 try
                 {
-                    if (!this.closed)
+                    if (!this.IsClosed)
                     {
                         Close();
-                        this.closed = true;
+                        this.IsClosed = true;
                     }
                 }
                 catch (Exception e)
@@ -79,17 +97,12 @@ namespace Google.Solutions.Ssh
                         e);
                 }
             }
-            else
+            else if (disposing)
             {
-                _ = this.Connection
-                    .RunSendOperationAsync(c =>
-                    {
-                        using (c.Session.AsBlocking())
-                        {
-                            Dispose();
-                        }
-                    })
-                    .ContinueWith(_ => { });
+                //
+                // Initiate dispose, but don't block the caller.
+                //
+                _ = this.CloseAsync();
             }
         }
     }
