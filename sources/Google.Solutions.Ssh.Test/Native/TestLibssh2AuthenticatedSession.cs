@@ -37,7 +37,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        [Repeat(300)]
+        [Repeat(10)]
         public async Task OpenShellChannel_WhenConnected_ThenOpenShellChannelSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)

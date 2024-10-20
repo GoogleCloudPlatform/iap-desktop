@@ -19,12 +19,14 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Threading;
 using System;
 using System.Globalization;
+using System.Threading;
 
 namespace Google.Solutions.Ssh
 {
-    public interface ITextTerminal
+    public interface ITextTerminal // TODO: remove ITextTerminal
     {
         /// <summary>
         /// Return terminal type ($TERM), such as "xterm".
@@ -54,5 +56,31 @@ namespace Google.Solutions.Ssh
         ConnectionFailed,
         ConnectionLost,
         TerminalIssue
+    }
+
+    public class SynchronizedTextTerminal : ITextTerminal
+    {
+        private readonly ITextTerminal terminal;
+        private readonly SynchronizationContext context;
+
+        public SynchronizedTextTerminal(ITextTerminal terminal, SynchronizationContext context)
+        {
+            this.terminal = terminal;
+            this.context = context;
+        }
+
+        public string TerminalType => this.terminal.TerminalType;
+
+        public CultureInfo? Locale => this.terminal.Locale;
+
+        public void OnDataReceived(string data)
+        {
+            this.context.Post(() => this.terminal.OnDataReceived(data));
+        }
+
+        public void OnError(TerminalErrorType errorType, Exception exception)
+        {
+            this.context.Post(() => this.terminal.OnError(errorType, exception));
+        }
     }
 }

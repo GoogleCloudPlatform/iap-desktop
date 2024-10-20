@@ -32,7 +32,7 @@ namespace Google.Solutions.Ssh
     /// <summary>
     /// Channel for interacting with a remote shell.
     /// </summary>
-    public class SshShellChannel : SshChannelBase
+    public class SshShellChannel : SshChannelBase // TODO: replace by SshShellChannel2
     {
         public const string DefaultTerminal = "xterm";
         public static readonly Encoding DefaultEncoding = Encoding.UTF8;
@@ -99,26 +99,23 @@ namespace Google.Solutions.Ssh
                 0,
                 (int)bytesReceived);
 
-            this.Connection.CallbackContext.Post(() =>
+            try
             {
-                try
-                {
-                    this.terminal.OnDataReceived(receivedData);
+                this.terminal.OnDataReceived(receivedData);
 
-                    //
-                    // In non-blocking mode, we're not always receive a final
-                    // zero-length read.
-                    //
-                    if (bytesReceived > 0 && endOfStream)
-                    {
-                        this.terminal.OnDataReceived(string.Empty);
-                    }
-                }
-                catch (Exception e)
+                //
+                // In non-blocking mode, we're not always receive a final
+                // zero-length read.
+                //
+                if (bytesReceived > 0 && endOfStream)
                 {
-                    this.terminal.OnError(TerminalErrorType.TerminalIssue, e);
+                    this.terminal.OnDataReceived(string.Empty);
                 }
-            });
+            }
+            catch (Exception e)
+            {
+                this.terminal.OnError(TerminalErrorType.TerminalIssue, e);
+            }
         }
 
         internal override void OnReceiveError(Exception exception)
@@ -135,18 +132,11 @@ namespace Google.Solutions.Ssh
             var lostConnection = exception.Unwrap() is Libssh2Exception sshEx &&
                 errorsIndicatingLostConnection.Contains(sshEx.ErrorCode);
 
-            //
-            // Run callback on different context (not on the current
-            // worker thread).
-            //
-            this.Connection.CallbackContext.Post(() =>
-            {
-                this.terminal.OnError(
-                    lostConnection
-                        ? TerminalErrorType.ConnectionLost
-                        : TerminalErrorType.ConnectionFailed,
-                    exception);
-            });
+            this.terminal.OnError(
+                lostConnection
+                    ? TerminalErrorType.ConnectionLost
+                    : TerminalErrorType.ConnectionFailed,
+                exception);
         }
 
         //---------------------------------------------------------------------
