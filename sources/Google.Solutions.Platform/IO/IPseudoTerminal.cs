@@ -34,24 +34,27 @@ namespace Google.Solutions.Platform.IO
     {
         /// <summary>
         /// Raised when output is available.
-        /// 
-        /// The event can be delivered on any thread.
         /// </summary>
+        /// <remarks>
+        /// The event can be delivered on any thread
+        /// </remarks>
         event EventHandler<PseudoTerminalDataEventArgs>? OutputAvailable;
 
         /// <summary>
         /// Raised when a fatal error occured. After a fatal error,
         /// might be in an unusable state and should be closed.
-        /// 
-        /// The event can be delivered on any thread
         /// </summary>
+        /// <remarks>
+        /// The event can be delivered on any thread
+        /// </remarks>
         event EventHandler<PseudoTerminalErrorEventArgs>? FatalError;
 
         /// <summary>
-        /// Raised when the console was disconnected.
-        /// 
-        /// The event can be delivered on any thread
+        /// Raised when the console was disconnected unexpectedly.
         /// </summary>
+        /// <remarks>
+        /// The event can be delivered on any thread
+        /// </remarks>
         event EventHandler<EventArgs>? Disconnected;
 
         /// <summary>
@@ -82,7 +85,9 @@ namespace Google.Solutions.Platform.IO
         /// <summary>
         /// Drain output and close the session.
         /// </summary>
-        /// <returns></returns>
+        /// <remarks>
+        /// Does not raise a Disconnected event.
+        /// </remarks>
         Task CloseAsync();
     }
 
@@ -122,15 +127,9 @@ namespace Google.Solutions.Platform.IO
         /// </summary>
         public string Data { get; }
 
-        public bool IsEof { get; private set; }
-
-        public static PseudoTerminalDataEventArgs Eof = new PseudoTerminalDataEventArgs(string.Empty)
-        {
-            IsEof = true
-        };
-
         public PseudoTerminalDataEventArgs(string data)
         {
+            Debug.Assert(data.Length > 0);
             this.Data = data;
         }
     }

@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,39 +19,37 @@
 // under the License.
 //
 
-using Google.Solutions.Ssh.Cryptography;
 using System;
-using System.Security;
 
 namespace Google.Solutions.Ssh
 {
     /// <summary>
-    /// Base interface.
+    /// Handler for "keyboard-interactive" prompts that might be required
+    /// in addition to presenting a credential.
     /// </summary>
-    public interface ISshCredential : IDisposable
+    public interface IKeyboardInteractiveHandler
     {
         /// <summary>
-        /// Name of remote user to authenticate with.
+        /// Prompt for keyboard-interactive input.
         /// </summary>
-        string Username { get; }
-    }
+        /// <exception cref="OperationCanceledException">
+        /// Thrown when users cancels the operation.
+        /// </exception>
+        string? Prompt(
+            string caption,
+            string instruction,
+            string prompt,
+            bool echo);
 
-    /// <summary>
-    /// Authenticator for "publickey" authentication.
-    /// </summary>
-    public interface IAsymmetricKeyCredential : ISshCredential
-    {
         /// <summary>
-        /// Signer for handling authentication challenges.
+        /// Perform for password.
         /// </summary>
-        IAsymmetricKeySigner Signer { get; }
-    }
-
-    /// <summary>
-    /// Authenticator for "password" authentication.
-    /// </summary>
-    public interface IPasswordCredential : ISshCredential
-    {
-        SecureString Password { get; }
+        /// <returns>
+        /// Credential for the same username.
+        /// </returns>
+        /// <exception cref="OperationCanceledException">
+        /// Thrown when users cancels the operation.
+        /// </exception>
+        IPasswordCredential PromptForCredentials(string username);
     }
 }

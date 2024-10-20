@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2022 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,12 +20,10 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Platform.IO;
 using Google.Solutions.Ssh.Cryptography;
-using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
-using System;
-using System.Globalization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,48 +32,17 @@ namespace Google.Solutions.Ssh.Test
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestSshConnection : SshFixtureBase
+    public class TestSshShellChannel2 : SshFixtureBase
     {
         //---------------------------------------------------------------------
-        // Connect.
+        // Resize.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Connect_WhenConnected_ThenThrowsException(
+        public async Task Resize_UpdatesEnvironment(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var credential = await CreateAsymmetricKeyCredentialAsync(
-                    instance,
-                    SshKeyType.Rsa3072)
-                .ConfigureAwait(false);
-
-            using (var connection = new SshConnection(
-                endpoint,
-                credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
-            {
-                connection.JoinWorkerThreadOnDispose = true;
-
-                await connection
-                    .ConnectAsync()
-                    .ConfigureAwait(false);
-
-                ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
-                    () => connection.ConnectAsync().Wait());
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // OpenShell.
-        //---------------------------------------------------------------------
-
-        private static async Task<string> ConnectAndEchoLocaleAsync(
-            InstanceLocator instance,
-            CultureInfo? locale)
-        {
             var endpoint = await GetPublicSshEndpointAsync(instance)
                 .ConfigureAwait(false);
             var credential = await CreateAsymmetricKeyCredentialAsync(
@@ -101,78 +68,42 @@ namespace Google.Solutions.Ssh.Test
                     .OpenShellAsync(
                         TerminalSize.Default,
                         "xterm",
-                        locale)
+                        null)
                     .ConfigureAwait(false))
                 {
+                    var dimensions = new PseudoTerminalSize(20, 30);
+                    await channel
+                        .ResizeAsync(dimensions, CancellationToken.None)
+                        .ConfigureAwait(false);
+
                     channel.OutputAvailable += (_, args) => output.Append(args.Data);
 
                     await channel
-                        .WriteAsync("locale;sleep 1;exit\n", CancellationToken.None)
+                        .WriteAsync("echo $COLUMNS x $LINES;exit\n", CancellationToken.None)
                         .ConfigureAwait(false);
 
                     await channel
                         .DrainAsync()
                         .ConfigureAwait(false);
                 }
+
+                StringAssert.Contains(
+                    "20 x 30",
+                    output.ToString());
             }
-
-            return output.ToString();
-        }
-
-        [Test]
-        public async Task OpenShell_WhenServerAcceptsLocale_ThenShellUsesRightLocale(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var output = await ConnectAndEchoLocaleAsync(
-                    await instanceLocatorTask,
-                    new CultureInfo("en-AU"))
-                .ConfigureAwait(false);
-
-            StringAssert.Contains(
-                "LC_ALL=en_AU.UTF-8",
-                output.ToString());
-        }
-
-        [Test]
-        public async Task OpenShell_WhenServerRejectsLocale_ThenShellUsesDefaultLocale(
-           [LinuxInstance(InitializeScript =
-                "sed -i '/AcceptEnv/d' /etc/ssh/sshd_config && systemctl restart sshd")]
-                ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var output = await ConnectAndEchoLocaleAsync(
-                    await instanceLocatorTask,
-                    new CultureInfo("en-AU"))
-                .ConfigureAwait(false);
-
-            StringAssert.Contains(
-                "LC_ALL=\r\n",
-                output.ToString());
-        }
-
-        [Test]
-        public async Task OpenShell_WhenLocaleIsNull_ThenShellUsesDefaultLocale(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var output = await ConnectAndEchoLocaleAsync(
-                    await instanceLocatorTask,
-                    null)
-                .ConfigureAwait(false);
-
-            StringAssert.Contains(
-                "LC_ALL=\r\n",
-                output.ToString());
         }
 
         //---------------------------------------------------------------------
-        // Dispose.
+        // Close.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Dispose_ThenWorkerIsStopped(
+        public async Task Close_DoesNotRaiseDisconnectedEvent(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var endpoint = await GetPublicSshEndpointAsync(instance)
+                .ConfigureAwait(false);
             var credential = await CreateAsymmetricKeyCredentialAsync(
                     instance,
                     SshKeyType.Rsa3072)
@@ -184,9 +115,29 @@ namespace Google.Solutions.Ssh.Test
                 new KeyboardInteractiveHandler(),
                 new SynchronizationContext()))
             {
+                connection.JoinWorkerThreadOnDispose = true;
+
                 await connection
                     .ConnectAsync()
                     .ConfigureAwait(false);
+
+                using (var channel = await connection
+                    .OpenShellAsync(
+                        TerminalSize.Default,
+                        "xterm",
+                        null)
+                    .ConfigureAwait(false))
+                {
+                    bool disconnectedRaised = false;
+                    channel.Disconnected += (_, args) => disconnectedRaised = true;
+
+                    await channel
+                        .CloseAsync()
+                        .ConfigureAwait(false);
+
+                    Assert.IsFalse(disconnectedRaised);
+                    Assert.IsTrue(channel.IsClosed);
+                }
             }
         }
     }
