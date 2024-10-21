@@ -53,6 +53,11 @@ namespace Google.Solutions.Terminal.Controls
         {
             this.Client = client;
 
+            if (client is RdpClient rdpClient)
+            {
+                rdpClient.MainWindow = this;
+            }
+
             SuspendLayout();
             this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
             this.AutoScaleMode = AutoScaleMode.Dpi;
