@@ -99,7 +99,19 @@ namespace Google.Solutions.Terminal.Controls
             this.StateChanged += (_, args) =>
             {
                 this.statePanel.State = this.State;
-                this.statePanel.Visible = !this.IsFullScreen && (
+
+                //
+                // NB. We check IsContainerFullScreen as opposed to
+                //     IsFullScreen here because IsFullScreen (at least
+                //     in the case of the RdpClient) is only updated
+                //     asynchronously after leaving full-screen. 
+                //
+                //     One particular example where this difference shows
+                //     is when the RDP session is disconnected because of
+                //     a session timeout while in full-screen mode.
+                //     
+
+                this.statePanel.Visible = !this.IsContainerFullScreen && (
                     this.State == ConnectionState.NotConnected ||
                     this.State == ConnectionState.Disconnecting ||
                     this.State == ConnectionState.Connecting);
@@ -108,10 +120,10 @@ namespace Google.Solutions.Terminal.Controls
         }
 
         /// <summary>
-        /// Check if the client is currently in full-screen mode.
+        /// Check if the client is currently hosted in a full-screen container.
         /// </summary>
         [Browsable(false)]
-        public virtual bool IsFullScreen
+        public virtual bool IsContainerFullScreen
         {
             get => false;
         }

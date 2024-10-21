@@ -197,7 +197,7 @@ namespace Google.Solutions.Terminal.Controls
                 args.Cancel = true;
                 return;
             }
-            else if (this.IsFullScreen)
+            else if (this.IsContainerFullScreen)
             {
                 //
                 // Veto this event as it would leave an orphaned full-screen
@@ -1168,13 +1168,18 @@ namespace Google.Solutions.Terminal.Controls
             Debug.Assert(source.Controls.Count == 0);
         }
 
+        public override bool IsContainerFullScreen
+        {
+            get => this.ContainerFullScreen;
+        }
+
         /// <summary>
         /// Gets or sets full-scren mode for the containing window.
         /// 
         /// This property should only be changed from within RDP
         /// callbacks.
         /// </summary>
-        internal bool ContainerFullScreen
+        protected bool ContainerFullScreen
         {
             get => fullScreenForm != null && fullScreenForm.Visible;
             private set
@@ -1279,7 +1284,7 @@ namespace Google.Solutions.Terminal.Controls
         /// Check if the client is currently in full-screen mode.
         /// </summary>
         [Browsable(false)]
-        public override bool IsFullScreen
+        public bool IsFullScreen
         {
             get
             {
@@ -1325,6 +1330,14 @@ namespace Google.Solutions.Terminal.Controls
             this.client.FullScreen = true;
 
             return true;
+        }
+
+        /// <summary>
+        /// Enter full screen mode.
+        /// </summary>
+        public bool TryEnterFullScreen()
+        {
+            return TryEnterFullScreen(null);
         }
 
         /// <summary>
