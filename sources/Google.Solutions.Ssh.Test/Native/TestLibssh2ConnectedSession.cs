@@ -19,11 +19,13 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Security;
 using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Ssh.Native;
 using Google.Solutions.Testing.Apis.Integration;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Linq;
@@ -524,7 +526,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Authenticate_PublicKey_WhenPublicKeyValidButUnrecognized_ThenAuthenticateThrowsException(
+        public async Task Authenticate_PublicKey_WhenPublicUnrecognized_ThenAuthenticateThrowsException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
@@ -535,11 +537,15 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             using (var signer = AsymmetricKeySigner.CreateEphemeral(keyType))
             {
+                var credential = new Mock<IAsymmetricKeyCredential>();
+                credential.SetupGet(c => c.Username).Returns("invaliduser");
+                credential.SetupGet(c => c.Signer).Returns(signer);
+
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
                     () => connection.Authenticate(
-                        new StaticAsymmetricKeyCredential("invaliduser", signer),
+                        credential.Object,
                         new KeyboardInteractiveHandler()));
             }
         }

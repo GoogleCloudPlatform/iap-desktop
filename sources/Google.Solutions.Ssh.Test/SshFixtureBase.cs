@@ -42,8 +42,8 @@ namespace Google.Solutions.Ssh.Test
 {
     public abstract class SshFixtureBase : FixtureBase
     {
-        private static readonly Dictionary<string, IAsymmetricKeyCredential> cachedCredentials =
-            new Dictionary<string, IAsymmetricKeyCredential>();
+        private static readonly Dictionary<string, CachedAsymmetricKeyCredential> cachedCredentials =
+            new Dictionary<string, CachedAsymmetricKeyCredential>();
 
         protected override IEnumerable<TraceSource> Sources
             => base.Sources.Concat(new[]
@@ -179,7 +179,7 @@ namespace Google.Solutions.Ssh.Test
                 foreach (var kvp in keysByType)
                 {
                     cachedCredentials[$"{instanceLocator}|{username}|{kvp.Key}"] =
-                        new StaticAsymmetricKeyCredential(username, kvp.Value);
+                        new CachedAsymmetricKeyCredential(username, kvp.Value);
                 }
             }
 
@@ -235,10 +235,30 @@ namespace Google.Solutions.Ssh.Test
             {
                 foreach (var credential in cachedCredentials.Values)
                 {
-                    credential.Dispose();
+                    credential.Signer.Dispose();
                 }
 
                 cachedCredentials.Clear();
+            }
+        }
+
+        private sealed class CachedAsymmetricKeyCredential : IAsymmetricKeyCredential
+        {
+            public CachedAsymmetricKeyCredential(string username, IAsymmetricKeySigner signer)
+            {
+                this.Username = username;
+                this.Signer = signer;
+            }
+
+            public IAsymmetricKeySigner Signer { get; }
+
+            public string Username { get; }
+
+            public void Dispose()
+            {
+                //
+                // Don't dispose the signer until we tear down the fixture.
+                //
             }
         }
     }

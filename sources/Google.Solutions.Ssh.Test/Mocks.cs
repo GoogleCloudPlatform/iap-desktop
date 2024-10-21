@@ -65,22 +65,4 @@ namespace Google.Solutions.Ssh.Test
             return this.PromptForCredentialsCallback(username);
         }
     }
-
-
-    internal sealed class StaticAsymmetricKeyCredential : IAsymmetricKeyCredential
-    {
-        public StaticAsymmetricKeyCredential(string username, IAsymmetricKeySigner signer)
-        {
-            this.Username = username;
-            this.Signer = signer;
-        }
-
-        public IAsymmetricKeySigner Signer { get; }
-
-        public string Username { get; }
-
-        public void Dispose()
-        {
-        }
-    }
 }
