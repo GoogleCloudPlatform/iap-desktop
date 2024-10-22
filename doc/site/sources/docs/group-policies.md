@@ -34,7 +34,7 @@ You can manage IAP Desktop group policies using Active Directory or Intune.
 
 === "Intune"
 
-    Before you can configure a group policy, you must first install the IAP Desktop Policy Templates:
+    Before you can configure a configuration policy, you must first install the IAP Desktop Policy Templates:
 
     1.  In the [Intune admin center :octicons-link-external-16:](https://intune.microsoft.com/), go to
         **Devices > Configuration**.
@@ -47,7 +47,7 @@ You can manage IAP Desktop group policies using Active Directory or Intune.
         *   **IapDesktop.admx and IapDesktop.adml**: You can find these files in the
             `PolicyTemplates` package from the [downloads page](https://github.com/GoogleCloudPlatform/iap-desktop/releases).
     
-    You can now use the IAP Desktop templates to configure a group policy object:
+    You can now use the IAP Desktop templates to configure a configuration policy:
 
     1.  Select the **Policies** tab.
     1.  Click **Create > New policy** and select the following:

@@ -109,7 +109,8 @@ This issue can be the intentional effect of the
 [Always prompt for password upon connection :octicons-link-external-16:](https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TerminalServer::TS_PASSWORD) 
 group policy setting. This policy is configured by default on [CIS hardened images :octicons-link-external-16:](https://www.cisecurity.org/cis-hardened-images/google/).
 
-To mitigate this issue, avoid saving passwords for affected Windows VMs and enter credentials manually instead.
+To mitigate this issue,  [disable automatic logons](toolwindow-connection-settings.md#remote-desktop-security-settings) in
+the VM's connection settings
 
 ## :material-message-alert: "Your credentials did not work"
 

@@ -63,31 +63,31 @@ a member of the _Administrators_ group or the _Remote Desktop users_ group.
 These settings control how IAP Desktop connects to your VM. You can let IAP Desktop connect in one
 of two ways:
 
-*   `IapTunnel`: By default, IAP Desktop connects to the [internal IP address :octicons-link-external-16:](https://cloud.google.com/compute/docs/ip-addresses#networkaddresses)
+*   **IAP Tunnel**: By default, IAP Desktop connects to the [internal IP address :octicons-link-external-16:](https://cloud.google.com/compute/docs/ip-addresses#networkaddresses)
     of your VM [through an IAP-TCP forwarding tunnel :octicons-link-external-16:](https://cloud.google.com/iap/docs/using-tcp-forwarding).
-*   `Vpc`: Alternatively, you can let IAP Desktop connect to the VM's internal IP address through Cloud VPN or Interconnect. If you use this option, 
+*   **VPN/Interconnect**: Alternatively, you can let IAP Desktop connect to the VM's internal IP address through Cloud VPN or Interconnect. If you use this option, 
     IAP Desktop doesn't use IAP-TCP forwarding.
     
 <table>
     <tr>
         <th>Setting</th>
         <th>Description</th>
-        <th>Required</th>
+        <th>Default</th>
     </tr>
     <tr>
         <td>Connect via</td>
         <td>Controls how IAP Desktop connects to your VM, see description above.</td>
-        <td>Yes</td>
+        <td></td>
     </tr>
     <tr>
         <td>Connection timeout</td>
         <td>Timeout for connecting to the VM, in seconds.</td>
-        <td>Yes</td>
+        <td>30 seconds</td>
     </tr>
     <tr>
         <td>Server port</td>
-        <td>Port to connect to, typically <code>3389</code>.</td>
-        <td>Yes</td>
+        <td>Port to connect to.</td>
+        <td><code>3389</code></td>
     </tr>
 </table>
 
@@ -100,17 +100,39 @@ These settings control the display settings for Remote Desktop.
     <tr>
         <th>Setting</th>
         <th>Description</th>
-        <th>Required</th>
+        <th>Default</th>
     </tr>
     <tr>
         <td>Color depth</td>
         <td>Color depth to use.</td>
-        <td>Yes</td>
+        <td>True color (24-bit)</td>
     </tr>
     <tr>
         <td>Connection bar</td>
         <td>Controls the behavior of the connection bar that's shown when you set the Remote Desktop session to full-screen.</td>
-        <td>Yes</td>
+        <td>Auto hide</td>
+    </tr>
+    <tr>
+        <td>Display resolution</td>
+        <td>
+            Controls the screen resolution and size of the remote desktop.
+            <ul>
+                <li><b>Adjust automatically</b>: Adjust the size and resolution to fit the IAP Desktop window.</li>
+                <li><b>Same as this computer</b>: Use the same size and resolution as the current monitor on your local computer.</li>
+            </ul>
+        </td>
+        <td>Adjust automatically</td>
+    </tr>
+    <tr>
+        <td>Display scaling</td>
+        <td>
+            Controls whether to scale the size of texts, fonts, and apps on the remote desktop.
+            <ul>
+                <li><b>Same as this computer</b>: Use the same scaling setting as your local computer.</li>
+                <li><b>Disabled (100%)</b>: Disable scaling and show  texts, fonts, and apps at their regular size.</li>
+            </ul>
+        </td>
+        <td>Disabled (100%)</td>
     </tr>
 </table>
 
@@ -122,58 +144,58 @@ These settings control which local and remote resources you want to share.
     <tr>
         <th>Setting</th>
         <th>Description</th>
-        <th>Required</th>
+        <th>Default</th>
     </tr>
     <tr>
         <td>Audio mode</td>
         <td>Controls where to play back audio.</td>
-        <td>Yes</td>
+        <td>On this computer</td>
     </tr>
     <tr>
-        <td>Windows shortcuts</td>
+        <td>Apply Windows shortcuts</td>
         <td>Controls whether IAP Desktop should send Windows shortcuts (such as <code>Win+R</code>) to the VM:
             <ul>
-                <li>Disabled: Don't capture shortcuts and handle them locally instead.</li>
-                <li>Enabled: Always capture shortcuts and handle them remotely.</li>
-                <li>FullScreenOnly: Only capture shortcuts when the Remote Desktop session is in full-screen mode.</li>
+                <li><b>On this computer</b>: Don't capture shortcuts and handle them locally instead.</li>
+                <li><b>On server</b>: Always capture shortcuts and handle them remotely.</li>
+                <li><b>Only in full-screen mode</b>: Only capture shortcuts when the Remote Desktop session is in full-screen mode.</li>
             </ul>
         </td>
-        <td>Yes</td>
+        <td>Only in full-screen mode</td>
     </tr>
     <tr>
         <td>Redirect clipboard</td>
         <td>Share the local clipboard with the remote VM.</td>
-        <td>Yes</td>
+        <td>Enabled</td>
     </tr>
     <tr>
         <td>Redirect printers</td>
         <td>Share local printers with the remote VM.</td>
-        <td>Yes</td>
+        <td>Disabled</td>
     </tr>
     <tr>
         <td>Redirect smart cards</td>
         <td>Share local smart cards with the remote VM.</td>
-        <td>Yes</td>
+        <td>Disabled</td>
     </tr>
     <tr>
         <td>Redirect local ports</td>
         <td>Share local ports with the remote VM.</td>
-        <td>Yes</td>
+        <td>Disabled</td>
     </tr>
     <tr>
         <td>Redirect drives</td>
         <td>Share local drives with the remote VM.</td>
-        <td>Yes</td>
+        <td>Disabled</td>
     </tr>
     <tr>
         <td>Redirect devices</td>
         <td>Share local devices with the remote VM.</td>
-        <td>Yes</td>
+        <td>Disabled</td>
     </tr>
     <tr>
         <td>Redirect WebAuthn authenticators</td>
         <td>Share WebAuthn authenticators with the remote VM.</td>
-        <td>Yes</td>
+        <td>Enabled</td>
     </tr>
 </table>
 
@@ -187,7 +209,19 @@ These settings control which RDP security mechanism to apply.
     <tr>
         <th>Setting</th>
         <th>Description</th>
-        <th>Required</th>
+        <th>Default</th>
+    </tr>
+    <tr>
+        <td>Automatic logon</td>
+        <td>
+            Controls whether IAP Desktop attempts to log you on automatically by using <a href="#windows-credentials">saved credentials</a>
+            or by offering to generate new Windows credentials.
+            <br><br>
+            Set this to <b>Disabled</b> for VMs that use the <a href="https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TerminalServer::TS_PASSWORD">Always prompt for password upon connection</a>
+            group policy setting to <a href="/iap-desktop/troubleshooting-rdp/#your-credentials-did-not-work-when-using-saved-credentials">
+            prevent duplicate password prompts</a>.
+        </td>
+        <td>Enabled</td>
     </tr>
     <tr>
         <td>Network level authentication</td>
@@ -199,18 +233,7 @@ These settings control which RDP security mechanism to apply.
             <br><br>
             Disabling NLA automatically enables server authentication.
         </td>
-        <td>Yes</td>
-    </tr>
-    <tr>
-        <td>Server authentication</td>
-        <td>
-            Controls whether to verify the VM's TLS certificate.
-            <br><br>
-            By default, IAP Desktop connects to the VM through an IAP-TCP forwarding tunnel. Tunneled connections
-            use a hostname such as <code>localhost:12345</code>, which is different from the VM's canonical hostname.
-            Because of this mismatch, certificate verification is unlikely to succeed and therefore off by default.
-        </td>
-        <td>Yes</td>
+        <td>Enabled</td>
     </tr>
     <tr>
         <td>Restricted Admin mode</td>
@@ -225,7 +248,21 @@ These settings control which RDP security mechanism to apply.
             </ul>
             If you don't meet these prerequisites, connecting to the VM might fail with the error <i>Account restrictions are preventing this user from signing in</i>.
         </td>
-        <td>Yes</td>
+        <td>Disabled</td>
+    </tr>
+    <tr>
+        <td>Session type</td>
+        <td>
+            Controls the type of RDP session to use:
+            <ul>
+                <li><b>Normal user session</b>: Establishes a normal user session.</li>
+                <li><b>RDS admin-session</b>: Establishes an administrative session, equivalent to running <code>mstsc /admin</code>.</li>
+            </ul>
+            This setting only affects VMs that operate as RDS session hosts. For further details, see 
+            <a href="https://techcommunity.microsoft.com/t5/security-compliance-and-identity/changes-to-remote-administration-in-windows-server-2008/ba-p/246577">
+            Changes to Remote Administration in Windows Server 2008</a>.
+        </td>
+        <td>Normal user session</td>
     </tr>
 </table>
 
@@ -253,7 +290,7 @@ or [metadata keys :octicons-link-external-16:](https://cloud.google.com/compute/
     <tr>
         <th>Setting</th>
         <th>Description</th>
-        <th>Required</th>
+        <th>Default</th>
     </tr>
     <tr>
         <td>Public key authentication</td>
@@ -265,7 +302,7 @@ or [metadata keys :octicons-link-external-16:](https://cloud.google.com/compute/
                 <li>Disabled: Use <code>password</code> or <code>keyboard-interactive</code>-based authentication.</li>
             </ul>
         </td>
-        <td>Yes</td>
+        <td>Enabled</td>
     </tr>
     <tr>
         <td>Username</td>
@@ -274,11 +311,11 @@ or [metadata keys :octicons-link-external-16:](https://cloud.google.com/compute/
             <br><br>
             This setting is ignored when using OS Login because OS Login automatically determines your username.
         </td>
-        <td>No</td>
+        <td></td>
     </tr>
     <tr>
         <td>Password</td>
         <td>Linux/Unix password</td>
-        <td>No</td>
+        <td></td>
     </tr>
 </table>
