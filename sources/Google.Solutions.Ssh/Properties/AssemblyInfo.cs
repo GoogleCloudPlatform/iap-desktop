@@ -25,4 +25,3 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTrademark("Google LLC")]
 
 [assembly: InternalsVisibleTo("Google.Solutions.Ssh.Test")]
-[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Session.Test")]

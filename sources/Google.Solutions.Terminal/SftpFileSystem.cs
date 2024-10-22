@@ -37,12 +37,16 @@ using System.Threading.Tasks;
 
 #pragma warning disable CS0067 // The event ... is never used
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
+namespace Google.Solutions.Terminal
 {
+    /// <summary>
+    /// Implements IFileSystem on a SFTP channel.
+    /// </summary>
     internal sealed class SftpFileSystem : IFileSystem, IDisposable
     {
         private readonly Func<string, Task<IReadOnlyCollection<Libssh2SftpFileInfo>>> listRemoteFilesFunc;
         private readonly FileTypeCache fileTypeCache;
+        private readonly IDisposable? channel;
 
         private static readonly Regex configFileNamePattern = new Regex("co?ni?f(ig)?$");
 
@@ -116,6 +120,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             : this((path) => channel.ListFilesAsync(path))
         {
             channel.ExpectNotNull(nameof(channel));
+
+            //
+            // Keep reference to channel so that we can
+            // dispose it later.
+            //
+            this.channel = channel;
         }
 
         //---------------------------------------------------------------------
@@ -162,6 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         public void Dispose()
         {
             this.fileTypeCache.Dispose();
+            this.channel?.Dispose();
         }
 
         //---------------------------------------------------------------------
@@ -174,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
             public string Name
             {
-                get => string.Empty;
+                get => "/";
             }
 
             public FileAttributes Attributes

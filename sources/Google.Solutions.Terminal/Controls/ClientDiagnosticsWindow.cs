@@ -20,7 +20,10 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Binding.Commands;
+using Google.Solutions.Mvvm.Binding;
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -80,6 +83,7 @@ namespace Google.Solutions.Terminal.Controls
             //
             client.Dock = DockStyle.Fill;
             splitContainer.Panel1.Controls.Add(client);
+            client.Bind(new ClientBindingContext());
 
             //
             // PropertyGrid.
@@ -129,6 +133,28 @@ namespace Google.Solutions.Terminal.Controls
 
             client.ConnectionFailed += (_, args)
                 => ShowError("Connection failed", args.Exception);
+        }
+
+
+        private class ClientBindingContext : IBindingContext
+        {
+            public void OnBindingCreated(
+                IComponent control, 
+                IDisposable binding)
+            {
+            }
+
+            public void OnCommandExecuted(
+                ICommandBase command)
+            {
+            }
+
+            public void OnCommandFailed(
+                IWin32Window? window, 
+                ICommandBase command,
+                Exception exception)
+            {
+            }
         }
     }
 }

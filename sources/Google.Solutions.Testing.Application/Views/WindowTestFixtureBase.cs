@@ -125,7 +125,7 @@ namespace Google.Solutions.Testing.Application.Views
         protected static void PumpWindowMessages()
             => System.Windows.Forms.Application.DoEvents();
 
-        protected async Task<TEvent> AssertRaisesEventAsync<TEvent>( // TODO: Change to Await w/ CTS
+        protected async Task<TEvent> AssertRaisesEventAsync<TEvent>(
             Func<Task> action,
             TimeSpan timeout) where TEvent : class
         {

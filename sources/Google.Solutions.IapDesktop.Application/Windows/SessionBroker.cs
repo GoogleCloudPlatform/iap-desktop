@@ -52,14 +52,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         bool CanTransferFiles { get; }
 
         /// <summary>
-        /// Download a file from the remote VM.
+        /// Transfer files from or to the remote VM.
         /// </summary>
-        Task DownloadFilesAsync();
-
-        /// <summary>
-        /// Upload a file to the remote VM.
-        /// </summary>
-        Task UploadFilesAsync();
+        Task TransferFilesAsync();
 
         /// <summary>
         /// Instance this session is connected to.

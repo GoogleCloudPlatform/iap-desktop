@@ -43,14 +43,13 @@ namespace Google.Solutions.IapDesktop.Application.Client
             where TModel : class;
     }
 
-    public class ExternalRestClient : IExternalRestClient
+    public sealed class ExternalRestClient : IExternalRestClient
     {
         //
         // Use the same client for all connections to benefit
         // from connection pooling.
         //
         private readonly RestClient client = new RestClient(Install.UserAgent);
-
 
         public async Task<TModel?> GetAsync<TModel>(Uri url, CancellationToken cancellationToken)
             where TModel : class

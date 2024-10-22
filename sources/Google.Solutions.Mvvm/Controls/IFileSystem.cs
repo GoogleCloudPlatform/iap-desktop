@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Mvvm.Controls
 {
-    public interface IFileSystem
+    public interface IFileSystem : IDisposable
     {
         /// <summary>
         /// Root of the file system.

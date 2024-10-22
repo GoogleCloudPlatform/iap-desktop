@@ -47,8 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             this.Logoff = new LogoffCommand();
             this.Reconnect = new ReconnectCommand();
             this.TypeClipboardText = new TypeClipboardTextCommand();
-            this.DownloadFiles = new DownloadFilesCommand();
-            this.UploadFiles = new UploadFilesCommand();
+            this.TransferFiles = new TransferFilesCommand();
             this.CloseAll = new CloseAllCommand(sessionBroker);
             this.CloseAllButThis = new CloseAllButThisCommand(sessionBroker);
         }
@@ -65,8 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         public IContextCommand<ISession> Logoff { get; }
         public IContextCommand<ISession> Reconnect { get; }
         public IContextCommand<ISession> TypeClipboardText { get; }
-        public IContextCommand<ISession> DownloadFiles { get; }
-        public IContextCommand<ISession> UploadFiles { get; }
+        public IContextCommand<ISession> TransferFiles { get; }
         public IContextCommand<ISession> CloseAll { get; }
         public IContextCommand<ISession> CloseAllButThis { get; }
 
@@ -86,13 +84,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             }
         }
 
-        private class DownloadFilesCommand : SessionCommandBase
+        private class TransferFilesCommand : SessionCommandBase
         {
-            public DownloadFilesCommand()
-                : base("Do&wnload files...")
+            public TransferFilesCommand()
+                : base("&Transfer files...")
             {
                 this.Image = Resources.DownloadFile_16;
-                this.ActivityText = "Downloading files";
+                this.ActivityText = "Transferring files";
             }
 
             protected override bool IsEnabled(ISession session)
@@ -104,29 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
             public override Task ExecuteAsync(ISession session)
             {
-                return session.DownloadFilesAsync();
-            }
-        }
-
-        private class UploadFilesCommand : SessionCommandBase
-        {
-            public UploadFilesCommand()
-                : base("U&pload files...")
-            {
-                this.Image = Resources.UploadFile_16;
-                this.ActivityText = "Uploading files";
-            }
-
-            protected override bool IsEnabled(ISession session)
-            {
-                return session != null &&
-                    session.IsConnected &&
-                    session.CanTransferFiles;
-            }
-
-            public override Task ExecuteAsync(ISession session)
-            {
-                return session.UploadFilesAsync();
+                return session.TransferFilesAsync();
             }
         }
 

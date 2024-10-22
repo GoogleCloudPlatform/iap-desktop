@@ -320,5 +320,17 @@ namespace Google.Solutions.Ssh.Native
             this.Name = name;
             this.attributes = attributes;
         }
+
+        public Libssh2SftpFileInfo(
+            string name,
+            FilePermissions permissions)
+            : this(
+                name,
+                new LIBSSH2_SFTP_ATTRIBUTES()
+                {
+                    permissions = (uint)permissions
+                })
+        {
+        }
     }
 }

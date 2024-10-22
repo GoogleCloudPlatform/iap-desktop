@@ -103,6 +103,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.Disposed += (s, e) =>
             {
                 this.fileTypeCache.Dispose();
+                this.fileSystem?.Dispose();
             };
         }
 

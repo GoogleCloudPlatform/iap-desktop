@@ -129,21 +129,42 @@ namespace Google.Solutions.Mvvm.Shell
             private const int MAX_PATH = 260;
             private const int NAMESIZE = 80;
 
-            [StructLayout(LayoutKind.Sequential)]
+            [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
             public struct SHFILEINFOA
             {
+                /// <summary>
+                /// A handle to the icon that represents the file. 
+                /// </summary>
                 public IntPtr hIcon;
+
+                /// <summary>
+                /// The index of the icon image within the system image list.
+                /// </summary>
                 public int iIcon;
+
+                /// <summary>
+                /// An array of values that indicates the attributes of the
+                /// file object. 
+                /// </summary>
                 public uint dwAttributes;
+
+                /// <summary>
+                /// A string that contains the name of the file as it appears
+                /// in the Windows Shell
+                /// </summary>
                 [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
                 public string szDisplayName;
+
+                /// <summary>
+                /// A string that describes the type of file.
+                /// </summary>
                 [MarshalAs(UnmanagedType.ByValTStr, SizeConst = NAMESIZE)]
                 public string szTypeName;
             };
 
-            [DllImport("Shell32.dll", CharSet = CharSet.Ansi)]
+            [DllImport("Shell32.dll", CharSet = CharSet.Unicode)]
             public static extern IntPtr SHGetFileInfo(
-                [In] string pszPath,
+                [In][MarshalAs(UnmanagedType.LPWStr)] string pszPath,
                 [In] FileAttributes dwFileAttributes,
                 [In][Out] ref SHFILEINFOA psfi,
                 [In] uint cbFileInfo,

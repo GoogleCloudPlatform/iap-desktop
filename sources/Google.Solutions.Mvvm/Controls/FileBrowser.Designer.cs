@@ -115,6 +115,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.directoryTree.SelectedImageIndex = 0;
             this.directoryTree.Size = new System.Drawing.Size(200, 256);
             this.directoryTree.TabIndex = 0;
+            this.directoryTree.HideSelection = false;
             this.directoryTree.SelectedModelNodeChanged += new System.EventHandler(this.directoryTree_SelectedModelNodeChanged);
             this.directoryTree.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fileList_KeyDown);
             // 
@@ -143,6 +144,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.fileList.Size = new System.Drawing.Size(390, 256);
             this.fileList.SmallImageList = this.fileIconsList;
             this.fileList.TabIndex = 1;
+            this.fileList.HideSelection = false;
             this.fileList.UseCompatibleStateImageBehavior = false;
             this.fileList.View = System.Windows.Forms.View.Details;
             this.fileList.DragDrop += new System.Windows.Forms.DragEventHandler(this.fileList_DragDrop);

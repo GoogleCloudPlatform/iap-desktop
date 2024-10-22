@@ -406,20 +406,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 .RedirectClipboard == RdpRedirectClipboard.Enabled;
         }
 
-        public Task DownloadFilesAsync()
+        public Task TransferFilesAsync()
         {
             ShowTooltip(
                 "Copy and paste files here",
-                "Use copy and paste to transfer files between " +
-                "your local computer and the VM.");
-
-            return Task.CompletedTask;
-        }
-
-        public Task UploadFilesAsync()
-        {
-            ShowTooltip(
-                "Paste files to upload",
                 "Use copy and paste to transfer files between " +
                 "your local computer and the VM.");
 

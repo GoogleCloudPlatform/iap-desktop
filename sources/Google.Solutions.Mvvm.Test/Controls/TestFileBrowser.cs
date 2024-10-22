@@ -984,5 +984,43 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     Times.Exactly(2));
             }
         }
+
+        //---------------------------------------------------------------------
+        // Dispose.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Dispose_DisposesFileSystem()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            fileSystem
+                .SetupGet(fs => fs.Root)
+                .Returns(CreateDirectory().Object);
+            fileSystem
+                .Setup(fs => fs.ListFilesAsync(It.IsAny<IFileItem>()))
+                .ReturnsAsync(new ObservableCollection<IFileItem>());
+
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+                form.Controls.Add(browser);
+
+
+                browser.Bind(
+                    fileSystem.Object,
+                    new Mock<IBindingContext>().Object);
+                Application.DoEvents();
+
+                form.Show();
+            }
+
+            fileSystem.Verify(f => f.Dispose(), Times.Once);
+        }
     }
 }

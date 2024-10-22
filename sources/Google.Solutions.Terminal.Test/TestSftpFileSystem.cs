@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
@@ -29,7 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Session
+namespace Google.Solutions.Terminal.Test
 {
     [TestFixture]
     public class TestSftpFileSystem
@@ -43,12 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
         private static Libssh2SftpFileInfo CreateFile(string name, FilePermissions permissions)
         {
-            return new Libssh2SftpFileInfo(
-                name,
-                new LIBSSH2_SFTP_ATTRIBUTES()
-                {
-                    permissions = (uint)permissions
-                });
+            return new Libssh2SftpFileInfo(name, permissions);
         }
 
         //---------------------------------------------------------------------
@@ -65,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 Assert.IsNotNull(root);
                 Assert.IsFalse(root.Type.IsFile);
                 Assert.IsTrue(root.IsExpanded);
-                Assert.AreEqual(string.Empty, root.Name);
+                Assert.AreEqual("/", root.Name);
             }
         }
 

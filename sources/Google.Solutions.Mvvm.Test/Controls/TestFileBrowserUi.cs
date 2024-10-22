@@ -104,6 +104,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 await Task.Delay(750);
                 return (new ObservableCollection<IFileItem>(directories.Concat(files)));
             }
+
+            public void Dispose()
+            {
+            }
         }
 
         private class LocalFileItem : ViewModelBase, IFileItem
