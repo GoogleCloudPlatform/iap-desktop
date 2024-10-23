@@ -73,10 +73,7 @@
       <DependentUpon>TerminalOptionsSheet.cs</DependentUpon>
     </Compile>
     <Compile Update="ToolWindows\Rdp\RdpView.cs" />
-    <Compile Update="ToolWindows\Rdp\RdpView.Designer.cs">
-      <DependentUpon>RdpView.cs</DependentUpon>
-    </Compile>
-    <Compile Update="ToolWindows\SessionViewBase.cs" />
+    <Compile Update="ToolWindows\Session\SessionViewBase.cs" />
     <Compile Update="ToolWindows\SshKeys\AuthorizedPublicKeysView.cs" />
     <Compile Update="ToolWindows\SshKeys\AuthorizedPublicKeysView.Designer.cs">
       <DependentUpon>AuthorizedPublicKeysView.cs</DependentUpon>
@@ -130,9 +127,6 @@
     </EmbeddedResource>
     <EmbeddedResource Update="ToolWindows\Options\TerminalOptionsSheet.resx">
       <DependentUpon>TerminalOptionsSheet.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="ToolWindows\Rdp\RdpView.resx">
-      <DependentUpon>RdpView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="ToolWindows\SshKeys\AuthorizedPublicKeysView.resx">
       <DependentUpon>AuthorizedPublicKeysView.cs</DependentUpon>

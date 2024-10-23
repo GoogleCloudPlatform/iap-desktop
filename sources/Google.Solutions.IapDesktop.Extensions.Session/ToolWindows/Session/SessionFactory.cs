@@ -36,6 +36,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 
+
 #if DEBUG
 using Google.Solutions.Common.Diagnostics;
 #endif

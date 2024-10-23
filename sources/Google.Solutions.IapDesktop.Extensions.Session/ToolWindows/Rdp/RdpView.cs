@@ -23,23 +23,21 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Security;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
+using Google.Solutions.IapDesktop.Extensions.Session.Properties;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Controls;
-using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Settings.Collection;
 using Google.Solutions.Terminal.Controls;
 using System;
 using System.Data;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -48,39 +46,20 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 {
     [Service]
-    public partial class RdpView
-        : SessionViewBase, IRdpSession, IView<RdpViewModel>
+    public class RdpView
+        : SessionViewBase2<RdpClient>, IRdpSession, IView<RdpViewModel>
     {
         /// <summary>
         /// Hotkey to toggle full-screen.
         /// </summary>
         public const Keys ToggleFullScreenHotKey = Keys.Control | Keys.Alt | Keys.F11;
 
-        private readonly IExceptionDialog exceptionDialog;
-        private readonly IEventQueue eventService;
-        private readonly IControlTheme theme;
         private readonly IRepository<IApplicationSettings> settingsRepository;
 
         private Bound<RdpViewModel> viewModel;
 
         // For testing only.
         internal event EventHandler? AuthenticationWarningDisplayed;
-
-        public bool IsClosing { get; private set; } = false;
-
-        private void UpdateLayout()
-        {
-            if (this.rdpClient == null)
-            {
-                return;
-            }
-
-            //
-            // NB. Docking does not work reliably with the OCX, so keep the size
-            // in sync programmatically.
-            //
-            this.rdpClient.Size = this.Size;
-        }
 
         private bool IsRdsSessionHostRedirectionError(Exception e)
         {
@@ -97,40 +76,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 //
                 return e is RdpDisconnectedException disconnected &&
                     disconnected.DisconnectReason == 516 && // Unable to establish a connection
-                    this.rdpClient.Server != this.viewModel.Value.Server;
+                    this.Client!.Server != this.viewModel.Value.Server;
             }
             catch
             {
                 return false;
-            }
-        }
-
-        private async Task ShowErrorAndCloseAsync(string caption, Exception e)
-        {
-            using (ApplicationTraceSource.Log.TraceMethod().WithParameters(e.Message))
-            {
-                await this.eventService
-                    .PublishAsync(new SessionAbortedEvent(this.Instance, e))
-                    .ConfigureAwait(true);
-
-                if (IsRdsSessionHostRedirectionError(e))
-                {
-                    this.exceptionDialog.Show(
-                        this,
-                        caption,
-                        new RdsRedirectException(
-                            "The server initiated a redirect to a different " +
-                            "server. IAP Desktop does not support redirects.\n\n" +
-                            "To connect to a RD Session Host, change your connection settings " +
-                            "to use an 'Admin' session.",
-                            e));
-                }
-                else
-                {
-                    this.exceptionDialog.Show(this, caption, e);
-                }
-
-                Close();
             }
         }
 
@@ -142,24 +92,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             : base(
                   serviceProvider.GetService<IMainWindow>(),
                   serviceProvider.GetService<ToolWindowStateRepository>(),
+                  serviceProvider.GetService<IEventQueue>(),
+                  serviceProvider.GetService<IExceptionDialog>(),
+                  serviceProvider.GetService<IToolWindowTheme>(),
                   serviceProvider.GetService<IBindingContext>())
         {
-            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
-            this.eventService = serviceProvider.GetService<IEventQueue>();
-            this.theme = serviceProvider.GetService<IToolWindowTheme>();
             this.settingsRepository = serviceProvider.GetService<IRepository<IApplicationSettings>>();
-        }
-
-        //---------------------------------------------------------------------
-        // Publics.
-        //---------------------------------------------------------------------
-
-        public InstanceLocator Instance => this.viewModel.Value.Instance!;
-
-        public override string Text
-        {
-            get => this.viewModel.TryGet()?.Instance?.Name ?? "Remote Desktop";
-            set { }
+            this.Icon = Resources.ComputerBlue_16;
         }
 
         public void Bind(
@@ -169,10 +108,40 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             this.viewModel.Value = viewModel;
         }
 
-        public void Connect()
-        {
-            Debug.Assert(this.rdpClient == null, "Not initialized yet");
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
 
+        public override InstanceLocator Instance
+        {
+            get => this.viewModel.Value.Instance!;
+        }
+
+        public override string Text
+        {
+            get => this.viewModel.TryGet()?.Instance?.Name ?? "Remote Desktop";
+            set { }
+        }
+
+        protected override void OnFatalError(Exception e)
+        {
+            if (IsRdsSessionHostRedirectionError(e))
+            {
+                base.OnFatalError(new RdsRedirectException(
+                    "The server initiated a redirect to a different " +
+                    "server. IAP Desktop does not support redirects.\n\n" +
+                    "To connect to a RD Session Host, change your connection settings " +
+                    "to use an 'Admin' session.",
+                    e));
+            }
+            else
+            {
+                base.OnFatalError(e);
+            }
+        }
+
+        protected override void ConnectCore()
+        {
             var viewModel = this.viewModel.Value;
 
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(
@@ -180,35 +149,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 viewModel.Port,
                 viewModel.Parameters!.ConnectionTimeout))
             {
-                //
-                // NB. The initialization needs to happen after the pane is shown, otherwise
-                // an error happens indicating that the control does not have a Window handle.
-                //
-                InitializeComponent();
-                Debug.Assert(this.rdpClient != null);
-
-                //
-                // Because we're not initializing controls in the constructor, the
-                // theme isn't applied by default.
-                //
-                Debug.Assert(this.theme != null || Install.IsExecutingTests);
-
-                SuspendLayout();
-                this.theme?.ApplyTo(this);
-                UpdateLayout();
-                ResumeLayout();
-
-                this.rdpClient!.MainWindow = (Form)this.MainWindow;
+                this.Client!.MainWindow = (Form)this.MainWindow;
+                this.Client.ServerAuthenticationWarningDisplayed += (_, args)
+                    => this.AuthenticationWarningDisplayed?.Invoke(this, args);
 
                 //
                 // Basic connection settings.
                 //
-                this.rdpClient.Server = viewModel.Server;
-                this.rdpClient.Domain = viewModel.Credential!.Domain;
-                this.rdpClient.Username = viewModel.Credential.User;
-                this.rdpClient.ServerPort = viewModel.Port!.Value;
-                this.rdpClient.ConnectionTimeout = viewModel.Parameters.ConnectionTimeout;
-                this.rdpClient.EnableAdminMode = viewModel.Parameters.SessionType == RdpSessionType.Admin;
+                this.Client.Server = viewModel.Server;
+                this.Client.Domain = viewModel.Credential!.Domain;
+                this.Client.Username = viewModel.Credential.User;
+                this.Client.ServerPort = viewModel.Port!.Value;
+                this.Client.ConnectionTimeout = viewModel.Parameters.ConnectionTimeout;
+                this.Client.EnableAdminMode = viewModel.Parameters.SessionType == RdpSessionType.Admin;
 
                 //
                 // Connection security settings.
@@ -216,105 +169,105 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 switch (viewModel.Parameters.AuthenticationLevel)
                 {
                     case RdpAuthenticationLevel.NoServerAuthentication:
-                        this.rdpClient.ServerAuthenticationLevel = 0;
+                        this.Client.ServerAuthenticationLevel = 0;
                         break;
 
                     case RdpAuthenticationLevel.RequireServerAuthentication:
-                        this.rdpClient.ServerAuthenticationLevel = 1;
+                        this.Client.ServerAuthenticationLevel = 1;
                         break;
 
                     case RdpAuthenticationLevel.AttemptServerAuthentication:
-                        this.rdpClient.ServerAuthenticationLevel = 2;
+                        this.Client.ServerAuthenticationLevel = 2;
                         break;
                 }
 
                 switch (viewModel.Parameters.UserAuthenticationBehavior)
                 {
                     case RdpAutomaticLogon.Enabled:
-                        this.rdpClient.EnableCredentialPrompt = true;
-                        this.rdpClient.Password = viewModel.Credential.Password?.AsClearText() ?? string.Empty;
+                        this.Client.EnableCredentialPrompt = true;
+                        this.Client.Password = viewModel.Credential.Password?.AsClearText() ?? string.Empty;
                         break;
 
                     case RdpAutomaticLogon.Disabled:
-                        this.rdpClient.EnableCredentialPrompt = true;
+                        this.Client.EnableCredentialPrompt = true;
                         // Leave password blank.
                         break;
 
                     case RdpAutomaticLogon.LegacyAbortOnFailure:
-                        this.rdpClient.EnableCredentialPrompt = false;
-                        this.rdpClient.Password = viewModel.Credential.Password?.AsClearText() ?? string.Empty;
+                        this.Client.EnableCredentialPrompt = false;
+                        this.Client.Password = viewModel.Credential.Password?.AsClearText() ?? string.Empty;
                         break;
                 }
 
-                this.rdpClient.EnableNetworkLevelAuthentication =
+                this.Client.EnableNetworkLevelAuthentication =
                     (viewModel.Parameters.NetworkLevelAuthentication != RdpNetworkLevelAuthentication.Disabled);
-                this.rdpClient.EnableRestrictedAdminMode =
+                this.Client.EnableRestrictedAdminMode =
                     (viewModel.Parameters.RestrictedAdminMode == RdpRestrictedAdminMode.Enabled);
 
                 //
                 // Connection bar settings.
                 //
-                this.rdpClient.EnableConnectionBar =
+                this.Client.EnableConnectionBar =
                     (viewModel.Parameters.ConnectionBar != RdpConnectionBarState.Off);
-                this.rdpClient.EnableConnectionBarMinimizeButton = true;
-                this.rdpClient.EnableConnectionBarPin =
+                this.Client.EnableConnectionBarMinimizeButton = true;
+                this.Client.EnableConnectionBarPin =
                     (viewModel.Parameters.ConnectionBar == RdpConnectionBarState.Pinned);
-                this.rdpClient.ConnectionBarText = this.Instance.Name;
+                this.Client.ConnectionBarText = this.Instance.Name;
 
                 //
                 // Local resources settings.
                 //
-                this.rdpClient.EnableClipboardRedirection =
+                this.Client.EnableClipboardRedirection =
                     viewModel.Parameters.RedirectClipboard == RdpRedirectClipboard.Enabled;
-                this.rdpClient.EnablePrinterRedirection =
+                this.Client.EnablePrinterRedirection =
                     viewModel.Parameters.RedirectPrinter == RdpRedirectPrinter.Enabled;
-                this.rdpClient.EnableSmartCardRedirection =
+                this.Client.EnableSmartCardRedirection =
                     viewModel.Parameters.RedirectSmartCard == RdpRedirectSmartCard.Enabled;
-                this.rdpClient.EnablePortRedirection =
+                this.Client.EnablePortRedirection =
                     viewModel.Parameters.RedirectPort == RdpRedirectPort.Enabled;
-                this.rdpClient.EnableDriveRedirection =
+                this.Client.EnableDriveRedirection =
                     viewModel.Parameters.RedirectDrive == RdpRedirectDrive.Enabled;
-                this.rdpClient.EnableDeviceRedirection =
+                this.Client.EnableDeviceRedirection =
                     viewModel.Parameters.RedirectDevice == RdpRedirectDevice.Enabled;
 
                 switch (viewModel.Parameters.AudioMode)
                 {
                     case RdpAudioMode.PlayLocally:
-                        this.rdpClient.AudioRedirectionMode = 0;
+                        this.Client.AudioRedirectionMode = 0;
                         break;
                     case RdpAudioMode.PlayOnServer:
-                        this.rdpClient.AudioRedirectionMode = 1;
+                        this.Client.AudioRedirectionMode = 1;
                         break;
                     case RdpAudioMode.DoNotPlay:
-                        this.rdpClient.AudioRedirectionMode = 2;
+                        this.Client.AudioRedirectionMode = 2;
                         break;
                 }
 
                 //
                 // Display settings.
                 //
-                this.rdpClient.EnableDpiScaling =
+                this.Client.EnableDpiScaling =
                     viewModel.Parameters.DpiScaling == RdpDpiScaling.Enabled;
-                this.rdpClient.EnableAutoResize =
+                this.Client.EnableAutoResize =
                     viewModel.Parameters.DesktopSize == RdpDesktopSize.AutoAdjust;
 
                 switch (viewModel.Parameters.ColorDepth)
                 {
                     case RdpColorDepth.HighColor:
-                        this.rdpClient.ColorDepth = 16;
+                        this.Client.ColorDepth = 16;
                         break;
                     case RdpColorDepth.TrueColor:
-                        this.rdpClient.ColorDepth = 24;
+                        this.Client.ColorDepth = 24;
                         break;
                     case RdpColorDepth.DeepColor:
-                        this.rdpClient.ColorDepth = 32;
+                        this.Client.ColorDepth = 32;
                         break;
                 }
 
                 //
                 // Keyboard settings.
                 //
-                this.rdpClient.KeyboardHookMode =
+                this.Client.KeyboardHookMode =
                     (int)viewModel.Parameters.HookWindowsKeys;
 
                 //
@@ -322,32 +275,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 // the same as the main window uses to move the focus to the
                 // control.
                 //
-                this.rdpClient.FocusHotKey = ToggleFocusHotKey;
-                this.rdpClient.FullScreenHotKey = ToggleFullScreenHotKey;
+                this.Client.FocusHotKey = ToggleFocusHotKey;
+                this.Client.FullScreenHotKey = ToggleFullScreenHotKey;
 
-                this.rdpClient.EnableWebAuthnRedirection =
+                this.Client.EnableWebAuthnRedirection =
                     (viewModel.Parameters.RedirectWebAuthn == RdpRedirectWebAuthn.Enabled);
 
-                this.rdpClient.Connect();
+                this.Client.Connect();
             }
         }
 
-        public bool IsConnected
-        {
-            get =>
-                this.rdpClient.State == RdpClient.ConnectionState.Connected ||
-                this.rdpClient.State == RdpClient.ConnectionState.LoggedOn;
-        }
-
-        public bool CanEnterFullScreen => this.rdpClient.CanEnterFullScreen;
-
-        //---------------------------------------------------------------------
-        // Window events.
-        //---------------------------------------------------------------------
-
         protected override void OnSizeChanged(EventArgs e)
         {
-            if (this.rdpClient != null && this.rdpClient.IsFullScreen)
+            if (this.Client != null && this.Client.IsFullScreen)
             {
                 //
                 // Ignore, any attempted size change might
@@ -357,94 +297,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             }
 
             base.OnSizeChanged(e);
-
-            //
-            // Rearrange controls based on new size.
-            //
-            UpdateLayout();
-        }
-
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            base.OnFormClosing(e);
-
-            //
-            // Mark this pane as being in closing state even though it is still
-            // visible at this point. The flag ensures that this pane is
-            // not considered by TryGetExistingPane anymore.
-            //
-            this.IsClosing = true;
-
-            _ = this.eventService
-                .PublishAsync(new SessionEndedEvent(this.Instance))
-                .ContinueWith(_ => { });
         }
 
         //---------------------------------------------------------------------
-        // RDP callbacks.
+        // IRdpSession.
         //---------------------------------------------------------------------
 
-        private void rdpClient_ConnectionClosed(object sender, RdpClient.ConnectionClosedEventArgs e)
+        public bool CanEnterFullScreen
         {
-            switch (e.Reason)
-            {
-                case ClientBase.DisconnectReason.ReconnectInitiatedByUser:
-                    //
-                    // User initiated a reconnect -- leave everything as is.
-                    //
-                    break;
-
-                case RdpClient.DisconnectReason.FormClosed:
-                    //
-                    // User closed the form.
-                    //
-                    break;
-
-                case RdpClient.DisconnectReason.DisconnectedByUser:
-                    //
-                    // User-initiated signout.
-                    //
-                    Close();
-                    break;
-
-                default:
-                    //
-                    // Something else - allow user to reconnect.
-                    //
-                    break;
-            }
+            get => this.Client != null && this.Client.CanEnterFullScreen;
         }
-
-        [SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "")]
-        private async void rdpClient_ConnectionFailed(object _, ExceptionEventArgs e)
-        {
-            await ShowErrorAndCloseAsync(
-                    "Connect Remote Desktop session failed",
-                    e.Exception)
-                .ConfigureAwait(true);
-        }
-
-        private void rdpClient_StateChanged(object _, System.EventArgs e)
-        {
-            if (this.rdpClient.State == RdpClient.ConnectionState.Connected)
-            {
-                _ = this.eventService
-                    .PublishAsync(new SessionStartedEvent(this.Instance))
-                    .ContinueWith(_ => { });
-            }
-        }
-
-        private void rdpClient_ServerAuthenticationWarningDisplayed(object _, System.EventArgs e)
-        {
-            this.AuthenticationWarningDisplayed?.Invoke(this, e);
-        }
-
-        //---------------------------------------------------------------------
-        // IRemoteDesktopSession.
-        //---------------------------------------------------------------------
 
         public bool TrySetFullscreen(FullScreenMode mode)
         {
+            Precondition.ExpectNotNull(this.Client, "Client connected");
+
             Rectangle? customBounds;
             if (mode == FullScreenMode.SingleScreen)
             {
@@ -486,32 +353,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 customBounds = r;
             }
 
-            return this.rdpClient.TryEnterFullScreen(customBounds);
+            return this.Client!.TryEnterFullScreen(customBounds);
         }
 
         public void ShowSecurityScreen()
         {
-            this.rdpClient.ShowSecurityScreen();
+            this.Client
+                .ExpectNotNull("Client connected")
+                .ShowSecurityScreen();
         }
 
         public void ShowTaskManager()
         {
-            this.rdpClient.ShowTaskManager();
+            this.Client
+                .ExpectNotNull("Client connected")
+                .ShowTaskManager();
         }
 
         public void Logoff()
         {
-            this.rdpClient.Logoff();
+            this.Client
+                .ExpectNotNull("Client connected")
+                .Logoff();
         }
 
         public void Reconnect()
         {
-            this.rdpClient.Reconnect();
+            this.Client
+                .ExpectNotNull("Client connected")
+                .Reconnect();
         }
 
         public void SendText(string text)
         {
-            this.rdpClient.SendText(text);
+            this.Client
+                .ExpectNotNull("Client connected")
+                .SendText(text);
         }
 
         public bool CanTransferFiles
@@ -564,10 +441,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             // NB. It's possible that another rescue operation is still in
             // progress. So don't create a window if there is one already.
             //
-            if (this.rescueWindow == null && this.rdpClient != null)
+            if (this.rescueWindow == null && this.Client != null)
             {
                 this.rescueWindow = new Form();
-                this.rdpClient.Parent = this.rescueWindow;
+                this.Client.Parent = this.rescueWindow;
             }
 
             base.OnDockBegin();
@@ -575,17 +452,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         protected override void OnDockEnd()
         {
-            if (this.rescueWindow != null && this.rdpClient != null)
+            if (this.rescueWindow != null && this.Client != null)
             {
-                this.rdpClient.Parent = this;
-                this.rdpClient.Size = this.Size;
+                this.Client.Parent = this;
+                this.Client.Size = this.Size;
                 this.rescueWindow.Close();
                 this.rescueWindow = null;
             }
 
             base.OnDockEnd();
         }
-
 
         //---------------------------------------------------------------------
         // Inner classes.
