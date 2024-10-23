@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Windows;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Moq;
