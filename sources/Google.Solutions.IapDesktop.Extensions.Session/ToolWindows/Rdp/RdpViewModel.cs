@@ -30,10 +30,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
     [Service]
     public class RdpViewModel : ViewModelBase
     {
-        public RdpViewModel()
-        {
-        }
-
         //---------------------------------------------------------------------
         // Initialization properties.
         //---------------------------------------------------------------------
@@ -51,10 +47,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
             this.Parameters.ExpectNotNull(nameof(this.Parameters));
             this.Credential.ExpectNotNull(nameof(this.Credential));
         }
-
-        //---------------------------------------------------------------------
-        // Observable properties.
-        //---------------------------------------------------------------------
-
     }
 }

@@ -39,7 +39,7 @@ namespace Google.Solutions.Terminal.Test.Controls
     [TestFixture]
     [RequiresInteraction]
     [Apartment(ApartmentState.STA)]
-    public class TestSshShellClient // TODO: Fix/complete tests
+    public class TestSshShellClient 
     {
         private const string InvalidServer = "8.8.8.8";
 
