@@ -31,6 +31,7 @@ using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Terminal.Controls;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
@@ -178,6 +179,50 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             this.IsClosing = true;
 
             _ = this.eventQueue.PublishAsync(new SessionEndedEvent(this.Instance));
+        }
+
+        //---------------------------------------------------------------------
+        // Drag/docking.
+        //
+        // The client control must always have a parent. But when a document is
+        // dragged to become a floating window, or when a window is re-docked,
+        // then its parent is temporarily set to null.
+        // 
+        // To "rescue" the client control in these situations, we temporarily
+        // move the the control to a rescue form when the drag begins, and
+        // restore it when it ends.
+        //---------------------------------------------------------------------
+
+        private Form? rescueWindow = null;
+
+        protected override Size DefaultFloatWindowClientSize => this.Size;
+
+        protected override void OnDockBegin()
+        {
+            //
+            // NB. It's possible that another rescue operation is still in
+            // progress. So don't create a window if there is one already.
+            //
+            if (this.rescueWindow == null && this.Client != null)
+            {
+                this.rescueWindow = new Form();
+                this.Client.Parent = this.rescueWindow;
+            }
+
+            base.OnDockBegin();
+        }
+
+        protected override void OnDockEnd()
+        {
+            if (this.rescueWindow != null && this.Client != null)
+            {
+                this.Client.Parent = this;
+                this.Client.Size = this.Size;
+                this.rescueWindow.Close();
+                this.rescueWindow = null;
+            }
+
+            base.OnDockEnd();
         }
 
         //---------------------------------------------------------------------
