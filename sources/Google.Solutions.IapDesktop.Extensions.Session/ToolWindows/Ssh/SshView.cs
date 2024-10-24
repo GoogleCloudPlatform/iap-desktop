@@ -1,4 +1,5 @@
-﻿using Google.Solutions.Apis.Locator;
+﻿using Google.Solutions.Apis.Diagnostics;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
@@ -163,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             //
             // Translate common exceptions to make them more actionable.
             //
-            if (e is Libssh2Exception unverifiedEx &&
+            if (e.Unwrap() is Libssh2Exception unverifiedEx &&
                 unverifiedEx.ErrorCode == LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED &&
                 this.viewModel.Value.Credential is PlatformCredential unverifiedPlatformCredential &&
                 unverifiedPlatformCredential.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
@@ -177,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                     e,
                     HelpTopics.TroubleshootingOsLogin));
             }
-            else if (e is Libssh2Exception authEx &&
+            else if (e.Unwrap() is Libssh2Exception authEx &&
                 authEx.ErrorCode == LIBSSH2_ERROR.AUTHENTICATION_FAILED &&
                 this.viewModel.Value.Credential is PlatformCredential failedPlatformCredential)
             {
@@ -215,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                         HelpTopics.ManagingMetadataAuthorizedKeys));
                 }
             }
-            else if (e is Libssh2Exception kexEx &&
+            else if (e.Unwrap() is Libssh2Exception kexEx &&
                 kexEx.ErrorCode == LIBSSH2_ERROR.KEY_EXCHANGE_FAILURE &&
                 Environment.OSVersion.Version.Build <= 10000)
             {
@@ -258,6 +259,38 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
         {
             //TODO: Show SFTP pane.
             throw new NotImplementedException();
+        }
+
+        //---------------------------------------------------------------------
+        // Exceptions.
+        //---------------------------------------------------------------------
+
+        public class OsLoginAuthenticationFailedException : Exception, IExceptionWithHelpTopic
+        {
+            public IHelpTopic Help { get; }
+
+            internal OsLoginAuthenticationFailedException(
+                string message,
+                Exception inner,
+                IHelpTopic helpTopic)
+                : base(message, inner)
+            {
+                this.Help = helpTopic;
+            }
+        }
+
+        public class MetadataKeyAuthenticationFailedException : Exception, IExceptionWithHelpTopic
+        {
+            public IHelpTopic Help { get; }
+
+            internal MetadataKeyAuthenticationFailedException(
+                string message,
+                Exception inner,
+                IHelpTopic helpTopic)
+                : base(message, inner)
+            {
+                this.Help = helpTopic;
+            }
         }
     }
 }

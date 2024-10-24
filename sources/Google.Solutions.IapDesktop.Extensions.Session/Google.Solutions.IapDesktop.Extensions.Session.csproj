@@ -85,11 +85,6 @@
     <Compile Update="ToolWindows\Ssh\DownloadFileView.Designer.cs">
       <DependentUpon>DownloadFileView.cs</DependentUpon>
     </Compile>
-    <Compile Update="ToolWindows\Ssh\SshTerminalView.cs" />
-    <Compile Update="ToolWindows\Ssh\TerminalPaneBase.cs" />
-    <Compile Update="ToolWindows\Ssh\TerminalPaneBase.Designer.cs">
-      <DependentUpon>TerminalPaneBase.cs</DependentUpon>
-    </Compile>
     <Compile Update="ToolWindows\Tunnels\TunnelsView.cs" />
     <Compile Update="ToolWindows\Tunnels\TunnelsView.designer.cs">
       <DependentUpon>TunnelsView.cs</DependentUpon>
@@ -133,9 +128,6 @@
     </EmbeddedResource>
     <EmbeddedResource Update="ToolWindows\Ssh\DownloadFileView.resx">
       <DependentUpon>DownloadFileView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="ToolWindows\Ssh\TerminalPaneBase.resx">
-      <DependentUpon>TerminalPaneBase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="ToolWindows\Tunnels\TunnelsView.resx">
       <DependentUpon>TunnelsView.cs</DependentUpon>

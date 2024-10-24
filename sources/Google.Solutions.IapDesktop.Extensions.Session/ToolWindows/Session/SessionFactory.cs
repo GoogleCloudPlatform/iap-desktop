@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             session.ContextCommands = this.sessionBroker.SessionMenu;
         }
 
-        private void ApplyTabStyle<TCredential, TParameters>(
+        private static void ApplyTabStyle<TCredential, TParameters>(
             DockContentHandler dockHandler,
             SessionTransportType transportType,
             bool isCreatedFromUrl,
@@ -221,48 +221,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             return session;
         }
 
-        internal async Task<ISshTerminalSession> ConnectSshSessionAsync( // TODO: remove
-            InstanceLocator instance,
-            ITransport transport,
-            SshParameters parameters,
-            ISshCredential credential)
-        {
-            Debug.Assert(this.mainForm.IsWindowThread());
-
-            var window = this.toolWindowHost.GetToolWindow<SshTerminalView, SshTerminalViewModel>();
-
-            window.ViewModel.Instance = instance;
-            window.ViewModel.Endpoint = transport.Endpoint;
-            window.ViewModel.Credential = credential;
-            window.ViewModel.Language = parameters.Language;
-            window.ViewModel.ConnectionTimeout = parameters.ConnectionTimeout;
-
-            var session = window.Bind();
-
-            //
-            // Dispose transport when session is closed, or if connecting fails.
-            //
-            session.AttachDisposable(transport);
-
-            ApplyTabStyle(
-                session.DockHandler,
-                parameters.TransportType,
-                false,
-                session.Instance,
-                credential,
-                parameters);
-
-            window.Show();
-
-            await session.ConnectAsync()
-                .ConfigureAwait(true);
-
-            OnSessionConnected(session);
-
-            return session;
-        }
-
-
         internal ISshTerminalSession ConnectSshSession(
             InstanceLocator instance,
             ITransport transport,
@@ -321,13 +279,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                     result.Transport,
                     context.Parameters,
                     result.Credential);
-                // TODO: remove
-                // var session = await ConnectSshSessionAsync(
-                //         context.Instance,
-                //         result.Transport,
-                //         context.Parameters,
-                //         result.Credential)
-                //     .ConfigureAwait(true);
 
                 //
                 // Attach lifetime of context that of the session.
