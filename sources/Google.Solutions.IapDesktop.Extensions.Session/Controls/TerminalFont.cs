@@ -26,7 +26,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Controls
 {
-    internal sealed class TerminalFont : IDisposable
+    internal sealed class TerminalFont : IDisposable // TODO: remove
     {
         public const string DefaultFontFamily = "Consolas";
         public const float DefaultSize = 9.75f;

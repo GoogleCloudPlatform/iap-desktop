@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         public void Connect()
         {
-            Precondition.Expect(this.Client == null, "Not initialized yet");
+            Precondition.Expect(this.Client == null, "View has been connected before");
 
             //
             // Do initialization here (as opposed to in the constructor)

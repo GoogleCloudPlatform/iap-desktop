@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         // Ctor.
         //---------------------------------------------------------------------
 
-        public RdpView(IServiceProvider serviceProvider)
+        public RdpView(IServiceProvider serviceProvider) // TODO: use typed arguments
             : base(
                   serviceProvider.GetService<IMainWindow>(),
                   serviceProvider.GetService<ToolWindowStateRepository>(),
@@ -281,6 +281,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 this.Client.EnableWebAuthnRedirection =
                     (viewModel.Parameters.RedirectWebAuthn == RdpRedirectWebAuthn.Enabled);
 
+                //
+                // Start establishing a connection and react to events.
+                //
                 this.Client.Connect();
             }
         }

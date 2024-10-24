@@ -221,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             return session;
         }
 
-        internal async Task<ISshTerminalSession> ConnectSshSessionAsync(
+        internal async Task<ISshTerminalSession> ConnectSshSessionAsync( // TODO: remove
             InstanceLocator instance,
             ITransport transport,
             SshParameters parameters,
@@ -262,6 +262,45 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             return session;
         }
 
+
+        internal ISshTerminalSession ConnectSshSession(
+            InstanceLocator instance,
+            ITransport transport,
+            SshParameters parameters,
+            ISshCredential credential)
+        {
+            Debug.Assert(this.mainForm.IsWindowThread());
+
+            var window = this.toolWindowHost.GetToolWindow<SshView, SshViewModel>();
+
+            window.ViewModel.Instance = instance;
+            window.ViewModel.Endpoint = transport.Endpoint;
+            window.ViewModel.Parameters = parameters;
+            window.ViewModel.Credential = credential;
+
+            var session = window.Bind();
+
+            //
+            // Dispose transport when session is closed, or if connecting fails.
+            //
+            session.AttachDisposable(transport);
+
+            ApplyTabStyle(
+                session.DockHandler,
+                parameters.TransportType,
+                false,
+                session.Instance,
+                credential,
+                parameters);
+
+            window.Show();
+            session.Connect();
+
+            OnSessionConnected(session);
+
+            return session;
+        }
+
         //---------------------------------------------------------------------
         // ISessionFactory.
         //---------------------------------------------------------------------
@@ -277,13 +316,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 //
                 // Back on the UI thread, create the corresponding view.
                 //
-
-                var session = await ConnectSshSessionAsync(
-                        context.Instance,
-                        result.Transport,
-                        context.Parameters,
-                        result.Credential)
-                    .ConfigureAwait(true);
+                var session = ConnectSshSession(
+                    context.Instance,
+                    result.Transport,
+                    context.Parameters,
+                    result.Credential);
+                // TODO: remove
+                // var session = await ConnectSshSessionAsync(
+                //         context.Instance,
+                //         result.Transport,
+                //         context.Parameters,
+                //         result.Credential)
+                //     .ConfigureAwait(true);
 
                 //
                 // Attach lifetime of context that of the session.
