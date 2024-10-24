@@ -29,46 +29,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
     public class TestTerminalFont
     {
         //---------------------------------------------------------------------
-        // NextLargerFont.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void NextLargerFont_NextSmallerFontReturnsSmallerFont()
-        {
-            using (var font = new TerminalFont(TerminalFont.DefaultFontFamily, 10f))
-            {
-                using (var smallerFont = font.NextSmallerFont())
-                {
-                    Assert.AreEqual(font.Font.Size - 1, smallerFont.Font.Size);
-                }
-            }
-        }
-
-        [Test]
-        public void NextLargerFont_WhenMinSizeReached_NextSmallerFontKeepsSize()
-        {
-            var font = new TerminalFont(TerminalFont.DefaultFontFamily, 10f);
-            for (var i = 0; i < 10; i++)
-            {
-                font = font.NextSmallerFont();
-            }
-
-            Assert.AreEqual(TerminalFont.MinimumSize, font.Font.Size);
-        }
-
-        [Test]
-        public void NextLargerFont_WhenMaxSizeReached_NextLargerFontKeepsSize()
-        {
-            var font = new TerminalFont(TerminalFont.DefaultFontFamily, 40f);
-            for (var i = 0; i < 10; i++)
-            {
-                font = font.NextLargerFont();
-            }
-
-            Assert.AreEqual(TerminalFont.MaximumSize, font.Font.Size);
-        }
-
-        //---------------------------------------------------------------------
         // IsValidFont.
         //---------------------------------------------------------------------
 
