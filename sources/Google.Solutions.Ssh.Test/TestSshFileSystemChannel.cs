@@ -64,8 +64,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
                 await connection
                     .ConnectAsync()
@@ -96,8 +95,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
                 await connection
                     .ConnectAsync()
@@ -129,8 +127,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
                 await connection
                     .ConnectAsync()
@@ -165,8 +162,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
                 await connection
                     .ConnectAsync()
@@ -204,8 +200,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
                 await connection
                     .ConnectAsync()
@@ -244,8 +239,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
                 await connection
                     .ConnectAsync()
@@ -291,8 +285,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
                 await connection
                     .ConnectAsync()
@@ -329,8 +322,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
                 await connection
                     .ConnectAsync()
@@ -367,8 +359,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
                 await connection
                     .ConnectAsync()

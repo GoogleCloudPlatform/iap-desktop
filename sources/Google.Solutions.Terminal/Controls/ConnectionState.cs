@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,26 +19,37 @@
 // under the License.
 //
 
-#pragma warning disable CA1051 // Do not declare visible instance fields
-
-namespace Google.Solutions.Ssh
+namespace Google.Solutions.Terminal.Controls
 {
-    public readonly struct TerminalSize // TODO: Replace with PseudoTerminalDimensions
+    /// <summary>
+    /// Connection state of a client.
+    /// </summary>
+    public enum ConnectionState
     {
-        public static readonly TerminalSize Default = new TerminalSize(80, 24);
+        /// <summary>
+        /// Client not connected yet or an existing connection has 
+        /// been lost.
+        /// </summary>
+        NotConnected,
 
-        public readonly ushort Columns;
-        public readonly ushort Rows;
+        /// <summary>
+        /// Client is in the process of connecting.
+        /// </summary>
+        Connecting,
 
-        public TerminalSize(ushort columns, ushort rows)
-        {
-            this.Columns = columns;
-            this.Rows = rows;
-        }
+        /// <summary>
+        /// Client connected, but user log on hasn't completed yet.
+        /// </summary>
+        Connected,
 
-        public override string ToString()
-        {
-            return $"{this.Columns}x{this.Rows}";
-        }
+        /// <summary>
+        /// Client is disconnecting.
+        /// </summary>
+        Disconnecting,
+
+        /// <summary>
+        /// User logged on, session is ready to use.
+        /// </summary>
+        LoggedOn
     }
 }

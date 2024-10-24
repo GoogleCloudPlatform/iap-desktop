@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport.Policies;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.Testing.Apis.Integration;
 using System.Net;
 
@@ -42,7 +43,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
 
         public IPEndPoint Endpoint => this.Tunnel.LocalEndpoint;
 
-
         private IapTransport(
             IapTunnel tunnel,
             IProtocol protocol,
@@ -53,9 +53,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             this.Target = target;
         }
 
-        public static IapTransport ForRdp(
+        private static IapTransport Create(
             InstanceLocator instance,
-            IAuthorization authorization)
+            IAuthorization authorization,
+            IProtocol protocol,
+            ushort port)
         {
             var client = new IapClient(
                 IapClient.CreateEndpoint(),
@@ -66,16 +68,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             var listener = new IapListener(
                 client.GetTarget(
                     instance,
-                    3389,
+                    port,
                     IapClient.DefaultNetworkInterface),
                 policy,
                 null);
 
             var profile = new IapTunnel.Profile(
-                RdpProtocol.Protocol,
+                protocol,
                 policy,
                 instance,
-                3389,
+                port,
                 listener.LocalEndpoint);
 
             return new IapTransport(
@@ -83,8 +85,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                     listener,
                     profile,
                     IapTunnelFlags.None),
-                RdpProtocol.Protocol,
+                protocol,
                 instance);
+        }
+
+        public static IapTransport ForRdp(
+            InstanceLocator instance,
+            IAuthorization authorization)
+        {
+            return Create(
+                instance,
+                authorization,
+                RdpProtocol.Protocol,
+                3389);
+        }
+
+        public static IapTransport ForSsh( // TODO: Rename to CreateForSsh
+            InstanceLocator instance,
+            IAuthorization authorization)
+        {
+            return Create(
+                instance,
+                authorization,
+                SshProtocol.Protocol,
+                22);
         }
 
         protected override void Dispose(bool disposing)

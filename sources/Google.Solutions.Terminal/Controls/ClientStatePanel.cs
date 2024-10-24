@@ -32,7 +32,7 @@ namespace Google.Solutions.Terminal.Controls
     /// </summary>
     internal class ClientStatePanel : UserControl
     {
-        private ClientBase.ConnectionState state;
+        private ConnectionState state;
         private readonly Panel panel;
         private readonly Label stateLabel;
         private readonly LinearProgressBar progressBar;
@@ -87,7 +87,10 @@ namespace Google.Solutions.Terminal.Controls
             this.connectButton.Click += (sender, args)
                 => this.ConnectButtonClicked?.Invoke(sender, args);
 
-            this.State = ClientBase.ConnectionState.NotConnected;
+            this.State = ConnectionState.NotConnected;
+
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = AutoScaleMode.Dpi;
 
             ResumeLayout(false);
         }
@@ -95,7 +98,7 @@ namespace Google.Solutions.Terminal.Controls
         /// <summary>
         /// Update controls to reflect connection state.
         /// </summary>
-        public ClientBase.ConnectionState State
+        public ConnectionState State
         {
             get => this.state;
             set
@@ -104,19 +107,19 @@ namespace Google.Solutions.Terminal.Controls
 
                 switch (value)
                 {
-                    case ClientBase.ConnectionState.NotConnected:
+                    case ConnectionState.NotConnected:
                         this.stateLabel.Text = "Session disconnected";
                         this.progressBar.Visible = false;
                         this.connectButton.Visible = true;
                         break;
 
-                    case ClientBase.ConnectionState.Connecting:
+                    case ConnectionState.Connecting:
                         this.stateLabel.Text = "Connecting...";
                         this.progressBar.Visible = true;
                         this.connectButton.Visible = false;
                         break;
 
-                    case ClientBase.ConnectionState.Disconnecting:
+                    case ConnectionState.Disconnecting:
                         this.stateLabel.Text = "Disconnecting...";
                         this.progressBar.Visible = false;
                         this.connectButton.Visible = false;

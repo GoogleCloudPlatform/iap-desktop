@@ -137,6 +137,7 @@ namespace Google.Solutions.Terminal.Controls
         [Category("Behavior")]
         public bool EnableTypographicQuoteConversion { get; set; } = true;
 
+        /// <summary>
         /// Scroll to top using Ctrl+Home.
         /// </summary>
         [Category("Behavior")]
@@ -145,7 +146,6 @@ namespace Google.Solutions.Terminal.Controls
         /// <summary>
         /// Scroll to bottom using Ctrl+Home.
         /// </summary>
-        [Category("Behavior")]
         public bool EnableCtrlEnd { get; set; } = true;
     }
 }

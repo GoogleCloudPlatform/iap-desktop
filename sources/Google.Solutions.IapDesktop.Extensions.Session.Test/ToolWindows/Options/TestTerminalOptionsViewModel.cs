@@ -471,7 +471,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var settings = settingsRepository.GetSettings();
             settings.FontFamily.Value = font.Name;
             settings.FontSizeAsDword.Value =
-                TerminalSettingsRepository.DwordFromFontSize(font.Size);
+                TerminalSettings.DwordFromFontSize(font.Size);
             settingsRepository.SetSettings(settings);
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
@@ -495,7 +495,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var settings = settingsRepository.GetSettings();
             Assert.AreEqual(font.Name, settings.FontFamily.Value);
             Assert.AreEqual(
-                TerminalSettingsRepository.DwordFromFontSize(font.Size),
+                TerminalSettings.DwordFromFontSize(font.Size),
                 settings.FontSizeAsDword.Value);
         }
 

@@ -36,12 +36,6 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Controls\VirtualTerminal.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Controls\VirtualTerminal.designer.cs">
-      <DependentUpon>VirtualTerminal.cs</DependentUpon>
-    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -79,17 +73,6 @@
       <DependentUpon>AuthorizedPublicKeysView.cs</DependentUpon>
     </Compile>
     <Compile Update="ToolWindows\SshKeys\AuthorizedPublicKeysList.cs" />
-    <Compile Update="ToolWindows\Ssh\DownloadFileView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\Ssh\DownloadFileView.Designer.cs">
-      <DependentUpon>DownloadFileView.cs</DependentUpon>
-    </Compile>
-    <Compile Update="ToolWindows\Ssh\SshTerminalView.cs" />
-    <Compile Update="ToolWindows\Ssh\TerminalPaneBase.cs" />
-    <Compile Update="ToolWindows\Ssh\TerminalPaneBase.Designer.cs">
-      <DependentUpon>TerminalPaneBase.cs</DependentUpon>
-    </Compile>
     <Compile Update="ToolWindows\Tunnels\TunnelsView.cs" />
     <Compile Update="ToolWindows\Tunnels\TunnelsView.designer.cs">
       <DependentUpon>TunnelsView.cs</DependentUpon>
@@ -108,9 +91,6 @@
     <ProjectReference Include="..\Google.Solutions.Terminal\Google.Solutions.Terminal.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Update="Controls\VirtualTerminal.resx">
-      <DependentUpon>VirtualTerminal.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -130,12 +110,6 @@
     </EmbeddedResource>
     <EmbeddedResource Update="ToolWindows\SshKeys\AuthorizedPublicKeysView.resx">
       <DependentUpon>AuthorizedPublicKeysView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="ToolWindows\Ssh\DownloadFileView.resx">
-      <DependentUpon>DownloadFileView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="ToolWindows\Ssh\TerminalPaneBase.resx">
-      <DependentUpon>TerminalPaneBase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="ToolWindows\Tunnels\TunnelsView.resx">
       <DependentUpon>TunnelsView.cs</DependentUpon>

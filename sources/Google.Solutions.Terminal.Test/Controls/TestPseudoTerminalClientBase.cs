@@ -70,11 +70,11 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.Controls.Add(client);
                 form.Show();
 
-                Assert.AreEqual(ClientBase.ConnectionState.NotConnected, client.State);
+                Assert.AreEqual(ConnectionState.NotConnected, client.State);
 
                 client.Connect();
 
-                Assert.AreEqual(ClientBase.ConnectionState.LoggedOn, client.State);
+                Assert.AreEqual(ConnectionState.LoggedOn, client.State);
             }
         }
 
@@ -87,14 +87,14 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.Controls.Add(client);
                 form.Show();
 
-                Assert.AreEqual(ClientBase.ConnectionState.NotConnected, client.State);
+                Assert.AreEqual(ConnectionState.NotConnected, client.State);
 
                 var connectionFailedEvents = 0;
                 client.ConnectionFailed += (_, args) => connectionFailedEvents++;
 
                 client.Connect();
 
-                Assert.AreEqual(ClientBase.ConnectionState.NotConnected, client.State);
+                Assert.AreEqual(ConnectionState.NotConnected, client.State);
                 Assert.AreEqual(1, connectionFailedEvents);
             }
         }
@@ -109,14 +109,14 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.Controls.Add(client);
                 form.Show();
 
-                Assert.AreEqual(ClientBase.ConnectionState.NotConnected, client.State);
+                Assert.AreEqual(ConnectionState.NotConnected, client.State);
 
                 client.Connect();
-                Assert.AreEqual(ClientBase.ConnectionState.LoggedOn, client.State);
+                Assert.AreEqual(ConnectionState.LoggedOn, client.State);
 
                 form.Close();
 
-                Assert.AreEqual(ClientBase.ConnectionState.NotConnected, client.State);
+                Assert.AreEqual(ConnectionState.NotConnected, client.State);
             }
         }
 
@@ -130,17 +130,17 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.Controls.Add(client);
                 form.Show();
 
-                Assert.AreEqual(ClientBase.ConnectionState.NotConnected, client.State);
+                Assert.AreEqual(ConnectionState.NotConnected, client.State);
 
                 client.Connect();
-                Assert.AreEqual(ClientBase.ConnectionState.LoggedOn, client.State);
+                Assert.AreEqual(ConnectionState.LoggedOn, client.State);
 
                 var connectionFailedEvents = 0;
                 client.ConnectionFailed += (_, args) => connectionFailedEvents++;
 
                 pty.Raise(p => p.FatalError += null, new PseudoTerminalErrorEventArgs(new Exception("mock")));
 
-                Assert.AreEqual(ClientBase.ConnectionState.NotConnected, client.State);
+                Assert.AreEqual(ConnectionState.NotConnected, client.State);
                 Assert.AreEqual(1, connectionFailedEvents);
             }
         }
@@ -155,17 +155,17 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.Controls.Add(client);
                 form.Show();
 
-                Assert.AreEqual(ClientBase.ConnectionState.NotConnected, client.State);
+                Assert.AreEqual(ConnectionState.NotConnected, client.State);
 
                 client.Connect();
-                Assert.AreEqual(ClientBase.ConnectionState.LoggedOn, client.State);
+                Assert.AreEqual(ConnectionState.LoggedOn, client.State);
 
                 var connectionClosedEvents = 0;
                 client.ConnectionClosed += (_, args) => connectionClosedEvents++;
 
                 pty.Raise(p => p.Disconnected += null, EventArgs.Empty);
 
-                Assert.AreEqual(ClientBase.ConnectionState.NotConnected, client.State);
+                Assert.AreEqual(ConnectionState.NotConnected, client.State);
                 Assert.AreEqual(1, connectionClosedEvents);
             }
         }
@@ -185,7 +185,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.Controls.Add(client);
                 form.Show();
 
-                Assert.AreEqual(ClientBase.ConnectionState.NotConnected, client.State);
+                Assert.AreEqual(ConnectionState.NotConnected, client.State);
 
                 Assert.Throws<InvalidOperationException>(
                     () => client.SendText("test"));

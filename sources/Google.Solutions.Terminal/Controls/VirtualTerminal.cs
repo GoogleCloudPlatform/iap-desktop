@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Interop;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Platform.IO;
@@ -37,7 +38,7 @@ namespace Google.Solutions.Terminal.Controls
     /// <summary>
     /// A virtual terminal based on the Windows Terminal aka "Cascadia".
     /// </summary>
-    public partial class VirtualTerminal : UserControl
+    public partial class VirtualTerminal : DpiAwareUserControl
     {
         private const string DefaultFontFamily = "Consolas";
         private const float DefaultFontSize = 9.75f;

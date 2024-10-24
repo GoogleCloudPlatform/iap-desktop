@@ -38,7 +38,7 @@ using System.Management;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Session
 {
     [TestFixture]
-    public class TestSessionViewBase2
+    public class TestClientViewBase
     {
         private class SampleClient : ClientBase
         {
@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             }
         }
 
-        private class SampleSessionView : SessionViewBase2<SampleClient>
+        private class SampleSessionView : ClientViewBase<SampleClient>
         {
             public SampleSessionView(
                 IEventQueue eventQueue,
@@ -195,6 +195,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             dialog.Verify(
                 d => d.Show(view, It.IsAny<string>(), exception),
                 Times.Once);
+            eventQueue.Verify(
+                q => q.PublishAsync(It.IsAny<SessionEndedEvent>()),
+                Times.Never);
+            eventQueue.Verify(
+                q => q.PublishAsync(It.IsAny<SessionAbortedEvent>()),
+                Times.Once);
+        }
+
+        [Test]
+        public void Client_WhenOperationCancelled()
+        {
+            var eventQueue = new Mock<IEventQueue>();
+            var dialog = new Mock<IExceptionDialog>();
+
+            var view = new SampleSessionView(
+                eventQueue.Object,
+                dialog.Object);
+            view.Connect();
+
+            var exception = new OperationCanceledException();
+            view.Client.FailConnection(exception);
+
+            dialog.Verify(
+                d => d.Show(view, It.IsAny<string>(), exception),
+                Times.Never);
             eventQueue.Verify(
                 q => q.PublishAsync(It.IsAny<SessionEndedEvent>()),
                 Times.Never);

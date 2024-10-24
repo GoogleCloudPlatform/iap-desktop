@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Platform.IO;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.Collections.Generic;
@@ -53,8 +54,6 @@ namespace Google.Solutions.Ssh
         private readonly LinkedList<SshChannelBase> channels
             = new LinkedList<SshChannelBase>();
 
-        private readonly SynchronizationContext callbackContext; // TODO: remove syncctx
-
         /// <summary>
         /// Create a connection.
         /// </summary>
@@ -65,16 +64,9 @@ namespace Google.Solutions.Ssh
         public SshConnection(
             IPEndPoint endpoint,
             ISshCredential credential,
-            IKeyboardInteractiveHandler keyboardHandler,
-            SynchronizationContext callbackContext)
-            : base(
-                  endpoint,
-                  credential,
-                  new SynchronizedKeyboardInteractiveHandler(
-                      keyboardHandler, 
-                      callbackContext))
+            IKeyboardInteractiveHandler keyboardHandler)
+            : base(endpoint, credential, keyboardHandler)
         {
-            this.callbackContext = callbackContext;
         }
 
         //---------------------------------------------------------------------
@@ -279,58 +271,7 @@ namespace Google.Solutions.Ssh
         }
 
         public async Task<SshShellChannel> OpenShellAsync(
-            ITextTerminal terminal,
-            TerminalSize initialSize)
-        {
-            IEnumerable<EnvironmentVariable>? environmentVariables = null;
-            if (terminal.Locale != null)
-            {
-                //
-                // Format language so that Linux understands it.
-                //
-                var languageFormatted = terminal.Locale.Name.Replace('-', '_');
-                environmentVariables = new[]
-                {
-                    //
-                    // Try to pass locale - but do not fail the connection if
-                    // the server rejects it.
-                    //
-                    new EnvironmentVariable(
-                        "LC_ALL",
-                        $"{languageFormatted}.UTF-8",
-                        false)
-                };
-            }
-
-            return await RunSendOperationAsync(
-                session =>
-                {
-                    Debug.Assert(this.IsRunningOnWorkerThread);
-
-                    using (session.Session.AsBlocking())
-                    {
-                        var nativeChannel = session.OpenShellChannel(
-                            LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
-                            terminal.TerminalType,
-                            initialSize.Columns,
-                            initialSize.Rows,
-                            environmentVariables);
-
-                        var channel = new SshShellChannel(
-                            this,
-                            nativeChannel,
-                            new SynchronizedTextTerminal(terminal, this.callbackContext));
-
-                        this.channels.AddLast(channel);
-
-                        return channel;
-                    }
-                })
-                .ConfigureAwait(false);
-        }
-
-        public async Task<SshShellChannel2> OpenShellAsync(
-            TerminalSize initialSize,
+            PseudoTerminalSize initialSize,
             string terminalType,
             CultureInfo? locale)
         {
@@ -364,11 +305,11 @@ namespace Google.Solutions.Ssh
                         var nativeChannel = session.OpenShellChannel(
                             LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                             terminalType,
-                            initialSize.Columns,
-                            initialSize.Rows,
+                            initialSize.Width,
+                            initialSize.Height,
                             environmentVariables);
 
-                        var channel = new SshShellChannel2(
+                        var channel = new SshShellChannel(
                             this,
                             nativeChannel);
 

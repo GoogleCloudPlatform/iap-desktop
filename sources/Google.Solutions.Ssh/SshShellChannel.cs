@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2022 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,59 +19,129 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Threading;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Platform.IO;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+
 namespace Google.Solutions.Ssh
 {
     /// <summary>
     /// Channel for interacting with a remote shell.
     /// </summary>
-    public class SshShellChannel : SshChannelBase // TODO: replace by SshShellChannel2
+    /// <remarks> 
+    /// Events are delivered on the worker thread.
+    /// </remarks>
+    public class SshShellChannel : SshChannelBase, IPseudoTerminal
     {
-        public const string DefaultTerminal = "xterm";
+        /// <summary>
+        /// Encoding used by pseudo-terminal.
+        /// </summary>
         public static readonly Encoding DefaultEncoding = Encoding.UTF8;
-        public static readonly TerminalSize DefaultTerminalSize = new TerminalSize(80, 24);
 
         /// <summary>
         /// Channel handle, must only be accessed on worker thread.
         /// </summary>
         private readonly Libssh2ShellChannel nativeChannel;
 
-        private readonly ITextTerminal terminal;
-        private readonly StreamingDecoder decoder;
-
+        private readonly StreamingDecoder receiveDecoder;
         private readonly byte[] receiveBuffer = new byte[64 * 1024];
 
-        public override SshConnection Connection { get; }
+        /// <summary>
+        /// Task that is completed when an EOF was received.
+        /// </summary>
+        /// <remarks>
+        /// Force continuations to run asycnhronously so that they
+        /// don't block the worker thread.
+        /// </remarks>
+        private readonly TaskCompletionSource<object?> endOfStream
+            = new TaskCompletionSource<object?>(
+                TaskCreationOptions.RunContinuationsAsynchronously);
 
         internal SshShellChannel(
             SshConnection connection,
-            Libssh2ShellChannel nativeChannel,
-            ITextTerminal terminal)
+            Libssh2ShellChannel nativeChannel)
         {
             this.Connection = connection;
             this.nativeChannel = nativeChannel;
-            this.terminal = terminal;
-            this.decoder = new StreamingDecoder(DefaultEncoding);
+            this.receiveDecoder = new StreamingDecoder(DefaultEncoding);
+        }
+
+        //---------------------------------------------------------------------
+        // IPseudoTerminal.
+        //---------------------------------------------------------------------
+
+        public event EventHandler<PseudoTerminalDataEventArgs>? OutputAvailable;
+        public event EventHandler<PseudoTerminalErrorEventArgs>? FatalError;
+        public event EventHandler<EventArgs>? Disconnected;
+
+        public Task DrainAsync()
+        {
+            return this.endOfStream.Task;
+        }
+
+        public async Task ResizeAsync(
+            PseudoTerminalSize dimensions, 
+            CancellationToken cancellationToken)
+        {
+            //
+            // Switch to worker thread and write to channel.
+            //
+            try
+            {
+                await this.Connection
+                    .RunSendOperationAsync(_ =>
+                    {
+                        Debug.Assert(this.Connection.IsRunningOnWorkerThread);
+
+                        this.nativeChannel.ResizePseudoTerminal(
+                            dimensions.Width,
+                            dimensions.Height);
+                    })
+                    .ConfigureAwait(false);
+            }
+            catch (SshConnectionClosedException)
+            {
+                //
+                // Connection closed already. This can happen
+                // if the connection was disconnected by the
+                // server, and the client has't caught up to that.
+                //
+            }
+        }
+
+        public async Task WriteAsync(
+            string data,
+            CancellationToken cancellationToken)
+        {
+            if (data.Length == 0)
+            {
+                return;
+            }
+
+            //
+            // Switch to worker thread and write to channel.
+            //
+            await this.Connection
+                .RunSendOperationAsync(_ =>
+                {
+                    Debug.Assert(this.Connection.IsRunningOnWorkerThread);
+
+                    this.nativeChannel.Write(DefaultEncoding.GetBytes(data));
+                })
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------
         // Overrides.
         //---------------------------------------------------------------------
 
-        protected override void Close()
-        {
-            Debug.Assert(this.Connection.IsRunningOnWorkerThread);
-
-            this.nativeChannel.Close();
-            this.nativeChannel.Dispose();
-        }
+        public override SshConnection Connection { get; }
 
         internal override void OnReceive()
         {
@@ -85,36 +155,34 @@ namespace Google.Solutions.Ssh
             var bytesReceived = this.nativeChannel.Read(this.receiveBuffer);
             var endOfStream = this.nativeChannel.IsEndOfStream;
 
-            //
-            // Run callback asynchronously (post) on different context 
-            // (i.e., not on the current worker thread).
-            //
-            // NB. By decoding the data first, we make sure that the
-            // buffer is ready to be reused while the callback is
-            // running.
-            //
-
-            var receivedData = this.decoder.Decode(
+            var receivedData = this.receiveDecoder.Decode(
                 this.receiveBuffer,
                 0,
                 (int)bytesReceived);
 
             try
             {
-                this.terminal.OnDataReceived(receivedData);
-
-                //
-                // In non-blocking mode, we're not always receive a final
-                // zero-length read.
-                //
-                if (bytesReceived > 0 && endOfStream)
+                if (bytesReceived > 0)
                 {
-                    this.terminal.OnDataReceived(string.Empty);
+                    this.OutputAvailable?.Invoke(
+                        this,
+                        new PseudoTerminalDataEventArgs(receivedData));
+                }
+
+                if (endOfStream)
+                {
+                    //
+                    // End of stream reached, that means we're
+                    // disconnecting.
+                    //
+                    this.Disconnected?.Invoke(this, EventArgs.Empty);
+
+                    this.endOfStream.SetResult(null);
                 }
             }
             catch (Exception e)
             {
-                this.terminal.OnError(TerminalErrorType.TerminalIssue, e);
+                this.FatalError?.Invoke(this, new PseudoTerminalErrorEventArgs(e));
             }
         }
 
@@ -129,49 +197,28 @@ namespace Google.Solutions.Ssh
                 LIBSSH2_ERROR.SOCKET_TIMEOUT
             };
 
-            var lostConnection = exception.Unwrap() is Libssh2Exception sshEx &&
+            var unwrappedException = exception.Unwrap();
+            var lostConnection = unwrappedException is Libssh2Exception sshEx &&
                 errorsIndicatingLostConnection.Contains(sshEx.ErrorCode);
 
-            this.terminal.OnError(
-                lostConnection
-                    ? TerminalErrorType.ConnectionLost
-                    : TerminalErrorType.ConnectionFailed,
-                exception);
+            if (lostConnection)
+            {
+                this.Disconnected?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                this.FatalError?.Invoke(
+                    this,
+                    new PseudoTerminalErrorEventArgs(unwrappedException));
+            }
         }
 
-        //---------------------------------------------------------------------
-        // Publics.
-        //---------------------------------------------------------------------
-
-        public async Task SendAsync(byte[] buffer)
+        protected override void Close()
         {
-            await this.Connection
-                .RunSendOperationAsync(_ =>
-                {
-                    Debug.Assert(this.Connection.IsRunningOnWorkerThread);
+            Debug.Assert(this.Connection.IsRunningOnWorkerThread);
 
-                    this.nativeChannel.Write(buffer);
-                })
-                .ConfigureAwait(false);
-        }
-
-        public Task SendAsync(string data)
-        {
-            return SendAsync(DefaultEncoding.GetBytes(data));
-        }
-
-        public async Task ResizeTerminalAsync(TerminalSize size)
-        {
-            await this.Connection
-                .RunSendOperationAsync(_ =>
-                {
-                    Debug.Assert(this.Connection.IsRunningOnWorkerThread);
-
-                    this.nativeChannel.ResizePseudoTerminal(
-                        size.Columns,
-                        size.Rows);
-                })
-                .ConfigureAwait(false);
+            this.nativeChannel.Close();
+            this.nativeChannel.Dispose();
         }
     }
 }
