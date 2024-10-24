@@ -31,11 +31,12 @@ using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Terminal.Controls;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
-    public abstract class SessionViewBase2<TClient> : SessionViewBase // TODO: Merge into SessionViewBase, consolidate namespaces
+    public abstract class ClientViewBase<TClient> : SessionViewBase
         where TClient : ClientBase, new()
     {
         private readonly IExceptionDialog exceptionDialog;
@@ -46,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         public bool IsClosing { get; private set; } = false;
 
-        protected SessionViewBase2(
+        protected ClientViewBase(
             IMainWindow mainWindow,
             ToolWindowStateRepository stateRepository,
             IEventQueue eventQueue,
@@ -62,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         public void Connect()
         {
-            Precondition.Expect(this.Client == null, "Not initialized yet");
+            Precondition.Expect(this.Client == null, "View has been connected before");
 
             //
             // Do initialization here (as opposed to in the constructor)
@@ -98,8 +99,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         {
             get =>
                 this.Client != null && (
-                this.Client.State == RdpClient.ConnectionState.Connected ||
-                this.Client.State == RdpClient.ConnectionState.LoggedOn);
+                this.Client.State == ConnectionState.Connected ||
+                this.Client.State == ConnectionState.LoggedOn);
         }
 
         //---------------------------------------------------------------------
@@ -108,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         private void OnClientStateChanged(object sender, System.EventArgs e)
         {
-            if (this.Client!.State == RdpClient.ConnectionState.Connected)
+            if (this.Client!.State == ConnectionState.Connected)
             {
                 _ = this.eventQueue.PublishAsync(new SessionStartedEvent(this.Instance));
             }
@@ -181,6 +182,50 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         }
 
         //---------------------------------------------------------------------
+        // Drag/docking.
+        //
+        // The client control must always have a parent. But when a document is
+        // dragged to become a floating window, or when a window is re-docked,
+        // then its parent is temporarily set to null.
+        // 
+        // To "rescue" the client control in these situations, we temporarily
+        // move the the control to a rescue form when the drag begins, and
+        // restore it when it ends.
+        //---------------------------------------------------------------------
+
+        private Form? rescueWindow = null;
+
+        protected override Size DefaultFloatWindowClientSize => this.Size;
+
+        protected override void OnDockBegin()
+        {
+            //
+            // NB. It's possible that another rescue operation is still in
+            // progress. So don't create a window if there is one already.
+            //
+            if (this.rescueWindow == null && this.Client != null)
+            {
+                this.rescueWindow = new Form();
+                this.Client.Parent = this.rescueWindow;
+            }
+
+            base.OnDockBegin();
+        }
+
+        protected override void OnDockEnd()
+        {
+            if (this.rescueWindow != null && this.Client != null)
+            {
+                this.Client.Parent = this;
+                this.Client.Size = this.Size;
+                this.rescueWindow.Close();
+                this.rescueWindow = null;
+            }
+
+            base.OnDockEnd();
+        }
+
+        //---------------------------------------------------------------------
         // Abstract and virtual methods for deriving class to override.
         //---------------------------------------------------------------------
 
@@ -199,6 +244,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         /// </summary>
         protected virtual void OnFatalError(Exception e)
         {
+            if (e.IsCancellation())
+            {
+                //
+                // The user cancelled, nervemind.
+                //
+                return;
+            }
+
             this.exceptionDialog.Show(this, "Session disconnected", e);
         }
     }

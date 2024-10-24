@@ -106,7 +106,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Client.Connect();
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
                 //
@@ -114,7 +114,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.WindowState = FormWindowState.Maximized;
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
                 await Task.Delay(TimeSpan.FromSeconds(1));
@@ -124,7 +124,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.WindowState = FormWindowState.Minimized;
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
                 await Task.Delay(TimeSpan.FromSeconds(1));
@@ -134,7 +134,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.WindowState = FormWindowState.Normal;
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
                 await Task.Delay(TimeSpan.FromSeconds(1));
@@ -166,7 +166,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Client.Connect();
                 await window.Client
-                    .AwaitStateAsync(ClientBase.ConnectionState.NotConnected)
+                    .AwaitStateAsync(ConnectionState.NotConnected)
                     .ConfigureAwait(true);
 
                 Assert.NotNull(eventArgs);
@@ -188,7 +188,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Client.Connect();
                 await window.Client
-                    .AwaitStateAsync(ClientBase.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
                 ClientBase.ConnectionClosedEventArgs? eventArgs = null;
@@ -200,7 +200,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 window.Close();
 
                 await window.Client
-                    .AwaitStateAsync(ClientBase.ConnectionState.NotConnected)
+                    .AwaitStateAsync(ConnectionState.NotConnected)
                     .ConfigureAwait(true);
 
                 Assert.NotNull(eventArgs);
@@ -220,13 +220,13 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Client.Connect();
                 await window.Client
-                    .AwaitStateAsync(ClientBase.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
                 window.Client.SendText("exit\r\n");
 
                 await window.Client
-                    .AwaitStateAsync(ClientBase.ConnectionState.NotConnected)
+                    .AwaitStateAsync(ConnectionState.NotConnected)
                     .ConfigureAwait(true);
 
                 window.Close();

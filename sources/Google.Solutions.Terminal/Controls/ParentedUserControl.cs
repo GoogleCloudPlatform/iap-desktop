@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Terminal.Controls
@@ -27,7 +28,7 @@ namespace Google.Solutions.Terminal.Controls
     /// UserControl that lets derive classes react to form
     /// close-events.
     /// </summary>
-    public abstract class ParentedUserControl : UserControl
+    public abstract class ParentedUserControl : DpiAwareUserControl
     {
         protected ParentedUserControl()
         {

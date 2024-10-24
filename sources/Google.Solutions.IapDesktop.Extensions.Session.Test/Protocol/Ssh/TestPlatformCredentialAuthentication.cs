@@ -91,8 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             using (var connection = new SshConnection(
                 new IPEndPoint(ipAddress, 22),
                 credential,
-                handler,
-                new SynchronizationContext()))
+                handler))
             {
                 await connection.ConnectAsync()
                     .ConfigureAwait(false);
@@ -181,9 +180,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public async Task Gaia_WhenNotInRole_ThenAuthenticationWithOsLoginFails(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance(EnableOsLogin = true)] ResourceTask<InstanceLocator> instance,
-            [Credential(Roles = new [] {
-                PredefinedRole.ComputeViewer,
-                PredefinedRole.OsLogin})] ResourceTask<IAuthorization> authorization)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<IAuthorization> authorization)
         {
             using (var key = AsymmetricKeySigner.CreateEphemeral(keyType))
             using (var credential = await CreateCredentialFactory(await authorization)

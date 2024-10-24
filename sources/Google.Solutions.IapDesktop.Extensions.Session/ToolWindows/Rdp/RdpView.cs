@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 {
     [Service]
     public class RdpView
-        : SessionViewBase2<RdpClient>, IRdpSession, IView<RdpViewModel>
+        : ClientViewBase<RdpClient>, IRdpSession, IView<RdpViewModel>
     {
         /// <summary>
         /// Hotkey to toggle full-screen.
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         // Ctor.
         //---------------------------------------------------------------------
 
-        public RdpView(IServiceProvider serviceProvider)
+        public RdpView(IServiceProvider serviceProvider) // TODO: use typed arguments
             : base(
                   serviceProvider.GetService<IMainWindow>(),
                   serviceProvider.GetService<ToolWindowStateRepository>(),
@@ -281,6 +281,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 this.Client.EnableWebAuthnRedirection =
                     (viewModel.Parameters.RedirectWebAuthn == RdpRedirectWebAuthn.Enabled);
 
+                //
+                // Start establishing a connection and react to events.
+                //
                 this.Client.Connect();
             }
         }
@@ -417,50 +420,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 "your local computer and the VM.");
 
             return Task.CompletedTask;
-        }
-
-        //---------------------------------------------------------------------
-        // Drag/docking.
-        //
-        // The RDP control must always have a parent. But when a document is
-        // dragged to become a floating window, or when a window is re-docked,
-        // then its parent is temporarily set to null.
-        // 
-        // To "rescue" the RDP control in these situations, we temporarily
-        // move the the control to a rescue form when the drag begins, and
-        // restore it when it ends.
-        //---------------------------------------------------------------------
-
-        private Form? rescueWindow = null;
-
-        protected override Size DefaultFloatWindowClientSize => this.Size;
-
-        protected override void OnDockBegin()
-        {
-            //
-            // NB. It's possible that another rescue operation is still in
-            // progress. So don't create a window if there is one already.
-            //
-            if (this.rescueWindow == null && this.Client != null)
-            {
-                this.rescueWindow = new Form();
-                this.Client.Parent = this.rescueWindow;
-            }
-
-            base.OnDockBegin();
-        }
-
-        protected override void OnDockEnd()
-        {
-            if (this.rescueWindow != null && this.Client != null)
-            {
-                this.Client.Parent = this;
-                this.Client.Size = this.Size;
-                this.rescueWindow.Close();
-                this.rescueWindow = null;
-            }
-
-            base.OnDockEnd();
         }
 
         //---------------------------------------------------------------------

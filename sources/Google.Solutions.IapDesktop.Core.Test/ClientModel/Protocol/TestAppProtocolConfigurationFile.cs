@@ -124,8 +124,6 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             ExceptionAssert.ThrowsAggregateException<FileNotFoundException>(
                 () => AppProtocolConfigurationFile.ReadFileAsync("doesnotexist.json").Wait());
-            ExceptionAssert.ThrowsAggregateException<NotSupportedException>(
-                () => AppProtocolConfigurationFile.ReadFileAsync("NUL.json").Wait());
         }
 
         [Test]

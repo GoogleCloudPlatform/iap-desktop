@@ -73,8 +73,9 @@ namespace Google.Solutions.Terminal.Controls
             this.connection = new SshConnection(
                 endpoint,
                 credential,
-                this.KeyboardInteractiveHandler, // TODO: Wrap into SynchronizedKIH
-                syncContext)
+                new SynchronizedKeyboardInteractiveHandler(
+                    this.KeyboardInteractiveHandler, 
+                    syncContext))
             {
                 ConnectionTimeout = this.ConnectionTimeout,
                 Banner = this.Banner,
@@ -100,7 +101,7 @@ namespace Google.Solutions.Terminal.Controls
             //
             return await this.connection
                 .OpenShellAsync(
-                    new TerminalSize(initialSize.Width, initialSize.Height),
+                    initialSize,
                     this.TerminalType,
                     this.Locale)
                 .ConfigureAwait(false);

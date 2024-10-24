@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2022 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,12 +20,10 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Platform.IO;
 using Google.Solutions.Ssh.Cryptography;
-using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
-using System;
-using System.Globalization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,94 +34,61 @@ namespace Google.Solutions.Ssh.Test
     [UsesCloudResources]
     public class TestSshShellChannel : SshFixtureBase
     {
-        private class BufferingTerminal : ITextTerminal
-        {
-            private readonly StringBuilder buffer = new StringBuilder();
-
-            public string TerminalType => "vanilla";
-
-            public CultureInfo? Locale { get; set; } = CultureInfo.InvariantCulture;
-
-            public void OnDataReceived(string data)
-            {
-                this.buffer.Append(data);
-            }
-
-            public void OnError(TerminalErrorType errorType, Exception exception)
-            {
-                Assert.Fail("Unexpected callback");
-            }
-
-            public string Buffer => this.buffer.ToString();
-
-            public async Task AwaitBufferContentAsync(
-                TimeSpan timeout,
-                string token)
-            {
-                for (var i = 0; i < 10; i++)
-                {
-                    await Task
-                        .Delay(TimeSpan.FromMilliseconds(timeout.TotalMilliseconds / 10))
-                        .ConfigureAwait(false);
-
-                    lock (this.buffer)
-                    {
-                        if (this.buffer.ToString().Contains(token))
-                        {
-                            return;
-                        }
-                    }
-                }
-
-                throw new TimeoutException(
-                    $"Timeout waiting for buffer to contain '{token}");
-            }
-        }
-
         //---------------------------------------------------------------------
-        // Send.
+        // Resize.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Send_WhenSendingEchoCommand_ThenEchoIsReceived(
+        public async Task Resize_UpdatesEnvironment(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var endpoint = await GetPublicSshEndpointAsync(instance)
+                .ConfigureAwait(false);
             var credential = await CreateAsymmetricKeyCredentialAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
-            var terminal = new BufferingTerminal();
+            var output = new StringBuilder();
 
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
-                await connection.ConnectAsync().ConfigureAwait(false);
+                connection.JoinWorkerThreadOnDispose = true;
 
-                ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
-                    () => connection.ConnectAsync().Wait());
-
-                var channel = await connection.OpenShellAsync(
-                        terminal,
-                        SshShellChannel.DefaultTerminalSize)
+                await connection
+                    .ConnectAsync()
                     .ConfigureAwait(false);
 
-                await channel.SendAsync("whoami\n").ConfigureAwait(false);
-                await channel.SendAsync("exit\n").ConfigureAwait(false);
+                using (var channel = await connection
+                    .OpenShellAsync(
+                        PseudoTerminalSize.Default,
+                        "xterm",
+                        null)
+                    .ConfigureAwait(false))
+                {
+                    var dimensions = new PseudoTerminalSize(20, 30);
+                    await channel
+                        .ResizeAsync(dimensions, CancellationToken.None)
+                        .ConfigureAwait(false);
 
-                await terminal.AwaitBufferContentAsync(
-                        TimeSpan.FromSeconds(10),
-                        "testuser")
-                    .ConfigureAwait(false);
+                    channel.OutputAvailable += (_, args) => output.Append(args.Data);
+
+                    await channel
+                        .WriteAsync("echo $COLUMNS x $LINES;exit\n", CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    await channel
+                        .DrainAsync()
+                        .ConfigureAwait(false);
+                }
 
                 StringAssert.Contains(
-                    "testuser",
-                    terminal.Buffer.ToString());
+                    "20 x 30",
+                    output.ToString());
             }
         }
 
@@ -132,191 +97,86 @@ namespace Google.Solutions.Ssh.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Close_WhenChannelClosedExplicitly_ThenDoubleCloseIsPrevented(
+        public async Task Close_DoesNotRaiseDisconnectedEvent(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var endpoint = await GetPublicSshEndpointAsync(instance)
+                .ConfigureAwait(false);
             var credential = await CreateAsymmetricKeyCredentialAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
-            var terminal = new BufferingTerminal()
-            {
-                Locale = new CultureInfo("en-AU")
-            };
-
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
+                connection.JoinWorkerThreadOnDispose = true;
+
                 await connection
                     .ConnectAsync()
                     .ConfigureAwait(false);
 
-                using (var channel = await connection.OpenShellAsync(
-                        terminal,
-                        SshShellChannel.DefaultTerminalSize)
+                using (var channel = await connection
+                    .OpenShellAsync(
+                        PseudoTerminalSize.Default,
+                        "xterm",
+                        null)
                     .ConfigureAwait(false))
                 {
+                    bool disconnectedRaised = false;
+                    channel.Disconnected += (_, args) => disconnectedRaised = true;
+
+                    await channel
+                        .CloseAsync()
+                        .ConfigureAwait(false);
+
+                    Assert.IsFalse(disconnectedRaised);
+                    Assert.IsTrue(channel.IsClosed);
                 }
             }
         }
 
-        //---------------------------------------------------------------------
-        // Environment.
-        //---------------------------------------------------------------------
-
         [Test]
-        public async Task OpenShell_WhenServerAcceptsLocale_ThenShellUsesRightLocale(
+        public async Task Close_WhenInvokedTwice(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var endpoint = await GetPublicSshEndpointAsync(instance)
+                .ConfigureAwait(false);
             var credential = await CreateAsymmetricKeyCredentialAsync(
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
-            var terminal = new BufferingTerminal()
-            {
-                Locale = new CultureInfo("en-AU")
-            };
-
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
+                connection.JoinWorkerThreadOnDispose = true;
+
                 await connection
                     .ConnectAsync()
                     .ConfigureAwait(false);
 
-                ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
-                    () => connection.ConnectAsync().Wait());
+                using (var channel = await connection
+                    .OpenShellAsync(
+                        PseudoTerminalSize.Default,
+                        "xterm",
+                        null)
+                    .ConfigureAwait(false))
+                {
+                    await channel
+                        .CloseAsync()
+                        .ConfigureAwait(false);
 
-                var channel = await connection.OpenShellAsync(
-                        terminal,
-                        SshShellChannel.DefaultTerminalSize)
-                    .ConfigureAwait(false);
-
-                await channel
-                    .SendAsync("locale;sleep 1;exit\n")
-                    .ConfigureAwait(false);
-
-                await terminal.AwaitBufferContentAsync(
-                        TimeSpan.FromSeconds(10),
-                        "testuser")
-                    .ConfigureAwait(false);
-
-                StringAssert.Contains(
-                    "LC_ALL=en_AU.UTF-8",
-                    terminal.Buffer.ToString());
-            }
-        }
-
-        [Test]
-        public async Task OpenShell_WhenServerRejectsLocale_ThenShellUsesDefaultLocale(
-            [LinuxInstance(InitializeScript =
-                "sed -i '/AcceptEnv/d' /etc/ssh/sshd_config && systemctl restart sshd")]
-                ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var credential = await CreateAsymmetricKeyCredentialAsync(
-                    instance,
-                    SshKeyType.Rsa3072)
-                .ConfigureAwait(false);
-
-            var terminal = new BufferingTerminal()
-            {
-                Locale = new CultureInfo("en-AU")
-            };
-
-            using (var connection = new SshConnection(
-                endpoint,
-                credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
-            {
-                await connection
-                    .ConnectAsync()
-                    .ConfigureAwait(false);
-
-                ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
-                    () => connection.ConnectAsync().Wait());
-
-
-                var channel = await connection.OpenShellAsync(
-                        terminal,
-                        SshShellChannel.DefaultTerminalSize)
-                    .ConfigureAwait(false);
-
-                await channel
-                    .SendAsync("locale;sleep 1;exit\n")
-                    .ConfigureAwait(false);
-
-                await terminal.AwaitBufferContentAsync(
-                        TimeSpan.FromSeconds(10),
-                        "testuser")
-                    .ConfigureAwait(false);
-
-                StringAssert.Contains(
-                    "LC_ALL=\r\n",
-                    terminal.Buffer.ToString());
-            }
-        }
-
-        [Test]
-        public async Task OpenShell_WhenLocaleIsNull_ThenShellUsesDefaultLocale(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var credential = await CreateAsymmetricKeyCredentialAsync(
-                    instance,
-                    SshKeyType.Rsa3072)
-                .ConfigureAwait(false);
-
-            var terminal = new BufferingTerminal()
-            {
-                Locale = null
-            };
-
-            using (var connection = new SshConnection(
-                endpoint,
-                credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
-            {
-                await connection
-                    .ConnectAsync()
-                    .ConfigureAwait(false);
-
-                ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
-                    () => connection.ConnectAsync().Wait());
-
-                var channel = await connection.OpenShellAsync(
-                        terminal,
-                        SshShellChannel.DefaultTerminalSize)
-                    .ConfigureAwait(false);
-
-                await channel
-                    .SendAsync("locale;sleep 1;exit\n")
-                    .ConfigureAwait(false);
-
-                await terminal.AwaitBufferContentAsync(
-                        TimeSpan.FromSeconds(10),
-                        "testuser")
-                    .ConfigureAwait(false);
-
-                StringAssert.Contains(
-                    "LC_ALL=\r\n",
-                    terminal.Buffer.ToString());
+                    await channel
+                        .CloseAsync()
+                        .ConfigureAwait(false);
+                }
             }
         }
     }

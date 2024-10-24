@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             session.ContextCommands = this.sessionBroker.SessionMenu;
         }
 
-        private void ApplyTabStyle<TCredential, TParameters>(
+        private static void ApplyTabStyle<TCredential, TParameters>(
             DockContentHandler dockHandler,
             SessionTransportType transportType,
             bool isCreatedFromUrl,
@@ -221,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             return session;
         }
 
-        internal async Task<ISshTerminalSession> ConnectSshSessionAsync(
+        internal ISshSession ConnectSshSession(
             InstanceLocator instance,
             ITransport transport,
             SshParameters parameters,
@@ -229,13 +229,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         {
             Debug.Assert(this.mainForm.IsWindowThread());
 
-            var window = this.toolWindowHost.GetToolWindow<SshTerminalView, SshTerminalViewModel>();
+            var window = this.toolWindowHost.GetToolWindow<SshView, SshViewModel>();
 
             window.ViewModel.Instance = instance;
             window.ViewModel.Endpoint = transport.Endpoint;
+            window.ViewModel.Parameters = parameters;
             window.ViewModel.Credential = credential;
-            window.ViewModel.Language = parameters.Language;
-            window.ViewModel.ConnectionTimeout = parameters.ConnectionTimeout;
 
             var session = window.Bind();
 
@@ -253,9 +252,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 parameters);
 
             window.Show();
-
-            await session.ConnectAsync()
-                .ConfigureAwait(true);
+            session.Connect();
 
             OnSessionConnected(session);
 
@@ -277,13 +274,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 //
                 // Back on the UI thread, create the corresponding view.
                 //
-
-                var session = await ConnectSshSessionAsync(
-                        context.Instance,
-                        result.Transport,
-                        context.Parameters,
-                        result.Credential)
-                    .ConfigureAwait(true);
+                var session = ConnectSshSession(
+                    context.Instance,
+                    result.Transport,
+                    context.Parameters,
+                    result.Credential);
 
                 //
                 // Attach lifetime of context that of the session.
