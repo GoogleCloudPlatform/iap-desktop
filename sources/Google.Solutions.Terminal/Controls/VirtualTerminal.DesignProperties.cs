@@ -137,28 +137,15 @@ namespace Google.Solutions.Terminal.Controls
         [Category("Behavior")]
         public bool EnableTypographicQuoteConversion { get; set; } = true;
 
-        /// <summary>
-        /// Scroll up using Ctrl+Up.
-        /// </summary>
-        [Category("Behavior")]
-        public bool EnableCtrlUp { get; set; } = true; // TODO: VT - scrolling accelerator
-
-        /// <summary>
-        /// Scroll down bottom using Ctrl+Down.
-        /// </summary>
-        [Category("Behavior")]
-        public bool EnableCtrlDown { get; set; } = true;// TODO: VT - scrolling accelerator
-
-        /// <summary>
         /// Scroll to top using Ctrl+Home.
         /// </summary>
         [Category("Behavior")]
-        public bool EnableCtrlHome { get; set; } = true;// TODO: VT - scrolling accelerator
+        public bool EnableCtrlHome { get; set; } = true;
 
         /// <summary>
         /// Scroll to bottom using Ctrl+Home.
         /// </summary>
         [Category("Behavior")]
-        public bool EnableCtrlEnd { get; set; } = true;// TODO: VT - scrolling accelerator
+        public bool EnableCtrlEnd { get; set; } = true;
     }
 }

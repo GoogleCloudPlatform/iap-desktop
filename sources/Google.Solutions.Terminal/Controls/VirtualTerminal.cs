@@ -420,9 +420,21 @@ namespace Google.Solutions.Terminal.Controls
                 return;
             }
 
-            var terminalHandle = Invariant.ExpectNotNull(this.terminal, "Terminal");
+            NativeMethods.TerminalUserScroll(
+                Invariant.ExpectNotNull(this.terminal, "Terminal"), 
+                e.NewValue);
+        }
 
-            NativeMethods.TerminalUserScroll(terminalHandle, e.NewValue);
+        private void OnScrollbarValueChanged(object sender, System.EventArgs e)
+        {
+            if (this.DesignMode)
+            {
+                return;
+            }
+
+            NativeMethods.TerminalUserScroll(
+                Invariant.ExpectNotNull(this.terminal, "Terminal"),
+                this.scrollBar.Value);
         }
 
         protected override bool ProcessDialogKey(Keys keyData)
@@ -622,6 +634,30 @@ namespace Google.Solutions.Terminal.Controls
                 };
             }
 
+            bool IsAcceleratorForScrollingToTop(Keys key)
+            {
+                if (ModifierKeys == Keys.Control && key == Keys.Home)
+                {
+                    return this.EnableCtrlHome;
+                }
+                else
+                {
+                    return false;
+                };
+            }
+
+            bool IsAcceleratorForScrollingToBottom(Keys key)
+            {
+                if (ModifierKeys == Keys.Control && key == Keys.Home)
+                {
+                    return this.EnableCtrlEnd;
+                }
+                else
+                {
+                    return false;
+                };
+            }
+
             Debug.Assert(!this.DesignMode);
 
             var terminalHandle = Invariant.ExpectNotNull(this.terminal, "Terminal");
@@ -684,6 +720,14 @@ namespace Google.Solutions.Terminal.Controls
                             // NB. We must not pass this key event to the terminal.
                             //
                             this.ignoreWmCharBecauseOfAccelerator = true;
+                        }
+                        else if (IsAcceleratorForScrollingToTop((Keys)keyParams.VirtualKey))
+                        {
+                            this.scrollBar.Value = 0;
+                        }
+                        else if (IsAcceleratorForScrollingToBottom((Keys)keyParams.VirtualKey))
+                        {
+                            this.scrollBar.Value = this.scrollBar.Maximum;
                         }
                         else
                         {
@@ -877,10 +921,6 @@ namespace Google.Solutions.Terminal.Controls
                                     this.scrollBar.Maximum,
                                     currentValue - linesDelta);
                             }
-
-                            NativeMethods.TerminalUserScroll(
-                                terminalHandle,
-                                this.scrollBar.Value);
                         }
 
                         break;
