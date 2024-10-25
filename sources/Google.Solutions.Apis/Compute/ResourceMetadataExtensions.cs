@@ -40,8 +40,7 @@ namespace Google.Solutions.Apis.Compute
         private const uint DefaultAttempts = 6;
 
         /// <summary>
-        /// Generic helper method that works for both instance and
-        /// project metadata
+        /// Modify metadata using optimistic concurrency control.
         /// </summary>
         private static async Task UpdateMetadataAsync(
             Func<Task<Metadata>> readMetadata,
@@ -81,14 +80,20 @@ namespace Google.Solutions.Apis.Compute
                         throw;
                     }
 
-                    if (e.Error != null && e.Error.Code == 412)
+                    if (e.Error != null && (e.Error.Code == 412 || e.Error.Code == 503))
                     {
-                        // Fingerprint mismatch - that happens when somebody else updated metadata
-                        // in patallel. 
-
+                        //
+                        // 412 indicates a conflict, meaning we lost the optimisitic
+                        // concurrency control race agains someone else. 
+                        //
+                        // 503 indicates that the API is flaky.
+                        //
+                        // In both cases, retry the read/update/write operation.
+                        //
                         var backoff = 100;
                         CommonTraceSource.Log.TraceWarning(
-                            "SetMetadata failed with {0} (code error {1}) - retrying after {2}ms", e.Message,
+                            "SetMetadata failed with {0} (code error {1}) - retrying after {2}ms", 
+                            e.Message,
                             e.Error?.Code,
                             backoff);
 

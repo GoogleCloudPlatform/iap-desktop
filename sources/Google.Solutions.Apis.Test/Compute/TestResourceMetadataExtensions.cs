@@ -38,18 +38,6 @@ namespace Google.Solutions.Apis.Test.Compute
     [UsesCloudResources]
     public class TestResourceMetadataExtensions : CommonFixtureBase
     {
-        private InstancesResource? instancesResource;
-        private ProjectsResource? projectsResource;
-
-        [SetUp]
-        public void SetUp()
-        {
-            var service = TestProject.CreateComputeService();
-
-            this.instancesResource = service.Instances;
-            this.projectsResource = service.Projects;
-        }
-
         //---------------------------------------------------------------------
         // AddMetadata (instance).
         //---------------------------------------------------------------------
@@ -59,18 +47,19 @@ namespace Google.Solutions.Apis.Test.Compute
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
             var locator = await testInstance;
+            var instancesResource = TestProject.CreateComputeService().Instances;
 
             var key = Guid.NewGuid().ToString();
             var value = "metadata value";
 
-            await this.instancesResource!.AddMetadataAsync(
+            await instancesResource.AddMetadataAsync(
                     locator,
                     key,
                     value,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            var instance = await this.instancesResource!.Get(
+            var instance = await instancesResource.Get(
                     locator.ProjectId,
                     locator.Zone,
                     locator.Name)
@@ -87,10 +76,12 @@ namespace Google.Solutions.Apis.Test.Compute
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
             var locator = await testInstance;
+            var instancesResource = TestProject.CreateComputeService().Instances;
 
             var key = Guid.NewGuid().ToString();
 
-            await this.instancesResource!.AddMetadataAsync(
+            await instancesResource
+                .AddMetadataAsync(
                     locator,
                     key,
                     "value to be overridden",
@@ -98,14 +89,15 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ConfigureAwait(false);
 
             var value = "metadata value";
-            await this.instancesResource!.AddMetadataAsync(
+            await instancesResource
+                .AddMetadataAsync(
                     locator,
                     key,
                     value,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            var instance = await this.instancesResource!.Get(
+            var instance = await instancesResource.Get(
                     locator.ProjectId,
                     locator.Zone,
                     locator.Name)
@@ -122,18 +114,20 @@ namespace Google.Solutions.Apis.Test.Compute
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
             var locator = await testInstance;
+            var instancesResource = TestProject.CreateComputeService().Instances;
 
             var key = Guid.NewGuid().ToString();
 
             var callbacks = 0;
-            await this.instancesResource!.UpdateMetadataAsync(
+            await instancesResource
+                .UpdateMetadataAsync(
                     locator,
                     metadata =>
                     {
                         if (callbacks++ == 0)
                         {
                             // Provoke a conflict on the first attempt.
-                            this.instancesResource!.AddMetadataAsync(
+                            instancesResource.AddMetadataAsync(
                                 locator,
                                 key,
                                 "conflict #" + callbacks,
@@ -146,7 +140,8 @@ namespace Google.Solutions.Apis.Test.Compute
                     2)
                 .ConfigureAwait(false);
 
-            var instance = await this.instancesResource!.Get(
+            var instance = await instancesResource
+                .Get(
                     locator.ProjectId,
                     locator.Zone,
                     locator.Name)
@@ -163,17 +158,18 @@ namespace Google.Solutions.Apis.Test.Compute
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
             var locator = await testInstance;
+            var instancesResource = TestProject.CreateComputeService().Instances;
 
             var key = Guid.NewGuid().ToString();
 
             var callbacks = 0;
             ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
-                () => this.instancesResource!.UpdateMetadataAsync(
+                () => instancesResource.UpdateMetadataAsync(
                     locator,
                     metadata =>
                     {
                         // Provoke a conflict every time.
-                        this.instancesResource!.AddMetadataAsync(
+                        instancesResource.AddMetadataAsync(
                             locator,
                             key,
                             "conflict #" + callbacks++,
@@ -192,17 +188,19 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public async Task AddMetadata_WhenUsingNewKey_ThenAddProjectMetadataSucceeds()
         {
+            var projectsResource = TestProject.CreateComputeService().Projects;
+
             var key = Guid.NewGuid().ToString();
             var value = "metadata value";
 
-            await this.projectsResource!.AddMetadataAsync(
+            await projectsResource.AddMetadataAsync(
                     TestProject.ProjectId,
                     key,
                     value,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            var project = await this.projectsResource!.Get(TestProject.ProjectId)
+            var project = await projectsResource.Get(TestProject.ProjectId)
                 .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -215,8 +213,9 @@ namespace Google.Solutions.Apis.Test.Compute
         public async Task AddMetadata_WhenUsingExistingKey_ThenAddProjectMetadataSucceeds()
         {
             var key = Guid.NewGuid().ToString();
+            var projectsResource = TestProject.CreateComputeService().Projects;
 
-            await this.projectsResource!.AddMetadataAsync(
+            await projectsResource.AddMetadataAsync(
                     TestProject.ProjectId,
                     key,
                     "value to be overridden",
@@ -224,14 +223,14 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ConfigureAwait(false);
 
             var value = "metadata value";
-            await this.projectsResource!.AddMetadataAsync(
+            await projectsResource.AddMetadataAsync(
                     TestProject.ProjectId,
                     key,
                     value,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            var project = await this.projectsResource!.Get(TestProject.ProjectId)
+            var project = await projectsResource.Get(TestProject.ProjectId)
                 .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -244,16 +243,17 @@ namespace Google.Solutions.Apis.Test.Compute
         public async Task AddMetadata_WhenUpdateConflictingOnFirstAttempt_ThenUpdateProjectMetadataRetriesAndSucceeds()
         {
             var key = Guid.NewGuid().ToString();
+            var projectsResource = TestProject.CreateComputeService().Projects;
 
             var callbacks = 0;
-            await this.projectsResource!.UpdateMetadataAsync(
+            await projectsResource.UpdateMetadataAsync(
                     TestProject.ProjectId,
                     metadata =>
                     {
                         if (callbacks++ == 0)
                         {
                             // Provoke a conflict on the first attempt.
-                            this.projectsResource!.AddMetadataAsync(
+                            projectsResource.AddMetadataAsync(
                                 TestProject.ProjectId,
                                 key,
                                 "conflict #" + callbacks,
@@ -266,7 +266,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     2)
                 .ConfigureAwait(false);
 
-            var project = await this.projectsResource!.Get(TestProject.ProjectId)
+            var project = await projectsResource.Get(TestProject.ProjectId)
                 .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -279,15 +279,16 @@ namespace Google.Solutions.Apis.Test.Compute
         public void AddMetadata_WhenUpdateKeepsConflicting_ThenUpdateProjectMetadataThrowsException()
         {
             var key = Guid.NewGuid().ToString();
+            var projectsResource = TestProject.CreateComputeService().Projects;
 
             var callbacks = 0;
             ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
-                () => this.projectsResource!.UpdateMetadataAsync(
+                () => projectsResource.UpdateMetadataAsync(
                     TestProject.ProjectId,
                     metadata =>
                     {
                         // Provoke a conflict every time.
-                        this.projectsResource!.AddMetadataAsync(
+                        projectsResource.AddMetadataAsync(
                             TestProject.ProjectId,
                             key,
                             "conflict #" + callbacks++,
