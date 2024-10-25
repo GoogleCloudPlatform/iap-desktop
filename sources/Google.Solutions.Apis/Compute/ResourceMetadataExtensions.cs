@@ -25,6 +25,7 @@ using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -67,8 +68,9 @@ namespace Google.Solutions.Apis.Compute
                         .ConfigureAwait(false);
                     break;
                 }
-                catch (GoogleApiException e)
+                catch (Exception e) when (e.Is<GoogleApiException>())
                 {
+                    var apiException = (GoogleApiException)e.Unwrap();
                     if (attempt == maxAttempts)
                     {
                         //
@@ -76,13 +78,13 @@ namespace Google.Solutions.Apis.Compute
                         //
                         CommonTraceSource.Log.TraceWarning(
                             "SetMetadata failed with {0} (code error {1})", e.Message,
-                            e.Error?.Code);
+                            apiException.Error?.Code);
 
                         throw;
                     }
                     else if (
-                        e.HttpStatusCode == HttpStatusCode.ServiceUnavailable ||
-                        e.Error != null && e.Error.Code == 412)
+                        apiException.HttpStatusCode == HttpStatusCode.ServiceUnavailable ||
+                        apiException.Error != null && apiException.Error.Code == 412)
                     {
                         //
                         // 412 indicates a conflict, meaning we lost the
@@ -98,7 +100,7 @@ namespace Google.Solutions.Apis.Compute
                         CommonTraceSource.Log.TraceWarning(
                             "SetMetadata failed with {0} (code error {1}) - retrying after {2}", 
                             e.Message,
-                            e.Error?.Code,
+                            apiException.Error?.Code,
                             backoff);
 
                         await Task
@@ -109,7 +111,7 @@ namespace Google.Solutions.Apis.Compute
                     {
                         CommonTraceSource.Log.TraceWarning(
                             "Setting metadata failed {0} (code error {1})", e.Message,
-                            e.Error?.Code);
+                            apiException.Error?.Code);
 
                         throw;
                     }
