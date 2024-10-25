@@ -30,18 +30,26 @@ using System.Text.RegularExpressions;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {
     /// <summary>
-    /// Single authorized key.
-    /// See https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys.
+    /// An authorized key as found in metadata.
     /// </summary>
     public abstract class MetadataAuthorizedPublicKey
         : IEquatable<MetadataAuthorizedPublicKey>, IAuthorizedPublicKey
     {
-        //
-        // NB Managed and unmanaged keys use a different format,
-        // this pattern matches both.
-        //
-        private static readonly Regex keyPattern = new Regex(
-            @"^([^\s]*):([^\s]+) ([^\s]+) ([^\s]+)( \{.*\})?$");
+        /// <summary>
+        /// Unmanaged keys. These don't have an expiry and use the following format:
+        /// 
+        /// USERNAME:TYPE KEY_VALUE EMAIL
+        /// </summary>
+        private static readonly Regex unmanagedKeyPattern = new Regex(
+            @"^([^\s]*):([^\s]+)\s+([^\s]+)\s+([^\s]+)$");
+
+        /// <summary>
+        /// Managed keys. These can have an expiry and use the following format:
+        /// 
+        /// USERNAME:TYPE KEY_VALUE google-ssh {"userName":"EMAIL","expireOn":"EXPIRE_TIME"}
+        /// </summary>
+        private static readonly Regex managedKeyPattern = new Regex(
+            @"^([^\s]*):([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+(\{.*\})$");
 
         protected const string ManagedKeyToken = "google-ssh";
 
@@ -83,42 +91,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public static MetadataAuthorizedPublicKey Parse(string line)
         {
+            line = line.Trim();
             Debug.Assert(!line.Contains('\n'));
 
-            var match = keyPattern.Match(line);
-            if (!match.Success || match.Groups.Count != 6)
+            if (managedKeyPattern.Match(line) is var managedMatch &&
+                managedMatch.Success &&
+                managedMatch.Groups[4].Value == ManagedKeyToken)
             {
-                throw new ArgumentException(
-                    $"Format of metadata key is invalid: {line.Truncate(20)}");
-            }
-
-            var username = match.Groups[1].Value;
-            var keyType = match.Groups[2].Value;
-            var key = match.Groups[3].Value;
-
-            // NB. "google-ssh" is also a valid username.
-            if (match.Groups[4].Value == ManagedKeyToken &&
-                !string.IsNullOrWhiteSpace(match.Groups[5].Value))
-            {
+                //
                 // This is a managed key.
+                //
                 var keyMetadata = JsonConvert.DeserializeObject<
                     ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata>(
-                        match.Groups[5].Value);
+                        managedMatch.Groups[5].Value);
 
                 return new ManagedMetadataAuthorizedPublicKey(
-                    username,
-                    keyType,
-                    key,
+                    managedMatch.Groups[1].Value,
+                    managedMatch.Groups[2].Value,
+                    managedMatch.Groups[3].Value,
                     keyMetadata!);
+            }
+            else if (unmanagedKeyPattern.Match(line) is var unmanagedMatch &&
+                unmanagedMatch.Success)
+            {
+                //
+                // This is an unmanaged key.
+                //
+                return new UnmanagedMetadataAuthorizedPublicKey(
+                    unmanagedMatch.Groups[1].Value,
+                    unmanagedMatch.Groups[2].Value,
+                    unmanagedMatch.Groups[3].Value,
+                    unmanagedMatch.Groups[4].Value);
             }
             else
             {
-                // This is an unmanaged key.
-                return new UnmanagedMetadataAuthorizedPublicKey(
-                    username,
-                    keyType,
-                    key,
-                    match.Groups[4].Value);
+                throw new ArgumentException(
+                    $"Format of metadata key is invalid: {line.Truncate(20)}");
             }
         }
 

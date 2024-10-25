@@ -33,35 +33,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void Parse_WhenUnmanagedKeyIsInvalid_ThenParseThrowsArgumentException()
+        public void Parse_WhenMalformed(
+            [Values(
+                "xxx",
+                "login:ssh-rsa key",
+                "login: key username",
+                "login:ssh-rsa key username morejunk",
+                "login:ssh-rsa key username google-ssh {",
+                "login:ssh-rsa key username google-ssh {}",
+                "login:ssh-rsa key username google-ssh {\"userName\": \"user\", \"expireOn\": null}",
+                "login:ssh-rsa key username google-ssh {\"userName\": \"user\", \"expireOn\": \"x\"}"
+            )]
+            string line)
         {
-            Assert.Throws<ArgumentException>(() => MetadataAuthorizedPublicKey.Parse(
-                "xxx"));
-            Assert.Throws<ArgumentException>(() => MetadataAuthorizedPublicKey.Parse(
-                "login:ssh-rsa key"));
-            Assert.Throws<ArgumentException>(() => MetadataAuthorizedPublicKey.Parse(
-                "login: key username"));
-            Assert.Throws<ArgumentException>(() => MetadataAuthorizedPublicKey.Parse(
-                "login:ssh-rsa key username morejunk"));
+            Assert.Throws<ArgumentException>(() => MetadataAuthorizedPublicKey.Parse(line));
         }
 
         [Test]
-        public void Parse_WhenManagedKeyIsInvalid_ThenParseThrowsArgumentException()
+        public void Parse_UnmanagedRsaKey(
+            [Values(
+                "login:ssh-rsa key user",
+                "login:ssh-rsa key    user",
+                "  login:ssh-rsa key\tuser         "
+            )]
+            string line)
         {
-            Assert.Throws<ArgumentException>(() => MetadataAuthorizedPublicKey.Parse(
-                "login:ssh-rsa key username google-ssh {"));
-            Assert.Throws<ArgumentException>(() => MetadataAuthorizedPublicKey.Parse(
-                "login:ssh-rsa key username google-ssh {}"));
-            Assert.Throws<ArgumentException>(() => MetadataAuthorizedPublicKey.Parse(
-                "login:ssh-rsa key username google-ssh {\"userName\": \"user\", \"expireOn\": null}"));
-            Assert.Throws<ArgumentException>(() => MetadataAuthorizedPublicKey.Parse(
-                "login:ssh-rsa key username google-ssh {\"userName\": \"user\", \"expireOn\": \"x\"}"));
-        }
-
-        [Test]
-        public void Parse_WhenKeyIsUnmanaged_ThenParseReturnsUnmanagedKey()
-        {
-            var line = "login:ssh-rsa key user";
             var key = MetadataAuthorizedPublicKey.Parse(line);
             Assert.IsInstanceOf<UnmanagedMetadataAuthorizedPublicKey>(key);
 
@@ -70,13 +66,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             Assert.AreEqual("key", key.PublicKey);
             Assert.AreEqual("user", ((UnmanagedMetadataAuthorizedPublicKey)key).Email);
 
-            Assert.AreEqual(line, key.ToString());
+            Assert.AreEqual("login:ssh-rsa key user", key.ToString());
         }
 
         [Test]
-        public void Parse_WhenKeyIsUnmanagedButUsernameIsGoogleSsh_ThenParseReturnsUnmanagedKey()
+        public void Parse_UnmanagedRsaKey_WhenUsernameIsGoogleSsh(
+            [Values(
+                "login:ssh-rsa key google-ssh",
+                "login:ssh-rsa key    google-ssh",
+                "login:ssh-rsa key\tgoogle-ssh         "
+            )]
+            string line)
         {
-            var line = "login:ssh-rsa key google-ssh";
             var key = MetadataAuthorizedPublicKey.Parse(line);
             Assert.IsInstanceOf<UnmanagedMetadataAuthorizedPublicKey>(key);
 
@@ -85,14 +86,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             Assert.AreEqual("key", key.PublicKey);
             Assert.AreEqual("google-ssh", ((UnmanagedMetadataAuthorizedPublicKey)key).Email);
 
-            Assert.AreEqual(line, key.ToString());
+            Assert.AreEqual(
+                "login:ssh-rsa key google-ssh",
+                key.ToString());
         }
 
         [Test]
-        public void Parse_WhenKeyIsManagedEcdsaKey_ThenParseReturnsManagedKey()
+        public void Parse_ManagedEcdsaKey(
+            [Values(
+                "login:ecdsa-sha2-nistp256 AAAA google-ssh {\"userName\":\"ldap@machine.com\",\"expireOn\":\"2015-11-01T10:43:01+0000\"}",
+                "login:ecdsa-sha2-nistp256  AAAA  google-ssh {\"userName\":\"ldap@machine.com\",\"expireOn\":\"2015-11-01T10:43:01+0000\"}    ",
+                "login:ecdsa-sha2-nistp256 AAAA\tgoogle-ssh\t {\"userName\":\"ldap@machine.com\",\"expireOn\":\"2015-11-01T10:43:01+0000\"}\r"
+            )]
+            string line)
         {
-            var line = "login:ecdsa-sha2-nistp256 AAAA google-ssh {\"userName\":" +
-              "\"ldap@machine.com\",\"expireOn\":\"2015-11-01T10:43:01+0000\"}";
             var key = MetadataAuthorizedPublicKey.Parse(line);
             Assert.IsInstanceOf<ManagedMetadataAuthorizedPublicKey>(key);
 
@@ -103,14 +110,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             Assert.AreEqual(new DateTime(2015, 11, 1, 10, 43, 1, 0, DateTimeKind.Utc),
                 ((ManagedMetadataAuthorizedPublicKey)key).Metadata.ExpireOn.ToUniversalTime());
 
-            Assert.AreEqual(line, key.ToString());
+            Assert.AreEqual(
+                "login:ecdsa-sha2-nistp256 AAAA google-ssh {\"userName\":\"ldap@machine.com\",\"expireOn\":\"2015-11-01T10:43:01+0000\"}",
+                key.ToString());
         }
 
         [Test]
-        public void Parse_WhenKeyIsManagedRsaKey_ThenParseReturnsManagedKey()
+        public void Parse_ManagedRsaKey(
+            [Values(
+                "login:ssh-rsa key google-ssh {\"userName\":\"username@example.com\",\"expireOn\":\"2021-01-15T15:22:35+0000\"}",
+                " login:ssh-rsa  key  google-ssh  { \"userName\":\"username@example.com\",\"expireOn\":\"2021-01-15T15:22:35+0000\"}",
+                "\tlogin:ssh-rsa key google-ssh\t\r{\"userName\":\"username@example.com\",\"expireOn\":\"2021-01-15T15:22:35+0000\"}\t"
+            )]
+            string line)
         {
-            var line = "login:ssh-rsa key google-ssh {\"userName\":\"username@example.com\"," +
-                "\"expireOn\":\"2021-01-15T15:22:35+0000\"}";
             var key = MetadataAuthorizedPublicKey.Parse(line);
             Assert.IsInstanceOf<ManagedMetadataAuthorizedPublicKey>(key);
 
@@ -121,7 +134,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             Assert.AreEqual(new DateTime(2021, 01, 15, 15, 22, 35, 0, DateTimeKind.Utc),
                 ((ManagedMetadataAuthorizedPublicKey)key).Metadata.ExpireOn.ToUniversalTime());
 
-            Assert.AreEqual(line, key.ToString());
+            Assert.AreEqual(
+                "login:ssh-rsa key google-ssh {\"userName\":\"username@example.com\",\"expireOn\":\"2021-01-15T15:22:35+0000\"}",
+                key.ToString());
         }
 
         //---------------------------------------------------------------------
@@ -129,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToString_WhenKeySerialized_ThenTimestampHasNoMilliseconds()
+        public void ToString_TimestampHasNoMilliseconds()
         {
             var key = new ManagedMetadataAuthorizedPublicKey(
                 "login",
@@ -149,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void Equals_WhenOtherIsNull_ThenEqualsReturnsFalse()
+        public void Equals_WhenOtherIsNull()
         {
             var key = new UnmanagedMetadataAuthorizedPublicKey(
                 "bob",
@@ -162,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void Equals_WhenKeysEquivalent_ThenEqualsReturnsTrue()
+        public void Equals_WhenKeysEquivalent()
         {
             var key1 = new UnmanagedMetadataAuthorizedPublicKey(
                 "bob",
@@ -181,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void Equals_WhenKeysEquivalentExceptForEmail_ThenEqualsReturnsTrue()
+        public void Equals_WhenKeysEquivalentExceptForEmail()
         {
             var key1 = new UnmanagedMetadataAuthorizedPublicKey(
                 "bob",
@@ -200,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void Equals_WhenKeysEquivalentButOneIsManaged_ThenEqualsReturnsTrue()
+        public void Equals_WhenKeysEquivalentButOneIsManaged()
         {
             var key1 = new UnmanagedMetadataAuthorizedPublicKey(
                 "bob",
