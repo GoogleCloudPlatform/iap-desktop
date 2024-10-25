@@ -63,6 +63,7 @@ namespace Google.Solutions.Terminal.Controls
             this.scrollBar.Size = new System.Drawing.Size(17, 130);
             this.scrollBar.TabIndex = 0;
             this.scrollBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.OnScrollbarScrolled);
+            this.scrollBar.ValueChanged += new System.EventHandler(OnScrollbarValueChanged);
             // 
             // VirtualTerminal
             // 
@@ -74,7 +75,6 @@ namespace Google.Solutions.Terminal.Controls
             this.ResumeLayout(false);
 
         }
-
         #endregion
 
         private System.Windows.Forms.Timer caretBlinkTimer;
