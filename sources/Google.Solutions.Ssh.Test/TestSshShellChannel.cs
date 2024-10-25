@@ -55,8 +55,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
                 connection.JoinWorkerThreadOnDispose = true;
 
@@ -66,7 +65,7 @@ namespace Google.Solutions.Ssh.Test
 
                 using (var channel = await connection
                     .OpenShellAsync(
-                        TerminalSize.Default,
+                        PseudoTerminalSize.Default,
                         "xterm",
                         null)
                     .ConfigureAwait(false))
@@ -112,8 +111,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
                 connection.JoinWorkerThreadOnDispose = true;
 
@@ -123,7 +121,7 @@ namespace Google.Solutions.Ssh.Test
 
                 using (var channel = await connection
                     .OpenShellAsync(
-                        TerminalSize.Default,
+                        PseudoTerminalSize.Default,
                         "xterm",
                         null)
                     .ConfigureAwait(false))
@@ -156,8 +154,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
                 connection.JoinWorkerThreadOnDispose = true;
 
@@ -167,7 +164,7 @@ namespace Google.Solutions.Ssh.Test
 
                 using (var channel = await connection
                     .OpenShellAsync(
-                        TerminalSize.Default,
+                        PseudoTerminalSize.Default,
                         "xterm",
                         null)
                     .ConfigureAwait(false))

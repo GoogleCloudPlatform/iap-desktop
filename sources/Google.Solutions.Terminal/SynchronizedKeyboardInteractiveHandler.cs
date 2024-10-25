@@ -22,10 +22,11 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Threading;
 using System.Threading;
+using Google.Solutions.Ssh;
 
-namespace Google.Solutions.Ssh
+namespace Google.Solutions.Terminal
 {
-    public class SynchronizedKeyboardInteractiveHandler : IKeyboardInteractiveHandler
+    internal class SynchronizedKeyboardInteractiveHandler : IKeyboardInteractiveHandler
     {
         private readonly IKeyboardInteractiveHandler handler;
         private readonly SynchronizationContext context;

@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Platform.IO;
 using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
@@ -54,8 +55,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
                 connection.JoinWorkerThreadOnDispose = true;
 
@@ -88,8 +88,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
                 connection.JoinWorkerThreadOnDispose = true;
 
@@ -99,7 +98,7 @@ namespace Google.Solutions.Ssh.Test
 
                 using (var channel = await connection
                     .OpenShellAsync(
-                        TerminalSize.Default,
+                        PseudoTerminalSize.Default,
                         "xterm",
                         locale)
                     .ConfigureAwait(false))
@@ -181,8 +180,7 @@ namespace Google.Solutions.Ssh.Test
             using (var connection = new SshConnection(
                 endpoint,
                 credential,
-                new KeyboardInteractiveHandler(),
-                new SynchronizationContext()))
+                new KeyboardInteractiveHandler()))
             {
                 await connection
                     .ConnectAsync()

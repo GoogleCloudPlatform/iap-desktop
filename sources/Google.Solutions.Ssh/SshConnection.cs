@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Platform.IO;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.Collections.Generic;
@@ -63,14 +64,8 @@ namespace Google.Solutions.Ssh
         public SshConnection(
             IPEndPoint endpoint,
             ISshCredential credential,
-            IKeyboardInteractiveHandler keyboardHandler,
-            SynchronizationContext callbackContext)
-            : base(
-                  endpoint,
-                  credential,
-                  new SynchronizedKeyboardInteractiveHandler( // TODO: move sync up
-                      keyboardHandler, 
-                      callbackContext))
+            IKeyboardInteractiveHandler keyboardHandler)
+            : base(endpoint, credential, keyboardHandler)
         {
         }
 
@@ -276,7 +271,7 @@ namespace Google.Solutions.Ssh
         }
 
         public async Task<SshShellChannel> OpenShellAsync(
-            TerminalSize initialSize,
+            PseudoTerminalSize initialSize,
             string terminalType,
             CultureInfo? locale)
         {
@@ -310,8 +305,8 @@ namespace Google.Solutions.Ssh
                         var nativeChannel = session.OpenShellChannel(
                             LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                             terminalType,
-                            initialSize.Columns,
-                            initialSize.Rows,
+                            initialSize.Width,
+                            initialSize.Height,
                             environmentVariables);
 
                         var channel = new SshShellChannel(

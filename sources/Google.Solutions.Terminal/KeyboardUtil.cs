@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Google.Solutions.Terminal.Controls
+namespace Google.Solutions.Terminal
 {
     internal static class KeyboardUtil
     {
@@ -94,7 +94,7 @@ namespace Google.Solutions.Terminal.Controls
                 scanCode,
                 keyboardState,
                 result,
-                (int)result.Capacity,
+                result.Capacity,
                 0,
                 inputLocaleIdentifier);
 

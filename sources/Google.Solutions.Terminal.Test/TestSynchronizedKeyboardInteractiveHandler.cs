@@ -19,11 +19,12 @@
 // under the License.
 //
 
+using Google.Solutions.Ssh;
 using Moq;
 using NUnit.Framework;
 using System.Threading;
 
-namespace Google.Solutions.Ssh.Test
+namespace Google.Solutions.Terminal.Test
 {
     [TestFixture]
     public class TestSynchronizedKeyboardInteractiveHandler
@@ -45,7 +46,7 @@ namespace Google.Solutions.Ssh.Test
         [Test]
         public void Prompt_SendsToContext()
         {
-            var context = new Context();    
+            var context = new Context();
             var handler = new Mock<IKeyboardInteractiveHandler>();
             handler
                 .Setup(h => h.Prompt("name", "instruction", "prompt", false))

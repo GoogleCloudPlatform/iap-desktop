@@ -91,8 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             using (var connection = new SshConnection(
                 new IPEndPoint(ipAddress, 22),
                 credential,
-                handler,
-                new SynchronizationContext()))
+                handler))
             {
                 await connection.ConnectAsync()
                     .ConfigureAwait(false);
