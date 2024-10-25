@@ -53,8 +53,6 @@ namespace Google.Solutions.Ssh
         private readonly LinkedList<SshChannelBase> channels
             = new LinkedList<SshChannelBase>();
 
-        private readonly SynchronizationContext callbackContext; // TODO: remove syncctx
-
         /// <summary>
         /// Create a connection.
         /// </summary>
@@ -70,11 +68,10 @@ namespace Google.Solutions.Ssh
             : base(
                   endpoint,
                   credential,
-                  new SynchronizedKeyboardInteractiveHandler(
+                  new SynchronizedKeyboardInteractiveHandler( // TODO: move sync up
                       keyboardHandler, 
                       callbackContext))
         {
-            this.callbackContext = callbackContext;
         }
 
         //---------------------------------------------------------------------
@@ -279,57 +276,6 @@ namespace Google.Solutions.Ssh
         }
 
         public async Task<SshShellChannel> OpenShellAsync(
-            ITextTerminal terminal,
-            TerminalSize initialSize)
-        {
-            IEnumerable<EnvironmentVariable>? environmentVariables = null;
-            if (terminal.Locale != null)
-            {
-                //
-                // Format language so that Linux understands it.
-                //
-                var languageFormatted = terminal.Locale.Name.Replace('-', '_');
-                environmentVariables = new[]
-                {
-                    //
-                    // Try to pass locale - but do not fail the connection if
-                    // the server rejects it.
-                    //
-                    new EnvironmentVariable(
-                        "LC_ALL",
-                        $"{languageFormatted}.UTF-8",
-                        false)
-                };
-            }
-
-            return await RunSendOperationAsync(
-                session =>
-                {
-                    Debug.Assert(this.IsRunningOnWorkerThread);
-
-                    using (session.Session.AsBlocking())
-                    {
-                        var nativeChannel = session.OpenShellChannel(
-                            LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
-                            terminal.TerminalType,
-                            initialSize.Columns,
-                            initialSize.Rows,
-                            environmentVariables);
-
-                        var channel = new SshShellChannel(
-                            this,
-                            nativeChannel,
-                            new SynchronizedTextTerminal(terminal, this.callbackContext));
-
-                        this.channels.AddLast(channel);
-
-                        return channel;
-                    }
-                })
-                .ConfigureAwait(false);
-        }
-
-        public async Task<SshShellChannel2> OpenShellAsync(
             TerminalSize initialSize,
             string terminalType,
             CultureInfo? locale)
@@ -368,7 +314,7 @@ namespace Google.Solutions.Ssh
                             initialSize.Rows,
                             environmentVariables);
 
-                        var channel = new SshShellChannel2(
+                        var channel = new SshShellChannel(
                             this,
                             nativeChannel);
 
