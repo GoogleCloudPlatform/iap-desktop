@@ -38,7 +38,7 @@ using System.Management;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Session
 {
     [TestFixture]
-    public class TestSessionViewBase2
+    public class TestClientViewBase
     {
         private class SampleClient : ClientBase
         {
@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             }
         }
 
-        private class SampleSessionView : SessionViewBase2<SampleClient>
+        private class SampleSessionView : ClientViewBase<SampleClient>
         {
             public SampleSessionView(
                 IEventQueue eventQueue,

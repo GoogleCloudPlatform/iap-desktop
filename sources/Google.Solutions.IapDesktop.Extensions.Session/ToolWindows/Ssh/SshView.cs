@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 {
     [Service]
     public class SshView
-        : SessionViewBase2<SshShellClient>, ISshSession, IView<SshViewModel> // TODO: add tests
+        : ClientViewBase<SshShellClient>, ISshSession, IView<SshViewModel> // TODO: add tests
     {
         private Bound<SshViewModel> viewModel;
         private readonly ITerminalSettingsRepository settingsRepository;

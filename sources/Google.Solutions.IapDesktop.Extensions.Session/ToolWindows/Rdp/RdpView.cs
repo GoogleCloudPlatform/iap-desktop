@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 {
     [Service]
     public class RdpView
-        : SessionViewBase2<RdpClient>, IRdpSession, IView<RdpViewModel>
+        : ClientViewBase<RdpClient>, IRdpSession, IView<RdpViewModel>
     {
         /// <summary>
         /// Hotkey to toggle full-screen.

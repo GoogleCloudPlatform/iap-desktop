@@ -36,7 +36,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
-    public abstract class SessionViewBase2<TClient> : SessionViewBase // TODO: Merge into SessionViewBase, consolidate namespaces
+    public abstract class ClientViewBase<TClient> : SessionViewBase // TODO: consolidate namespaces
         where TClient : ClientBase, new()
     {
         private readonly IExceptionDialog exceptionDialog;
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         public bool IsClosing { get; private set; } = false;
 
-        protected SessionViewBase2(
+        protected ClientViewBase(
             IMainWindow mainWindow,
             ToolWindowStateRepository stateRepository,
             IEventQueue eventQueue,
