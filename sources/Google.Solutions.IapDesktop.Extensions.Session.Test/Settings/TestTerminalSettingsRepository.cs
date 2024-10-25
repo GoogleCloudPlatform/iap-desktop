@@ -19,11 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Extensions.Session.Controls;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Testing.Apis.Platform;
-using Microsoft.Win32;
 using NUnit.Framework;
 using System.Drawing;
 
@@ -50,12 +47,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 Assert.IsTrue(settings.IsNavigationUsingControlArrrowEnabled.Value);
                 Assert.IsTrue(settings.IsScrollingUsingCtrlUpDownEnabled.Value);
                 Assert.IsTrue(settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
-                Assert.AreEqual(TerminalFont.DefaultFontFamily, settings.FontFamily.Value);
+                Assert.AreEqual(TerminalSettings.DefaultFontFamily, settings.FontFamily.Value);
                 Assert.AreEqual(
-                    TerminalFont.DefaultSize,
-                    TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.Value));
+                    TerminalSettings.DefaultFontSize,
+                    TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.Value));
                 Assert.AreEqual(
-                    TerminalSettingsRepository.DefaultBackgroundColor.ToArgb(),
+                    TerminalSettings.DefaultBackgroundColor.ToArgb(),
                     settings.BackgroundColorArgb.Value);
                 Assert.AreEqual(
                     Color.White.ToArgb(),

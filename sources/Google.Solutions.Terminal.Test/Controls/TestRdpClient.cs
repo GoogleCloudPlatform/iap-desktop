@@ -23,6 +23,7 @@ using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Terminal.Controls;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
+using Microsoft.VisualBasic;
 using NUnit.Framework;
 using System;
 using System.Linq;
@@ -40,13 +41,25 @@ namespace Google.Solutions.Terminal.Test.Controls
     {
         private const string InvalidServer = "8.8.8.8";
 
+        private static string? serverName;
+        private static string? username;
+        private static string? password;
+
+        [OneTimeSetUp]
+        public static void CollectCredentials()
+        {
+            serverName = Interaction.InputBox("RDP server");
+            username = Interaction.InputBox("RDP username");
+            password = Interaction.InputBox("RDP password");
+        }
+
         private static ClientDiagnosticsWindow<RdpClient> CreateWindow()
         {
             var window = new ClientDiagnosticsWindow<RdpClient>(new RdpClient());
             window.Client.MainWindow = window;
-            window.Client.Username = ".\\admin";
-            window.Client.Password = "admin";
-            window.Client.Server = Dns.GetHostEntry("rdptesthost")
+            window.Client.Username = $".\\{username}";
+            window.Client.Password = password;
+            window.Client.Server = Dns.GetHostEntry(serverName)
                 .AddressList
                 .First()
                 .ToString();
@@ -67,7 +80,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Client.Connect();
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
                 //
@@ -75,7 +88,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.WindowState = FormWindowState.Maximized;
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
                 await Task.Delay(TimeSpan.FromSeconds(1));
@@ -85,7 +98,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.WindowState = FormWindowState.Normal;
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
                 await Task.Delay(TimeSpan.FromSeconds(1));
@@ -111,7 +124,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Client.Connect();
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
                 //
@@ -123,7 +136,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Assert.IsTrue(window.Client.IsFullScreen);
 
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
                 await Task.Delay(TimeSpan.FromSeconds(1));
 
@@ -132,7 +145,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.WindowState = FormWindowState.Minimized;
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
                 await Task.Delay(TimeSpan.FromSeconds(1));
@@ -142,7 +155,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.WindowState = FormWindowState.Normal;
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
                 await Task.Delay(TimeSpan.FromSeconds(1));
@@ -168,7 +181,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Client.Connect();
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
                 //
@@ -184,7 +197,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Assert.IsFalse(window.Client.CanEnterFullScreen);
 
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
                 await Task.Delay(TimeSpan.FromSeconds(1));
 
@@ -195,7 +208,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Assert.IsFalse(window.Client.IsFullScreen);
 
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
                 await Task.Delay(TimeSpan.FromSeconds(1));
 
@@ -208,7 +221,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Assert.IsTrue(window.Client.IsFullScreen);
 
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
                 await Task.Delay(TimeSpan.FromSeconds(1));
 
@@ -237,7 +250,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Client.Connect();
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
                 RdpClient.ConnectionClosedEventArgs? eventArgs = null;
@@ -249,7 +262,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 window.Close();
 
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.NotConnected)
+                    .AwaitStateAsync(ConnectionState.NotConnected)
                     .ConfigureAwait(true);
 
                 Assert.NotNull(eventArgs);
@@ -275,7 +288,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Client.Connect();
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.NotConnected)
+                    .AwaitStateAsync(ConnectionState.NotConnected)
                     .ConfigureAwait(true);
 
                 Assert.NotNull(eventArgs);
@@ -297,13 +310,13 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Client.Connect();
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
                 window.Client.Logoff();
 
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.NotConnected)
+                    .AwaitStateAsync(ConnectionState.NotConnected)
                     .ConfigureAwait(true);
 
                 window.Close();
@@ -322,7 +335,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Client.Connect();
                 await window.Client
-                    .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
                     .ConfigureAwait(true);
 
                 var connectionClosedEvents = 0;
@@ -338,10 +351,10 @@ namespace Google.Solutions.Terminal.Test.Controls
                     window.Client.Reconnect();
 
                     await window.Client
-                        .AwaitStateAsync(RdpClient.ConnectionState.NotConnected)
+                        .AwaitStateAsync(ConnectionState.NotConnected)
                         .ConfigureAwait(true);
                     await window.Client
-                        .AwaitStateAsync(RdpClient.ConnectionState.LoggedOn)
+                        .AwaitStateAsync(ConnectionState.LoggedOn)
                         .ConfigureAwait(true);
                 }
 

@@ -127,14 +127,7 @@ namespace Google.Solutions.Terminal.Controls
             //
             try
             {
-                if (args.IsEof)
-                {
-                    this.terminal.ReceiveClose();
-                }
-                else
-                {
-                    this.terminal.ReceiveOutput(args.Data);
-                }
+                this.terminal.ReceiveOutput(args.Data);
             }
             catch (Exception e)
             {

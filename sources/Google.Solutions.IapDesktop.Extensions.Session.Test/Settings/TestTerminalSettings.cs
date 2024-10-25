@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,33 +19,36 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
-using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.IapDesktop.Extensions.Session.Settings;
+using NUnit.Framework;
+using System.Drawing;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 {
-    [Service]
-    public class RdpViewModel : ViewModelBase
+    [TestFixture]
+    public class TestTerminalSettings
     {
         //---------------------------------------------------------------------
-        // Initialization properties.
+        // IsValidFont.
         //---------------------------------------------------------------------
 
-        public InstanceLocator? Instance { get; set; }
-        public string? Server { get; set; }
-        public ushort? Port { get; set; }
-        public RdpParameters? Parameters { get; set; }
-        public RdpCredential? Credential { get; set; }
-
-        protected override void OnValidate()
+        [Test]
+        public void IsValidFont_WhenFontNotFound()
         {
-            this.Instance.ExpectNotNull(nameof(this.Instance));
-            this.Server.ExpectNotNull(nameof(this.Server));
-            this.Parameters.ExpectNotNull(nameof(this.Parameters));
-            this.Credential.ExpectNotNull(nameof(this.Credential));
+            Assert.IsFalse(TerminalSettings.IsValidFont(string.Empty));
+            Assert.IsFalse(TerminalSettings.IsValidFont("doesnotexist"));
+        }
+
+        [Test]
+        public void IsValidFont_WhenFontMonospaced()
+        {
+            Assert.IsTrue(TerminalSettings.IsValidFont(FontFamily.GenericMonospace.Name));
+        }
+
+        [Test]
+        public void IsValidFont_WhenFontNotMonospaced()
+        {
+            Assert.IsFalse(TerminalSettings.IsValidFont(FontFamily.GenericSansSerif.Name));
         }
     }
 }

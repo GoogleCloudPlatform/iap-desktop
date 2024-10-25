@@ -13,6 +13,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Mvvm\Google.Solutions.Mvvm.csproj" />
+    <ProjectReference Include="..\Google.Solutions.Ssh\Google.Solutions.Ssh.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Controls\RdpClient.ConnectionProperties.cs" />

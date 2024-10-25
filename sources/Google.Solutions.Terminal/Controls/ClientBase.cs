@@ -145,9 +145,14 @@ namespace Google.Solutions.Terminal.Controls
                 if (this.state != value)
                 {
                     this.state = value;
-                    this.StateChanged?.Invoke(this, EventArgs.Empty);
+                    OnStateChanged();
                 }
             }
+        }
+
+        protected virtual void OnStateChanged()
+        {
+            this.StateChanged?.Invoke(this, EventArgs.Empty);
         }
 
         protected void ExpectState(ConnectionState expectedState)
@@ -229,35 +234,6 @@ namespace Google.Solutions.Terminal.Controls
         //---------------------------------------------------------------------
         // Inner types.
         //---------------------------------------------------------------------
-
-        public enum ConnectionState
-        {
-            /// <summary>
-            /// Client not connected yet or an existing connection has 
-            /// been lost.
-            /// </summary>
-            NotConnected,
-
-            /// <summary>
-            /// Client is in the process of connecting.
-            /// </summary>
-            Connecting,
-
-            /// <summary>
-            /// Client connected, but user log on hasn't completed yet.
-            /// </summary>
-            Connected,
-
-            /// <summary>
-            /// Client is disconnecting.
-            /// </summary>
-            Disconnecting,
-
-            /// <summary>
-            /// User logged on, session is ready to use.
-            /// </summary>
-            LoggedOn
-        }
 
         public class ConnectionClosedEventArgs : EventArgs
         {

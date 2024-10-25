@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 Debug.Assert(session != null);
                 Debug.Assert(
                     (instanceNode.IsRdpSupported() && session is IRdpSession) ||
-                    (instanceNode.IsSshSupported() && session is ISshTerminalSession));
+                    (instanceNode.IsSshSupported() && session is ISshSession));
                 return;
             }
 

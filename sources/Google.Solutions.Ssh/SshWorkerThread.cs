@@ -70,13 +70,8 @@ namespace Google.Solutions.Ssh
 
         public string? Banner { get; set; }
 
-        /// <summary>
-        /// Context to perform callbacks on
-        /// </summary>
-        internal SynchronizationContext CallbackContext { get; }
-
         internal bool IsRunningOnWorkerThread
-            => Thread.CurrentThread.ManagedThreadId == this.workerThread.ManagedThreadId;
+            => Environment.CurrentManagedThreadId == this.workerThread.ManagedThreadId;
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -85,13 +80,11 @@ namespace Google.Solutions.Ssh
         protected SshWorkerThread(
             IPEndPoint endpoint,
             ISshCredential credential,
-            IKeyboardInteractiveHandler keyboardHandler,
-            SynchronizationContext callbackContext)
+            IKeyboardInteractiveHandler keyboardHandler)
         {
             this.endpoint = endpoint.ExpectNotNull(nameof(endpoint));
             this.credential = credential.ExpectNotNull(nameof(credential));
             this.keyboardHandler = keyboardHandler.ExpectNotNull(nameof(keyboardHandler));
-            this.CallbackContext = callbackContext.ExpectNotNull(nameof(callbackContext));
 
             this.readyToSend = NativeMethods.WSACreateEvent();
 
@@ -233,20 +226,12 @@ namespace Google.Solutions.Ssh
                         session.Timeout = this.ConnectionTimeout;
 
                         //
-                        // Force 2FA callbacks to happen on the callback 
-                        // context, not on the current worker thread.
-                        //
-                        var crossContextAuthenticator = new SynchronizationContextBoundKeyboardInteractiveHandler(
-                            this.keyboardHandler,
-                            this.CallbackContext);
-
-                        //
                         // Open connection and perform handshake using blocking I/O.
                         //
                         using (var connectedSession = session.Connect(this.endpoint))
                         using (var authenticatedSession = connectedSession.Authenticate(
                             this.credential,
-                            crossContextAuthenticator))
+                            this.keyboardHandler))
                         {
                             //
                             // Make sure the readyToSend handle remains valid throughout
@@ -460,45 +445,6 @@ namespace Google.Solutions.Ssh
         public static Task JoinAllWorkerThreadsAsync()
         {
             return workerThreadRundownProtection.WaitAsync();
-        }
-
-        //---------------------------------------------------------------------
-        // Inner classes.
-        //---------------------------------------------------------------------
-
-        private class SynchronizationContextBoundKeyboardInteractiveHandler
-            : IKeyboardInteractiveHandler
-        {
-            private readonly IKeyboardInteractiveHandler handler;
-            private readonly SynchronizationContext context;
-
-            public SynchronizationContextBoundKeyboardInteractiveHandler(
-                IKeyboardInteractiveHandler handler,
-                SynchronizationContext context)
-            {
-                this.handler = handler.ExpectNotNull(nameof(handler));
-                this.context = context.ExpectNotNull(nameof(context));
-            }
-
-            public string? Prompt(
-                string name,
-                string instruction,
-                string prompt,
-                bool echo)
-            {
-                return this.context.Send(
-                    () => this.handler.Prompt(
-                        name,
-                        instruction,
-                        prompt,
-                        echo));
-            }
-
-            public IPasswordCredential PromptForCredentials(string username)
-            {
-                return this.context.Send(
-                    () => this.handler.PromptForCredentials(username));
-            }
         }
     }
 }

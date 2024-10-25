@@ -668,7 +668,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(runningInstance.Object);
 
-            var connectedSession = new Mock<ISshTerminalSession>();
+            var connectedSession = new Mock<ISshSession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
             connectedSession.SetupGet(s => s.Instance).Returns(locator);
 

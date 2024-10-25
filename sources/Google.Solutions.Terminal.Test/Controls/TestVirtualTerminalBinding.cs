@@ -251,23 +251,5 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Assert.AreEqual("data", data);
             }
         }
-
-        [Test]
-        public void OnDeviceOutput_WhenDeviceReportsEof_ThenRaisesEvent()
-        {
-            var device = new Mock<IPseudoTerminal>();
-            using (var virtualTerminal = new VirtualTerminal()
-            {
-                Device = device.Object,
-            })
-            {
-                var deviceClosed = false;
-                virtualTerminal.DeviceClosed += (_, args) => deviceClosed = true;
-
-                device.Raise(d => d.OutputAvailable += null, PseudoTerminalDataEventArgs.Eof);
-
-                Assert.IsTrue(deviceClosed);
-            }
-        }
     }
 }

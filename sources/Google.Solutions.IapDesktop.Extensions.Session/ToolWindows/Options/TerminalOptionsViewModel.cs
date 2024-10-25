@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
             this.TerminalFont = ObservableProperty.Build<Font>(new Font(
                 settings.FontFamily.Value,
-                TerminalSettingsRepository.FontSizeFromDword(settings.FontSizeAsDword.Value)));
+                TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.Value)));
             this.TerminalForegroundColor = ObservableProperty.Build<Color>(
                 Color.FromArgb(settings.ForegroundColorArgb.Value));
             this.TerminalBackgroundColor = ObservableProperty.Build<Color>(
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             settings.FontFamily.Value =
                 this.TerminalFont.Value.FontFamily.Name;
             settings.FontSizeAsDword.Value =
-                TerminalSettingsRepository.DwordFromFontSize(this.TerminalFont.Value.Size);
+                TerminalSettings.DwordFromFontSize(this.TerminalFont.Value.Size);
             settings.ForegroundColorArgb.Value =
                 this.TerminalForegroundColor.Value.ToArgb();
             settings.BackgroundColorArgb.Value =
@@ -116,8 +116,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public float MaximumFontSize => Controls.TerminalFont.MaximumSize;
-        public float MinimumFontSize => Controls.TerminalFont.MinimumSize;
+        public float MaximumFontSize => TerminalSettings.MaximumFontSize;
+        public float MinimumFontSize => TerminalSettings.MinimumFontSize;
 
         public ObservableProperty<bool> IsCopyPasteUsingCtrlCAndCtrlVEnabled { get; }
 

@@ -151,13 +151,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             protected override bool IsEnabled(ISession session)
             {
                 return session != null &&
-                    session is ISshTerminalSession sshSession &&
+                    session is ISshSession sshSession &&
                     sshSession.IsConnected;
             }
 
             public override async Task ExecuteAsync(ISession session)
             {
-                var sshSession = (ISshTerminalSession)session;
+                var sshSession = (ISshSession)session;
 
                 //
                 // Try to lookup node for this session. In some cases,

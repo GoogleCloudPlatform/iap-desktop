@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,40 +19,37 @@
 // under the License.
 //
 
-using System;
-using System.Globalization;
-
-namespace Google.Solutions.Ssh
+namespace Google.Solutions.Terminal.Controls
 {
-    public interface ITextTerminal
+    /// <summary>
+    /// Connection state of a client.
+    /// </summary>
+    public enum ConnectionState
     {
         /// <summary>
-        /// Return terminal type ($TERM), such as "xterm".
+        /// Client not connected yet or an existing connection has 
+        /// been lost.
         /// </summary>
-        string TerminalType { get; }
+        NotConnected,
 
         /// <summary>
-        /// Language ($LC_ALL) of terminal.
+        /// Client is in the process of connecting.
         /// </summary>
-        CultureInfo? Locale { get; }
+        Connecting,
 
         /// <summary>
-        /// Process decoded data received from remote peer.
+        /// Client connected, but user log on hasn't completed yet.
         /// </summary>
-        void OnDataReceived(string data);
+        Connected,
 
         /// <summary>
-        /// Handle communication error.
+        /// Client is disconnecting.
         /// </summary>
-        void OnError(
-            TerminalErrorType errorType,
-            Exception exception);
-    }
+        Disconnecting,
 
-    public enum TerminalErrorType
-    {
-        ConnectionFailed,
-        ConnectionLost,
-        TerminalIssue
+        /// <summary>
+        /// User logged on, session is ready to use.
+        /// </summary>
+        LoggedOn
     }
 }

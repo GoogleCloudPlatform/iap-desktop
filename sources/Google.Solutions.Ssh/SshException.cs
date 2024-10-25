@@ -48,4 +48,14 @@ namespace Google.Solutions.Ssh
         {
         }
     }
+
+    public class SshConnectionClosedException : Exception
+    {
+        internal SshConnectionClosedException()
+            : base(
+                  "The operation is invalid because the " +
+                  "connection is not in connected state")
+        {
+        }
+    }
 }

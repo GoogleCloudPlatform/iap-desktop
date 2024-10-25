@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -22,28 +22,30 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
-using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Ssh;
+using System.Net;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
+namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 {
     [Service]
-    public class RdpViewModel : ViewModelBase
+    public class SshViewModel : ViewModelBase
     {
         //---------------------------------------------------------------------
         // Initialization properties.
         //---------------------------------------------------------------------
 
         public InstanceLocator? Instance { get; set; }
-        public string? Server { get; set; }
-        public ushort? Port { get; set; }
-        public RdpParameters? Parameters { get; set; }
-        public RdpCredential? Credential { get; set; }
+        public IPEndPoint? Endpoint { get; set; }
+        public SshParameters? Parameters { get; set; }
+        public ISshCredential? Credential { get; set; }
+
 
         protected override void OnValidate()
         {
             this.Instance.ExpectNotNull(nameof(this.Instance));
-            this.Server.ExpectNotNull(nameof(this.Server));
+            this.Endpoint.ExpectNotNull(nameof(this.Endpoint));
             this.Parameters.ExpectNotNull(nameof(this.Parameters));
             this.Credential.ExpectNotNull(nameof(this.Credential));
         }
