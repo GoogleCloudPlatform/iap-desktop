@@ -31,7 +31,6 @@
     <PackageReference Include="System.Text.Encoding" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding.Extensions" Version="4.3.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
-    <PackageReference Include="Google.Solutions.ThirdParty.Vtnetcore" Version="1.0.30.31" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Configuration" />

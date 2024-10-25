@@ -275,10 +275,16 @@
                 Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Libssh2.dll"
                 Vital="yes"/>
               <File
-                Id="FileVtnetcoreDll"
-                Name="Vtnetcore.dll"
+                Id="FileIcuDll"
+                Name="Icu.dll"
                 DiskId="1"
-                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Vtnetcore.dll"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Icu.dll"
+                Vital="yes"/>
+              <File
+                Id="FileMicrosoftTerminalControlDll"
+                Name="Microsoft.Terminal.Control.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Microsoft.Terminal.Control.dll"
                 Vital="yes"/>
               <File
                 Id="FileGoogleSolutionsManagementDll"
