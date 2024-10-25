@@ -28,7 +28,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.Terminal.Controls
 {
-    public static class KeyboardUtil // TODO: Make internal once it's no longer used in Session project
+    internal static class KeyboardUtil
     {
         /// <summary>
         /// Generate a WM_KEYDOWN/WM_CHAR/WM_KEYUp message sequence.

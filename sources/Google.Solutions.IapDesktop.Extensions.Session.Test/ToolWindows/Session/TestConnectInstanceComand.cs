@@ -198,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 .ReturnsAsync(new Mock<ISession>().Object);
 
             var sessionBroker = new Mock<ISessionBroker>();
-            var session = (ISession)new Mock<ISshTerminalSession>().Object;
+            var session = (ISession)new Mock<ISshSession>().Object;
             sessionBroker
                 .Setup(s => s.TryActivateSession(SampleLocator, out session))
                 .Returns(true);

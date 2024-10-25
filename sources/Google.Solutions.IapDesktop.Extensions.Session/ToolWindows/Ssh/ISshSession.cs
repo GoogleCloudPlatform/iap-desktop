@@ -23,7 +23,7 @@ using Google.Solutions.IapDesktop.Application.Windows;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 {
-    public interface ISshTerminalSession : ISession // TODO: rename to ISshSession
+    public interface ISshSession : ISession
     {
     }
 }

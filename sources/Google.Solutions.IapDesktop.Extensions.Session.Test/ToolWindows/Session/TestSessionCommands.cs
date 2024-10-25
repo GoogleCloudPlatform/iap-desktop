@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var closedRdpSession = new Mock<IRdpSession>();
             closedRdpSession.SetupGet(s => s.IsConnected).Returns(false);
 
-            var sshSession = new Mock<ISshTerminalSession>();
+            var sshSession = new Mock<ISshSession>();
 
             Assert.AreEqual(
                 CommandState.Disabled,
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var closedSession = new Mock<IRdpSession>();
             closedSession.SetupGet(s => s.IsConnected).Returns(false);
 
-            var sshSession = new Mock<ISshTerminalSession>();
+            var sshSession = new Mock<ISshSession>();
             sshSession.SetupGet(s => s.IsConnected).Returns(true);
 
             Assert.AreEqual(
@@ -284,7 +284,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var closedSession = new Mock<IRdpSession>();
             closedSession.SetupGet(s => s.IsConnected).Returns(false);
 
-            var sshSession = new Mock<ISshTerminalSession>();
+            var sshSession = new Mock<ISshSession>();
             sshSession.SetupGet(s => s.IsConnected).Returns(true);
 
             Assert.AreEqual(
@@ -322,7 +322,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var closedSession = new Mock<IRdpSession>();
             closedSession.SetupGet(s => s.IsConnected).Returns(false);
 
-            var sshSession = new Mock<ISshTerminalSession>();
+            var sshSession = new Mock<ISshSession>();
             sshSession.SetupGet(s => s.IsConnected).Returns(true);
 
             Assert.AreEqual(
@@ -360,7 +360,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var closedSession = new Mock<IRdpSession>();
             closedSession.SetupGet(s => s.IsConnected).Returns(false);
 
-            var sshSession = new Mock<ISshTerminalSession>();
+            var sshSession = new Mock<ISshSession>();
             sshSession.SetupGet(s => s.IsConnected).Returns(true);
 
             Assert.AreEqual(

@@ -221,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             return session;
         }
 
-        internal ISshTerminalSession ConnectSshSession(
+        internal ISshSession ConnectSshSession(
             InstanceLocator instance,
             ITransport transport,
             SshParameters parameters,
