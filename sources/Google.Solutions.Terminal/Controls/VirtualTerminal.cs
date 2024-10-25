@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Runtime;
+using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Interop;
 using Google.Solutions.Mvvm.Theme;
@@ -741,6 +742,11 @@ namespace Google.Solutions.Terminal.Controls
                                 var contents = Clipboard.GetText();
                                 if (!string.IsNullOrWhiteSpace(contents))
                                 {
+                                    if (this.EnableTypographicQuoteConversion)
+                                    {
+                                        contents = TypographicQuotes.ToAsciiQuotes(contents);
+                                    }
+
                                     OnUserInput(contents);
                                 }
                             }
