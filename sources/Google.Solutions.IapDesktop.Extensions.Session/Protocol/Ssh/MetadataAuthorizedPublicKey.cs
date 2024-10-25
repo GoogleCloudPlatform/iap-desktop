@@ -38,13 +38,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         /// <summary>
         /// Unmanaged keys. These don't have an expiry and use the following format:
         /// 
-        /// USERNAME:TYPE KEY_VALUE EMAIL
+        /// USERNAME:TYPE KEY_VALUE [EMAIL]
+        /// 
+        /// EMAIL used to be mandatory, but at some point it became optional.
         /// </summary>
         private static readonly Regex unmanagedKeyPattern = new Regex(
-            @"^([^\s]*):([^\s]+)\s+([^\s]+)\s+([^\s]+)$");
+            @"^([^\s]*):([^\s]+)\s+([^\s]+)(\s+[^\s]+)?$");
 
         /// <summary>
-        /// Managed keys. These can have an expiry and use the following format:
+        /// Managed keys. These have an expiry and use the following format:
         /// 
         /// USERNAME:TYPE KEY_VALUE google-ssh {"userName":"EMAIL","expireOn":"EXPIRE_TIME"}
         /// </summary>
@@ -72,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         /// <summary>
         /// Email address of owning user account.
         /// </summary>
-        public abstract string Email { get; }
+        public abstract string? Email { get; }
 
         public abstract DateTime? ExpireOn { get; }
 
@@ -121,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     unmanagedMatch.Groups[1].Value,
                     unmanagedMatch.Groups[2].Value,
                     unmanagedMatch.Groups[3].Value,
-                    unmanagedMatch.Groups[4].Value);
+                    unmanagedMatch.Groups[4].Value.NullIfEmptyOrWhitespace()?.Trim());
             }
             else
             {
@@ -160,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
     public class UnmanagedMetadataAuthorizedPublicKey : MetadataAuthorizedPublicKey, IAuthorizedPublicKey
     {
-        public override string Email { get; }
+        public override string? Email { get; }
 
         public override DateTime? ExpireOn => null;
 
@@ -168,17 +170,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             string posixUsername,
             string keyType,
             string key,
-            string username)
+            string? username)
             : base(posixUsername, keyType, key)
         {
-            Precondition.ExpectNotEmpty(username, nameof(username));
-
             this.Email = username;
         }
 
         public override string ToString()
         {
-            return $"{this.PosixUsername}:{this.KeyType} {this.PublicKey} {this.Email}";
+            var s = $"{this.PosixUsername}:{this.KeyType} {this.PublicKey}";
+            if (this.Email != null)
+            {
+                s += $" {this.Email}";
+            }
+
+            return s;
         }
     }
 

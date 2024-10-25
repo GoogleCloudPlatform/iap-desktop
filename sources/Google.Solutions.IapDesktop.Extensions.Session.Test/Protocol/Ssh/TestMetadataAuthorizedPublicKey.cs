@@ -36,13 +36,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public void Parse_WhenMalformed(
             [Values(
                 "xxx",
-                "login:ssh-rsa key",
                 "login: key username",
                 "login:ssh-rsa key username morejunk",
                 "login:ssh-rsa key username google-ssh {",
                 "login:ssh-rsa key username google-ssh {}",
                 "login:ssh-rsa key username google-ssh {\"userName\": \"user\", \"expireOn\": null}",
-                "login:ssh-rsa key username google-ssh {\"userName\": \"user\", \"expireOn\": \"x\"}"
+                "login:ssh-rsa key username google-ssh {\"userName\": \"user\", \"expireOn\": \"x\"}",
+                "login:ssh-rsa key username google-ssh {\"notjson}"
             )]
             string line)
         {
@@ -67,6 +67,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             Assert.AreEqual("user", ((UnmanagedMetadataAuthorizedPublicKey)key).Email);
 
             Assert.AreEqual("login:ssh-rsa key user", key.ToString());
+        }
+
+        [Test]
+        public void Parse_UnmanagedRsaKey_WhenUsernameMissing(
+            [Values(
+                "login:ssh-rsa key",
+                "login:ssh-rsa  key    ",
+                " login:ssh-rsa \tkey\t         "
+            )]
+            string line)
+        {
+            var key = MetadataAuthorizedPublicKey.Parse(line);
+            Assert.IsInstanceOf<UnmanagedMetadataAuthorizedPublicKey>(key);
+
+            Assert.AreEqual("login", key.PosixUsername);
+            Assert.AreEqual("ssh-rsa", key.KeyType);
+            Assert.AreEqual("key", key.PublicKey);
+            Assert.IsNull(((UnmanagedMetadataAuthorizedPublicKey)key).Email);
+
+            Assert.AreEqual(
+                "login:ssh-rsa key",
+                key.ToString());
         }
 
         [Test]

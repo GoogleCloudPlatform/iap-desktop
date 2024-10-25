@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
 
                 var matches = this.AllKeys
                     .Where(k => string.IsNullOrEmpty(this.filter) ||
-                                k.Key.Email.Contains(this.filter) ||
+                                (k.Key.Email != null && k.Key.Email.Contains(this.filter)) ||
                                 k.Key.KeyType.Contains(this.filter));
 
                 this.FilteredKeys.Clear();
