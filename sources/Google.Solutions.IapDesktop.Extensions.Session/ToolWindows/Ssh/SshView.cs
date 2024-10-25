@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
         public bool CanTransferFiles
         {
-            //TODO: Implement dnd
+            //TODO: SFTP - Implement dnd
             get => false;
         }
 
@@ -271,13 +271,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
 
         public Task DownloadFilesAsync()
         {
-            //TODO: Show SFTP pane.
+            //TODO: SFTP - Show pane.
             throw new NotImplementedException();
         }
 
         public Task UploadFilesAsync()
         {
-            //TODO: Show SFTP pane.
+            //TODO: SFTP - Show pane.
             throw new NotImplementedException();
         }
 
