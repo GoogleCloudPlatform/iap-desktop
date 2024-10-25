@@ -68,9 +68,8 @@ namespace Google.Solutions.Apis.Compute
                         .ConfigureAwait(false);
                     break;
                 }
-                catch (Exception e) when (e.Is<GoogleApiException>())
+                catch (Exception e) when (e.Unwrap() is GoogleApiException apiException)
                 {
-                    var apiException = (GoogleApiException)e.Unwrap();
                     if (attempt == maxAttempts)
                     {
                         //
