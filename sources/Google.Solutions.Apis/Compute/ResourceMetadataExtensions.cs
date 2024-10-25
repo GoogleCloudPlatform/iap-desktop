@@ -27,6 +27,7 @@ using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -79,25 +80,30 @@ namespace Google.Solutions.Apis.Compute
 
                         throw;
                     }
-
-                    if (e.Error != null && (e.Error.Code == 412 || e.Error.Code == 503))
+                    else if (
+                        e.HttpStatusCode == HttpStatusCode.ServiceUnavailable ||
+                        e.Error != null && e.Error.Code == 412)
                     {
                         //
-                        // 412 indicates a conflict, meaning we lost the optimisitic
-                        // concurrency control race agains someone else. 
+                        // 412 indicates a conflict, meaning we lost the
+                        // optimisitic concurrency control race agains
+                        // someone else. 
                         //
-                        // 503 indicates that the API is flaky.
+                        // 503 indicates that the API is being flaky.
                         //
-                        // In both cases, retry the read/update/write operation.
+                        // In both cases, back off and retry the
+                        // read/update/write operation.
                         //
-                        var backoff = 100;
+                        var backoff = TimeSpan.FromMilliseconds(10 * attempt);
                         CommonTraceSource.Log.TraceWarning(
-                            "SetMetadata failed with {0} (code error {1}) - retrying after {2}ms", 
+                            "SetMetadata failed with {0} (code error {1}) - retrying after {2}", 
                             e.Message,
                             e.Error?.Code,
                             backoff);
 
-                        await Task.Delay(backoff).ConfigureAwait(false);
+                        await Task
+                            .Delay(backoff)
+                            .ConfigureAwait(false);
                     }
                     else
                     {
