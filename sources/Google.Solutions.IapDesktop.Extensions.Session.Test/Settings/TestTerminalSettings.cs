@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,14 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Session.Controls;
+using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using NUnit.Framework;
 using System.Drawing;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 {
     [TestFixture]
-    public class TestTerminalFont
+    public class TestTerminalSettings
     {
         //---------------------------------------------------------------------
         // IsValidFont.
@@ -35,17 +35,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
         [Test]
         public void IsValidFont_WhenFontNotFound()
         {
-            Assert.IsFalse(TerminalFont.IsValidFont(string.Empty));
-            Assert.IsFalse(TerminalFont.IsValidFont("doesnotexist"));
+            Assert.IsFalse(TerminalSettings.IsValidFont(string.Empty));
+            Assert.IsFalse(TerminalSettings.IsValidFont("doesnotexist"));
+        }
+
+        [Test]
+        public void IsValidFont_WhenFontMonospaced()
+        {
+            Assert.IsFalse(TerminalSettings.IsValidFont(FontFamily.GenericMonospace.Name));
         }
 
         [Test]
         public void IsValidFont_WhenFontNotMonospaced()
         {
-            using (var font = new Font(FontFamily.GenericSansSerif, 10))
-            {
-                Assert.IsFalse(TerminalFont.IsValidFont(font));
-            }
+            Assert.IsFalse(TerminalSettings.IsValidFont(FontFamily.GenericSansSerif.Name));
         }
     }
 }
