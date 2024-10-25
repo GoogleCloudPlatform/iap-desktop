@@ -43,7 +43,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task AddMetadata_WhenUsingNewKey_ThenAddInstanceMetadataSucceeds(
+        public async Task AddMetadata_WhenUsingNewKey(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
             var locator = await testInstance;
@@ -52,14 +52,16 @@ namespace Google.Solutions.Apis.Test.Compute
             var key = Guid.NewGuid().ToString();
             var value = "metadata value";
 
-            await instancesResource.AddMetadataAsync(
+            await instancesResource
+                .AddMetadataAsync(
                     locator,
                     key,
                     value,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            var instance = await instancesResource.Get(
+            var instance = await instancesResource
+                .Get(
                     locator.ProjectId,
                     locator.Zone,
                     locator.Name)
@@ -72,7 +74,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task AddMetadata_WhenUsingExistingKey_ThenAddInstanceMetadataSucceeds(
+        public async Task AddMetadata_WhenUsingExistingKey(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
             var locator = await testInstance;
@@ -186,14 +188,15 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task AddMetadata_WhenUsingNewKey_ThenAddProjectMetadataSucceeds()
+        public async Task AddMetadata_WhenUsingNewKey()
         {
             var projectsResource = TestProject.CreateComputeService().Projects;
 
             var key = Guid.NewGuid().ToString();
             var value = "metadata value";
 
-            await projectsResource.AddMetadataAsync(
+            await projectsResource
+                .AddMetadataAsync(
                     TestProject.ProjectId,
                     key,
                     value,
@@ -210,12 +213,13 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task AddMetadata_WhenUsingExistingKey_ThenAddProjectMetadataSucceeds()
+        public async Task AddMetadata_WhenUsingExistingKey()
         {
             var key = Guid.NewGuid().ToString();
             var projectsResource = TestProject.CreateComputeService().Projects;
 
-            await projectsResource.AddMetadataAsync(
+            await projectsResource
+                .AddMetadataAsync(
                     TestProject.ProjectId,
                     key,
                     "value to be overridden",
@@ -223,7 +227,8 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ConfigureAwait(false);
 
             var value = "metadata value";
-            await projectsResource.AddMetadataAsync(
+            await projectsResource
+                .AddMetadataAsync(
                     TestProject.ProjectId,
                     key,
                     value,
@@ -246,7 +251,8 @@ namespace Google.Solutions.Apis.Test.Compute
             var projectsResource = TestProject.CreateComputeService().Projects;
 
             var callbacks = 0;
-            await projectsResource.UpdateMetadataAsync(
+            await projectsResource
+                .UpdateMetadataAsync(
                     TestProject.ProjectId,
                     metadata =>
                     {
@@ -276,7 +282,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void AddMetadata_WhenUpdateKeepsConflicting_ThenUpdateProjectMetadataThrowsException()
+        public void AddMetadata_WhenUpdateKeepsConflicting_ThenThrowsException()
         {
             var key = Guid.NewGuid().ToString();
             var projectsResource = TestProject.CreateComputeService().Projects;
