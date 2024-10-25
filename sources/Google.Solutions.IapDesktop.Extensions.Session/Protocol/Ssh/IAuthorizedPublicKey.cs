@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         /// <summary>
         /// Email address of user.
         /// </summary>
-        string Email { get; }
+        string? Email { get; }
 
         /// <summary>
         /// Type of key (rsa-rsa, ...).

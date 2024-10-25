@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             this.List.GridLines = true;
 
             this.List.BindImageIndex(m => 0);
-            this.List.BindColumn(0, m => m.Key.Email);
+            this.List.BindColumn(0, m => m.Key.Email ?? string.Empty);
             this.List.BindColumn(1, m => m.Key.KeyType);
             this.List.BindColumn(2, m => m.AuthorizationMethod.ToString());
             this.List.BindColumn(3, m =>
