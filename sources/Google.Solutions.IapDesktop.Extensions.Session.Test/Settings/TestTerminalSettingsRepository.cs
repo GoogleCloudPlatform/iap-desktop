@@ -40,12 +40,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 var settings = repository.GetSettings();
 
                 Assert.IsTrue(settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value);
-                Assert.IsFalse(settings.IsSelectAllUsingCtrlAEnabled.Value);
                 Assert.IsTrue(settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value);
-                Assert.IsTrue(settings.IsSelectUsingShiftArrrowEnabled.Value);
                 Assert.IsTrue(settings.IsQuoteConvertionOnPasteEnabled.Value);
-                Assert.IsTrue(settings.IsNavigationUsingControlArrrowEnabled.Value);
-                Assert.IsTrue(settings.IsScrollingUsingCtrlUpDownEnabled.Value);
                 Assert.IsTrue(settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
                 Assert.AreEqual(TerminalSettings.DefaultFontFamily, settings.FontFamily.Value);
                 Assert.AreEqual(
@@ -71,13 +67,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 repository.SettingsChanged += (sender, args) =>
                 {
                     Assert.AreSame(repository, sender);
-                    Assert.IsTrue(args.Data.IsSelectAllUsingCtrlAEnabled.Value);
+                    Assert.IsFalse(args.Data.IsScrollingUsingCtrlHomeEndEnabled.Value);
                     eventFired = true;
                 };
 
                 var settings = repository.GetSettings();
-                Assert.IsFalse(settings.IsSelectAllUsingCtrlAEnabled.Value);
-                settings.IsSelectAllUsingCtrlAEnabled.Value = true;
+                Assert.IsTrue(settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
+                settings.IsScrollingUsingCtrlHomeEndEnabled.Value = false;
 
                 repository.SetSettings(settings);
 

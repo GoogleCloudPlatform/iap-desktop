@@ -23,8 +23,12 @@ using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Terminal.Controls;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 
 #nullable disable
 
@@ -43,16 +47,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value);
             this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled = ObservableProperty.Build(
                 settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value);
-            this.IsSelectAllUsingCtrlAEnabled = ObservableProperty.Build(
-                settings.IsSelectAllUsingCtrlAEnabled.Value);
-            this.IsSelectUsingShiftArrrowEnabled = ObservableProperty.Build(
-                settings.IsSelectUsingShiftArrrowEnabled.Value);
             this.IsQuoteConvertionOnPasteEnabled = ObservableProperty.Build(
                 settings.IsQuoteConvertionOnPasteEnabled.Value);
-            this.IsNavigationUsingControlArrrowEnabled = ObservableProperty.Build(
-                settings.IsNavigationUsingControlArrrowEnabled.Value);
-            this.IsScrollingUsingCtrlUpDownEnabled = ObservableProperty.Build(
-                settings.IsScrollingUsingCtrlUpDownEnabled.Value);
             this.IsScrollingUsingCtrlHomeEndEnabled = ObservableProperty.Build(
                 settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
             this.TerminalFont = ObservableProperty.Build<Font>(new Font(
@@ -62,18 +58,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 Color.FromArgb(settings.ForegroundColorArgb.Value));
             this.TerminalBackgroundColor = ObservableProperty.Build<Color>(
                 Color.FromArgb(settings.BackgroundColorArgb.Value));
+            this.CaretStyle = ObservableProperty.Build(settings.CaretStyle.Value);
 
             MarkDirtyWhenPropertyChanges(this.IsCopyPasteUsingCtrlCAndCtrlVEnabled);
             MarkDirtyWhenPropertyChanges(this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled);
-            MarkDirtyWhenPropertyChanges(this.IsSelectAllUsingCtrlAEnabled);
-            MarkDirtyWhenPropertyChanges(this.IsSelectUsingShiftArrrowEnabled);
             MarkDirtyWhenPropertyChanges(this.IsQuoteConvertionOnPasteEnabled);
-            MarkDirtyWhenPropertyChanges(this.IsNavigationUsingControlArrrowEnabled);
-            MarkDirtyWhenPropertyChanges(this.IsScrollingUsingCtrlUpDownEnabled);
             MarkDirtyWhenPropertyChanges(this.IsScrollingUsingCtrlHomeEndEnabled);
             MarkDirtyWhenPropertyChanges(this.TerminalFont);
             MarkDirtyWhenPropertyChanges(this.TerminalForegroundColor);
             MarkDirtyWhenPropertyChanges(this.TerminalBackgroundColor);
+            MarkDirtyWhenPropertyChanges(this.CaretStyle);
 
             base.OnInitializationCompleted();
         }
@@ -90,16 +84,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 this.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value;
             settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value =
                 this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value;
-            settings.IsSelectAllUsingCtrlAEnabled.Value =
-                this.IsSelectAllUsingCtrlAEnabled.Value;
-            settings.IsSelectUsingShiftArrrowEnabled.Value =
-                this.IsSelectUsingShiftArrrowEnabled.Value;
             settings.IsQuoteConvertionOnPasteEnabled.Value =
                 this.IsQuoteConvertionOnPasteEnabled.Value;
-            settings.IsNavigationUsingControlArrrowEnabled.Value =
-                this.IsNavigationUsingControlArrrowEnabled.Value;
-            settings.IsScrollingUsingCtrlUpDownEnabled.Value =
-                this.IsScrollingUsingCtrlUpDownEnabled.Value;
             settings.IsScrollingUsingCtrlHomeEndEnabled.Value =
                 this.IsScrollingUsingCtrlHomeEndEnabled.Value;
             settings.FontFamily.Value =
@@ -110,6 +96,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 this.TerminalForegroundColor.Value.ToArgb();
             settings.BackgroundColorArgb.Value =
                 this.TerminalBackgroundColor.Value.ToArgb();
+            settings.CaretStyle.Value =
+                this.CaretStyle.Value;
         }
 
         //---------------------------------------------------------------------
@@ -123,15 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
 
         public ObservableProperty<bool> IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; }
 
-        public ObservableProperty<bool> IsSelectAllUsingCtrlAEnabled { get; }
-
-        public ObservableProperty<bool> IsSelectUsingShiftArrrowEnabled { get; }
-
         public ObservableProperty<bool> IsQuoteConvertionOnPasteEnabled { get; }
-
-        public ObservableProperty<bool> IsNavigationUsingControlArrrowEnabled { get; }
-
-        public ObservableProperty<bool> IsScrollingUsingCtrlUpDownEnabled { get; }
 
         public ObservableProperty<bool> IsScrollingUsingCtrlHomeEndEnabled { get; }
 
@@ -140,5 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         public ObservableProperty<Color> TerminalForegroundColor { get; }
 
         public ObservableProperty<Color> TerminalBackgroundColor { get; }
+
+        public ObservableProperty<VirtualTerminal.CaretStyle> CaretStyle { get; }
     }
 }

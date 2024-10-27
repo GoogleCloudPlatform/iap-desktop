@@ -32,7 +32,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.Mvvm.Controls
 {
     /// <summary>
-    /// Listview that support simple data binding.
+    /// Combobox that support simple data binding.
     /// </summary>
     public class BindableComboBox : ComboBox
     {

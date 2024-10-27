@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Util;
 using NUnit.Framework;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace Google.Solutions.Common.Test.Util
 {
@@ -109,7 +108,8 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void GetAttribute_WhenValueHasAttribute_ThenGetAttributeReturnsValue()
         {
-            var a = SampleEnumWithAttributes.WithAttribute.GetAttribute<System.ComponentModel.DescriptionAttribute>();
+            var a = SampleEnumWithAttributes.WithAttribute
+                .GetAttribute<System.ComponentModel.DescriptionAttribute>();
             Assert.IsNotNull(a);
             Assert.AreEqual("With attribute", a!.Description);
         }
@@ -117,7 +117,8 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void GetAttribute_WhenValueHasNoAttribute_ThenGetAttributeReturnsNull()
         {
-            var a = SampleEnumWithAttributes.NoAttribute.GetAttribute<System.ComponentModel.DescriptionAttribute>();
+            var a = SampleEnumWithAttributes.NoAttribute
+                .GetAttribute<System.ComponentModel.DescriptionAttribute>();
             Assert.IsNull(a);
         }
     }

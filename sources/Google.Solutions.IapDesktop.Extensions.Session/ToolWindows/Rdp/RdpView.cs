@@ -88,16 +88,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
         // Ctor.
         //---------------------------------------------------------------------
 
-        public RdpView(IServiceProvider serviceProvider) // TODO: use typed arguments
+        public RdpView(
+            IMainWindow mainWindow,
+            IRepository<IApplicationSettings> settingsRepository,
+            ToolWindowStateRepository stateRepository,
+            IEventQueue eventQueue,
+            IExceptionDialog exceptionDialog,
+            IToolWindowTheme theme,
+            IBindingContext bindingContext)
             : base(
-                  serviceProvider.GetService<IMainWindow>(),
-                  serviceProvider.GetService<ToolWindowStateRepository>(),
-                  serviceProvider.GetService<IEventQueue>(),
-                  serviceProvider.GetService<IExceptionDialog>(),
-                  serviceProvider.GetService<IToolWindowTheme>(),
-                  serviceProvider.GetService<IBindingContext>())
+                  mainWindow,
+                  stateRepository,
+                  eventQueue,
+                  exceptionDialog,
+                  theme,
+                  bindingContext)
         {
-            this.settingsRepository = serviceProvider.GetService<IRepository<IApplicationSettings>>();
+            this.settingsRepository = settingsRepository;
             this.Icon = Resources.ComputerBlue_16;
         }
 
