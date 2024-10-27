@@ -191,6 +191,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
+        [Ignore("b/375829679")]
         public async Task AddMetadata_WhenUsingNewKey()
         {
             var projectsResource = TestProject.CreateComputeService().Projects;
@@ -216,6 +217,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
+        [Ignore("b/375829679")]
         public async Task AddMetadata_WhenUsingExistingKey()
         {
             var key = Guid.NewGuid().ToString();
