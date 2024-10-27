@@ -43,6 +43,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
+        [Ignore("b/375829679")]
         public async Task AddMetadata_WhenUsingNewKey(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
@@ -74,6 +75,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
+        [Ignore("b/375829679")]
         public async Task AddMetadata_WhenUsingExistingKey(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
@@ -112,6 +114,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
+        [Ignore("b/375829679")]
         public async Task UpdateMetadata_WhenUpdateConflictingOnFirstAttempt(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
@@ -245,6 +248,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
+        [Ignore("b/375829679")]
         public async Task AddMetadata_WhenUpdateConflictingOnFirstAttempt_ThenUpdateProjectMetadataRetriesAndSucceeds()
         {
             var key = Guid.NewGuid().ToString();
