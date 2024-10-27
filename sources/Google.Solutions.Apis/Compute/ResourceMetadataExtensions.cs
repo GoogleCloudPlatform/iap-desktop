@@ -25,8 +25,10 @@ using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,8 +42,7 @@ namespace Google.Solutions.Apis.Compute
         private const uint DefaultAttempts = 6;
 
         /// <summary>
-        /// Generic helper method that works for both instance and
-        /// project metadata
+        /// Modify metadata using optimistic concurrency control.
         /// </summary>
         private static async Task UpdateMetadataAsync(
             Func<Task<Metadata>> readMetadata,
@@ -67,7 +68,7 @@ namespace Google.Solutions.Apis.Compute
                         .ConfigureAwait(false);
                     break;
                 }
-                catch (GoogleApiException e)
+                catch (Exception e) when (e.Unwrap() is GoogleApiException apiException)
                 {
                     if (attempt == maxAttempts)
                     {
@@ -76,29 +77,40 @@ namespace Google.Solutions.Apis.Compute
                         //
                         CommonTraceSource.Log.TraceWarning(
                             "SetMetadata failed with {0} (code error {1})", e.Message,
-                            e.Error?.Code);
+                            apiException.Error?.Code);
 
                         throw;
                     }
-
-                    if (e.Error != null && e.Error.Code == 412)
+                    else if (
+                        apiException.HttpStatusCode == HttpStatusCode.ServiceUnavailable ||
+                        apiException.Error != null && apiException.Error.Code == 412)
                     {
-                        // Fingerprint mismatch - that happens when somebody else updated metadata
-                        // in patallel. 
-
-                        var backoff = 100;
+                        //
+                        // 412 indicates a conflict, meaning we lost the
+                        // optimisitic concurrency control race agains
+                        // someone else. 
+                        //
+                        // 503 indicates that the API is being flaky.
+                        //
+                        // In both cases, back off and retry the
+                        // read/update/write operation.
+                        //
+                        var backoff = TimeSpan.FromMilliseconds(10 * attempt);
                         CommonTraceSource.Log.TraceWarning(
-                            "SetMetadata failed with {0} (code error {1}) - retrying after {2}ms", e.Message,
-                            e.Error?.Code,
+                            "SetMetadata failed with {0} (code error {1}) - retrying after {2}", 
+                            e.Message,
+                            apiException.Error?.Code,
                             backoff);
 
-                        await Task.Delay(backoff).ConfigureAwait(false);
+                        await Task
+                            .Delay(backoff)
+                            .ConfigureAwait(false);
                     }
                     else
                     {
                         CommonTraceSource.Log.TraceWarning(
                             "Setting metadata failed {0} (code error {1})", e.Message,
-                            e.Error?.Code);
+                            apiException.Error?.Code);
 
                         throw;
                     }
