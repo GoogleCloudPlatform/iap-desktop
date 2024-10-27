@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             var auth = await authTask;
 
             using (var window = new ClientDiagnosticsWindow<RdpClient>(new RdpClient()))
-            using (var tunnel = IapTransport.ForRdp(instance, auth))
+            using (var tunnel = IapTransport.CreateRdpTransport(instance, auth))
             {
                 var rdpCredential = await
                     GenerateRdpCredentialAsync(instance)
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             var auth = await authTask;
 
             using (var window = new ClientDiagnosticsWindow<RdpClient>(new RdpClient()))
-            using (var tunnel = IapTransport.ForRdp(instance, auth))
+            using (var tunnel = IapTransport.CreateRdpTransport(instance, auth))
             {
                 var rdpCredential = await
                     GenerateRdpCredentialAsync(instance)
@@ -228,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
             var auth = await authTask;
 
             using (var window = new ClientDiagnosticsWindow<RdpClient>(new RdpClient()))
-            using (var tunnel = IapTransport.ForRdp(instance, auth))
+            using (var tunnel = IapTransport.CreateRdpTransport(instance, auth))
             {
                 var rdpCredential = await
                     GenerateRdpCredentialAsync(instance)

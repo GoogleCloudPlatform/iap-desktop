@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             var serviceProvider = CreateServiceProvider(await auth);
             var instance = await testInstance;
 
-            using (var tunnel = IapTransport.ForRdp(
+            using (var tunnel = IapTransport.CreateRdpTransport(
                 instance,
                 await auth))
             {
@@ -194,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                 GenerateRdpCredentialAsync(instance)
                 .ConfigureAwait(true);
 
-            using (var tunnel = IapTransport.ForRdp(
+            using (var tunnel = IapTransport.CreateRdpTransport(
                 instance,
                 await auth))
             {

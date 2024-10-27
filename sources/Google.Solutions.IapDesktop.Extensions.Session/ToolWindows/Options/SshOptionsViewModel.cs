@@ -26,8 +26,6 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Settings.Collection;
 using Google.Solutions.Ssh.Cryptography;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 #nullable disable
 
@@ -36,11 +34,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
     [Service(ServiceLifetime.Transient)]
     public class SshOptionsViewModel : OptionsViewModelBase<ISshSettings>
     {
-        private static readonly SshKeyType[] publicKeyTypes =
-            Enum.GetValues(typeof(SshKeyType))
-                .Cast<SshKeyType>()
-                .ToArray();
-
         public SshOptionsViewModel(IRepository<ISshSettings> settingsRepository)
             : base("SSH", settingsRepository)
         {
@@ -98,8 +91,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         public ObservableProperty<SshKeyType> PublicKeyType { get; private set; }
 
         public ObservableProperty<decimal> PublicKeyValidityInDays { get; private set; }
-
-        public IList<SshKeyType> AllPublicKeyTypes => publicKeyTypes;
 
         public ObservableProperty<bool> UsePersistentKey { get; private set; }
         public ObservableFunc<bool> IsUsePersistentKeyEditable { get; private set; }

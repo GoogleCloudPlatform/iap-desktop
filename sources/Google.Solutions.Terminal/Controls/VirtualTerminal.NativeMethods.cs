@@ -23,6 +23,7 @@ using Google.Solutions.Mvvm.Interop;
 using Google.Solutions.Platform.Interop;
 using Microsoft.Win32.SafeHandles;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -45,14 +46,30 @@ namespace Google.Solutions.Terminal.Controls
             public int Y;
         }
 
-        public enum CaretStyle : uint
+        public enum CaretStyle : int
         {
+            /// <summary>
+            /// Not useful, same as underline.
+            /// </summary>
+            [Browsable(false)]
             BlinkingBlock = 0,
+
+            [Description("Blinking block")]
             BlinkingBlockDefault = 1,
+
+            [Description("Steady block")]
             SteadyBlock = 2,
+
+            [Description("Blinking underscore")]
             BlinkingUnderline = 3,
+
+            [Description("Steady underscore")]
             SteadyUnderline = 4,
+
+            [Description("Blinking bar")]
             BlinkingBar = 5,
+
+            [Description("Steady bar")]
             SteadyBar = 6,
         }
 

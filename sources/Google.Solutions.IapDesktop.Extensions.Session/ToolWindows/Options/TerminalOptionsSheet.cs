@@ -73,32 +73,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 bindingContext);
 
             //
-            // Text selection box.
-            //
-            this.selectUsingShiftArrrowEnabledCheckBox.BindObservableProperty(
-                c => c.Checked,
-                viewModel,
-                m => m.IsSelectUsingShiftArrrowEnabled,
-                bindingContext);
-            this.selectAllUsingCtrlAEnabledCheckBox.BindObservableProperty(
-                c => c.Checked,
-                viewModel,
-                m => m.IsSelectAllUsingCtrlAEnabled,
-                bindingContext);
-            this.navigationUsingControlArrrowEnabledCheckBox.BindObservableProperty(
-                c => c.Checked,
-                viewModel,
-                m => m.IsNavigationUsingControlArrrowEnabled,
-                bindingContext);
-
-            //
             // Scrolling box.
             //
-            this.scrollUsingCtrlUpDownCheckBox.BindObservableProperty(
-                c => c.Checked,
-                viewModel,
-                m => m.IsScrollingUsingCtrlUpDownEnabled,
-                bindingContext);
             this.scrollUsingCtrlHomeEndcheckBox.BindObservableProperty(
                 c => c.Checked,
                 viewModel,
@@ -106,8 +82,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 bindingContext);
 
             //
-            // Font box.
+            // Theme box.
             //
+            this.caretStyleCombobox.BindObservableProperty(
+                viewModel.CaretStyle,
+                bindingContext);
             this.terminalLook.BindReadonlyObservableProperty(
                 c => c.Font,
                 viewModel,

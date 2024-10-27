@@ -23,6 +23,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Drawing;
 using Google.Solutions.Settings;
 using Google.Solutions.Settings.Collection;
+using Google.Solutions.Terminal.Controls;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -35,17 +36,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
     public interface ITerminalSettings : ISettingsCollection
     {
         ISetting<bool> IsCopyPasteUsingCtrlCAndCtrlVEnabled { get; }
-        ISetting<bool> IsSelectAllUsingCtrlAEnabled { get; }
         ISetting<bool> IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; }
-        ISetting<bool> IsSelectUsingShiftArrrowEnabled { get; }
         ISetting<bool> IsQuoteConvertionOnPasteEnabled { get; }
-        ISetting<bool> IsNavigationUsingControlArrrowEnabled { get; }
-        ISetting<bool> IsScrollingUsingCtrlUpDownEnabled { get; }
         ISetting<bool> IsScrollingUsingCtrlHomeEndEnabled { get; }
         ISetting<string> FontFamily { get; }
         ISetting<int> FontSizeAsDword { get; }
         ISetting<int> ForegroundColorArgb { get; }
         ISetting<int> BackgroundColorArgb { get; }
+        ISetting<VirtualTerminal.CaretStyle> CaretStyle { get; }
     }
 
     internal class TerminalSettings : ITerminalSettings
@@ -97,32 +95,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         }
 
         public ISetting<bool> IsCopyPasteUsingCtrlCAndCtrlVEnabled { get; }
-        public ISetting<bool> IsSelectAllUsingCtrlAEnabled { get; }
         public ISetting<bool> IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; }
-        public ISetting<bool> IsSelectUsingShiftArrrowEnabled { get; }
         public ISetting<bool> IsQuoteConvertionOnPasteEnabled { get; }
-        public ISetting<bool> IsNavigationUsingControlArrrowEnabled { get; }
-        public ISetting<bool> IsScrollingUsingCtrlUpDownEnabled { get; }
         public ISetting<bool> IsScrollingUsingCtrlHomeEndEnabled { get; }
         public ISetting<string> FontFamily { get; }
         public ISetting<int> FontSizeAsDword { get; }
         public ISetting<int> ForegroundColorArgb { get; }
         public ISetting<int> BackgroundColorArgb { get; }
+        public ISetting<VirtualTerminal.CaretStyle> CaretStyle { get; }
 
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
             this.IsCopyPasteUsingCtrlCAndCtrlVEnabled,
-            this.IsSelectAllUsingCtrlAEnabled,
             this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled,
-            this.IsSelectUsingShiftArrrowEnabled,
             this.IsQuoteConvertionOnPasteEnabled,
-            this.IsNavigationUsingControlArrrowEnabled,
-            this.IsScrollingUsingCtrlUpDownEnabled,
             this.IsScrollingUsingCtrlHomeEndEnabled,
             this.FontFamily,
             this.FontSizeAsDword,
             this.ForegroundColorArgb,
-            this.BackgroundColorArgb
+            this.BackgroundColorArgb,
+            this.CaretStyle,
         };
 
         internal TerminalSettings(ISettingsStore store)
@@ -133,39 +125,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 null,
                 null,
                 true);
-            this.IsSelectAllUsingCtrlAEnabled = store.Read<bool>(
-                "IsSelectAllUsingCtrlAEnabled",
-                "IsSelectAllUsingCtrlAEnabled",
-                null,
-                null,
-                false);
             this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled = store.Read<bool>(
                 "IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled",
                 "IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled",
                 null,
                 null,
                 true);
-            this.IsSelectUsingShiftArrrowEnabled = store.Read<bool>(
-                "IsSelectUsingShiftArrrowEnabled",
-                "IsSelectUsingShiftArrrowEnabled",
-                null,
-                null,
-                true);
             this.IsQuoteConvertionOnPasteEnabled = store.Read<bool>(
                 "IsQuoteConvertionOnPasteEnabled",
                 "IsQuoteConvertionOnPasteEnabled",
-                null,
-                null,
-                true);
-            this.IsNavigationUsingControlArrrowEnabled = store.Read<bool>(
-                "IsNavigationUsingControlArrrowEnabled",
-                "IsNavigationUsingControlArrrowEnabled",
-                null,
-                null,
-                true);
-            this.IsScrollingUsingCtrlUpDownEnabled = store.Read<bool>(
-                "IsScrollingUsingCtrlUpDownEnabled",
-                "IsScrollingUsingCtrlUpDownEnabled",
                 null,
                 null,
                 true);
@@ -209,6 +177,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 Predicate.InRange(
                     Color.Black.ToArgb(),
                     Color.White.ToArgb()));
+            this.CaretStyle = store.Read<VirtualTerminal.CaretStyle>(
+                "CaretStyle",
+                "CaretStyle",
+                null,
+                null,
+                VirtualTerminal.CaretStyle.BlinkingBar);
         }
     }
 }

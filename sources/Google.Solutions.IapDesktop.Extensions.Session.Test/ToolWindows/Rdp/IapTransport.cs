@@ -33,6 +33,9 @@ using System.Net;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
 {
+    /// <summary>
+    /// Helper class for managing IAP transports in test cases.
+    /// </summary>
     internal class IapTransport : DisposableBase, ITransport
     {
         public IapTunnel Tunnel { get; }
@@ -89,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                 instance);
         }
 
-        public static IapTransport ForRdp(
+        public static IapTransport CreateRdpTransport(
             InstanceLocator instance,
             IAuthorization authorization)
         {
@@ -100,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
                 3389);
         }
 
-        public static IapTransport ForSsh( // TODO: Rename to CreateForSsh
+        public static IapTransport CreateSshTransport(
             InstanceLocator instance,
             IAuthorization authorization)
         {

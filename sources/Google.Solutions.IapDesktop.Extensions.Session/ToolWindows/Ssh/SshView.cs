@@ -65,17 +65,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             terminal.EnableCtrlInsert = settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value;
             terminal.EnableShiftInsert = settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value;
             terminal.EnableTypographicQuoteConversion = settings.IsQuoteConvertionOnPasteEnabled.Value;
-
-            //TODO: remove obsolete settings 
-            // terminal.EnableCtrlA = settings.IsSelectAllUsingCtrlAEnabled.Value;
-            // terminal.EnableShiftLeftRight = settings.IsSelectUsingShiftArrrowEnabled.Value;
-            // terminal.EnableShiftUpDown = settings.IsSelectUsingShiftArrrowEnabled.Value;
-            // 
-            // terminal.EnableCtrlLeftRight = settings.IsNavigationUsingControlArrrowEnabled.Value;
-            // 
-            //terminal.EnableCtrlUpDown = settings.IsScrollingUsingCtrlUpDownEnabled.Value;
             terminal.EnableCtrlHome = settings.IsScrollingUsingCtrlHomeEndEnabled.Value;
             terminal.EnableCtrlEnd = settings.IsScrollingUsingCtrlHomeEndEnabled.Value;
+            terminal.Caret = settings.CaretStyle.Value;
 
             terminal.Font = new Font(
                 settings.FontFamily.Value,

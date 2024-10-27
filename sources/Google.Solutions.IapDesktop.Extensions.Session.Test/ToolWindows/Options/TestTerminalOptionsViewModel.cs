@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options;
+using Google.Solutions.Terminal.Controls;
 using Google.Solutions.Testing.Apis.Platform;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -159,126 +160,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         //---------------------------------------------------------------------
-        // IsSelectAllUsingCtrlAEnabled.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void IsSelectAllUsingCtrlAEnabled_WhenSettingEnabled()
-        {
-            var settingsRepository = CreateTerminalSettingsRepository();
-            var settings = settingsRepository.GetSettings();
-            settings.IsSelectAllUsingCtrlAEnabled.Value = true;
-            settingsRepository.SetSettings(settings);
-
-            var viewModel = new TerminalOptionsViewModel(settingsRepository);
-
-            Assert.IsTrue(viewModel.IsSelectAllUsingCtrlAEnabled.Value);
-        }
-
-        [Test]
-        public void IsSelectAllUsingCtrlAEnabled_WhenSettingDisabled()
-        {
-            var settingsRepository = CreateTerminalSettingsRepository();
-            var settings = settingsRepository.GetSettings();
-            settings.IsSelectAllUsingCtrlAEnabled.Value = false;
-            settingsRepository.SetSettings(settings);
-
-            var viewModel = new TerminalOptionsViewModel(settingsRepository);
-
-            Assert.IsFalse(viewModel.IsSelectAllUsingCtrlAEnabled.Value);
-        }
-
-        [Test]
-        public async Task IsSelectAllUsingCtrlAEnabled_AppliesChange()
-        {
-            var settingsRepository = CreateTerminalSettingsRepository();
-            var settings = settingsRepository.GetSettings();
-            settings.IsSelectAllUsingCtrlAEnabled.Value = true;
-            settingsRepository.SetSettings(settings);
-
-            var viewModel = new TerminalOptionsViewModel(settingsRepository);
-            viewModel.IsSelectAllUsingCtrlAEnabled.Value = false;
-            await viewModel.ApplyChangesAsync();
-
-            settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsSelectAllUsingCtrlAEnabled.Value);
-        }
-
-        [Test]
-        public void IsSelectAllUsingCtrlAEnabled_WhenChanged_ThenIsDirtyIsTrueUntilApplied()
-        {
-            var settingsRepository = CreateTerminalSettingsRepository();
-            var viewModel = new TerminalOptionsViewModel(settingsRepository);
-
-            Assert.IsFalse(viewModel.IsDirty.Value);
-
-            viewModel.IsSelectAllUsingCtrlAEnabled.Value =
-                !viewModel.IsSelectAllUsingCtrlAEnabled.Value;
-
-            Assert.IsTrue(viewModel.IsDirty.Value);
-        }
-
-        //---------------------------------------------------------------------
-        // IsSelectUsingShiftArrrowEnabled.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void IsSelectUsingShiftArrrowEnabled_WhenSettingEnabled()
-        {
-            var settingsRepository = CreateTerminalSettingsRepository();
-            var settings = settingsRepository.GetSettings();
-            settings.IsSelectUsingShiftArrrowEnabled.Value = true;
-            settingsRepository.SetSettings(settings);
-
-            var viewModel = new TerminalOptionsViewModel(settingsRepository);
-
-            Assert.IsTrue(viewModel.IsSelectUsingShiftArrrowEnabled.Value);
-        }
-
-        [Test]
-        public void IsSelectUsingShiftArrrowEnabled_WhenSettingDisabled()
-        {
-            var settingsRepository = CreateTerminalSettingsRepository();
-            var settings = settingsRepository.GetSettings();
-            settings.IsSelectUsingShiftArrrowEnabled.Value = false;
-            settingsRepository.SetSettings(settings);
-
-            var viewModel = new TerminalOptionsViewModel(settingsRepository);
-
-            Assert.IsFalse(viewModel.IsSelectUsingShiftArrrowEnabled.Value);
-        }
-
-        [Test]
-        public async Task IsSelectUsingShiftArrrowEnabled_AppliesChange()
-        {
-            var settingsRepository = CreateTerminalSettingsRepository();
-            var settings = settingsRepository.GetSettings();
-            settings.IsSelectUsingShiftArrrowEnabled.Value = true;
-            settingsRepository.SetSettings(settings);
-
-            var viewModel = new TerminalOptionsViewModel(settingsRepository);
-            viewModel.IsSelectUsingShiftArrrowEnabled.Value = false;
-            await viewModel.ApplyChangesAsync();
-
-            settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsSelectUsingShiftArrrowEnabled.Value);
-        }
-
-        [Test]
-        public void IsSelectUsingShiftArrrowEnabled_WhenChanged_ThenIsDirtyIsTrueUntilApplied()
-        {
-            var settingsRepository = CreateTerminalSettingsRepository();
-            var viewModel = new TerminalOptionsViewModel(settingsRepository);
-
-            Assert.IsFalse(viewModel.IsDirty.Value);
-
-            viewModel.IsSelectUsingShiftArrrowEnabled.Value =
-                !viewModel.IsSelectUsingShiftArrrowEnabled.Value;
-
-            Assert.IsTrue(viewModel.IsDirty.Value);
-        }
-
-        //---------------------------------------------------------------------
         // IsQuoteConvertionOnPasteEnabled.
         //---------------------------------------------------------------------
 
@@ -334,67 +215,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             viewModel.IsQuoteConvertionOnPasteEnabled.Value =
                 !viewModel.IsQuoteConvertionOnPasteEnabled.Value;
-
-            Assert.IsTrue(viewModel.IsDirty.Value);
-        }
-
-        //---------------------------------------------------------------------
-        // IsScrollingUsingCtrlUpDownEnabled.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void IsScrollingUsingCtrlUpDownEnabled_WhenSettingEnabled()
-        {
-            var settingsRepository = CreateTerminalSettingsRepository();
-            var settings = settingsRepository.GetSettings();
-            settings.IsScrollingUsingCtrlUpDownEnabled.Value = true;
-            settingsRepository.SetSettings(settings);
-
-            var viewModel = new TerminalOptionsViewModel(settingsRepository);
-
-            Assert.IsTrue(viewModel.IsScrollingUsingCtrlUpDownEnabled.Value);
-        }
-
-        [Test]
-        public void IsScrollingUsingCtrlUpDownEnabled_WhenSettingDisabled()
-        {
-            var settingsRepository = CreateTerminalSettingsRepository();
-            var settings = settingsRepository.GetSettings();
-            settings.IsScrollingUsingCtrlUpDownEnabled.Value = false;
-            settingsRepository.SetSettings(settings);
-
-            var viewModel = new TerminalOptionsViewModel(settingsRepository);
-
-            Assert.IsFalse(viewModel.IsScrollingUsingCtrlUpDownEnabled.Value);
-        }
-
-        [Test]
-        public async Task IsScrollingUsingCtrlUpDownEnabled_AppliesChange()
-        {
-            var settingsRepository = CreateTerminalSettingsRepository();
-            var settings = settingsRepository.GetSettings();
-            settings.IsScrollingUsingCtrlUpDownEnabled.Value = true;
-            settingsRepository.SetSettings(settings);
-
-            var viewModel = new TerminalOptionsViewModel(settingsRepository);
-            viewModel.IsScrollingUsingCtrlUpDownEnabled.Value = false;
-
-            await viewModel.ApplyChangesAsync();
-
-            settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsScrollingUsingCtrlUpDownEnabled.Value);
-        }
-
-        [Test]
-        public void IsScrollingUsingCtrlUpDownEnabled_WhenChanged_ThenIsDirtyIsTrueUntilApplied()
-        {
-            var settingsRepository = CreateTerminalSettingsRepository();
-            var viewModel = new TerminalOptionsViewModel(settingsRepository);
-
-            Assert.IsFalse(viewModel.IsDirty.Value);
-
-            viewModel.IsScrollingUsingCtrlUpDownEnabled.Value =
-                !viewModel.IsScrollingUsingCtrlUpDownEnabled.Value;
 
             Assert.IsTrue(viewModel.IsDirty.Value);
         }
@@ -573,6 +393,56 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var settings = settingsRepository.GetSettings();
             Assert.AreEqual(color.ToArgb(), settings.BackgroundColorArgb.Value);
+        }
+
+        //---------------------------------------------------------------------
+        // CaretStyle.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void CaretStyle_WhenSettingPresent()
+        {
+            var settingsRepository = CreateTerminalSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.CaretStyle.Value = VirtualTerminal.CaretStyle.SteadyBlock;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new TerminalOptionsViewModel(settingsRepository);
+
+            Assert.AreEqual(
+                VirtualTerminal.CaretStyle.SteadyBlock,
+                viewModel.CaretStyle.Value);
+        }
+
+        [Test]
+        public async Task CaretStyle_AppliesChange()
+        {
+            var settingsRepository = CreateTerminalSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.CaretStyle.Value = VirtualTerminal.CaretStyle.SteadyBlock;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new TerminalOptionsViewModel(settingsRepository);
+            viewModel.CaretStyle.Value = VirtualTerminal.CaretStyle.BlinkingBlock;
+            await viewModel.ApplyChangesAsync();
+
+            settings = settingsRepository.GetSettings();
+            Assert.AreEqual(
+                VirtualTerminal.CaretStyle.BlinkingBlock,
+                viewModel.CaretStyle.Value);
+        }
+
+        [Test]
+        public void CaretStyle_WhenChanged_ThenIsDirtyIsTrueUntilApplied()
+        {
+            var settingsRepository = CreateTerminalSettingsRepository();
+            var viewModel = new TerminalOptionsViewModel(settingsRepository);
+
+            Assert.IsFalse(viewModel.IsDirty.Value);
+
+            viewModel.CaretStyle.Value = VirtualTerminal.CaretStyle.BlinkingBlock;
+
+            Assert.IsTrue(viewModel.IsDirty.Value);
         }
     }
 }

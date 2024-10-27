@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         {
             var instance = await testInstance;
 
-            using (var tunnel = IapTransport.ForSsh(
+            using (var tunnel = IapTransport.CreateSshTransport(
                 instance,
                 await auth))
             {
@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         {
             var instance = await testInstance;
 
-            using (var tunnel = IapTransport.ForSsh(
+            using (var tunnel = IapTransport.CreateSshTransport(
                 instance,
                 await auth))
             {
