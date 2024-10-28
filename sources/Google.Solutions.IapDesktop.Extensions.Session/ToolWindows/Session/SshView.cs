@@ -32,7 +32,6 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Properties;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Ssh.Native;
 using Google.Solutions.Terminal.Controls;
@@ -41,11 +40,11 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
+namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
     [Service]
     public class SshView
-        : ClientViewBase<SshShellClient>, ISshSession, IView<SshViewModel> 
+        : ClientViewBase<SshShellClient>, ISshSession, IView<SshViewModel>
     {
         private Bound<SshViewModel> viewModel;
         private readonly ITerminalSettingsRepository settingsRepository;
@@ -147,10 +146,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
                 // Basic connection settings.
                 //
                 client.ServerEndpoint = viewModel.Endpoint;
-                client.Credential  = viewModel.Credential;
+                client.Credential = viewModel.Credential;
                 client.ConnectionTimeout = viewModel.Parameters.ConnectionTimeout;
                 client.Locale = viewModel.Parameters.Language;
-                client.KeyboardInteractiveHandler = new KeyboardInteractiveHandler(
+                client.KeyboardInteractiveHandler = new SshKeyboardInteractiveHandler(
                     this,
                     this.inputDialog,
                     viewModel.Instance!);

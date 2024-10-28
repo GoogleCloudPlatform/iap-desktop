@@ -32,7 +32,6 @@ using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Properties;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Settings.Collection;
 using Google.Solutions.Terminal.Controls;
@@ -43,7 +42,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
+namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
     [Service]
     public class RdpView
@@ -207,18 +206,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 }
 
                 this.Client.EnableNetworkLevelAuthentication =
-                    (viewModel.Parameters.NetworkLevelAuthentication != RdpNetworkLevelAuthentication.Disabled);
+                    viewModel.Parameters.NetworkLevelAuthentication != RdpNetworkLevelAuthentication.Disabled;
                 this.Client.EnableRestrictedAdminMode =
-                    (viewModel.Parameters.RestrictedAdminMode == RdpRestrictedAdminMode.Enabled);
+                    viewModel.Parameters.RestrictedAdminMode == RdpRestrictedAdminMode.Enabled;
 
                 //
                 // Connection bar settings.
                 //
                 this.Client.EnableConnectionBar =
-                    (viewModel.Parameters.ConnectionBar != RdpConnectionBarState.Off);
+                    viewModel.Parameters.ConnectionBar != RdpConnectionBarState.Off;
                 this.Client.EnableConnectionBarMinimizeButton = true;
                 this.Client.EnableConnectionBarPin =
-                    (viewModel.Parameters.ConnectionBar == RdpConnectionBarState.Pinned);
+                    viewModel.Parameters.ConnectionBar == RdpConnectionBarState.Pinned;
                 this.Client.ConnectionBarText = this.Instance.Name;
 
                 //
@@ -286,7 +285,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
                 this.Client.FullScreenHotKey = ToggleFullScreenHotKey;
 
                 this.Client.EnableWebAuthnRedirection =
-                    (viewModel.Parameters.RedirectWebAuthn == RdpRedirectWebAuthn.Enabled);
+                    viewModel.Parameters.RedirectWebAuthn == RdpRedirectWebAuthn.Enabled;
 
                 //
                 // Start establishing a connection and react to events.
@@ -320,7 +319,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp
 
         public bool TrySetFullscreen(FullScreenMode mode)
         {
-            Precondition.ExpectNotNull(this.Client, "Client connected");
+            this.Client.ExpectNotNull("Client connected");
 
             Rectangle? customBounds;
             if (mode == FullScreenMode.SingleScreen)

@@ -31,7 +31,7 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
 using Google.Solutions.Testing.Apis.Integration;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Session
 {
     /// <summary>
     /// Helper class for managing IAP transports in test cases.

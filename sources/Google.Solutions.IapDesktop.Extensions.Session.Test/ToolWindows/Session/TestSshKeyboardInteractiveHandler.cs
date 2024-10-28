@@ -22,17 +22,17 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.Ssh;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Session
 {
     [TestFixture]
-    public class TestKeyboardInteractiveHandler
+    public class TestSshKeyboardInteractiveHandler
     {
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");
@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
         public void Prompt_WhenUserCancels()
         {
             var owner = new Mock<IWin32Window>().Object;
-            
+
             var inputDialog = new Mock<IInputDialog>();
             string? input;
             inputDialog.Setup(
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     out input))
                 .Returns(DialogResult.Cancel);
 
-            var handler = new KeyboardInteractiveHandler(
+            var handler = new SshKeyboardInteractiveHandler(
                 owner,
                 inputDialog.Object,
                 SampleLocator);
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var owner = new Mock<IWin32Window>().Object;
 
             var inputDialog = new Mock<IInputDialog>();
-            string? input = prefixedInput;
+            var input = prefixedInput;
             inputDialog.Setup(
                 d => d.Prompt(
                     owner,
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     out input))
                 .Returns(DialogResult.OK);
 
-            var handler = new KeyboardInteractiveHandler(
+            var handler = new SshKeyboardInteractiveHandler(
                 owner,
                 inputDialog.Object,
                 SampleLocator);
@@ -96,15 +96,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var owner = new Mock<IWin32Window>().Object;
 
             var inputDialog = new Mock<IInputDialog>();
-            string? input = prefixedInput;
+            var input = prefixedInput;
             inputDialog.Setup(
                 d => d.Prompt(
-                    owner, 
-                    It.Is<InputDialogParameters>(p => !p.IsPassword), 
+                    owner,
+                    It.Is<InputDialogParameters>(p => !p.IsPassword),
                     out input))
                 .Returns(DialogResult.OK);
 
-            var handler = new KeyboardInteractiveHandler(
+            var handler = new SshKeyboardInteractiveHandler(
                 owner,
                 inputDialog.Object,
                 SampleLocator);
@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     out input))
                 .Returns(DialogResult.Cancel);
 
-            var handler = new KeyboardInteractiveHandler(
+            var handler = new SshKeyboardInteractiveHandler(
                 owner,
                 inputDialog.Object,
                 SampleLocator);
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
             var owner = new Mock<IWin32Window>().Object;
 
             var inputDialog = new Mock<IInputDialog>();
-            string? input = "password";
+            var input = "password";
             inputDialog.Setup(
                 d => d.Prompt(
                     owner,
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
                     out input))
                 .Returns(DialogResult.OK);
 
-            var handler = new KeyboardInteractiveHandler(
+            var handler = new SshKeyboardInteractiveHandler(
                 owner,
                 inputDialog.Object,
                 SampleLocator);

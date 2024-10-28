@@ -65,7 +65,7 @@
     <Compile Update="ToolWindows\Options\TerminalOptionsSheet.Designer.cs">
       <DependentUpon>TerminalOptionsSheet.cs</DependentUpon>
     </Compile>
-    <Compile Update="ToolWindows\Rdp\RdpView.cs" />
+    <Compile Update="ToolWindows\Session\RdpView.cs" />
     <Compile Update="ToolWindows\Session\SessionViewBase.cs" />
     <Compile Update="ToolWindows\SshKeys\AuthorizedPublicKeysView.cs" />
     <Compile Update="ToolWindows\SshKeys\AuthorizedPublicKeysView.Designer.cs">

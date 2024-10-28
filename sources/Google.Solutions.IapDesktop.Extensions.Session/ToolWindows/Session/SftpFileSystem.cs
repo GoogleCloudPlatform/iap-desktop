@@ -37,7 +37,7 @@ using System.Threading.Tasks;
 
 #pragma warning disable CS0067 // The event ... is never used
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
+namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
     internal sealed class SftpFileSystem : FileBrowser.IFileSystem, IDisposable
     {

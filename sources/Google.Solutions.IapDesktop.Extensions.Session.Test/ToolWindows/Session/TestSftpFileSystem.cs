@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
@@ -29,7 +29,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Ssh
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Session
 {
     [TestFixture]
     public class TestSftpFileSystem
