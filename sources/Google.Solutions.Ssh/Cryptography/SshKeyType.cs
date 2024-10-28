@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
@@ -30,16 +30,16 @@ namespace Google.Solutions.Ssh.Cryptography
         // must be kept constant.
         //
 
-        [Display(Name = "RSA (3072 bit)")]
+        [Description("RSA (3072 bit)")]
         Rsa3072 = 0x01,
 
-        [Display(Name = "ECDSA NIST P-256")]
+        [Description("ECDSA NIST P-256")]
         EcdsaNistp256 = 0x11,
 
-        [Display(Name = "ECDSA NIST P-384")]
+        [Description("ECDSA NIST P-384")]
         EcdsaNistp384 = 0x12,
 
-        [Display(Name = "ECDSA NIST P-521")]
+        [Description("ECDSA NIST P-521")]
         EcdsaNistp521 = 0x13
     }
 }
