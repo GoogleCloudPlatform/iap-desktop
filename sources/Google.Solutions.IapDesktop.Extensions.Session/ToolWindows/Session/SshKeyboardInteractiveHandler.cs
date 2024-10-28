@@ -27,9 +27,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
+namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
-    internal class KeyboardInteractiveHandler : IKeyboardInteractiveHandler
+    internal class SshKeyboardInteractiveHandler : IKeyboardInteractiveHandler
     {
         private readonly IWin32Window owner;
         private readonly IInputDialog inputDialog;
@@ -52,8 +52,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
             warning = null;
         }
 
-        public KeyboardInteractiveHandler(
-            IWin32Window owner, 
+        public SshKeyboardInteractiveHandler(
+            IWin32Window owner,
             IInputDialog inputDialog,
             InstanceLocator instance)
         {

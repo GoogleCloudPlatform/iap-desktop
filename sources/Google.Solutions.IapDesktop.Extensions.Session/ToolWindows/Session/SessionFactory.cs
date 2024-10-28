@@ -26,8 +26,6 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Ssh;
 using System.Diagnostics;
@@ -35,6 +33,12 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
+
+
+
+
+
+
 
 
 #if DEBUG

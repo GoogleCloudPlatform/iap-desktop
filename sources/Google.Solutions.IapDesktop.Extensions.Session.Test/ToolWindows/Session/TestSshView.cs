@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -21,17 +21,20 @@
 
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Compute;
+using Google.Solutions.Apis.Crm;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Rdp;
+using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Terminal.Controls;
+using Google.Solutions.Ssh;
+using Google.Solutions.Ssh.Cryptography;
 using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
@@ -40,60 +43,37 @@ using NUnit.Framework;
 using System;
 using System.Drawing;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Session
 {
     [TestFixture]
     [UsesCloudResources]
-    [RequiresRdp]
-    public class TestRdpView : WindowTestFixtureBase
+    public class TestSshView : WindowTestFixtureBase
     {
-        private static async Task<RdpCredential> GenerateRdpCredentialAsync(
-            InstanceLocator instance)
-        {
-            var username = "test" + Guid.NewGuid().ToString().Substring(0, 4);
-            var credentialAdapter = new WindowsCredentialGenerator(
-                new ComputeEngineClient(
-                    ComputeEngineClient.CreateEndpoint(),
-                    TestProject.AdminAuthorization,
-                    TestProject.UserAgent));
-
-            var credential = await credentialAdapter
-                .CreateWindowsCredentialsAsync(
-                    instance,
-                    username,
-                    UserFlags.AddToAdministrators,
-                    TimeSpan.FromSeconds(60),
-                    CancellationToken.None)
-                .ConfigureAwait(true);
-
-            return new RdpCredential(
-                credential.UserName,
-                credential.Domain,
-                credential.SecurePassword);
-        }
-
-        //
-        // Use a larger machine type as all this RDP'ing consumes a fair
-        // amount of memory.
-        //
-        private const string MachineTypeForRdp = "n1-highmem-2";
-
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project", "zone", "instance");
 
         private IServiceProvider CreateServiceProvider(IAuthorization authorization)
         {
             var registry = new ServiceRegistry(this.ServiceRegistry);
-            registry.AddTransient<RdpView>();
-            registry.AddTransient<RdpViewModel>();
+            registry.AddTransient<SshView>();
+            registry.AddTransient<SshViewModel>();
             registry.AddMock<IBindingContext>();
             registry.AddMock<IToolWindowTheme>();
+            registry.AddMock<IInputDialog>();
             registry.AddTransient<IToolWindowHost, ToolWindowHost>();
             registry.AddSingleton(authorization);
+            registry.AddSingleton<SessionFactory>();
+
+            var settingsRepository = registry.AddMock<ITerminalSettingsRepository>();
+            settingsRepository
+                .Setup(r => r.GetSettings())
+                .Returns(TerminalSettings.Default);
+
             return registry;
         }
 
@@ -103,6 +83,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             transport.SetupGet(t => t.Protocol).Returns(RdpProtocol.Protocol);
             transport.SetupGet(t => t.Endpoint).Returns(endpoint);
             return transport.Object;
+        }
+
+        private static async Task<ISshCredential> CrateSshCredential(
+            InstanceLocator instance,
+            IAuthorization authorization,
+            SshKeyType keyType)
+        {
+            var keyAdapter = new PlatformCredentialFactory(
+                authorization,
+                new ComputeEngineClient(
+                    ComputeEngineClient.CreateEndpoint(),
+                    authorization,
+                    TestProject.UserAgent),
+                new ResourceManagerClient(
+                    ResourceManagerClient.CreateEndpoint(),
+                    authorization,
+                    TestProject.UserAgent),
+                new Mock<IOsLoginProfile>().Object);
+
+            return await keyAdapter
+                .CreateCredentialAsync(
+                    instance,
+                    AsymmetricKeySigner.CreateEphemeral(keyType),
+                    TimeSpan.FromMinutes(10),
+                    null,
+                    KeyAuthorizationMethods.InstanceMetadata,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
         }
 
         //---------------------------------------------------------------------
@@ -117,24 +125,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
             var transport = CreateTransportForEndpoint(unboundEndpoint);
 
             var serviceProvider = CreateServiceProvider(await auth);
-            var broker = new SessionFactory(
-                serviceProvider.GetService<IMainWindow>(),
-                serviceProvider.GetService<ISessionBroker>(),
-                serviceProvider.GetService<IToolWindowHost>(),
-                serviceProvider.GetService<IJobService>());
+            var factory = serviceProvider.GetService<SessionFactory>();
+
             await AssertRaisesEventAsync<SessionAbortedEvent>(
-                () => broker.ConnectRdpSession(
+                () => factory.ConnectSshSession(
                     SampleLocator,
                     transport,
-                    new RdpParameters()
+                    new SshParameters()
                     {
                         ConnectionTimeout = TimeSpan.FromSeconds(5)
                     },
-                    RdpCredential.Empty))
+                    new StaticPasswordCredential("user", string.Empty)))
                 .ConfigureAwait(true);
 
-            Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
-            Assert.AreEqual(516, ((RdpDisconnectedException)this.ExceptionShown!).DisconnectReason);
+            Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
         }
 
         //---------------------------------------------------------------------
@@ -143,76 +147,60 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
 
         [Test]
         public async Task Connect_WhenCredentialsInvalid_ThenErrorIsShownAndWindowIsClosed(
-            [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
-            var serviceProvider = CreateServiceProvider(await auth);
             var instance = await testInstance;
 
-            using (var tunnel = IapTransport.CreateRdpTransport(
+            using (var tunnel = IapTransport.CreateSshTransport(
                 instance,
                 await auth))
             {
-                var rdpCredential = new RdpCredential(
-                    "wrong",
-                    null,
-                    SecureStringExtensions.FromClearText("wrong"));
-                var rdpParameters = new RdpParameters()
-                {
-                    AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
-                    UserAuthenticationBehavior = RdpAutomaticLogon.LegacyAbortOnFailure
-                };
-
-                var broker = new SessionFactory(
-                    serviceProvider.GetService<IMainWindow>(),
-                    serviceProvider.GetService<ISessionBroker>(),
-                    serviceProvider.GetService<IToolWindowHost>(),
-                    serviceProvider.GetService<IJobService>());
+                var serviceProvider = CreateServiceProvider(await auth);
+                var factory = serviceProvider.GetService<SessionFactory>();
 
                 await AssertRaisesEventAsync<SessionAbortedEvent>(
-                    () => broker.ConnectRdpSession(
+                    () => factory.ConnectSshSession(
                         instance,
                         tunnel,
-                        rdpParameters,
-                        rdpCredential))
+                        new SshParameters(),
+                        new StaticPasswordCredential("user", string.Empty)))
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(this.ExceptionShown);
-                Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
-                Assert.AreEqual(2055, ((RdpDisconnectedException)this.ExceptionShown!).DisconnectReason);
+                Assert.IsInstanceOf(typeof(UnsupportedAuthenticationMethodException), this.ExceptionShown);
             }
         }
 
         [Test]
         public async Task Connect_WhenWindowChangedToFloating_ThenConnectionSurvives(
-            [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Roles = new[] {
+                PredefinedRole.IapTunnelUser,
+                PredefinedRole.ComputeInstanceAdminV1
+            })] ResourceTask<IAuthorization> auth)
         {
-            var serviceProvider = CreateServiceProvider(await auth);
             var instance = await testInstance;
-            var rdpCredential = await
-                GenerateRdpCredentialAsync(instance)
-                .ConfigureAwait(true);
 
-            using (var tunnel = IapTransport.CreateRdpTransport(
+            using (var tunnel = IapTransport.CreateSshTransport(
                 instance,
                 await auth))
             {
-                var rdpParameters = new RdpParameters();
+                var serviceProvider = CreateServiceProvider(await auth);
+                var factory = serviceProvider.GetService<SessionFactory>();
 
-                var broker = new SessionFactory(
-                    serviceProvider.GetService<IMainWindow>(),
-                    serviceProvider.GetService<ISessionBroker>(),
-                    serviceProvider.GetService<IToolWindowHost>(),
-                    serviceProvider.GetService<IJobService>());
+                var credential = await CrateSshCredential(
+                    instance,
+                    await auth,
+                    SshKeyType.Rsa3072);
 
-                RdpView? session = null;
+                SshView? session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
-                    () => session = (RdpView)broker.ConnectRdpSession(
+                    () => session = (SshView)factory.ConnectSshSession(
                         instance,
                         tunnel,
-                        rdpParameters,
-                        rdpCredential))
+                        new SshParameters(),
+                        credential))
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(session);

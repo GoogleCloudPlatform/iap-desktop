@@ -25,6 +25,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp;
+using Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Session;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Terminal.Controls;
 using Google.Solutions.Testing.Apis;

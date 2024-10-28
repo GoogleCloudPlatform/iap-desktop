@@ -25,7 +25,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Session
 {
     [TestFixture]
     public class TestWindowsUser

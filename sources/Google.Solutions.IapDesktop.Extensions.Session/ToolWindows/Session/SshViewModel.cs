@@ -27,7 +27,7 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Ssh;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Ssh
+namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
     [Service]
     public class SshViewModel : ViewModelBase
