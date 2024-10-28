@@ -23,6 +23,7 @@ using Google.Solutions.Settings;
 using Google.Solutions.Settings.Collection;
 using Microsoft.Win32;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
@@ -32,13 +33,13 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     /// </summary>
     public enum ApplicationTheme
     {
-        [Display(Name = "Light theme")]
+        [Description("Light theme")]
         Light = 0,
 
-        [Display(Name = "Current Windows theme")]
+        [Description("Current Windows theme")]
         System = 1,
 
-        [Display(Name = "Dark theme")]
+        [Description("Dark theme")]
         Dark = 2,
         _Default = System
     }
@@ -51,19 +52,19 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// <summary>
         /// Default (blurry) scaling.
         /// </summary>
-        [Display(Name = "Off")]
+        [Description("Off")]
         None = 0,
 
         /// <summary>
         /// Enable GDI scaling.
         /// </summary>
-        [Display(Name = "Legacy (GDI scaling)")]
+        [Description("Legacy (GDI scaling)")]
         Gdi = 1,
 
         /// <summary>
         /// System DPI aware scaling.
         /// </summary>
-        [Display(Name = "Same as primary monitor")]
+        [Description("Same as primary monitor")]
         SystemDpiAware = 2,
 
         _Default = SystemDpiAware

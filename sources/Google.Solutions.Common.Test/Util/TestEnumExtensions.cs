@@ -102,22 +102,22 @@ namespace Google.Solutions.Common.Test.Util
         {
             NoAttribute,
 
-            [Display(Name = "With attribute")]
+            [System.ComponentModel.Description("With attribute")]
             WithAttribute
         }
 
         [Test]
         public void GetAttribute_WhenValueHasAttribute_ThenGetAttributeReturnsValue()
         {
-            var a = SampleEnumWithAttributes.WithAttribute.GetAttribute<DisplayAttribute>();
+            var a = SampleEnumWithAttributes.WithAttribute.GetAttribute<System.ComponentModel.DescriptionAttribute>();
             Assert.IsNotNull(a);
-            Assert.AreEqual("With attribute", a!.Name);
+            Assert.AreEqual("With attribute", a!.Description);
         }
 
         [Test]
         public void GetAttribute_WhenValueHasNoAttribute_ThenGetAttributeReturnsNull()
         {
-            var a = SampleEnumWithAttributes.NoAttribute.GetAttribute<DisplayAttribute>();
+            var a = SampleEnumWithAttributes.NoAttribute.GetAttribute<System.ComponentModel.DescriptionAttribute>();
             Assert.IsNull(a);
         }
     }

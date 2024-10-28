@@ -37,10 +37,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
         public enum Dish
         {
-            [Display(Name = "Italian dish")]
+            [System.ComponentModel.Description("Italian dish")]
             Pizza = 0,
 
-            [Display(Name = "Chinese dish")]
+            [System.ComponentModel.Description("Chinese dish")]
             Dumplings = 1,
 
             Leftovers = 2,
@@ -48,7 +48,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void Options_WhenEnumHasValuesWithoutDisplayAttribute_ThenValuesAreIgnored()
+        public void Options_WhenEnumHasValuesWithoutAttribute_ThenValuesAreIgnored()
         {
             var prop = ObservableProperty.Build<Dish>(Dish.Pizza);
             var adapter = new BindableComboBox.SelectionAdapter<Dish>(prop);

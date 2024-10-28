@@ -57,7 +57,7 @@ namespace Google.Solutions.Mvvm.Controls
                 var v = ((Enum)e.Value);
                 if (v != null)
                 {
-                    e.Value = v.GetAttribute<DisplayAttribute>()?.Name ?? v.ToString();
+                    e.Value = v.GetAttribute<DescriptionAttribute>()?.Description ?? v.ToString();
                 }
             };
 
@@ -85,7 +85,7 @@ namespace Google.Solutions.Mvvm.Controls
                 return typeof(TEnum)
                     .GetMember(enumValue)
                     .FirstOrDefault()?
-                    .GetCustomAttribute<DisplayAttribute>()?.Name != null;
+                    .GetCustomAttribute<DescriptionAttribute>()?.Description != null;
             }
 
             public SelectionAdapter(IObservableWritableProperty<TEnum> property)
@@ -93,7 +93,7 @@ namespace Google.Solutions.Mvvm.Controls
                 this.property = property;
 
                 //
-                // Only consider options that have a DisplayAttribute.
+                // Only consider options that have a DescriptionAttribute.
                 //
                 this.Options = Enum
                     .GetNames(typeof(TEnum))
