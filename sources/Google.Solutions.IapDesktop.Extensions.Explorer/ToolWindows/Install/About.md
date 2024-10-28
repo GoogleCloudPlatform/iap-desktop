@@ -1,4 +1,5 @@
-IAP Desktop is an open-source project and is not an officially supported Google product.
+IAP Desktop is an open-source project and its source code is available
+[on GitHub](https://github.com/GoogleCloudPlatform/iap-desktop).
 
 This software is licensed under the Apache License, version 2.0.
 
@@ -201,10 +202,10 @@ END OF TERMS AND CONDITIONS
 
 Third-party libraries used by this software include: 
 
-*	[DockPanel Suite](http://dockpanelsuite.com/), licensed under the MIT license.
-*	[Json.NET](https://github.com/JamesNK/Newtonsoft.Json), licensed under the MIT license.
-*	[Libssh2](https://www.libssh2.org/), licensed under the BSD 3-Clause license.
-*	[VtNetCore](https://github.com/darrenstarr/VtNetCore), licensed under the MIT license.
+* [DockPanel Suite](http://dockpanelsuite.com/), licensed under the MIT license.
+* [Json.NET](https://github.com/JamesNK/Newtonsoft.Json), licensed under the MIT license.
+* [Libssh2](https://www.libssh2.org/), licensed under the BSD 3-Clause license.
+* [Windows Terminal](https://github.com/microsoft/terminal), licensed under the MIT license.
 
 # DockPanel Suite 
 
@@ -281,21 +282,23 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 
-# VtNetCore 
+# Windows Terminal
 
-Copyright 2018 Darren R. Starr - Telenor Inpli
+Copyright (c) Microsoft Corporation. All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentationfiles (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
