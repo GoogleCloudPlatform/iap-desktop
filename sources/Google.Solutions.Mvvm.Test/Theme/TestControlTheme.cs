@@ -93,6 +93,33 @@ namespace Google.Solutions.Mvvm.Test.Theme
             }
         }
 
+        [Test]
+        public void ApplyTo_WhenControlAddedLater()
+        {
+            using (var form = new Form())
+            {
+                var theme = new ControlTheme();
+                var appliedControls = new List<Control>();
+                theme.AddRule<Control>(c => appliedControls.Add(c));
+                theme.ApplyTo(form);
+
+                var textBox = new TextBox();
+                form.Controls.Add(textBox);
+
+                form.Show();
+
+                var label = new Label();
+                form.Controls.Add(label);
+
+                form.Close();
+
+                CollectionAssert.AreEquivalent(
+                    new Control[] { form, label },
+                    appliedControls,
+                    "Label themed after show, textbox is ignored");
+            }
+        }
+
         //---------------------------------------------------------------------
         // Rule matching.
         //---------------------------------------------------------------------

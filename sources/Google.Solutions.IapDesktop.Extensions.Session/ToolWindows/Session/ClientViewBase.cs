@@ -21,16 +21,13 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Terminal.Controls;
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -41,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventQueue eventQueue;
-        private readonly IControlTheme theme;
+        private readonly IBindingContext bindingContext;
 
         protected TClient? Client { get; private set; }
 
@@ -52,13 +49,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             ToolWindowStateRepository stateRepository,
             IEventQueue eventQueue,
             IExceptionDialog exceptionDialog,
-            IControlTheme theme,
             IBindingContext bindingContext)
             : base(mainWindow, stateRepository, bindingContext)
         {
             this.exceptionDialog = exceptionDialog;
             this.eventQueue = eventQueue;
-            this.theme = theme;
+            this.bindingContext = bindingContext;
         }
 
         public void Connect()
@@ -82,13 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             this.Client.ConnectionFailed += OnClientConnectionFailed;
             this.Client.StateChanged += OnClientStateChanged;
 
-            //
-            // Because we're not initializing controls in the constructor, the
-            // theme isn't applied by default.
-            //
-            Debug.Assert(this.theme != null || Install.IsExecutingTests);
-
-            this.theme?.ApplyTo(this);
+            this.Client.Bind(this.bindingContext);
 
             ResumeLayout(false);
 

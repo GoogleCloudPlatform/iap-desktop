@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using System;
 using System.ComponentModel;
@@ -118,6 +119,9 @@ namespace Google.Solutions.Terminal.Controls
             };
             this.statePanel.ConnectButtonClicked += (_, args) => Connect();
         }
+
+        public virtual void Bind(IBindingContext bindingContext)
+        { }
 
         /// <summary>
         /// Check if the client is currently hosted in a full-screen container.

@@ -36,6 +36,7 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Ssh.Native;
 using Google.Solutions.Terminal.Controls;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -87,14 +88,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             IEventQueue eventQueue,
             IExceptionDialog exceptionDialog,
             IInputDialog inputDialog,
-            IToolWindowTheme theme,
             IBindingContext bindingContext)
             : base(
                   mainWindow,
                   stateRepository,
                   eventQueue,
                   exceptionDialog,
-                  theme,
                   bindingContext)
         {
             this.Icon = Resources.ConsoleBlue_16;
@@ -125,12 +124,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         {
             get => this.viewModel.TryGet()?.Instance?.Name ?? "SSH";
             set { }
-        }
-
-        public bool CanTransferFiles
-        {
-            //TODO: SFTP - Implement dnd
-            get => false;
         }
 
         protected override void ConnectCore()
@@ -253,6 +246,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 this.MainWindow.MainPanel.Focus();
                 e.Handled = true;
             }
+        }
+
+        public bool CanTransferFiles
+        {
+            //TODO: SFTP - Implement dnd
+            get => false;
         }
 
         //---------------------------------------------------------------------

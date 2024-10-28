@@ -93,6 +93,30 @@ namespace Google.Solutions.Mvvm.Theme
             // Controls too, but they're not included in the Controls list.
             //
             ApplyTo(control.ContextMenuStrip);
+
+            if (control is ContainerControl || control is Panel)
+            {
+                //
+                // Watch for new controls.
+                //
+                control.ControlAdded += (_, args) => 
+                {
+                    //
+                    // Theming happens before a window is shown. Therefore,
+                    // if we get a callback for an control that isn't
+                    // visible yet, we can ignore this call.
+                    //
+                    // However, if the control is already visible,
+                    // then that new child control must be the result
+                    // of a programmatic control creation. For that,
+                    // we need to apply the theme.
+                    //
+                    if (control.Visible)
+                    {
+                        ApplyTo(args.Control);
+                    }
+                };
+            }
         }
 
         //---------------------------------------------------------------------

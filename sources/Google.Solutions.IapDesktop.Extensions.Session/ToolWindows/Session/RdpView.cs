@@ -93,14 +93,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             ToolWindowStateRepository stateRepository,
             IEventQueue eventQueue,
             IExceptionDialog exceptionDialog,
-            IToolWindowTheme theme,
             IBindingContext bindingContext)
             : base(
                   mainWindow,
                   stateRepository,
                   eventQueue,
                   exceptionDialog,
-                  theme,
                   bindingContext)
         {
             this.settingsRepository = settingsRepository;
