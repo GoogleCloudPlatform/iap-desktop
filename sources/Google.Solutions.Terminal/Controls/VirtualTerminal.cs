@@ -585,7 +585,6 @@ namespace Google.Solutions.Terminal.Controls
         //---------------------------------------------------------------------
 
         private bool ignoreWmCharBecauseOfAccelerator = false;
-        private ushort lastKeyDownVirtualKey = 0;
         private string? selectionToCopyInKeyUp = null;
 
         private void TerminalSubclassWndProc(ref Message m)
@@ -739,7 +738,6 @@ namespace Google.Solutions.Terminal.Controls
                                 true);
                         }
 
-                        this.lastKeyDownVirtualKey = keyParams.VirtualKey;
                         break;
                     }
 
@@ -805,33 +803,6 @@ namespace Google.Solutions.Terminal.Controls
                         }
                         else
                         {
-                            if (this.lastKeyDownVirtualKey != keyParams.VirtualKey)
-                            {
-                                //
-                                // For some keys (in particular, TAB and the
-                                // arrow keys), we only get a WM_KEYUP and no
-                                // preceeding WM_KEYDOWN.
-                                // 
-                                // When that happens, inject an extra
-                                // TerminalSendKeyEvent call so that the
-                                // subsequent WM_KEYDOWN isn't ignored by the
-                                // terminal.
-                                //
-                                // NB. We don't know how many WM_KEYDOWNs we
-                                // actually missed.
-                                //
-                                NativeMethods.TerminalSetCursorVisible(
-                                    terminalHandle,
-                                    true);
-                                NativeMethods.TerminalSendKeyEvent(
-                                    terminalHandle,
-                                    keyParams.VirtualKey,
-                                    keyParams.ScanCode,
-                                    keyParams.Flags,
-                                    true);
-                                this.caretBlinkTimer.Start();
-                            }
-
                             NativeMethods.TerminalSendKeyEvent(
                                 terminalHandle,
                                 keyParams.VirtualKey,
