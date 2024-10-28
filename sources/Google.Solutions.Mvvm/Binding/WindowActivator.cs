@@ -168,7 +168,7 @@ namespace Google.Solutions.Mvvm.Binding
                 view.SuspendLayout();
 
                 this.theme.ApplyTo(view);
-                if (view is IThemedView<TViewModel> themedView && themedView != null)
+                if (view is IThemedView themedView && themedView != null)
                 {
                     themedView.SetTheme(this.theme);
                 }
@@ -240,7 +240,7 @@ namespace Google.Solutions.Mvvm.Binding
             if (theme != null)
             {
                 theme.ApplyTo(viewControl);
-                if (view is IThemedView<TViewModel> themedView && themedView != null)
+                if (view is IThemedView themedView && themedView != null)
                 {
                     themedView.SetTheme(theme);
                 }

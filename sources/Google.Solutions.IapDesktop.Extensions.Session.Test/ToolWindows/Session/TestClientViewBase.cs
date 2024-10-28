@@ -78,7 +78,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                         RegistryKeyPath.ForCurrentTest().CreateKey()),
                     eventQueue, 
                     exceptionDialog,
-                    new Mock<IControlTheme>().Object,
                     new Mock<IBindingContext>().Object)
             {
             }

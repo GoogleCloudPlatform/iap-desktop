@@ -40,8 +40,7 @@ namespace Google.Solutions.Mvvm.Binding
     /// Optional interface to implement by views if they need access
     /// to the "raw" theme.
     /// </summary>
-    internal interface IThemedView<TViewModel> : IView<TViewModel>
-        where TViewModel : ViewModelBase
+    public interface IThemedView
     {
         void SetTheme(IControlTheme theme);
     }
