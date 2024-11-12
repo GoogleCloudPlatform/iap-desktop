@@ -58,12 +58,15 @@ namespace Google.Solutions.Mvvm.Controls
             this.fileList = new Google.Solutions.Mvvm.Controls.FileBrowser.FileListView();
             this.typeColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.sizeColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.filesContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             nameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             lastModifiedColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
+            this.filesContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // nameColumn
@@ -111,6 +114,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.directoryTree.Size = new System.Drawing.Size(200, 256);
             this.directoryTree.TabIndex = 0;
             this.directoryTree.SelectedModelNodeChanged += new System.EventHandler(this.directoryTree_SelectedModelNodeChanged);
+            this.directoryTree.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fileList_KeyDown);
             // 
             // fileIconsList
             // 
@@ -126,6 +130,7 @@ namespace Google.Solutions.Mvvm.Controls
             lastModifiedColumn,
             this.typeColumn,
             this.sizeColumn});
+            this.fileList.ContextMenuStrip = this.filesContextMenu;
             this.fileList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.fileList.FullRowSelect = true;
             this.fileList.HideSelection = false;
@@ -151,9 +156,23 @@ namespace Google.Solutions.Mvvm.Controls
             this.sizeColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.sizeColumn.Width = 7;
             // 
+            // filesContextMenu
+            // 
+            this.filesContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.refreshToolStripMenuItem});
+            this.filesContextMenu.Name = "contextMenu";
+            this.filesContextMenu.Size = new System.Drawing.Size(181, 48);
+            // 
+            // refreshToolStripMenuItem
+            // 
+            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.refreshToolStripMenuItem.Text = "&Refresh";
+            this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
+            // 
             // FileBrowser
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96, 96);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.splitContainer);
             this.Name = "FileBrowser";
@@ -162,6 +181,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.splitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
+            this.filesContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -174,6 +194,8 @@ namespace Google.Solutions.Mvvm.Controls
         private System.Windows.Forms.ImageList fileIconsList;
         private System.Windows.Forms.ColumnHeader typeColumn;
         private System.Windows.Forms.ColumnHeader sizeColumn;
+        private System.Windows.Forms.ContextMenuStrip filesContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
 
         internal class FileListView : BindableListView<IFileItem>
         { }

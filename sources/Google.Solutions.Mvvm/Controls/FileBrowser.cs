@@ -32,6 +32,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+#pragma warning disable VSTHRD100 // Avoid async void methods
+
 namespace Google.Solutions.Mvvm.Controls
 {
     public partial class FileBrowser : DpiAwareUserControl
@@ -39,7 +41,7 @@ namespace Google.Solutions.Mvvm.Controls
         private readonly FileTypeCache fileTypeCache = new FileTypeCache();
 
         private IFileSystem? fileSystem = null;
-        private readonly IDictionary<IFileItem, ObservableCollection<IFileItem>> listFilesCache =
+        private readonly Dictionary<IFileItem, ObservableCollection<IFileItem>> listFilesCache =
             new Dictionary<IFileItem, ObservableCollection<IFileItem>>();
 
         internal DirectoryTreeView Directories => this.directoryTree;
@@ -106,12 +108,19 @@ namespace Google.Solutions.Mvvm.Controls
         public event EventHandler? SelectedFilesChanged;
 
         protected void OnNavigationFailed(Exception e)
-            => this.NavigationFailed?.Invoke(this, new ExceptionEventArgs(e));
+        {
+            this.NavigationFailed?.Invoke(this, new ExceptionEventArgs(e));
+        }
 
         protected void OnCurrentDirectoryChanged()
-            => this.CurrentDirectoryChanged?.Invoke(this, EventArgs.Empty);
+        {
+            this.CurrentDirectoryChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         protected void OnSelectedFilesChanged()
-            => this.SelectedFilesChanged?.Invoke(this, EventArgs.Empty);
+        {
+            this.SelectedFilesChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         //---------------------------------------------------------------------
         // Selection properties.
@@ -152,7 +161,7 @@ namespace Google.Solutions.Mvvm.Controls
         // Data Binding.
         //---------------------------------------------------------------------
 
-        private async Task<ObservableCollection<IFileItem>> ListFilesAsync(IFileItem folder)
+        private async Task<ObservableCollection<IFileItem>> ListFilesAsync(IFileItem directory)
         {
             Debug.Assert(!this.InvokeRequired, "Running on UI thread");
             Debug.Assert(this.fileSystem != null);
@@ -164,30 +173,30 @@ namespace Google.Solutions.Mvvm.Controls
 
             //
             // NB. Both controls must use the same file items so that expansion
-            // tracking works correctly. Instead of bining each control individually,
+            // tracking works correctly. Instead of binding each control individually,
             // we therefore put a cache in between.
             //
-            if (!this.listFilesCache.TryGetValue(folder, out var children))
+            if (!this.listFilesCache.TryGetValue(directory, out var children))
             {
                 children = await this.fileSystem
-                    .ListFilesAsync(folder)
+                    .ListFilesAsync(directory)
                     .ConfigureAwait(true);
                 Debug.Assert(children != null);
 
-                this.listFilesCache[folder] = children!;
+                this.listFilesCache[directory] = children!;
             }
 
             return children!;
         }
 
-        private async Task ShowDirectoryContentsAsync(IFileItem folder)
+        private async Task ShowDirectoryContentsAsync(IFileItem directory)
         {
-            Debug.Assert(!folder.Type.IsFile);
+            Debug.Assert(!directory.Type.IsFile);
 
             //
             // Update list view.
             //
-            var files = await ListFilesAsync(folder).ConfigureAwait(true);
+            var files = await ListFilesAsync(directory).ConfigureAwait(true);
             this.fileList.BindCollection(files);
 
             OnCurrentDirectoryChanged();
@@ -204,7 +213,7 @@ namespace Google.Solutions.Mvvm.Controls
 
             if (fileSystem.Root.Type.IsFile)
             {
-                throw new ArgumentException("The root item must be a folder");
+                throw new ArgumentException("The root item must be a directory");
             }
 
             this.fileSystem = fileSystem;
@@ -310,29 +319,45 @@ namespace Google.Solutions.Mvvm.Controls
 
         private async void fileList_KeyDown(object sender, KeyEventArgs args)
         {
-            if (args.KeyCode == Keys.Enter &&
-                this.fileList.SelectedModelItem is var item &&
-                item != null &&
-                !item.Type.IsFile)
+            try
             {
-                //
-                // Go down one level, same as double-click.
-                //
-                fileList_DoubleClick(sender, EventArgs.Empty);
-            }
-            else if (args.KeyCode == Keys.Up && args.Alt)
-            {
-                //
-                // Go up one level.
-                //
-                try
+                if (args.KeyCode == Keys.Enter &&
+                    this.fileList.SelectedModelItem is var item &&
+                    item != null &&
+                    !item.Type.IsFile)
                 {
+                    //
+                    // Go down one level, same as double-click.
+                    //
+                    fileList_DoubleClick(sender, EventArgs.Empty);
+                }
+                else if (args.KeyCode == Keys.Up && args.Alt)
+                {
+                    //
+                    // Go up one level.
+                    //
                     await NavigateUpAsync();
                 }
-                catch (Exception e)
+                else if (args.KeyCode == Keys.F5)
                 {
-                    OnNavigationFailed(e);
+                    await RefreshAsync();
                 }
+            }
+            catch (Exception e)
+            {
+                OnNavigationFailed(e);
+            }
+        }
+
+        private async void refreshToolStripMenuItem_Click(object sender, EventArgs args)
+        {
+            try
+            {
+                await RefreshAsync().ConfigureAwait(true);
+            }
+            catch (Exception e)
+            {
+                OnNavigationFailed(e);
             }
         }
 
@@ -356,7 +381,8 @@ namespace Google.Solutions.Mvvm.Controls
 
             if (path == null || !path.Any())
             {
-                await ShowDirectoryContentsAsync(this.navigationState.Directory).ConfigureAwait(true);
+                await ShowDirectoryContentsAsync(this.navigationState.Directory)
+                    .ConfigureAwait(true);
             }
             else
             {
@@ -397,7 +423,7 @@ namespace Google.Solutions.Mvvm.Controls
 
             if (child == null)
             {
-                throw new ArgumentException($"The folder '{directoryName}' does not exist");
+                throw new ArgumentException($"The directory '{directoryName}' does not exist");
             }
 
             this.navigationState = new Breadcrumb(this.navigationState, child);
@@ -426,6 +452,19 @@ namespace Google.Solutions.Mvvm.Controls
                 .ConfigureAwait(true);
         }
 
+        public async Task RefreshAsync()
+        {
+            if (this.navigationState != null)
+            {
+                //
+                // Clear cache and reload.
+                //
+                this.listFilesCache.Remove(this.navigationState.Directory);
+                await ShowDirectoryContentsAsync(this.navigationState.Directory)
+                    .ConfigureAwait(true);
+            }
+        }
+
         //---------------------------------------------------------------------
         // Inner classes.
         //---------------------------------------------------------------------
@@ -445,9 +484,11 @@ namespace Google.Solutions.Mvvm.Controls
             }
 
             public IEnumerable<string> Path
-                => this.Parent == null
+            {
+                get => this.Parent == null
                     ? Enumerable.Empty<string>()
                     : this.Parent.Path.ConcatItem(this.Directory.Name);
+            }
         }
     }
 }

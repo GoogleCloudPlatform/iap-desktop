@@ -297,8 +297,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
+        //---------------------------------------------------------------------
+        // CurrentDirectory.
+        //---------------------------------------------------------------------
+
         [Test]
-        public async Task CurrentDirectory_WhenPathInvalid_ThenNavigateRaisesNavigationFailedEvent()
+        public async Task Navigate_WhenPathInvalid_ThenRaisesEvent()
         {
             using (var form = new Form()
             {
@@ -336,9 +340,43 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 { }
             }
         }
+        [Test]
+        public async Task Navigate_WhenPathIsNull_ThenNavigatesToRoot()
+        {
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+                form.Controls.Add(browser);
+
+                var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
+                browser.Bind(
+                    fileSystem,
+                    new Mock<IBindingContext>().Object);
+                Application.DoEvents();
+
+                form.Show();
+
+                await browser
+                    .NavigateAsync(new[] { "Item", "Item" })
+                    .ConfigureAwait(true);
+
+                await browser
+                    .NavigateAsync(null)
+                    .ConfigureAwait(true);
+
+                Application.DoEvents();
+                Assert.AreEqual(string.Empty, browser.CurrentPath);
+            }
+        }
 
         [Test]
-        public async Task CurrentDirectory_WhenBrowsedToSubfolder_ThenCurrentDirectoryAndPathIsUpdated()
+        public async Task Navigate()
         {
             using (var form = new Form()
             {
@@ -375,8 +413,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
+        //---------------------------------------------------------------------
+        // NavigateUp.
+        //---------------------------------------------------------------------
+
         [Test]
-        public async Task CurrentDirectory_WhenNavigatedToSubfolder_ThenNavigateUpGoesBackToRoot()
+        public async Task NavigateUp()
         {
             using (var form = new Form()
             {
@@ -413,8 +455,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
+        //---------------------------------------------------------------------
+        // Refresh.
+        //---------------------------------------------------------------------
+
         [Test]
-        public async Task CurrentDirectory_WhenNavigatedToSubfolder_ThenNavigateNullGoesBackToRoot()
+        public async Task Refresh()
         {
             using (var form = new Form()
             {
@@ -427,24 +473,22 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 };
                 form.Controls.Add(browser);
 
-                var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
+                var fileSystem = CreateFileSystemWithEmptyRoot();
                 browser.Bind(
-                    fileSystem,
+                    fileSystem.Object,
                     new Mock<IBindingContext>().Object);
                 Application.DoEvents();
 
                 form.Show();
-
-                await browser
-                    .NavigateAsync(new[] { "Item", "Item" })
-                    .ConfigureAwait(true);
-
-                await browser
-                    .NavigateAsync(null)
-                    .ConfigureAwait(true);
-
                 Application.DoEvents();
-                Assert.AreEqual(string.Empty, browser.CurrentPath);
+
+                await browser
+                    .RefreshAsync()
+                    .ConfigureAwait(true);
+
+                fileSystem.Verify(
+                    f => f.ListFilesAsync(It.IsAny<IFileItem>()), 
+                    Times.Exactly(2));
             }
         }
 
