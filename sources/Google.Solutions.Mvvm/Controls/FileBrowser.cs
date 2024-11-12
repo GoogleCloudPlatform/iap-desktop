@@ -484,10 +484,11 @@ namespace Google.Solutions.Mvvm.Controls
             }
 
             public IEnumerable<string> Path
-                => this.Parent == null
+            {
+                get => this.Parent == null
                     ? Enumerable.Empty<string>()
                     : this.Parent.Path.ConcatItem(this.Directory.Name);
+            }
         }
-
     }
 }
