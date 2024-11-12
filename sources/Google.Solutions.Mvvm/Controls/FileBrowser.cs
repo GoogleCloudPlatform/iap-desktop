@@ -32,6 +32,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+#pragma warning disable VSTHRD100 // Avoid async void methods
+
 namespace Google.Solutions.Mvvm.Controls
 {
     public partial class FileBrowser : DpiAwareUserControl
@@ -159,7 +161,7 @@ namespace Google.Solutions.Mvvm.Controls
         // Data Binding.
         //---------------------------------------------------------------------
 
-        private async Task<ObservableCollection<IFileItem>> ListFilesAsync(IFileItem folder)
+        private async Task<ObservableCollection<IFileItem>> ListFilesAsync(IFileItem directory)
         {
             Debug.Assert(!this.InvokeRequired, "Running on UI thread");
             Debug.Assert(this.fileSystem != null);
@@ -174,27 +176,27 @@ namespace Google.Solutions.Mvvm.Controls
             // tracking works correctly. Instead of binding each control individually,
             // we therefore put a cache in between.
             //
-            if (!this.listFilesCache.TryGetValue(folder, out var children))
+            if (!this.listFilesCache.TryGetValue(directory, out var children))
             {
                 children = await this.fileSystem
-                    .ListFilesAsync(folder)
+                    .ListFilesAsync(directory)
                     .ConfigureAwait(true);
                 Debug.Assert(children != null);
 
-                this.listFilesCache[folder] = children!;
+                this.listFilesCache[directory] = children!;
             }
 
             return children!;
         }
 
-        private async Task ShowDirectoryContentsAsync(IFileItem folder)
+        private async Task ShowDirectoryContentsAsync(IFileItem directory)
         {
-            Debug.Assert(!folder.Type.IsFile);
+            Debug.Assert(!directory.Type.IsFile);
 
             //
             // Update list view.
             //
-            var files = await ListFilesAsync(folder).ConfigureAwait(true);
+            var files = await ListFilesAsync(directory).ConfigureAwait(true);
             this.fileList.BindCollection(files);
 
             OnCurrentDirectoryChanged();
@@ -211,7 +213,7 @@ namespace Google.Solutions.Mvvm.Controls
 
             if (fileSystem.Root.Type.IsFile)
             {
-                throw new ArgumentException("The root item must be a folder");
+                throw new ArgumentException("The root item must be a directory");
             }
 
             this.fileSystem = fileSystem;
@@ -421,7 +423,7 @@ namespace Google.Solutions.Mvvm.Controls
 
             if (child == null)
             {
-                throw new ArgumentException($"The folder '{directoryName}' does not exist");
+                throw new ArgumentException($"The directory '{directoryName}' does not exist");
             }
 
             this.navigationState = new Breadcrumb(this.navigationState, child);
@@ -489,5 +491,3 @@ namespace Google.Solutions.Mvvm.Controls
 
     }
 }
-
-//TODO: Align "folder" vs "directory"

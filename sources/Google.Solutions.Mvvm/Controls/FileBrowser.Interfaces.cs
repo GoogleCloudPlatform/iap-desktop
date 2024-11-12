@@ -41,7 +41,7 @@ namespace Google.Solutions.Mvvm.Controls
             /// List files and directory. 
             /// Returns an empty collection if the directory is empty.
             /// </summary>
-            Task<ObservableCollection<IFileItem>> ListFilesAsync(IFileItem folder);
+            Task<ObservableCollection<IFileItem>> ListFilesAsync(IFileItem directory);
         }
 
         /// <summary>
