@@ -189,8 +189,11 @@ namespace Google.Solutions.Mvvm.Controls
             return children!;
         }
 
-        private async Task ShowDirectoryContentsAsync(IFileItem directory)
+        private async Task RebindToNavigationStateAsync()
         {
+            Debug.Assert(this.navigationState != null);
+
+            var directory = this.navigationState!.Directory;
             Debug.Assert(!directory.Type.IsFile);
 
             //
@@ -198,6 +201,11 @@ namespace Google.Solutions.Mvvm.Controls
             //
             var files = await ListFilesAsync(directory).ConfigureAwait(true);
             this.fileList.BindCollection(files);
+
+            //
+            // Update tree view.
+            //
+            this.directoryTree.SelectedNode = this.navigationState.TreeNode;
 
             OnCurrentDirectoryChanged();
         }
@@ -281,8 +289,7 @@ namespace Google.Solutions.Mvvm.Controls
 
                 try
                 {
-                    await ShowDirectoryContentsAsync(this.navigationState.Directory)
-                        .ConfigureAwait(true);
+                    await RebindToNavigationStateAsync().ConfigureAwait(true);
                 }
                 catch (Exception e)
                 {
@@ -310,6 +317,8 @@ namespace Google.Solutions.Mvvm.Controls
                     .ConfigureAwait(true);
 
                 this.CurrentDirectory.IsExpanded = true;
+
+                this.fileList.Focus();
             }
             catch (Exception e)
             {
@@ -381,8 +390,7 @@ namespace Google.Solutions.Mvvm.Controls
 
             if (path == null || !path.Any())
             {
-                await ShowDirectoryContentsAsync(this.navigationState.Directory)
-                    .ConfigureAwait(true);
+                await RebindToNavigationStateAsync().ConfigureAwait(true);
             }
             else
             {
@@ -427,8 +435,7 @@ namespace Google.Solutions.Mvvm.Controls
             }
 
             this.navigationState = new Breadcrumb(this.navigationState, child);
-
-            await ShowDirectoryContentsAsync(this.navigationState.Directory).ConfigureAwait(true);
+            await RebindToNavigationStateAsync().ConfigureAwait(true);
         }
 
         public async Task NavigateUpAsync()
@@ -448,8 +455,8 @@ namespace Google.Solutions.Mvvm.Controls
                 return;
             }
 
-            await NavigateAsync(this.navigationState.Parent.Path)
-                .ConfigureAwait(true);
+            this.navigationState = this.navigationState.Parent;
+            await RebindToNavigationStateAsync().ConfigureAwait(true);
         }
 
         public async Task RefreshAsync()
@@ -460,8 +467,7 @@ namespace Google.Solutions.Mvvm.Controls
                 // Clear cache and reload.
                 //
                 this.listFilesCache.Remove(this.navigationState.Directory);
-                await ShowDirectoryContentsAsync(this.navigationState.Directory)
-                    .ConfigureAwait(true);
+                await RebindToNavigationStateAsync().ConfigureAwait(true);
             }
         }
 
