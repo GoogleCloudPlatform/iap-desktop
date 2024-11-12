@@ -39,7 +39,7 @@ namespace Google.Solutions.Mvvm.Controls
         private readonly FileTypeCache fileTypeCache = new FileTypeCache();
 
         private IFileSystem? fileSystem = null;
-        private readonly IDictionary<IFileItem, ObservableCollection<IFileItem>> listFilesCache =
+        private readonly Dictionary<IFileItem, ObservableCollection<IFileItem>> listFilesCache =
             new Dictionary<IFileItem, ObservableCollection<IFileItem>>();
 
         internal DirectoryTreeView Directories => this.directoryTree;
@@ -106,12 +106,19 @@ namespace Google.Solutions.Mvvm.Controls
         public event EventHandler? SelectedFilesChanged;
 
         protected void OnNavigationFailed(Exception e)
-            => this.NavigationFailed?.Invoke(this, new ExceptionEventArgs(e));
+        {
+            this.NavigationFailed?.Invoke(this, new ExceptionEventArgs(e));
+        }
 
         protected void OnCurrentDirectoryChanged()
-            => this.CurrentDirectoryChanged?.Invoke(this, EventArgs.Empty);
+        {
+            this.CurrentDirectoryChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         protected void OnSelectedFilesChanged()
-            => this.SelectedFilesChanged?.Invoke(this, EventArgs.Empty);
+        {
+            this.SelectedFilesChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         //---------------------------------------------------------------------
         // Selection properties.
@@ -164,7 +171,7 @@ namespace Google.Solutions.Mvvm.Controls
 
             //
             // NB. Both controls must use the same file items so that expansion
-            // tracking works correctly. Instead of bining each control individually,
+            // tracking works correctly. Instead of binding each control individually,
             // we therefore put a cache in between.
             //
             if (!this.listFilesCache.TryGetValue(folder, out var children))
@@ -310,29 +317,45 @@ namespace Google.Solutions.Mvvm.Controls
 
         private async void fileList_KeyDown(object sender, KeyEventArgs args)
         {
-            if (args.KeyCode == Keys.Enter &&
-                this.fileList.SelectedModelItem is var item &&
-                item != null &&
-                !item.Type.IsFile)
+            try
             {
-                //
-                // Go down one level, same as double-click.
-                //
-                fileList_DoubleClick(sender, EventArgs.Empty);
-            }
-            else if (args.KeyCode == Keys.Up && args.Alt)
-            {
-                //
-                // Go up one level.
-                //
-                try
+                if (args.KeyCode == Keys.Enter &&
+                    this.fileList.SelectedModelItem is var item &&
+                    item != null &&
+                    !item.Type.IsFile)
                 {
+                    //
+                    // Go down one level, same as double-click.
+                    //
+                    fileList_DoubleClick(sender, EventArgs.Empty);
+                }
+                else if (args.KeyCode == Keys.Up && args.Alt)
+                {
+                    //
+                    // Go up one level.
+                    //
                     await NavigateUpAsync();
                 }
-                catch (Exception e)
+                else if (args.KeyCode == Keys.F5)
                 {
-                    OnNavigationFailed(e);
+                    await RefreshAsync();
                 }
+            }
+            catch (Exception e)
+            {
+                OnNavigationFailed(e);
+            }
+        }
+
+        private async void refreshToolStripMenuItem_Click(object sender, EventArgs args)
+        {
+            try
+            {
+                await RefreshAsync().ConfigureAwait(true);
+            }
+            catch (Exception e)
+            {
+                OnNavigationFailed(e);
             }
         }
 
@@ -356,7 +379,8 @@ namespace Google.Solutions.Mvvm.Controls
 
             if (path == null || !path.Any())
             {
-                await ShowDirectoryContentsAsync(this.navigationState.Directory).ConfigureAwait(true);
+                await ShowDirectoryContentsAsync(this.navigationState.Directory)
+                    .ConfigureAwait(true);
             }
             else
             {
@@ -426,6 +450,19 @@ namespace Google.Solutions.Mvvm.Controls
                 .ConfigureAwait(true);
         }
 
+        public async Task RefreshAsync()
+        {
+            if (this.navigationState != null)
+            {
+                //
+                // Clear cache and reload.
+                //
+                this.listFilesCache.Remove(this.navigationState.Directory);
+                await ShowDirectoryContentsAsync(this.navigationState.Directory)
+                    .ConfigureAwait(true);
+            }
+        }
+
         //---------------------------------------------------------------------
         // Inner classes.
         //---------------------------------------------------------------------
@@ -449,5 +486,8 @@ namespace Google.Solutions.Mvvm.Controls
                     ? Enumerable.Empty<string>()
                     : this.Parent.Path.ConcatItem(this.Directory.Name);
         }
+
     }
 }
+
+//TODO: Align "folder" vs "directory"

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Google.Solutions.Mvvm.Properties {
+namespace Google.Solutions.Terminal {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Google.Solutions.Mvvm.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Google.Solutions.Mvvm.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Google.Solutions.Terminal.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -66,16 +66,6 @@ namespace Google.Solutions.Mvvm.Properties {
         internal static System.Drawing.Bitmap Copy_16x {
             get {
                 object obj = ResourceManager.GetObject("Copy_16x", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Search_16 {
-            get {
-                object obj = ResourceManager.GetObject("Search_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
