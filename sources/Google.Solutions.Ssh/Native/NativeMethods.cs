@@ -141,8 +141,8 @@ namespace Google.Solutions.Ssh.Native
     internal struct LIBSSH2_SFTP_ATTRIBUTES
     {
         /// <summary>
-        /// If flags & ATTR_* bit is set, then the value in this struct will be
-        /// meaningful Otherwise it should be ignored
+        /// If flags & ATTR_* bit is set, then the value in this struct is
+        /// meaningful. Otherwise it should be ignored.
         /// </summary>
         internal uint flags;
         internal ulong filesize;

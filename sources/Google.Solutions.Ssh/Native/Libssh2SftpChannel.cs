@@ -279,25 +279,39 @@ namespace Google.Solutions.Ssh.Native
         /// </summary>
 
         public FilePermissions Permissions
-            => (FilePermissions)this.attributes.permissions;
+        {
+            get => (FilePermissions)this.attributes.permissions;
+        }
 
         public bool IsDirectory
-            => this.Permissions.IsDirectory();
+        {
+            get => this.Permissions.IsDirectory();
+        }
 
         public uint UserId
-            => this.attributes.uid;
+        {
+            get => this.attributes.uid;
+        }
 
         public uint GroupId
-            => this.attributes.gid;
+        {
+            get => this.attributes.gid;
+        }
 
         public DateTime LastAccessDate
-            => DateTimeOffset.FromUnixTimeSeconds(this.attributes.atime).DateTime;
+        {
+            get => DateTimeOffset.FromUnixTimeSeconds(this.attributes.atime).DateTime;
+        }
 
         public DateTime LastModifiedDate
-            => DateTimeOffset.FromUnixTimeSeconds(this.attributes.mtime).DateTime;
+        {
+            get => DateTimeOffset.FromUnixTimeSeconds(this.attributes.mtime).DateTime;
+        }
 
         public ulong Size
-            => this.attributes.filesize;
+        {
+            get => this.attributes.filesize;
+        }
 
         internal Libssh2SftpFileInfo(
             string name,

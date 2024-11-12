@@ -170,18 +170,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         private class SftpRootItem : FileBrowser.IFileItem
         {
-            public string Name => string.Empty;
+            public string Name
+            {
+                get => string.Empty;
+            }
 
-            public FileAttributes Attributes => FileAttributes.Directory;
+            public FileAttributes Attributes
+            {
+                get => FileAttributes.Directory;
+            }
 
-            public DateTime LastModified => DateTimeOffset.FromUnixTimeSeconds(0).DateTime;
+            public DateTime LastModified
+            {
+                get => DateTimeOffset.FromUnixTimeSeconds(0).DateTime;
+            }
 
-            public ulong Size => 0;
+            public ulong Size
+            {
+                get => 0;
+            }
 
-            public FileType Type => new FileType(
-                "Server",
-                false,
-                StockIcons.GetIcon(StockIcons.IconId.Server, StockIcons.IconSize.Small));
+            public FileType Type
+            {
+                get => new FileType(
+                    "Server",
+                    false,
+                    StockIcons.GetIcon(StockIcons.IconId.Server, StockIcons.IconSize.Small));
+            }
 
             public bool IsExpanded { get; set; } = true;
 
@@ -195,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             private readonly FileBrowser.IFileItem parent;
             private readonly Libssh2SftpFileInfo fileInfo;
 
-            public SftpFileItem(
+            internal SftpFileItem(
                 FileBrowser.IFileItem parent,
                 Libssh2SftpFileInfo fileInfo,
                 FileType type)
@@ -205,14 +220,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 this.Type = type;
             }
 
+            public event PropertyChangedEventHandler? PropertyChanged;
+
             public string Path
-                => (this.parent?.Path ?? string.Empty) + "/" + this.Name;
+            {
+                get => (this.parent?.Path ?? string.Empty) + "/" + this.Name;
+            }
 
-            public string Name => this.fileInfo.Name;
+            public string Name
+            {
+                get => this.fileInfo.Name;
+            }
 
-            public DateTime LastModified => this.fileInfo.LastModifiedDate;
+            public DateTime LastModified
+            {
+                get => this.fileInfo.LastModifiedDate;
+            }
 
-            public ulong Size => this.fileInfo.Size;
+            public ulong Size
+            {
+                get => this.fileInfo.Size;
+            }
 
             public bool IsExpanded { get; set; }
 
@@ -250,8 +278,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                     return attributes;
                 }
             }
-
-            public event PropertyChangedEventHandler? PropertyChanged;
         }
     }
 }
