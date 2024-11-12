@@ -24,6 +24,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows;
@@ -135,6 +136,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 viewModel.Endpoint,
                 viewModel.Parameters!.ConnectionTimeout))
             {
+                //
+                // Identify as IAP-Desktop, not plain libssh2.
+                // Replace dashes as those aren't allowed in SSH
+                // banners.
+                //
+                client.Banner = Install.UserAgent
+                    .ToApplicationName()
+                    .Replace("-", string.Empty);
+
                 //
                 // Basic connection settings.
                 //
