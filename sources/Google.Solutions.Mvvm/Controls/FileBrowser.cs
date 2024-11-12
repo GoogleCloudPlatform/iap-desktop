@@ -317,8 +317,6 @@ namespace Google.Solutions.Mvvm.Controls
                     .ConfigureAwait(true);
 
                 this.CurrentDirectory.IsExpanded = true;
-
-                this.fileList.Focus();
             }
             catch (Exception e)
             {
