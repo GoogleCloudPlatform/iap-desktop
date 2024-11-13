@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Interop;
+using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Platform.Interop;
 using System;
@@ -28,7 +29,6 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
-using static Google.Solutions.Mvvm.Shell.VirtualFileDataObject;
 using UCOMIDataObject = System.Runtime.InteropServices.ComTypes.IDataObject;
 
 namespace Google.Solutions.Mvvm.Shell
@@ -45,10 +45,16 @@ namespace Google.Solutions.Mvvm.Shell
     /// https://www.codeproject.com/Articles/23139/Transferring-Virtual-Files-to-Windows-Explorer-in
     /// </remarks>
     public sealed class VirtualFileDataObject
-        : DataObject, UCOMIDataObject, IDataObjectAsyncCapability, IDisposable
+        : DataObject, UCOMIDataObject, VirtualFileDataObject.IDataObjectAsyncCapability, IDisposable
     {
         private readonly IList<Descriptor> files;
         private int currentFile = 0;
+
+        /// <summary>
+        /// Keeps track of all streams that we opened so that we can
+        /// dispose them at the end.
+        /// </summary>
+        private readonly DisposableContainer openedContentStreams = new DisposableContainer();
 
         public VirtualFileDataObject(IList<Descriptor> files)
         {
@@ -101,12 +107,19 @@ namespace Google.Solutions.Mvvm.Shell
             else if (CFSTR_FILECONTENTS.Equals(format, StringComparison.OrdinalIgnoreCase))
             {
                 //
+                // Open the stream. We do that lazily in case the client
+                // never actally invokes this method.
+                //
+                var contentStream = this.files[this.currentFile].OpenStream();
+                this.openedContentStreams.Add(contentStream);
+
+                //
                 // Supply data for the current (!) file.
                 //
                 base.SetData(
                     CFSTR_FILECONTENTS,
                     this.currentFile < this.files.Count
-                        ? this.files[this.currentFile].ContentStream
+                        ? contentStream
                         : null);
             }
 
@@ -240,26 +253,34 @@ namespace Google.Solutions.Mvvm.Shell
 
         public void Dispose()
         {
-            foreach (var file in this.files)
-            {
-                file.ContentStream.Dispose();
-            }
+            this.openedContentStreams.Dispose();
         }
 
         //----------------------------------------------------------------------
         // Inner types.
         //----------------------------------------------------------------------
 
+        public delegate Stream OpenStreamDelegate();
+
         /// <summary>
         /// Represents a virtual file and its metadata.
         /// </summary>
         public class Descriptor
         {
+            private readonly OpenStreamDelegate openContentStream;
+
+            /// <summary>
+            /// Create a new descriptor.
+            /// </summary>
+            /// <remarks>
+            /// When the data object is disposed, all opened streams
+            /// are disposed automatically.
+            /// </remarks>
             public Descriptor(
                 string name,
                 ulong size,
                 FileAttributes attributes,
-                Stream content)
+                OpenStreamDelegate openContentStream)
             {
                 Precondition.Expect(
                     !name.Contains("\\"),
@@ -268,7 +289,7 @@ namespace Google.Solutions.Mvvm.Shell
                 this.Name = name;
                 this.Size = size;
                 this.Attributes = attributes;
-                this.ContentStream = content;
+                this.openContentStream = openContentStream;
             }
 
             /// <summary>
@@ -287,11 +308,6 @@ namespace Google.Solutions.Mvvm.Shell
             public FileAttributes Attributes { get; }
 
             /// <summary>
-            /// Stream containing the file contents.
-            /// </summary>
-            internal Stream ContentStream { get; }
-
-            /// <summary>
             /// File creation time.
             /// </summary>
             public DateTime? CreationTime { get; set; }
@@ -307,16 +323,24 @@ namespace Google.Solutions.Mvvm.Shell
             public DateTime? LastWriteTime { get; set; }
 
             /// <summary>
+            /// Open the stream that contains the file contents.
+            /// </summary>
+            internal Stream OpenStream()
+            {
+                return this.openContentStream();
+            }
+
+            /// <summary>
             /// Convert to FILEDESCRIPTORW struct. 
             /// </summary>
-            internal FILEDESCRIPTORW ToNativeFileDescriptor()
+            internal FILEDESCRIPTORW ToNativeFileDescriptor(bool requireProgressUi)
             {
                 var native = new FILEDESCRIPTORW()
                 {
                     dwFlags =
                         FD_FILESIZE |
-                        FD_PROGRESSUI |
-                        FD_UNICODE,
+                        FD_UNICODE |
+                        (requireProgressUi ? FD_PROGRESSUI : 0),
                     cFileName = this.Name,
                     dwFileAttributes = (uint)this.Attributes,
                     nFileSizeHigh = (uint)(this.Size >> 32),
@@ -325,38 +349,20 @@ namespace Google.Solutions.Mvvm.Shell
 
                 if (this.CreationTime != null)
                 {
-                    var creationTime = this.CreationTime.Value.ToFileTimeUtc();
-
                     native.dwFlags |= FD_CREATETIME;
-                    native.ftCreationTime = new System.Runtime.InteropServices.ComTypes.FILETIME()
-                    {
-                        dwHighDateTime = (int)(creationTime >> 32),
-                        dwLowDateTime = (int)(creationTime & 0xFFFFFFFF),
-                    };
+                    native.ftCreationTime = FileTimeFromDateTime(this.CreationTime.Value);
                 }
 
                 if (this.LastAccessTime != null)
                 {
-                    var lastAccessTime = this.LastAccessTime.Value.ToFileTimeUtc();
-
                     native.dwFlags |= FD_ACCESSTIME;
-                    native.ftLastAccessTime = new System.Runtime.InteropServices.ComTypes.FILETIME()
-                    {
-                        dwHighDateTime = (int)(lastAccessTime >> 32),
-                        dwLowDateTime = (int)(lastAccessTime & 0xFFFFFFFF),
-                    };
+                    native.ftCreationTime = FileTimeFromDateTime(this.LastAccessTime.Value);
                 }
 
                 if (this.LastWriteTime != null)
                 {
-                    var lastWriteTime = this.LastWriteTime.Value.ToFileTimeUtc();
-
                     native.dwFlags |= FD_WRITESTIME;
-                    native.ftLastWriteTime = new System.Runtime.InteropServices.ComTypes.FILETIME()
-                    {
-                        dwHighDateTime = (int)(lastWriteTime >> 32),
-                        dwLowDateTime = (int)(lastWriteTime & 0xFFFFFFFF),
-                    };
+                    native.ftCreationTime = FileTimeFromDateTime(this.LastWriteTime.Value);
                 }
 
                 return native;
@@ -388,7 +394,7 @@ namespace Google.Solutions.Mvvm.Shell
                     for (int i = 0; i < fileDescriptors.Count; i++)
                     {
                         Marshal.StructureToPtr(
-                            fileDescriptors[i].ToNativeFileDescriptor(),
+                            fileDescriptors[i].ToNativeFileDescriptor(true),
                             ptr.DangerousGetHandle(),
                             false);
 
@@ -398,6 +404,21 @@ namespace Google.Solutions.Mvvm.Shell
 
                     return stream;
                 }
+            }
+
+            /// <summary>
+            /// Convert DateTime to a FILETIME.
+            /// </summary>
+            private static System.Runtime.InteropServices.ComTypes.FILETIME FileTimeFromDateTime(
+                DateTime dt)
+            {
+                var utc = dt.ToFileTimeUtc();
+
+                return new System.Runtime.InteropServices.ComTypes.FILETIME()
+                {
+                    dwHighDateTime = (int)(utc >> 32),
+                    dwLowDateTime = (int)(utc & 0xFFFFFFFF),
+                };
             }
         }
 

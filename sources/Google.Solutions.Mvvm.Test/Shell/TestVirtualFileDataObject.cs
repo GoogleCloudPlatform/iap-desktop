@@ -26,7 +26,6 @@ using System;
 using System.IO;
 using System.Text;
 using System.Threading;
-using System.Windows.Forms.Layout;
 
 namespace Google.Solutions.Mvvm.Test.Shell
 {
@@ -51,12 +50,12 @@ namespace Google.Solutions.Mvvm.Test.Shell
                         "file-1.txt",
                         (ulong)content.Length,
                         FileAttributes.Normal,
-                        contentStream),
+                        () => contentStream),
                     new VirtualFileDataObject.Descriptor(
                         "file-2.txt",
                         (ulong)content.Length,
                         FileAttributes.Normal,
-                        contentStream),
+                        () => contentStream),
                 });
 
                 Assert.IsInstanceOf<Stream>(
