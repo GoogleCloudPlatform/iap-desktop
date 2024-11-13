@@ -20,10 +20,13 @@
 //
 
 using Google.Solutions.Mvvm.Shell;
+using Google.Solutions.Platform.Interop;
 using NUnit.Framework;
+using System;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms.Layout;
 
 namespace Google.Solutions.Mvvm.Test.Shell
 {
@@ -31,8 +34,12 @@ namespace Google.Solutions.Mvvm.Test.Shell
     [Apartment(ApartmentState.STA)]
     public class TestVirtualFileDataObject
     {
+        //----------------------------------------------------------------------
+        // GetData.
+        //----------------------------------------------------------------------
+
         [Test]
-        public void GetData()
+        public void GetData_WhenFormatSupported()
         {
             var content = Encoding.ASCII.GetBytes("Test");
             using (var contentStream = new MemoryStream())
@@ -58,6 +65,97 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 Assert.IsInstanceOf<Stream>(
                     dataObject.GetData(VirtualFileDataObject.CFSTR_FILECONTENTS, false));
             }
+        }
+
+        [Test]
+        public void GetData_WhenFormatNotSupported()
+        {
+            var dataObject = new VirtualFileDataObject(
+                Array.Empty<VirtualFileDataObject.Descriptor>());
+
+            Assert.IsNull(dataObject.GetData("Unsupported", false));
+        }
+
+        //----------------------------------------------------------------------
+        // StartOperation.
+        //----------------------------------------------------------------------
+
+        [Test]
+        public void StartOperation_RaisesEvent()
+        {
+            var dataObject = new VirtualFileDataObject(
+                Array.Empty<VirtualFileDataObject.Descriptor>());
+
+            bool eventRaised = false;
+            dataObject.AsyncOperationStarted += (_, args) => eventRaised = true;
+            dataObject.StartOperation(null);
+
+            dataObject.InOperation(out var inOp);
+            Assert.AreEqual(-1, inOp);
+
+            Assert.IsTrue(eventRaised);
+        }
+
+        //----------------------------------------------------------------------
+        // EndOperation.
+        //----------------------------------------------------------------------
+
+        [Test]
+        public void EndOperation_WhenSucceeded_ThenRaisesEvent()
+        {
+            var dataObject = new VirtualFileDataObject(
+                Array.Empty<VirtualFileDataObject.Descriptor>());
+
+            bool eventRaised = false;
+            dataObject.AsyncOperationCompleted += (_, args) =>
+            {
+                eventRaised = true;
+                Assert.IsTrue(args.Succeeded);
+            };
+
+            dataObject.StartOperation(null);
+            dataObject.EndOperation(0, null, 0);
+
+            Assert.IsTrue(eventRaised);
+        }
+
+        [Test]
+        public void EndOperation_WhenFailed_ThenRaisesEvent()
+        {
+            var dataObject = new VirtualFileDataObject(
+                Array.Empty<VirtualFileDataObject.Descriptor>());
+
+            bool eventRaised = false;
+            dataObject.AsyncOperationCompleted += (_, args) =>
+            {
+                eventRaised = true;
+                Assert.IsFalse(args.Succeeded);
+                Assert.IsNotNull(args.Exception);
+            };
+
+            dataObject.StartOperation(null);
+            dataObject.EndOperation((int)HRESULT.E_UNEXPECTED, null, 0);
+
+            Assert.IsTrue(eventRaised);
+        }
+
+        //----------------------------------------------------------------------
+        // IsOperationInProgress.
+        //----------------------------------------------------------------------
+
+        [Test]
+        public void IsOperationInProgress()
+        {
+            var dataObject = new VirtualFileDataObject(
+                Array.Empty<VirtualFileDataObject.Descriptor>());
+
+            Assert.IsFalse(dataObject.IsOperationInProgress);
+
+            dataObject.StartOperation(null);
+            Assert.IsTrue(dataObject.IsOperationInProgress);
+
+            dataObject.EndOperation(0, null, 0);
+            Assert.IsFalse(dataObject.IsOperationInProgress);
         }
     }
 }

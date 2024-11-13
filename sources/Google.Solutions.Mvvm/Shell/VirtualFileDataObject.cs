@@ -21,12 +21,14 @@
 
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Platform.Interop;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
+using static Google.Solutions.Mvvm.Shell.VirtualFileDataObject;
 using UCOMIDataObject = System.Runtime.InteropServices.ComTypes.IDataObject;
 
 namespace Google.Solutions.Mvvm.Shell
@@ -43,7 +45,7 @@ namespace Google.Solutions.Mvvm.Shell
     /// https://www.codeproject.com/Articles/23139/Transferring-Virtual-Files-to-Windows-Explorer-in
     /// </remarks>
     public sealed class VirtualFileDataObject
-        : DataObject, UCOMIDataObject, IDisposable
+        : DataObject, UCOMIDataObject, IDataObjectAsyncCapability, IDisposable
     {
         private readonly IList<Descriptor> files;
         private int currentFile = 0;
@@ -60,8 +62,29 @@ namespace Google.Solutions.Mvvm.Shell
             SetData(CFSTR_PERFORMEDDROPEFFECT, null);
         }
 
+        /// <summary>
+        /// Indicates if data extraction is done asynchronously, i.e.,
+        /// on a background thrad.
+        /// </summary>
+        internal bool IsAsync { get; private set; }
+
+        /// <summary>
+        /// Indicates that data extraction is ongoing.
+        /// </summary>
+        internal bool IsOperationInProgress { get; private set; }
+
+        /// <summary>
+        /// Raised when asynchronous data extraction is starting.
+        /// </summary>
+        public event EventHandler? AsyncOperationStarted;
+
+        /// <summary>
+        /// Raised when asynchronous data extraction ahs ended.
+        /// </summary>
+        public event EventHandler<AsyncOperationEventArgs>? AsyncOperationCompleted;
+
         //----------------------------------------------------------------------
-        // Overrides.
+        // DataObject/UCOMIDataObject overrides.
         //----------------------------------------------------------------------
 
         public override object GetData(string format, bool autoConvert)
@@ -72,7 +95,7 @@ namespace Google.Solutions.Mvvm.Shell
                 // Supply group descriptor for all files.
                 //
                 base.SetData(
-                    CFSTR_FILEDESCRIPTORW, 
+                    CFSTR_FILEDESCRIPTORW,
                     Descriptor.ToNativeGroupDescriptorStream(this.files));
             }
             else if (CFSTR_FILECONTENTS.Equals(format, StringComparison.OrdinalIgnoreCase))
@@ -105,7 +128,7 @@ namespace Google.Solutions.Mvvm.Shell
                 //
                 this.currentFile = formatetc.lindex;
             }
-            
+
             //
             // Now it would be good to call base.GetData(...), but that's not possible
             // because the method is an EIMI. Therefore, we replicate its logic here.
@@ -129,6 +152,8 @@ namespace Google.Solutions.Mvvm.Shell
                         // Copy data. This will invoke GetData(format, autoConvert), which
                         // in turn uses the cached index to provide the right data.
                         //
+                        this.IsOperationInProgress = true;
+
                         ((UCOMIDataObject)this).GetDataHere(ref formatetc, ref medium);
                         return;
                     }
@@ -172,6 +197,47 @@ namespace Google.Solutions.Mvvm.Shell
             }
         }
 
+        //----------------------------------------------------------------------
+        // IDataObjectAsyncCapability.
+        //----------------------------------------------------------------------
+
+        public void SetAsyncMode([In] int fDoOpAsync)
+        {
+            this.IsAsync = fDoOpAsync != VARIANT_FALSE;
+        }
+
+        public void GetAsyncMode([Out] out int pfIsOpAsync)
+        {
+            pfIsOpAsync = this.IsAsync ? VARIANT_TRUE : VARIANT_FALSE;
+        }
+
+        public void StartOperation([In] IBindCtx pbcReserved)
+        {
+            this.IsOperationInProgress = true;
+            this.AsyncOperationStarted?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void EndOperation([In] int hResult, [In] IBindCtx pbcReserved, [In] uint dwEffects)
+        {
+            Precondition.Expect(this.IsOperationInProgress, "Operation not started");
+
+            this.IsOperationInProgress = false;
+            this.AsyncOperationCompleted?.Invoke(
+                this, 
+                ((HRESULT)hResult).Succeeded()
+                    ? new AsyncOperationEventArgs(null)
+                    : new AsyncOperationEventArgs(Marshal.GetExceptionForHR(hResult)));
+        }
+
+        public void InOperation([Out] out int pfInAsyncOp)
+        {
+            pfInAsyncOp = this.IsOperationInProgress ? VARIANT_TRUE : VARIANT_FALSE;
+        }
+
+        //----------------------------------------------------------------------
+        // IDisposable.
+        //----------------------------------------------------------------------
+
         public void Dispose()
         {
             foreach (var file in this.files)
@@ -190,7 +256,7 @@ namespace Google.Solutions.Mvvm.Shell
         public class Descriptor
         {
             public Descriptor(
-                string name, 
+                string name,
                 ulong size,
                 FileAttributes attributes,
                 Stream content)
@@ -218,7 +284,7 @@ namespace Google.Solutions.Mvvm.Shell
             /// <summary>
             /// File attributes.
             /// </summary>
-            public FileAttributes Attributes { get;  }
+            public FileAttributes Attributes { get; }
 
             /// <summary>
             /// Stream containing the file contents.
@@ -335,6 +401,21 @@ namespace Google.Solutions.Mvvm.Shell
             }
         }
 
+        public class AsyncOperationEventArgs : EventArgs
+        {
+            public Exception? Exception { get; }
+
+            public bool Succeeded
+            {
+                get => this.Exception == null;
+            }
+
+            internal AsyncOperationEventArgs(Exception? exception)
+            {
+                this.Exception = exception;
+            }
+        }
+
         //----------------------------------------------------------------------
         // Interop declarations.
         //----------------------------------------------------------------------
@@ -360,7 +441,10 @@ namespace Google.Solutions.Mvvm.Shell
         private const uint GHND = (GMEM_MOVEABLE | GMEM_ZEROINIT);
         private const uint GMEM_DDESHARE = 0x2000;
 
-        public const int DV_E_TYMED = unchecked((int)0x80040069);
+        private const int VARIANT_FALSE = 0;
+        private const int VARIANT_TRUE = -1;
+
+        private const int DV_E_TYMED = unchecked((int)0x80040069);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         internal struct FILEDESCRIPTORW
@@ -426,6 +510,50 @@ namespace Google.Solutions.Mvvm.Shell
 
             [DllImport("kernel32.dll", ExactSpelling = true)]
             public static extern IntPtr GlobalFree(HandleRef handle);
+        }
+
+        /// <summary>
+        /// Definition of the IDataObjectAsyncCapability (formerly named IAsyncOperation)
+        /// COM interface.
+        /// </summary>
+        [ComImport]
+        [Guid("3D8B0590-F691-11d2-8EA9-006097DF5BD4")]
+        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        internal interface IDataObjectAsyncCapability
+        {
+            /// <summary>
+            /// Called by a drop source to specify whether the data object 
+            /// supports asynchronous data extraction.
+            /// </summary>
+            void SetAsyncMode([In] int fDoOpAsync);
+
+            /// <summary>
+            /// Called by a drop target to determine whether the data object 
+            /// supports asynchronous data extraction.
+            /// </summary>
+            void GetAsyncMode([Out] out int pfIsOpAsync);
+
+            /// <summary>
+            /// Called by a drop target to indicate that asynchronous 
+            /// data extraction is starting.
+            /// </summary>
+            /// <param name="pbcReserved"></param>
+            void StartOperation([In] IBindCtx pbcReserved);
+
+            /// <summary>
+            /// Called by the drop source to determine whether the target 
+            /// is extracting data asynchronously.
+            /// </summary>
+            void InOperation([Out] out int pfInAsyncOp);
+
+            /// <summary>
+            /// Notifies the data object that the asynchronous data 
+            /// extraction has ended.
+            /// </summary>
+            void EndOperation(
+                [In] int hResult, 
+                [In] IBindCtx pbcReserved,
+                [In] UInt32 dwEffects);
         }
     }
 }
