@@ -83,15 +83,29 @@ namespace Google.Solutions.Mvvm.Controls
         bool IsExpanded { get; set; }
 
         /// <summary>
-        /// Open the file
+        /// Open the file.
         /// </summary>
         /// <param name="access">type of access</param>
         /// <param name="transferProhress">
         /// callback for reporting the number of bytes transferred
         /// </param>
-        /// <returns></returns>
+        /// <remarks>Only applicable if the item is a file</remarks>
         Stream Open(
             FileAccess access,
-            IProgress<ulong> transferProhress);
+            IProgress<ulong> transferProgress);
+
+        /// <summary>
+        /// Create or open a file.
+        /// </summary>
+        /// <param name="name">Name of the file</param>
+        /// <param name="access">type of access</param>
+        /// <param name="transferProhress">
+        /// callback for reporting the number of bytes transferred
+        /// </param>
+        /// <remarks>Only applicable if the item is a directory</remarks>
+        Stream Create(
+            string name,
+            FileAccess access,
+            IProgress<ulong> transferProgress);
     }
 }

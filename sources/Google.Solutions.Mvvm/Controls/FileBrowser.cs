@@ -51,8 +51,10 @@ namespace Google.Solutions.Mvvm.Controls
         private Breadcrumb? root;
         private Breadcrumb? navigationState;
 
+        private IList<IFileItem>? currentDirectoryContents;
+
         internal ITaskDialog TaskDialog { get; set; } = new TaskDialog();
-        internal IOperationProgressDialog ProgressDialog { get; set; } = new OperationProgressDialog();
+        // internal IOperationProgressDialog ProgressDialog { get; set; } = new OperationProgressDialog();
 
         //---------------------------------------------------------------------
         // Privates.
@@ -211,6 +213,7 @@ namespace Google.Solutions.Mvvm.Controls
             //
             this.directoryTree.SelectedNode = this.navigationState.TreeNode;
 
+            this.currentDirectoryContents = files;
             OnCurrentDirectoryChanged();
         }
 
@@ -509,11 +512,93 @@ namespace Google.Solutions.Mvvm.Controls
 
         internal void PasteFiles(IDataObject dataObject) // TODO: test
         {
-            foreach (var filePath in GetFileDropList(dataObject))
-            {
-                // TODO: CHeck if file exists, prompt w/ task dialog
+            Debug.Assert(this.currentDirectoryContents != null);
+            Debug.Assert(this.currentDirectoryContents!.Count == this.fileList.Items.Count);
 
-                // TODO: ShowCopyDialog
+            // TODO: Start ShowCopyDialog
+
+            foreach (var file in GetFileDropList(dataObject))
+            {
+                var conflictingItem = this.currentDirectoryContents
+                    .FirstOrDefault(f => f.Name == file.Name);
+
+                var dialogResult = DialogResult.OK;
+                if (conflictingItem != null && !conflictingItem.Type.IsFile)
+                {
+                    //
+                    // There is an existing directory with the same name
+                    // as the file to be dropped.
+                    //
+
+                    var parameters = new TaskDialogParameters(
+                        "Copy files",
+                        $"The destination already has a directory named '{conflictingItem.Name}'",
+                        string.Empty);
+                    parameters.Buttons.Add(new TaskDialogCommandLinkButton(
+                        "Skip this file",
+                        DialogResult.Ignore));
+                    parameters.Buttons.Add(new TaskDialogCommandLinkButton(
+                        "Cancel",
+                        DialogResult.Cancel));
+
+                    dialogResult = this.TaskDialog.ShowDialog(this, parameters);
+                }
+                else if (conflictingItem != null)
+                {
+                    //
+                    // There is an existing file with the same name
+                    // as the file to be dropped.
+                    //
+
+                    var parameters = new TaskDialogParameters(
+                        "Copy files",
+                        $"The destination already has a file named '{conflictingItem.Name}'",
+                        string.Empty);
+                    parameters.Buttons.Add(new TaskDialogCommandLinkButton(
+                        "Replace the file in the destination",
+                        DialogResult.OK));
+                    parameters.Buttons.Add(new TaskDialogCommandLinkButton(
+                        "Skip this file",
+                        DialogResult.Ignore));
+                    parameters.Buttons.Add(new TaskDialogCommandLinkButton(
+                        "Cancel",
+                        DialogResult.Cancel));
+                }
+
+                switch (dialogResult)
+                {
+                    case DialogResult.Ignore:
+                        //
+                        // Skip this file.
+                        //
+
+                        // TODO: update progress
+
+                        continue;
+
+                    case DialogResult.Cancel:
+                        return;
+                }
+
+                //
+                // Copy file, and overwrite if necessary.
+                //
+
+                try
+                {
+                    using (var fileStream = file.OpenRead())
+                    using (this.navigationState.Directory.Create(file.Name, progress))
+                    {
+
+
+                    }
+                }
+                catch (Exception)
+                {
+                    // TODO: Skip/cancel
+                }
+
+                // TODO: update progress
             }
         }
 
