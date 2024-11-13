@@ -83,6 +83,18 @@ namespace Google.Solutions.Mvvm.Controls
             /// Gets or sets the expansion state.
             /// </summary>
             bool IsExpanded { get; set; }
+
+            /// <summary>
+            /// Open the file
+            /// </summary>
+            /// <param name="access">type of access</param>
+            /// <param name="transferProhress">
+            /// callback for reporting the number of bytes transferred
+            /// </param>
+            /// <returns></returns>
+            Stream Open(
+                FileAccess access,
+                IProgress<ulong> transferProhress);
         }
     }
 }

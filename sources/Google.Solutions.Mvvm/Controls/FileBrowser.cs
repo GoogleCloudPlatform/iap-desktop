@@ -338,6 +338,13 @@ namespace Google.Solutions.Mvvm.Controls
                     //
                     fileList_DoubleClick(sender, EventArgs.Empty);
                 }
+                if (args.KeyCode == Keys.C && args.Control)
+                {
+                    //
+                    // Copy files.
+                    //
+                    copyToolStripMenuItem_Click(sender, EventArgs.Empty);
+                }
                 else if (args.KeyCode == Keys.Up && args.Alt)
                 {
                     //
@@ -361,6 +368,53 @@ namespace Google.Solutions.Mvvm.Controls
             try
             {
                 await RefreshAsync().ConfigureAwait(true);
+            }
+            catch (Exception e)
+            {
+                OnNavigationFailed(e);
+            }
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs args)
+        {
+            //
+            // We only copy files, not directories.
+            //
+            var files = this.SelectedFiles.Where(f => f.Type.IsFile);
+            if (!files.Any())
+            { 
+                return; 
+            }
+
+            try
+            {
+                var progress = new Progress<ulong>();
+
+                var dataObject = new VirtualFileDataObject(files
+                    .Select(f => new VirtualFileDataObject.Descriptor(
+                        f.Name,
+                        f.Size,
+                        f.Attributes,
+                        () => f.Open(System.IO.FileAccess.Read, progress)))
+                    .ToList())
+                {
+                    //
+                    // Don't block the UI thread when the target reads
+                    // the data.
+                    //
+                    IsAsync = true
+                };
+
+                //
+                // Don't dispose the data object yet, because it's being
+                // used asynchonously.
+                //
+                dataObject.AsyncOperationCompleted += (_, args) =>
+                {
+                    dataObject.Dispose();
+                };
+
+                Clipboard.SetDataObject(dataObject);
             }
             catch (Exception e)
             {

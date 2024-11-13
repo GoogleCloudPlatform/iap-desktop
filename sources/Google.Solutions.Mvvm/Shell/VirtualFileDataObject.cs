@@ -69,10 +69,10 @@ namespace Google.Solutions.Mvvm.Shell
         }
 
         /// <summary>
-        /// Indicates if data extraction is done asynchronously, i.e.,
+        /// Indicates if data extraction should be done asynchronously, i.e.,
         /// on a background thrad.
         /// </summary>
-        internal bool IsAsync { get; private set; }
+        internal bool IsAsync { get; set; }
 
         /// <summary>
         /// Indicates that data extraction is ongoing.
@@ -147,7 +147,7 @@ namespace Google.Solutions.Mvvm.Shell
             // because the method is an EIMI. Therefore, we replicate its logic here.
             //
 
-            medium = default(STGMEDIUM);
+            medium = default;
             if (GetTymedUseable(formatetc.tymed))
             {
                 if ((formatetc.tymed & TYMED.TYMED_HGLOBAL) != 0)
@@ -240,6 +240,8 @@ namespace Google.Solutions.Mvvm.Shell
                 ((HRESULT)hResult).Succeeded()
                     ? new AsyncOperationEventArgs(null)
                     : new AsyncOperationEventArgs(Marshal.GetExceptionForHR(hResult)));
+        
+            //TODO: dispose?
         }
 
         public void InOperation([Out] out int pfInAsyncOp)

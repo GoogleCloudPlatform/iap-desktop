@@ -60,6 +60,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.sizeColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.filesContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             nameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             lastModifiedColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
@@ -159,9 +160,10 @@ namespace Google.Solutions.Mvvm.Controls
             // filesContextMenu
             // 
             this.filesContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyToolStripMenuItem,
             this.refreshToolStripMenuItem});
             this.filesContextMenu.Name = "contextMenu";
-            this.filesContextMenu.Size = new System.Drawing.Size(181, 48);
+            this.filesContextMenu.Size = new System.Drawing.Size(181, 70);
             // 
             // refreshToolStripMenuItem
             // 
@@ -169,6 +171,14 @@ namespace Google.Solutions.Mvvm.Controls
             this.refreshToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.refreshToolStripMenuItem.Text = "&Refresh";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
+            // 
+            // copyToolStripMenuItem
+            // 
+            this.copyToolStripMenuItem.Image = global::Google.Solutions.Mvvm.Properties.Resources.Copy_16x;
+            this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copyToolStripMenuItem.Text = "&Copy";
+            this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
             // FileBrowser
             // 
@@ -196,6 +206,7 @@ namespace Google.Solutions.Mvvm.Controls
         private System.Windows.Forms.ColumnHeader sizeColumn;
         private System.Windows.Forms.ContextMenuStrip filesContextMenu;
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
 
         internal class FileListView : BindableListView<IFileItem>
         { }

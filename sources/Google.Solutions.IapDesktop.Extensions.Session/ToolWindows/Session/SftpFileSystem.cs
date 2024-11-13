@@ -170,6 +170,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         private class SftpRootItem : FileBrowser.IFileItem
         {
+            public event PropertyChangedEventHandler? PropertyChanged;
+
             public string Name
             {
                 get => string.Empty;
@@ -200,9 +202,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
             public bool IsExpanded { get; set; } = true;
 
-            public string Path => string.Empty;
+            public string Path
+            {
+                get => string.Empty;
+            }
 
-            public event PropertyChangedEventHandler? PropertyChanged;
+            public Stream Open(FileAccess access, IProgress<ulong> transferProhress)
+            {
+                throw new InvalidOperationException(
+                    "Reading or writing a directory is not allowed");
+            }
         }
 
         private class SftpFileItem : FileBrowser.IFileItem
@@ -277,6 +286,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
                     return attributes;
                 }
+            }
+
+            public Stream Open(FileAccess access, IProgress<ulong> transferProhress)
+            {
+                throw new NotImplementedException();
             }
         }
     }
