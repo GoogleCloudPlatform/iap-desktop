@@ -42,13 +42,13 @@ namespace Google.Solutions.Mvvm.Shell
     /// This class extends DataObject to support multiple files, inspired by
     /// https://www.codeproject.com/Articles/23139/Transferring-Virtual-Files-to-Windows-Explorer-in
     /// </remarks>
-    public sealed class FileDataObject
+    public sealed class VirtualFileDataObject
         : DataObject, UCOMIDataObject, IDisposable
     {
         private readonly IList<Descriptor> files;
         private int currentFile = 0;
 
-        public FileDataObject(IList<Descriptor> files)
+        public VirtualFileDataObject(IList<Descriptor> files)
         {
             this.files = files;
 

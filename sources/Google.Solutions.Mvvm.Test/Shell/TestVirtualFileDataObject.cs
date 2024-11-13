@@ -29,7 +29,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestFileDataObject
+    public class TestVirtualFileDataObject
     {
         [Test]
         public void GetData()
@@ -39,13 +39,13 @@ namespace Google.Solutions.Mvvm.Test.Shell
             {
                 contentStream.Write(content, 0, content.Length);
 
-                var dataObject = new FileDataObject(new[] {
-                    new FileDataObject.Descriptor(
+                var dataObject = new VirtualFileDataObject(new[] {
+                    new VirtualFileDataObject.Descriptor(
                         "file-1.txt",
                         (ulong)content.Length,
                         FileAttributes.Normal,
                         contentStream),
-                    new FileDataObject.Descriptor(
+                    new VirtualFileDataObject.Descriptor(
                         "file-2.txt",
                         (ulong)content.Length,
                         FileAttributes.Normal,
@@ -53,10 +53,10 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 });
 
                 Assert.IsInstanceOf<Stream>(
-                    dataObject.GetData(FileDataObject.CFSTR_FILEDESCRIPTORW, false));
+                    dataObject.GetData(VirtualFileDataObject.CFSTR_FILEDESCRIPTORW, false));
 
                 Assert.IsInstanceOf<Stream>(
-                    dataObject.GetData(FileDataObject.CFSTR_FILECONTENTS, false));
+                    dataObject.GetData(VirtualFileDataObject.CFSTR_FILECONTENTS, false));
             }
         }
     }
