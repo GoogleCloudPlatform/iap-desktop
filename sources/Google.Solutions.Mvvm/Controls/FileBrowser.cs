@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -345,6 +346,13 @@ namespace Google.Solutions.Mvvm.Controls
                     //
                     copyToolStripMenuItem_Click(sender, EventArgs.Empty);
                 }
+                if (args.KeyCode == Keys.V && args.Control)
+                {
+                    //
+                    // Paste files.
+                    //
+                    pasteToolStripMenuItem_Click(sender, EventArgs.Empty);
+                }
                 else if (args.KeyCode == Keys.Up && args.Alt)
                 {
                     //
@@ -376,10 +384,101 @@ namespace Google.Solutions.Mvvm.Controls
         }
 
         //---------------------------------------------------------------------
-        // Event handlers - copying and dragging.
+        // Event handlers - copy/drag.
         //---------------------------------------------------------------------
 
-        private VirtualFileDataObject CreateAsyncDataObjectForSelectedFiles()
+        private void copyToolStripMenuItem_Click(object sender, EventArgs args)
+        {
+            try
+            {
+                Clipboard.SetDataObject(
+                    CopySelectedFiles(),
+                    false);
+            }
+            catch (Exception e)
+            {
+                OnNavigationFailed(e);
+            }
+        }
+
+        private void fileList_MouseDown(object sender, MouseEventArgs args)
+        {
+            if (args.Button != MouseButtons.Left)
+            {
+                return;
+            }
+
+            try
+            {
+                var dataObject = CopySelectedFiles();
+                if (dataObject.Files.Any())
+                {
+                    //
+                    // NB. Only begin a drag operation when there's actually
+                    //     a file in the data object, otherwise the drop target
+                    //     will indicate that there's something to drop, even
+                    //     though there isn't.
+                    //
+                    DoDragDrop(dataObject, DragDropEffects.Copy);
+                }
+            }
+            catch (Exception e)
+            {
+                OnNavigationFailed(e);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Event handlers - paste/drop.
+        //---------------------------------------------------------------------
+
+        private void pasteToolStripMenuItem_Click(object sender, EventArgs args)
+        {
+            try
+            {
+                PasteFiles(Clipboard.GetDataObject());
+            }
+            catch (Exception e)
+            {
+                OnNavigationFailed(e);
+            }
+        }
+            
+        private void fileList_DragEnter(object sender, DragEventArgs args)
+        {
+            args.Effect = GetFileDropList(args.Data).Any()
+                ? DragDropEffects.Copy
+                : DragDropEffects.None;
+        }
+
+        private void fileList_DragDrop(object sender, DragEventArgs args)
+        {
+            try
+            {
+                PasteFiles(args.Data);
+            }
+            catch (Exception e)
+            {
+                OnNavigationFailed(e);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Clipboard handling.
+        //---------------------------------------------------------------------
+
+        private static IEnumerable<FileInfo> GetFileDropList(IDataObject dataObject)
+        {
+            //
+            // Extract file paths, ignore directory paths.
+            //
+            return (dataObject.GetData(DataFormats.FileDrop) as IEnumerable<string>)
+                .EnsureNotNull()
+                .Where(path => File.Exists(path))
+                .Select(path => new FileInfo(path));
+        }
+
+        internal VirtualFileDataObject CopySelectedFiles() // TODO: test
         {
             //
             // Only consider files, ignore directories.
@@ -405,51 +504,14 @@ namespace Google.Solutions.Mvvm.Controls
             return dataObject;
         }
 
-        private void copyToolStripMenuItem_Click(object sender, EventArgs args)
+        internal void PasteFiles(IDataObject dataObject) // TODO: test
         {
-            try
+            foreach (var filePath in GetFileDropList(dataObject))
             {
-                Clipboard.SetDataObject(
-                    CreateAsyncDataObjectForSelectedFiles(), 
-                    false);
-            }
-            catch (Exception e)
-            {
-                OnNavigationFailed(e);
+                // TOCO: CHeck if file exists, prompt w/ task dialog
+                // TODO: ShowCopyDialog
             }
         }
-
-        private void fileList_MouseDown(object sender, MouseEventArgs args)
-        {
-            if (args.Button != MouseButtons.Left)
-            {
-                return;
-            }
-
-            try
-            {
-                var dataObject = CreateAsyncDataObjectForSelectedFiles();
-                if (dataObject.Files.Any())
-                { 
-                    //
-                    // NB. Only begin a drag operation when there's actually
-                    //     a file in the data object, otherwise the drop target
-                    //     will indicate that there's something to drop, even
-                    //     though there isn't.
-                    //
-                    DoDragDrop(dataObject, DragDropEffects.Copy);
-                }
-            }
-            catch (Exception e)
-            {
-                OnNavigationFailed(e);
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // Event handlers - pasting and dropping.
-        //---------------------------------------------------------------------
-
 
         //---------------------------------------------------------------------
         // Publics.

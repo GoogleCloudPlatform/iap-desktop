@@ -54,6 +54,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
             file.SetupGet(i => i.Type).Returns(DirectoryType);
             file.SetupGet(i => i.Size).Returns(1);
             file.SetupGet(i => i.IsExpanded).Returns(false);
+            file.SetupGet(i => i.Type).Returns(FileType.Lookup(
+                ".",
+                System.IO.FileAttributes.Directory,
+                FileType.IconFlags.None));
 
             return file;
         }
@@ -66,6 +70,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
             file.SetupGet(i => i.Type).Returns(FileType);
             file.SetupGet(i => i.Size).Returns(1);
             file.SetupGet(i => i.IsExpanded).Returns(false);
+            file.SetupGet(i => i.Type).Returns(FileType.Lookup(
+                ".txt", 
+                System.IO.FileAttributes.Normal, 
+                FileType.IconFlags.None));
 
             return file;
         }
@@ -280,13 +288,14 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Size = new Size(800, 600)
             })
             {
+                var fileSystem = CreateFileSystemWithEmptyRoot().Object;
+
                 var browser = new FileBrowser()
                 {
                     Dock = DockStyle.Fill
                 };
                 form.Controls.Add(browser);
 
-                var fileSystem = CreateFileSystemWithEmptyRoot().Object;
                 browser.Bind(
                     fileSystem,
                     new Mock<IBindingContext>().Object);
@@ -309,19 +318,20 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Size = new Size(800, 600)
             })
             {
+                var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
+
                 var browser = new FileBrowser()
                 {
                     Dock = DockStyle.Fill
                 };
                 form.Controls.Add(browser);
 
-                var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
                 browser.Bind(
                     fileSystem,
                     new Mock<IBindingContext>().Object);
-                Application.DoEvents();
 
                 form.Show();
+                Application.DoEvents();
 
                 Exception exception = null;
                 browser.NavigationFailed += (s, e) =>
@@ -348,19 +358,20 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Size = new Size(800, 600)
             })
             {
+                var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
+
                 var browser = new FileBrowser()
                 {
                     Dock = DockStyle.Fill
                 };
                 form.Controls.Add(browser);
 
-                var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
                 browser.Bind(
                     fileSystem,
                     new Mock<IBindingContext>().Object);
-                Application.DoEvents();
-
+                
                 form.Show();
+                Application.DoEvents();
 
                 await browser
                     .NavigateAsync(new[] { "Item", "Item" })
@@ -383,17 +394,16 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Size = new Size(800, 600)
             })
             {
+                var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
+
                 var browser = new FileBrowser()
                 {
                     Dock = DockStyle.Fill
                 };
                 form.Controls.Add(browser);
-
-                var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
                 browser.Bind(
                     fileSystem,
                     new Mock<IBindingContext>().Object);
-                Application.DoEvents();
 
                 IFileItem currentDirectory = null;
                 browser.CurrentDirectoryChanged += (s, e) =>
@@ -402,6 +412,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 };
 
                 form.Show();
+                Application.DoEvents();
 
                 await browser
                     .NavigateAsync(new[] { "Item", "Item" })
@@ -425,19 +436,19 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Size = new Size(800, 600)
             })
             {
+                var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
+
                 var browser = new FileBrowser()
                 {
                     Dock = DockStyle.Fill
                 };
                 form.Controls.Add(browser);
-
-                var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
                 browser.Bind(
                     fileSystem,
                     new Mock<IBindingContext>().Object);
-                Application.DoEvents();
 
                 form.Show();
+                Application.DoEvents();
 
                 await browser
                     .NavigateAsync(new[] { "Item", "Item" })
@@ -467,17 +478,16 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Size = new Size(800, 600)
             })
             {
+                var fileSystem = CreateFileSystemWithEmptyRoot();
+
                 var browser = new FileBrowser()
                 {
                     Dock = DockStyle.Fill
                 };
                 form.Controls.Add(browser);
-
-                var fileSystem = CreateFileSystemWithEmptyRoot();
                 browser.Bind(
                     fileSystem.Object,
                     new Mock<IBindingContext>().Object);
-                Application.DoEvents();
 
                 form.Show();
                 Application.DoEvents();
@@ -487,7 +497,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     .ConfigureAwait(true);
 
                 fileSystem.Verify(
-                    f => f.ListFilesAsync(It.IsAny<IFileItem>()), 
+                    f => f.ListFilesAsync(It.IsAny<IFileItem>()),
                     Times.Exactly(2));
             }
         }
@@ -504,12 +514,6 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Size = new Size(800, 600)
             })
             {
-                var browser = new FileBrowser()
-                {
-                    Dock = DockStyle.Fill
-                };
-                form.Controls.Add(browser);
-
                 var root = CreateDirectory();
 
                 var fileSystem = new Mock<IFileSystem>();
@@ -523,12 +527,17 @@ namespace Google.Solutions.Mvvm.Test.Controls
                         CreateFile().Object
                     });
 
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+                form.Controls.Add(browser);
                 browser.Bind(
                     fileSystem.Object,
                     new Mock<IBindingContext>().Object);
-                Application.DoEvents();
 
                 form.Show();
+                Application.DoEvents();
 
                 var selectionEvents = 0;
                 browser.SelectedFilesChanged += (s, a) => selectionEvents++;
@@ -551,12 +560,6 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Size = new Size(800, 600)
             })
             {
-                var browser = new FileBrowser()
-                {
-                    Dock = DockStyle.Fill
-                };
-                form.Controls.Add(browser);
-
                 var root = CreateDirectory();
                 var files = new ObservableCollection<IFileItem>()
                 {
@@ -565,17 +568,24 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     CreateFile().Object
                 };
                 var fileSystem = new Mock<IFileSystem>();
-                fileSystem.SetupGet(fs => fs.Root).Returns(root.Object);
+                fileSystem
+                    .SetupGet(fs => fs.Root)
+                    .Returns(root.Object);
                 fileSystem
                     .Setup(fs => fs.ListFilesAsync(It.IsIn(root.Object)))
                     .ReturnsAsync(files);
 
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+                form.Controls.Add(browser);
                 browser.Bind(
                     fileSystem.Object,
                     new Mock<IBindingContext>().Object);
-                Application.DoEvents();
 
                 form.Show();
+                Application.DoEvents();
 
                 var selectionEvents = 0;
                 browser.SelectedFilesChanged += (s, a) => selectionEvents++;
@@ -584,6 +594,98 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 Assert.AreEqual(2, browser.SelectedFiles.Count());
                 Assert.AreEqual(2, selectionEvents);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // CopySelectedFiles.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void CopySelectedFiles_WhenDirectorySelected()
+        {
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var root = CreateDirectory();
+                var files = new ObservableCollection<IFileItem>()
+                {
+                    CreateDirectory().Object,
+                    CreateFile().Object
+                };
+                var fileSystem = new Mock<IFileSystem>();
+                fileSystem
+                    .SetupGet(fs => fs.Root)
+                    .Returns(root.Object);
+                fileSystem
+                    .Setup(fs => fs.ListFilesAsync(It.IsIn(root.Object)))
+                    .ReturnsAsync(files);
+
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+                form.Controls.Add(browser);
+                browser.Bind(
+                    fileSystem.Object,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+                Application.DoEvents();
+
+                browser.SelectedFiles = new[] { files[0] };
+
+                using (var dataObject = browser.CopySelectedFiles())
+                {
+                    Assert.AreEqual(0, dataObject.Files.Count);
+                }
+            }
+        }
+
+        [Test]
+        public void CopySelectedFiles()
+        {
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var root = CreateDirectory();
+                var files = new ObservableCollection<IFileItem>()
+                {
+                    CreateDirectory().Object,
+                    CreateFile().Object,
+                    CreateFile().Object
+                };
+                var fileSystem = new Mock<IFileSystem>();
+                fileSystem
+                    .SetupGet(fs => fs.Root)
+                    .Returns(root.Object);
+                fileSystem
+                    .Setup(fs => fs.ListFilesAsync(It.IsIn(root.Object)))
+                    .ReturnsAsync(files);
+
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+                form.Controls.Add(browser);
+                browser.Bind(
+                    fileSystem.Object,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+                Application.DoEvents();
+
+                browser.SelectedFiles = new[] { files[0], files[1], files[2] };
+
+                using (var dataObject = browser.CopySelectedFiles())
+                {
+                    Assert.AreEqual(2, dataObject.Files.Count);
+                    Assert.IsTrue(dataObject.IsAsync);
+                }
             }
         }
     }
