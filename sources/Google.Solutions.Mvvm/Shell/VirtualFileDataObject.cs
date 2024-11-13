@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Interop;
-using Google.Solutions.Common.Runtime;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Platform.Interop;
 using System;
@@ -52,10 +51,9 @@ namespace Google.Solutions.Mvvm.Shell
         private bool disposed;
 
         /// <summary>
-        /// Keeps track of all streams that we opened so that we can
-        /// dispose them at the end.
+        /// List of streams that were opened during the last operation.
         /// </summary>
-        private readonly DisposableContainer openedContentStreams = new DisposableContainer();
+        private readonly List<Stream> openedContentStreams = new List<Stream>();
 
         public VirtualFileDataObject(IList<Descriptor> files)
         {
@@ -124,11 +122,16 @@ namespace Google.Solutions.Mvvm.Shell
                 // Open the stream. We do that lazily in case the client
                 // never actally invokes this method.
                 //
+                // NB. The base class doesn't dispose the stream. So we need
+                //     to keep track of it and dispose it once the operation
+                //     has completed.
+                //
                 var contentStream = this.files[this.currentFile].OpenStream();
                 this.openedContentStreams.Add(contentStream);
 
                 //
                 // Supply data for the current (!) file.
+                //
                 //
                 base.SetData(
                     CFSTR_FILECONTENTS,
@@ -262,6 +265,14 @@ namespace Google.Solutions.Mvvm.Shell
             ExpectNotDisposed();
             Precondition.Expect(this.IsOperationInProgress, "Operation not started");
 
+            //
+            // Close all streams that were opened.
+            //
+            foreach (var stream in this.openedContentStreams)
+            {
+                stream.Dispose();
+            }
+
             this.IsOperationInProgress = false;
             this.AsyncOperationCompleted?.Invoke(
                 this, 
@@ -283,7 +294,11 @@ namespace Google.Solutions.Mvvm.Shell
 
         public void Dispose()
         {
-            this.openedContentStreams.Dispose();
+            foreach (var stream in this.openedContentStreams)
+            {
+                stream.Dispose();
+            }
+
             this.disposed = true;
         }
 

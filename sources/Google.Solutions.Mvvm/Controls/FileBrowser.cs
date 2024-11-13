@@ -81,7 +81,7 @@ namespace Google.Solutions.Mvvm.Controls
             return imageIndex;
         }
 
-        private static VirtualFileDataObject CreateDataObject(
+        private static VirtualFileDataObject CreateAsyncDataObject(
             IEnumerable<IFileItem> files)
         {
             var progress = new Progress<ulong>();
@@ -99,16 +99,6 @@ namespace Google.Solutions.Mvvm.Controls
                 // the data.
                 //
                 IsAsync = true
-            };
-
-            //
-            // Don't dispose the data object yet, because it's being
-            // used asynchonously.
-            //
-            dataObject.AsyncOperationCompleted += (_, args) =>
-            {
-                //TODO: Dispose not necessary b/c streams are closed?!
-                dataObject.Dispose();
             };
 
             return dataObject;
@@ -411,7 +401,7 @@ namespace Google.Solutions.Mvvm.Controls
         private void copyToolStripMenuItem_Click(object sender, EventArgs args)
         {
             //
-            // We only copy files, not directories.
+            // Copy files, not directories.
             //
             var files = this.SelectedFiles.Where(f => f.Type.IsFile);
             if (!files.Any())
@@ -421,7 +411,7 @@ namespace Google.Solutions.Mvvm.Controls
 
             try
             { 
-                Clipboard.SetDataObject(CreateDataObject(files), false);
+                Clipboard.SetDataObject(CreateAsyncDataObject(files), false);
             }
             catch (Exception e)
             {
@@ -440,7 +430,7 @@ namespace Google.Solutions.Mvvm.Controls
                 var files = this.SelectedFiles.Where(f => f.Type.IsFile);
                 if (files.Any())
                 {
-                    DoDragDrop(CreateDataObject(files), DragDropEffects.Copy);
+                    DoDragDrop(CreateAsyncDataObject(files), DragDropEffects.Copy);
                 }
             }
         }

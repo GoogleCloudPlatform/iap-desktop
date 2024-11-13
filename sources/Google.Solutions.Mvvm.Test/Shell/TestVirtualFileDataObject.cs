@@ -58,11 +58,13 @@ namespace Google.Solutions.Mvvm.Test.Shell
                         () => contentStream),
                 });
 
-                Assert.IsInstanceOf<Stream>(
-                    dataObject.GetData(VirtualFileDataObject.CFSTR_FILEDESCRIPTORW, false));
+                Assert.IsInstanceOf<Stream>(dataObject.GetData(
+                    VirtualFileDataObject.CFSTR_FILEDESCRIPTORW, 
+                    false));
 
-                Assert.IsInstanceOf<Stream>(
-                    dataObject.GetData(VirtualFileDataObject.CFSTR_FILECONTENTS, false));
+                Assert.IsInstanceOf<Stream>(dataObject.GetData(
+                    VirtualFileDataObject.CFSTR_FILECONTENTS, 
+                    false));
             }
         }
 
@@ -73,6 +75,17 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 Array.Empty<VirtualFileDataObject.Descriptor>());
 
             Assert.IsNull(dataObject.GetData("Unsupported", false));
+        }
+
+        [Test]
+        public void GetData_WhenDisposed()
+        {
+            var dataObject = new VirtualFileDataObject(
+                Array.Empty<VirtualFileDataObject.Descriptor>());
+            dataObject.Dispose();
+            Assert.IsNull(dataObject.GetData(
+                VirtualFileDataObject.CFSTR_FILEDESCRIPTORW, 
+                false));
         }
 
         //----------------------------------------------------------------------
