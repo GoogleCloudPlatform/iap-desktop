@@ -51,6 +51,9 @@ namespace Google.Solutions.Mvvm.Controls
         private Breadcrumb? root;
         private Breadcrumb? navigationState;
 
+        internal ITaskDialog TaskDialog { get; set; } = new TaskDialog();
+        internal IOperationProgressDialog ProgressDialog { get; set; } = new OperationProgressDialog();
+
         //---------------------------------------------------------------------
         // Privates.
         //---------------------------------------------------------------------
@@ -508,7 +511,8 @@ namespace Google.Solutions.Mvvm.Controls
         {
             foreach (var filePath in GetFileDropList(dataObject))
             {
-                // TOCO: CHeck if file exists, prompt w/ task dialog
+                // TODO: CHeck if file exists, prompt w/ task dialog
+
                 // TODO: ShowCopyDialog
             }
         }
