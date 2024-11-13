@@ -49,6 +49,7 @@ namespace Google.Solutions.Mvvm.Shell
     {
         private readonly IList<Descriptor> files;
         private int currentFile = 0;
+        private bool disposed;
 
         /// <summary>
         /// Keeps track of all streams that we opened so that we can
@@ -89,12 +90,25 @@ namespace Google.Solutions.Mvvm.Shell
         /// </summary>
         public event EventHandler<AsyncOperationEventArgs>? AsyncOperationCompleted;
 
+        private void ExpectNotDisposed()
+        {
+            if (this.disposed)
+            {
+                throw new ObjectDisposedException(GetType().Name);
+            }
+        }
+
         //----------------------------------------------------------------------
         // DataObject/UCOMIDataObject overrides.
         //----------------------------------------------------------------------
 
-        public override object GetData(string format, bool autoConvert)
+        public override object? GetData(string format, bool autoConvert)
         {
+            if (this.disposed)
+            {
+                return null;
+            }
+
             if (CFSTR_FILEDESCRIPTORW.Equals(format, StringComparison.OrdinalIgnoreCase))
             {
                 //
@@ -128,6 +142,13 @@ namespace Google.Solutions.Mvvm.Shell
 
         void UCOMIDataObject.GetData(ref FORMATETC formatetc, out STGMEDIUM medium)
         {
+            if (this.disposed)
+            {
+                medium = default;
+                medium.tymed = TYMED.TYMED_NULL;
+                return;
+            }
+
             //
             // NB. The only purpose of overriding this method is to get the
             //     index of the file that is currently being processed. This
@@ -216,22 +237,29 @@ namespace Google.Solutions.Mvvm.Shell
 
         public void SetAsyncMode([In] int fDoOpAsync)
         {
+            ExpectNotDisposed();
+
             this.IsAsync = fDoOpAsync != VARIANT_FALSE;
         }
 
         public void GetAsyncMode([Out] out int pfIsOpAsync)
         {
+            ExpectNotDisposed();
+
             pfIsOpAsync = this.IsAsync ? VARIANT_TRUE : VARIANT_FALSE;
         }
 
         public void StartOperation([In] IBindCtx pbcReserved)
         {
+            ExpectNotDisposed();
+
             this.IsOperationInProgress = true;
             this.AsyncOperationStarted?.Invoke(this, EventArgs.Empty);
         }
 
         public void EndOperation([In] int hResult, [In] IBindCtx pbcReserved, [In] uint dwEffects)
         {
+            ExpectNotDisposed();
             Precondition.Expect(this.IsOperationInProgress, "Operation not started");
 
             this.IsOperationInProgress = false;
@@ -240,12 +268,12 @@ namespace Google.Solutions.Mvvm.Shell
                 ((HRESULT)hResult).Succeeded()
                     ? new AsyncOperationEventArgs(null)
                     : new AsyncOperationEventArgs(Marshal.GetExceptionForHR(hResult)));
-        
-            //TODO: dispose?
         }
 
         public void InOperation([Out] out int pfInAsyncOp)
         {
+            ExpectNotDisposed();
+
             pfInAsyncOp = this.IsOperationInProgress ? VARIANT_TRUE : VARIANT_FALSE;
         }
 
@@ -256,6 +284,7 @@ namespace Google.Solutions.Mvvm.Shell
         public void Dispose()
         {
             this.openedContentStreams.Dispose();
+            this.disposed = true;
         }
 
         //----------------------------------------------------------------------
@@ -576,7 +605,7 @@ namespace Google.Solutions.Mvvm.Shell
             void EndOperation(
                 [In] int hResult, 
                 [In] IBindCtx pbcReserved,
-                [In] UInt32 dwEffects);
+                [In] uint dwEffects);
         }
     }
 }

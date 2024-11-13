@@ -59,8 +59,8 @@ namespace Google.Solutions.Mvvm.Controls
             this.typeColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.sizeColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.filesContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             nameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             lastModifiedColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
@@ -145,6 +145,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.fileList.View = System.Windows.Forms.View.Details;
             this.fileList.DoubleClick += new System.EventHandler(this.fileList_DoubleClick);
             this.fileList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fileList_KeyDown);
+            this.fileList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.fileList_MouseDown);
             // 
             // typeColumn
             // 
@@ -163,22 +164,22 @@ namespace Google.Solutions.Mvvm.Controls
             this.copyToolStripMenuItem,
             this.refreshToolStripMenuItem});
             this.filesContextMenu.Name = "contextMenu";
-            this.filesContextMenu.Size = new System.Drawing.Size(181, 70);
-            // 
-            // refreshToolStripMenuItem
-            // 
-            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.refreshToolStripMenuItem.Text = "&Refresh";
-            this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
+            this.filesContextMenu.Size = new System.Drawing.Size(114, 48);
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Image = global::Google.Solutions.Mvvm.Properties.Resources.Copy_16x;
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.copyToolStripMenuItem.Text = "&Copy";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
+            // 
+            // refreshToolStripMenuItem
+            // 
+            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
+            this.refreshToolStripMenuItem.Text = "&Refresh";
+            this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
             // FileBrowser
             // 

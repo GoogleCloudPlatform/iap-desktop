@@ -81,6 +81,39 @@ namespace Google.Solutions.Mvvm.Controls
             return imageIndex;
         }
 
+        private static VirtualFileDataObject CreateDataObject(
+            IEnumerable<IFileItem> files)
+        {
+            var progress = new Progress<ulong>();
+
+            var dataObject = new VirtualFileDataObject(files
+                .Select(f => new VirtualFileDataObject.Descriptor(
+                    f.Name,
+                    f.Size,
+                    f.Attributes,
+                    () => f.Open(System.IO.FileAccess.Read, progress)))
+                .ToList())
+            {
+                //
+                // Don't block the UI thread when the target reads
+                // the data.
+                //
+                IsAsync = true
+            };
+
+            //
+            // Don't dispose the data object yet, because it's being
+            // used asynchonously.
+            //
+            dataObject.AsyncOperationCompleted += (_, args) =>
+            {
+                //TODO: Dispose not necessary b/c streams are closed?!
+                dataObject.Dispose();
+            };
+
+            return dataObject;
+        }
+
         public FileBrowser()
         {
             InitializeComponent();
@@ -387,38 +420,28 @@ namespace Google.Solutions.Mvvm.Controls
             }
 
             try
-            {
-                var progress = new Progress<ulong>();
-
-                var dataObject = new VirtualFileDataObject(files
-                    .Select(f => new VirtualFileDataObject.Descriptor(
-                        f.Name,
-                        f.Size,
-                        f.Attributes,
-                        () => f.Open(System.IO.FileAccess.Read, progress)))
-                    .ToList())
-                {
-                    //
-                    // Don't block the UI thread when the target reads
-                    // the data.
-                    //
-                    IsAsync = true
-                };
-
-                //
-                // Don't dispose the data object yet, because it's being
-                // used asynchonously.
-                //
-                dataObject.AsyncOperationCompleted += (_, args) =>
-                {
-                    dataObject.Dispose();
-                };
-
-                Clipboard.SetDataObject(dataObject);
+            { 
+                Clipboard.SetDataObject(CreateDataObject(files), false);
             }
             catch (Exception e)
             {
                 OnNavigationFailed(e);
+            }
+        }
+
+
+        private void fileList_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                //
+                // Drag files, not directories.
+                //
+                var files = this.SelectedFiles.Where(f => f.Type.IsFile);
+                if (files.Any())
+                {
+                    DoDragDrop(CreateDataObject(files), DragDropEffects.Copy);
+                }
             }
         }
 
