@@ -81,29 +81,6 @@ namespace Google.Solutions.Mvvm.Controls
             return imageIndex;
         }
 
-        private static VirtualFileDataObject CreateAsyncDataObject(
-            IEnumerable<IFileItem> files)
-        {
-            var progress = new Progress<ulong>();
-
-            var dataObject = new VirtualFileDataObject(files
-                .Select(f => new VirtualFileDataObject.Descriptor(
-                    f.Name,
-                    f.Size,
-                    f.Attributes,
-                    () => f.Open(System.IO.FileAccess.Read, progress)))
-                .ToList())
-            {
-                //
-                // Don't block the UI thread when the target reads
-                // the data.
-                //
-                IsAsync = true
-            };
-
-            return dataObject;
-        }
-
         public FileBrowser()
         {
             InitializeComponent();
@@ -288,7 +265,7 @@ namespace Google.Solutions.Mvvm.Controls
         }
 
         //---------------------------------------------------------------------
-        // Event handlers.
+        // Event handlers - navigation.
         //---------------------------------------------------------------------
 
         private async void directoryTree_SelectedModelNodeChanged(object sender, EventArgs args)
@@ -398,15 +375,43 @@ namespace Google.Solutions.Mvvm.Controls
             }
         }
 
+        //---------------------------------------------------------------------
+        // Event handlers - copying and dragging.
+        //---------------------------------------------------------------------
+
+        private VirtualFileDataObject CreateAsyncDataObjectForSelectedFiles()
+        {
+            //
+            // Only consider files, ignore directories.
+            //
+            var files = this.SelectedFiles.Where(f => f.Type.IsFile);
+            var progress = new Progress<ulong>();
+
+            var dataObject = new VirtualFileDataObject(files
+                .Select(f => new VirtualFileDataObject.Descriptor(
+                    f.Name,
+                    f.Size,
+                    f.Attributes,
+                    () => f.Open(System.IO.FileAccess.Read, progress)))
+                .ToList())
+            {
+                //
+                // Don't block the UI thread when the target reads
+                // the data.
+                //
+                IsAsync = true
+            };
+
+            return dataObject;
+        }
+
         private void copyToolStripMenuItem_Click(object sender, EventArgs args)
         {
             try
             {
-                //
-                // Copy files, not directories.
-                //
-                var files = this.SelectedFiles.Where(f => f.Type.IsFile);
-                Clipboard.SetDataObject(CreateAsyncDataObject(files), false);
+                Clipboard.SetDataObject(
+                    CreateAsyncDataObjectForSelectedFiles(), 
+                    false);
             }
             catch (Exception e)
             {
@@ -414,20 +419,37 @@ namespace Google.Solutions.Mvvm.Controls
             }
         }
 
-        private void fileList_MouseDown(object sender, MouseEventArgs e)
+        private void fileList_MouseDown(object sender, MouseEventArgs args)
         {
-            if (e.Button == MouseButtons.Left)
+            if (args.Button != MouseButtons.Left)
             {
-                //
-                // Drag files, not directories.
-                //
-                var files = this.SelectedFiles.Where(f => f.Type.IsFile);
-                if (files.Any())
-                {
-                    DoDragDrop(CreateAsyncDataObject(files), DragDropEffects.Copy);
+                return;
+            }
+
+            try
+            {
+                var dataObject = CreateAsyncDataObjectForSelectedFiles();
+                if (dataObject.Files.Any())
+                { 
+                    //
+                    // NB. Only begin a drag operation when there's actually
+                    //     a file in the data object, otherwise the drop target
+                    //     will indicate that there's something to drop, even
+                    //     though there isn't.
+                    //
+                    DoDragDrop(dataObject, DragDropEffects.Copy);
                 }
             }
+            catch (Exception e)
+            {
+                OnNavigationFailed(e);
+            }
         }
+
+        //---------------------------------------------------------------------
+        // Event handlers - pasting and dropping.
+        //---------------------------------------------------------------------
+
 
         //---------------------------------------------------------------------
         // Publics.

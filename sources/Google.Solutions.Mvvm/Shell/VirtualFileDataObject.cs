@@ -46,7 +46,6 @@ namespace Google.Solutions.Mvvm.Shell
     public sealed class VirtualFileDataObject
         : DataObject, UCOMIDataObject, VirtualFileDataObject.IDataObjectAsyncCapability, IDisposable
     {
-        private readonly IList<Descriptor> files;
         private int currentFile = 0;
         private bool disposed;
 
@@ -55,9 +54,14 @@ namespace Google.Solutions.Mvvm.Shell
         /// </summary>
         private readonly List<Stream> openedContentStreams = new List<Stream>();
 
+        /// <summary>
+        /// List of virtual files.
+        /// </summary>
+        public IList<Descriptor> Files { get; }
+
         public VirtualFileDataObject(IList<Descriptor> files)
         {
-            this.files = files;
+            this.Files = files;
 
             //
             // Enable delayed rendering
@@ -114,7 +118,7 @@ namespace Google.Solutions.Mvvm.Shell
                 //
                 base.SetData(
                     CFSTR_FILEDESCRIPTORW,
-                    Descriptor.ToNativeGroupDescriptorStream(this.files));
+                    Descriptor.ToNativeGroupDescriptorStream(this.Files));
             }
             else if (CFSTR_FILECONTENTS.Equals(format, StringComparison.OrdinalIgnoreCase))
             {
@@ -126,7 +130,7 @@ namespace Google.Solutions.Mvvm.Shell
                 //     to keep track of it and dispose it once the operation
                 //     has completed.
                 //
-                var contentStream = this.files[this.currentFile].OpenStream();
+                var contentStream = this.Files[this.currentFile].OpenStream();
                 this.openedContentStreams.Add(contentStream);
 
                 //
@@ -135,7 +139,7 @@ namespace Google.Solutions.Mvvm.Shell
                 //
                 base.SetData(
                     CFSTR_FILECONTENTS,
-                    this.currentFile < this.files.Count
+                    this.currentFile < this.Files.Count
                         ? contentStream
                         : null);
             }
