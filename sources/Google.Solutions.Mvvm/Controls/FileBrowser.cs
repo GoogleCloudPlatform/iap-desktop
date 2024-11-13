@@ -400,17 +400,12 @@ namespace Google.Solutions.Mvvm.Controls
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs args)
         {
-            //
-            // Copy files, not directories.
-            //
-            var files = this.SelectedFiles.Where(f => f.Type.IsFile);
-            if (!files.Any())
-            { 
-                return; 
-            }
-
             try
-            { 
+            {
+                //
+                // Copy files, not directories.
+                //
+                var files = this.SelectedFiles.Where(f => f.Type.IsFile);
                 Clipboard.SetDataObject(CreateAsyncDataObject(files), false);
             }
             catch (Exception e)
@@ -418,7 +413,6 @@ namespace Google.Solutions.Mvvm.Controls
                 OnNavigationFailed(e);
             }
         }
-
 
         private void fileList_MouseDown(object sender, MouseEventArgs e)
         {
