@@ -93,9 +93,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Controls\FileBrowser.Interfaces.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="Controls\FileBrowser.Interfaces.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj" />

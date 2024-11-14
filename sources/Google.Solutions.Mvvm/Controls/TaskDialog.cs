@@ -70,6 +70,10 @@ namespace Google.Solutions.Mvvm.Controls
                 .OfType<TaskDialogCommandLinkButton>()
                 .ToList();
 
+            Precondition.Expect(
+                standardButtons.Any(), 
+                "At least one standard button is required");
+
             using (var commandButtonsHandle = LocalAllocSafeHandle.LocalAlloc(
                 (uint)(Marshal.SizeOf<TASKDIALOG_BUTTON_RAW>() * commandButtons.Count)))
             {

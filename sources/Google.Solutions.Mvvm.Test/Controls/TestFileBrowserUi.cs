@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Linq;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
@@ -34,7 +35,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Google.Solutions.Mvvm.Controls.FileBrowser;
 
 namespace Google.Solutions.Mvvm.Test.Controls
 {
@@ -121,22 +121,43 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 this.fileTypeCache = fileTypeCache;
             }
 
-            public string Name => this.FileInfo.Name;
+            public string Name
+            {
+                get => this.FileInfo.Name;
+            }
 
-            public string Path => this.FileInfo.FullName;
+            public string Path
+            {
+                get => this.FileInfo.FullName;
+            }
 
-            public bool IsFile => this.FileInfo is FileInfo;
+            public bool IsFile
+            {
+                get => this.FileInfo is FileInfo;
+            }
 
-            public FileAttributes Attributes => this.FileInfo.Attributes;
+            public FileAttributes Attributes
+            {
+                get => this.FileInfo.Attributes;
+            }
 
-            public DateTime LastModified => this.FileInfo.LastWriteTimeUtc;
+            public DateTime LastModified
+            {
+                get => this.FileInfo.LastWriteTimeUtc;
+            }
 
-            public ulong Size => (ulong)((this.FileInfo as FileInfo)?.Length ?? 0);
+            public ulong Size
+            {
+                get => (ulong)((this.FileInfo as FileInfo)?.Length ?? 0);
+            }
 
-            public FileType Type => this.fileTypeCache.Lookup(
-                this.FileInfo.Name,
-                this.FileInfo.Attributes,
-                FileType.IconFlags.None);
+            public FileType Type
+            {
+                get => this.fileTypeCache.Lookup(
+                    this.FileInfo.Name,
+                    this.FileInfo.Attributes,
+                    FileType.IconFlags.None);
+            }
 
             public bool IsExpanded
             {
@@ -148,6 +169,23 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 }
             }
 
+            public Stream Open(FileAccess access)
+            {
+                Precondition.Expect(this.IsFile, "Not a file");
+                return File.Open(this.FileInfo.FullName, FileMode.Open, access);
+            }
+
+            public Stream Create(
+                string name, 
+                FileAccess access)
+            {
+                Precondition.Expect(!this.IsFile, "Not a directory");
+
+                return File.Open(
+                    System.IO.Path.Combine(this.FileInfo.FullName, name), 
+                    FileMode.OpenOrCreate,
+                    access);
+            }
         }
     }
 }

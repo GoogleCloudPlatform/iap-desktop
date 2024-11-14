@@ -39,7 +39,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
-    internal sealed class SftpFileSystem : FileBrowser.IFileSystem, IDisposable
+    internal sealed class SftpFileSystem : IFileSystem, IDisposable
     {
         private readonly Func<string, Task<IReadOnlyCollection<Libssh2SftpFileInfo>>> listRemoteFilesFunc;
         private readonly FileTypeCache fileTypeCache;
@@ -122,10 +122,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         // IFileSystem.
         //---------------------------------------------------------------------
 
-        public FileBrowser.IFileItem Root { get; }
+        public IFileItem Root { get; }
 
-        public async Task<ObservableCollection<FileBrowser.IFileItem>> ListFilesAsync(
-            FileBrowser.IFileItem directory)
+        public async Task<ObservableCollection<IFileItem>> ListFilesAsync(
+            IFileItem directory)
         {
             directory.ExpectNotNull(nameof(directory));
             Debug.Assert(!directory.Type.IsFile);
@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                     TranslateFileType(f)))
                 .ToList();
 
-            return new ObservableCollection<FileBrowser.IFileItem>(filteredSftpFiles);
+            return new ObservableCollection<IFileItem>(filteredSftpFiles);
         }
 
         //---------------------------------------------------------------------
@@ -168,8 +168,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         // Inner classes.
         //---------------------------------------------------------------------
 
-        private class SftpRootItem : FileBrowser.IFileItem
+        private class SftpRootItem : IFileItem
         {
+            public event PropertyChangedEventHandler? PropertyChanged;
+
             public string Name
             {
                 get => string.Empty;
@@ -200,18 +202,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
             public bool IsExpanded { get; set; } = true;
 
-            public string Path => string.Empty;
+            public string Path
+            {
+                get => string.Empty;
+            }
 
-            public event PropertyChangedEventHandler? PropertyChanged;
+            public Stream Open(FileAccess access)
+            {
+                throw new InvalidOperationException(
+                    "Reading or writing a directory is not allowed");
+            }
+
+            public Stream Create(string name, FileAccess access)
+            {
+                throw new NotImplementedException();
+            }
         }
 
-        private class SftpFileItem : FileBrowser.IFileItem
+        private class SftpFileItem : IFileItem
         {
-            private readonly FileBrowser.IFileItem parent;
+            private readonly IFileItem parent;
             private readonly Libssh2SftpFileInfo fileInfo;
 
             internal SftpFileItem(
-                FileBrowser.IFileItem parent,
+                IFileItem parent,
                 Libssh2SftpFileInfo fileInfo,
                 FileType type)
             {
@@ -277,6 +291,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
                     return attributes;
                 }
+            }
+
+            public Stream Open(FileAccess access)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Stream Create(
+                string name, 
+                FileAccess access)
+            {
+                throw new NotImplementedException();
             }
         }
     }

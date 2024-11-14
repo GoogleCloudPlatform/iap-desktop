@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Platform.Interop;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -42,15 +43,25 @@ namespace Google.Solutions.Mvvm.Shell
     /// This class extends DataObject to support multiple files, inspired by
     /// https://www.codeproject.com/Articles/23139/Transferring-Virtual-Files-to-Windows-Explorer-in
     /// </remarks>
-    public sealed class FileDataObject
-        : DataObject, UCOMIDataObject, IDisposable
+    public sealed class VirtualFileDataObject
+        : DataObject, UCOMIDataObject, VirtualFileDataObject.IDataObjectAsyncCapability, IDisposable
     {
-        private readonly IList<Descriptor> files;
         private int currentFile = 0;
+        private bool disposed;
 
-        public FileDataObject(IList<Descriptor> files)
+        /// <summary>
+        /// List of streams that were opened during the last operation.
+        /// </summary>
+        private readonly List<Stream> openedContentStreams = new List<Stream>();
+
+        /// <summary>
+        /// List of virtual files.
+        /// </summary>
+        public IList<Descriptor> Files { get; }
+
+        public VirtualFileDataObject(IList<Descriptor> files)
         {
-            this.files = files;
+            this.Files = files;
 
             //
             // Enable delayed rendering
@@ -60,30 +71,76 @@ namespace Google.Solutions.Mvvm.Shell
             SetData(CFSTR_PERFORMEDDROPEFFECT, null);
         }
 
+        /// <summary>
+        /// Indicates if data extraction should be done asynchronously, i.e.,
+        /// on a background thrad.
+        /// </summary>
+        internal bool IsAsync { get; set; }
+
+        /// <summary>
+        /// Indicates that data extraction is ongoing.
+        /// </summary>
+        internal bool IsOperationInProgress { get; private set; }
+
+        /// <summary>
+        /// Raised when asynchronous data extraction is starting.
+        /// </summary>
+        public event EventHandler? AsyncOperationStarted;
+
+        /// <summary>
+        /// Raised when asynchronous data extraction ahs ended.
+        /// </summary>
+        public event EventHandler<AsyncOperationEventArgs>? AsyncOperationCompleted;
+
+        private void ExpectNotDisposed()
+        {
+            if (this.disposed)
+            {
+                throw new ObjectDisposedException(GetType().Name);
+            }
+        }
+
         //----------------------------------------------------------------------
-        // Overrides.
+        // DataObject/UCOMIDataObject overrides.
         //----------------------------------------------------------------------
 
-        public override object GetData(string format, bool autoConvert)
+        public override object? GetData(string format, bool autoConvert)
         {
+            if (this.disposed)
+            {
+                return null;
+            }
+
             if (CFSTR_FILEDESCRIPTORW.Equals(format, StringComparison.OrdinalIgnoreCase))
             {
                 //
                 // Supply group descriptor for all files.
                 //
                 base.SetData(
-                    CFSTR_FILEDESCRIPTORW, 
-                    Descriptor.ToNativeGroupDescriptorStream(this.files));
+                    CFSTR_FILEDESCRIPTORW,
+                    Descriptor.ToNativeGroupDescriptorStream(this.Files));
             }
             else if (CFSTR_FILECONTENTS.Equals(format, StringComparison.OrdinalIgnoreCase))
             {
                 //
+                // Open the stream. We do that lazily in case the client
+                // never actally invokes this method.
+                //
+                // NB. The base class doesn't dispose the stream. So we need
+                //     to keep track of it and dispose it once the operation
+                //     has completed.
+                //
+                var contentStream = this.Files[this.currentFile].OpenStream();
+                this.openedContentStreams.Add(contentStream);
+
+                //
                 // Supply data for the current (!) file.
+                //
                 //
                 base.SetData(
                     CFSTR_FILECONTENTS,
-                    this.currentFile < this.files.Count
-                        ? this.files[this.currentFile].ContentStream
+                    this.currentFile < this.Files.Count
+                        ? contentStream
                         : null);
             }
 
@@ -92,6 +149,13 @@ namespace Google.Solutions.Mvvm.Shell
 
         void UCOMIDataObject.GetData(ref FORMATETC formatetc, out STGMEDIUM medium)
         {
+            if (this.disposed)
+            {
+                medium = default;
+                medium.tymed = TYMED.TYMED_NULL;
+                return;
+            }
+
             //
             // NB. The only purpose of overriding this method is to get the
             //     index of the file that is currently being processed. This
@@ -105,13 +169,13 @@ namespace Google.Solutions.Mvvm.Shell
                 //
                 this.currentFile = formatetc.lindex;
             }
-            
+
             //
             // Now it would be good to call base.GetData(...), but that's not possible
             // because the method is an EIMI. Therefore, we replicate its logic here.
             //
 
-            medium = default(STGMEDIUM);
+            medium = default;
             if (GetTymedUseable(formatetc.tymed))
             {
                 if ((formatetc.tymed & TYMED.TYMED_HGLOBAL) != 0)
@@ -129,6 +193,8 @@ namespace Google.Solutions.Mvvm.Shell
                         // Copy data. This will invoke GetData(format, autoConvert), which
                         // in turn uses the cached index to provide the right data.
                         //
+                        this.IsOperationInProgress = true;
+
                         ((UCOMIDataObject)this).GetDataHere(ref formatetc, ref medium);
                         return;
                     }
@@ -172,28 +238,99 @@ namespace Google.Solutions.Mvvm.Shell
             }
         }
 
+        //----------------------------------------------------------------------
+        // IDataObjectAsyncCapability.
+        //----------------------------------------------------------------------
+
+        public void SetAsyncMode([In] int fDoOpAsync)
+        {
+            ExpectNotDisposed();
+
+            this.IsAsync = fDoOpAsync != VARIANT_FALSE;
+        }
+
+        public void GetAsyncMode([Out] out int pfIsOpAsync)
+        {
+            ExpectNotDisposed();
+
+            pfIsOpAsync = this.IsAsync ? VARIANT_TRUE : VARIANT_FALSE;
+        }
+
+        public void StartOperation([In] IBindCtx pbcReserved)
+        {
+            ExpectNotDisposed();
+
+            this.IsOperationInProgress = true;
+            this.AsyncOperationStarted?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void EndOperation([In] int hResult, [In] IBindCtx pbcReserved, [In] uint dwEffects)
+        {
+            ExpectNotDisposed();
+            Precondition.Expect(this.IsOperationInProgress, "Operation not started");
+
+            //
+            // Close all streams that were opened.
+            //
+            foreach (var stream in this.openedContentStreams)
+            {
+                stream.Dispose();
+            }
+
+            this.IsOperationInProgress = false;
+            this.AsyncOperationCompleted?.Invoke(
+                this, 
+                ((HRESULT)hResult).Succeeded()
+                    ? new AsyncOperationEventArgs(null)
+                    : new AsyncOperationEventArgs(Marshal.GetExceptionForHR(hResult)));
+        }
+
+        public void InOperation([Out] out int pfInAsyncOp)
+        {
+            ExpectNotDisposed();
+
+            pfInAsyncOp = this.IsOperationInProgress ? VARIANT_TRUE : VARIANT_FALSE;
+        }
+
+        //----------------------------------------------------------------------
+        // IDisposable.
+        //----------------------------------------------------------------------
+
         public void Dispose()
         {
-            foreach (var file in this.files)
+            foreach (var stream in this.openedContentStreams)
             {
-                file.ContentStream.Dispose();
+                stream.Dispose();
             }
+
+            this.disposed = true;
         }
 
         //----------------------------------------------------------------------
         // Inner types.
         //----------------------------------------------------------------------
 
+        public delegate Stream OpenStreamDelegate();
+
         /// <summary>
         /// Represents a virtual file and its metadata.
         /// </summary>
         public class Descriptor
         {
+            private readonly OpenStreamDelegate openContentStream;
+
+            /// <summary>
+            /// Create a new descriptor.
+            /// </summary>
+            /// <remarks>
+            /// When the data object is disposed, all opened streams
+            /// are disposed automatically.
+            /// </remarks>
             public Descriptor(
-                string name, 
+                string name,
                 ulong size,
                 FileAttributes attributes,
-                Stream content)
+                OpenStreamDelegate openContentStream)
             {
                 Precondition.Expect(
                     !name.Contains("\\"),
@@ -202,7 +339,7 @@ namespace Google.Solutions.Mvvm.Shell
                 this.Name = name;
                 this.Size = size;
                 this.Attributes = attributes;
-                this.ContentStream = content;
+                this.openContentStream = openContentStream;
             }
 
             /// <summary>
@@ -218,12 +355,7 @@ namespace Google.Solutions.Mvvm.Shell
             /// <summary>
             /// File attributes.
             /// </summary>
-            public FileAttributes Attributes { get;  }
-
-            /// <summary>
-            /// Stream containing the file contents.
-            /// </summary>
-            internal Stream ContentStream { get; }
+            public FileAttributes Attributes { get; }
 
             /// <summary>
             /// File creation time.
@@ -241,16 +373,24 @@ namespace Google.Solutions.Mvvm.Shell
             public DateTime? LastWriteTime { get; set; }
 
             /// <summary>
+            /// Open the stream that contains the file contents.
+            /// </summary>
+            internal Stream OpenStream()
+            {
+                return this.openContentStream();
+            }
+
+            /// <summary>
             /// Convert to FILEDESCRIPTORW struct. 
             /// </summary>
-            internal FILEDESCRIPTORW ToNativeFileDescriptor()
+            internal FILEDESCRIPTORW ToNativeFileDescriptor(bool requireProgressUi)
             {
                 var native = new FILEDESCRIPTORW()
                 {
                     dwFlags =
                         FD_FILESIZE |
-                        FD_PROGRESSUI |
-                        FD_UNICODE,
+                        FD_UNICODE |
+                        (requireProgressUi ? FD_PROGRESSUI : 0),
                     cFileName = this.Name,
                     dwFileAttributes = (uint)this.Attributes,
                     nFileSizeHigh = (uint)(this.Size >> 32),
@@ -259,38 +399,20 @@ namespace Google.Solutions.Mvvm.Shell
 
                 if (this.CreationTime != null)
                 {
-                    var creationTime = this.CreationTime.Value.ToFileTimeUtc();
-
                     native.dwFlags |= FD_CREATETIME;
-                    native.ftCreationTime = new System.Runtime.InteropServices.ComTypes.FILETIME()
-                    {
-                        dwHighDateTime = (int)(creationTime >> 32),
-                        dwLowDateTime = (int)(creationTime & 0xFFFFFFFF),
-                    };
+                    native.ftCreationTime = FileTimeFromDateTime(this.CreationTime.Value);
                 }
 
                 if (this.LastAccessTime != null)
                 {
-                    var lastAccessTime = this.LastAccessTime.Value.ToFileTimeUtc();
-
                     native.dwFlags |= FD_ACCESSTIME;
-                    native.ftLastAccessTime = new System.Runtime.InteropServices.ComTypes.FILETIME()
-                    {
-                        dwHighDateTime = (int)(lastAccessTime >> 32),
-                        dwLowDateTime = (int)(lastAccessTime & 0xFFFFFFFF),
-                    };
+                    native.ftCreationTime = FileTimeFromDateTime(this.LastAccessTime.Value);
                 }
 
                 if (this.LastWriteTime != null)
                 {
-                    var lastWriteTime = this.LastWriteTime.Value.ToFileTimeUtc();
-
                     native.dwFlags |= FD_WRITESTIME;
-                    native.ftLastWriteTime = new System.Runtime.InteropServices.ComTypes.FILETIME()
-                    {
-                        dwHighDateTime = (int)(lastWriteTime >> 32),
-                        dwLowDateTime = (int)(lastWriteTime & 0xFFFFFFFF),
-                    };
+                    native.ftCreationTime = FileTimeFromDateTime(this.LastWriteTime.Value);
                 }
 
                 return native;
@@ -322,7 +444,7 @@ namespace Google.Solutions.Mvvm.Shell
                     for (int i = 0; i < fileDescriptors.Count; i++)
                     {
                         Marshal.StructureToPtr(
-                            fileDescriptors[i].ToNativeFileDescriptor(),
+                            fileDescriptors[i].ToNativeFileDescriptor(true),
                             ptr.DangerousGetHandle(),
                             false);
 
@@ -332,6 +454,36 @@ namespace Google.Solutions.Mvvm.Shell
 
                     return stream;
                 }
+            }
+
+            /// <summary>
+            /// Convert DateTime to a FILETIME.
+            /// </summary>
+            private static System.Runtime.InteropServices.ComTypes.FILETIME FileTimeFromDateTime(
+                DateTime dt)
+            {
+                var utc = dt.ToFileTimeUtc();
+
+                return new System.Runtime.InteropServices.ComTypes.FILETIME()
+                {
+                    dwHighDateTime = (int)(utc >> 32),
+                    dwLowDateTime = (int)(utc & 0xFFFFFFFF),
+                };
+            }
+        }
+
+        public class AsyncOperationEventArgs : EventArgs
+        {
+            public Exception? Exception { get; }
+
+            public bool Succeeded
+            {
+                get => this.Exception == null;
+            }
+
+            internal AsyncOperationEventArgs(Exception? exception)
+            {
+                this.Exception = exception;
             }
         }
 
@@ -360,7 +512,10 @@ namespace Google.Solutions.Mvvm.Shell
         private const uint GHND = (GMEM_MOVEABLE | GMEM_ZEROINIT);
         private const uint GMEM_DDESHARE = 0x2000;
 
-        public const int DV_E_TYMED = unchecked((int)0x80040069);
+        private const int VARIANT_FALSE = 0;
+        private const int VARIANT_TRUE = -1;
+
+        private const int DV_E_TYMED = unchecked((int)0x80040069);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         internal struct FILEDESCRIPTORW
@@ -426,6 +581,50 @@ namespace Google.Solutions.Mvvm.Shell
 
             [DllImport("kernel32.dll", ExactSpelling = true)]
             public static extern IntPtr GlobalFree(HandleRef handle);
+        }
+
+        /// <summary>
+        /// Definition of the IDataObjectAsyncCapability (formerly named IAsyncOperation)
+        /// COM interface.
+        /// </summary>
+        [ComImport]
+        [Guid("3D8B0590-F691-11d2-8EA9-006097DF5BD4")]
+        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        internal interface IDataObjectAsyncCapability
+        {
+            /// <summary>
+            /// Called by a drop source to specify whether the data object 
+            /// supports asynchronous data extraction.
+            /// </summary>
+            void SetAsyncMode([In] int fDoOpAsync);
+
+            /// <summary>
+            /// Called by a drop target to determine whether the data object 
+            /// supports asynchronous data extraction.
+            /// </summary>
+            void GetAsyncMode([Out] out int pfIsOpAsync);
+
+            /// <summary>
+            /// Called by a drop target to indicate that asynchronous 
+            /// data extraction is starting.
+            /// </summary>
+            /// <param name="pbcReserved"></param>
+            void StartOperation([In] IBindCtx pbcReserved);
+
+            /// <summary>
+            /// Called by the drop source to determine whether the target 
+            /// is extracting data asynchronously.
+            /// </summary>
+            void InOperation([Out] out int pfInAsyncOp);
+
+            /// <summary>
+            /// Notifies the data object that the asynchronous data 
+            /// extraction has ended.
+            /// </summary>
+            void EndOperation(
+                [In] int hResult, 
+                [In] IBindCtx pbcReserved,
+                [In] uint dwEffects);
         }
     }
 }

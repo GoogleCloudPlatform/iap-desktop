@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.IO;
 using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
@@ -28,6 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -49,6 +51,11 @@ namespace Google.Solutions.Mvvm.Controls
 
         private Breadcrumb? root;
         private Breadcrumb? navigationState;
+
+        private IList<IFileItem>? currentDirectoryContents;
+
+        internal ITaskDialog TaskDialog { get; set; } = new TaskDialog();
+        internal IOperationProgressDialog ProgressDialog { get; set; } = new OperationProgressDialog();
 
         //---------------------------------------------------------------------
         // Privates.
@@ -207,6 +214,7 @@ namespace Google.Solutions.Mvvm.Controls
             //
             this.directoryTree.SelectedNode = this.navigationState.TreeNode;
 
+            this.currentDirectoryContents = files;
             OnCurrentDirectoryChanged();
         }
 
@@ -265,7 +273,7 @@ namespace Google.Solutions.Mvvm.Controls
         }
 
         //---------------------------------------------------------------------
-        // Event handlers.
+        // Event handlers - navigation.
         //---------------------------------------------------------------------
 
         private async void directoryTree_SelectedModelNodeChanged(object sender, EventArgs args)
@@ -338,6 +346,20 @@ namespace Google.Solutions.Mvvm.Controls
                     //
                     fileList_DoubleClick(sender, EventArgs.Empty);
                 }
+                if (args.KeyCode == Keys.C && args.Control)
+                {
+                    //
+                    // Copy files.
+                    //
+                    copyToolStripMenuItem_Click(sender, EventArgs.Empty);
+                }
+                if (args.KeyCode == Keys.V && args.Control)
+                {
+                    //
+                    // Paste files.
+                    //
+                    pasteToolStripMenuItem_Click(sender, EventArgs.Empty);
+                }
                 else if (args.KeyCode == Keys.Up && args.Alt)
                 {
                     //
@@ -366,6 +388,296 @@ namespace Google.Solutions.Mvvm.Controls
             {
                 OnNavigationFailed(e);
             }
+        }
+
+        //---------------------------------------------------------------------
+        // Event handlers - copy/drag.
+        //---------------------------------------------------------------------
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs args)
+        {
+            try
+            {
+                Clipboard.SetDataObject(
+                    CopySelectedFiles(),
+                    false);
+            }
+            catch (Exception e)
+            {
+                OnNavigationFailed(e);
+            }
+        }
+
+        private void fileList_MouseDown(object sender, MouseEventArgs args)
+        {
+            if (args.Button != MouseButtons.Left)
+            {
+                return;
+            }
+
+            try
+            {
+                var dataObject = CopySelectedFiles();
+                if (dataObject.Files.Any())
+                {
+                    //
+                    // NB. Only begin a drag operation when there's actually
+                    //     a file in the data object, otherwise the drop target
+                    //     will indicate that there's something to drop, even
+                    //     though there isn't.
+                    //
+                    DoDragDrop(dataObject, DragDropEffects.Copy);
+                }
+            }
+            catch (Exception e)
+            {
+                OnNavigationFailed(e);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Event handlers - paste/drop.
+        //---------------------------------------------------------------------
+
+        private async void pasteToolStripMenuItem_Click(object sender, EventArgs args)
+        {
+            try
+            {
+                await PasteFilesAsync(Clipboard.GetDataObject()).ConfigureAwait(true);
+            }
+            catch (Exception e)
+            {
+                OnNavigationFailed(e);
+            }
+        }
+            
+        private void fileList_DragEnter(object sender, DragEventArgs args)
+        {
+            args.Effect = GetPastableFiles(args.Data, false).Any()
+                ? DragDropEffects.Copy
+                : DragDropEffects.None;
+        }
+
+        private async void fileList_DragDrop(object sender, DragEventArgs args)
+        {
+            try
+            {
+                await PasteFilesAsync(args.Data).ConfigureAwait(true);
+            }
+            catch (Exception e)
+            {
+                OnNavigationFailed(e);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Clipboard handling.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Create an IDataObject with the contents of the selected files.
+        /// </summary>
+        internal VirtualFileDataObject CopySelectedFiles()
+        {
+            //
+            // Only consider files, ignore directories.
+            //
+            var files = this.SelectedFiles.Where(f => f.Type.IsFile);
+
+            var dataObject = new VirtualFileDataObject(files
+                .Select(f => new VirtualFileDataObject.Descriptor(
+                    f.Name,
+                    f.Size,
+                    f.Attributes,
+                    () => f.Open(System.IO.FileAccess.Read)))
+                .ToList())
+            {
+                //
+                // Don't block the UI thread when the target reads
+                // the data.
+                //
+                IsAsync = true
+            };
+
+            return dataObject;
+        }
+
+        /// <summary>
+        /// Inspect the data object and extract the list of files
+        /// that can be pasted to the current directory.
+        /// </summary>
+        internal IEnumerable<FileInfo> GetPastableFiles(
+            IDataObject dataObject,
+            bool promptForConflicts)
+        {
+            //
+            // Extract file paths, ignore directory paths.
+            //
+            var files = (dataObject.GetData(DataFormats.FileDrop) as IEnumerable<string>)
+                .EnsureNotNull()
+                .Where(path => File.Exists(path))
+                .Select(path => new FileInfo(path));
+
+            if (!promptForConflicts)
+            {
+                return files;
+            }
+
+            //
+            // Allow user to exclude files that would otherwise be overwritten.
+            //
+            Debug.Assert(this.currentDirectoryContents != null);
+            Debug.Assert(this.currentDirectoryContents!.Count == this.fileList.Items.Count);
+
+            var result = new List<FileInfo>();
+            foreach (var file in files)
+            {
+                var conflictingItem = this.currentDirectoryContents
+                    .FirstOrDefault(f => f.Name == file.Name);
+
+                var dialogResult = DialogResult.OK;
+                if (conflictingItem != null && !conflictingItem.Type.IsFile)
+                {
+                    //
+                    // There is an existing directory with the same name
+                    // as the file to be dropped.
+                    //
+
+                    var parameters = new TaskDialogParameters(
+                        "Copy files",
+                        $"The destination already has a directory named '{conflictingItem.Name}'",
+                        string.Empty);
+                    parameters.Buttons.Add(new TaskDialogCommandLinkButton(
+                        "Skip this file",
+                        DialogResult.Ignore));
+                    parameters.Buttons.Add(TaskDialogStandardButton.Cancel);
+
+                    dialogResult = this.TaskDialog.ShowDialog(this, parameters);
+                }
+                else if (conflictingItem != null)
+                {
+                    //
+                    // There is an existing file with the same name
+                    // as the file to be dropped.
+                    //
+
+                    var parameters = new TaskDialogParameters(
+                        "Copy files",
+                        $"The destination already has a file named '{conflictingItem.Name}'",
+                        string.Empty);
+                    parameters.Buttons.Add(new TaskDialogCommandLinkButton(
+                        "Replace the file in the destination",
+                        DialogResult.OK));
+                    parameters.Buttons.Add(new TaskDialogCommandLinkButton(
+                        "Skip this file",
+                        DialogResult.Ignore));
+                    parameters.Buttons.Add(TaskDialogStandardButton.Cancel);
+
+                    dialogResult = this.TaskDialog.ShowDialog(this, parameters);
+                }
+
+                switch (dialogResult)
+                {
+                    case DialogResult.OK:
+                        result.Add(file);
+                        break;
+
+                    case DialogResult.Ignore:
+                        //
+                        // Skip this file.
+                        //
+                        break;
+
+                    case DialogResult.Cancel:
+                        return Array.Empty<FileInfo>();
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Paste files to current directory.
+        /// </summary>
+        internal async Task PasteFilesAsync(IDataObject dataObject)
+        {
+            Debug.Assert(this.navigationState != null);
+            Debug.Assert(this.currentDirectoryContents != null);
+            Debug.Assert(this.currentDirectoryContents!.Count == this.fileList.Items.Count);
+
+            var filesToCopy = GetPastableFiles(dataObject, true);
+            if (!filesToCopy.Any())
+            {
+                return;
+            }
+
+            //
+            // Show a progress dialog to track overall progress.
+            //
+            using (var progressDialog = this.ProgressDialog.StartCopyOperation(
+                this,
+                (ulong)filesToCopy.Count(),
+                (ulong)filesToCopy.Sum(f => f.Length)))
+            {
+                var copyProgress = new Progress<int>(
+                    delta => progressDialog.OnBytesCompleted((ulong)delta));
+
+                foreach (var file in filesToCopy)
+                {
+                    if (progressDialog.CancellationToken.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    try
+                    {
+                        //
+                        // Perform the file copy in the background.
+                        //
+                        await Task
+                            .Run(() =>
+                                {
+                                    using (var sourceStream = file.OpenRead())
+                                    using (var targetStream = this.navigationState!.Directory.Create(
+                                        file.Name,
+                                        FileAccess.Write))
+                                    {
+                                        sourceStream.CopyTo(targetStream, copyProgress);
+                                    }
+                                })
+                            .ConfigureAwait(true);
+                    }
+                    catch (Exception e)
+                    {
+                        var parameters = new TaskDialogParameters(
+                            "Copy files",
+                            file.Name,
+                            e.Unwrap().Message)
+                        {
+                            Icon = TaskDialogIcon.Error
+                        };
+
+                        parameters.Buttons.Add(new TaskDialogCommandLinkButton(
+                            "Skip this file",
+                            DialogResult.Ignore));
+                        parameters.Buttons.Add(TaskDialogStandardButton.Cancel);
+
+                        if (this.TaskDialog.ShowDialog(this, parameters) == DialogResult.Cancel)
+                        {
+                            return;
+                        }
+                    }
+                    finally 
+                    {
+                        progressDialog.OnItemCompleted();
+                    }
+                }
+            }
+
+            //
+            // Refresh as there might be some new files now.
+            //
+            await RefreshAsync().ConfigureAwait(true);
         }
 
         //---------------------------------------------------------------------
