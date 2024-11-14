@@ -599,7 +599,7 @@ namespace Google.Solutions.Mvvm.Controls
         /// <summary>
         /// Paste files to current directory.
         /// </summary>
-        internal async Task PasteFilesAsync(IDataObject dataObject) // TODO: test
+        internal async Task PasteFilesAsync(IDataObject dataObject)
         {
             Debug.Assert(this.navigationState != null);
             Debug.Assert(this.currentDirectoryContents != null);

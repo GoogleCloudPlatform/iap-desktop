@@ -924,9 +924,65 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void PasteFiles_WhenCopyFails_ThenUserCanIgnore()
+        public async Task PasteFiles_WhenCopyFails_ThenUserCanIgnore()
         {
-            Assert.Fail();
+            var sourceFiles = new[] 
+            {
+                new FileInfo(Path.GetTempFileName()),
+                new FileInfo(Path.GetTempFileName())
+            };
+
+            using (File.Open(   // Lock first file.
+                sourceFiles[0].FullName, 
+                FileMode.Open, 
+                FileAccess.Write, 
+                FileShare.Write))
+            using (File.Open(   // Lock second file.
+                sourceFiles[1].FullName,
+                FileMode.Open,
+                FileAccess.Write,
+                FileShare.Write))
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var taskDialog = new Mock<ITaskDialog>();
+                taskDialog
+                    .Setup(d => d.ShowDialog(
+                        It.IsAny<IWin32Window>(),
+                        It.IsAny<TaskDialogParameters>()))
+                    .Returns(DialogResult.Ignore);
+
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill,
+                    TaskDialog = taskDialog.Object
+                };
+                form.Controls.Add(browser);
+                browser.Bind(
+                    CreateFileSystem().Object,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+                Application.DoEvents();
+
+                var dataObject = new DataObject();
+                dataObject.SetData(
+                    DataFormats.FileDrop,
+                    new string[] 
+                    {
+                        sourceFiles[0].FullName,
+                        sourceFiles[1].FullName
+                    });
+
+                await browser
+                    .PasteFilesAsync(dataObject)
+                    .ConfigureAwait(true);
+                taskDialog.Verify(
+                    d => d.ShowDialog(browser, It.IsAny<TaskDialogParameters>()),
+                    Times.Exactly(2));
+            }
         }
     }
 }
