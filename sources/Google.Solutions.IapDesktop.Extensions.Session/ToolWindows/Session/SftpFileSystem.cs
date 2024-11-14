@@ -212,6 +212,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 throw new InvalidOperationException(
                     "Reading or writing a directory is not allowed");
             }
+
+            public Stream Create(string name, FileAccess access, IProgress<ulong> transferProgress)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         private class SftpFileItem : IFileItem
@@ -288,7 +293,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 }
             }
 
-            public Stream Open(FileAccess access, IProgress<ulong> transferProhress)
+            public Stream Open(
+                FileAccess access, 
+                IProgress<ulong> transferProhress)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Stream Create(
+                string name, 
+                FileAccess access, 
+                IProgress<ulong> transferProgress)
             {
                 throw new NotImplementedException();
             }

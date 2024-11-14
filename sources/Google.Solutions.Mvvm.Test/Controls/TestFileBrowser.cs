@@ -29,7 +29,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -46,10 +48,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
         private static readonly FileType FileType
             = new FileType("File", false, SystemIcons.Application.ToBitmap());
 
-        private static Mock<IFileItem> CreateDirectory()
+        private static Mock<IFileItem> CreateDirectory(string name = "Item")
         {
             var file = new Mock<IFileItem>();
-            file.SetupGet(i => i.Name).Returns("Item");
+            file.SetupGet(i => i.Name).Returns(name);
             file.SetupGet(i => i.LastModified).Returns(DateTime.UtcNow);
             file.SetupGet(i => i.Type).Returns(DirectoryType);
             file.SetupGet(i => i.Size).Returns(1);
@@ -62,10 +64,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
             return file;
         }
 
-        private static Mock<IFileItem> CreateFile()
+        private static Mock<IFileItem> CreateFile(string name = "Item")
         {
             var file = new Mock<IFileItem>();
-            file.SetupGet(i => i.Name).Returns("Item");
+            file.SetupGet(i => i.Name).Returns(name);
             file.SetupGet(i => i.LastModified).Returns(DateTime.UtcNow);
             file.SetupGet(i => i.Type).Returns(FileType);
             file.SetupGet(i => i.Size).Returns(1);
@@ -76,19 +78,6 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 FileType.IconFlags.None));
 
             return file;
-        }
-
-        private static Mock<IFileSystem> CreateFileSystemWithEmptyRoot()
-        {
-            var root = CreateDirectory();
-
-            var fileSystem = new Mock<IFileSystem>();
-            fileSystem.SetupGet(fs => fs.Root).Returns(root.Object);
-            fileSystem
-                .Setup(fs => fs.ListFilesAsync(It.IsIn<IFileItem>(root.Object)))
-                .ReturnsAsync(new ObservableCollection<IFileItem>());
-
-            return fileSystem;
         }
 
         private static Mock<IFileSystem> CreateFileSystemWithInfinitelyNestedDirectories()
@@ -103,6 +92,28 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 {
                     CreateDirectory().Object
                 });
+
+            return fileSystem;
+        }
+
+        private static Mock<IFileSystem> CreateFileSystem(
+            params IFileItem[] files)
+        {
+            var root = CreateDirectory();
+            var fileCollection = new ObservableCollection<IFileItem>();
+
+            foreach (var file in files)
+            {
+                fileCollection.Add(file);
+            }
+
+            var fileSystem = new Mock<IFileSystem>();
+            fileSystem
+                .SetupGet(fs => fs.Root)
+                .Returns(root.Object);
+            fileSystem
+                .Setup(fs => fs.ListFilesAsync(It.IsIn(root.Object)))
+                .ReturnsAsync(fileCollection);
 
             return fileSystem;
         }
@@ -126,7 +137,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.Controls.Add(browser);
 
                 var bindingContext = new Mock<IBindingContext>().Object;
-                var fileSystem = CreateFileSystemWithEmptyRoot().Object;
+                var fileSystem = CreateFileSystem().Object;
 
                 browser.Bind(fileSystem, bindingContext);
 
@@ -288,7 +299,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Size = new Size(800, 600)
             })
             {
-                var fileSystem = CreateFileSystemWithEmptyRoot().Object;
+                var fileSystem = CreateFileSystem().Object;
 
                 var browser = new FileBrowser()
                 {
@@ -478,7 +489,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Size = new Size(800, 600)
             })
             {
-                var fileSystem = CreateFileSystemWithEmptyRoot();
+                var fileSystem = CreateFileSystem();
 
                 var browser = new FileBrowser()
                 {
@@ -514,18 +525,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Size = new Size(800, 600)
             })
             {
-                var root = CreateDirectory();
-
-                var fileSystem = new Mock<IFileSystem>();
-                fileSystem.SetupGet(fs => fs.Root).Returns(root.Object);
-                fileSystem
-                    .Setup(fs => fs.ListFilesAsync(It.IsIn(root.Object)))
-                    .ReturnsAsync(new ObservableCollection<IFileItem>()
-                    {
-                        CreateFile().Object,
-                        CreateFile().Object,
-                        CreateFile().Object
-                    });
+                var fileSystem = CreateFileSystem(
+                    CreateFile().Object,
+                    CreateFile().Object,
+                    CreateFile().Object);
 
                 var browser = new FileBrowser()
                 {
@@ -560,20 +563,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Size = new Size(800, 600)
             })
             {
-                var root = CreateDirectory();
-                var files = new ObservableCollection<IFileItem>()
+                var files = new[]
                 {
                     CreateFile().Object,
                     CreateFile().Object,
                     CreateFile().Object
                 };
-                var fileSystem = new Mock<IFileSystem>();
-                fileSystem
-                    .SetupGet(fs => fs.Root)
-                    .Returns(root.Object);
-                fileSystem
-                    .Setup(fs => fs.ListFilesAsync(It.IsIn(root.Object)))
-                    .ReturnsAsync(files);
 
                 var browser = new FileBrowser()
                 {
@@ -581,7 +576,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 };
                 form.Controls.Add(browser);
                 browser.Bind(
-                    fileSystem.Object,
+                     CreateFileSystem(files).Object,
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
@@ -609,19 +604,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Size = new Size(800, 600)
             })
             {
-                var root = CreateDirectory();
-                var files = new ObservableCollection<IFileItem>()
+                var files = new[] 
                 {
                     CreateDirectory().Object,
-                    CreateFile().Object
+                    CreateFile().Object 
                 };
-                var fileSystem = new Mock<IFileSystem>();
-                fileSystem
-                    .SetupGet(fs => fs.Root)
-                    .Returns(root.Object);
-                fileSystem
-                    .Setup(fs => fs.ListFilesAsync(It.IsIn(root.Object)))
-                    .ReturnsAsync(files);
 
                 var browser = new FileBrowser()
                 {
@@ -629,7 +616,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 };
                 form.Controls.Add(browser);
                 browser.Bind(
-                    fileSystem.Object,
+                    CreateFileSystem(files).Object,
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
@@ -652,28 +639,19 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Size = new Size(800, 600)
             })
             {
-                var root = CreateDirectory();
-                var files = new ObservableCollection<IFileItem>()
+                var files = new[]
                 {
                     CreateDirectory().Object,
                     CreateFile().Object,
                     CreateFile().Object
                 };
-                var fileSystem = new Mock<IFileSystem>();
-                fileSystem
-                    .SetupGet(fs => fs.Root)
-                    .Returns(root.Object);
-                fileSystem
-                    .Setup(fs => fs.ListFilesAsync(It.IsIn(root.Object)))
-                    .ReturnsAsync(files);
-
                 var browser = new FileBrowser()
                 {
                     Dock = DockStyle.Fill
                 };
                 form.Controls.Add(browser);
                 browser.Bind(
-                    fileSystem.Object,
+                    CreateFileSystem(files).Object,
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
@@ -686,6 +664,202 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     Assert.AreEqual(2, dataObject.Files.Count);
                     Assert.IsTrue(dataObject.IsAsync);
                 }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // GetPastableFiles.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void GetPastableFiles_WhenFormatIncompatible()
+        {
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+                form.Controls.Add(browser);
+                browser.Bind(
+                    CreateFileSystem().Object,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+                Application.DoEvents();
+
+                var dataObject = new DataObject();
+                dataObject.SetData("Unknown", "data");
+
+                Assert.IsEmpty(browser.GetPastableFiles(dataObject, false));
+            }
+        }
+
+        [Test]
+        public void GetPastableFiles_WhenDataObjectContainsNonFiles(
+            [Values("__doesnotexist.txt", "\\", "COM1")] string path)
+        {
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+                form.Controls.Add(browser);
+                browser.Bind(
+                    CreateFileSystem().Object,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+                Application.DoEvents();
+
+                var dataObject = new DataObject();
+                dataObject.SetData(
+                    DataFormats.FileDrop, 
+                    new string[] { path });
+
+                Assert.IsEmpty(browser.GetPastableFiles(dataObject, false));
+            }
+        }
+
+        [Test]
+        public void GetPastableFiles_WhenDataObjectContainsFileThatConflictsWithExistingDirectory(
+            [Values(DialogResult.Cancel, DialogResult.Ignore)] DialogResult dialogResult)
+        {
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var sourceFile = new FileInfo(Path.GetTempFileName());
+                var taskDialog = new Mock<ITaskDialog>();
+                taskDialog
+                    .Setup(d => d.ShowDialog(
+                        It.IsAny<IWin32Window>(),
+                        It.IsAny<TaskDialogParameters>()))
+                    .Returns(dialogResult);
+
+                var existingDirectory = CreateDirectory(sourceFile.Name);
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill,
+                    TaskDialog = taskDialog.Object
+                };
+                form.Controls.Add(browser);
+                browser.Bind(
+                    CreateFileSystem(existingDirectory.Object).Object,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+                Application.DoEvents();
+
+                var dataObject = new DataObject();
+                dataObject.SetData(
+                    DataFormats.FileDrop,
+                    new string[] { sourceFile.FullName });
+
+                Assert.IsEmpty(browser.GetPastableFiles(dataObject, true));
+
+                taskDialog.Verify(
+                    d => d.ShowDialog(browser, It.IsAny<TaskDialogParameters>()),
+                    Times.Once);
+            }
+        }
+
+        [Test]
+        public void GetPastableFiles_WhenDataObjectContainsFileToOverwriteAndUserConfirms()
+        {
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var sourceFile = new FileInfo(Path.GetTempFileName());
+                var taskDialog = new Mock<ITaskDialog>();
+                taskDialog
+                    .Setup(d => d.ShowDialog(
+                        It.IsAny<IWin32Window>(),
+                        It.IsAny<TaskDialogParameters>()))
+                    .Returns(DialogResult.OK);
+
+                var existingFile = CreateFile(sourceFile.Name);
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill,
+                    TaskDialog = taskDialog.Object
+                };
+                form.Controls.Add(browser);
+                browser.Bind(
+                    CreateFileSystem(existingFile.Object).Object,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+                Application.DoEvents();
+
+                var dataObject = new DataObject();
+                dataObject.SetData(
+                    DataFormats.FileDrop,
+                    new string[] { sourceFile.FullName });
+
+                Assert.AreEqual(
+                    sourceFile.Name, 
+                    browser
+                        .GetPastableFiles(dataObject, true)
+                        .FirstOrDefault()?
+                        .Name);
+
+                taskDialog.Verify(
+                    d => d.ShowDialog(browser, It.IsAny<TaskDialogParameters>()),
+                    Times.Once);
+            }
+        }
+
+        [Test]
+        public void GetPastableFiles_WhenDataObjectContainsFileToOverwriteAndUserDeclines()
+        {
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var sourceFile = new FileInfo(Path.GetTempFileName());
+                var taskDialog = new Mock<ITaskDialog>();
+                taskDialog
+                    .Setup(d => d.ShowDialog(
+                        It.IsAny<IWin32Window>(), 
+                        It.IsAny<TaskDialogParameters>()))
+                    .Returns(DialogResult.Ignore);
+
+                var existingFile = CreateFile(sourceFile.Name);
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill,
+                    TaskDialog = taskDialog.Object
+                };
+                form.Controls.Add(browser);
+                browser.Bind(
+                    CreateFileSystem(existingFile.Object).Object,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+                Application.DoEvents();
+
+                var dataObject = new DataObject();
+                dataObject.SetData(
+                    DataFormats.FileDrop,
+                    new string[] { sourceFile.FullName });
+
+                Assert.IsEmpty(browser.GetPastableFiles(dataObject, true));
+
+                taskDialog.Verify(
+                    d => d.ShowDialog(browser, It.IsAny<TaskDialogParameters>()),
+                    Times.Once);
             }
         }
     }

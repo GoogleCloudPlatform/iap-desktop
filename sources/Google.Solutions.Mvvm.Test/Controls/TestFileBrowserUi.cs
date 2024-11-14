@@ -170,10 +170,25 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 }
             }
 
-            public Stream Open(FileAccess access, IProgress<ulong> transferProhress)
+            public Stream Open(
+                FileAccess access, 
+                IProgress<ulong> transferProhress)
             {
                 Precondition.Expect(this.IsFile, "Not a file");
                 return File.Open(this.FileInfo.FullName, FileMode.Open, access);
+            }
+
+            public Stream Create(
+                string name, 
+                FileAccess access, 
+                IProgress<ulong> transferProgress)
+            {
+                Precondition.Expect(!this.IsFile, "Not a directory");
+
+                return File.Open(
+                    System.IO.Path.Combine(this.FileInfo.FullName, name), 
+                    FileMode.OpenOrCreate,
+                    access);
             }
         }
     }

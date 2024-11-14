@@ -54,7 +54,7 @@ namespace Google.Solutions.Mvvm.Controls
         private IList<IFileItem>? currentDirectoryContents;
 
         internal ITaskDialog TaskDialog { get; set; } = new TaskDialog();
-        // internal IOperationProgressDialog ProgressDialog { get; set; } = new OperationProgressDialog();
+        internal IOperationProgressDialog ProgressDialog { get; set; } = new OperationProgressDialog();
 
         //---------------------------------------------------------------------
         // Privates.
@@ -452,7 +452,7 @@ namespace Google.Solutions.Mvvm.Controls
             
         private void fileList_DragEnter(object sender, DragEventArgs args)
         {
-            args.Effect = GetFileDropList(args.Data).Any()
+            args.Effect = GetPastableFiles(args.Data, false).Any()
                 ? DragDropEffects.Copy
                 : DragDropEffects.None;
         }
@@ -473,18 +473,10 @@ namespace Google.Solutions.Mvvm.Controls
         // Clipboard handling.
         //---------------------------------------------------------------------
 
-        private static IEnumerable<FileInfo> GetFileDropList(IDataObject dataObject)
-        {
-            //
-            // Extract file paths, ignore directory paths.
-            //
-            return (dataObject.GetData(DataFormats.FileDrop) as IEnumerable<string>)
-                .EnsureNotNull()
-                .Where(path => File.Exists(path))
-                .Select(path => new FileInfo(path));
-        }
-
-        internal VirtualFileDataObject CopySelectedFiles() // TODO: test
+        /// <summary>
+        /// Create an IDataObject with the contents of the selected files.
+        /// </summary>
+        internal VirtualFileDataObject CopySelectedFiles()
         {
             //
             // Only consider files, ignore directories.
@@ -510,14 +502,35 @@ namespace Google.Solutions.Mvvm.Controls
             return dataObject;
         }
 
-        internal void PasteFiles(IDataObject dataObject) // TODO: test
+        /// <summary>
+        /// Inspect the data object and extract the list of files
+        /// that can be pasted to the current directory.
+        /// </summary>
+        internal IEnumerable<FileInfo> GetPastableFiles(
+            IDataObject dataObject,
+            bool promptForConflicts)
         {
+            //
+            // Extract file paths, ignore directory paths.
+            //
+            var files = (dataObject.GetData(DataFormats.FileDrop) as IEnumerable<string>)
+                .EnsureNotNull()
+                .Where(path => File.Exists(path))
+                .Select(path => new FileInfo(path));
+
+            if (!promptForConflicts)
+            {
+                return files;
+            }
+
+            //
+            // Allow user to exclude files that would otherwise be overwritten.
+            //
             Debug.Assert(this.currentDirectoryContents != null);
             Debug.Assert(this.currentDirectoryContents!.Count == this.fileList.Items.Count);
 
-            // TODO: Start ShowCopyDialog
-
-            foreach (var file in GetFileDropList(dataObject))
+            var result = new List<FileInfo>();
+            foreach (var file in files)
             {
                 var conflictingItem = this.currentDirectoryContents
                     .FirstOrDefault(f => f.Name == file.Name);
@@ -537,9 +550,7 @@ namespace Google.Solutions.Mvvm.Controls
                     parameters.Buttons.Add(new TaskDialogCommandLinkButton(
                         "Skip this file",
                         DialogResult.Ignore));
-                    parameters.Buttons.Add(new TaskDialogCommandLinkButton(
-                        "Cancel",
-                        DialogResult.Cancel));
+                    parameters.Buttons.Add(TaskDialogStandardButton.Cancel);
 
                     dialogResult = this.TaskDialog.ShowDialog(this, parameters);
                 }
@@ -560,45 +571,97 @@ namespace Google.Solutions.Mvvm.Controls
                     parameters.Buttons.Add(new TaskDialogCommandLinkButton(
                         "Skip this file",
                         DialogResult.Ignore));
-                    parameters.Buttons.Add(new TaskDialogCommandLinkButton(
-                        "Cancel",
-                        DialogResult.Cancel));
+                    parameters.Buttons.Add(TaskDialogStandardButton.Cancel);
+
+                    dialogResult = this.TaskDialog.ShowDialog(this, parameters);
                 }
 
                 switch (dialogResult)
                 {
+                    case DialogResult.OK:
+                        result.Add(file);
+                        break;
+
                     case DialogResult.Ignore:
                         //
                         // Skip this file.
                         //
-
-                        // TODO: update progress
-
-                        continue;
+                        break;
 
                     case DialogResult.Cancel:
-                        return;
+                        return Array.Empty<FileInfo>();
                 }
+            }
 
-                //
-                // Copy file, and overwrite if necessary.
-                //
+            return result;
+        }
 
-                try
+        /// <summary>
+        /// Paste files to current directory.
+        /// </summary>
+        internal void PasteFiles(IDataObject dataObject) // TODO: test
+        {
+            Debug.Assert(this.navigationState != null);
+            Debug.Assert(this.currentDirectoryContents != null);
+            Debug.Assert(this.currentDirectoryContents!.Count == this.fileList.Items.Count);
+
+            var filesToCopy = GetPastableFiles(dataObject, true);
+            if (!filesToCopy.Any())
+            {
+                return;
+            }
+
+            using (var progressDialog = this.ProgressDialog.StartCopyOperation(
+                this,
+                (ulong)filesToCopy.Count(),
+                (ulong)filesToCopy.Sum(f => f.Length)))
+            {
+                var fileProgress = new Progress<ulong>(
+                    delta => progressDialog.OnBytesCompleted(delta));
+
+                foreach (var file in filesToCopy)
                 {
-                    using (var fileStream = file.OpenRead())
-                    using (this.navigationState.Directory.Create(file.Name, progress))
+                    if (progressDialog.CancellationToken.IsCancellationRequested)
                     {
+                        break;
+                    }
 
+                    try
+                    {
+                        using (var sourceStream = file.OpenRead())
+                        using (var targetStream = this.navigationState!.Directory.Create(
+                            file.Name,
+                            FileAccess.Write,
+                            fileProgress))
+                        {
+                            sourceStream.CopyTo(targetStream);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        var parameters = new TaskDialogParameters(
+                            "Copy files",
+                            file.Name,
+                            e.Message)
+                        {
+                            Icon = TaskDialogIcon.Error
+                        };
 
+                        parameters.Buttons.Add(new TaskDialogCommandLinkButton(
+                            "Skip this file",
+                            DialogResult.Ignore));
+                        parameters.Buttons.Add(TaskDialogStandardButton.Cancel);
+
+                        if (this.TaskDialog.ShowDialog(this, parameters) == DialogResult.Cancel)
+                        {
+                            return;
+                        }
+                    }
+                    finally 
+                    {
+                        progressDialog.OnItemCompleted();
                     }
                 }
-                catch (Exception)
-                {
-                    // TODO: Skip/cancel
-                }
-
-                // TODO: update progress
             }
         }
 
