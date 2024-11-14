@@ -207,13 +207,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 get => string.Empty;
             }
 
-            public Stream Open(FileAccess access, IProgress<ulong> transferProhress)
+            public Stream Open(FileAccess access)
             {
                 throw new InvalidOperationException(
                     "Reading or writing a directory is not allowed");
             }
 
-            public Stream Create(string name, FileAccess access, IProgress<ulong> transferProgress)
+            public Stream Create(string name, FileAccess access)
             {
                 throw new NotImplementedException();
             }
@@ -293,17 +293,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 }
             }
 
-            public Stream Open(
-                FileAccess access, 
-                IProgress<ulong> transferProhress)
+            public Stream Open(FileAccess access)
             {
                 throw new NotImplementedException();
             }
 
             public Stream Create(
                 string name, 
-                FileAccess access, 
-                IProgress<ulong> transferProgress)
+                FileAccess access)
             {
                 throw new NotImplementedException();
             }

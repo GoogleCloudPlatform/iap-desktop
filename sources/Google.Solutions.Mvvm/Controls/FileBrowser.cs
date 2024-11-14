@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.IO;
 using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
@@ -482,14 +483,13 @@ namespace Google.Solutions.Mvvm.Controls
             // Only consider files, ignore directories.
             //
             var files = this.SelectedFiles.Where(f => f.Type.IsFile);
-            var progress = new Progress<ulong>();
 
             var dataObject = new VirtualFileDataObject(files
                 .Select(f => new VirtualFileDataObject.Descriptor(
                     f.Name,
                     f.Size,
                     f.Attributes,
-                    () => f.Open(System.IO.FileAccess.Read, progress)))
+                    () => f.Open(System.IO.FileAccess.Read)))
                 .ToList())
             {
                 //
@@ -619,8 +619,8 @@ namespace Google.Solutions.Mvvm.Controls
                 (ulong)filesToCopy.Count(),
                 (ulong)filesToCopy.Sum(f => f.Length)))
             {
-                var fileProgress = new Progress<ulong>(
-                    delta => progressDialog.OnBytesCompleted(delta));
+                var copyProgress = new Progress<int>(
+                    delta => progressDialog.OnBytesCompleted((ulong)delta));
 
                 foreach (var file in filesToCopy)
                 {
@@ -640,10 +640,9 @@ namespace Google.Solutions.Mvvm.Controls
                                     using (var sourceStream = file.OpenRead())
                                     using (var targetStream = this.navigationState!.Directory.Create(
                                         file.Name,
-                                        FileAccess.Write,
-                                        fileProgress))
+                                        FileAccess.Write))
                                     {
-                                        sourceStream.CopyTo(targetStream);
+                                        sourceStream.CopyTo(targetStream, copyProgress);
                                     }
                                 })
                             .ConfigureAwait(true);
