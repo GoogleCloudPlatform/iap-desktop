@@ -220,13 +220,13 @@ namespace Google.Solutions.Terminal
 
             public Stream Open(FileAccess access)
             {
-                throw new InvalidOperationException(
-                    "Reading or writing a directory is not allowed");
+                throw new UnauthorizedAccessException("/ is a directory");
             }
 
             public Stream Create(string name, FileAccess access)
             {
-                throw new NotImplementedException();
+                throw new UnauthorizedAccessException(
+                    "Reading or writing to the file system root is not supported");
             }
         }
 
