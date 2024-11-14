@@ -197,9 +197,22 @@ namespace Google.Solutions.Terminal.Controls
                     };
                     this.fileBrowserPanel.Controls.Add(this.fileBrowser);
 
+                    var fileSystem = new SftpFileSystem(fsChannel);
+                    this.fileBrowser.Disposed += (_, args) => fileSystem.Dispose();
                     this.fileBrowser.Bind(
-                        new SftpFileSystem(fsChannel), 
+                        fileSystem, 
                         this.bindingContext!);
+
+                    //
+                    // Move focus away from terminal to file browser.
+                    // This implicily causes the root directory to
+                    // be populated.
+                    //
+
+                    this.fileBrowser.Select();
+                    this.fileBrowser.Focus();
+
+
 
                     // TODO: Handle NavigationFailed
                 }
@@ -216,14 +229,6 @@ namespace Google.Solutions.Terminal.Controls
             this.IsFileBrowserVisible = true;
         }
 
-        // TODO: Ctrl+C, V
-        // TODO: Context menu copy/paste
-        // TODO: Drag + drop
-        // TODO: F5/refresh
-        // TODO: tests
-
-        // CFSTR_FILECONTENTS + IStream
-        //  - https://www.codeproject.com/Articles/23139/Transferring-Virtual-Files-to-Windows-Explorer-in
-        //  - https://referencesource.microsoft.com/#PresentationFramework/src/Framework/MS/Internal/IO/Packaging/managedIStream.cs
+        // TODO: paste icon
     }
 }
