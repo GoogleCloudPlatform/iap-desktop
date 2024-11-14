@@ -35,7 +35,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Google.Solutions.Mvvm.Controls.FileBrowser;
 
 namespace Google.Solutions.Mvvm.Test.Controls
 {

@@ -31,11 +31,9 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Google.Solutions.Mvvm.Controls.FileBrowser;
 
 namespace Google.Solutions.Mvvm.Test.Controls
 {
@@ -861,6 +859,74 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     d => d.ShowDialog(browser, It.IsAny<TaskDialogParameters>()),
                     Times.Once);
             }
+        }
+
+        //---------------------------------------------------------------------
+        // PasteFiles.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task PasteFiles_WhenUserCancels()
+        {
+            var cts = new CancellationTokenSource();
+
+            var operation = new Mock<IOperation>();
+            operation
+                .SetupGet(o => o.CancellationToken)
+                .Returns(cts.Token);
+            var progressDialog = new Mock<IOperationProgressDialog>();
+            progressDialog
+                .Setup(d => d.StartCopyOperation(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<ulong>(),
+                    It.IsAny<ulong>()))
+                .Returns(operation.Object);
+
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var sourceFile = new FileInfo(Path.GetTempFileName());
+                var taskDialog = new Mock<ITaskDialog>();
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill,
+                    TaskDialog = taskDialog.Object,
+                    ProgressDialog = progressDialog.Object,
+                };
+                form.Controls.Add(browser);
+                browser.Bind(
+                    CreateFileSystem().Object,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+                Application.DoEvents();
+
+                var dataObject = new DataObject();
+                dataObject.SetData(
+                    DataFormats.FileDrop,
+                    new string[] { sourceFile.FullName });
+
+                cts.Cancel();
+
+                await browser
+                    .PasteFilesAsync(dataObject)
+                    .ConfigureAwait(true);
+
+                operation.Verify(
+                    o => o.OnItemCompleted(),
+                    Times.Never);
+                taskDialog.Verify(
+                    d => d.ShowDialog(browser, It.IsAny<TaskDialogParameters>()),
+                    Times.Never);
+            }
+        }
+
+        [Test]
+        public void PasteFiles_WhenCopyFails_ThenUserCanIgnore()
+        {
+            Assert.Fail();
         }
     }
 }

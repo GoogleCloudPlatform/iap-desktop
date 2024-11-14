@@ -438,11 +438,11 @@ namespace Google.Solutions.Mvvm.Controls
         // Event handlers - paste/drop.
         //---------------------------------------------------------------------
 
-        private void pasteToolStripMenuItem_Click(object sender, EventArgs args)
+        private async void pasteToolStripMenuItem_Click(object sender, EventArgs args)
         {
             try
             {
-                PasteFiles(Clipboard.GetDataObject());
+                await PasteFilesAsync(Clipboard.GetDataObject()).ConfigureAwait(true);
             }
             catch (Exception e)
             {
@@ -457,11 +457,11 @@ namespace Google.Solutions.Mvvm.Controls
                 : DragDropEffects.None;
         }
 
-        private void fileList_DragDrop(object sender, DragEventArgs args)
+        private async void fileList_DragDrop(object sender, DragEventArgs args)
         {
             try
             {
-                PasteFiles(args.Data);
+                await PasteFilesAsync(args.Data).ConfigureAwait(true);
             }
             catch (Exception e)
             {
@@ -599,7 +599,7 @@ namespace Google.Solutions.Mvvm.Controls
         /// <summary>
         /// Paste files to current directory.
         /// </summary>
-        internal void PasteFiles(IDataObject dataObject) // TODO: test
+        internal async Task PasteFilesAsync(IDataObject dataObject) // TODO: test
         {
             Debug.Assert(this.navigationState != null);
             Debug.Assert(this.currentDirectoryContents != null);
@@ -611,6 +611,9 @@ namespace Google.Solutions.Mvvm.Controls
                 return;
             }
 
+            //
+            // Show a progress dialog to track overall progress.
+            //
             using (var progressDialog = this.ProgressDialog.StartCopyOperation(
                 this,
                 (ulong)filesToCopy.Count(),
@@ -628,21 +631,29 @@ namespace Google.Solutions.Mvvm.Controls
 
                     try
                     {
-                        using (var sourceStream = file.OpenRead())
-                        using (var targetStream = this.navigationState!.Directory.Create(
-                            file.Name,
-                            FileAccess.Write,
-                            fileProgress))
-                        {
-                            sourceStream.CopyTo(targetStream);
-                        }
+                        //
+                        // Perform the file copy in the background.
+                        //
+                        await Task
+                            .Run(() =>
+                                {
+                                    using (var sourceStream = file.OpenRead())
+                                    using (var targetStream = this.navigationState!.Directory.Create(
+                                        file.Name,
+                                        FileAccess.Write,
+                                        fileProgress))
+                                    {
+                                        sourceStream.CopyTo(targetStream);
+                                    }
+                                })
+                            .ConfigureAwait(true);
                     }
                     catch (Exception e)
                     {
                         var parameters = new TaskDialogParameters(
                             "Copy files",
                             file.Name,
-                            e.Message)
+                            e.Unwrap().Message)
                         {
                             Icon = TaskDialogIcon.Error
                         };
@@ -663,6 +674,11 @@ namespace Google.Solutions.Mvvm.Controls
                     }
                 }
             }
+
+            //
+            // Refresh as there might be some new files now.
+            //
+            await RefreshAsync().ConfigureAwait(true);
         }
 
         //---------------------------------------------------------------------
