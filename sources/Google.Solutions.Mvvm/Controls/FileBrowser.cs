@@ -641,8 +641,10 @@ namespace Google.Solutions.Mvvm.Controls
                                     using (var sourceStream = file.OpenRead())
                                     using (var targetStream = this.navigationState!.Directory.Create(
                                         file.Name,
+                                        FileMode.Create,
                                         FileAccess.Write))
                                     {
+                                        //TODO: Async, w/ right buffer size
                                         sourceStream.CopyTo(targetStream, copyProgress);
                                     }
                                 })

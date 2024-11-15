@@ -85,7 +85,7 @@ namespace Google.Solutions.Mvvm.Controls
         /// <summary>
         /// Open the file.
         /// </summary>
-        /// <param name="access">type of access</param>
+        /// <param name="access">Type of access</param>
         /// <remarks>Only applicable if the item is a file</remarks>
         Stream Open(FileAccess access);
 
@@ -93,10 +93,12 @@ namespace Google.Solutions.Mvvm.Controls
         /// Create or open a file.
         /// </summary>
         /// <param name="name">Name of the file</param>
-        /// <param name="access">type of access</param>
+        /// <param name="mode">Defines whether to create or open a file</param>
+        /// <param name="access">Type of access</param>
         /// <remarks>Only applicable if the item is a directory</remarks>
         Stream Create(
             string name,
+            FileMode mode,
             FileAccess access);
     }
 }
