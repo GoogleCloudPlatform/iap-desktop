@@ -47,7 +47,9 @@ namespace Google.Solutions.Ssh
         BlockSpecial = 0x6000,
         Regular = 0x8000,
         SymbolicLink = 0xa000,
-        Socket = 0xc000
+        Socket = 0xc000,
+
+        None = 0x0,
     }
 
     public static class FilePermissionExtensions

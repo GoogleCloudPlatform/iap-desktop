@@ -224,14 +224,13 @@ namespace Google.Solutions.Ssh
 
         internal async Task<TResult> RunThrowingOperationAsync<TResult>(
             Func<Libssh2AuthenticatedSession, TResult> sendOperation)
-            where TResult : class
         {
             //
             // Some operations (such as SFTP operations) might throw 
             // exceptions, and these need to be passed thru to the caller
             // (as opposed to letting them bubble up to OnReceiveError).
             //
-            TResult? result = null;
+            TResult result = default;
             Exception? exception = null;
 
             await RunSendOperationAsync(

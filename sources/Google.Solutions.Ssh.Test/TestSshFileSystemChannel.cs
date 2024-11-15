@@ -27,6 +27,8 @@ using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System;
 using System.IO;
+using System.Runtime.Remoting.Channels;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -145,15 +147,16 @@ namespace Google.Solutions.Ssh.Test
         }
 
         //---------------------------------------------------------------------
-        // UploadFile.
+        // CreateFile.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task UploadFile_WhenFileDoesNotExistYet_ThenUploadFileSucceeds(
+        public async Task CreateFile_CreateNew_WhenFileExists(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var endpoint = await GetPublicSshEndpointAsync(instance)
+                .ConfigureAwait(false);
             var credential = await CreateAsymmetricKeyCredentialAsync(
                     instance,
                     SshKeyType.Rsa3072)
@@ -168,69 +171,30 @@ namespace Google.Solutions.Ssh.Test
                     .ConnectAsync()
                     .ConfigureAwait(false);
 
-                var channel = await connection.OpenFileSystemAsync()
-                    .ConfigureAwait(false);
-
-                var fileName = $"{Guid.NewGuid()}.txt";
-                using (var data = CreateStream("This is some test data"))
+                using (var channel = await connection
+                    .OpenFileSystemAsync()
+                    .ConfigureAwait(false))
+                using (var bufferStream = new MemoryStream())
                 {
-                    await channel.UploadFileAsync(
-                            fileName,
-                            data,
-                            LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
-                            FilePermissions.OtherRead | FilePermissions.OwnerWrite,
-                            new Progress<uint>(),
-                            CancellationToken.None)
-                        .ConfigureAwait(false);
-                }
-            }
-        }
-
-        [Test]
-        public async Task UploadFile_WhenFileExists_ThenUploadFileThrowsException(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var credential = await CreateAsymmetricKeyCredentialAsync(
-                    instance,
-                    SshKeyType.Rsa3072)
-                .ConfigureAwait(false);
-
-            using (var connection = new SshConnection(
-                endpoint,
-                credential,
-                new KeyboardInteractiveHandler()))
-            {
-                await connection
-                    .ConnectAsync()
-                    .ConfigureAwait(false);
-
-                var channel = await connection.OpenFileSystemAsync()
-                    .ConfigureAwait(false);
-
-                using (var data = CreateStream("This is some test data"))
-                {
-                    SshAssert.ThrowsAggregateExceptionWithError(
-                        LIBSSH2_FX_ERROR.PERMISSION_DENIED,
-                        () => channel.UploadFileAsync(
+                    ExceptionAssert.ThrowsAggregateException<Libssh2SftpException>(
+                        () => channel
+                            .CreateFileAsync(
                                 "/etc/passwd",
-                                data,
-                                LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
-                                FilePermissions.OtherRead | FilePermissions.OwnerWrite,
-                                new Progress<uint>(),
-                                CancellationToken.None)
+                                FileMode.CreateNew,
+                                FileAccess.Read,
+                                FilePermissions.None)
                             .Wait());
                 }
             }
         }
 
         [Test]
-        public async Task UploadFile_WhenUploadCancelled_ThenUploadFileThrowsException(
+        public async Task CreateFile_CreateNew(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var endpoint = await GetPublicSshEndpointAsync(instance)
+                .ConfigureAwait(false);
             var credential = await CreateAsymmetricKeyCredentialAsync(
                     instance,
                     SshKeyType.Rsa3072)
@@ -245,141 +209,76 @@ namespace Google.Solutions.Ssh.Test
                     .ConnectAsync()
                     .ConfigureAwait(false);
 
-                var channel = await connection.OpenFileSystemAsync()
-                    .ConfigureAwait(false);
-
-                var fileName = $"{Guid.NewGuid()}.txt";
-                using (var cts = new CancellationTokenSource())
-                using (var data = CreateStream("This is some test data"))
+                using (var channel = await connection
+                    .OpenFileSystemAsync()
+                    .ConfigureAwait(false))
                 {
-                    cts.Cancel();
+                    var tempFile = $"{Guid.NewGuid()}.txt";
 
-                    ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
-                        () => channel.UploadFileAsync(
-                                fileName,
-                                data,
-                                LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
-                                FilePermissions.OtherRead | FilePermissions.OwnerWrite,
-                                new Progress<uint>(),
-                                cts.Token)
-                            .Wait());
-                }
-            }
-        }
+                    //
+                    // Write to temp file.
+                    //
+                    using (var outputStream = await channel
+                        .CreateFileAsync(
+                            tempFile,
+                            FileMode.Create,
+                            FileAccess.Write,
+                            FilePermissions.OwnerWrite | FilePermissions.OwnerRead)
+                        .ConfigureAwait(false))
+                    {
+                        Assert.IsTrue(outputStream.CanWrite);
+                        Assert.IsFalse(outputStream.CanRead);
+                        Assert.IsFalse(outputStream.CanSeek);
 
-        //---------------------------------------------------------------------
-        // DownloadFile.
-        //---------------------------------------------------------------------
+                        Assert.Throws<NotSupportedException>(
+                            () => outputStream.Read(new byte[1], 0, 1));
+                        Assert.Throws<NotSupportedException>(
+                            () => outputStream.Write(new byte[1], 0, 1));
+                        ExceptionAssert.ThrowsAggregateException<NotSupportedException>(
+                            () => outputStream.ReadAsync(new byte[1], 0, 1).Wait());
 
-        [Test]
-        public async Task DownloadFile_WhenFileExists_ThenDownloadFileSucceeds(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var credential = await CreateAsymmetricKeyCredentialAsync(
-                    instance,
-                    SshKeyType.Rsa3072)
-                .ConfigureAwait(false);
+                        var data = Encoding.ASCII.GetBytes("'Some data'");
+                        await outputStream
+                            .WriteAsync(data, 1, data.Length - 2)
+                            .ConfigureAwait(false);
+                    }
 
-            using (var connection = new SshConnection(
-                endpoint,
-                credential,
-                new KeyboardInteractiveHandler()))
-            {
-                await connection
-                    .ConnectAsync()
-                    .ConfigureAwait(false);
+                    //
+                    // Read back.
+                    //
+                    using (var inputStream = await channel
+                        .CreateFileAsync(
+                            tempFile,
+                            FileMode.Open,
+                            FileAccess.Read,
+                            FilePermissions.None)
+                        .ConfigureAwait(false))
+                    {
+                        Assert.IsTrue(inputStream.CanRead);
+                        Assert.IsFalse(inputStream.CanWrite);
+                        Assert.IsFalse(inputStream.CanSeek);
 
-                var channel = await connection.OpenFileSystemAsync()
-                    .ConfigureAwait(false);
+                        Assert.Throws<NotSupportedException>(
+                            () => inputStream.Read(new byte[1], 0, 1));
+                        Assert.Throws<NotSupportedException>(
+                            () => inputStream.Write(new byte[1], 0, 1));
+                        ExceptionAssert.ThrowsAggregateException<NotSupportedException>(
+                            () => inputStream.WriteAsync(new byte[1], 0, 1).Wait());
 
-                using (var data = new MemoryStream())
-                {
-                    await channel.DownloadFileAsync(
-                            "/etc/passwd",
-                            data,
-                            new Progress<uint>(),
-                            CancellationToken.None)
-                        .ConfigureAwait(false);
+                        var buffer = new byte[1024];
+                        var bytesRead = await inputStream
+                            .ReadAsync(buffer, 1, buffer.Length - 1)
+                            .ConfigureAwait(false);
 
-                    Assert.AreNotEqual(0, data.Length);
-                }
-            }
-        }
+                        Assert.AreEqual(
+                            "Some data",
+                            Encoding.ASCII.GetString(buffer, 1, bytesRead));
 
-        [Test]
-        public async Task DownloadFile_WhenFileDoesNotExist_ThenDownloadFileThrowsException(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var credential = await CreateAsymmetricKeyCredentialAsync(
-                    instance,
-                    SshKeyType.Rsa3072)
-                .ConfigureAwait(false);
-
-            using (var connection = new SshConnection(
-                endpoint,
-                credential,
-                new KeyboardInteractiveHandler()))
-            {
-                await connection
-                    .ConnectAsync()
-                    .ConfigureAwait(false);
-
-                var channel = await connection.OpenFileSystemAsync()
-                    .ConfigureAwait(false);
-
-                using (var data = new MemoryStream())
-                {
-                    SshAssert.ThrowsAggregateExceptionWithError(
-                        LIBSSH2_FX_ERROR.NO_SUCH_FILE,
-                        () => channel.DownloadFileAsync(
-                                "/this/file-does-not-exist.txt",
-                                data,
-                                new Progress<uint>(),
-                                CancellationToken.None)
-                            .Wait());
-                }
-            }
-        }
-
-        [Test]
-        public async Task DownloadFile_WhenDownloadCancelled_ThenDownloadFileThrowsException(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var instance = await instanceLocatorTask;
-            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
-            var credential = await CreateAsymmetricKeyCredentialAsync(
-                    instance,
-                    SshKeyType.Rsa3072)
-                .ConfigureAwait(false);
-
-            using (var connection = new SshConnection(
-                endpoint,
-                credential,
-                new KeyboardInteractiveHandler()))
-            {
-                await connection
-                    .ConnectAsync()
-                    .ConfigureAwait(false);
-
-                var channel = await connection.OpenFileSystemAsync()
-                    .ConfigureAwait(false);
-
-                using (var cts = new CancellationTokenSource())
-                using (var data = new MemoryStream())
-                {
-                    cts.Cancel();
-
-                    ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
-                        () => channel.DownloadFileAsync(
-                                "/etc/passwd",
-                                data,
-                                new Progress<uint>(),
-                                cts.Token)
-                            .Wait());
+                        bytesRead = await inputStream
+                            .ReadAsync(buffer, 0, buffer.Length)
+                            .ConfigureAwait(false);
+                        Assert.AreEqual(0, bytesRead);
+                    }
                 }
             }
         }

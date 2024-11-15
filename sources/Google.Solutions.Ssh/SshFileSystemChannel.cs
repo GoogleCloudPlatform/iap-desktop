@@ -25,7 +25,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh
@@ -35,28 +34,35 @@ namespace Google.Solutions.Ssh
     /// </summary>
     public class SshFileSystemChannel : SshChannelBase
     {
-        //
-        // SFTP effectively limits the size of a packet to 32 KB, see
-        // <https://datatracker.ietf.org/doc/html/draft-ietf-secsh-filexfer-13#section-4>
-        //
-        // libssh2 uses a slightly smaller limit of 30000 bytes 
-        // (MAX_SFTP_OUTGOING_SIZE, MAX_SFTP_READ_SIZE).
-        // Using a buffer larger than 30000 bytes therefore doen't
-        // provide much value.
-        //
-        // Note that IAP/SSH Relay uses 16KB as maximum message size,
-        // so a 32000 byte packet will be split into 2 messages. 
-        // That's still more efficient than using a SFTP packet
-        // size below 16 KB as it at least limits the number of 
-        // SSH_FXP_STATUS packets that need to be exchanged.
-        //
-        internal const int CopyBufferSize = 30000;
+        /// <summary>
+        /// Recommended buffer size to use for reading from, or
+        /// writing to a stream.
+        ///
+        /// SFTP effectively limits the size of a packet to 32 KB, see
+        /// <https://datatracker.ietf.org/doc/html/draft-ietf-secsh-filexfer-13#section-4>
+        ///
+        /// libssh2 uses a slightly smaller limit of 30000 bytes 
+        /// (MAX_SFTP_OUTGOING_SIZE, MAX_SFTP_READ_SIZE).
+        /// Using a buffer larger than 30000 bytes therefore doen't
+        /// provide much value.
+        ///
+        /// Note that IAP/SSH Relay uses 16KB as maximum message size,
+        /// so a 32000 byte packet will be split into 2 messages. 
+        /// That's still more efficient than using a SFTP packet
+        /// size below 16 KB as it at least limits the number of 
+        /// SSH_FXP_STATUS packets that need to be exchanged.
+        ///
+        /// </summary>
+        public const int BufferSize = 30000;
 
         /// <summary>
         /// Channel handle, must only be accessed on worker thread.
         /// </summary>
         private readonly Libssh2SftpChannel nativeChannel;
 
+        /// <summary>
+        /// Connection used by this channel.
+        /// </summary>
         public override SshConnection Connection { get; }
 
         internal SshFileSystemChannel(
@@ -95,115 +101,73 @@ namespace Google.Solutions.Ssh
         // Publics.
         //---------------------------------------------------------------------
 
+        /// <summary>
+        /// List contents of a directory.
+        /// </summary>
         public Task<IReadOnlyCollection<Libssh2SftpFileInfo>> ListFilesAsync(
             string remotePath)
         {
             Precondition.ExpectNotEmpty(remotePath, nameof(remotePath));
 
-            return this.Connection
-                .RunThrowingOperationAsync(c =>
-                {
-                    Debug.Assert(this.Connection.IsRunningOnWorkerThread);
+            return this.Connection.RunThrowingOperationAsync(c =>
+            {
+                Debug.Assert(this.Connection.IsRunningOnWorkerThread);
 
-                    using (c.Session.AsBlocking())
-                    {
-                        return this.nativeChannel.ListFiles(remotePath);
-                    }
-                });
+                using (c.Session.AsBlocking())
+                {
+                    return this.nativeChannel.ListFiles(remotePath);
+                }
+            });
         }
 
-        public Task UploadFileAsync(
+        /// <summary>
+        /// Create or open a file.
+        /// </summary>
+        public Task<Stream> CreateFileAsync(
             string remotePath,
-            Stream source,
-            LIBSSH2_FXF_FLAGS flags,
-            FilePermissions permissions,
-            IProgress<uint> progress,
-            CancellationToken cancellationToken)
+            FileMode mode,
+            FileAccess access,
+            FilePermissions permissions)
         {
             Precondition.ExpectNotEmpty(remotePath, nameof(remotePath));
-            Precondition.ExpectNotNull(source, nameof(source));
-            Precondition.ExpectNotNull(progress, nameof(progress));
 
-            Debug.Assert(source.CanRead);
+            var flags = mode switch
+            {
+                FileMode.Create => LIBSSH2_FXF_FLAGS.CREAT,
+                FileMode.CreateNew => LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.EXCL,
+                FileMode.OpenOrCreate => LIBSSH2_FXF_FLAGS.CREAT,
+                FileMode.Open => (LIBSSH2_FXF_FLAGS)0,
+                FileMode.Truncate => LIBSSH2_FXF_FLAGS.TRUNC,
+                FileMode.Append => LIBSSH2_FXF_FLAGS.APPEND,
+                
+                _ => throw new ArgumentException(nameof(mode)),
+            };
 
-            return this.Connection
-                .RunThrowingOperationAsync<object>(c =>
+            if (access.HasFlag(FileAccess.Read))
+            {
+                flags |= LIBSSH2_FXF_FLAGS.READ;
+            }
+
+            if (access.HasFlag(FileAccess.Write))
+            {
+                flags |= LIBSSH2_FXF_FLAGS.WRITE;
+            }
+
+            return this.Connection.RunThrowingOperationAsync<Stream>(c =>
+            {
+                Debug.Assert(this.Connection.IsRunningOnWorkerThread);
+
+                using (c.Session.AsBlocking())
                 {
-                    Debug.Assert(this.Connection.IsRunningOnWorkerThread);
-
-                    //
-                    // Upload the entire file as one operation, possibly
-                    // blocking other channels.
-                    //
-                    // Temporarily disable the timeout.
-                    //
-                    using (c.Session.AsBlocking())
-                    using (var file = this.nativeChannel.CreateFile(
+                    return new SshFileStream(
+                        this.Connection,
+                        this.nativeChannel.CreateFile(
                             remotePath,
                             flags,
-                            permissions))
-                    {
-                        var buffer = new byte[CopyBufferSize];
-                        int bytesRead;
-
-                        while ((bytesRead = source.Read(buffer, 0, buffer.Length)) > 0)
-                        {
-                            cancellationToken.ThrowIfCancellationRequested();
-
-                            file.Write(buffer, bytesRead);
-
-                            progress.Report((uint)bytesRead);
-                        }
-
-                        return bytesRead;
-                    }
-                });
-        }
-
-        public Task DownloadFileAsync(
-            string remotePath,
-            Stream target,
-            IProgress<uint> progress,
-            CancellationToken cancellationToken)
-        {
-            Precondition.ExpectNotEmpty(remotePath, nameof(remotePath));
-            Precondition.ExpectNotNull(target, nameof(target));
-            Precondition.ExpectNotNull(progress, nameof(progress));
-
-            Debug.Assert(target.CanWrite);
-
-            return this.Connection
-                .RunThrowingOperationAsync<object>(c =>
-                {
-                    Debug.Assert(this.Connection.IsRunningOnWorkerThread);
-
-                    //
-                    // Upload the entire file as one operation, possibly
-                    // blocking other channels.
-                    //
-                    // Temporarily disable the timeout.
-                    //
-                    using (c.Session.AsBlocking())
-                    using (var file = this.nativeChannel.CreateFile(
-                            remotePath,
-                            LIBSSH2_FXF_FLAGS.READ,
-                            (FilePermissions)0))
-                    {
-                        var buffer = new byte[CopyBufferSize];
-                        uint bytesRead;
-
-                        while ((bytesRead = file.Read(buffer)) > 0)
-                        {
-                            cancellationToken.ThrowIfCancellationRequested();
-
-                            target.Write(buffer, 0, (int)bytesRead);
-
-                            progress.Report((uint)bytesRead);
-                        }
-
-                        return bytesRead;
-                    }
-                });
+                            permissions),
+                        flags);
+                }
+            });
         }
     }
 }

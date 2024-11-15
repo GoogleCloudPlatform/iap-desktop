@@ -21,10 +21,13 @@
 
 
 using Google.Solutions.Common.IO;
+using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Test.IO
 {
@@ -36,6 +39,30 @@ namespace Google.Solutions.Common.Test.IO
         //--------------------------------------------------------------------
 
         [Test]
+        public void CopyTo_WhenSourceNotReadable()
+        {
+            var sourceStream = new Mock<Stream>();
+            sourceStream.SetupGet(s => s.CanRead).Returns(false);
+
+            Assert.Throws<NotSupportedException>(
+                () => sourceStream.Object.CopyTo(
+                new MemoryStream(),
+                new Mock<IProgress<int>>().Object));
+        }
+
+        [Test]
+        public void CopyTo_WhenDestinationNotWritable()
+        {
+            var destinationStream = new Mock<Stream>();
+            destinationStream.SetupGet(s => s.CanWrite).Returns(false);
+
+            Assert.Throws<NotSupportedException>(
+                () => new MemoryStream().CopyTo(
+                destinationStream.Object,
+                new Mock<IProgress<int>>().Object));
+        }
+
+        [Test]
         public void CopyTo_ReportsProgress()
         {
             var source = new byte[StreamExtensions.DefaultBufferSize * 3 + 1];
@@ -45,6 +72,53 @@ namespace Google.Solutions.Common.Test.IO
             sourceStream.CopyTo(
                 new MemoryStream(),
                 progress.Object);
+
+            progress.Verify(p => p.Report(It.IsAny<int>()), Times.AtLeast(4));
+        }
+
+        //--------------------------------------------------------------------
+        // CopyToAsync.
+        //--------------------------------------------------------------------
+
+        [Test]
+        public void CopyToAsync_WhenSourceNotReadable()
+        {
+            var sourceStream = new Mock<Stream>();
+            sourceStream.SetupGet(s => s.CanRead).Returns(false);
+
+            ExceptionAssert.ThrowsAggregateException<NotSupportedException>(
+                () => sourceStream.Object.CopyToAsync(
+                new MemoryStream(),
+                new Mock<IProgress<int>>().Object,
+                CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public void CopyToAsync_WhenDestinationNotWritable()
+        {
+            var destinationStream = new Mock<Stream>();
+            destinationStream.SetupGet(s => s.CanWrite).Returns(false);
+
+            ExceptionAssert.ThrowsAggregateException<NotSupportedException>(
+                () => new MemoryStream().CopyToAsync(
+                destinationStream.Object,
+                new Mock<IProgress<int>>().Object,
+                CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task CopyToAsync_ReportsProgress()
+        {
+            var source = new byte[StreamExtensions.DefaultBufferSize * 3 + 1];
+            var sourceStream = new MemoryStream(source);
+
+            var progress = new Mock<IProgress<int>>();
+            await sourceStream
+                .CopyToAsync(
+                    new MemoryStream(),
+                    progress.Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             progress.Verify(p => p.Report(It.IsAny<int>()), Times.AtLeast(4));
         }
