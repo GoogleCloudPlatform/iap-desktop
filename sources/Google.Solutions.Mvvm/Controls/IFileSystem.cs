@@ -40,6 +40,28 @@ namespace Google.Solutions.Mvvm.Controls
         /// Returns an empty collection if the directory is empty.
         /// </summary>
         Task<ObservableCollection<IFileItem>> ListFilesAsync(IFileItem directory);
+
+        /// <summary>
+        /// Open a file for reading or writing.
+        /// </summary>
+        /// <param name="directory">Parent directory</param>
+        /// <param name="name">Name of the file</param>
+        /// <param name="mode">Defines whether to create or open a file</param>
+        /// <param name="access">Type of access</param>
+        Task<Stream> OpenFileAsync(
+            IFileItem directory,
+            string name,
+            FileMode mode,
+            FileAccess access);
+
+        /// <summary>
+        /// Open a file for reading or writing.
+        /// </summary>
+        /// <param name="file">File to open</param>
+        /// <param name="access">Type of access</param>
+        Task<Stream> OpenFileAsync(
+            IFileItem file,
+            FileAccess access);
     }
 
     /// <summary>
@@ -81,24 +103,5 @@ namespace Google.Solutions.Mvvm.Controls
         /// Gets or sets the expansion state.
         /// </summary>
         bool IsExpanded { get; set; }
-
-        /// <summary>
-        /// Open the file.
-        /// </summary>
-        /// <param name="access">Type of access</param>
-        /// <remarks>Only applicable if the item is a file</remarks>
-        Stream Open(FileAccess access);
-
-        /// <summary>
-        /// Create or open a file.
-        /// </summary>
-        /// <param name="name">Name of the file</param>
-        /// <param name="mode">Defines whether to create or open a file</param>
-        /// <param name="access">Type of access</param>
-        /// <remarks>Only applicable if the item is a directory</remarks>
-        Stream Create(
-            string name,
-            FileMode mode,
-            FileAccess access);
     }
 }

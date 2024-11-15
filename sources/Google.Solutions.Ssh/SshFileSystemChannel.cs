@@ -140,7 +140,7 @@ namespace Google.Solutions.Ssh
                 FileMode.Truncate => LIBSSH2_FXF_FLAGS.TRUNC,
                 FileMode.Append => LIBSSH2_FXF_FLAGS.APPEND,
                 
-                _ => throw new ArgumentException(nameof(mode)),
+                _ => throw new ArgumentException("The file mode is invalid"),
             };
 
             if (access.HasFlag(FileAccess.Read))

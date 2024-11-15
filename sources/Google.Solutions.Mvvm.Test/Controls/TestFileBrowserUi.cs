@@ -105,6 +105,34 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 return (new ObservableCollection<IFileItem>(directories.Concat(files)));
             }
 
+            public Task<Stream> OpenFileAsync(
+                IFileItem file,
+                FileAccess access)
+            {
+                var localFile = (LocalFileItem)file;
+                Precondition.Expect(localFile.IsFile, "Not a file");
+
+                return Task.FromResult<Stream>(File.Open(
+                    localFile.FileInfo.FullName,
+                    FileMode.Open,
+                    access));
+            }
+
+            public Task<Stream> OpenFileAsync(
+                IFileItem directory,
+                string name,
+                FileMode mode,
+                FileAccess access)
+            {
+                var localDirectory = (LocalFileItem)directory;
+                Precondition.Expect(!localDirectory.IsFile, "Not a directory");
+
+                return Task.FromResult<Stream>(File.Open(
+                    System.IO.Path.Combine(localDirectory.FileInfo.FullName, name),
+                    FileMode.OpenOrCreate,
+                    access));
+            }
+
             public void Dispose()
             {
             }
@@ -171,25 +199,6 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     this.expanded = value;
                     RaisePropertyChange();
                 }
-            }
-
-            public Stream Open(FileAccess access)
-            {
-                Precondition.Expect(this.IsFile, "Not a file");
-                return File.Open(this.FileInfo.FullName, FileMode.Open, access);
-            }
-
-            public Stream Create(
-                string name,
-                FileMode mode,
-                FileAccess access)
-            {
-                Precondition.Expect(!this.IsFile, "Not a directory");
-
-                return File.Open(
-                    System.IO.Path.Combine(this.FileInfo.FullName, name), 
-                    FileMode.OpenOrCreate,
-                    access);
             }
         }
     }

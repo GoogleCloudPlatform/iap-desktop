@@ -165,6 +165,24 @@ namespace Google.Solutions.Terminal
             return new ObservableCollection<IFileItem>(filteredSftpFiles);
         }
 
+        public Task<Stream> OpenFileAsync(
+            IFileItem file,
+            FileAccess access)
+        {
+            Precondition.Expect(file.Type.IsFile, $"{file.Name} is not a file");
+            throw new NotImplementedException();
+        }
+
+        public Task<Stream> OpenFileAsync(
+            IFileItem directory,
+            string name,
+            FileMode mode,
+            FileAccess access)
+        {
+            Precondition.Expect(!directory.Type.IsFile, $"{directory.Name} is not a directory");
+            throw new NotImplementedException();
+        }
+
         //---------------------------------------------------------------------
         // IDisposable.
         //---------------------------------------------------------------------
@@ -216,20 +234,6 @@ namespace Google.Solutions.Terminal
             public string Path
             {
                 get => string.Empty;
-            }
-
-            public Stream Open(FileAccess access)
-            {
-                throw new UnauthorizedAccessException("/ is a directory");
-            }
-
-            public Stream Create(
-                string name,
-                FileMode mode, 
-                FileAccess access)
-            {
-                throw new UnauthorizedAccessException(
-                    "Reading or writing to the file system root is not supported");
             }
         }
 
@@ -305,21 +309,6 @@ namespace Google.Solutions.Terminal
 
                     return attributes;
                 }
-            }
-
-            public Stream Open(FileAccess access)
-            {
-                Precondition.Expect(this.Type.IsFile, $"{this.Name} is not a file");
-                throw new NotImplementedException();
-            }
-
-            public Stream Create(
-                string name,
-                FileMode mode,
-                FileAccess access)
-            {
-                Precondition.Expect(!this.Type.IsFile, $"{this.Name} is not a directory");
-                throw new NotImplementedException();
             }
         }
     }

@@ -485,6 +485,8 @@ namespace Google.Solutions.Mvvm.Controls
         /// </summary>
         internal VirtualFileDataObject CopySelectedFiles()
         {
+            Precondition.ExpectNotNull(this.fileSystem, nameof(this.fileSystem));
+
             //
             // Only consider files, ignore directories.
             //
@@ -495,7 +497,16 @@ namespace Google.Solutions.Mvvm.Controls
                     f.Name,
                     f.Size,
                     f.Attributes,
-                    () => f.Open(System.IO.FileAccess.Read)))
+                    () => {
+                        //
+                        // NB. We're in a synchronous execution path here,
+                        //     so we can't open the file asynchronously.
+                        // TODO: On background thread here?
+                        //
+                        return this.fileSystem!
+                            .OpenFileAsync(f, FileAccess.Read)
+                            .Result;
+                        }))
                 .ToList())
             {
                 //
@@ -607,7 +618,9 @@ namespace Google.Solutions.Mvvm.Controls
         /// </summary>
         internal async Task PasteFilesAsync(IDataObject dataObject)
         {
-            Debug.Assert(this.navigationState != null);
+            Precondition.ExpectNotNull(this.fileSystem, nameof(this.fileSystem));
+            Precondition.ExpectNotNull(this.navigationState, nameof(this.navigationState));
+
             Debug.Assert(this.currentDirectoryContents != null);
             Debug.Assert(this.currentDirectoryContents!.Count == this.fileList.Items.Count);
 
@@ -644,10 +657,13 @@ namespace Google.Solutions.Mvvm.Controls
                             .Run(async () =>
                                 {
                                     using (var sourceStream = file.OpenRead())
-                                    using (var targetStream = this.navigationState!.Directory.Create(
-                                        file.Name,
-                                        FileMode.Create,
-                                        FileAccess.Write))
+                                    using (var targetStream = await this.fileSystem!
+                                        .OpenFileAsync(
+                                            this.navigationState!.Directory,
+                                            file.Name,
+                                            FileMode.Create,
+                                            FileAccess.Write)
+                                        .ConfigureAwait(false))
                                     {
                                         await sourceStream
                                             .CopyToAsync(
