@@ -121,7 +121,7 @@ namespace Google.Solutions.Ssh.Native
     /// FTP File Transfer Flags.
     /// </summary>
     [Flags]
-    public enum LIBSSH2_FXF_FLAGS : Int32
+    internal enum LIBSSH2_FXF_FLAGS : Int32
     {
         READ = 0x00000001,
         WRITE = 0x00000002,
@@ -837,8 +837,13 @@ namespace Google.Solutions.Ssh.Native
     {
         protected override void ProtectedReleaseHandle()
         {
-            var result = (LIBSSH2_ERROR)NativeMethods.libssh2_channel_free(
-                this.handle);
+            LIBSSH2_ERROR result;
+
+            while ((result = (LIBSSH2_ERROR)
+                NativeMethods.libssh2_channel_free(this.handle))
+                == LIBSSH2_ERROR.EAGAIN)
+            { };
+
             Debug.Assert(result == LIBSSH2_ERROR.NONE);
         }
     }
@@ -850,8 +855,13 @@ namespace Google.Solutions.Ssh.Native
     {
         protected override void ProtectedReleaseHandle()
         {
-            var result = (LIBSSH2_ERROR)NativeMethods.libssh2_sftp_shutdown(
-                this.handle);
+            LIBSSH2_ERROR result;
+
+            while ((result = (LIBSSH2_ERROR)
+                NativeMethods.libssh2_sftp_shutdown(this.handle))
+                == LIBSSH2_ERROR.EAGAIN)
+            { };
+
             Debug.Assert(result == LIBSSH2_ERROR.NONE);
         }
     }
@@ -862,8 +872,13 @@ namespace Google.Solutions.Ssh.Native
     {
         protected override void ProtectedReleaseHandle()
         {
-            var result = (LIBSSH2_ERROR)NativeMethods.libssh2_sftp_close_handle(
-                this.handle);
+            LIBSSH2_ERROR result;
+
+            while ((result = (LIBSSH2_ERROR)
+                NativeMethods.libssh2_sftp_close_handle(this.handle)) 
+                == LIBSSH2_ERROR.EAGAIN) 
+            { };
+
             Debug.Assert(result == LIBSSH2_ERROR.NONE);
         }
     }
