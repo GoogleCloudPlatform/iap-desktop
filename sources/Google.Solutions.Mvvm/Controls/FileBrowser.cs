@@ -57,6 +57,11 @@ namespace Google.Solutions.Mvvm.Controls
         internal ITaskDialog TaskDialog { get; set; } = new TaskDialog();
         internal IOperationProgressDialog ProgressDialog { get; set; } = new OperationProgressDialog();
 
+        /// <summary>
+        /// Buffer size for stream copy operations.
+        /// </summary>
+        public int StreamCopyBufferSize { get; set; } = StreamExtensions.DefaultBufferSize;
+
         //---------------------------------------------------------------------
         // Privates.
         //---------------------------------------------------------------------
@@ -636,7 +641,7 @@ namespace Google.Solutions.Mvvm.Controls
                         // Perform the file copy in the background.
                         //
                         await Task
-                            .Run(() =>
+                            .Run(async () =>
                                 {
                                     using (var sourceStream = file.OpenRead())
                                     using (var targetStream = this.navigationState!.Directory.Create(
@@ -644,8 +649,13 @@ namespace Google.Solutions.Mvvm.Controls
                                         FileMode.Create,
                                         FileAccess.Write))
                                     {
-                                        //TODO: Async, w/ right buffer size
-                                        sourceStream.CopyTo(targetStream, copyProgress);
+                                        await sourceStream
+                                            .CopyToAsync(
+                                                targetStream,
+                                                copyProgress,
+                                                this.StreamCopyBufferSize,
+                                                progressDialog.CancellationToken)
+                                            .ConfigureAwait(false);
                                     }
                                 })
                             .ConfigureAwait(true);

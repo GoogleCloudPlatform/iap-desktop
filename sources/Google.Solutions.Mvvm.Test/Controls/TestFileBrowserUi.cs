@@ -180,7 +180,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
 
             public Stream Create(
-                string name, 
+                string name,
+                FileMode mode,
                 FileAccess access)
             {
                 Precondition.Expect(!this.IsFile, "Not a directory");

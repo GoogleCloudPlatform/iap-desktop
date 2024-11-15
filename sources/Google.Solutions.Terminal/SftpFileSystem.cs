@@ -223,7 +223,10 @@ namespace Google.Solutions.Terminal
                 throw new UnauthorizedAccessException("/ is a directory");
             }
 
-            public Stream Create(string name, FileAccess access)
+            public Stream Create(
+                string name,
+                FileMode mode, 
+                FileAccess access)
             {
                 throw new UnauthorizedAccessException(
                     "Reading or writing to the file system root is not supported");
@@ -306,13 +309,16 @@ namespace Google.Solutions.Terminal
 
             public Stream Open(FileAccess access)
             {
+                Precondition.Expect(this.Type.IsFile, $"{this.Name} is not a file");
                 throw new NotImplementedException();
             }
 
             public Stream Create(
-                string name, 
+                string name,
+                FileMode mode,
                 FileAccess access)
             {
+                Precondition.Expect(!this.Type.IsFile, $"{this.Name} is not a directory");
                 throw new NotImplementedException();
             }
         }

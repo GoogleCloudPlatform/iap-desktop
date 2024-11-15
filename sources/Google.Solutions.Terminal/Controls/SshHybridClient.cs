@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Ssh;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -194,6 +195,7 @@ namespace Google.Solutions.Terminal.Controls
                     this.fileBrowser = new FileBrowser()
                     {
                         Dock = DockStyle.Fill,
+                        StreamCopyBufferSize = SshFileSystemChannel.BufferSize,
                     };
                     this.fileBrowserPanel.Controls.Add(this.fileBrowser);
 
