@@ -32,7 +32,7 @@ namespace Google.Solutions.Ssh
     /// <summary>
     /// Channel for interacting with remote file.
     /// </summary>
-    public class SshFileSystemChannel : SshChannelBase
+    public class SftpChannel : SshChannelBase, ISftpChannel
     {
         /// <summary>
         /// Recommended buffer size to use for reading from, or
@@ -65,7 +65,7 @@ namespace Google.Solutions.Ssh
         /// </summary>
         public override SshConnection Connection { get; }
 
-        internal SshFileSystemChannel(
+        internal SftpChannel(
             SshConnection connection,
             Libssh2SftpChannel nativeChannel)
         {
@@ -159,7 +159,7 @@ namespace Google.Solutions.Ssh
 
                 using (c.Session.AsBlocking())
                 {
-                    return new SshFileStream(
+                    return new SftpFileStream(
                         this.Connection,
                         this.nativeChannel.CreateFile(
                             remotePath,

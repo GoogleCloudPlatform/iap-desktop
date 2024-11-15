@@ -320,7 +320,7 @@ namespace Google.Solutions.Ssh
                 .ConfigureAwait(false);
         }
 
-        public async Task<SshFileSystemChannel> OpenFileSystemAsync()
+        public async Task<SftpChannel> OpenFileSystemAsync()
         {
             return await RunSendOperationAsync(
                 session =>
@@ -329,7 +329,7 @@ namespace Google.Solutions.Ssh
 
                     using (session.Session.AsBlocking())
                     {
-                        var channel = new SshFileSystemChannel(
+                        var channel = new SftpChannel(
                             this,
                             session.OpenSftpChannel());
 

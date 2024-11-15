@@ -26,7 +26,6 @@ using Google.Solutions.Platform.Interop;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -44,11 +43,16 @@ namespace Google.Solutions.Terminal
     /// </summary>
     internal sealed class SftpFileSystem : IFileSystem, IDisposable
     {
-        private readonly Func<string, Task<IReadOnlyCollection<Libssh2SftpFileInfo>>> listRemoteFilesFunc;
         private readonly FileTypeCache fileTypeCache;
-        private readonly IDisposable? channel;
+        private readonly ISftpChannel channel;
 
         private static readonly Regex configFileNamePattern = new Regex("co?ni?f(ig)?$");
+
+        /// <summary>
+        /// Default permissions to apply to new files.
+        /// </summary>
+        public FilePermissions DefaultFilePermissions { get; set; } =
+            FilePermissions.OwnerRead | FilePermissions.OwnerWrite;
 
         internal FileType TranslateFileType(Libssh2SftpFileInfo sftpFile)
         {
@@ -107,25 +111,11 @@ namespace Google.Solutions.Terminal
             }
         }
 
-        internal SftpFileSystem(
-            Func<string, Task<IReadOnlyCollection<Libssh2SftpFileInfo>>> listRemoteFilesFunc)
+        public SftpFileSystem(ISftpChannel channel)
         {
-            this.listRemoteFilesFunc = listRemoteFilesFunc;
+            this.channel = channel.ExpectNotNull(nameof(channel));
             this.fileTypeCache = new FileTypeCache();
-
             this.Root = new SftpRootItem();
-        }
-
-        public SftpFileSystem(SshFileSystemChannel channel)
-            : this((path) => channel.ListFilesAsync(path))
-        {
-            channel.ExpectNotNull(nameof(channel));
-
-            //
-            // Keep reference to channel so that we can
-            // dispose it later.
-            //
-            this.channel = channel;
         }
 
         //---------------------------------------------------------------------
@@ -145,8 +135,8 @@ namespace Google.Solutions.Terminal
                 : directory.Path;
             Debug.Assert(!remotePath.StartsWith("//"));
 
-            var sftpFiles = await this
-                .listRemoteFilesFunc(remotePath)
+            var sftpFiles = await this.channel
+                .ListFilesAsync(remotePath)
                 .ConfigureAwait(false);
 
             //
@@ -165,22 +155,37 @@ namespace Google.Solutions.Terminal
             return new ObservableCollection<IFileItem>(filteredSftpFiles);
         }
 
-        public Task<Stream> OpenFileAsync(
+        public Task<Stream> OpenFileAsync( // TODO: test
             IFileItem file,
             FileAccess access)
         {
             Precondition.Expect(file.Type.IsFile, $"{file.Name} is not a file");
-            throw new NotImplementedException();
+
+            // TODO: translate exceptions?
+
+            return this.channel.CreateFileAsync(
+                file.Path,
+                FileMode.Open,
+                access,
+                FilePermissions.None);
         }
 
-        public Task<Stream> OpenFileAsync(
+        public Task<Stream> OpenFileAsync(// TODO: test
             IFileItem directory,
             string name,
             FileMode mode,
             FileAccess access)
         {
             Precondition.Expect(!directory.Type.IsFile, $"{directory.Name} is not a directory");
-            throw new NotImplementedException();
+            Precondition.Expect(!name.Contains("/"), "Name must not be a path");
+
+            // TODO: translate exceptions?
+
+            return this.channel.CreateFileAsync(
+                $"{directory.Path}/{name}",
+                FileMode.Create,
+                access,
+                DefaultFilePermissions);
         }
 
         //---------------------------------------------------------------------

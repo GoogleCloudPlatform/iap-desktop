@@ -21,6 +21,7 @@
 
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
+using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -33,13 +34,6 @@ namespace Google.Solutions.Terminal.Test
     [TestFixture]
     public class TestSftpFileSystem
     {
-        private static SftpFileSystem CreateFileSystem(params Libssh2SftpFileInfo[] files)
-        {
-            return new SftpFileSystem(
-                path => Task.FromResult<IReadOnlyCollection<Libssh2SftpFileInfo>>(
-                    new ReadOnlyCollection<Libssh2SftpFileInfo>(files)));
-        }
-
         private static Libssh2SftpFileInfo CreateFile(string name, FilePermissions permissions)
         {
             return new Libssh2SftpFileInfo(name, permissions);
@@ -52,7 +46,7 @@ namespace Google.Solutions.Terminal.Test
         [Test]
         public void Root_IsDirectory()
         {
-            using (var fs = CreateFileSystem())
+            using (var fs = new SftpFileSystem(new Mock<ISftpChannel>().Object))
             {
                 var root = fs.Root;
 
@@ -70,11 +64,18 @@ namespace Google.Solutions.Terminal.Test
         [Test]
         public async Task ListFiles_WhenServerReturnsUnorderedList_ThenListFilesReturnsOrderedList()
         {
-            using (var fs = CreateFileSystem(
-                CreateFile("dir-2", FilePermissions.Directory),
-                CreateFile("file-2", FilePermissions.OwnerRead),
-                CreateFile("file-1", FilePermissions.OwnerRead),
-                CreateFile("dir-1", FilePermissions.Directory)))
+            var sftpChannel = new Mock<ISftpChannel>();
+            sftpChannel
+                .Setup(c => c.ListFilesAsync(It.IsAny<string>()))
+                .ReturnsAsync(new[]
+                {
+                    CreateFile("dir-2", FilePermissions.Directory),
+                    CreateFile("file-2", FilePermissions.OwnerRead),
+                    CreateFile("file-1", FilePermissions.OwnerRead),
+                    CreateFile("dir-1", FilePermissions.Directory)
+                });
+
+            using (var fs = new SftpFileSystem(sftpChannel.Object))
             {
                 var files = await fs
                     .ListFilesAsync(fs.Root)
@@ -97,9 +98,16 @@ namespace Google.Solutions.Terminal.Test
         [Test]
         public async Task ListFiles_WhenFileIsDotLink_ThenListFilesIgnoresFile()
         {
-            using (var fs = CreateFileSystem(
-                CreateFile(".", FilePermissions.SymbolicLink),
-                CreateFile("..", FilePermissions.SymbolicLink)))
+            var sftpChannel = new Mock<ISftpChannel>();
+            sftpChannel
+                .Setup(c => c.ListFilesAsync(It.IsAny<string>()))
+                .ReturnsAsync(new[]
+                {
+                    CreateFile(".", FilePermissions.SymbolicLink),
+                    CreateFile("..", FilePermissions.SymbolicLink)
+                });
+
+            using (var fs = new SftpFileSystem(sftpChannel.Object))
             {
                 var files = await fs
                     .ListFilesAsync(fs.Root)
@@ -112,8 +120,15 @@ namespace Google.Solutions.Terminal.Test
         [Test]
         public async Task ListFiles_WhenFileStartsWithDot_ThenListFilesAppliesAttribute()
         {
-            using (var fs = CreateFileSystem(
-                CreateFile(".hidden", FilePermissions.OtherRead)))
+            var sftpChannel = new Mock<ISftpChannel>();
+            sftpChannel
+                .Setup(c => c.ListFilesAsync(It.IsAny<string>()))
+                .ReturnsAsync(new[]
+                {
+                    CreateFile(".hidden", FilePermissions.OtherRead)
+                });
+
+            using (var fs = new SftpFileSystem(sftpChannel.Object))
             {
                 var files = await fs
                     .ListFilesAsync(fs.Root)
@@ -128,8 +143,15 @@ namespace Google.Solutions.Terminal.Test
         [Test]
         public async Task ListFiles_WhenFileIsSymlink_ThenListFilesAppliesAttribute()
         {
-            using (var fs = CreateFileSystem(
-                CreateFile("symlink", FilePermissions.SymbolicLink)))
+            var sftpChannel = new Mock<ISftpChannel>();
+            sftpChannel
+                .Setup(c => c.ListFilesAsync(It.IsAny<string>()))
+                .ReturnsAsync(new[]
+                {
+                    CreateFile("symlink", FilePermissions.SymbolicLink)
+                });
+
+            using (var fs = new SftpFileSystem(sftpChannel.Object))
             {
                 var files = await fs
                     .ListFilesAsync(fs.Root)
@@ -149,8 +171,15 @@ namespace Google.Solutions.Terminal.Test
                 FilePermissions.CharacterDevice,
                 FilePermissions.BlockSpecial)] FilePermissions permissions)
         {
-            using (var fs = CreateFileSystem(
-                CreateFile("devide", FilePermissions.OtherRead | permissions)))
+            var sftpChannel = new Mock<ISftpChannel>();
+            sftpChannel
+                .Setup(c => c.ListFilesAsync(It.IsAny<string>()))
+                .ReturnsAsync(new[]
+                {
+                    CreateFile("device", FilePermissions.OtherRead | permissions)
+                });
+
+            using (var fs = new SftpFileSystem(sftpChannel.Object))
             {
                 var files = await fs
                     .ListFilesAsync(fs.Root)
@@ -169,7 +198,7 @@ namespace Google.Solutions.Terminal.Test
         [Test]
         public void TranslateFileType_WhenFileIsExecutable_ThenFileTypeIsSpecial()
         {
-            using (var fs = CreateFileSystem())
+            using (var fs = new SftpFileSystem(new Mock<ISftpChannel>().Object))
             {
                 var regularType = fs.TranslateFileType(
                     CreateFile(
@@ -188,7 +217,7 @@ namespace Google.Solutions.Terminal.Test
         [Test]
         public void TranslateFileType_WhenFileIsSymlink_ThenFileTypeIsIsSpecial()
         {
-            using (var fs = CreateFileSystem())
+            using (var fs = new SftpFileSystem(new Mock<ISftpChannel>().Object))
             {
                 var regularType = fs.TranslateFileType(
                     CreateFile(
@@ -207,7 +236,7 @@ namespace Google.Solutions.Terminal.Test
         [Test]
         public void TranslateFileType_WhenFileIsConfigFile_ThenFileTypeIsSpecial()
         {
-            using (var fs = CreateFileSystem())
+            using (var fs = new SftpFileSystem(new Mock<ISftpChannel>().Object))
             {
                 var regularType = fs.TranslateFileType(
                     CreateFile(
@@ -226,7 +255,7 @@ namespace Google.Solutions.Terminal.Test
         [Test]
         public void TranslateFileType_WhenFileIsDirectory_ThenFileTypeIsDirectory()
         {
-            using (var fs = CreateFileSystem())
+            using (var fs = new SftpFileSystem(new Mock<ISftpChannel>().Object))
             {
                 var dirType = fs.TranslateFileType(
                     CreateFile(
@@ -241,7 +270,7 @@ namespace Google.Solutions.Terminal.Test
         public void TranslateFileType_WhenFileNameContainsInvalidCharacters_ThenFileTypeIsPlain(
             [Values("file?", "<file", "COM1", "file.")] string fileName)
         {
-            using (var fs = CreateFileSystem())
+            using (var fs = new SftpFileSystem(new Mock<ISftpChannel>().Object))
             {
                 var regularType = fs.TranslateFileType(
                     CreateFile(

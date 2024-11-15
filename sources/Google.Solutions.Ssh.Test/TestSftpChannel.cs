@@ -36,7 +36,7 @@ namespace Google.Solutions.Ssh.Test
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestSshFileSystemChannel : SshFixtureBase
+    public class TestSftpChannel : SshFixtureBase
     {
         public static Stream CreateStream(string content)
         {

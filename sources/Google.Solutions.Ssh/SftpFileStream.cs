@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh
 {
-    internal class SshFileStream : Stream
+    internal class SftpFileStream : Stream
     {
         /// <summary>
         /// Native channel, can only be accessed on the worker thread.
@@ -45,7 +45,7 @@ namespace Google.Solutions.Ssh
         /// </summary>
         private readonly LIBSSH2_FXF_FLAGS flags;
 
-        internal SshFileStream(
+        internal SftpFileStream(
             SshConnection connection,
             Libssh2SftpFileChannel nativeChannel,
             LIBSSH2_FXF_FLAGS flags)

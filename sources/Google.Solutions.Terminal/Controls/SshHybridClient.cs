@@ -195,7 +195,7 @@ namespace Google.Solutions.Terminal.Controls
                     this.fileBrowser = new FileBrowser()
                     {
                         Dock = DockStyle.Fill,
-                        StreamCopyBufferSize = SshFileSystemChannel.BufferSize,
+                        StreamCopyBufferSize = SftpChannel.BufferSize,
                     };
                     this.fileBrowserPanel.Controls.Add(this.fileBrowser);
 
