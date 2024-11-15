@@ -35,6 +35,27 @@ namespace Google.Solutions.Ssh
     public class SshFileSystemChannel : SshChannelBase
     {
         /// <summary>
+        /// Recommended buffer size to use for reading from, or
+        /// writing to a stream.
+        ///
+        /// SFTP effectively limits the size of a packet to 32 KB, see
+        /// <https://datatracker.ietf.org/doc/html/draft-ietf-secsh-filexfer-13#section-4>
+        ///
+        /// libssh2 uses a slightly smaller limit of 30000 bytes 
+        /// (MAX_SFTP_OUTGOING_SIZE, MAX_SFTP_READ_SIZE).
+        /// Using a buffer larger than 30000 bytes therefore doen't
+        /// provide much value.
+        ///
+        /// Note that IAP/SSH Relay uses 16KB as maximum message size,
+        /// so a 32000 byte packet will be split into 2 messages. 
+        /// That's still more efficient than using a SFTP packet
+        /// size below 16 KB as it at least limits the number of 
+        /// SSH_FXP_STATUS packets that need to be exchanged.
+        ///
+        /// </summary>
+        public const int BufferSize = 30000;
+
+        /// <summary>
         /// Channel handle, must only be accessed on worker thread.
         /// </summary>
         private readonly Libssh2SftpChannel nativeChannel;
