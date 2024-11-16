@@ -569,8 +569,6 @@ namespace Google.Solutions.Mvvm.Controls
                 var conflictingItem = this.currentDirectoryContents
                     .FirstOrDefault(f => f.Name == file.Name);
 
-                // TODO: Optimize dialog messages
-
                 var dialogResult = DialogResult.OK;
                 if (conflictingItem != null && !conflictingItem.Type.IsFile)
                 {
@@ -582,7 +580,11 @@ namespace Google.Solutions.Mvvm.Controls
                     var parameters = new TaskDialogParameters(
                         "Copy files",
                         $"The destination already has a directory named '{conflictingItem.Name}'",
-                        string.Empty);
+                        string.Empty)
+                    {
+                        Icon = TaskDialogIcon.Error
+                    };
+
                     parameters.Buttons.Add(new TaskDialogCommandLinkButton(
                         "Skip this file",
                         DialogResult.Ignore));
@@ -600,7 +602,11 @@ namespace Google.Solutions.Mvvm.Controls
                     var parameters = new TaskDialogParameters(
                         "Copy files",
                         $"The destination already has a file named '{conflictingItem.Name}'",
-                        string.Empty);
+                        string.Empty)
+                    {
+                        Icon = TaskDialogIcon.Warning
+                    };
+
                     parameters.Buttons.Add(new TaskDialogCommandLinkButton(
                         "Replace the file in the destination",
                         DialogResult.OK));
@@ -695,12 +701,12 @@ namespace Google.Solutions.Mvvm.Controls
                                 })
                             .ConfigureAwait(true);
                     }
-                    catch (Exception e)
+                    catch (Exception e) when (!e.IsCancellation())
                     {
                         var parameters = new TaskDialogParameters(
                             "Copy files",
                             file.Name,
-                            e.Unwrap().Message) // TODO: Optimize error message
+                            e.Unwrap().Message)
                         {
                             Icon = TaskDialogIcon.Error
                         };
