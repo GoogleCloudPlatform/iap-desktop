@@ -130,7 +130,15 @@ namespace Google.Solutions.Mvvm.Shell
                 //     to keep track of it and dispose it once the operation
                 //     has completed.
                 //
-                var contentStream = this.Files[this.currentFile].OpenStream();
+
+                //
+                // NB. DataObject (in SaveStreamToHandle) assumes that Stream.Read()
+                //     always reads the requested amount of data, but Stream
+                //     implementations are allowed to return _less_ than that.
+                //     To compensate, wrap the stream.
+
+                var contentStream = new FullReadGuaranteeingStream(
+                    this.Files[this.currentFile].OpenStream());
                 this.openedContentStreams.Add(contentStream);
 
                 //
@@ -484,6 +492,94 @@ namespace Google.Solutions.Mvvm.Shell
             internal AsyncOperationEventArgs(Exception? exception)
             {
                 this.Exception = exception;
+            }
+        }
+
+        /// <summary>
+        /// Stream that always reads the full amount of requested data,
+        /// even if the Stream contract doesn't require that.
+        /// </summary>
+        private class FullReadGuaranteeingStream : Stream
+        {
+            private readonly Stream stream;
+
+            public FullReadGuaranteeingStream(Stream stream)
+            {
+                this.stream = stream;
+            }
+
+            public override bool CanRead
+            {
+                get => this.stream.CanRead;
+            }
+
+            public override bool CanSeek
+            {
+                get => this.stream.CanSeek;
+            }
+
+            public override bool CanWrite
+            {
+                get => this.stream.CanWrite;
+            }
+
+            public override long Length
+            {
+                get => this.stream.Length;
+            }
+
+            public override long Position 
+            { 
+                get => this.stream.Position; 
+                set => this.stream.Position = value;
+            }
+
+            public override void Flush()
+            {
+                this.stream.Flush();
+            }
+
+            public override long Seek(long offset, SeekOrigin origin)
+            {
+                return this.stream.Seek(offset, origin);
+            }
+
+            public override void SetLength(long value)
+            {
+                this.stream?.SetLength(value);
+            }
+
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                //
+                // Keep reading until we reached the requested number
+                // of bytes or the end of the stream.
+                //
+                int totalBytesRead = 0;
+                while (totalBytesRead < count)
+                {
+                    var bytesRead = this.stream.Read(
+                        buffer, 
+                        offset + totalBytesRead, 
+                        count - totalBytesRead);
+                    if (bytesRead > 0)
+                    {
+                        totalBytesRead += bytesRead;
+                    }
+                }
+
+                return totalBytesRead;
+            }
+
+            public override void Write(byte[] buffer, int offset, int count)
+            {
+                this.stream.Write(buffer, offset, count);
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                base.Dispose(disposing);
+                this.stream.Dispose();
             }
         }
 

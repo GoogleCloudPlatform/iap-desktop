@@ -65,6 +65,23 @@ namespace Google.Solutions.Ssh.Native
             this.filePath = filePath;
         }
 
+        public LIBSSH2_SFTP_ATTRIBUTES Attributes
+        {
+            get
+            {
+                var result = (LIBSSH2_ERROR)NativeMethods.libssh2_sftp_fstat_ex(
+                    this.fileHandle,
+                    out var attributes,
+                    0);
+                if (result != LIBSSH2_ERROR.NONE)
+                {
+                    throw this.session.CreateException(result);
+                }
+
+                return attributes;
+            }
+        }
+
         public uint Read(byte[] buffer)
         {
             this.fileHandle.CheckCurrentThreadOwnsHandle();

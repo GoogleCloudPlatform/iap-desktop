@@ -194,7 +194,6 @@ namespace Google.Solutions.Ssh.Native
                         flags,
                         mode,
                         LIBSSH2_OPENTYPE.OPENFILE);
-
                     fileHandle.ValidateAndAttachToSession(this.session);
 
                     return new Libssh2SftpFileChannel(
@@ -328,7 +327,7 @@ namespace Google.Solutions.Ssh.Native
                 name,
                 new LIBSSH2_SFTP_ATTRIBUTES()
                 {
-                    permissions = (uint)permissions
+                    permissions = permissions
                 })
         {
         }

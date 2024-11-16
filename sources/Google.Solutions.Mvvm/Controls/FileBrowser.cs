@@ -29,6 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -483,6 +484,9 @@ namespace Google.Solutions.Mvvm.Controls
         /// <summary>
         /// Create an IDataObject with the contents of the selected files.
         /// </summary>
+        [SuppressMessage("Usage", 
+            "VSTHRD002:Avoid problematic synchronous waits", 
+            Justification = "Blocking calls made from worker thread")]
         internal VirtualFileDataObject CopySelectedFiles()
         {
             Precondition.ExpectNotNull(this.fileSystem, nameof(this.fileSystem));
@@ -501,12 +505,16 @@ namespace Google.Solutions.Mvvm.Controls
                         //
                         // NB. We're in a synchronous execution path here,
                         //     so we can't open the file asynchronously.
-                        // TODO: On background thread here?
+                        //
+                        //     However, this isn't a problem because this
+                        //     is an asynchronous data object, so the call
+                        //     should come from a worker thread, not the UI
+                        //     thread.
                         //
                         return this.fileSystem!
                             .OpenFileAsync(f, FileAccess.Read)
                             .Result;
-                        }))
+                    }))
                 .ToList())
             {
                 //

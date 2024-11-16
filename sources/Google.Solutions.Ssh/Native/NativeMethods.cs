@@ -137,6 +137,18 @@ namespace Google.Solutions.Ssh.Native
         OPENDIR = 1
     }
 
+    /// <summary>
+    /// SFTP attribute flag bits
+    /// </summary>
+    internal enum LIBSSH2_SFTP_ATTR : uint
+    {
+        SIZE = 0x00000001,
+        UIDGID = 0x00000002,
+        PERMISSIONS = 0x00000004,
+        ACMODTIME = 0x00000008,
+        EXTENDED = 0x80000000,
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     internal struct LIBSSH2_SFTP_ATTRIBUTES
     {
@@ -144,11 +156,11 @@ namespace Google.Solutions.Ssh.Native
         /// If flags & ATTR_* bit is set, then the value in this struct is
         /// meaningful. Otherwise it should be ignored.
         /// </summary>
-        internal uint flags;
+        internal LIBSSH2_SFTP_ATTR flags;
         internal ulong filesize;
         internal uint uid;
         internal uint gid;
-        internal uint permissions;
+        internal FilePermissions permissions;
         internal uint atime;
         internal uint mtime;
     };
@@ -548,6 +560,12 @@ namespace Google.Solutions.Ssh.Native
             Libssh2SftpFileHandle channel,
             IntPtr buffer,
             IntPtr bufferSize);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int libssh2_sftp_fstat_ex(
+            Libssh2SftpFileHandle channel,
+            out LIBSSH2_SFTP_ATTRIBUTES attrs,
+            int setstat);
 
         //---------------------------------------------------------------------
         // Keepalive.

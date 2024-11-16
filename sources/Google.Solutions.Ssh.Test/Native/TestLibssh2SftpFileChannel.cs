@@ -35,6 +35,80 @@ namespace Google.Solutions.Ssh.Test.Native
     public class TestLibssh2SftpFileChannel : SshFixtureBase
     {
         //---------------------------------------------------------------------
+        // Attributes.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task Attributes_WhenFileIsNew(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var credential = await CreateAsymmetricKeyCredentialAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
+
+            var fileName = Guid.NewGuid().ToString();
+
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                credential,
+                new KeyboardInteractiveHandler()))
+            using (var channel = authSession.OpenSftpChannel())
+            using (var file = channel.CreateFile(
+                fileName,
+                LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
+                FilePermissions.OwnerRead | FilePermissions.OwnerWrite))
+            {
+                var attributes = file.Attributes;
+
+                Assert.IsTrue(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.SIZE));
+                Assert.AreEqual(0, attributes.filesize);
+
+                Assert.IsTrue(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.PERMISSIONS));
+                Assert.AreEqual(
+                    FilePermissions.OwnerRead | 
+                        FilePermissions.OwnerWrite | 
+                        FilePermissions.Regular,
+                    attributes.permissions);
+            }
+        }
+
+        [Test]
+        public async Task Attributes_WhenFileExists(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var credential = await CreateAsymmetricKeyCredentialAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
+
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                credential,
+                new KeyboardInteractiveHandler()))
+            using (var channel = authSession.OpenSftpChannel())
+            using (var file = channel.CreateFile(
+                "/etc/passwd",
+                LIBSSH2_FXF_FLAGS.READ,
+                FilePermissions.None))
+            {
+                var attributes = file.Attributes;
+
+                Assert.IsTrue(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.SIZE));
+                Assert.AreNotEqual(0, attributes.filesize);
+
+                Assert.IsTrue(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.ACMODTIME));
+                Assert.AreNotEqual(0, attributes.atime);
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Read.
         //---------------------------------------------------------------------
 
@@ -58,9 +132,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var file = channel.CreateFile(
                 Guid.NewGuid().ToString(),
                 LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.READ,
-                FilePermissions.OwnerExecute |
-                    FilePermissions.OwnerRead |
-                    FilePermissions.OtherWrite))
+                FilePermissions.OwnerRead | FilePermissions.OwnerWrite))
             {
                 var bytesRead = file.Read(new byte[16]);
                 Assert.AreEqual(0, bytesRead);
@@ -101,9 +173,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 using (var file = channel.CreateFile(
                     fileName,
                     LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
-                    FilePermissions.OwnerExecute |
-                        FilePermissions.OwnerRead |
-                        FilePermissions.OtherWrite))
+                    FilePermissions.OwnerRead | FilePermissions.OwnerWrite))
                 {
                     var buffer = Encoding.ASCII.GetBytes(sendData.ToString());
                     file.Write(buffer, buffer.Length);
@@ -112,9 +182,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 using (var file = channel.CreateFile(
                     fileName,
                     LIBSSH2_FXF_FLAGS.READ,
-                    FilePermissions.OwnerExecute |
-                        FilePermissions.OwnerRead |
-                        FilePermissions.OtherWrite))
+                    FilePermissions.OwnerRead | FilePermissions.OwnerWrite))
                 {
                     var receiveData = new StringBuilder();
 
