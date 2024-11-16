@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
 using Moq;
@@ -284,6 +286,75 @@ namespace Google.Solutions.Terminal.Test
                 Assert.IsTrue(iniType.IsFile);
                 Assert.AreNotEqual(regularType.TypeName, iniType.TypeName);
             }
+        }
+
+        //---------------------------------------------------------------------
+        // OpenFileAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task OpenFile_ByFileItem_OpensFile()
+        {
+            var sftpChannel = new Mock<ISftpChannel>();
+            using (var fs = new SftpFileSystem(sftpChannel.Object))
+            {
+                var file = new Mock<IFileItem>();
+                file.SetupGet(f => f.Path).Returns("file.txt");
+                file.SetupGet(f => f.Type).Returns(new FileType("file", true, null!));
+                
+                await fs
+                    .OpenFileAsync(file.Object, FileAccess.ReadWrite)
+                    .ConfigureAwait(false);
+            }
+
+            sftpChannel.Verify(
+                c => c.CreateFileAsync(
+                    "file.txt",
+                    FileMode.Open,
+                    FileAccess.ReadWrite,
+                    FilePermissions.None),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task OpenFile_ByName_CreatesFile()
+        {
+            var sftpChannel = new Mock<ISftpChannel>();
+            using (var fs = new SftpFileSystem(sftpChannel.Object))
+            {
+                await fs
+                    .OpenFileAsync(fs.Root, "file.txt", FileMode.CreateNew, FileAccess.ReadWrite)
+                    .ConfigureAwait(false);
+            }
+
+            sftpChannel.Verify(
+                c => c.CreateFileAsync(
+                    "/file.txt",
+                    FileMode.CreateNew,
+                    FileAccess.ReadWrite,
+                    FilePermissions.OwnerWrite | FilePermissions.OwnerRead),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task OpenFile_ByName_UsesDefaultPermission()
+        {
+            var sftpChannel = new Mock<ISftpChannel>();
+            using (var fs = new SftpFileSystem(sftpChannel.Object))
+            {
+                fs.DefaultFilePermissions = FilePermissions.OwnerExecute;
+                await fs
+                    .OpenFileAsync(fs.Root, "file.txt", FileMode.CreateNew, FileAccess.ReadWrite)
+                    .ConfigureAwait(false);
+            }
+
+            sftpChannel.Verify(
+                c => c.CreateFileAsync(
+                    "/file.txt",
+                    FileMode.CreateNew,
+                    FileAccess.ReadWrite,
+                    FilePermissions.OwnerExecute),
+                Times.Once);
         }
     }
 }

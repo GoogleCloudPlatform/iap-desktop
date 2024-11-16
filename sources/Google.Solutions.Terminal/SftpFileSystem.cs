@@ -155,13 +155,11 @@ namespace Google.Solutions.Terminal
             return new ObservableCollection<IFileItem>(filteredSftpFiles);
         }
 
-        public Task<Stream> OpenFileAsync( // TODO: test
+        public Task<Stream> OpenFileAsync(
             IFileItem file,
             FileAccess access)
         {
             Precondition.Expect(file.Type.IsFile, $"{file.Name} is not a file");
-
-            // TODO: translate exceptions?
 
             return this.channel.CreateFileAsync(
                 file.Path,
@@ -170,7 +168,7 @@ namespace Google.Solutions.Terminal
                 FilePermissions.None);
         }
 
-        public Task<Stream> OpenFileAsync(// TODO: test
+        public Task<Stream> OpenFileAsync(
             IFileItem directory,
             string name,
             FileMode mode,
@@ -179,13 +177,11 @@ namespace Google.Solutions.Terminal
             Precondition.Expect(!directory.Type.IsFile, $"{directory.Name} is not a directory");
             Precondition.Expect(!name.Contains("/"), "Name must not be a path");
 
-            // TODO: translate exceptions?
-
             return this.channel.CreateFileAsync(
                 $"{directory.Path}/{name}",
-                FileMode.Create,
+                mode,
                 access,
-                DefaultFilePermissions);
+                this.DefaultFilePermissions);
         }
 
         //---------------------------------------------------------------------

@@ -521,6 +521,8 @@ namespace Google.Solutions.Mvvm.Controls
                         return this.fileSystem!
                             .OpenFileAsync(f, FileAccess.Read)
                             .Result;
+
+                        //TODO: catch & report exception (on UI thread)
                     }))
                 .ToList())
             {
