@@ -815,6 +815,8 @@ namespace Google.Solutions.Ssh.Native
             Invariant.ExpectNotNull(this.SessionHandle, nameof(this.SessionHandle));
             Debug.Assert(!this.SessionHandle!.IsClosed);
 
+            CheckCurrentThreadOwnsHandle();
+
             if (this.SessionHandle.IsClosed)
             {
                 // Do not free the channel.

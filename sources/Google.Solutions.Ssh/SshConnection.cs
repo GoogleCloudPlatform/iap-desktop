@@ -205,7 +205,7 @@ namespace Google.Solutions.Ssh
             }
         }
 
-        internal async Task<TResult> RunSendOperationAsync<TResult>(
+        internal async Task<TResult> RunSendOperationAsync<TResult>( // TODO: consolidate, rename
             Func<Libssh2AuthenticatedSession, TResult> sendOperation)
             where TResult : class
         {
@@ -222,8 +222,38 @@ namespace Google.Solutions.Ssh
             return result!;
         }
 
+        internal async Task RunThrowingOperationAsync(
+            Action<Libssh2AuthenticatedSession> operation)
+        {
+            //
+            // Some operations (such as SFTP operations) might throw 
+            // exceptions, and these need to be passed thru to the caller
+            // (as opposed to letting them bubble up to OnReceiveError).
+            //
+            Exception? exception = null;
+            await RunSendOperationAsync(
+                session =>
+                {
+                    try
+                    {
+                        operation(session);
+                    }
+                    catch (Exception e)
+                    {
+                        exception = e;
+                    }
+                })
+                .ConfigureAwait(false);
+
+            if (exception != null)
+            {
+                SshTraceSource.Log.TraceError(exception);
+                throw exception;
+            }
+        }
+
         internal async Task<TResult> RunThrowingOperationAsync<TResult>(
-            Func<Libssh2AuthenticatedSession, TResult> sendOperation)
+            Func<Libssh2AuthenticatedSession, TResult> operation)
         {
             //
             // Some operations (such as SFTP operations) might throw 
@@ -238,7 +268,7 @@ namespace Google.Solutions.Ssh
                 {
                     try
                     {
-                        result = sendOperation(session);
+                        result = operation(session);
                     }
                     catch (Exception e)
                     {

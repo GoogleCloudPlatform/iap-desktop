@@ -66,8 +66,20 @@ namespace Google.Solutions.Ssh
 
         protected override void Dispose(bool disposing)
         {
-            this.nativeChannel.Dispose();
             base.Dispose(disposing);
+
+            if (disposing)
+            {
+                if (this.Connection.IsRunningOnWorkerThread)
+                {
+                    this.nativeChannel.Dispose();
+                }
+                else
+                {
+                    _ = this.Connection.RunThrowingOperationAsync(
+                        _ => this.nativeChannel.Dispose());
+                }
+            }
         }
 
         //----------------------------------------------------------------------

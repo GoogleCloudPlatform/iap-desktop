@@ -352,20 +352,23 @@ namespace Google.Solutions.Mvvm.Controls
                     // Go down one level, same as double-click.
                     //
                     fileList_DoubleClick(sender, EventArgs.Empty);
+                    args.Handled = true;
                 }
-                if (args.KeyCode == Keys.C && args.Control)
+                else if (args.KeyCode == Keys.C && args.Control)
                 {
                     //
                     // Copy files.
                     //
                     copyToolStripMenuItem_Click(sender, EventArgs.Empty);
+                    args.Handled = true;
                 }
-                if (args.KeyCode == Keys.V && args.Control)
+                else if (args.KeyCode == Keys.V && args.Control)
                 {
                     //
                     // Paste files.
                     //
                     pasteToolStripMenuItem_Click(sender, EventArgs.Empty);
+                    args.Handled = true;
                 }
                 else if (args.KeyCode == Keys.Up && args.Alt)
                 {
@@ -373,10 +376,12 @@ namespace Google.Solutions.Mvvm.Controls
                     // Go up one level.
                     //
                     await NavigateUpAsync();
+                    args.Handled = true;
                 }
                 else if (args.KeyCode == Keys.F5)
                 {
                     await RefreshAsync();
+                    args.Handled = true;
                 }
             }
             catch (Exception e)
@@ -440,6 +445,8 @@ namespace Google.Solutions.Mvvm.Controls
             {
                 OnNavigationFailed(e);
             }
+
+            //TODO: Cancel selection after drag - https://stackoverflow.com/questions/8066982/disabling-drag-selection-on-listbox
         }
 
         //---------------------------------------------------------------------
@@ -559,6 +566,8 @@ namespace Google.Solutions.Mvvm.Controls
             {
                 var conflictingItem = this.currentDirectoryContents
                     .FirstOrDefault(f => f.Name == file.Name);
+
+                // TODO: Optimize dialog messages
 
                 var dialogResult = DialogResult.OK;
                 if (conflictingItem != null && !conflictingItem.Type.IsFile)
@@ -689,7 +698,7 @@ namespace Google.Solutions.Mvvm.Controls
                         var parameters = new TaskDialogParameters(
                             "Copy files",
                             file.Name,
-                            e.Unwrap().Message)
+                            e.Unwrap().Message) // TODO: Optimize error message
                         {
                             Icon = TaskDialogIcon.Error
                         };
