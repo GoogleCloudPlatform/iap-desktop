@@ -1,7 +1,7 @@
 # Group policy reference
 
 You can use Active Directory group policies to configure policies for IAP Desktop. Policies take
-~~~~precedence over user settings: When you configure a policy, users can't change the respective
+precedence over user settings: When you configure a policy, users can't change the respective
 setting anymore. 
 
 IAP Desktop supports the following policies:
