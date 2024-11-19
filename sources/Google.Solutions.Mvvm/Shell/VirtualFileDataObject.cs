@@ -26,7 +26,6 @@ using Google.Solutions.Platform.Interop;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
@@ -68,9 +67,9 @@ namespace Google.Solutions.Mvvm.Shell
             //
             // Enable delayed rendering
             //
-            SetData(CFSTR_FILEDESCRIPTORW, null);
-            SetData(CFSTR_FILECONTENTS, null);
-            SetData(CFSTR_PERFORMEDDROPEFFECT, null);
+            SetData(ShellDataFormats.CFSTR_FILEDESCRIPTORW, null);
+            SetData(ShellDataFormats.CFSTR_FILECONTENTS, null);
+            SetData(ShellDataFormats.CFSTR_PERFORMEDDROPEFFECT, null);
         }
 
         /// <summary>
@@ -118,16 +117,16 @@ namespace Google.Solutions.Mvvm.Shell
                 return null;
             }
 
-            if (CFSTR_FILEDESCRIPTORW.Equals(format, StringComparison.OrdinalIgnoreCase))
+            if (ShellDataFormats.CFSTR_FILEDESCRIPTORW.Equals(format, StringComparison.OrdinalIgnoreCase))
             {
                 //
                 // Supply group descriptor for all files.
                 //
                 base.SetData(
-                    CFSTR_FILEDESCRIPTORW,
+                    ShellDataFormats.CFSTR_FILEDESCRIPTORW,
                     Descriptor.ToNativeGroupDescriptorStream(this.Files));
             }
-            else if (CFSTR_FILECONTENTS.Equals(format, StringComparison.OrdinalIgnoreCase))
+            else if (ShellDataFormats.CFSTR_FILECONTENTS.Equals(format, StringComparison.OrdinalIgnoreCase))
             {
                 //
                 // Open the stream. We do that lazily in case the client
@@ -154,7 +153,7 @@ namespace Google.Solutions.Mvvm.Shell
                 //
                 //
                 base.SetData(
-                    CFSTR_FILECONTENTS,
+                    ShellDataFormats.CFSTR_FILECONTENTS,
                     this.currentFile < this.Files.Count
                         ? contentStream
                         : null);
@@ -178,7 +177,8 @@ namespace Google.Solutions.Mvvm.Shell
             //     information is encoded in the FORMATETC parameter.
             //
 
-            if (formatetc.cfFormat == (short)DataFormats.GetFormat(CFSTR_FILECONTENTS).Id)
+            if (formatetc.cfFormat == 
+                (short)DataFormats.GetFormat(ShellDataFormats.CFSTR_FILECONTENTS).Id)
             {
                 //
                 // Cache the index so that we can use it in GetData(format, autoConvert).
@@ -221,7 +221,7 @@ namespace Google.Solutions.Mvvm.Shell
 
                         if (e is COMException comEx && (
                             comEx.HResult == DV_E_FORMATETC ||
-                            comEx.HResult == E_FAIL))
+                            comEx.HResult == (int)HRESULT.E_FAIL))
                         {
                             //
                             // These can happen during format negotiation and 
@@ -276,14 +276,14 @@ namespace Google.Solutions.Mvvm.Shell
         {
             ExpectNotDisposed();
 
-            this.IsAsync = fDoOpAsync != VARIANT_FALSE;
+            this.IsAsync = fDoOpAsync != VariantBool.False;
         }
 
         public void GetAsyncMode([Out] out int pfIsOpAsync)
         {
             ExpectNotDisposed();
 
-            pfIsOpAsync = this.IsAsync ? VARIANT_TRUE : VARIANT_FALSE;
+            pfIsOpAsync = this.IsAsync ? VariantBool.True : VariantBool.False;
         }
 
         public void StartOperation([In] IBindCtx pbcReserved)
@@ -319,7 +319,7 @@ namespace Google.Solutions.Mvvm.Shell
         {
             ExpectNotDisposed();
 
-            pfInAsyncOp = this.IsOperationInProgress ? VARIANT_TRUE : VARIANT_FALSE;
+            pfInAsyncOp = this.IsOperationInProgress ? VariantBool.True : VariantBool.False;
         }
 
         //----------------------------------------------------------------------
@@ -616,22 +616,13 @@ namespace Google.Solutions.Mvvm.Shell
         private const uint FD_PROGRESSUI = 0x00004000;
         private const uint FD_UNICODE = 0x80000000;
 
-        internal const string CFSTR_FILEDESCRIPTORW = "FileGroupDescriptorW"; // TODO: Extract to class
-        internal const string CFSTR_FILECONTENTS = "FileContents";
-        internal const string CFSTR_PREFERREDDROPEFFECT = "Preferred DropEffect";
-        internal const string CFSTR_PERFORMEDDROPEFFECT = "Performed DropEffect";
-
         private const uint GMEM_MOVEABLE = 0x0002;
         private const uint GMEM_ZEROINIT = 0x0040;
         private const uint GHND = (GMEM_MOVEABLE | GMEM_ZEROINIT);
         private const uint GMEM_DDESHARE = 0x2000;
 
-        private const int VARIANT_FALSE = 0;
-        private const int VARIANT_TRUE = -1;
-
-        private const int DV_E_TYMED = unchecked((int)0x80040069); // TODO: Move to HRESULT
+        private const int DV_E_TYMED = unchecked((int)0x80040069);
         private const int DV_E_FORMATETC = unchecked((int)0x80040064);
-        private const int E_FAIL = unchecked((int)0x80004005);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         internal struct FILEDESCRIPTORW

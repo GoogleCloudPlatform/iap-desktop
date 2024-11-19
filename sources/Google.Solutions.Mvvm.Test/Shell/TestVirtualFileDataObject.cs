@@ -60,11 +60,11 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 });
 
                 Assert.IsInstanceOf<Stream>(dataObject.GetData(
-                    VirtualFileDataObject.CFSTR_FILEDESCRIPTORW, 
+                    ShellDataFormats.CFSTR_FILEDESCRIPTORW, 
                     false));
 
                 Assert.IsInstanceOf<Stream>(dataObject.GetData(
-                    VirtualFileDataObject.CFSTR_FILECONTENTS, 
+                    ShellDataFormats.CFSTR_FILECONTENTS, 
                     false));
             }
         }
@@ -85,7 +85,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 Array.Empty<VirtualFileDataObject.Descriptor>());
             dataObject.Dispose();
             Assert.IsNull(dataObject.GetData(
-                VirtualFileDataObject.CFSTR_FILEDESCRIPTORW, 
+                ShellDataFormats.CFSTR_FILEDESCRIPTORW, 
                 false));
         }
 
@@ -112,7 +112,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 });
 
             var stream = (Stream)dataObject.GetData(
-                VirtualFileDataObject.CFSTR_FILECONTENTS,
+                ShellDataFormats.CFSTR_FILECONTENTS,
                 false);
             Assert.AreEqual(2, stream.Length);
             Assert.AreEqual(2, stream.Read(new byte[2], 0, 2));

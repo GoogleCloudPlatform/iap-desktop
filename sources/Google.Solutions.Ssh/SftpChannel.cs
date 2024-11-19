@@ -94,7 +94,6 @@ namespace Google.Solutions.Ssh
 
         internal override void OnReceiveError(Exception exception)
         {
-            Debug.Assert(false, "OnReceiveError should never be called");
         }
 
         //---------------------------------------------------------------------

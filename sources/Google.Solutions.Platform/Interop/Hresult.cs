@@ -26,6 +26,7 @@ namespace Google.Solutions.Platform.Interop
         S_OK = 0,
         S_FALSE = 1,
         E_UNEXPECTED = unchecked((int)0x8000ffff),
+        E_FAIL = unchecked((int)0x80004005),
     }
 
     public static class HresultExtensions

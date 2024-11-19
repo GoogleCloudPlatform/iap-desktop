@@ -673,7 +673,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     var formatetc = new FORMATETC()
                     {
                         tymed = TYMED.TYMED_HGLOBAL,
-                        cfFormat = (short)DataFormats.GetFormat(VirtualFileDataObject.CFSTR_FILECONTENTS).Id,
+                        cfFormat = (short)DataFormats.GetFormat(ShellDataFormats.CFSTR_FILECONTENTS).Id,
                         dwAspect = DVASPECT.DVASPECT_CONTENT,
                         lindex = 0
                     };
