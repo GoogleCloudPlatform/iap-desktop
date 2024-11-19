@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 {
     [Service]
     public class SshView
-        : ClientViewBase<SshShellClient>, ISshSession, IView<SshViewModel>
+        : ClientViewBase<SshHybridClient>, ISshSession, IView<SshViewModel>
     {
         private Bound<SshViewModel> viewModel;
         private readonly ITerminalSettingsRepository settingsRepository;
@@ -165,6 +165,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 //
                 ApplyTerminalSettings(this.settingsRepository.GetSettings());
 
+                client.FileBrowsingFailed += (_, args)
+                    => OnError("Unable to complete file operation", args.Exception);
+
                 //
                 // Start establishing a connection and react to events.
                 //
@@ -245,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             }
         }
 
-        protected override void OnKeyDown(KeyEventArgs e) // TODO: verify this works
+        protected override void OnKeyDown(KeyEventArgs e)
         {
             if (e.KeyData == ToggleFocusHotKey)
             {
@@ -260,24 +263,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         public bool CanTransferFiles
         {
-            //TODO: SFTP - Implement dnd
-            get => false;
+            get => 
+                this.Client != null &&
+                this.Client.CanShowFileBrowser;
         }
 
         //---------------------------------------------------------------------
         // ISshSession.
         //---------------------------------------------------------------------
 
-        public Task DownloadFilesAsync()
+        public Task TransferFilesAsync()
         {
-            //TODO: SFTP - Show pane.
-            throw new NotImplementedException();
-        }
-
-        public Task UploadFilesAsync()
-        {
-            //TODO: SFTP - Show pane.
-            throw new NotImplementedException();
+            Debug.Assert(this.CanTransferFiles);
+            this.Client?.BrowseFiles();
+            return Task.CompletedTask;
         }
 
         //---------------------------------------------------------------------

@@ -29,6 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -56,6 +57,11 @@ namespace Google.Solutions.Mvvm.Controls
 
         internal ITaskDialog TaskDialog { get; set; } = new TaskDialog();
         internal IOperationProgressDialog ProgressDialog { get; set; } = new OperationProgressDialog();
+
+        /// <summary>
+        /// Buffer size for stream copy operations.
+        /// </summary>
+        public int StreamCopyBufferSize { get; set; } = StreamExtensions.DefaultBufferSize;
 
         //---------------------------------------------------------------------
         // Privates.
@@ -103,6 +109,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.Disposed += (s, e) =>
             {
                 this.fileTypeCache.Dispose();
+                this.fileSystem?.Dispose();
             };
         }
 
@@ -111,12 +118,18 @@ namespace Google.Solutions.Mvvm.Controls
         //---------------------------------------------------------------------
 
         public event EventHandler<ExceptionEventArgs>? NavigationFailed;
+        public event EventHandler<ExceptionEventArgs>? FileCopyFailed;
         public event EventHandler? CurrentDirectoryChanged;
         public event EventHandler? SelectedFilesChanged;
 
         protected void OnNavigationFailed(Exception e)
         {
             this.NavigationFailed?.Invoke(this, new ExceptionEventArgs(e));
+        }
+
+        protected void OnFileCopyFailed(Exception e)
+        {
+            this.FileCopyFailed?.Invoke(this, new ExceptionEventArgs(e));
         }
 
         protected void OnCurrentDirectoryChanged()
@@ -345,20 +358,23 @@ namespace Google.Solutions.Mvvm.Controls
                     // Go down one level, same as double-click.
                     //
                     fileList_DoubleClick(sender, EventArgs.Empty);
+                    args.Handled = true;
                 }
-                if (args.KeyCode == Keys.C && args.Control)
+                else if (args.KeyCode == Keys.C && args.Control)
                 {
                     //
                     // Copy files.
                     //
                     copyToolStripMenuItem_Click(sender, EventArgs.Empty);
+                    args.Handled = true;
                 }
-                if (args.KeyCode == Keys.V && args.Control)
+                else if (args.KeyCode == Keys.V && args.Control)
                 {
                     //
                     // Paste files.
                     //
                     pasteToolStripMenuItem_Click(sender, EventArgs.Empty);
+                    args.Handled = true;
                 }
                 else if (args.KeyCode == Keys.Up && args.Alt)
                 {
@@ -366,10 +382,12 @@ namespace Google.Solutions.Mvvm.Controls
                     // Go up one level.
                     //
                     await NavigateUpAsync();
+                    args.Handled = true;
                 }
                 else if (args.KeyCode == Keys.F5)
                 {
                     await RefreshAsync();
+                    args.Handled = true;
                 }
             }
             catch (Exception e)
@@ -404,11 +422,11 @@ namespace Google.Solutions.Mvvm.Controls
             }
             catch (Exception e)
             {
-                OnNavigationFailed(e);
+                OnFileCopyFailed(e);
             }
         }
 
-        private void fileList_MouseDown(object sender, MouseEventArgs args)
+        private void fileList_MouseMove(object sender, MouseEventArgs args)
         {
             if (args.Button != MouseButtons.Left)
             {
@@ -431,7 +449,7 @@ namespace Google.Solutions.Mvvm.Controls
             }
             catch (Exception e)
             {
-                OnNavigationFailed(e);
+                OnFileCopyFailed(e);
             }
         }
 
@@ -447,7 +465,7 @@ namespace Google.Solutions.Mvvm.Controls
             }
             catch (Exception e)
             {
-                OnNavigationFailed(e);
+                OnFileCopyFailed(e);
             }
         }
             
@@ -466,7 +484,7 @@ namespace Google.Solutions.Mvvm.Controls
             }
             catch (Exception e)
             {
-                OnNavigationFailed(e);
+                OnFileCopyFailed(e);
             }
         }
 
@@ -477,8 +495,13 @@ namespace Google.Solutions.Mvvm.Controls
         /// <summary>
         /// Create an IDataObject with the contents of the selected files.
         /// </summary>
+        [SuppressMessage("Usage", 
+            "VSTHRD002:Avoid problematic synchronous waits", 
+            Justification = "Blocking calls made from worker thread")]
         internal VirtualFileDataObject CopySelectedFiles()
         {
+            Precondition.ExpectNotNull(this.fileSystem, nameof(this.fileSystem));
+
             //
             // Only consider files, ignore directories.
             //
@@ -489,7 +512,20 @@ namespace Google.Solutions.Mvvm.Controls
                     f.Name,
                     f.Size,
                     f.Attributes,
-                    () => f.Open(System.IO.FileAccess.Read)))
+                    () => {
+                        //
+                        // NB. We're in a synchronous execution path here,
+                        //     so we can't open the file asynchronously.
+                        //
+                        //     However, this isn't a problem because this
+                        //     is an asynchronous data object, so the call
+                        //     should come from a worker thread, not the UI
+                        //     thread.
+                        //
+                        return this.fileSystem!
+                            .OpenFileAsync(f, FileAccess.Read)
+                            .Result;
+                    }))
                 .ToList())
             {
                 //
@@ -497,6 +533,11 @@ namespace Google.Solutions.Mvvm.Controls
                 // the data.
                 //
                 IsAsync = true
+            };
+
+            dataObject.AsyncOperationFailed += (_, args) =>
+            {
+                this.Invoke(new Action(() => OnFileCopyFailed(args.Exception)));
             };
 
             return dataObject;
@@ -546,7 +587,11 @@ namespace Google.Solutions.Mvvm.Controls
                     var parameters = new TaskDialogParameters(
                         "Copy files",
                         $"The destination already has a directory named '{conflictingItem.Name}'",
-                        string.Empty);
+                        string.Empty)
+                    {
+                        Icon = TaskDialogIcon.Error
+                    };
+
                     parameters.Buttons.Add(new TaskDialogCommandLinkButton(
                         "Skip this file",
                         DialogResult.Ignore));
@@ -564,7 +609,11 @@ namespace Google.Solutions.Mvvm.Controls
                     var parameters = new TaskDialogParameters(
                         "Copy files",
                         $"The destination already has a file named '{conflictingItem.Name}'",
-                        string.Empty);
+                        string.Empty)
+                    {
+                        Icon = TaskDialogIcon.Warning
+                    };
+
                     parameters.Buttons.Add(new TaskDialogCommandLinkButton(
                         "Replace the file in the destination",
                         DialogResult.OK));
@@ -601,7 +650,9 @@ namespace Google.Solutions.Mvvm.Controls
         /// </summary>
         internal async Task PasteFilesAsync(IDataObject dataObject)
         {
-            Debug.Assert(this.navigationState != null);
+            Precondition.ExpectNotNull(this.fileSystem, nameof(this.fileSystem));
+            Precondition.ExpectNotNull(this.navigationState, nameof(this.navigationState));
+
             Debug.Assert(this.currentDirectoryContents != null);
             Debug.Assert(this.currentDirectoryContents!.Count == this.fileList.Items.Count);
 
@@ -635,23 +686,33 @@ namespace Google.Solutions.Mvvm.Controls
                         // Perform the file copy in the background.
                         //
                         await Task
-                            .Run(() =>
+                            .Run(async () =>
                                 {
                                     using (var sourceStream = file.OpenRead())
-                                    using (var targetStream = this.navigationState!.Directory.Create(
-                                        file.Name,
-                                        FileAccess.Write))
+                                    using (var targetStream = await this.fileSystem!
+                                        .OpenFileAsync(
+                                            this.navigationState!.Directory,
+                                            file.Name,
+                                            FileMode.Create,
+                                            FileAccess.Write)
+                                        .ConfigureAwait(false))
                                     {
-                                        sourceStream.CopyTo(targetStream, copyProgress);
+                                        await sourceStream
+                                            .CopyToAsync(
+                                                targetStream,
+                                                copyProgress,
+                                                this.StreamCopyBufferSize,
+                                                progressDialog.CancellationToken)
+                                            .ConfigureAwait(false);
                                     }
                                 })
                             .ConfigureAwait(true);
                     }
-                    catch (Exception e)
+                    catch (Exception e) when (!e.IsCancellation())
                     {
                         var parameters = new TaskDialogParameters(
                             "Copy files",
-                            file.Name,
+                            $"Unable to copy {file.Name}",
                             e.Unwrap().Message)
                         {
                             Icon = TaskDialogIcon.Error

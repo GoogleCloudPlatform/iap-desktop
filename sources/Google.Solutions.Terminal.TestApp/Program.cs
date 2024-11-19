@@ -20,6 +20,8 @@
 //
 
 using Google.Solutions.Common.Security;
+using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Ssh;
 using Google.Solutions.Terminal.Controls;
 using Microsoft.VisualBasic;
@@ -37,7 +39,7 @@ namespace Google.Solutions.Terminal.TestApp
         /// <summary>
         /// SSH client that uses password authentication.
         /// </summary>
-        private class SimpleSshShellClient : SshShellClient, IKeyboardInteractiveHandler
+        private class SimpleSshShellClient : SshHybridClient, IKeyboardInteractiveHandler
         {
             public SimpleSshShellClient()
             {
@@ -75,7 +77,6 @@ namespace Google.Solutions.Terminal.TestApp
                 return new StaticPasswordCredential(username, password);
             }
         }
-
         private static ClientBase CreateClient(string[] args)
         {
             if (args.FirstOrDefault() == "/rdp")

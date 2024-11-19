@@ -19,9 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
+using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
+using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -29,26 +31,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Session
+namespace Google.Solutions.Terminal.Test
 {
     [TestFixture]
     public class TestSftpFileSystem
     {
-        private static SftpFileSystem CreateFileSystem(params Libssh2SftpFileInfo[] files)
-        {
-            return new SftpFileSystem(
-                path => Task.FromResult<IReadOnlyCollection<Libssh2SftpFileInfo>>(
-                    new ReadOnlyCollection<Libssh2SftpFileInfo>(files)));
-        }
-
         private static Libssh2SftpFileInfo CreateFile(string name, FilePermissions permissions)
         {
-            return new Libssh2SftpFileInfo(
-                name,
-                new LIBSSH2_SFTP_ATTRIBUTES()
-                {
-                    permissions = (uint)permissions
-                });
+            return new Libssh2SftpFileInfo(name, permissions);
         }
 
         //---------------------------------------------------------------------
@@ -58,14 +48,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void Root_IsDirectory()
         {
-            using (var fs = CreateFileSystem())
+            using (var fs = new SftpFileSystem(new Mock<ISftpChannel>().Object))
             {
                 var root = fs.Root;
 
                 Assert.IsNotNull(root);
                 Assert.IsFalse(root.Type.IsFile);
                 Assert.IsTrue(root.IsExpanded);
-                Assert.AreEqual(string.Empty, root.Name);
+                Assert.AreEqual("/", root.Name);
             }
         }
 
@@ -76,11 +66,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public async Task ListFiles_WhenServerReturnsUnorderedList_ThenListFilesReturnsOrderedList()
         {
-            using (var fs = CreateFileSystem(
-                CreateFile("dir-2", FilePermissions.Directory),
-                CreateFile("file-2", FilePermissions.OwnerRead),
-                CreateFile("file-1", FilePermissions.OwnerRead),
-                CreateFile("dir-1", FilePermissions.Directory)))
+            var sftpChannel = new Mock<ISftpChannel>();
+            sftpChannel
+                .Setup(c => c.ListFilesAsync(It.IsAny<string>()))
+                .ReturnsAsync(new[]
+                {
+                    CreateFile("dir-2", FilePermissions.Directory),
+                    CreateFile("file-2", FilePermissions.OwnerRead),
+                    CreateFile("file-1", FilePermissions.OwnerRead),
+                    CreateFile("dir-1", FilePermissions.Directory)
+                });
+
+            using (var fs = new SftpFileSystem(sftpChannel.Object))
             {
                 var files = await fs
                     .ListFilesAsync(fs.Root)
@@ -103,9 +100,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public async Task ListFiles_WhenFileIsDotLink_ThenListFilesIgnoresFile()
         {
-            using (var fs = CreateFileSystem(
-                CreateFile(".", FilePermissions.SymbolicLink),
-                CreateFile("..", FilePermissions.SymbolicLink)))
+            var sftpChannel = new Mock<ISftpChannel>();
+            sftpChannel
+                .Setup(c => c.ListFilesAsync(It.IsAny<string>()))
+                .ReturnsAsync(new[]
+                {
+                    CreateFile(".", FilePermissions.SymbolicLink),
+                    CreateFile("..", FilePermissions.SymbolicLink)
+                });
+
+            using (var fs = new SftpFileSystem(sftpChannel.Object))
             {
                 var files = await fs
                     .ListFilesAsync(fs.Root)
@@ -118,8 +122,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public async Task ListFiles_WhenFileStartsWithDot_ThenListFilesAppliesAttribute()
         {
-            using (var fs = CreateFileSystem(
-                CreateFile(".hidden", FilePermissions.OtherRead)))
+            var sftpChannel = new Mock<ISftpChannel>();
+            sftpChannel
+                .Setup(c => c.ListFilesAsync(It.IsAny<string>()))
+                .ReturnsAsync(new[]
+                {
+                    CreateFile(".hidden", FilePermissions.OtherRead)
+                });
+
+            using (var fs = new SftpFileSystem(sftpChannel.Object))
             {
                 var files = await fs
                     .ListFilesAsync(fs.Root)
@@ -134,8 +145,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public async Task ListFiles_WhenFileIsSymlink_ThenListFilesAppliesAttribute()
         {
-            using (var fs = CreateFileSystem(
-                CreateFile("symlink", FilePermissions.SymbolicLink)))
+            var sftpChannel = new Mock<ISftpChannel>();
+            sftpChannel
+                .Setup(c => c.ListFilesAsync(It.IsAny<string>()))
+                .ReturnsAsync(new[]
+                {
+                    CreateFile("symlink", FilePermissions.SymbolicLink)
+                });
+
+            using (var fs = new SftpFileSystem(sftpChannel.Object))
             {
                 var files = await fs
                     .ListFilesAsync(fs.Root)
@@ -155,8 +173,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 FilePermissions.CharacterDevice,
                 FilePermissions.BlockSpecial)] FilePermissions permissions)
         {
-            using (var fs = CreateFileSystem(
-                CreateFile("devide", FilePermissions.OtherRead | permissions)))
+            var sftpChannel = new Mock<ISftpChannel>();
+            sftpChannel
+                .Setup(c => c.ListFilesAsync(It.IsAny<string>()))
+                .ReturnsAsync(new[]
+                {
+                    CreateFile("device", FilePermissions.OtherRead | permissions)
+                });
+
+            using (var fs = new SftpFileSystem(sftpChannel.Object))
             {
                 var files = await fs
                     .ListFilesAsync(fs.Root)
@@ -175,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void TranslateFileType_WhenFileIsExecutable_ThenFileTypeIsSpecial()
         {
-            using (var fs = CreateFileSystem())
+            using (var fs = new SftpFileSystem(new Mock<ISftpChannel>().Object))
             {
                 var regularType = fs.TranslateFileType(
                     CreateFile(
@@ -194,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void TranslateFileType_WhenFileIsSymlink_ThenFileTypeIsIsSpecial()
         {
-            using (var fs = CreateFileSystem())
+            using (var fs = new SftpFileSystem(new Mock<ISftpChannel>().Object))
             {
                 var regularType = fs.TranslateFileType(
                     CreateFile(
@@ -213,7 +238,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void TranslateFileType_WhenFileIsConfigFile_ThenFileTypeIsSpecial()
         {
-            using (var fs = CreateFileSystem())
+            using (var fs = new SftpFileSystem(new Mock<ISftpChannel>().Object))
             {
                 var regularType = fs.TranslateFileType(
                     CreateFile(
@@ -232,7 +257,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void TranslateFileType_WhenFileIsDirectory_ThenFileTypeIsDirectory()
         {
-            using (var fs = CreateFileSystem())
+            using (var fs = new SftpFileSystem(new Mock<ISftpChannel>().Object))
             {
                 var dirType = fs.TranslateFileType(
                     CreateFile(
@@ -247,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         public void TranslateFileType_WhenFileNameContainsInvalidCharacters_ThenFileTypeIsPlain(
             [Values("file?", "<file", "COM1", "file.")] string fileName)
         {
-            using (var fs = CreateFileSystem())
+            using (var fs = new SftpFileSystem(new Mock<ISftpChannel>().Object))
             {
                 var regularType = fs.TranslateFileType(
                     CreateFile(
@@ -261,6 +286,75 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 Assert.IsTrue(iniType.IsFile);
                 Assert.AreNotEqual(regularType.TypeName, iniType.TypeName);
             }
+        }
+
+        //---------------------------------------------------------------------
+        // OpenFileAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task OpenFile_ByFileItem_OpensFile()
+        {
+            var sftpChannel = new Mock<ISftpChannel>();
+            using (var fs = new SftpFileSystem(sftpChannel.Object))
+            {
+                var file = new Mock<IFileItem>();
+                file.SetupGet(f => f.Path).Returns("file.txt");
+                file.SetupGet(f => f.Type).Returns(new FileType("file", true, null!));
+                
+                await fs
+                    .OpenFileAsync(file.Object, FileAccess.ReadWrite)
+                    .ConfigureAwait(false);
+            }
+
+            sftpChannel.Verify(
+                c => c.CreateFileAsync(
+                    "file.txt",
+                    FileMode.Open,
+                    FileAccess.ReadWrite,
+                    FilePermissions.None),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task OpenFile_ByName_CreatesFile()
+        {
+            var sftpChannel = new Mock<ISftpChannel>();
+            using (var fs = new SftpFileSystem(sftpChannel.Object))
+            {
+                await fs
+                    .OpenFileAsync(fs.Root, "file.txt", FileMode.CreateNew, FileAccess.ReadWrite)
+                    .ConfigureAwait(false);
+            }
+
+            sftpChannel.Verify(
+                c => c.CreateFileAsync(
+                    "/file.txt",
+                    FileMode.CreateNew,
+                    FileAccess.ReadWrite,
+                    FilePermissions.OwnerWrite | FilePermissions.OwnerRead),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task OpenFile_ByName_UsesDefaultPermission()
+        {
+            var sftpChannel = new Mock<ISftpChannel>();
+            using (var fs = new SftpFileSystem(sftpChannel.Object))
+            {
+                fs.DefaultFilePermissions = FilePermissions.OwnerExecute;
+                await fs
+                    .OpenFileAsync(fs.Root, "file.txt", FileMode.CreateNew, FileAccess.ReadWrite)
+                    .ConfigureAwait(false);
+            }
+
+            sftpChannel.Verify(
+                c => c.CreateFileAsync(
+                    "/file.txt",
+                    FileMode.CreateNew,
+                    FileAccess.ReadWrite,
+                    FilePermissions.OwnerExecute),
+                Times.Once);
         }
     }
 }

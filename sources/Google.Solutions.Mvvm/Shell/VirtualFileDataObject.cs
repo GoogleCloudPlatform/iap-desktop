@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.Interop;
 using System;
 using System.Collections.Generic;
@@ -66,9 +67,9 @@ namespace Google.Solutions.Mvvm.Shell
             //
             // Enable delayed rendering
             //
-            SetData(CFSTR_FILEDESCRIPTORW, null);
-            SetData(CFSTR_FILECONTENTS, null);
-            SetData(CFSTR_PERFORMEDDROPEFFECT, null);
+            SetData(ShellDataFormats.CFSTR_FILEDESCRIPTORW, null);
+            SetData(ShellDataFormats.CFSTR_FILECONTENTS, null);
+            SetData(ShellDataFormats.CFSTR_PERFORMEDDROPEFFECT, null);
         }
 
         /// <summary>
@@ -92,6 +93,11 @@ namespace Google.Solutions.Mvvm.Shell
         /// </summary>
         public event EventHandler<AsyncOperationEventArgs>? AsyncOperationCompleted;
 
+        /// <summary>
+        /// Raised when asynchronous reading or writing failed.
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? AsyncOperationFailed;
+
         private void ExpectNotDisposed()
         {
             if (this.disposed)
@@ -111,16 +117,16 @@ namespace Google.Solutions.Mvvm.Shell
                 return null;
             }
 
-            if (CFSTR_FILEDESCRIPTORW.Equals(format, StringComparison.OrdinalIgnoreCase))
+            if (ShellDataFormats.CFSTR_FILEDESCRIPTORW.Equals(format, StringComparison.OrdinalIgnoreCase))
             {
                 //
                 // Supply group descriptor for all files.
                 //
                 base.SetData(
-                    CFSTR_FILEDESCRIPTORW,
+                    ShellDataFormats.CFSTR_FILEDESCRIPTORW,
                     Descriptor.ToNativeGroupDescriptorStream(this.Files));
             }
-            else if (CFSTR_FILECONTENTS.Equals(format, StringComparison.OrdinalIgnoreCase))
+            else if (ShellDataFormats.CFSTR_FILECONTENTS.Equals(format, StringComparison.OrdinalIgnoreCase))
             {
                 //
                 // Open the stream. We do that lazily in case the client
@@ -130,7 +136,16 @@ namespace Google.Solutions.Mvvm.Shell
                 //     to keep track of it and dispose it once the operation
                 //     has completed.
                 //
-                var contentStream = this.Files[this.currentFile].OpenStream();
+
+                //
+                // NB. DataObject (in SaveStreamToHandle) assumes that Stream.Read()
+                //     always reads the requested amount of data, but Stream
+                //     implementations are allowed to return _less_ than that.
+                //     To compensate, wrap the stream.
+                //
+
+                var contentStream = new FullReadGuaranteeingStream(
+                    this.Files[this.currentFile].OpenStream());
                 this.openedContentStreams.Add(contentStream);
 
                 //
@@ -138,7 +153,7 @@ namespace Google.Solutions.Mvvm.Shell
                 //
                 //
                 base.SetData(
-                    CFSTR_FILECONTENTS,
+                    ShellDataFormats.CFSTR_FILECONTENTS,
                     this.currentFile < this.Files.Count
                         ? contentStream
                         : null);
@@ -162,7 +177,8 @@ namespace Google.Solutions.Mvvm.Shell
             //     information is encoded in the FORMATETC parameter.
             //
 
-            if (formatetc.cfFormat == (short)DataFormats.GetFormat(CFSTR_FILECONTENTS).Id)
+            if (formatetc.cfFormat == 
+                (short)DataFormats.GetFormat(ShellDataFormats.CFSTR_FILECONTENTS).Id)
             {
                 //
                 // Cache the index so that we can use it in GetData(format, autoConvert).
@@ -198,10 +214,24 @@ namespace Google.Solutions.Mvvm.Shell
                         ((UCOMIDataObject)this).GetDataHere(ref formatetc, ref medium);
                         return;
                     }
-                    catch
+                    catch (Exception e)
                     {
                         NativeMethods.GlobalFree(new HandleRef(medium, medium.unionmember));
                         medium.unionmember = IntPtr.Zero;
+
+                        if (e is COMException comEx && (
+                            comEx.HResult == DV_E_FORMATETC ||
+                            comEx.HResult == (int)HRESULT.E_FAIL))
+                        {
+                            //
+                            // These can happen during format negotiation and 
+                            // aren't worth raising an event for.
+                            //
+                        }
+                        else if (this.IsAsync)
+                        {
+                            this.AsyncOperationFailed?.Invoke(this, new ExceptionEventArgs(e));
+                        }
 
                         throw;
                     }
@@ -246,14 +276,14 @@ namespace Google.Solutions.Mvvm.Shell
         {
             ExpectNotDisposed();
 
-            this.IsAsync = fDoOpAsync != VARIANT_FALSE;
+            this.IsAsync = fDoOpAsync != VariantBool.False;
         }
 
         public void GetAsyncMode([Out] out int pfIsOpAsync)
         {
             ExpectNotDisposed();
 
-            pfIsOpAsync = this.IsAsync ? VARIANT_TRUE : VARIANT_FALSE;
+            pfIsOpAsync = this.IsAsync ? VariantBool.True : VariantBool.False;
         }
 
         public void StartOperation([In] IBindCtx pbcReserved)
@@ -289,7 +319,7 @@ namespace Google.Solutions.Mvvm.Shell
         {
             ExpectNotDisposed();
 
-            pfInAsyncOp = this.IsOperationInProgress ? VARIANT_TRUE : VARIANT_FALSE;
+            pfInAsyncOp = this.IsOperationInProgress ? VariantBool.True : VariantBool.False;
         }
 
         //----------------------------------------------------------------------
@@ -487,35 +517,112 @@ namespace Google.Solutions.Mvvm.Shell
             }
         }
 
+        /// <summary>
+        /// Stream that always reads the full amount of requested data,
+        /// even if the Stream contract doesn't require that.
+        /// </summary>
+        private class FullReadGuaranteeingStream : Stream
+        {
+            private readonly Stream stream;
+
+            public FullReadGuaranteeingStream(Stream stream)
+            {
+                this.stream = stream;
+            }
+
+            public override bool CanRead
+            {
+                get => this.stream.CanRead;
+            }
+
+            public override bool CanSeek
+            {
+                get => this.stream.CanSeek;
+            }
+
+            public override bool CanWrite
+            {
+                get => this.stream.CanWrite;
+            }
+
+            public override long Length
+            {
+                get => this.stream.Length;
+            }
+
+            public override long Position 
+            { 
+                get => this.stream.Position; 
+                set => this.stream.Position = value;
+            }
+
+            public override void Flush()
+            {
+                this.stream.Flush();
+            }
+
+            public override long Seek(long offset, SeekOrigin origin)
+            {
+                return this.stream.Seek(offset, origin);
+            }
+
+            public override void SetLength(long value)
+            {
+                this.stream?.SetLength(value);
+            }
+
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                //
+                // Keep reading until we reached the requested number
+                // of bytes or the end of the stream.
+                //
+                int totalBytesRead = 0;
+                while (totalBytesRead < count)
+                {
+                    var bytesRead = this.stream.Read(
+                        buffer, 
+                        offset + totalBytesRead, 
+                        count - totalBytesRead);
+                    if (bytesRead > 0)
+                    {
+                        totalBytesRead += bytesRead;
+                    }
+                }
+
+                return totalBytesRead;
+            }
+
+            public override void Write(byte[] buffer, int offset, int count)
+            {
+                this.stream.Write(buffer, offset, count);
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                base.Dispose(disposing);
+                this.stream.Dispose();
+            }
+        }
+
         //----------------------------------------------------------------------
         // Interop declarations.
         //----------------------------------------------------------------------
 
-        private const uint FD_CLSID = 0x00000001;
-        private const uint FD_SIZEPOINT = 0x00000002;
-        private const uint FD_ATTRIBUTES = 0x00000004;
         private const uint FD_CREATETIME = 0x00000008;
         private const uint FD_ACCESSTIME = 0x00000010;
         private const uint FD_WRITESTIME = 0x00000020;
         private const uint FD_FILESIZE = 0x00000040;
         private const uint FD_PROGRESSUI = 0x00004000;
-        private const uint FD_LINKUI = 0x00008000;
         private const uint FD_UNICODE = 0x80000000;
-
-        internal const string CFSTR_FILEDESCRIPTORW = "FileGroupDescriptorW";
-        internal const string CFSTR_FILECONTENTS = "FileContents";
-        internal const string CFSTR_PREFERREDDROPEFFECT = "Preferred DropEffect";
-        internal const string CFSTR_PERFORMEDDROPEFFECT = "Performed DropEffect";
 
         private const uint GMEM_MOVEABLE = 0x0002;
         private const uint GMEM_ZEROINIT = 0x0040;
         private const uint GHND = (GMEM_MOVEABLE | GMEM_ZEROINIT);
         private const uint GMEM_DDESHARE = 0x2000;
 
-        private const int VARIANT_FALSE = 0;
-        private const int VARIANT_TRUE = -1;
-
         private const int DV_E_TYMED = unchecked((int)0x80040069);
+        private const int DV_E_FORMATETC = unchecked((int)0x80040064);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         internal struct FILEDESCRIPTORW

@@ -26,7 +26,6 @@ using Google.Solutions.Platform.Interop;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -37,14 +36,23 @@ using System.Threading.Tasks;
 
 #pragma warning disable CS0067 // The event ... is never used
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
+namespace Google.Solutions.Terminal
 {
+    /// <summary>
+    /// Implements IFileSystem on a SFTP channel.
+    /// </summary>
     internal sealed class SftpFileSystem : IFileSystem, IDisposable
     {
-        private readonly Func<string, Task<IReadOnlyCollection<Libssh2SftpFileInfo>>> listRemoteFilesFunc;
         private readonly FileTypeCache fileTypeCache;
+        private readonly ISftpChannel channel;
 
         private static readonly Regex configFileNamePattern = new Regex("co?ni?f(ig)?$");
+
+        /// <summary>
+        /// Default permissions to apply to new files.
+        /// </summary>
+        public FilePermissions DefaultFilePermissions { get; set; } =
+            FilePermissions.OwnerRead | FilePermissions.OwnerWrite;
 
         internal FileType TranslateFileType(Libssh2SftpFileInfo sftpFile)
         {
@@ -103,19 +111,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             }
         }
 
-        internal SftpFileSystem(
-            Func<string, Task<IReadOnlyCollection<Libssh2SftpFileInfo>>> listRemoteFilesFunc)
+        public SftpFileSystem(ISftpChannel channel)
         {
-            this.listRemoteFilesFunc = listRemoteFilesFunc;
+            this.channel = channel.ExpectNotNull(nameof(channel));
             this.fileTypeCache = new FileTypeCache();
-
             this.Root = new SftpRootItem();
-        }
-
-        public SftpFileSystem(SshFileSystemChannel channel)
-            : this((path) => channel.ListFilesAsync(path))
-        {
-            channel.ExpectNotNull(nameof(channel));
         }
 
         //---------------------------------------------------------------------
@@ -135,8 +135,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 : directory.Path;
             Debug.Assert(!remotePath.StartsWith("//"));
 
-            var sftpFiles = await this
-                .listRemoteFilesFunc(remotePath)
+            var sftpFiles = await this.channel
+                .ListFilesAsync(remotePath)
                 .ConfigureAwait(false);
 
             //
@@ -155,6 +155,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             return new ObservableCollection<IFileItem>(filteredSftpFiles);
         }
 
+        public Task<Stream> OpenFileAsync(
+            IFileItem file,
+            FileAccess access)
+        {
+            Precondition.Expect(file.Type.IsFile, $"{file.Name} is not a file");
+
+            return this.channel.CreateFileAsync(
+                file.Path,
+                FileMode.Open,
+                access,
+                FilePermissions.None);
+        }
+
+        public Task<Stream> OpenFileAsync(
+            IFileItem directory,
+            string name,
+            FileMode mode,
+            FileAccess access)
+        {
+            Precondition.Expect(!directory.Type.IsFile, $"{directory.Name} is not a directory");
+            Precondition.Expect(!name.Contains("/"), "Name must not be a path");
+
+            return this.channel.CreateFileAsync(
+                $"{directory.Path}/{name}",
+                mode,
+                access,
+                this.DefaultFilePermissions);
+        }
+
         //---------------------------------------------------------------------
         // IDisposable.
         //---------------------------------------------------------------------
@@ -162,6 +191,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         public void Dispose()
         {
             this.fileTypeCache.Dispose();
+            this.channel?.Dispose();
         }
 
         //---------------------------------------------------------------------
@@ -174,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
             public string Name
             {
-                get => string.Empty;
+                get => "/";
             }
 
             public FileAttributes Attributes
@@ -205,17 +235,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             public string Path
             {
                 get => string.Empty;
-            }
-
-            public Stream Open(FileAccess access)
-            {
-                throw new InvalidOperationException(
-                    "Reading or writing a directory is not allowed");
-            }
-
-            public Stream Create(string name, FileAccess access)
-            {
-                throw new NotImplementedException();
             }
         }
 
@@ -291,18 +310,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
                     return attributes;
                 }
-            }
-
-            public Stream Open(FileAccess access)
-            {
-                throw new NotImplementedException();
-            }
-
-            public Stream Create(
-                string name, 
-                FileAccess access)
-            {
-                throw new NotImplementedException();
             }
         }
     }

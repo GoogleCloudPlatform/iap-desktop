@@ -55,12 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             {
             }
 
-            public Task DownloadFilesAsync()
-            {
-                throw new System.NotImplementedException();
-            }
-
-            public Task UploadFilesAsync()
+            public Task TransferFilesAsync()
             {
                 throw new System.NotImplementedException();
             }

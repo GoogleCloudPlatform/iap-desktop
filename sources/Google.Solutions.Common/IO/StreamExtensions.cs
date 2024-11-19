@@ -28,7 +28,10 @@ namespace Google.Solutions.Common.IO
 {
     public static class StreamExtensions
     {
-        internal const int DefaultBufferSize = 64 * 1024;
+        /// <summary>
+        /// Default size for stream copy operations.
+        /// </summary>
+        public const int DefaultBufferSize = 64 * 1024;
 
         private static void ExpectReadable(Stream s)
         {

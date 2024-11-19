@@ -296,8 +296,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
             menu.AddCommand(sessionCommands.EnterFullScreenOnAllScreens);
             menu.AddCommand(connectCommands.DuplicateSession);
             menu.AddSeparator();
-            menu.AddCommand(sessionCommands.DownloadFiles);
-            menu.AddCommand(sessionCommands.UploadFiles);
+            menu.AddCommand(sessionCommands.TransferFiles);
             menu.AddCommand(sessionCommands.TypeClipboardText);
             menu.AddCommand(sessionCommands.ShowSecurityScreen);
             menu.AddCommand(sessionCommands.ShowTaskManager);

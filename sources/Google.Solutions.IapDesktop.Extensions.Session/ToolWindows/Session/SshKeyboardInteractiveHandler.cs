@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             }
             else
             {
-                throw new OperationCanceledException(); // TODO: Verify that OperationCanceledException is handled correctly.
+                throw new OperationCanceledException();
             }
         }
 

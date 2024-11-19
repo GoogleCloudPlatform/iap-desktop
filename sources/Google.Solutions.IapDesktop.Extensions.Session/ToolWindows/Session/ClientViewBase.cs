@@ -230,6 +230,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         public abstract InstanceLocator Instance { get; }
 
         /// <summary>
+        /// Display a non-fatal error.
+        /// </summary>
+        protected virtual void OnError(string caption, Exception e)
+        {
+            if (e.IsCancellation())
+            {
+                //
+                // The user cancelled, nervemind.
+                //
+                return;
+            }
+
+            this.exceptionDialog.Show(this, caption, e);
+        }
+
+        /// <summary>
         /// Display a fatal error.
         /// </summary>
         protected virtual void OnFatalError(Exception e)

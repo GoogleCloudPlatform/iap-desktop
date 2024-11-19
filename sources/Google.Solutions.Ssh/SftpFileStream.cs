@@ -19,16 +19,18 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh
 {
-    internal class SshFileStream : Stream
+    internal class SftpFileStream : Stream
     {
         /// <summary>
         /// Native channel, can only be accessed on the worker thread.
@@ -45,20 +47,65 @@ namespace Google.Solutions.Ssh
         /// </summary>
         private readonly LIBSSH2_FXF_FLAGS flags;
 
-        internal SshFileStream(
+        private readonly LIBSSH2_SFTP_ATTRIBUTES attributes;
+
+        private long position;
+
+        internal SftpFileStream(
             SshConnection connection,
             Libssh2SftpFileChannel nativeChannel,
             LIBSSH2_FXF_FLAGS flags)
         {
+            Debug.Assert(connection.IsRunningOnWorkerThread);
+
             this.Connection = connection;
             this.nativeChannel = nativeChannel;
             this.flags = flags;
+            this.attributes = nativeChannel.Attributes;
         }
 
         protected override void Dispose(bool disposing)
         {
-            this.nativeChannel.Dispose();
             base.Dispose(disposing);
+
+            if (disposing)
+            {
+                if (this.Connection.IsRunningOnWorkerThread)
+                {
+                    this.nativeChannel.Dispose();
+                }
+                else
+                {
+                    _ = this.Connection.RunThrowingOperationAsync(
+                        _ => this.nativeChannel.Dispose());
+                }
+            }
+        }
+
+        //----------------------------------------------------------------------
+        // Attributes.
+        //----------------------------------------------------------------------
+
+        /// <summary>
+        /// Length of file at the time it was opened.
+        /// </summary>
+        public override long Length
+        {
+            get
+            {
+                //
+                // Return size at the time of open so that we don't need
+                // to block.
+                //
+                if (this.attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.SIZE))
+                {
+                    return (long)this.attributes.filesize;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
         }
 
         //----------------------------------------------------------------------
@@ -70,10 +117,19 @@ namespace Google.Solutions.Ssh
             get => this.flags.HasFlag(LIBSSH2_FXF_FLAGS.READ);
         }
 
+        [SuppressMessage("Usage",
+            "VSTHRD002:Avoid problematic synchronous waits",
+            Justification = "")]
         public override int Read(byte[] buffer, int offset, int count)
         {
-            throw new NotSupportedException(
-                "The stream can only be accessed asynchonously");
+            try
+            {
+                return ReadAsync(buffer, offset, count).Result;
+            }
+            catch (AggregateException e)
+            {
+                throw e.Unwrap();
+            }
         }
 
         public override async Task<int> ReadAsync(
@@ -92,12 +148,12 @@ namespace Google.Solutions.Ssh
             //
             // Perform a synchronous read on the worker thread.
             //
-            return await this.Connection
+            var bytesRead = await this.Connection
                 .RunThrowingOperationAsync(session =>
                 {
                     Debug.Assert(this.Connection.IsRunningOnWorkerThread);
 
-                    using (session.Session.AsBlocking())
+                    using (session.Session.AsBlocking()) 
                     {
                         if (offset == 0 && count == buffer.Length) 
                         {
@@ -116,6 +172,9 @@ namespace Google.Solutions.Ssh
                     }
                 })
                 .ConfigureAwait(false);
+
+            this.position += bytesRead;
+            return bytesRead;
         }
 
         //----------------------------------------------------------------------
@@ -127,10 +186,19 @@ namespace Google.Solutions.Ssh
             get => this.flags.HasFlag(LIBSSH2_FXF_FLAGS.WRITE);
         }
 
+        [SuppressMessage("Usage",
+            "VSTHRD002:Avoid problematic synchronous waits",
+            Justification = "")]
         public override void Write(byte[] buffer, int offset, int count)
         {
-            throw new NotSupportedException(
-                "The stream can only be accessed asynchonously");
+            try
+            {
+                WriteAsync(buffer, offset, count).Wait();
+            }
+            catch (AggregateException e)
+            {
+                throw e.Unwrap();
+            }
         }
 
         public override async Task WriteAsync(
@@ -174,6 +242,8 @@ namespace Google.Solutions.Ssh
                     return session;
                 })
                 .ConfigureAwait(false);
+
+            this.position += count;
         }
 
         public override void Flush()
@@ -199,15 +269,17 @@ namespace Google.Solutions.Ssh
             throw new NotSupportedException();
         }
 
-        public override long Length
-        {
-            get => throw new NotSupportedException();
-        }
-
         public override long Position
         {
-            get => throw new NotSupportedException();
-            set => throw new NotSupportedException();
+            get => this.position;
+            set
+            {
+                if (this.position != value)
+                {
+                    throw new NotSupportedException(
+                        "The stream does not support seeking");
+                }
+            }
         }
     }
 }

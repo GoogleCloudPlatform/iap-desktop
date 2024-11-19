@@ -27,16 +27,14 @@ using Google.Solutions.Testing.Apis.Integration;
 using NUnit.Framework;
 using System;
 using System.IO;
-using System.Runtime.Remoting.Channels;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Test
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestSshFileSystemChannel : SshFixtureBase
+    public class TestSftpChannel : SshFixtureBase
     {
         public static Stream CreateStream(string content)
         {
@@ -189,7 +187,7 @@ namespace Google.Solutions.Ssh.Test
         }
 
         [Test]
-        public async Task CreateFile_CreateNew(
+        public async Task CreateFile_WriteReadAsynchronously(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instance = await instanceLocatorTask;
@@ -230,10 +228,8 @@ namespace Google.Solutions.Ssh.Test
                         Assert.IsFalse(outputStream.CanRead);
                         Assert.IsFalse(outputStream.CanSeek);
 
-                        Assert.Throws<NotSupportedException>(
-                            () => outputStream.Read(new byte[1], 0, 1));
-                        Assert.Throws<NotSupportedException>(
-                            () => outputStream.Write(new byte[1], 0, 1));
+                        Assert.AreEqual(0, outputStream.Length);
+
                         ExceptionAssert.ThrowsAggregateException<NotSupportedException>(
                             () => outputStream.ReadAsync(new byte[1], 0, 1).Wait());
 
@@ -241,6 +237,8 @@ namespace Google.Solutions.Ssh.Test
                         await outputStream
                             .WriteAsync(data, 1, data.Length - 2)
                             .ConfigureAwait(false);
+
+                        Assert.AreEqual(data.Length - 2, outputStream.Position);
                     }
 
                     //
@@ -258,10 +256,8 @@ namespace Google.Solutions.Ssh.Test
                         Assert.IsFalse(inputStream.CanWrite);
                         Assert.IsFalse(inputStream.CanSeek);
 
-                        Assert.Throws<NotSupportedException>(
-                            () => inputStream.Read(new byte[1], 0, 1));
-                        Assert.Throws<NotSupportedException>(
-                            () => inputStream.Write(new byte[1], 0, 1));
+                        Assert.AreNotEqual(0, inputStream.Length);
+
                         ExceptionAssert.ThrowsAggregateException<NotSupportedException>(
                             () => inputStream.WriteAsync(new byte[1], 0, 1).Wait());
 
@@ -273,10 +269,99 @@ namespace Google.Solutions.Ssh.Test
                         Assert.AreEqual(
                             "Some data",
                             Encoding.ASCII.GetString(buffer, 1, bytesRead));
+                        Assert.AreEqual(bytesRead, inputStream.Position);
 
                         bytesRead = await inputStream
                             .ReadAsync(buffer, 0, buffer.Length)
                             .ConfigureAwait(false);
+                        Assert.AreEqual(0, bytesRead);
+                    }
+                }
+            }
+        }
+
+        [Test]
+        public async Task CreateFile_WriteReadSynchronously(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance)
+                .ConfigureAwait(false);
+            var credential = await CreateAsymmetricKeyCredentialAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
+
+            using (var connection = new SshConnection(
+                endpoint,
+                credential,
+                new KeyboardInteractiveHandler()))
+            {
+                await connection
+                    .ConnectAsync()
+                    .ConfigureAwait(false);
+
+                using (var channel = await connection
+                    .OpenFileSystemAsync()
+                    .ConfigureAwait(false))
+                {
+                    var tempFile = $"{Guid.NewGuid()}.txt";
+
+                    //
+                    // Write to temp file.
+                    //
+                    using (var outputStream = await channel
+                        .CreateFileAsync(
+                            tempFile,
+                            FileMode.Create,
+                            FileAccess.Write,
+                            FilePermissions.OwnerWrite | FilePermissions.OwnerRead)
+                        .ConfigureAwait(false))
+                    {
+                        Assert.IsTrue(outputStream.CanWrite);
+                        Assert.IsFalse(outputStream.CanRead);
+                        Assert.IsFalse(outputStream.CanSeek);
+
+                        Assert.AreEqual(0, outputStream.Length);
+
+                        Assert.Throws<NotSupportedException>(
+                            () => outputStream.Read(new byte[1], 0, 1));
+
+                        var data = Encoding.ASCII.GetBytes("'Some data'");
+                        outputStream.Write(data, 1, data.Length - 2);
+
+                        Assert.AreEqual(data.Length - 2, outputStream.Position);
+                    }
+
+                    //
+                    // Read back.
+                    //
+                    using (var inputStream = await channel
+                        .CreateFileAsync(
+                            tempFile,
+                            FileMode.Open,
+                            FileAccess.Read,
+                            FilePermissions.None)
+                        .ConfigureAwait(false))
+                    {
+                        Assert.IsTrue(inputStream.CanRead);
+                        Assert.IsFalse(inputStream.CanWrite);
+                        Assert.IsFalse(inputStream.CanSeek);
+
+                        Assert.AreNotEqual(0, inputStream.Length);
+
+                        Assert.Throws<NotSupportedException>(
+                            () => inputStream.Write(new byte[1], 0, 1));
+
+                        var buffer = new byte[1024];
+                        var bytesRead = inputStream.Read(buffer, 1, buffer.Length - 1);
+
+                        Assert.AreEqual(
+                            "Some data",
+                            Encoding.ASCII.GetString(buffer, 1, bytesRead));
+                        Assert.AreEqual(bytesRead, inputStream.Position);
+
+                        bytesRead = inputStream.Read(buffer, 0, buffer.Length);
                         Assert.AreEqual(0, bytesRead);
                     }
                 }

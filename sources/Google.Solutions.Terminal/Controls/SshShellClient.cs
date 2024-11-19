@@ -126,5 +126,20 @@ namespace Google.Solutions.Terminal.Controls
             return e.Unwrap() is Libssh2Exception sshEx &&
                 sshEx.ErrorCode == LIBSSH2_ERROR.SOCKET_TIMEOUT;
         }
+
+        /// <summary>
+        /// Get underlying SSH connection.
+        /// </summary>
+        /// <remarks>
+        /// The connection must be in LoggedOn state.
+        /// </remarks>
+        protected SshConnection Connection
+        {
+            get
+            {
+                ExpectState(ConnectionState.LoggedOn);
+                return this.connection!;
+            }
+        }
     }
 }

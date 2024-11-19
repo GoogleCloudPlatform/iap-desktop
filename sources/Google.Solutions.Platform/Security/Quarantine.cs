@@ -99,7 +99,7 @@ namespace Google.Solutions.Platform.Security
                 {
                     //
                     // Set a client GUID that identifies the current application. Might
-                    // be used to persistently suppress promotes.
+                    // be used to persistently suppress prompts.
                     //
                     attachment.SetClientGuid(clientGuid);
                     attachment.SetLocalPath(filePath.FullName);

@@ -65,6 +65,23 @@ namespace Google.Solutions.Ssh.Native
             this.filePath = filePath;
         }
 
+        public LIBSSH2_SFTP_ATTRIBUTES Attributes
+        {
+            get
+            {
+                var result = (LIBSSH2_ERROR)NativeMethods.libssh2_sftp_fstat_ex(
+                    this.fileHandle,
+                    out var attributes,
+                    0);
+                if (result != LIBSSH2_ERROR.NONE)
+                {
+                    throw this.session.CreateException(result);
+                }
+
+                return attributes;
+            }
+        }
+
         public uint Read(byte[] buffer)
         {
             this.fileHandle.CheckCurrentThreadOwnsHandle();
@@ -72,18 +89,31 @@ namespace Google.Solutions.Ssh.Native
 
             using (SshTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                var bytesRead = NativeMethods.libssh2_sftp_read(
-                    this.fileHandle,
-                    buffer,
-                    new IntPtr(buffer.Length));
+                while (true)
+                {
+                    var bytesRead = NativeMethods.libssh2_sftp_read(
+                        this.fileHandle,
+                        buffer,
+                        new IntPtr(buffer.Length));
 
-                if (bytesRead >= 0)
-                {
-                    return (uint)bytesRead;
-                }
-                else
-                {
-                    throw CreateException((LIBSSH2_ERROR)bytesRead);
+                    if (bytesRead >= 0)
+                    {
+                        return (uint)bytesRead;
+                    }
+                    else if (this.session.IsBlocking &&
+                        (LIBSSH2_ERROR)bytesRead == LIBSSH2_ERROR.TIMEOUT)
+                    {
+                        //
+                        // libssh2_sftp_read can return TIMEOUT well
+                        // before the blocking timeout has elapsed.
+                        //
+
+                        continue;
+                    }
+                    else
+                    {
+                        throw CreateException((LIBSSH2_ERROR)bytesRead);
+                    }
                 }
             }
         }

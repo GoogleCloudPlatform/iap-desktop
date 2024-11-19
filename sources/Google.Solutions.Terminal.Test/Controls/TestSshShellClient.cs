@@ -19,13 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Security;
 using Google.Solutions.Mvvm.Controls;
-using Google.Solutions.Ssh;
 using Google.Solutions.Terminal.Controls;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
-using Microsoft.VisualBasic;
 using NUnit.Framework;
 using System;
 using System.Net;
@@ -39,65 +36,14 @@ namespace Google.Solutions.Terminal.Test.Controls
     [TestFixture]
     [RequiresInteraction]
     [Apartment(ApartmentState.STA)]
-    public class TestSshShellClient 
+    public class TestSshShellClient : SshClientFixtureBase
     {
         private const string InvalidServer = "8.8.8.8";
-
-        private static string? serverAddress;
-        private static string? username;
-        private static string? password;
-
-        [OneTimeSetUp]
-        public static void CollectCredentials()
-        {
-            serverAddress = Interaction.InputBox("SSH server IP address");
-            username = Interaction.InputBox("SSH username");
-            password = Interaction.InputBox("SSH password");
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            //
-            // Wait for worker threads to finish so that test caseses
-            // don't interfere with another.
-            //
-            SshWorkerThread.JoinAllWorkerThreadsAsync().Wait();
-        }
-
-        private class KeyboardInteractiveHandler : IKeyboardInteractiveHandler
-        {
-            public string? Prompt(string caption, string instruction, string prompt, bool echo)
-            {
-                return Interaction.InputBox(
-                    $"Caption: {caption}\nPrompt: {prompt}",
-                    caption);
-            }
-
-            public IPasswordCredential PromptForCredentials(string username)
-            {
-                var password = Interaction.InputBox($"Enter password for {username}");
-                return new StaticPasswordCredential(username, password);
-            }
-        }
-
-        private static ClientDiagnosticsWindow<SshShellClient> CreateWindow()
-        {
-            var window = new ClientDiagnosticsWindow<SshShellClient>(new SshShellClient());
-            window.Client.ServerEndpoint = new IPEndPoint(
-                IPAddress.Parse(serverAddress), 
-                22);
-            window.Client.Credential = new StaticPasswordCredential(
-                username ?? "test", 
-                SecureStringExtensions.FromClearText(password));
-            window.Client.KeyboardInteractiveHandler = new KeyboardInteractiveHandler();
-            return window;
-        }
 
         [WindowsFormsTest]
         public async Task ResizeWindow()
         {
-            using (var window = CreateWindow())
+            using (var window = CreateWindow<SshShellClient>())
             {
                 window.Show();
 
@@ -149,7 +95,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [WindowsFormsTest]
         public async Task Connect_WhenServerInvalid_ThenRaisesEvent()
         {
-            using (var window = CreateWindow())
+            using (var window = CreateWindow<SshShellClient>())
             {
                 window.Client.ServerEndpoint = new IPEndPoint(
                     IPAddress.Parse(InvalidServer), 
@@ -179,7 +125,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [WindowsFormsTest]
         public async Task Close_RaisesEvent()
         {
-            using (var window = CreateWindow())
+            using (var window = CreateWindow<SshShellClient>())
             {
                 window.Show();
 
@@ -211,7 +157,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         [WindowsFormsTest]
         public async Task Logoff()
         {
-            using (var window = CreateWindow())
+            using (var window = CreateWindow<SshShellClient>())
             {
                 window.Show();
 

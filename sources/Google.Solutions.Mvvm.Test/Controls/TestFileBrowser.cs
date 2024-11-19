@@ -31,6 +31,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -630,6 +631,61 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
+        public void CopySelectedFiles_WhenOpenStreamFails_ThenRaisesException()
+        {
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var file = CreateFile().Object;
+                var fileSystem = CreateFileSystem(new[]
+                {
+                    file
+                });
+
+                fileSystem
+                    .Setup(fs => fs.OpenFileAsync(
+                        It.IsAny<IFileItem>(),
+                        FileAccess.Read))
+                    .Throws<UnauthorizedAccessException>();
+
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+                form.Controls.Add(browser);
+                browser.Bind(
+                    fileSystem.Object,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+                Application.DoEvents();
+
+                browser.SelectedFiles = new[] { file };
+
+                using (var dataObject = browser.CopySelectedFiles())
+                {
+                    Exception? fileCopyException = null;
+                    browser.FileCopyFailed += (_, args) => fileCopyException = args.Exception;
+
+                    var ucomDataObject = (System.Runtime.InteropServices.ComTypes.IDataObject)dataObject;
+                    var formatetc = new FORMATETC()
+                    {
+                        tymed = TYMED.TYMED_HGLOBAL,
+                        cfFormat = (short)DataFormats.GetFormat(ShellDataFormats.CFSTR_FILECONTENTS).Id,
+                        dwAspect = DVASPECT.DVASPECT_CONTENT,
+                        lindex = 0
+                    };
+                    Assert.Throws<UnauthorizedAccessException>(
+                        () => ucomDataObject.GetData(ref formatetc, out var medium));
+
+                    Assert.IsInstanceOf<UnauthorizedAccessException>(fileCopyException);
+                }
+            }
+        }
+
+        [Test]
         public void CopySelectedFiles()
         {
             using (var form = new Form()
@@ -983,6 +1039,44 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     d => d.ShowDialog(browser, It.IsAny<TaskDialogParameters>()),
                     Times.Exactly(2));
             }
+        }
+
+        //---------------------------------------------------------------------
+        // Dispose.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Dispose_DisposesFileSystem()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            fileSystem
+                .SetupGet(fs => fs.Root)
+                .Returns(CreateDirectory().Object);
+            fileSystem
+                .Setup(fs => fs.ListFilesAsync(It.IsAny<IFileItem>()))
+                .ReturnsAsync(new ObservableCollection<IFileItem>());
+
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+                form.Controls.Add(browser);
+
+
+                browser.Bind(
+                    fileSystem.Object,
+                    new Mock<IBindingContext>().Object);
+                Application.DoEvents();
+
+                form.Show();
+            }
+
+            fileSystem.Verify(f => f.Dispose(), Times.Once);
         }
     }
 }

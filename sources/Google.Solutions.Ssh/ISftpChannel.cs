@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,9 +19,29 @@
 // under the License.
 //
 
+using Google.Solutions.Ssh.Native;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
-using System.Reflection;
-using System.Runtime.CompilerServices;
-[assembly: AssemblyTrademark("Google LLC")]
+namespace Google.Solutions.Ssh
+{
+    public interface ISftpChannel : IDisposable
+    {
+        /// <summary>
+        /// List contents of a directory.
+        /// </summary>
+        Task<IReadOnlyCollection<Libssh2SftpFileInfo>> ListFilesAsync(
+            string remotePath);
 
-[assembly: InternalsVisibleTo("Google.Solutions.Ssh.Test")]
+        /// <summary>
+        /// Create or open a file.
+        /// </summary>
+        Task<Stream> CreateFileAsync(
+            string remotePath,
+            FileMode mode,
+            FileAccess access,
+            FilePermissions permissions);
+    }
+}

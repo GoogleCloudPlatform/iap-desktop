@@ -21,6 +21,7 @@
 
 using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Platform.Interop;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.IO;
@@ -59,11 +60,11 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 });
 
                 Assert.IsInstanceOf<Stream>(dataObject.GetData(
-                    VirtualFileDataObject.CFSTR_FILEDESCRIPTORW, 
+                    ShellDataFormats.CFSTR_FILEDESCRIPTORW, 
                     false));
 
                 Assert.IsInstanceOf<Stream>(dataObject.GetData(
-                    VirtualFileDataObject.CFSTR_FILECONTENTS, 
+                    ShellDataFormats.CFSTR_FILECONTENTS, 
                     false));
             }
         }
@@ -84,8 +85,37 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 Array.Empty<VirtualFileDataObject.Descriptor>());
             dataObject.Dispose();
             Assert.IsNull(dataObject.GetData(
-                VirtualFileDataObject.CFSTR_FILEDESCRIPTORW, 
+                ShellDataFormats.CFSTR_FILEDESCRIPTORW, 
                 false));
+        }
+
+        [Test]
+        public void GetData_ReturnsStreamThatGuaranteesFullReads()
+        {
+            var copiedStream = new Mock<Stream>();
+            copiedStream
+                .SetupGet(s => s.Length)
+                .Returns(2);
+            copiedStream
+                .Setup(s => s.Read(It.IsAny<byte[]>(), 0, 2))
+                .Returns(1);
+            copiedStream
+                .Setup(s => s.Read(It.IsAny<byte[]>(), 1, 1))
+                .Returns(1);
+
+            var dataObject = new VirtualFileDataObject(new[] {
+                    new VirtualFileDataObject.Descriptor(
+                        "file-1.txt",
+                        2,
+                        FileAttributes.Normal,
+                        () => copiedStream.Object)
+                });
+
+            var stream = (Stream)dataObject.GetData(
+                ShellDataFormats.CFSTR_FILECONTENTS,
+                false);
+            Assert.AreEqual(2, stream.Length);
+            Assert.AreEqual(2, stream.Read(new byte[2], 0, 2));
         }
 
         //----------------------------------------------------------------------

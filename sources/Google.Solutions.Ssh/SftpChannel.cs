@@ -32,7 +32,7 @@ namespace Google.Solutions.Ssh
     /// <summary>
     /// Channel for interacting with remote file.
     /// </summary>
-    public class SshFileSystemChannel : SshChannelBase
+    public class SftpChannel : SshChannelBase, ISftpChannel
     {
         /// <summary>
         /// Recommended buffer size to use for reading from, or
@@ -65,7 +65,7 @@ namespace Google.Solutions.Ssh
         /// </summary>
         public override SshConnection Connection { get; }
 
-        internal SshFileSystemChannel(
+        internal SftpChannel(
             SshConnection connection,
             Libssh2SftpChannel nativeChannel)
         {
@@ -94,7 +94,6 @@ namespace Google.Solutions.Ssh
 
         internal override void OnReceiveError(Exception exception)
         {
-            Debug.Assert(false, "OnReceiveError should never be called");
         }
 
         //---------------------------------------------------------------------
@@ -140,7 +139,7 @@ namespace Google.Solutions.Ssh
                 FileMode.Truncate => LIBSSH2_FXF_FLAGS.TRUNC,
                 FileMode.Append => LIBSSH2_FXF_FLAGS.APPEND,
                 
-                _ => throw new ArgumentException(nameof(mode)),
+                _ => throw new ArgumentException("The file mode is invalid"),
             };
 
             if (access.HasFlag(FileAccess.Read))
@@ -159,7 +158,7 @@ namespace Google.Solutions.Ssh
 
                 using (c.Session.AsBlocking())
                 {
-                    return new SshFileStream(
+                    return new SftpFileStream(
                         this.Connection,
                         this.nativeChannel.CreateFile(
                             remotePath,
