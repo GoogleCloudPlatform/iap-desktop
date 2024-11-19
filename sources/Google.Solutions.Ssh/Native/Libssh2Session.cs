@@ -231,7 +231,7 @@ namespace Google.Solutions.Ssh.Native
         /// <summary>
         /// Enable blocking I/O for a using block.
         /// </summary>
-        public IDisposable AsBlocking(TimeSpan timeout)
+        public IDisposable AsBlocking(TimeSpan timeout) // TODO: remove
         {
             this.IsBlocking = true;
             var previousTimeout = this.Timeout;

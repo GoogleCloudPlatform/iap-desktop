@@ -153,7 +153,7 @@ namespace Google.Solutions.Ssh
                 {
                     Debug.Assert(this.Connection.IsRunningOnWorkerThread);
 
-                    using (session.Session.AsBlocking()) // TODO: handle/avoid timeout for larger files
+                    using (session.Session.AsBlocking()) 
                     {
                         if (offset == 0 && count == buffer.Length) 
                         {

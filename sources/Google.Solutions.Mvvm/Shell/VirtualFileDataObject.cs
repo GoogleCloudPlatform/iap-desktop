@@ -629,7 +629,7 @@ namespace Google.Solutions.Mvvm.Shell
         private const int VARIANT_FALSE = 0;
         private const int VARIANT_TRUE = -1;
 
-        private const int DV_E_TYMED = unchecked((int)0x80040069);
+        private const int DV_E_TYMED = unchecked((int)0x80040069); // TODO: Move to HRESULT
         private const int DV_E_FORMATETC = unchecked((int)0x80040064);
         private const int E_FAIL = unchecked((int)0x80004005);
 

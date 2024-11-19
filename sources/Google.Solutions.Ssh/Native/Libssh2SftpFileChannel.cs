@@ -89,18 +89,33 @@ namespace Google.Solutions.Ssh.Native
 
             using (SshTraceSource.Log.TraceMethod().WithoutParameters())
             {
-                var bytesRead = NativeMethods.libssh2_sftp_read(
-                    this.fileHandle,
-                    buffer,
-                    new IntPtr(buffer.Length));
+                while (true)
+                {
+                    var bytesRead = NativeMethods.libssh2_sftp_read(
+                        this.fileHandle,
+                        buffer,
+                        new IntPtr(buffer.Length));
 
-                if (bytesRead >= 0)
-                {
-                    return (uint)bytesRead;
-                }
-                else
-                {
-                    throw CreateException((LIBSSH2_ERROR)bytesRead);
+                    if (bytesRead >= 0)
+                    {
+                        return (uint)bytesRead;
+                    }
+                    else if (this.session.IsBlocking &&
+                        (LIBSSH2_ERROR)bytesRead == LIBSSH2_ERROR.TIMEOUT)
+                    {
+                        //
+                        // libssh2_sftp_read can return TIMEOUT well
+                        // before the blocking timeout has elapsed.
+                        //
+
+                        // TODO: Prevent ~5sec timeout?
+
+                        continue;
+                    }
+                    else
+                    {
+                        throw CreateException((LIBSSH2_ERROR)bytesRead);
+                    }
                 }
             }
         }
