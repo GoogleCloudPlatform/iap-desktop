@@ -108,8 +108,6 @@ namespace Google.Solutions.Ssh.Native
                         // before the blocking timeout has elapsed.
                         //
 
-                        // TODO: Prevent ~5sec timeout?
-
                         continue;
                     }
                     else

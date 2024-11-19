@@ -367,7 +367,9 @@ namespace Google.Solutions.Ssh
                                     }
                                     catch (Libssh2Exception e) when (e.ErrorCode == LIBSSH2_ERROR.EAGAIN)
                                     {
+                                        //
                                         // Retry operation.
+                                        //
                                     }
                                     catch (Exception e)
                                     {
@@ -382,11 +384,15 @@ namespace Google.Solutions.Ssh
                                         }
                                         else
                                         {
+                                            //
                                             // Consider it a receive error.
+                                            //
                                             OnReceiveError(e);
                                         }
 
+                                        //
                                         // Bail out.
+                                        //
                                         return;
                                     }
                                 } // while
