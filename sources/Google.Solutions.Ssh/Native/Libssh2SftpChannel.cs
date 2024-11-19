@@ -264,7 +264,7 @@ namespace Google.Solutions.Ssh.Native
         }
     }
 
-    public readonly struct Libssh2SftpFileInfo // TODO: rename
+    public readonly struct Libssh2SftpFileInfo
     {
         private readonly LIBSSH2_SFTP_ATTRIBUTES attributes;
 
@@ -279,7 +279,7 @@ namespace Google.Solutions.Ssh.Native
 
         public FilePermissions Permissions
         {
-            get => (FilePermissions)this.attributes.permissions;
+            get => this.attributes.permissions;
         }
 
         public bool IsDirectory

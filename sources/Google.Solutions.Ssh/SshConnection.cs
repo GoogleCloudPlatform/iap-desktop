@@ -205,7 +205,7 @@ namespace Google.Solutions.Ssh
             }
         }
 
-        internal async Task<TResult> RunSendOperationAsync<TResult>( // TODO: consolidate, rename
+        internal async Task<TResult> RunSendOperationAsync<TResult>(
             Func<Libssh2AuthenticatedSession, TResult> sendOperation)
             where TResult : class
         {

@@ -717,7 +717,7 @@ namespace Google.Solutions.Mvvm.Controls
                     {
                         var parameters = new TaskDialogParameters(
                             "Copy files",
-                            file.Name,
+                            $"Unable to copy {file.Name}",
                             e.Unwrap().Message)
                         {
                             Icon = TaskDialogIcon.Error
