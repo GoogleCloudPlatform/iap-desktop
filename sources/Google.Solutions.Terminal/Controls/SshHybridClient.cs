@@ -73,6 +73,23 @@ namespace Google.Solutions.Terminal.Controls
             this.container.Panel2MinSize = 10;
             this.container.SplitterMoved += OnSplitterMoved;
 
+            //
+            // Allow user to drop files onto terminal. But instead
+            // of initiating an upload, open the file browser.
+            //
+            this.Terminal.AllowDrop = true;
+            this.Terminal.DragEnter += (_, args) =>
+            {
+                //
+                // Open file browser to indicate that that's how
+                // you drag and drop files.
+                //
+                if (FileBrowser.CanPaste(args.Data))
+                {
+                    this.IsFileBrowserVisible = true;
+                }
+            };
+
             ResumeLayout(false);
         }
 
@@ -150,6 +167,11 @@ namespace Google.Solutions.Terminal.Controls
                 }
                 else if (value)
                 {
+                    if (!this.CanShowFileBrowser)
+                    {
+                        return;
+                    }
+
                     Debug.Assert(this.fileBrowser == null);
 
                     Precondition.Expect(

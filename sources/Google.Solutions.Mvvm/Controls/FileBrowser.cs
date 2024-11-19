@@ -543,6 +543,18 @@ namespace Google.Solutions.Mvvm.Controls
             return dataObject;
         }
 
+        internal static IEnumerable<FileInfo> GetPastableFiles(
+            IDataObject dataObject)
+        {
+            //
+            // Extract file paths, ignore directory paths.
+            //
+            return (dataObject.GetData(DataFormats.FileDrop) as IEnumerable<string>)
+                .EnsureNotNull()
+                .Where(path => File.Exists(path))
+                .Select(path => new FileInfo(path));
+        }
+
         /// <summary>
         /// Inspect the data object and extract the list of files
         /// that can be pasted to the current directory.
@@ -554,10 +566,7 @@ namespace Google.Solutions.Mvvm.Controls
             //
             // Extract file paths, ignore directory paths.
             //
-            var files = (dataObject.GetData(DataFormats.FileDrop) as IEnumerable<string>)
-                .EnsureNotNull()
-                .Where(path => File.Exists(path))
-                .Select(path => new FileInfo(path));
+            var files = GetPastableFiles(dataObject);
 
             if (!promptForConflicts)
             {
@@ -643,6 +652,14 @@ namespace Google.Solutions.Mvvm.Controls
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Check of the data object contains pastable files.
+        /// </summary>
+        public static bool CanPaste(IDataObject dataObject)
+        {
+            return GetPastableFiles(dataObject).Any();
         }
 
         /// <summary>

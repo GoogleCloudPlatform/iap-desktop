@@ -722,6 +722,42 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         //---------------------------------------------------------------------
+        // CanPaste.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void CanPaste_WhenFormatIncompatible()
+        {
+            var dataObject = new DataObject();
+            dataObject.SetData("Unknown", "data");
+
+            Assert.IsFalse(FileBrowser.CanPaste(dataObject));
+        }
+
+        [Test]
+        public void CanPaste_WhenDataObjectContainsNonFiles(
+            [Values("__doesnotexist.txt", "\\", "COM1")] string path)
+        {
+            var dataObject = new DataObject();
+            dataObject.SetData(
+                DataFormats.FileDrop,
+                new string[] { path });
+
+            Assert.IsFalse(FileBrowser.CanPaste(dataObject));
+        }
+
+        [Test]
+        public void CanPaste_WhenDataObjectContainsFile()
+        {
+            var dataObject = new DataObject();
+            dataObject.SetData(
+                DataFormats.FileDrop,
+                new string[] { Path.GetTempFileName() });
+
+            Assert.IsTrue(FileBrowser.CanPaste(dataObject));
+        }
+
+        //---------------------------------------------------------------------
         // GetPastableFiles.
         //---------------------------------------------------------------------
 
