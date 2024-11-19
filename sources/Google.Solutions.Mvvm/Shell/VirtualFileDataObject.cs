@@ -21,10 +21,12 @@
 
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Platform.Interop;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
@@ -92,6 +94,11 @@ namespace Google.Solutions.Mvvm.Shell
         /// </summary>
         public event EventHandler<AsyncOperationEventArgs>? AsyncOperationCompleted;
 
+        /// <summary>
+        /// Raised when asynchronous reading or writing failed.
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? AsyncOperationFailed;
+
         private void ExpectNotDisposed()
         {
             if (this.disposed)
@@ -136,6 +143,7 @@ namespace Google.Solutions.Mvvm.Shell
                 //     always reads the requested amount of data, but Stream
                 //     implementations are allowed to return _less_ than that.
                 //     To compensate, wrap the stream.
+                //
 
                 var contentStream = new FullReadGuaranteeingStream(
                     this.Files[this.currentFile].OpenStream());
@@ -206,10 +214,24 @@ namespace Google.Solutions.Mvvm.Shell
                         ((UCOMIDataObject)this).GetDataHere(ref formatetc, ref medium);
                         return;
                     }
-                    catch
+                    catch (Exception e)
                     {
                         NativeMethods.GlobalFree(new HandleRef(medium, medium.unionmember));
                         medium.unionmember = IntPtr.Zero;
+
+                        if (e is COMException comEx && (
+                            comEx.HResult == DV_E_FORMATETC ||
+                            comEx.HResult == E_FAIL))
+                        {
+                            //
+                            // These can happen during format negotiation and 
+                            // aren't worth raising an event for.
+                            //
+                        }
+                        else if (this.IsAsync)
+                        {
+                            this.AsyncOperationFailed?.Invoke(this, new ExceptionEventArgs(e));
+                        }
 
                         throw;
                     }
@@ -608,6 +630,8 @@ namespace Google.Solutions.Mvvm.Shell
         private const int VARIANT_TRUE = -1;
 
         private const int DV_E_TYMED = unchecked((int)0x80040069);
+        private const int DV_E_FORMATETC = unchecked((int)0x80040064);
+        private const int E_FAIL = unchecked((int)0x80004005);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         internal struct FILEDESCRIPTORW

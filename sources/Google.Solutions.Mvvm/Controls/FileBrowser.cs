@@ -524,17 +524,9 @@ namespace Google.Solutions.Mvvm.Controls
                         //     should come from a worker thread, not the UI
                         //     thread.
                         //
-                        try
-                        {
-                            return this.fileSystem!
-                                .OpenFileAsync(f, FileAccess.Read)
-                                .Result;
-                        }
-                        catch (Exception e)
-                        {
-                            this.Invoke(new Action(() => OnFileCopyFailed(e)));
-                            throw;
-                        }
+                        return this.fileSystem!
+                            .OpenFileAsync(f, FileAccess.Read)
+                            .Result;
                     }))
                 .ToList())
             {
@@ -543,6 +535,11 @@ namespace Google.Solutions.Mvvm.Controls
                 // the data.
                 //
                 IsAsync = true
+            };
+
+            dataObject.AsyncOperationFailed += (_, args) =>
+            {
+                this.Invoke(new Action(() => OnFileCopyFailed(args.Exception)));
             };
 
             return dataObject;

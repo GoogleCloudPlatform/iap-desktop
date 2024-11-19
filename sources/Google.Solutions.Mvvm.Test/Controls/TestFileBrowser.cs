@@ -31,6 +31,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -668,8 +669,16 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     Exception? fileCopyException = null;
                     browser.FileCopyFailed += (_, args) => fileCopyException = args.Exception;
 
+                    var ucomDataObject = (System.Runtime.InteropServices.ComTypes.IDataObject)dataObject;
+                    var formatetc = new FORMATETC()
+                    {
+                        tymed = TYMED.TYMED_HGLOBAL,
+                        cfFormat = (short)DataFormats.GetFormat(VirtualFileDataObject.CFSTR_FILECONTENTS).Id,
+                        dwAspect = DVASPECT.DVASPECT_CONTENT,
+                        lindex = 0
+                    };
                     Assert.Throws<UnauthorizedAccessException>(
-                        () => dataObject.GetData(VirtualFileDataObject.CFSTR_FILECONTENTS));
+                        () => ucomDataObject.GetData(ref formatetc, out var medium));
 
                     Assert.IsInstanceOf<UnauthorizedAccessException>(fileCopyException);
                 }
