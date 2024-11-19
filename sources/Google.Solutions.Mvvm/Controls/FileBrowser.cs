@@ -426,7 +426,7 @@ namespace Google.Solutions.Mvvm.Controls
             }
         }
 
-        private void fileList_MouseDown(object sender, MouseEventArgs args)
+        private void fileList_MouseMove(object sender, MouseEventArgs args)
         {
             if (args.Button != MouseButtons.Left)
             {
@@ -451,8 +451,6 @@ namespace Google.Solutions.Mvvm.Controls
             {
                 OnFileCopyFailed(e);
             }
-
-            //TODO: Cancel selection after drag - https://stackoverflow.com/questions/8066982/disabling-drag-selection-on-listbox
         }
 
         //---------------------------------------------------------------------
