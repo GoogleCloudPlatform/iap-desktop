@@ -23,6 +23,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Ssh;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -84,6 +85,8 @@ namespace Google.Solutions.Terminal.Controls
                 this.State == ConnectionState.LoggedOn && 
                 this.BindingContext != null;
         }
+
+        public event EventHandler<ExceptionEventArgs>? FileBrowsingFailed;
 
         //---------------------------------------------------------------------
         // Overrides.
@@ -200,7 +203,17 @@ namespace Google.Solutions.Terminal.Controls
                     this.fileBrowserPanel.Controls.Add(this.fileBrowser);
 
                     var fileSystem = new SftpFileSystem(fsChannel);
-                    this.fileBrowser.Disposed += (_, args) => fileSystem.Dispose();
+                    this.fileBrowser.Disposed += (_, args) 
+                        => fileSystem.Dispose();
+
+                    //
+                    // Propagate browsing events.
+                    //
+                    this.fileBrowser.FileCopyFailed += (_, args) 
+                        => this.FileBrowsingFailed?.Invoke(this, args);
+                    this.fileBrowser.NavigationFailed += (_, args) 
+                        => this.FileBrowsingFailed?.Invoke(this, args);
+
                     this.fileBrowser.Bind(
                         fileSystem, 
                         this.bindingContext!);
@@ -213,10 +226,6 @@ namespace Google.Solutions.Terminal.Controls
 
                     this.fileBrowser.Select();
                     this.fileBrowser.Focus();
-
-
-
-                    // TODO: Handle NavigationFailed
                 }
             }
         }

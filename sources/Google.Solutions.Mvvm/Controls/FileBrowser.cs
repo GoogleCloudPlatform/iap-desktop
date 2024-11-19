@@ -118,12 +118,18 @@ namespace Google.Solutions.Mvvm.Controls
         //---------------------------------------------------------------------
 
         public event EventHandler<ExceptionEventArgs>? NavigationFailed;
+        public event EventHandler<ExceptionEventArgs>? FileCopyFailed;
         public event EventHandler? CurrentDirectoryChanged;
         public event EventHandler? SelectedFilesChanged;
 
         protected void OnNavigationFailed(Exception e)
         {
             this.NavigationFailed?.Invoke(this, new ExceptionEventArgs(e));
+        }
+
+        protected void OnFileCopyFailed(Exception e)
+        {
+            this.FileCopyFailed?.Invoke(this, new ExceptionEventArgs(e));
         }
 
         protected void OnCurrentDirectoryChanged()
@@ -416,7 +422,7 @@ namespace Google.Solutions.Mvvm.Controls
             }
             catch (Exception e)
             {
-                OnNavigationFailed(e);
+                OnFileCopyFailed(e);
             }
         }
 
@@ -443,7 +449,7 @@ namespace Google.Solutions.Mvvm.Controls
             }
             catch (Exception e)
             {
-                OnNavigationFailed(e);
+                OnFileCopyFailed(e);
             }
 
             //TODO: Cancel selection after drag - https://stackoverflow.com/questions/8066982/disabling-drag-selection-on-listbox
@@ -461,7 +467,7 @@ namespace Google.Solutions.Mvvm.Controls
             }
             catch (Exception e)
             {
-                OnNavigationFailed(e);
+                OnFileCopyFailed(e);
             }
         }
             
@@ -480,7 +486,7 @@ namespace Google.Solutions.Mvvm.Controls
             }
             catch (Exception e)
             {
-                OnNavigationFailed(e);
+                OnFileCopyFailed(e);
             }
         }
 
@@ -518,11 +524,17 @@ namespace Google.Solutions.Mvvm.Controls
                         //     should come from a worker thread, not the UI
                         //     thread.
                         //
-                        return this.fileSystem!
-                            .OpenFileAsync(f, FileAccess.Read)
-                            .Result;
-
-                        //TODO: catch & report exception (on UI thread)
+                        try
+                        {
+                            return this.fileSystem!
+                                .OpenFileAsync(f, FileAccess.Read)
+                                .Result;
+                        }
+                        catch (Exception e)
+                        {
+                            this.Invoke(new Action(() => OnFileCopyFailed(e)));
+                            throw;
+                        }
                     }))
                 .ToList())
             {

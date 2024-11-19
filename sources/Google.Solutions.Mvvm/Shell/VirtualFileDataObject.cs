@@ -587,18 +587,14 @@ namespace Google.Solutions.Mvvm.Shell
         // Interop declarations.
         //----------------------------------------------------------------------
 
-        private const uint FD_CLSID = 0x00000001;
-        private const uint FD_SIZEPOINT = 0x00000002;
-        private const uint FD_ATTRIBUTES = 0x00000004;
         private const uint FD_CREATETIME = 0x00000008;
         private const uint FD_ACCESSTIME = 0x00000010;
         private const uint FD_WRITESTIME = 0x00000020;
         private const uint FD_FILESIZE = 0x00000040;
         private const uint FD_PROGRESSUI = 0x00004000;
-        private const uint FD_LINKUI = 0x00008000;
         private const uint FD_UNICODE = 0x80000000;
 
-        internal const string CFSTR_FILEDESCRIPTORW = "FileGroupDescriptorW";
+        internal const string CFSTR_FILEDESCRIPTORW = "FileGroupDescriptorW"; // TODO: Extract to class
         internal const string CFSTR_FILECONTENTS = "FileContents";
         internal const string CFSTR_PREFERREDDROPEFFECT = "Preferred DropEffect";
         internal const string CFSTR_PERFORMEDDROPEFFECT = "Performed DropEffect";

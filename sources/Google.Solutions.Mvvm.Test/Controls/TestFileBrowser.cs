@@ -630,6 +630,53 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
+        public void CopySelectedFiles_WhenOpenStreamFails_ThenRaisesException()
+        {
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var file = CreateFile().Object;
+                var fileSystem = CreateFileSystem(new[]
+                {
+                    file
+                });
+
+                fileSystem
+                    .Setup(fs => fs.OpenFileAsync(
+                        It.IsAny<IFileItem>(),
+                        FileAccess.Read))
+                    .Throws<UnauthorizedAccessException>();
+
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+                form.Controls.Add(browser);
+                browser.Bind(
+                    fileSystem.Object,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+                Application.DoEvents();
+
+                browser.SelectedFiles = new[] { file };
+
+                using (var dataObject = browser.CopySelectedFiles())
+                {
+                    Exception? fileCopyException = null;
+                    browser.FileCopyFailed += (_, args) => fileCopyException = args.Exception;
+
+                    Assert.Throws<UnauthorizedAccessException>(
+                        () => dataObject.GetData(VirtualFileDataObject.CFSTR_FILECONTENTS));
+
+                    Assert.IsInstanceOf<UnauthorizedAccessException>(fileCopyException);
+                }
+            }
+        }
+
+        [Test]
         public void CopySelectedFiles()
         {
             using (var form = new Form()

@@ -264,7 +264,7 @@ namespace Google.Solutions.Ssh.Native
         }
     }
 
-    public readonly struct Libssh2SftpFileInfo
+    public readonly struct Libssh2SftpFileInfo // TODO: rename
     {
         private readonly LIBSSH2_SFTP_ATTRIBUTES attributes;
 

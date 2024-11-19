@@ -165,6 +165,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 //
                 ApplyTerminalSettings(this.settingsRepository.GetSettings());
 
+                client.FileBrowsingFailed += (_, args)
+                    => OnError("The file operation failed", args.Exception);
+
                 //
                 // Start establishing a connection and react to events.
                 //
