@@ -32,7 +32,7 @@ namespace Google.Solutions.Ssh
         /// <summary>
         /// List contents of a directory.
         /// </summary>
-        Task<IReadOnlyCollection<Libssh2SftpFileInfo>> ListFilesAsync(
+        Task<IReadOnlyCollection<SftpFileInfo>> ListFilesAsync(
             string remotePath);
 
         /// <summary>

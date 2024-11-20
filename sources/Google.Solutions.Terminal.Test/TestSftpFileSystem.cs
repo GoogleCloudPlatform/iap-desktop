@@ -22,7 +22,6 @@
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Ssh;
-using Google.Solutions.Ssh.Native;
 using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
@@ -36,9 +35,9 @@ namespace Google.Solutions.Terminal.Test
     [TestFixture]
     public class TestSftpFileSystem
     {
-        private static Libssh2SftpFileInfo CreateFile(string name, FilePermissions permissions)
+        private static SftpFileInfo CreateFile(string name, FilePermissions permissions)
         {
-            return new Libssh2SftpFileInfo(name, permissions);
+            return new SftpFileInfo(name, permissions);
         }
 
         //---------------------------------------------------------------------
