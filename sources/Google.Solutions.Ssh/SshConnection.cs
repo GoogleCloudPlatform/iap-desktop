@@ -29,12 +29,13 @@ using System.Globalization;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using static Google.Solutions.Ssh.SshConnection;
 
 namespace Google.Solutions.Ssh
 {
     public class SshConnection : SshWorkerThread
     {
-        private readonly Queue<SendOperation> sendQueue = new Queue<SendOperation>();
+        private readonly Queue<ISendOperation> sendQueue = new Queue<ISendOperation>();
 
         /// <summary>
         /// Task that is completed after the SSH connection has
@@ -108,7 +109,7 @@ namespace Google.Solutions.Ssh
                 // exception is bad, we'll receive an OnSendError 
                 // callback later.
                 //
-                packet.Operation(session);
+                packet.Run(session);
 
                 //
                 // Sending succeeded - complete packet.
@@ -119,7 +120,7 @@ namespace Google.Solutions.Ssh
                 //
                 this.sendQueue.Dequeue();
 
-                packet.CompletionSource.SetResult(0);
+                packet.OnCompleted();
 
                 if (this.sendQueue.Count == 0)
                 {
@@ -137,7 +138,7 @@ namespace Google.Solutions.Ssh
             lock (this.sendQueue)
             {
                 Debug.Assert(this.sendQueue.Count > 0);
-                this.sendQueue.Dequeue().CompletionSource.SetException(exception);
+                this.sendQueue.Dequeue().OnFailed(exception);
             }
         }
 
@@ -175,11 +176,12 @@ namespace Google.Solutions.Ssh
         //---------------------------------------------------------------------
 
         /// <summary>
-        /// Run an sending operation on the worker thread
-        /// when the connection is ready to send data.
+        /// Execute a callback on the worker thread when the connection
+        /// is ready to send data.
         /// </summary>
-        internal Task RunSendOperationAsync(
-            Action<Libssh2AuthenticatedSession> sendOperation)
+        internal Task<TResult> RunAsync<TResult>(
+            Func<Libssh2AuthenticatedSession, TResult> callback,
+            bool terminateConnectionOnError = true)
         {
             if (!this.IsConnected)
             {
@@ -188,7 +190,9 @@ namespace Google.Solutions.Ssh
 
             lock (this.sendQueue)
             {
-                var packet = new SendOperation(sendOperation);
+                var packet = new SendOperation<TResult>(
+                    callback, 
+                    terminateConnectionOnError);
                 this.sendQueue.Enqueue(packet);
 
                 // 
@@ -201,92 +205,24 @@ namespace Google.Solutions.Ssh
                 // Return a task - it'll be completed once we've
                 // actually sent the data.
                 //
-                return packet.CompletionSource.Task;
+                return packet.Task;
             }
         }
 
-        internal async Task<TResult> RunSendOperationAsync<TResult>(
-            Func<Libssh2AuthenticatedSession, TResult> sendOperation)
-            where TResult : class
+        /// <summary>
+        /// Execute a callback on the worker thread when the connection
+        /// is ready to send data.
+        /// </summary>
+        internal Task RunAsync(
+            Action<Libssh2AuthenticatedSession> callback,
+            bool terminateConnectionOnError = true)
         {
-            TResult? result = null;
-
-            await RunSendOperationAsync(
-                session =>
-                {
-                    result = sendOperation(session);
-                })
-                .ConfigureAwait(false);
-
-            Debug.Assert(result != null);
-            return result!;
-        }
-
-        internal async Task RunThrowingOperationAsync(
-            Action<Libssh2AuthenticatedSession> operation)
-        {
-            //
-            // Some operations (such as SFTP operations) might throw 
-            // exceptions, and these need to be passed thru to the caller
-            // (as opposed to letting them bubble up to OnReceiveError).
-            //
-            Exception? exception = null;
-            await RunSendOperationAsync(
-                session =>
-                {
-                    try
-                    {
-                        operation(session);
-                    }
-                    catch (Exception e)
-                    {
-                        exception = e;
-                    }
-                })
-                .ConfigureAwait(false);
-
-            if (exception != null)
-            {
-                SshTraceSource.Log.TraceError(exception);
-                throw exception;
-            }
-        }
-
-        internal async Task<TResult> RunThrowingOperationAsync<TResult>(
-            Func<Libssh2AuthenticatedSession, TResult> operation)
-        {
-            //
-            // Some operations (such as SFTP operations) might throw 
-            // exceptions, and these need to be passed thru to the caller
-            // (as opposed to letting them bubble up to OnReceiveError).
-            //
-            TResult result = default;
-            Exception? exception = null;
-
-            await RunSendOperationAsync(
-                session =>
-                {
-                    try
-                    {
-                        result = operation(session);
-                    }
-                    catch (Exception e)
-                    {
-                        exception = e;
-                    }
-                })
-                .ConfigureAwait(false);
-
-            if (exception != null)
-            {
-                SshTraceSource.Log.TraceError(exception);
-                throw exception;
-            }
-            else
-            {
-                Debug.Assert(result != null);
-                return result!;
-            }
+            return RunAsync<object?>(
+                s => {
+                    callback(s);
+                    return null;
+                },
+                terminateConnectionOnError);
         }
 
         //---------------------------------------------------------------------
@@ -299,7 +235,7 @@ namespace Google.Solutions.Ssh
             return this.connectionCompleted.Task;
         }
 
-        public async Task<SshShellChannel> OpenShellAsync(
+        public Task<SshShellChannel> OpenShellAsync(
             PseudoTerminalSize initialSize,
             string terminalType,
             CultureInfo? locale)
@@ -324,9 +260,8 @@ namespace Google.Solutions.Ssh
                 };
             }
 
-            return await RunSendOperationAsync(
-                session =>
-                {
+            return RunAsync(
+                session => {
                     Debug.Assert(this.IsRunningOnWorkerThread);
 
                     using (session.Session.AsBlocking())
@@ -346,15 +281,14 @@ namespace Google.Solutions.Ssh
 
                         return channel;
                     }
-                })
-                .ConfigureAwait(false);
+                },
+                false);
         }
 
-        public async Task<SftpChannel> OpenFileSystemAsync()
+        public Task<SftpChannel> OpenFileSystemAsync()
         {
-            return await RunSendOperationAsync(
-                session =>
-                {
+            return RunAsync(
+                session => {
                     Debug.Assert(this.IsRunningOnWorkerThread);
 
                     using (session.Session.AsBlocking())
@@ -367,29 +301,100 @@ namespace Google.Solutions.Ssh
 
                         return channel;
                     }
-                })
-                .ConfigureAwait(false);
+                });
         }
 
         //---------------------------------------------------------------------
         // Inner classes.
         //---------------------------------------------------------------------
 
-        protected internal class SendOperation
+        private interface ISendOperation
         {
-            internal readonly TaskCompletionSource<uint> CompletionSource;
-            internal readonly Action<Libssh2AuthenticatedSession> Operation;
+            /// <summary>
+            /// Run the operation.
+            /// </summary>
+            /// <remarks>
+            /// Any exception thrown by this method causes
+            /// the connection to be terminated.
+            /// </remarks>
+            void Run(Libssh2AuthenticatedSession session);
 
-            internal SendOperation(Action<Libssh2AuthenticatedSession> operation)
+            /// <summary>
+            /// Mark the operation as successful.
+            /// </summary>
+            void OnCompleted();
+
+            /// <summary>
+            /// Mark the operation as failed.
+            /// </summary>
+            void OnFailed(Exception e);
+        }
+
+        protected internal class SendOperation<TResult> : ISendOperation
+        {
+            private readonly TaskCompletionSource<TResult> completionSource;
+            private readonly Func<Libssh2AuthenticatedSession, TResult> operation;
+            private readonly bool terminateConnectionOnError;
+            private TResult result = default!;
+            private Exception? exception;
+
+            internal SendOperation(
+                Func<Libssh2AuthenticatedSession, TResult> operation,
+                bool terminateConnectionOnError)
             {
-                this.Operation = operation;
+                this.operation = operation;
+                this.terminateConnectionOnError = terminateConnectionOnError;
 
                 //
                 // Force continuations to run asycnhronously so that they
                 // don't block the worker thread.
                 //
-                this.CompletionSource = new TaskCompletionSource<uint>(
+                this.completionSource = new TaskCompletionSource<TResult>(
                     TaskCreationOptions.RunContinuationsAsynchronously);
+            }
+
+            void ISendOperation.Run(Libssh2AuthenticatedSession session)
+            {
+                try
+                {
+                    this.result = this.operation(session);
+                }
+                catch (Exception e) when (!this.terminateConnectionOnError)
+                {
+                    //
+                    // Swallow exception here so that we keep the
+                    // connection alive.
+                    //
+                    this.exception = e;
+                }
+            }
+
+            void ISendOperation.OnCompleted()
+            {
+                //
+                // Propagate exception or result to awaiters.
+                //
+                if (this.exception != null)
+                {
+                    this.completionSource.TrySetException(this.exception);
+                }
+                else
+                {
+                    this.completionSource.TrySetResult(this.result);
+                }
+            }
+
+            void ISendOperation.OnFailed(Exception e)
+            {
+                this.completionSource.TrySetException(e);
+            }
+
+            /// <summary>
+            /// Task to await completion.
+            /// </summary>
+            public Task<TResult> Task
+            {
+                get => this.completionSource.Task;
             }
         }
     }

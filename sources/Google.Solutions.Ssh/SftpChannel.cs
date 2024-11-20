@@ -108,15 +108,16 @@ namespace Google.Solutions.Ssh
         {
             Precondition.ExpectNotEmpty(remotePath, nameof(remotePath));
 
-            return this.Connection.RunThrowingOperationAsync(c =>
-            {
-                Debug.Assert(this.Connection.IsRunningOnWorkerThread);
+            return this.Connection.RunAsync(
+                c => {
+                    Debug.Assert(this.Connection.IsRunningOnWorkerThread);
 
-                using (c.Session.AsBlocking())
-                {
-                    return this.nativeChannel.ListFiles(remotePath);
-                }
-            });
+                    using (c.Session.AsBlocking())
+                    {
+                        return this.nativeChannel.ListFiles(remotePath);
+                    }
+                },
+                false);
         }
 
         /// <summary>
@@ -152,21 +153,22 @@ namespace Google.Solutions.Ssh
                 flags |= LIBSSH2_FXF_FLAGS.WRITE;
             }
 
-            return this.Connection.RunThrowingOperationAsync<Stream>(c =>
-            {
-                Debug.Assert(this.Connection.IsRunningOnWorkerThread);
+            return this.Connection.RunAsync<Stream>(
+                c => {
+                    Debug.Assert(this.Connection.IsRunningOnWorkerThread);
 
-                using (c.Session.AsBlocking())
-                {
-                    return new SftpFileStream(
-                        this.Connection,
-                        this.nativeChannel.CreateFile(
-                            remotePath,
-                            flags,
-                            permissions),
-                        flags);
-                }
-            });
+                    using (c.Session.AsBlocking())
+                    {
+                        return new SftpFileStream(
+                            this.Connection,
+                            this.nativeChannel.CreateFile(
+                                remotePath,
+                                flags,
+                                permissions),
+                            flags);
+                    }
+                },
+                false);
         }
     }
 }

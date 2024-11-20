@@ -95,7 +95,7 @@ namespace Google.Solutions.Ssh
             try
             {
                 await this.Connection
-                    .RunSendOperationAsync(_ =>
+                    .RunAsync(_ =>
                     {
                         Debug.Assert(this.Connection.IsRunningOnWorkerThread);
 
@@ -128,7 +128,7 @@ namespace Google.Solutions.Ssh
             // Switch to worker thread and write to channel.
             //
             await this.Connection
-                .RunSendOperationAsync(_ =>
+                .RunAsync(_ =>
                 {
                     Debug.Assert(this.Connection.IsRunningOnWorkerThread);
 
