@@ -70,7 +70,7 @@ namespace Google.Solutions.Terminal
         /// <summary>
         /// Map SFTP file attributes to a file type.
         /// </summary>
-        internal FileType MapFileType(Libssh2SftpFileInfo sftpFile)
+        internal FileType MapFileType(SftpFileInfo sftpFile)
         {
             if (sftpFile.IsDirectory)
             {

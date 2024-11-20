@@ -103,7 +103,7 @@ namespace Google.Solutions.Ssh
         /// <summary>
         /// List contents of a directory.
         /// </summary>
-        public Task<IReadOnlyCollection<Libssh2SftpFileInfo>> ListFilesAsync(
+        public Task<IReadOnlyCollection<SftpFileInfo>> ListFilesAsync(
             string remotePath)
         {
             Precondition.ExpectNotEmpty(remotePath, nameof(remotePath));

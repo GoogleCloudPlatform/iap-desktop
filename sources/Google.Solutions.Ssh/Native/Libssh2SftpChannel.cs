@@ -50,12 +50,12 @@ namespace Google.Solutions.Ssh.Native
 
         //---------------------------------------------------------------------
 
-        public IReadOnlyCollection<Libssh2SftpFileInfo> ListFiles(string path)
+        public IReadOnlyCollection<SftpFileInfo> ListFiles(string path)
         {
             this.channelHandle.CheckCurrentThreadOwnsHandle();
             Precondition.ExpectNotEmpty(path, nameof(path));
 
-            var files = new LinkedList<Libssh2SftpFileInfo>();
+            var files = new LinkedList<SftpFileInfo>();
 
             using (SshTraceSource.Log.TraceMethod().WithParameters(path))
             using (var dirHandle = NativeMethods.libssh2_sftp_open_ex(
@@ -99,7 +99,7 @@ namespace Google.Solutions.Ssh.Native
                             }
                             else
                             {
-                                files.AddLast(new Libssh2SftpFileInfo(
+                                files.AddLast(new SftpFileInfo(
                                     Marshal.PtrToStringAnsi(fileNameBuffer.DangerousGetHandle()),
                                     attributes));
                             }
@@ -261,75 +261,6 @@ namespace Google.Solutions.Ssh.Native
                 this.channelHandle.Dispose();
                 this.disposed = true;
             }
-        }
-    }
-
-    public readonly struct Libssh2SftpFileInfo
-    {
-        private readonly LIBSSH2_SFTP_ATTRIBUTES attributes;
-
-        /// <summary>
-        /// Name of file (without path).
-        /// </summary>
-        public string Name { get; }
-
-        /// <summary>
-        /// File attributes.
-        /// </summary>
-
-        public FilePermissions Permissions
-        {
-            get => this.attributes.permissions;
-        }
-
-        public bool IsDirectory
-        {
-            get => this.Permissions.IsDirectory();
-        }
-
-        public uint UserId
-        {
-            get => this.attributes.uid;
-        }
-
-        public uint GroupId
-        {
-            get => this.attributes.gid;
-        }
-
-        public DateTime LastAccessDate
-        {
-            get => DateTimeOffset.FromUnixTimeSeconds(this.attributes.atime).DateTime;
-        }
-
-        public DateTime LastModifiedDate
-        {
-            get => DateTimeOffset.FromUnixTimeSeconds(this.attributes.mtime).DateTime;
-        }
-
-        public ulong Size
-        {
-            get => this.attributes.filesize;
-        }
-
-        internal Libssh2SftpFileInfo(
-            string name,
-            LIBSSH2_SFTP_ATTRIBUTES attributes)
-        {
-            this.Name = name;
-            this.attributes = attributes;
-        }
-
-        public Libssh2SftpFileInfo(
-            string name,
-            FilePermissions permissions)
-            : this(
-                name,
-                new LIBSSH2_SFTP_ATTRIBUTES()
-                {
-                    permissions = permissions
-                })
-        {
         }
     }
 }
