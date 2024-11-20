@@ -200,6 +200,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     RaisePropertyChange();
                 }
             }
+
+            public string Access
+            {
+                get => string.Empty;
+            }
         }
     }
 }

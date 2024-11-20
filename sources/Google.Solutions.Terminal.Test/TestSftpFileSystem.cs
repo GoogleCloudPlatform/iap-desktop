@@ -55,6 +55,7 @@ namespace Google.Solutions.Terminal.Test
                 Assert.IsFalse(root.Type.IsFile);
                 Assert.IsTrue(root.IsExpanded);
                 Assert.AreEqual("Server", root.Name);
+                Assert.AreEqual(string.Empty, root.Access);
             }
         }
 
@@ -74,6 +75,7 @@ namespace Google.Solutions.Terminal.Test
                 Assert.IsFalse(drive.IsExpanded);
                 Assert.AreEqual("File system root", drive.Name);
                 Assert.AreEqual("/.", drive.Path);
+                Assert.AreEqual(string.Empty, drive.Access);
             }
         }
 
@@ -93,6 +95,7 @@ namespace Google.Solutions.Terminal.Test
                 Assert.IsFalse(home.IsExpanded);
                 Assert.AreEqual("Home", home.Name);
                 Assert.AreEqual(".", home.Path);
+                Assert.AreEqual(string.Empty, home.Access);
             }
         }
 
@@ -169,6 +172,36 @@ namespace Google.Solutions.Terminal.Test
                 CollectionAssert.AreEqual(
                     new [] {fs.Home, fs.Drive},
                     files);
+            }
+        }
+
+        [Test]
+        public async Task ListFiles_MapsPermissions()
+        {
+            var sftpChannel = new Mock<ISftpChannel>();
+            sftpChannel
+                .Setup(c => c.ListFilesAsync("/."))
+                .ReturnsAsync(new[]
+                {
+                    CreateFile(
+                        "dir", 
+                        FilePermissions.Directory | 
+                            FilePermissions.OwnerRead |
+                            FilePermissions.OwnerExecute |
+                            FilePermissions.OtherRead)
+                });
+
+            using (var fs = new SftpFileSystem(sftpChannel.Object))
+            {
+                var files = await fs
+                    .ListFilesAsync(fs.Drive)
+                    .ConfigureAwait(false);
+
+                var dir = files.First();
+                Assert.AreEqual("dir", dir.Name);
+                Assert.IsFalse(dir.Type.IsFile);
+                Assert.IsTrue(dir.Attributes.HasFlag(FileAttributes.Directory));
+                Assert.AreEqual("dr-x---r--", dir.Access);
             }
         }
 

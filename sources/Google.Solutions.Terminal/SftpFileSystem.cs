@@ -24,7 +24,6 @@ using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Platform.Interop;
 using Google.Solutions.Ssh;
-using Google.Solutions.Ssh.Native;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -172,7 +171,6 @@ namespace Google.Solutions.Terminal
             // Initialize pseudo-directories.
             //
             this.Root = new FileItem(
-                null,
                 new FileType(
                     "Server",
                     false,
@@ -180,14 +178,15 @@ namespace Google.Solutions.Terminal
                         StockIcons.IconId.Server, 
                         StockIcons.IconSize.Small)),
                 "Server",
+                string.Empty,
                 FileAttributes.Directory | FileAttributes.ReadOnly,
                 Epoch,
-                0)
+                0,
+                string.Empty)
             {
                 IsExpanded = true
             };
             this.Home = new FileItem(
-                (FileItem)this.Root,
                 new FileType(
                     "Home",
                     false,
@@ -198,9 +197,9 @@ namespace Google.Solutions.Terminal
                 ".",
                 FileAttributes.Directory,
                 Epoch,
-                0);
+                0,
+                string.Empty);
             this.Drive = new FileItem(
-                (FileItem)this.Root,
                 new FileType(
                     "Drive",
                     false,
@@ -211,7 +210,8 @@ namespace Google.Solutions.Terminal
                 "/.",
                 FileAttributes.Directory,
                 Epoch,
-                0);
+                0,
+                string.Empty);
         }
 
         //---------------------------------------------------------------------
@@ -259,7 +259,8 @@ namespace Google.Solutions.Terminal
                         f.Name,
                         MapFileAttributes(f.Name, f.IsDirectory, f.Permissions),
                         f.LastModifiedDate,
-                        f.Size))
+                        f.Size,
+                        f.Permissions.ToListFormat()))
                     .ToList();
 
                 return new ObservableCollection<IFileItem>(filteredSftpFiles);
@@ -321,25 +322,24 @@ namespace Google.Solutions.Terminal
 
         private class FileItem : IFileItem
         {
-            private readonly FileItem? parent;
             public event PropertyChangedEventHandler? PropertyChanged;
 
             internal FileItem(
-                FileItem? parent,
                 FileType type,
                 string name,
                 string path,
                 FileAttributes attributes,
                 DateTime lastModified,
-                ulong size)
+                ulong size,
+                string access)
             {
-                this.parent = parent;
                 this.Type = type;
                 this.Name = name;
                 this.Path = path;
                 this.Attributes = attributes;
                 this.LastModified = lastModified;
                 this.Size = size;
+                this.Access = access;
             }
 
             internal FileItem(
@@ -348,16 +348,18 @@ namespace Google.Solutions.Terminal
                 string name,
                 FileAttributes attributes,
                 DateTime lastModified,
-                ulong size)
+                ulong size,
+                string access)
                 : this(
-                      parent,
                       type,
                       name,
                       parent != null
                         ? $"{parent.Path}/{name}"
                         : name,
                       attributes,
-                      lastModified, size) 
+                      lastModified, 
+                      size,
+                      access) 
             { }
 
             public FileType Type { get; }
@@ -371,6 +373,8 @@ namespace Google.Solutions.Terminal
             public ulong Size { get; }
 
             public string Path { get; }
+
+            public string Access { get; }
 
             public bool IsExpanded { get; set; }
         }

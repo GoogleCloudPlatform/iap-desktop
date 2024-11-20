@@ -20,6 +20,7 @@
 //
 
 using NUnit.Framework;
+using System;
 
 namespace Google.Solutions.Ssh.Test
 {
@@ -30,6 +31,10 @@ namespace Google.Solutions.Ssh.Test
             FilePermissions.OtherRead |
             FilePermissions.OwnerRead |
             FilePermissions.OtherWrite;
+
+        //--------------------------------------------------------------------
+        // IsXxx.
+        //--------------------------------------------------------------------
 
         [Test]
         public void IsRegular()
@@ -78,6 +83,35 @@ namespace Google.Solutions.Ssh.Test
         {
             Assert.IsFalse(basePermissions.IsLink());
             Assert.IsTrue((basePermissions | FilePermissions.Socket).IsSocket());
+        }
+
+        //--------------------------------------------------------------------
+        // ToListFormat.
+        //--------------------------------------------------------------------
+
+        [Test]
+        [TestCase("000", "----------")]
+        [TestCase("777", "-rwxrwxrwx")]
+        [TestCase("400", "-r--------")]
+        [TestCase("644", "-rw-r--r--")]
+        [TestCase("111", "---x--x--x")]
+        public void ToListFormat_MapsPermissions(string octal, string expected)
+        {
+            var permissions = (FilePermissions)Convert.ToInt32(octal, 8);
+            Assert.AreEqual(expected, permissions.ToListFormat());
+        }
+
+        [Test]
+        [TestCase(FilePermissions.Directory, "d---------")]
+        [TestCase(FilePermissions.SymbolicLink, "l---------")]
+        [TestCase(FilePermissions.CharacterDevice, "c---------")]
+        [TestCase(FilePermissions.BlockSpecial, "b---------")]
+        [TestCase(FilePermissions.Socket, "s---------")]
+        [TestCase(FilePermissions.Fifo, "p---------")]
+        [TestCase(FilePermissions.Regular, "----------")]
+        public void ToListFormat_MapsFileType(FilePermissions p, string expected)
+        {
+            Assert.AreEqual(expected, p.ToListFormat());
         }
     }
 }

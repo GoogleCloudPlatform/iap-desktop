@@ -100,6 +100,12 @@ namespace Google.Solutions.Mvvm.Controls
         FileType Type { get; }
 
         /// <summary>
+        /// Access information, this can be in Unix-style "rwx"
+        /// format or in some other summary format.
+        /// </summary>
+        string Access { get; }
+
+        /// <summary>
         /// Gets or sets the expansion state.
         /// </summary>
         bool IsExpanded { get; set; }
