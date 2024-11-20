@@ -144,19 +144,28 @@ namespace Google.Solutions.Mvvm.Shell
                 //     To compensate, wrap the stream.
                 //
 
-                var contentStream = new FullReadGuaranteeingStream(
-                    this.Files[this.currentFile].OpenStream());
-                this.openedContentStreams.Add(contentStream);
+                if (this.currentFile >= 0 && this.currentFile < this.Files.Count)
+                {
+                    var contentStream = new FullReadGuaranteeingStream(
+                        this.Files[this.currentFile].OpenStream());
+                    this.openedContentStreams.Add(contentStream);
 
-                //
-                // Supply data for the current (!) file.
-                //
-                //
-                base.SetData(
-                    ShellDataFormats.CFSTR_FILECONTENTS,
-                    this.currentFile < this.Files.Count
-                        ? contentStream
-                        : null);
+                    //
+                    // Supply data for the current file.
+                    //
+                    base.SetData(
+                        ShellDataFormats.CFSTR_FILECONTENTS,
+                        contentStream);
+                }
+                else
+                {
+                    //
+                    // Index out of range.
+                    //
+                    base.SetData(
+                        ShellDataFormats.CFSTR_FILECONTENTS, 
+                        null);
+                }
             }
 
             return base.GetData(format, autoConvert);
