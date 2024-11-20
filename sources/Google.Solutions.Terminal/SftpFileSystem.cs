@@ -54,7 +54,10 @@ namespace Google.Solutions.Terminal
         public FilePermissions DefaultFilePermissions { get; set; } =
             FilePermissions.OwnerRead | FilePermissions.OwnerWrite;
 
-        internal FileType TranslateFileType(Libssh2SftpFileInfo sftpFile)
+        /// <summary>
+        /// Map SFTP file attributes to a file type.
+        /// </summary>
+        internal FileType MapFileType(Libssh2SftpFileInfo sftpFile)
         {
             if (sftpFile.IsDirectory)
             {
@@ -111,11 +114,59 @@ namespace Google.Solutions.Terminal
             }
         }
 
+        /// <summary>
+        /// Translate SFTP file attributes to Win32 attributes.
+        /// </summary>
+        internal static FileAttributes MapFileAttributes(
+            string name,
+            bool isDirectory,
+            FilePermissions permissions)
+        {
+            var attributes = (FileAttributes)0;
+
+            if (isDirectory)
+            {
+                attributes |= FileAttributes.Directory;
+            }
+
+            if (name.StartsWith("."))
+            {
+                attributes |= FileAttributes.Hidden;
+            }
+
+            if (permissions.IsLink())
+            {
+                attributes |= FileAttributes.ReparsePoint;
+            }
+
+            if (permissions.IsSocket() ||
+                permissions.IsFifo() ||
+                permissions.IsCharacterDevice() ||
+                permissions.IsBlockDevice())
+            {
+                attributes |= FileAttributes.Device;
+            }
+
+            return attributes == 0 ? FileAttributes.Normal : attributes;
+        }
+
         public SftpFileSystem(ISftpChannel channel)
         {
             this.channel = channel.ExpectNotNull(nameof(channel));
             this.fileTypeCache = new FileTypeCache();
-            this.Root = new SftpRootItem();
+            this.Root = new FileItem(
+                null,
+                new FileType(
+                    "Server",
+                    false,
+                    StockIcons.GetIcon(StockIcons.IconId.Server, StockIcons.IconSize.Small)),
+                string.Empty,
+                FileAttributes.Directory,
+                DateTimeOffset.FromUnixTimeSeconds(0).DateTime,
+                0)
+            {
+                IsExpanded = true
+            };
         }
 
         //---------------------------------------------------------------------
@@ -146,10 +197,13 @@ namespace Google.Solutions.Terminal
             var filteredSftpFiles = sftpFiles
                 .Where(f => f.Name != "." && f.Name != "..")
                 .OrderBy(f => !f.IsDirectory).ThenBy(f => f.Name)
-                .Select(f => new SftpFileItem(
-                    directory,
-                    f,
-                    TranslateFileType(f)))
+                .Select(f => new FileItem(
+                    (FileItem)directory,
+                    MapFileType(f),
+                    f.Name,
+                    MapFileAttributes(f.Name, f.IsDirectory, f.Permissions),
+                    f.LastModifiedDate,
+                    f.Size))
                 .ToList();
 
             return new ObservableCollection<IFileItem>(filteredSftpFiles);
@@ -198,119 +252,45 @@ namespace Google.Solutions.Terminal
         // Inner classes.
         //---------------------------------------------------------------------
 
-        private class SftpRootItem : IFileItem
+        private class FileItem : IFileItem
         {
+            private readonly FileItem? parent;
             public event PropertyChangedEventHandler? PropertyChanged;
 
-            public string Name
-            {
-                get => "/";
-            }
-
-            public FileAttributes Attributes
-            {
-                get => FileAttributes.Directory;
-            }
-
-            public DateTime LastModified
-            {
-                get => DateTimeOffset.FromUnixTimeSeconds(0).DateTime;
-            }
-
-            public ulong Size
-            {
-                get => 0;
-            }
-
-            public FileType Type
-            {
-                get => new FileType(
-                    "Server",
-                    false,
-                    StockIcons.GetIcon(StockIcons.IconId.Server, StockIcons.IconSize.Small));
-            }
-
-            public bool IsExpanded { get; set; } = true;
-
-            public string Path
-            {
-                get => string.Empty;
-            }
-        }
-
-        private class SftpFileItem : IFileItem
-        {
-            private readonly IFileItem parent;
-            private readonly Libssh2SftpFileInfo fileInfo;
-
-            internal SftpFileItem(
-                IFileItem parent,
-                Libssh2SftpFileInfo fileInfo,
-                FileType type)
+            internal FileItem(
+                FileItem? parent,
+                FileType type,
+                string name,
+                FileAttributes attributes,
+                DateTime lastModified,
+                ulong size)
             {
                 this.parent = parent;
-                this.fileInfo = fileInfo;
                 this.Type = type;
+                this.Name = name;
+                this.Attributes = attributes;
+                this.LastModified = lastModified;
+                this.Size = size;
             }
-
-            public event PropertyChangedEventHandler? PropertyChanged;
-
-            public string Path
-            {
-                get => (this.parent?.Path ?? string.Empty) + "/" + this.Name;
-            }
-
-            public string Name
-            {
-                get => this.fileInfo.Name;
-            }
-
-            public DateTime LastModified
-            {
-                get => this.fileInfo.LastModifiedDate;
-            }
-
-            public ulong Size
-            {
-                get => this.fileInfo.Size;
-            }
-
-            public bool IsExpanded { get; set; }
 
             public FileType Type { get; }
 
-            public FileAttributes Attributes
+            public string Name { get; }
+
+            public FileAttributes Attributes { get; }
+
+            public DateTime LastModified { get; }
+
+            public ulong Size { get; }
+
+            public string Path
             {
-                get
-                {
-                    var attributes = FileAttributes.Normal;
-
-                    if (this.fileInfo.IsDirectory)
-                    {
-                        attributes |= FileAttributes.Directory;
-                    }
-
-                    if (this.fileInfo.Name.StartsWith("."))
-                    {
-                        attributes |= FileAttributes.Hidden;
-                    }
-
-                    if (this.fileInfo.Permissions.IsLink())
-                    {
-                        attributes |= FileAttributes.ReparsePoint;
-                    }
-
-                    if (this.fileInfo.Permissions.IsSocket() ||
-                        this.fileInfo.Permissions.IsFifo() ||
-                        this.fileInfo.Permissions.IsCharacterDevice() ||
-                        this.fileInfo.Permissions.IsBlockDevice())
-                    {
-                        attributes |= FileAttributes.Device;
-                    }
-
-                    return attributes;
-                }
+                get => this.parent != null
+                    ? $"{this.parent.Path}/{this.Name}"
+                    : this.Name;
             }
+
+            public bool IsExpanded { get; set; }
         }
     }
 }

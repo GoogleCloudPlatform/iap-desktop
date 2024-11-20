@@ -25,8 +25,6 @@ using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -55,7 +53,7 @@ namespace Google.Solutions.Terminal.Test
                 Assert.IsNotNull(root);
                 Assert.IsFalse(root.Type.IsFile);
                 Assert.IsTrue(root.IsExpanded);
-                Assert.AreEqual("/", root.Name);
+                Assert.AreEqual("", root.Name);
             }
         }
 
@@ -119,94 +117,20 @@ namespace Google.Solutions.Terminal.Test
             }
         }
 
-        [Test]
-        public async Task ListFiles_WhenFileStartsWithDot_ThenListFilesAppliesAttribute()
-        {
-            var sftpChannel = new Mock<ISftpChannel>();
-            sftpChannel
-                .Setup(c => c.ListFilesAsync(It.IsAny<string>()))
-                .ReturnsAsync(new[]
-                {
-                    CreateFile(".hidden", FilePermissions.OtherRead)
-                });
-
-            using (var fs = new SftpFileSystem(sftpChannel.Object))
-            {
-                var files = await fs
-                    .ListFilesAsync(fs.Root)
-                    .ConfigureAwait(false);
-
-                Assert.AreEqual(
-                    FileAttributes.Normal | FileAttributes.Hidden,
-                    files.First().Attributes);
-            }
-        }
-
-        [Test]
-        public async Task ListFiles_WhenFileIsSymlink_ThenListFilesAppliesAttribute()
-        {
-            var sftpChannel = new Mock<ISftpChannel>();
-            sftpChannel
-                .Setup(c => c.ListFilesAsync(It.IsAny<string>()))
-                .ReturnsAsync(new[]
-                {
-                    CreateFile("symlink", FilePermissions.SymbolicLink)
-                });
-
-            using (var fs = new SftpFileSystem(sftpChannel.Object))
-            {
-                var files = await fs
-                    .ListFilesAsync(fs.Root)
-                    .ConfigureAwait(false);
-
-                Assert.AreEqual(
-                    FileAttributes.Normal | FileAttributes.ReparsePoint,
-                    files.First().Attributes);
-            }
-        }
-
-        [Test]
-        public async Task ListFiles_WhenFileIsDevice_ThenListFilesAppliesAttribute(
-            [Values(
-                FilePermissions.Socket,
-                FilePermissions.Fifo,
-                FilePermissions.CharacterDevice,
-                FilePermissions.BlockSpecial)] FilePermissions permissions)
-        {
-            var sftpChannel = new Mock<ISftpChannel>();
-            sftpChannel
-                .Setup(c => c.ListFilesAsync(It.IsAny<string>()))
-                .ReturnsAsync(new[]
-                {
-                    CreateFile("device", FilePermissions.OtherRead | permissions)
-                });
-
-            using (var fs = new SftpFileSystem(sftpChannel.Object))
-            {
-                var files = await fs
-                    .ListFilesAsync(fs.Root)
-                    .ConfigureAwait(false);
-
-                Assert.AreEqual(
-                    FileAttributes.Normal | FileAttributes.Device,
-                    files.First().Attributes);
-            }
-        }
-
         //---------------------------------------------------------------------
-        // TranslateFileType.
+        // MapFileType.
         //---------------------------------------------------------------------
 
         [Test]
-        public void TranslateFileType_WhenFileIsExecutable_ThenFileTypeIsSpecial()
+        public void MapFileType_WhenFileIsExecutable_ThenFileTypeIsSpecial()
         {
             using (var fs = new SftpFileSystem(new Mock<ISftpChannel>().Object))
             {
-                var regularType = fs.TranslateFileType(
+                var regularType = fs.MapFileType(
                     CreateFile(
                         "file",
                         FilePermissions.OtherRead));
-                var exeType = fs.TranslateFileType(
+                var exeType = fs.MapFileType(
                     CreateFile(
                         "file",
                         FilePermissions.OtherRead | FilePermissions.OwnerExecute));
@@ -217,15 +141,15 @@ namespace Google.Solutions.Terminal.Test
         }
 
         [Test]
-        public void TranslateFileType_WhenFileIsSymlink_ThenFileTypeIsIsSpecial()
+        public void MapFileType_WhenFileIsSymlink_ThenFileTypeIsIsSpecial()
         {
             using (var fs = new SftpFileSystem(new Mock<ISftpChannel>().Object))
             {
-                var regularType = fs.TranslateFileType(
+                var regularType = fs.MapFileType(
                     CreateFile(
                         "file",
                         FilePermissions.OtherRead));
-                var linkType = fs.TranslateFileType(
+                var linkType = fs.MapFileType(
                     CreateFile(
                         "file",
                         FilePermissions.SymbolicLink));
@@ -236,15 +160,15 @@ namespace Google.Solutions.Terminal.Test
         }
 
         [Test]
-        public void TranslateFileType_WhenFileIsConfigFile_ThenFileTypeIsSpecial()
+        public void MapFileType_WhenFileIsConfigFile_ThenFileTypeIsSpecial()
         {
             using (var fs = new SftpFileSystem(new Mock<ISftpChannel>().Object))
             {
-                var regularType = fs.TranslateFileType(
+                var regularType = fs.MapFileType(
                     CreateFile(
                         "file",
                         FilePermissions.OtherRead));
-                var iniType = fs.TranslateFileType(
+                var iniType = fs.MapFileType(
                     CreateFile(
                         "file.conf",
                         FilePermissions.OtherRead | FilePermissions.OwnerExecute));
@@ -255,11 +179,11 @@ namespace Google.Solutions.Terminal.Test
         }
 
         [Test]
-        public void TranslateFileType_WhenFileIsDirectory_ThenFileTypeIsDirectory()
+        public void MapFileType_WhenFileIsDirectory_ThenFileTypeIsDirectory()
         {
             using (var fs = new SftpFileSystem(new Mock<ISftpChannel>().Object))
             {
-                var dirType = fs.TranslateFileType(
+                var dirType = fs.MapFileType(
                     CreateFile(
                         "file",
                         FilePermissions.Directory));
@@ -269,16 +193,16 @@ namespace Google.Solutions.Terminal.Test
         }
 
         [Test]
-        public void TranslateFileType_WhenFileNameContainsInvalidCharacters_ThenFileTypeIsPlain(
+        public void MapFileType_WhenFileNameContainsInvalidCharacters_ThenFileTypeIsPlain(
             [Values("file?", "<file", "COM1", "file.")] string fileName)
         {
             using (var fs = new SftpFileSystem(new Mock<ISftpChannel>().Object))
             {
-                var regularType = fs.TranslateFileType(
+                var regularType = fs.MapFileType(
                     CreateFile(
                         fileName,
                         FilePermissions.OtherRead));
-                var iniType = fs.TranslateFileType(
+                var iniType = fs.MapFileType(
                     CreateFile(
                         "file",
                         FilePermissions.OtherRead | FilePermissions.OwnerExecute));
@@ -286,6 +210,76 @@ namespace Google.Solutions.Terminal.Test
                 Assert.IsTrue(iniType.IsFile);
                 Assert.AreNotEqual(regularType.TypeName, iniType.TypeName);
             }
+        }
+
+        //---------------------------------------------------------------------
+        // MapFileAttributes.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void MapFileAttributes_WhenNormalDirectory()
+        {
+            var attributes = SftpFileSystem.MapFileAttributes(
+                "/",
+                true,
+                FilePermissions.OwnerRead);
+            Assert.AreEqual(
+                FileAttributes.Directory, 
+                attributes);
+        }
+
+        [Test]
+        public void MapFileAttributes_WhenHiddenDirectory(
+            [Values(".hidden", "..hidden")] string name)
+        {
+            var attributes = SftpFileSystem.MapFileAttributes(
+                name,
+                true,
+                FilePermissions.OwnerRead);
+            Assert.AreEqual(
+                FileAttributes.Directory | FileAttributes.Hidden, 
+                attributes);
+        }
+
+        [Test]
+        public void MapFileAttributes_WhenSymlink()
+        {
+            var attributes = SftpFileSystem.MapFileAttributes(
+                "link",
+                false,
+                FilePermissions.OwnerRead | FilePermissions.SymbolicLink);
+            Assert.AreEqual(
+                FileAttributes.ReparsePoint,
+                attributes);
+        }
+
+        [Test]
+        public void MapFileAttributes_WhenDevice(
+            [Values(
+            FilePermissions.BlockSpecial,
+            FilePermissions.CharacterDevice,
+            FilePermissions.Fifo,
+            FilePermissions.Socket)] FilePermissions permissions)
+        {
+            var attributes = SftpFileSystem.MapFileAttributes(
+                "device",
+                false,
+                FilePermissions.OwnerRead | permissions);
+            Assert.AreEqual(
+                FileAttributes.Device,
+                attributes);
+        }
+
+        [Test]
+        public void MapFileAttributes_WhenFile()
+        {
+            var attributes = SftpFileSystem.MapFileAttributes(
+                "file",
+                false,
+                FilePermissions.OwnerRead);
+            Assert.AreEqual(
+                FileAttributes.Normal,
+                attributes);
         }
 
         //---------------------------------------------------------------------
