@@ -65,7 +65,7 @@ namespace Google.Solutions.Ssh
             //
             try
             {
-                await this.Connection.RunSendOperationAsync(c =>
+                await this.Connection.RunAsync(c =>
                 {
                     using (c.Session.AsBlocking())
                     {

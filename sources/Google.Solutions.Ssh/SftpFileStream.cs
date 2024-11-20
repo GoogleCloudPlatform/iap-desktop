@@ -76,8 +76,9 @@ namespace Google.Solutions.Ssh
                 }
                 else
                 {
-                    _ = this.Connection.RunThrowingOperationAsync(
-                        _ => this.nativeChannel.Dispose());
+                    _ = this.Connection.RunAsync(
+                        _ => this.nativeChannel.Dispose(),
+                        false);
                 }
             }
         }
@@ -149,28 +150,29 @@ namespace Google.Solutions.Ssh
             // Perform a synchronous read on the worker thread.
             //
             var bytesRead = await this.Connection
-                .RunThrowingOperationAsync(session =>
-                {
-                    Debug.Assert(this.Connection.IsRunningOnWorkerThread);
+                .RunAsync(
+                    session => {
+                        Debug.Assert(this.Connection.IsRunningOnWorkerThread);
 
-                    using (session.Session.AsBlocking()) 
-                    {
-                        if (offset == 0 && count == buffer.Length) 
+                        using (session.Session.AsBlocking()) 
                         {
-                            //
-                            // Use the supplied buffer.
-                            //
-                            return (int)this.nativeChannel.Read(buffer);
+                            if (offset == 0 && count == buffer.Length) 
+                            {
+                                //
+                                // Use the supplied buffer.
+                                //
+                                return (int)this.nativeChannel.Read(buffer);
+                            }
+                            else
+                            {
+                                var readBuffer = new byte[count];
+                                var bytesRead = this.nativeChannel.Read(readBuffer);
+                                Array.Copy(readBuffer, 0, buffer, offset, count);
+                                return (int)bytesRead;
+                            }
                         }
-                        else
-                        {
-                            var readBuffer = new byte[count];
-                            var bytesRead = this.nativeChannel.Read(readBuffer);
-                            Array.Copy(readBuffer, 0, buffer, offset, count);
-                            return (int)bytesRead;
-                        }
-                    }
-                })
+                    }, 
+                    false)
                 .ConfigureAwait(false);
 
             this.position += bytesRead;
@@ -218,29 +220,30 @@ namespace Google.Solutions.Ssh
             // Perform a synchronous write on the worker thread.
             //
             await this.Connection
-                .RunThrowingOperationAsync<object?>(session =>
-                {
-                    Debug.Assert(this.Connection.IsRunningOnWorkerThread);
+                .RunAsync<object?>(
+                    session => {
+                        Debug.Assert(this.Connection.IsRunningOnWorkerThread);
 
-                    using (session.Session.AsBlocking())
-                    {
-                        if (offset == 0)
+                        using (session.Session.AsBlocking())
                         {
-                            //
-                            // Use the supplied buffer.
-                            //
-                            this.nativeChannel.Write(buffer, count);
+                            if (offset == 0)
+                            {
+                                //
+                                // Use the supplied buffer.
+                                //
+                                this.nativeChannel.Write(buffer, count);
+                            }
+                            else
+                            {
+                                var writeBuffer = new byte[count];
+                                Array.Copy(buffer, offset, writeBuffer, 0, count);
+                                this.nativeChannel.Write(writeBuffer, count);
+                            }
                         }
-                        else
-                        {
-                            var writeBuffer = new byte[count];
-                            Array.Copy(buffer, offset, writeBuffer, 0, count);
-                            this.nativeChannel.Write(writeBuffer, count);
-                        }
-                    }
 
-                    return session;
-                })
+                        return session;
+                    },
+                    false)
                 .ConfigureAwait(false);
 
             this.position += count;
