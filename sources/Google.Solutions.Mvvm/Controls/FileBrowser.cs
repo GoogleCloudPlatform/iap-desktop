@@ -279,7 +279,8 @@ namespace Google.Solutions.Mvvm.Controls
             this.fileList.BindColumn(0, i => i.Name);
             this.fileList.BindColumn(1, i => i.LastModified.ToString());
             this.fileList.BindColumn(2, i => i.Type.TypeName);
-            this.fileList.BindColumn(3, i => ByteSizeFormatter.Format(i.Size));
+            this.fileList.BindColumn(3, i => i.Access);
+            this.fileList.BindColumn(4, i => ByteSizeFormatter.Format(i.Size));
 
             this.directoryTree.LoadingChildrenFailed += (s, args) => OnNavigationFailed(args.Exception);
             this.fileList.ItemSelectionChanged += (s, args) => OnSelectedFilesChanged();

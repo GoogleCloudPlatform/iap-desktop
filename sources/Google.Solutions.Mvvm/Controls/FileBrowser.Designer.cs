@@ -57,6 +57,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.fileIconsList = new System.Windows.Forms.ImageList(this.components);
             this.fileList = new Google.Solutions.Mvvm.Controls.FileBrowser.FileListView();
             this.typeColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.accessColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.sizeColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.filesContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -132,6 +133,7 @@ namespace Google.Solutions.Mvvm.Controls
             nameColumn,
             lastModifiedColumn,
             this.typeColumn,
+            this.accessColumn,
             this.sizeColumn});
             this.fileList.ContextMenuStrip = this.filesContextMenu;
             this.fileList.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -155,6 +157,11 @@ namespace Google.Solutions.Mvvm.Controls
             // 
             this.typeColumn.Text = "Type";
             this.typeColumn.Width = 100;
+            // 
+            // accessColumn
+            // 
+            this.accessColumn.Text = "Access";
+            this.accessColumn.Width = 100;
             // 
             // sizeColumn
             // 
@@ -221,6 +228,7 @@ namespace Google.Solutions.Mvvm.Controls
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader accessColumn;
 
         internal class FileListView : BindableListView<IFileItem>
         { }

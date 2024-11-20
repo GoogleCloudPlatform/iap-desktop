@@ -182,7 +182,8 @@ namespace Google.Solutions.Terminal
                 "Server",
                 FileAttributes.Directory | FileAttributes.ReadOnly,
                 Epoch,
-                0)
+                0,
+                string.Empty)
             {
                 IsExpanded = true
             };
@@ -198,7 +199,8 @@ namespace Google.Solutions.Terminal
                 ".",
                 FileAttributes.Directory,
                 Epoch,
-                0);
+                0,
+                string.Empty);
             this.Drive = new FileItem(
                 (FileItem)this.Root,
                 new FileType(
@@ -211,7 +213,8 @@ namespace Google.Solutions.Terminal
                 "/.",
                 FileAttributes.Directory,
                 Epoch,
-                0);
+                0,
+                string.Empty);
         }
 
         //---------------------------------------------------------------------
@@ -259,7 +262,8 @@ namespace Google.Solutions.Terminal
                         f.Name,
                         MapFileAttributes(f.Name, f.IsDirectory, f.Permissions),
                         f.LastModifiedDate,
-                        f.Size))
+                        f.Size,
+                        f.Permissions.ToListFormat()))
                     .ToList();
 
                 return new ObservableCollection<IFileItem>(filteredSftpFiles);
@@ -331,7 +335,8 @@ namespace Google.Solutions.Terminal
                 string path,
                 FileAttributes attributes,
                 DateTime lastModified,
-                ulong size)
+                ulong size,
+                string access)
             {
                 this.parent = parent;
                 this.Type = type;
@@ -340,6 +345,7 @@ namespace Google.Solutions.Terminal
                 this.Attributes = attributes;
                 this.LastModified = lastModified;
                 this.Size = size;
+                this.Access = access;
             }
 
             internal FileItem(
@@ -348,7 +354,8 @@ namespace Google.Solutions.Terminal
                 string name,
                 FileAttributes attributes,
                 DateTime lastModified,
-                ulong size)
+                ulong size,
+                string access)
                 : this(
                       parent,
                       type,
@@ -357,7 +364,9 @@ namespace Google.Solutions.Terminal
                         ? $"{parent.Path}/{name}"
                         : name,
                       attributes,
-                      lastModified, size) 
+                      lastModified, 
+                      size,
+                      access) 
             { }
 
             public FileType Type { get; }
@@ -371,6 +380,8 @@ namespace Google.Solutions.Terminal
             public ulong Size { get; }
 
             public string Path { get; }
+
+            public string Access { get; }
 
             public bool IsExpanded { get; set; }
         }
