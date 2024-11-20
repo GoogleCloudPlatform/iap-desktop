@@ -33,6 +33,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 #pragma warning disable CS1690 // Accessing a member on a field of a marshal-by-reference class may cause a runtime exception
 
@@ -172,7 +173,7 @@ namespace Google.Solutions.Mvvm.Controls
         }
 
         //---------------------------------------------------------------------
-        // BindableTreeNode
+        // Node
         //---------------------------------------------------------------------
 
         internal sealed class Node : TreeNode, IDisposable
@@ -258,8 +259,10 @@ namespace Google.Solutions.Mvvm.Controls
                 }
                 else
                 {
+                    //
                     // This node might have children. Add a dummy node
                     // to ensure that the '+' control is being displayed.
+                    //
                     this.Nodes.Add(new LoadingTreeNode());
 
                     if (this.treeView.isExpandedFunc(this.Model))
@@ -394,6 +397,22 @@ namespace Google.Solutions.Mvvm.Controls
                 // have been completed for a while.
                 //
                 return this.lazyLoadResult.Task;
+            }
+
+            internal void Reload()
+            {
+                //
+                // Clear existing children as they might no longer be valid.
+                //
+                Collapse();
+                this.Nodes.Clear();
+
+                //
+                // Force-reload children.
+                //
+                this.lazyLoadTriggered = false;
+                this.Nodes.Add(new LoadingTreeNode());
+                LazyLoadChildren();
             }
 
             private void AddTreeNodesForModelNodes(IEnumerable<TModelNode> children)

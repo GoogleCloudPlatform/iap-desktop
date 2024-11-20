@@ -856,6 +856,16 @@ namespace Google.Solutions.Mvvm.Controls
                 //
                 this.listFilesCache.Remove(this.navigationState.Directory);
                 await RebindToNavigationStateAsync().ConfigureAwait(true);
+
+                //
+                // Force tree view to reload nodes in case a child
+                // directory was added.
+                //
+                if (this.directoryTree.SelectedNode 
+                    is BindableTreeView<IFileItem>.Node node)
+                {
+                    node.Reload();
+                }
             }
         }
 
