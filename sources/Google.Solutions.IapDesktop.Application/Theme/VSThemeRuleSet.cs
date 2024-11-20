@@ -154,7 +154,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         {
             listView.BackColor = this.theme.Palette.ToolWindowInnerTabInactive.Background;
             listView.ForeColor = this.theme.Palette.ToolWindowInnerTabInactive.Text;
-            listView.BorderStyle = BorderStyle.FixedSingle;
 
             if (this.theme.IsDark)
             {
