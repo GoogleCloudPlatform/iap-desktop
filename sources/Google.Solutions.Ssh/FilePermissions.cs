@@ -90,5 +90,62 @@ namespace Google.Solutions.Ssh
         {
             return (mode & FormatMask) == FilePermissions.Socket;
         }
+
+        /// <summary>
+        /// Format permissions in "rwx" format.
+        /// </summary>
+        public static string ToListFormat(this FilePermissions mode)
+        {
+            var s = new char[10];
+
+            //
+            // File type.
+            //
+            if (mode.IsDirectory())
+            {
+                s[0] = 'd';
+            }
+            else if (mode.IsLink())
+            {
+                s[0] = 'l';
+            }
+            else if (mode.IsCharacterDevice())
+            {
+                s[0] = 'c';
+            }
+            else if (mode.IsBlockDevice())
+            {
+                s[0] = 'b';
+            }
+            else if (mode.IsSocket())
+            {
+                s[0] = 's';
+            }
+            else if (mode.IsFifo())
+            {
+                s[0] = 'p';
+            }
+            else // Regular
+            {
+                s[0] = '-';
+            }
+
+            //
+            // Permissions.
+            //
+            s[1] = mode.HasFlag(FilePermissions.OwnerRead) ? 'r' : '-';
+            s[2] = mode.HasFlag(FilePermissions.OwnerWrite) ? 'w' : '-';
+            s[3] = mode.HasFlag(FilePermissions.OwnerExecute) ? 'x' : '-';
+
+            s[4] = mode.HasFlag(FilePermissions.GroupRead) ? 'r' : '-';
+            s[5] = mode.HasFlag(FilePermissions.GroupWrite) ? 'w' : '-';
+            s[6] = mode.HasFlag(FilePermissions.GroupExecute) ? 'x' : '-';
+
+            s[7] = mode.HasFlag(FilePermissions.OtherRead) ? 'r' : '-';
+            s[8] = mode.HasFlag(FilePermissions.OtherWrite) ? 'w' : '-';
+            s[9] = mode.HasFlag(FilePermissions.OtherExecute) ? 'x' : '-';
+
+            return new string(s);
+        }
     }
 }
