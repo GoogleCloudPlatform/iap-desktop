@@ -34,7 +34,7 @@ namespace Google.Solutions.Ssh
 {
     public class SshConnection : SshWorkerThread
     {
-        private readonly Queue<SendOperation> sendQueue = new Queue<SendOperation>();
+        private readonly Queue<ISendOperation> sendQueue = new Queue<ISendOperation>();
 
         /// <summary>
         /// Task that is completed after the SSH connection has
@@ -108,7 +108,7 @@ namespace Google.Solutions.Ssh
                 // exception is bad, we'll receive an OnSendError 
                 // callback later.
                 //
-                packet.Execute(session);
+                packet.Run(session);
 
                 //
                 // Sending succeeded - complete packet.
@@ -375,7 +375,25 @@ namespace Google.Solutions.Ssh
         // Inner classes.
         //---------------------------------------------------------------------
 
-        protected internal class SendOperation
+        private interface ISendOperation
+        {
+            /// <summary>
+            /// Run the operation.
+            /// </summary>
+            void Run(Libssh2AuthenticatedSession session);
+
+            /// <summary>
+            /// Mark the operation as successful.
+            /// </summary>
+            void OnCompleted();
+
+            /// <summary>
+            /// Mark the operation as failed.
+            /// </summary>
+            void OnFailed(Exception e);
+        }
+
+        protected internal class SendOperation : ISendOperation
         {
             private readonly TaskCompletionSource<uint> completionSource;
             private readonly Action<Libssh2AuthenticatedSession> operation;
@@ -392,23 +410,17 @@ namespace Google.Solutions.Ssh
                     TaskCreationOptions.RunContinuationsAsynchronously);
             }
 
-            internal void Execute(Libssh2AuthenticatedSession session)
+            void ISendOperation.Run(Libssh2AuthenticatedSession session)
             {
                 this.operation(session);
             }
 
-            /// <summary>
-            /// Mark the operation as successful.
-            /// </summary>
-            internal void OnCompleted()
+            void ISendOperation.OnCompleted()
             {
                 this.completionSource.SetResult(0);
             }
 
-            /// <summary>
-            /// Mark the operation as failed.
-            /// </summary>
-            internal void OnFailed(Exception e)
+            void ISendOperation.OnFailed(Exception e)
             {
                 this.completionSource.SetException(e);
             }
