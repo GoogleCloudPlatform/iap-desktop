@@ -108,7 +108,7 @@ namespace Google.Solutions.Ssh
                 // exception is bad, we'll receive an OnSendError 
                 // callback later.
                 //
-                packet.Operation(session);
+                packet.Execute(session);
 
                 //
                 // Sending succeeded - complete packet.
@@ -119,7 +119,7 @@ namespace Google.Solutions.Ssh
                 //
                 this.sendQueue.Dequeue();
 
-                packet.CompletionSource.SetResult(0);
+                packet.OnCompleted();
 
                 if (this.sendQueue.Count == 0)
                 {
@@ -137,7 +137,7 @@ namespace Google.Solutions.Ssh
             lock (this.sendQueue)
             {
                 Debug.Assert(this.sendQueue.Count > 0);
-                this.sendQueue.Dequeue().CompletionSource.SetException(exception);
+                this.sendQueue.Dequeue().OnFailed(exception);
             }
         }
 
@@ -201,7 +201,7 @@ namespace Google.Solutions.Ssh
                 // Return a task - it'll be completed once we've
                 // actually sent the data.
                 //
-                return packet.CompletionSource.Task;
+                return packet.Task;
             }
         }
 
@@ -377,19 +377,48 @@ namespace Google.Solutions.Ssh
 
         protected internal class SendOperation
         {
-            internal readonly TaskCompletionSource<uint> CompletionSource;
-            internal readonly Action<Libssh2AuthenticatedSession> Operation;
+            private readonly TaskCompletionSource<uint> completionSource;
+            private readonly Action<Libssh2AuthenticatedSession> operation;
 
             internal SendOperation(Action<Libssh2AuthenticatedSession> operation)
             {
-                this.Operation = operation;
+                this.operation = operation;
 
                 //
                 // Force continuations to run asycnhronously so that they
                 // don't block the worker thread.
                 //
-                this.CompletionSource = new TaskCompletionSource<uint>(
+                this.completionSource = new TaskCompletionSource<uint>(
                     TaskCreationOptions.RunContinuationsAsynchronously);
+            }
+
+            internal void Execute(Libssh2AuthenticatedSession session)
+            {
+                this.operation(session);
+            }
+
+            /// <summary>
+            /// Mark the operation as successful.
+            /// </summary>
+            internal void OnCompleted()
+            {
+                this.completionSource.SetResult(0);
+            }
+
+            /// <summary>
+            /// Mark the operation as failed.
+            /// </summary>
+            internal void OnFailed(Exception e)
+            {
+                this.completionSource.SetException(e);
+            }
+
+            /// <summary>
+            /// Task to await completion.
+            /// </summary>
+            public Task Task
+            {
+                get => this.completionSource.Task;
             }
         }
     }
