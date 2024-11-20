@@ -54,6 +54,19 @@ namespace Google.Solutions.Terminal
         public FilePermissions DefaultFilePermissions { get; set; } =
             FilePermissions.OwnerRead | FilePermissions.OwnerWrite;
 
+        private static readonly DateTime Epoch =
+            DateTimeOffset.FromUnixTimeSeconds(0).DateTime;
+
+        /// <summary>
+        /// The file system root (/) on the server.
+        /// </summary>
+        internal IFileItem Drive { get; }
+
+        /// <summary>
+        /// The user's home directory.
+        /// </summary>
+        internal IFileItem Home { get; }
+
         /// <summary>
         /// Map SFTP file attributes to a file type.
         /// </summary>
@@ -154,25 +167,60 @@ namespace Google.Solutions.Terminal
         {
             this.channel = channel.ExpectNotNull(nameof(channel));
             this.fileTypeCache = new FileTypeCache();
+
+            //
+            // Initialize pseudo-directories.
+            //
             this.Root = new FileItem(
                 null,
                 new FileType(
                     "Server",
                     false,
-                    StockIcons.GetIcon(StockIcons.IconId.Server, StockIcons.IconSize.Small)),
-                string.Empty,
-                FileAttributes.Directory,
-                DateTimeOffset.FromUnixTimeSeconds(0).DateTime,
+                    StockIcons.GetIcon(
+                        StockIcons.IconId.Server, 
+                        StockIcons.IconSize.Small)),
+                "Server",
+                FileAttributes.Directory | FileAttributes.ReadOnly,
+                Epoch,
                 0)
             {
                 IsExpanded = true
             };
+            this.Home = new FileItem(
+                (FileItem)this.Root,
+                new FileType(
+                    "Home",
+                    false,
+                    StockIcons.GetIcon(
+                        StockIcons.IconId.Folder, 
+                        StockIcons.IconSize.Small)),
+                "Home",
+                ".",
+                FileAttributes.Directory,
+                Epoch,
+                0);
+            this.Drive = new FileItem(
+                (FileItem)this.Root,
+                new FileType(
+                    "Drive",
+                    false,
+                    StockIcons.GetIcon(
+                        StockIcons.IconId.DriveFixed,
+                        StockIcons.IconSize.Small)),
+                "File system root",
+                "/.",
+                FileAttributes.Directory,
+                Epoch,
+                0);
         }
 
         //---------------------------------------------------------------------
         // IFileSystem.
         //---------------------------------------------------------------------
 
+        /// <summary>
+        /// The "Server" node, root of the virtual file system.
+        /// </summary>
         public IFileItem Root { get; }
 
         public async Task<ObservableCollection<IFileItem>> ListFilesAsync(
@@ -181,38 +229,52 @@ namespace Google.Solutions.Terminal
             directory.ExpectNotNull(nameof(directory));
             Debug.Assert(!directory.Type.IsFile);
 
-            var remotePath = directory == this.Root
-                ? "/"
-                : directory.Path;
-            Debug.Assert(!remotePath.StartsWith("//"));
+            if (directory == this.Root)
+            {
+                //
+                // Return a pseudo-directory listing.
+                //
+                return new ObservableCollection<IFileItem>()
+                {
+                    this.Home,
+                    this.Drive,
+                };
+            }
+            else
+            {
+                var sftpFiles = await this.channel
+                    .ListFilesAsync(directory.Path)
+                    .ConfigureAwait(false);
 
-            var sftpFiles = await this.channel
-                .ListFilesAsync(remotePath)
-                .ConfigureAwait(false);
+                //
+                // NB. SFTP returns files/directories in arbitrary order.
+                //
 
-            //
-            // NB. SFTP returns files/directories in arbitrary order.
-            //
+                var filteredSftpFiles = sftpFiles
+                    .Where(f => f.Name != "." && f.Name != "..")
+                    .OrderBy(f => !f.IsDirectory).ThenBy(f => f.Name)
+                    .Select(f => new FileItem(
+                        (FileItem)directory,
+                        MapFileType(f),
+                        f.Name,
+                        MapFileAttributes(f.Name, f.IsDirectory, f.Permissions),
+                        f.LastModifiedDate,
+                        f.Size))
+                    .ToList();
 
-            var filteredSftpFiles = sftpFiles
-                .Where(f => f.Name != "." && f.Name != "..")
-                .OrderBy(f => !f.IsDirectory).ThenBy(f => f.Name)
-                .Select(f => new FileItem(
-                    (FileItem)directory,
-                    MapFileType(f),
-                    f.Name,
-                    MapFileAttributes(f.Name, f.IsDirectory, f.Permissions),
-                    f.LastModifiedDate,
-                    f.Size))
-                .ToList();
-
-            return new ObservableCollection<IFileItem>(filteredSftpFiles);
+                return new ObservableCollection<IFileItem>(filteredSftpFiles);
+            }
         }
 
         public Task<Stream> OpenFileAsync(
             IFileItem file,
             FileAccess access)
         {
+            if (file == this.Root)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
             Precondition.Expect(file.Type.IsFile, $"{file.Name} is not a file");
 
             return this.channel.CreateFileAsync(
@@ -228,6 +290,11 @@ namespace Google.Solutions.Terminal
             FileMode mode,
             FileAccess access)
         {
+            if (directory == this.Root)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
             Precondition.Expect(!directory.Type.IsFile, $"{directory.Name} is not a directory");
             Precondition.Expect(!name.Contains("/"), "Name must not be a path");
 
@@ -261,6 +328,7 @@ namespace Google.Solutions.Terminal
                 FileItem? parent,
                 FileType type,
                 string name,
+                string path,
                 FileAttributes attributes,
                 DateTime lastModified,
                 ulong size)
@@ -268,10 +336,29 @@ namespace Google.Solutions.Terminal
                 this.parent = parent;
                 this.Type = type;
                 this.Name = name;
+                this.Path = path;
                 this.Attributes = attributes;
                 this.LastModified = lastModified;
                 this.Size = size;
             }
+
+            internal FileItem(
+                FileItem? parent,
+                FileType type,
+                string name,
+                FileAttributes attributes,
+                DateTime lastModified,
+                ulong size)
+                : this(
+                      parent,
+                      type,
+                      name,
+                      parent != null
+                        ? $"{parent.Path}/{name}"
+                        : name,
+                      attributes,
+                      lastModified, size) 
+            { }
 
             public FileType Type { get; }
 
@@ -283,12 +370,7 @@ namespace Google.Solutions.Terminal
 
             public ulong Size { get; }
 
-            public string Path
-            {
-                get => this.parent != null
-                    ? $"{this.parent.Path}/{this.Name}"
-                    : this.Name;
-            }
+            public string Path { get; }
 
             public bool IsExpanded { get; set; }
         }
