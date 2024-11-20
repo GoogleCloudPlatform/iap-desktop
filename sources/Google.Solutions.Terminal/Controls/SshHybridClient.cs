@@ -161,9 +161,13 @@ namespace Google.Solutions.Terminal.Controls
                 if (value == this.IsFileBrowserVisible)
                 {
                     //
-                    // No change.
+                    // No change, but activate file browser. This
+                    // enables switching from terminal to an already-
+                    // opened file browser by using the keyboard.
                     //
-                    return;
+
+                    this.fileBrowser?.Select();
+                    this.fileBrowser?.Focus();
                 }
                 else if (value)
                 {
