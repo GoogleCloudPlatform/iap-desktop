@@ -121,21 +121,18 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 .AddRuleSet(windowsTheme)
                 .AddRuleSet(new WindowsSystemDialogRuleset())
                 .AddRuleSet(new VSThemeDialogRuleSet(vsTheme))
-                .AddRuleSet(new GdiScalingRuleset())
                 .AddRuleSet(new DpiAwarenessRuleset());
 
             var dialogTheme = new ControlTheme()
                 .AddRuleSet(windowsTheme)
                 .AddRuleSet(new CommonControlRuleSet())
                 .AddRuleSet(new VSThemeDialogRuleSet(vsTheme))
-                .AddRuleSet(new GdiScalingRuleset())
                 .AddRuleSet(new DpiAwarenessRuleset());
 
             var dockWindowTheme = new ControlTheme()
                 .AddRuleSet(windowsTheme)
                 .AddRuleSet(new CommonControlRuleSet())
                 .AddRuleSet(new VSThemeDockWindowRuleSet(vsTheme))
-                .AddRuleSet(new GdiScalingRuleset())
                 .AddRuleSet(new DpiAwarenessRuleset());
 
 

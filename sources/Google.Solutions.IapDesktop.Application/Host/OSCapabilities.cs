@@ -33,11 +33,6 @@ namespace Google.Solutions.IapDesktop.Application.Host
         private static readonly Version Windows11 = new Version(10, 0, 22000, 0);
         private static readonly Version WindowsServer2022 = new Version(10, 0, 20348, 0);
 
-        public static bool IsGdiScalingSupported
-        {
-            get => Environment.OSVersion.Version >= Windows10_1703;
-        }
-
         public static SecurityProtocolType SupportedTlsVersions
         {
             get
