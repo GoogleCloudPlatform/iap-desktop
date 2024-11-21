@@ -68,6 +68,12 @@ namespace Google.Solutions.Terminal.Controls
         {
             InitializeComponent();
 
+            //
+            // Adjust scrollbar withdt to match system settings.
+            //
+            this.scrollBar.Width = SystemInformation.VerticalScrollBarWidth;
+            this.scrollBar.Location = new Point(this.Width - this.scrollBar.Width, 0);
+
             this.writeCallback = new NativeMethods.WriteCallback(OnUserInput);
             this.scrollCallback = new NativeMethods.ScrollCallback(OnTerminalScrolled);
 
@@ -496,6 +502,16 @@ namespace Google.Solutions.Terminal.Controls
                 default:
                     return base.ProcessDialogKey(keyData);
             }
+        }
+
+        protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
+        {
+            base.ScaleControl(factor, specified);
+
+            //
+            // The scrollbar width isn't adjusted automatically.
+            //
+            this.scrollBar.Width = LogicalToDeviceUnits(SystemInformation.VerticalScrollBarWidth);
         }
 
         //---------------------------------------------------------------------
