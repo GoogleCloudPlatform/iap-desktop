@@ -81,29 +81,31 @@ namespace Google.Solutions.Common.Test.IO
         //--------------------------------------------------------------------
 
         [Test]
-        public void CopyToAsync_WhenSourceNotReadable()
+        public async Task CopyToAsync_WhenSourceNotReadable()
         {
             var sourceStream = new Mock<Stream>();
             sourceStream.SetupGet(s => s.CanRead).Returns(false);
 
-            ExceptionAssert.ThrowsAggregateException<NotSupportedException>(
-                () => sourceStream.Object.CopyToAsync(
-                new MemoryStream(),
-                new Mock<IProgress<int>>().Object,
-                CancellationToken.None).Wait());
+            await ExceptionAssert
+                .ThrowsAsync<NotSupportedException>(() => sourceStream.Object.CopyToAsync(
+                    new MemoryStream(),
+                    new Mock<IProgress<int>>().Object,
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
-        public void CopyToAsync_WhenDestinationNotWritable()
+        public async Task CopyToAsync_WhenDestinationNotWritable()
         {
             var destinationStream = new Mock<Stream>();
             destinationStream.SetupGet(s => s.CanWrite).Returns(false);
 
-            ExceptionAssert.ThrowsAggregateException<NotSupportedException>(
-                () => new MemoryStream().CopyToAsync(
-                destinationStream.Object,
-                new Mock<IProgress<int>>().Object,
-                CancellationToken.None).Wait());
+            await ExceptionAssert
+                .ThrowsAsync<NotSupportedException>(() => new MemoryStream().CopyToAsync(
+                    destinationStream.Object,
+                    new Mock<IProgress<int>>().Object,
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
