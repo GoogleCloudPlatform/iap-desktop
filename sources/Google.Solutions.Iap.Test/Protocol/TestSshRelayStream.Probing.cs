@@ -37,7 +37,7 @@ namespace Google.Solutions.Iap.Test.Protocol
     public class TestSshRelayStreamProbing : IapFixtureBase
     {
         [Test]
-        public async Task ProbeConnection_WhenProjectDoesntExist_ThenProbeThrowsException(
+        public async Task ProbeConnection_WhenProjectDoesntExist(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new IapClient(
@@ -51,13 +51,15 @@ namespace Google.Solutions.Iap.Test.Protocol
                     80,
                     IapClient.DefaultNetworkInterface)))
             {
-                ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(() =>
-                    stream.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
+                await ExceptionAssert
+                    .ThrowsAsync<SshRelayDeniedException>(() =>
+                        stream.ProbeConnectionAsync(TimeSpan.FromSeconds(10)))
+                    .ConfigureAwait(false);
             }
         }
 
         [Test]
-        public async Task ProbeConnection_WhenZoneDoesntExist_ThenProbeThrowsException(
+        public async Task ProbeConnection_WhenZoneDoesntExist(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new IapClient(
@@ -74,13 +76,15 @@ namespace Google.Solutions.Iap.Test.Protocol
                     80,
                     IapClient.DefaultNetworkInterface)))
             {
-                ExceptionAssert.ThrowsAggregateException<SshRelayBackendNotFoundException>(() =>
-                    stream.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
+                await ExceptionAssert
+                    .ThrowsAsync<SshRelayBackendNotFoundException>(
+                        () => stream.ProbeConnectionAsync(TimeSpan.FromSeconds(10)))
+                    .ConfigureAwait(false);
             }
         }
 
         [Test]
-        public async Task ProbeConnection_WhenInstanceDoesntExist_ThenProbeThrowsException(
+        public async Task ProbeConnection_WhenInstanceDoesntExist(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var client = new IapClient(
@@ -97,13 +101,15 @@ namespace Google.Solutions.Iap.Test.Protocol
                     80,
                     IapClient.DefaultNetworkInterface)))
             {
-                ExceptionAssert.ThrowsAggregateException<SshRelayBackendNotFoundException>(() =>
-                    stream.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
+                await ExceptionAssert
+                    .ThrowsAsync<SshRelayBackendNotFoundException>(
+                        () => stream.ProbeConnectionAsync(TimeSpan.FromSeconds(10)))
+                    .ConfigureAwait(false);
             }
         }
 
         [Test]
-        public async Task ProbeConnection_WhenInstanceExistsAndIsListening_ThenProbeSucceeds(
+        public async Task ProbeConnection_WhenInstanceExistsAndIsListening(
              [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
              [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
@@ -125,7 +131,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task ProbeConnection_WhenInstanceExistsButNotListening_ThenProbeThrowsException(
+        public async Task ProbeConnection_WhenInstanceExistsButNotListening(
              [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
              [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
@@ -140,13 +146,15 @@ namespace Google.Solutions.Iap.Test.Protocol
                     22,
                     IapClient.DefaultNetworkInterface)))
             {
-                ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(() =>
-                    stream.ProbeConnectionAsync(TimeSpan.FromSeconds(5)).Wait());
+                await ExceptionAssert
+                    .ThrowsAsync<NetworkStreamClosedException>(
+                        () => stream.ProbeConnectionAsync(TimeSpan.FromSeconds(5)))
+                    .ConfigureAwait(false);
             }
         }
 
         [Test]
-        public void ProbeConnection_WhenServerClosesConnectionWithNotAuthorized_ThenTestConnectionAsyncThrowsUnauthorizedException()
+        public async Task ProbeConnection_WhenServerClosesConnectionWithNotAuthorized()
         {
             var stream = new MockStream()
             {
@@ -156,12 +164,12 @@ namespace Google.Solutions.Iap.Test.Protocol
             {
                 ExpectedStream = stream
             };
-            var relay = new SshRelayStream(endpoint);
 
-            ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(
-                () => relay
-                    .ProbeConnectionAsync(TimeSpan.FromSeconds(2))
-                    .Wait());
+            var relay = new SshRelayStream(endpoint);
+            await ExceptionAssert
+                .ThrowsAsync<SshRelayDeniedException>(
+                    () => relay.ProbeConnectionAsync(TimeSpan.FromSeconds(2)))
+                .ConfigureAwait(false);
         }
     }
 }

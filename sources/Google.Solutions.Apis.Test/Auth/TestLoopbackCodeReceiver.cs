@@ -74,7 +74,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 var url = new AuthorizationCodeRequestUrl(SampleUri);
 
                 await ExceptionAssert
-                    .ThrowsAsync<TaskCanceledException>(
+                    .ThrowsAsync<OperationCanceledException>(
                         () => receiver.ReceiveCodeAsync(url, tokenSource.Token))
                     .ConfigureAwait(false);
             }
@@ -93,7 +93,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 tokenSource.Cancel();
 
                 await ExceptionAssert
-                    .ThrowsAsync<TaskCanceledException>(() => receiveTask)
+                    .ThrowsAsync<OperationCanceledException>(() => receiveTask)
                     .ConfigureAwait(false);
             }
         }

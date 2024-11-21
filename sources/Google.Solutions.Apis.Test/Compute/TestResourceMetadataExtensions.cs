@@ -168,8 +168,8 @@ namespace Google.Solutions.Apis.Test.Compute
             var key = Guid.NewGuid().ToString();
 
             var callbacks = 0;
-            ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
-                () => instancesResource.UpdateMetadataAsync(
+            await ExceptionAssert
+                .ThrowsAsync<GoogleApiException>(() => instancesResource.UpdateMetadataAsync(
                     locator,
                     metadata =>
                     {
@@ -183,7 +183,8 @@ namespace Google.Solutions.Apis.Test.Compute
                         metadata.Add(key, "value");
                     },
                     CancellationToken.None,
-                    2).Wait());
+                    2))
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------
@@ -288,28 +289,30 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void AddMetadata_WhenUpdateKeepsConflicting_ThenThrowsException()
+        public async Task AddMetadata_WhenUpdateKeepsConflicting_ThenThrowsException()
         {
             var key = Guid.NewGuid().ToString();
             var projectsResource = TestProject.CreateComputeService().Projects;
 
             var callbacks = 0;
-            ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
-                () => projectsResource.UpdateMetadataAsync(
-                    TestProject.ProjectId,
-                    metadata =>
-                    {
-                        // Provoke a conflict every time.
-                        projectsResource.AddMetadataAsync(
-                            TestProject.ProjectId,
-                            key,
-                            "conflict #" + callbacks++,
-                            CancellationToken.None).Wait();
+            await ExceptionAssert
+                .ThrowsAsync<GoogleApiException>(
+                    () => projectsResource.UpdateMetadataAsync(
+                        TestProject.ProjectId,
+                        metadata =>
+                        {
+                            // Provoke a conflict every time.
+                            projectsResource.AddMetadataAsync(
+                                TestProject.ProjectId,
+                                key,
+                                "conflict #" + callbacks++,
+                                CancellationToken.None).Wait();
 
-                        metadata.Add(key, "value");
-                    },
-                    CancellationToken.None,
-                    1).Wait());
+                            metadata.Add(key, "value");
+                        },
+                        CancellationToken.None,
+                        1))
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------
