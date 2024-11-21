@@ -52,19 +52,19 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// <summary>
         /// Default (blurry) scaling.
         /// </summary>
-        [Description("Off")]
+        [Description("Disabled")]
         None = 0,
 
         /// <summary>
         /// Enable GDI scaling.
         /// </summary>
-        [Description("Legacy (GDI scaling)")]
-        Gdi = 1,
+        [Browsable(false)]
+        LegacyGdi = 1,
 
         /// <summary>
         /// System DPI aware scaling.
         /// </summary>
-        [Description("Same as primary monitor")]
+        [Description("Match primary display")]
         SystemDpiAware = 2,
 
         _Default = SystemDpiAware

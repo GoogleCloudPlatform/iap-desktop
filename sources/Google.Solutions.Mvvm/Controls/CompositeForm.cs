@@ -19,9 +19,7 @@
 // under the License.
 //
 
-
 using Google.Solutions.Mvvm.Interop;
-using Google.Solutions.Mvvm.Theme;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Controls
@@ -44,7 +42,7 @@ namespace Google.Solutions.Mvvm.Controls
                 //
                 var cp = base.CreateParams;
 
-                if (!DeviceCapabilities.Current.IsGdiScalingActive && !this.DesignMode)
+                if (!this.DesignMode)
                 {
                     //
                     // WS_EX_COMPOSITED can break scrolling if
