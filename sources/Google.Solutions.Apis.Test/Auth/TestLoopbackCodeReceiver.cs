@@ -62,7 +62,7 @@ namespace Google.Solutions.Apis.Test.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public void ReceiveCode_WhenCancelledBeforeListen_ThenThrowsException()
+        public async Task ReceiveCode_WhenCancelledBeforeListen_ThenThrowsException()
         {
             using (var tokenSource = new CancellationTokenSource())
             {
@@ -73,13 +73,15 @@ namespace Google.Solutions.Apis.Test.Auth
 
                 var url = new AuthorizationCodeRequestUrl(SampleUri);
 
-                ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
-                    () => receiver.ReceiveCodeAsync(url, tokenSource.Token).Wait());
+                await ExceptionAssert
+                    .ThrowsAsync<TaskCanceledException>(
+                        () => receiver.ReceiveCodeAsync(url, tokenSource.Token))
+                    .ConfigureAwait(false);
             }
         }
 
         [Test]
-        public void ReceiveCode_WhenCancelledAfterListen_ThenThrowsException()
+        public async Task ReceiveCode_WhenCancelledAfterListen_ThenThrowsException()
         {
             using (var tokenSource = new CancellationTokenSource())
             {
@@ -90,8 +92,9 @@ namespace Google.Solutions.Apis.Test.Auth
 
                 tokenSource.Cancel();
 
-                ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
-                    () => receiveTask.Wait());
+                await ExceptionAssert
+                    .ThrowsAsync<TaskCanceledException>(() => receiveTask)
+                    .ConfigureAwait(false);
             }
         }
 

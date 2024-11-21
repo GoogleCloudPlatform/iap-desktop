@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
                 window.Client.EnableNetworkLevelAuthentication = false;
                 window.Client.Connect();
 
-                var eventArgs = await EventAssert.AssertRaisesEventAsync<ExceptionEventArgs>(
+                var eventArgs = await EventAssert.RaisesEventAsync<ExceptionEventArgs>(
                     cb => window.Client.ConnectionFailed += (s, e) => cb(e))
                     .ConfigureAwait(true);
 

@@ -41,7 +41,7 @@ namespace Google.Solutions.Apis.Test.Client
     public class TestExecuteAsStreamExtensions : CommonFixtureBase
     {
         [Test]
-        public async Task ExecuteAsStreamOrThrow_WhenApiReturns404_ThenThrowsException(
+        public async Task ExecuteAsStreamOrThrow_WhenApiReturns404(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential
             )
         {
@@ -50,13 +50,15 @@ namespace Google.Solutions.Apis.Test.Client
                 HttpClientInitializer = await credential
             });
 
-            ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
-                () => computeService.Instances.Get("invalid", "invalid", "invalid")
-                    .ExecuteAsStreamOrThrowAsync(CancellationToken.None).Wait());
+            await ExceptionAssert
+                .ThrowsAsync<GoogleApiException>(() => computeService.Instances
+                    .Get("invalid", "invalid", "invalid")
+                    .ExecuteAsStreamOrThrowAsync(CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
-        public async Task ExecuteAndAwaitOperation_WhenOperationFailsWithoutErrorDetails_ThenThrowsException()
+        public async Task ExecuteAndAwaitOperation_WhenOperationFailsWithoutErrorDetails()
         {
             var request = new Mock<IClientServiceRequest<Operation>>();
             request
@@ -68,20 +70,14 @@ namespace Google.Solutions.Apis.Test.Client
                     HttpErrorMessage = "MockError",
                 });
 
-            try
-            {
-                await request.Object
-                    .ExecuteAndAwaitOperationAsync("project-1", CancellationToken.None)
+            var e = await ExceptionAssert
+                .ThrowsAsync<GoogleApiException>(() => request.Object
+                    .ExecuteAndAwaitOperationAsync("project-1", CancellationToken.None))
                     .ConfigureAwait(false);
 
-                Assert.Fail("Expected exception");
-            }
-            catch (GoogleApiException e)
-            {
-                Assert.AreEqual("MockError", e.Message);
-                Assert.AreEqual("MockError", e.Error.Message);
-                CollectionAssert.IsEmpty(e.Error.Errors);
-            }
+            Assert.AreEqual("MockError", e.Message);
+            Assert.AreEqual("MockError", e.Error.Message);
+            CollectionAssert.IsEmpty(e.Error.Errors);
         }
 
         [Test]
@@ -108,21 +104,15 @@ namespace Google.Solutions.Apis.Test.Client
                     }
                 });
 
-            try
-            {
-                await request.Object
-                    .ExecuteAndAwaitOperationAsync("project-1", CancellationToken.None)
-                    .ConfigureAwait(false);
+            var e = await ExceptionAssert
+                .ThrowsAsync<GoogleApiException>(() => request.Object
+                    .ExecuteAndAwaitOperationAsync("project-1", CancellationToken.None))
+                .ConfigureAwait(false);
 
-                Assert.Fail("Expected exception");
-            }
-            catch (GoogleApiException e)
-            {
-                Assert.AreEqual("MockError", e.Message);
-                Assert.AreEqual("MockError", e.Error.Message);
-                Assert.AreEqual(412, (int)e.Error.Code);
-                Assert.AreEqual("message", e.Error.Errors.First().Reason);
-            }
+            Assert.AreEqual("MockError", e.Message);
+            Assert.AreEqual("MockError", e.Error.Message);
+            Assert.AreEqual(412, (int)e.Error.Code);
+            Assert.AreEqual("message", e.Error.Errors.First().Reason);
         }
     }
 }

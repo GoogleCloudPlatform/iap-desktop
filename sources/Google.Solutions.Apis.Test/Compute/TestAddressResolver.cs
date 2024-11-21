@@ -42,7 +42,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void GetAddress_WhenInstanceLookupFails()
+        public async Task GetAddress_WhenInstanceLookupFails()
         {
             var computeClient = new Mock<IComputeEngineClient>();
             computeClient
@@ -51,11 +51,12 @@ namespace Google.Solutions.Apis.Test.Compute
 
             var resolver = new AddressResolver(computeClient.Object);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceNotFoundException>(
-                () => resolver.GetAddressAsync(
+            await ExceptionAssert
+                .ThrowsAsync<ResourceNotFoundException>(() => resolver.GetAddressAsync(
                     SampleInstance,
                     NetworkInterfaceType.PrimaryInternal,
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------
@@ -63,7 +64,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void GetAddress_WhenInstanceLacksInternalIp()
+        public async Task GetAddress_WhenInstanceLacksInternalIp()
         {
             var computeClient = new Mock<IComputeEngineClient>();
             computeClient
@@ -72,11 +73,12 @@ namespace Google.Solutions.Apis.Test.Compute
 
             var resolver = new AddressResolver(computeClient.Object);
 
-            ExceptionAssert.ThrowsAggregateException<AddressNotFoundException>(
-                () => resolver.GetAddressAsync(
+            await ExceptionAssert
+                .ThrowsAsync<AddressNotFoundException>(() => resolver.GetAddressAsync(
                     SampleInstance,
                     NetworkInterfaceType.PrimaryInternal,
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -165,7 +167,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void GetAddress_WhenInstanceHasNoExternalAddress()
+        public async Task GetAddress_WhenInstanceHasNoExternalAddress()
         {
             var instance = new Instance()
             {
@@ -187,11 +189,12 @@ namespace Google.Solutions.Apis.Test.Compute
 
             var resolver = new AddressResolver(computeClient.Object);
 
-            ExceptionAssert.ThrowsAggregateException<AddressNotFoundException>(
-                () => resolver.GetAddressAsync(
+            await ExceptionAssert
+                .ThrowsAsync<AddressNotFoundException>(() => resolver.GetAddressAsync(
                     SampleInstance,
                     NetworkInterfaceType.External,
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]

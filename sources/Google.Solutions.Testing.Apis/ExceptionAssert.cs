@@ -175,7 +175,7 @@ namespace Google.Solutions.Testing.Apis
     public static class EventAssert
     {
         [SuppressMessage("Usage", "VSTHRD103:Call async methods when in an async method", Justification = "")]
-        public static async Task<TArgs> AssertRaisesEventAsync<TArgs>(
+        public static async Task<TArgs> RaisesEventAsync<TArgs>(
             Action<Action<TArgs>> registerEvent,
             TimeSpan timeout)
             where TArgs : EventArgs
@@ -196,11 +196,11 @@ namespace Google.Solutions.Testing.Apis
             }
         }
 
-        public static Task<TArgs> AssertRaisesEventAsync<TArgs>(
+        public static Task<TArgs> RaisesEventAsync<TArgs>(
             Action<Action<TArgs>> registerEvent)
             where TArgs : EventArgs
         {
-            return AssertRaisesEventAsync<TArgs>(
+            return RaisesEventAsync<TArgs>(
                 registerEvent,
                 TimeSpan.FromSeconds(30));
         }

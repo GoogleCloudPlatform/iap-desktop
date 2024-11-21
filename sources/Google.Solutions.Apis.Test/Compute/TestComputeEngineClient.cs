@@ -103,10 +103,11 @@ namespace Google.Solutions.Apis.Test.Compute
                 await auth,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => client.GetProjectAsync(
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(() => client.GetProjectAsync(
                     new ProjectLocator(TestProject.ProjectId),
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -118,10 +119,11 @@ namespace Google.Solutions.Apis.Test.Compute
                 await auth,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceNotFoundException>(
-                () => client.GetProjectAsync(
+            await ExceptionAssert
+                .ThrowsAsync<ResourceNotFoundException>(() => client.GetProjectAsync(
                     new ProjectLocator(TestProject.InvalidProjectId),
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------
@@ -184,10 +186,11 @@ namespace Google.Solutions.Apis.Test.Compute
                 await auth,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => client.ListInstancesAsync(
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(() => client.ListInstancesAsync(
                     new ProjectLocator(TestProject.ProjectId),
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -199,10 +202,11 @@ namespace Google.Solutions.Apis.Test.Compute
                 await auth,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => client.ListInstancesAsync(
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(() => client.ListInstancesAsync(
                     new ZoneLocator(TestProject.ProjectId, "us-central1-a"),
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -216,10 +220,11 @@ namespace Google.Solutions.Apis.Test.Compute
                 await auth,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => client.GetInstanceAsync(
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(() => client.GetInstanceAsync(
                     locator,
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------
@@ -237,11 +242,12 @@ namespace Google.Solutions.Apis.Test.Compute
                 await auth,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => client.GetGuestAttributesAsync(
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(() => client.GetGuestAttributesAsync(
                     locator,
                     "somepath/",
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------
@@ -291,11 +297,12 @@ namespace Google.Solutions.Apis.Test.Compute
                 await auth,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceNotFoundException>(
-                () => client.ControlInstanceAsync(
+            await ExceptionAssert
+                .ThrowsAsync<ResourceNotFoundException>(() => client.ControlInstanceAsync(
                     new InstanceLocator(TestProject.ProjectId, "us-central1-a", "doesnotexist"),
                     InstanceControlCommand.Start,
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -331,11 +338,12 @@ namespace Google.Solutions.Apis.Test.Compute
                 await auth,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => client.ControlInstanceAsync(
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(() => client.ControlInstanceAsync(
                     instance,
                     command,
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------
