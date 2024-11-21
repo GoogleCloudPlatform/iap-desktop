@@ -207,13 +207,14 @@ namespace Google.Solutions.Apis.Test.Compute
             {
                 cts.Cancel();
 
-                ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
-                    () => adapter.CreateWindowsCredentialsAsync(
-                    instanceLocator,
-                    "test" + Guid.NewGuid().ToString().Substring(20),
-                    UserFlags.AddToAdministrators,
-                    TimeSpan.FromMinutes(1),
-                    cts.Token).Wait());
+                await ExceptionAssert
+                    .ThrowsAsync<TaskCanceledException>(() => adapter.CreateWindowsCredentialsAsync(
+                        instanceLocator,
+                        "test" + Guid.NewGuid().ToString().Substring(20),
+                        UserFlags.AddToAdministrators,
+                        TimeSpan.FromMinutes(1),
+                        cts.Token))
+                    .ConfigureAwait(false);
             }
         }
 
@@ -232,13 +233,15 @@ namespace Google.Solutions.Apis.Test.Compute
             var instanceLocator = await testInstance;
             using (var cts = new CancellationTokenSource())
             {
-                ExceptionAssert.ThrowsAggregateException<WindowsCredentialCreationFailedException>(
-                    () => adapter.CreateWindowsCredentialsAsync(
-                    instanceLocator,
-                    "test" + Guid.NewGuid().ToString().Substring(20),
-                    UserFlags.AddToAdministrators,
-                    TimeSpan.FromMilliseconds(1),
-                    cts.Token).Wait());
+                await ExceptionAssert
+                    .ThrowsAsync<WindowsCredentialCreationFailedException>(
+                        () => adapter.CreateWindowsCredentialsAsync(
+                            instanceLocator,
+                            "test" + Guid.NewGuid().ToString().Substring(20),
+                            UserFlags.AddToAdministrators,
+                            TimeSpan.FromMilliseconds(1),
+                            cts.Token))
+                    .ConfigureAwait(false);
             }
         }
 
@@ -300,12 +303,14 @@ namespace Google.Solutions.Apis.Test.Compute
             var adapter = new WindowsCredentialGenerator(computeClient);
             var username = "test" + Guid.NewGuid().ToString();
 
-            ExceptionAssert.ThrowsAggregateException<WindowsCredentialCreationFailedException>(
-                () => adapter.CreateWindowsCredentialsAsync(
-                    locator,
-                    username,
-                    UserFlags.AddToAdministrators,
-                    CancellationToken.None).Wait());
+            await ExceptionAssert
+                .ThrowsAsync<WindowsCredentialCreationFailedException>(
+                    () => adapter.CreateWindowsCredentialsAsync(
+                        locator,
+                        username,
+                        UserFlags.AddToAdministrators,
+                        CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -344,12 +349,14 @@ namespace Google.Solutions.Apis.Test.Compute
             var adapter = new WindowsCredentialGenerator(computeClient);
             var username = "test" + Guid.NewGuid().ToString();
 
-            ExceptionAssert.ThrowsAggregateException<WindowsCredentialCreationFailedException>(
-                () => adapter.CreateWindowsCredentialsAsync(
-                    locator,
-                    username,
-                    UserFlags.AddToAdministrators,
-                    CancellationToken.None).Wait());
+            await ExceptionAssert
+                .ThrowsAsync<WindowsCredentialCreationFailedException>(
+                    () => adapter.CreateWindowsCredentialsAsync(
+                        locator,
+                        username,
+                        UserFlags.AddToAdministrators,
+                        CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]

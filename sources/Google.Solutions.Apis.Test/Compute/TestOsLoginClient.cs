@@ -78,12 +78,14 @@ namespace Google.Solutions.Apis.Test.Compute
                 TestProject.ApiKey,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
-                () => client.ImportSshPublicKeyAsync(
-                    new ProjectLocator(TestProject.ProjectId),
-                    "ssh-rsa blob",
-                    TimeSpan.FromMinutes(1),
-                    CancellationToken.None).Wait());
+            await ExceptionAssert
+                .ThrowsAsync<OsLoginNotSupportedForWorkloadIdentityException>(
+                    () => client.ImportSshPublicKeyAsync(
+                        new ProjectLocator(TestProject.ProjectId),
+                        "ssh-rsa blob",
+                        TimeSpan.FromMinutes(1),
+                        CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -99,12 +101,14 @@ namespace Google.Solutions.Apis.Test.Compute
                 TestProject.ApiKey,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => client.ImportSshPublicKeyAsync(
-                    new ProjectLocator(TestProject.ProjectId),
-                    "ssh-rsa blob",
-                    TimeSpan.FromMinutes(1),
-                    CancellationToken.None).Wait());
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(
+                    () => client.ImportSshPublicKeyAsync(
+                        new ProjectLocator(TestProject.ProjectId),
+                        "ssh-rsa blob",
+                        TimeSpan.FromMinutes(1),
+                        CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -149,12 +153,12 @@ namespace Google.Solutions.Apis.Test.Compute
                 TestProject.ApiKey,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
-                () => client
-                .GetLoginProfileAsync(
-                    new ProjectLocator(TestProject.ProjectId),
-                    CancellationToken.None)
-                .Wait());
+            await ExceptionAssert
+                .ThrowsAsync<OsLoginNotSupportedForWorkloadIdentityException>(
+                    () => client.GetLoginProfileAsync(
+                        new ProjectLocator(TestProject.ProjectId),
+                        CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -170,10 +174,11 @@ namespace Google.Solutions.Apis.Test.Compute
                 TestProject.ApiKey,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => client.GetLoginProfileAsync(
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(() => client.GetLoginProfileAsync(
                     new ProjectLocator(TestProject.ProjectId),
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -211,10 +216,12 @@ namespace Google.Solutions.Apis.Test.Compute
                 TestProject.ApiKey,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
-                () => client.DeleteSshPublicKeyAsync(
-                    "fingerprint",
-                    CancellationToken.None).Wait());
+            await ExceptionAssert
+                .ThrowsAsync<OsLoginNotSupportedForWorkloadIdentityException>(
+                    () => client.DeleteSshPublicKeyAsync(
+                        "fingerprint",
+                        CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -306,13 +313,13 @@ namespace Google.Solutions.Apis.Test.Compute
                 TestProject.ApiKey,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => client
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(() => client
                     .SignPublicKeyAsync(
                         new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
                         $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
-                        CancellationToken.None)
-                    .Wait());
+                        CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -376,10 +383,12 @@ namespace Google.Solutions.Apis.Test.Compute
                 TestProject.ApiKey,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<OsLoginNotSupportedForWorkloadIdentityException>(
-                () => client.ListSecurityKeysAsync(
-                    new ProjectLocator(TestProject.ProjectId),
-                    CancellationToken.None).Wait());
+            await ExceptionAssert
+                .ThrowsAsync<OsLoginNotSupportedForWorkloadIdentityException>(
+                    () => client.ListSecurityKeysAsync(
+                        new ProjectLocator(TestProject.ProjectId),
+                        CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -395,10 +404,12 @@ namespace Google.Solutions.Apis.Test.Compute
                 TestProject.ApiKey,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => client.ListSecurityKeysAsync(
-                    new ProjectLocator(TestProject.ProjectId),
-                    CancellationToken.None).Wait());
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(
+                    () => client.ListSecurityKeysAsync(
+                        new ProjectLocator(TestProject.ProjectId),
+                        CancellationToken.None))
+                .ConfigureAwait(false); 
         }
 
         [Test]

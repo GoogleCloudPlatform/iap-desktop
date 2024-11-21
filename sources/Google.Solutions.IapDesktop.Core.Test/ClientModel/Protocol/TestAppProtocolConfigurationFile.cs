@@ -26,6 +26,7 @@ using NUnit.Framework;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 {
@@ -120,22 +121,27 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public void ReadStreamAsync_WhenFileNotFound()
+        public async Task ReadStreamAsync_WhenFileNotFound()
         {
-            ExceptionAssert.ThrowsAggregateException<FileNotFoundException>(
-                () => AppProtocolConfigurationFile.ReadFileAsync("doesnotexist.json").Wait());
+            await ExceptionAssert
+                .ThrowsAsync<FileNotFoundException>(
+                    () => AppProtocolConfigurationFile.ReadFileAsync("doesnotexist.json"))
+                .ConfigureAwait(false);
         }
 
         [Test]
-        public void ReadStreamAsync_WhenFileEmptyOrMalformed(
+        public async Task ReadStreamAsync_WhenFileEmptyOrMalformed(
             [Values("", " ", "{,", "{}")] string json)
         {
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, json);
 
-            ExceptionAssert.ThrowsAggregateException<InvalidAppProtocolException>(
-                $"file {filePath}",
-                () => AppProtocolConfigurationFile.ReadFileAsync(filePath).Wait());
+            var e = await ExceptionAssert
+                .ThrowsAsync<InvalidAppProtocolException>(
+                    () => AppProtocolConfigurationFile.ReadFileAsync(filePath))
+                .ConfigureAwait(false);
+
+            StringAssert.Contains($"file {filePath}", e.Message);
         }
     }
 }

@@ -97,10 +97,10 @@ namespace Google.Solutions.Iap.Test.Net
                             e.CloseStatusDescription);
                     }
 
-                    ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(
-                        () => clientStream
-                            .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
-                            .Wait());
+                    await ExceptionAssert
+                        .ThrowsAsync<NetworkStreamClosedException>(() => clientStream
+                            .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None))
+                        .ConfigureAwait(false);
                 }
             }
         }
@@ -117,10 +117,10 @@ namespace Google.Solutions.Iap.Test.Net
                         .ConfigureAwait(false);
 
                     var buffer = new byte[32];
-                    ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(
-                        () => clientStream
-                            .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
-                            .Wait());
+                    await ExceptionAssert
+                        .ThrowsAsync<NetworkStreamClosedException>(() => clientStream
+                            .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None))
+                        .ConfigureAwait(false);
                 }
             }
         }
@@ -334,10 +334,10 @@ namespace Google.Solutions.Iap.Test.Net
                         .ConfigureAwait(false);
 
                     var buffer = FillBuffer(8);
-                    ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(
-                        () => clientStream
-                            .WriteAsync(buffer, 0, buffer.Length, CancellationToken.None)
-                            .Wait());
+                    await ExceptionAssert
+                        .ThrowsAsync<NetworkStreamClosedException>(() => clientStream
+                            .WriteAsync(buffer, 0, buffer.Length, CancellationToken.None))
+                        .ConfigureAwait(false);
                 }
             }
         }
@@ -357,10 +357,10 @@ namespace Google.Solutions.Iap.Test.Net
                         .CloseAsync(CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    ExceptionAssert.ThrowsAggregateException<WebSocketStreamClosedByClientException>(
-                        () => clientStream
-                            .CloseAsync(CancellationToken.None)
-                            .Wait());
+                    await ExceptionAssert
+                        .ThrowsAsync<WebSocketStreamClosedByClientException>(() => clientStream
+                            .CloseAsync(CancellationToken.None))
+                        .ConfigureAwait(false);
                 }
             }
         }

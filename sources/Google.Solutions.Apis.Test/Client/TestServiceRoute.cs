@@ -83,17 +83,17 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         [Test]
-        public void Probe_WhenPscEndpointInvalid()
+        public async Task Probe_WhenPscEndpointInvalid()
         {
             //
             // Use IP address as pseudo-PSC endpoint.
             //
             var route = new ServiceRoute("127.0.0.254");
 
-            ExceptionAssert.ThrowsAggregateException<InvalidServiceRouteException>(
-                () => route
-                    .ProbeAsync(TimeSpan.FromSeconds(5))
-                    .Wait());
+            await ExceptionAssert
+                .ThrowsAsync<InvalidServiceRouteException>(() => route
+                    .ProbeAsync(TimeSpan.FromSeconds(5)))
+                .ConfigureAwait(false);
         }
     }
 }

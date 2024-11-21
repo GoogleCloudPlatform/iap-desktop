@@ -62,7 +62,7 @@ namespace Google.Solutions.Apis.Test.Analytics
         }
 
         [Test]
-        public void Collect_WhenClientIdMissingAndDebugModeIsOn()
+        public async Task Collect_WhenClientIdMissingAndDebugModeIsOn()
         {
             var service = new MeasurementService(new MeasurementService.Initializer()
             {
@@ -70,24 +70,24 @@ namespace Google.Solutions.Apis.Test.Analytics
                 MeasurementId = "invalid"
             });
 
-            ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
-                "client_id",
-                () => service
-                    .CollectAsync(
-                        new MeasurementService.MeasurementRequest()
+            var e = await ExceptionAssert.ThrowsAsync<GoogleApiException>(
+                () => service.CollectAsync(
+                    new MeasurementService.MeasurementRequest()
+                    {
+                        DebugMode = true,
+                        ClientId = string.Empty,
+                        Events = new[]
                         {
-                            DebugMode = true,
-                            ClientId = string.Empty,
-                            Events = new[]
+                            new MeasurementService.EventSection()
                             {
-                                new MeasurementService.EventSection()
-                                {
-                                    Name = "click",
-                                }
+                                Name = "click",
                             }
-                        },
-                        CancellationToken.None)
-                    .Wait());
+                        }
+                    },
+                    CancellationToken.None))
+                .ConfigureAwait(false);
+
+            StringAssert.Contains("client_id", e.Message);
         }
     }
 }

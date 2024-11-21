@@ -46,12 +46,13 @@ namespace Google.Solutions.Apis.Test.Logging
                 await auth,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.ReadLogsAsync(
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(() => adapter.ReadLogsAsync(
                     new[] { $"projects/{TestProject.ProjectId}" },
                     string.Empty,
                     _ => null,
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -63,12 +64,13 @@ namespace Google.Solutions.Apis.Test.Logging
                 await auth,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
-                () => adapter.ReadLogsAsync(
+            await ExceptionAssert
+                .ThrowsAsync<GoogleApiException>(() => adapter.ReadLogsAsync(
                     new[] { $"projects/{TestProject.InvalidProjectId}" },
                     string.Empty,
                     _ => null,
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]

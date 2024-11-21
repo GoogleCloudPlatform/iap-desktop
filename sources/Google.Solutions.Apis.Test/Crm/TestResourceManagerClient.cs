@@ -141,10 +141,12 @@ namespace Google.Solutions.Apis.Test.Crm
                 ResourceManagerClient.CreateEndpoint(),
                 await auth,
                 TestProject.UserAgent);
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => client.GetProjectAsync(
+
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(() => client.GetProjectAsync(
                     new ProjectLocator(TestProject.ProjectId),
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -155,10 +157,12 @@ namespace Google.Solutions.Apis.Test.Crm
                 ResourceManagerClient.CreateEndpoint(),
                 await auth,
                 TestProject.UserAgent);
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => client.GetProjectAsync(
+
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(() => client.GetProjectAsync(
                     new ProjectLocator("invalid"),
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------
@@ -222,10 +226,12 @@ namespace Google.Solutions.Apis.Test.Crm
                 ResourceManagerClient.CreateEndpoint(),
                 await auth,
                 TestProject.UserAgent);
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => client.FindOrganizationAsync(
+
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(() => client.FindOrganizationAsync(
                     new ProjectLocator("invalid"),
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -259,10 +265,11 @@ namespace Google.Solutions.Apis.Test.Crm
                 await auth,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => client.GetOrganizationAsync(
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(() => client.GetOrganizationAsync(
                     new OrganizationLocator(0),
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -282,8 +289,10 @@ namespace Google.Solutions.Apis.Test.Crm
 
             Assert.IsNotNull(org);
 
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                 () => client.GetOrganizationAsync(org!, CancellationToken.None).Wait());
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(
+                    () => client.GetOrganizationAsync(org!, CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------

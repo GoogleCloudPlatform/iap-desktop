@@ -197,12 +197,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 Assert.AreEqual(KeyAuthorizationMethods.Oslogin, credential.AuthorizationMethod);
 
                 var instanceLocator = await instance;
-                ExceptionAssert.ThrowsAggregateException<Libssh2Exception>(
-                    "Username/PublicKey combination invalid",
-                    () => VerifyCredentialAsync(
+                var e = await ExceptionAssert
+                    .ThrowsAsync<Libssh2Exception>(() => VerifyCredentialAsync(
                         instanceLocator,
                         credential,
-                        new Mock<IKeyboardInteractiveHandler>().Object).Wait());
+                        new Mock<IKeyboardInteractiveHandler>().Object))
+                    .ConfigureAwait(false);
+                Assert.AreEqual("Username/PublicKey combination invalid", e.Message);
             }
         }
 

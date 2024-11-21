@@ -330,7 +330,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void AuthorizeWithBrowser_WhenOfflineCredentialPresent_ThenUsesMinimalFlow()
+        public async Task AuthorizeWithBrowser_WhenOfflineCredentialPresent_ThenUsesMinimalFlow()
         {
             var oldIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
@@ -356,8 +356,9 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 SampleRegistration,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
-                () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
+            await ExceptionAssert.ThrowsAsync<TokenResponseException>(
+                () => client.AuthorizeAsync(codeReceiver, CancellationToken.None))
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(codeReceiver.RequestUrl);
             Assert.AreEqual(
@@ -370,7 +371,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void AuthorizeWithBrowser_WhenOfflineCredentialLacksEmail_ThenUsesMinimalFlow()
+        public async Task AuthorizeWithBrowser_WhenOfflineCredentialLacksEmail_ThenUsesMinimalFlow()
         {
             var oldIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
@@ -396,8 +397,9 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 SampleRegistration,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
-                () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
+            await ExceptionAssert.ThrowsAsync<TokenResponseException>(
+                () => client.AuthorizeAsync(codeReceiver, CancellationToken.None))
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(codeReceiver.RequestUrl);
             Assert.AreEqual(
@@ -407,7 +409,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void AuthorizeWithBrowser_WhenOfflineCredentialIsInvalid_ThenUsesFullFlow()
+        public async Task AuthorizeWithBrowser_WhenOfflineCredentialIsInvalid_ThenUsesFullFlow()
         {
             // Non-empty store.
             var store = new OfflineStore()
@@ -425,8 +427,9 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 SampleRegistration,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
-                () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
+            await ExceptionAssert.ThrowsAsync<TokenResponseException>(
+                () => client.AuthorizeAsync(codeReceiver, CancellationToken.None))
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(codeReceiver.RequestUrl);
             Assert.AreEqual(
@@ -436,7 +439,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void AuthorizeWithBrowser_WhenNoOfflineCredentialFound_ThenUsesFullFlow()
+        public async Task AuthorizeWithBrowser_WhenNoOfflineCredentialFound_ThenUsesFullFlow()
         {
             // Empty store.
             var store = new OfflineStore();
@@ -450,8 +453,9 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 SampleRegistration,
                 TestProject.UserAgent);
 
-            ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
-                () => client.AuthorizeAsync(codeReceiver, CancellationToken.None).Wait());
+            await ExceptionAssert.ThrowsAsync<TokenResponseException>(
+                () => client.AuthorizeAsync(codeReceiver, CancellationToken.None))
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(codeReceiver.RequestUrl);
             Assert.AreEqual(
@@ -461,7 +465,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void AuthorizeWithBrowser_WhenBrowserFlowFails_ThenThrowsException()
+        public async Task AuthorizeWithBrowser_WhenBrowserFlowFails_ThenThrowsException()
         {
             var store = new OfflineStore();
             var client = new GaiaOidcClientWithMockFlow(
@@ -479,15 +483,15 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                     Error = "invalid_grant"
                 });
 
-            ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
-                "invalid_grant",
-                () => client
-                    .AuthorizeAsync(codeReceiver.Object, CancellationToken.None)
-                    .Wait());
+            var e = await ExceptionAssert
+                .ThrowsAsync<TokenResponseException>(
+                    () => client.AuthorizeAsync(codeReceiver.Object, CancellationToken.None))
+                .ConfigureAwait(false);
+            StringAssert.Contains("invalid_grant", e.Message);
         }
 
         [Test]
-        public void AuthorizeWithBrowser_WhenTokenExchangeFails_ThenThrowsException()
+        public async Task AuthorizeWithBrowser_WhenTokenExchangeFails_ThenThrowsException()
         {
             var store = new OfflineStore();
             var client = new GaiaOidcClientWithMockFlow(
@@ -515,15 +519,15 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                     Error = "invalid_grant"
                 }));
 
-            ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
-                "invalid_grant",
-                () => client
-                    .AuthorizeAsync(codeReceiver.Object, CancellationToken.None)
-                    .Wait());
+            var e = await ExceptionAssert
+                .ThrowsAsync<TokenResponseException>(
+                    () => client.AuthorizeAsync(codeReceiver.Object, CancellationToken.None))
+                .ConfigureAwait(false);
+            StringAssert.Contains("invalid_grant", e.Message);
         }
 
         [Test]
-        public void AuthorizeWithBrowser_WhenScopeNotGranted_ThenReturnsSession()
+        public async Task AuthorizeWithBrowser_WhenScopeNotGranted_ThenReturnsSession()
         {
             var store = new OfflineStore();
             var client = new GaiaOidcClientWithMockFlow(
@@ -556,10 +560,10 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                     IssuedUtc = DateTime.UtcNow
                 });
 
-            ExceptionAssert.ThrowsAggregateException<OAuthScopeNotGrantedException>(
-                () => client
-                    .AuthorizeAsync(codeReceiver.Object, CancellationToken.None)
-                    .Wait());
+            var e = await ExceptionAssert
+                .ThrowsAsync<OAuthScopeNotGrantedException>(
+                    () => client.AuthorizeAsync(codeReceiver.Object, CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]

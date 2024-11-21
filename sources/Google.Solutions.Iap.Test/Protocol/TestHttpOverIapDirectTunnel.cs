@@ -66,10 +66,10 @@ namespace Google.Solutions.Iap.Test.Protocol
 
             var buffer = new byte[64];
 
-            ExceptionAssert.ThrowsAggregateException<IndexOutOfRangeException>(() =>
-            {
-                stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None).Wait();
-            });
+            await ExceptionAssert
+                .ThrowsAsync<IndexOutOfRangeException>(
+                    () => stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -92,10 +92,10 @@ namespace Google.Solutions.Iap.Test.Protocol
                     80,
                     IapClient.DefaultNetworkInterface));
 
-            ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(() =>
-            {
-                stream.WriteAsync(request, 0, request.Length, CancellationToken.None).Wait();
-            });
+            await ExceptionAssert
+                .ThrowsAsync<SshRelayDeniedException>(
+                    () => stream.WriteAsync(request, 0, request.Length, CancellationToken.None))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -131,11 +131,12 @@ namespace Google.Solutions.Iap.Test.Protocol
             var request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
 
-            ExceptionAssert.ThrowsAggregateException<SshRelayConnectException>(() =>
-            {
-                var buffer = new byte[SshRelayStream.MinReadSize];
-                stream.WriteAsync(request, 0, request.Length, CancellationToken.None).Wait();
-            });
+            var buffer = new byte[SshRelayStream.MinReadSize];
+
+            await ExceptionAssert
+                .ThrowsAsync<SshRelayConnectException>(() => 
+                    stream.WriteAsync(request, 0, request.Length, CancellationToken.None))
+                .ConfigureAwait(false);
         }
     }
 }

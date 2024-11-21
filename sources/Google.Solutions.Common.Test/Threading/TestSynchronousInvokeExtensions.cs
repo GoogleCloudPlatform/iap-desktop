@@ -108,7 +108,7 @@ namespace Google.Solutions.Common.Test.Threading
         }
 
         [Test]
-        public void Invoke_WhenInvokeRequired_ThenInvokeAsyncWorksAsynchronouslyAndPropagatesException()
+        public async Task Invoke_WhenInvokeRequired_ThenInvokeAsyncWorksAsynchronouslyAndPropagatesException()
         {
             var invoker = new Invoker()
             {
@@ -128,7 +128,9 @@ namespace Google.Solutions.Common.Test.Threading
             Assert.IsFalse(invoked);
             tcs.SetResult(null);
 
-            ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => task.Wait());
+            await ExceptionAssert
+                .ThrowsAsync<ArgumentException>(() => task)
+                .ConfigureAwait(false);
             Assert.IsTrue(invoked);
         }
     }
