@@ -118,7 +118,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public void Authorize_WhenBrowserFlowFails_ThenThrowsException()
+        public async Task Authorize_WhenBrowserFlowFails_ThenThrowsException()
         {
             var store = new OfflineStore();
             var client = new WorkforcePoolClientWithMockFlow(
@@ -137,15 +137,15 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                     Error = "invalid_grant"
                 });
 
-            ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
-                "invalid_grant",
-                () => client
-                    .AuthorizeAsync(codeReceiver.Object, CancellationToken.None)
-                    .Wait());
+            var e = await ExceptionAssert
+                .ThrowsAsync<TokenResponseException>(
+                    () => client.AuthorizeAsync(codeReceiver.Object, CancellationToken.None))
+                .ConfigureAwait(false);
+            StringAssert.Contains("invalid_grant", e.Message);
         }
 
         [Test]
-        public void Authorize_WhenTokenExchangeFails_ThenThrowsException()
+        public async Task Authorize_WhenTokenExchangeFails_ThenThrowsException()
         {
             var store = new OfflineStore();
             var client = new WorkforcePoolClientWithMockFlow(
@@ -174,11 +174,12 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                     Error = "invalid_grant"
                 }));
 
-            ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
-                "invalid_grant",
-                () => client
-                    .AuthorizeAsync(codeReceiver.Object, CancellationToken.None)
-                    .Wait());
+            var e = await ExceptionAssert
+                .ThrowsAsync<TokenResponseException>(
+                    () => client.AuthorizeAsync(codeReceiver.Object, CancellationToken.None))
+                .ConfigureAwait(false);
+
+            StringAssert.Contains("invalid_grant", e.Message);
         }
 
         [Test]

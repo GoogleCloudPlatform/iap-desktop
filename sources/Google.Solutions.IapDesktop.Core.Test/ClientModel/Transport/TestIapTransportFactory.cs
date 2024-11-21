@@ -423,7 +423,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
         //---------------------------------------------------------------------
 
         [Test]
-        public void CreateTransport_WhenSshRelayDenied()
+        public async Task CreateTransport_WhenSshRelayDenied()
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
             var tunnelFactory = CreateTunnelFactory();
@@ -438,8 +438,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 new Mock<IEventQueue>().Object,
                 tunnelFactory.Object);
 
-            ExceptionAssert.ThrowsAggregateException<TransportFailedException>(
-                HelpTopics.IapAccess,
+            var e = await ExceptionAssert.ThrowsAsync<TransportFailedException>(
                 () => factory.CreateTransportAsync(
                     validProfile.Protocol,
                     validProfile.Policy,
@@ -447,11 +446,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                     validProfile.TargetPort,
                     validProfile.LocalEndpoint,
                     SampleTimeout,
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(HelpTopics.IapAccess, e.Help);
         }
 
         [Test]
-        public void CreateTransport_WhenNetworkStreamClosed()
+        public async Task CreateTransport_WhenNetworkStreamClosed()
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
             var tunnelFactory = CreateTunnelFactory();
@@ -466,8 +468,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 new Mock<IEventQueue>().Object,
                 tunnelFactory.Object);
 
-            ExceptionAssert.ThrowsAggregateException<TransportFailedException>(
-                HelpTopics.CreateIapFirewallRule,
+            var e = await ExceptionAssert.ThrowsAsync<TransportFailedException>(
                 () => factory.CreateTransportAsync(
                     validProfile.Protocol,
                     validProfile.Policy,
@@ -475,11 +476,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                     validProfile.TargetPort,
                     validProfile.LocalEndpoint,
                     SampleTimeout,
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(HelpTopics.CreateIapFirewallRule, e.Help);
         }
 
         [Test]
-        public void CreateTransport_WhenWebSocketConnectionDenied()
+        public async Task CreateTransport_WhenWebSocketConnectionDenied()
         {
             var validProfile = CreateTunnelProfile(SampleInstance, 22);
             var tunnelFactory = CreateTunnelFactory();
@@ -494,8 +498,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 new Mock<IEventQueue>().Object,
                 tunnelFactory.Object);
 
-            ExceptionAssert.ThrowsAggregateException<TransportFailedException>(
-                HelpTopics.ProxyConfiguration,
+            var e = await ExceptionAssert.ThrowsAsync<TransportFailedException>(
                 () => factory.CreateTransportAsync(
                     validProfile.Protocol,
                     validProfile.Policy,
@@ -503,7 +506,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                     validProfile.TargetPort,
                     validProfile.LocalEndpoint,
                     SampleTimeout,
-                    CancellationToken.None).Wait());
+                    CancellationToken.None))
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(HelpTopics.ProxyConfiguration, e.Help);
         }
 
         //---------------------------------------------------------------------
