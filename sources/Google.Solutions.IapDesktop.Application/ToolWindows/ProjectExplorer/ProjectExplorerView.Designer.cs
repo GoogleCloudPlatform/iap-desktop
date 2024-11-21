@@ -137,7 +137,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             this.treeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.treeView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.treeView.ContextMenuStrip = this.contextMenu;
             this.treeView.HideSelection = false;
             this.treeView.ImageIndex = 0;

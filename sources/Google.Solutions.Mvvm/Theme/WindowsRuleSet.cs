@@ -27,6 +27,7 @@ using Google.Solutions.Platform.Interop;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -106,6 +107,7 @@ namespace Google.Solutions.Mvvm.Theme
         private void StyleTreeView(TreeView treeView)
         {
             treeView.HotTracking = true;
+            treeView.BorderStyle = BorderStyle.None;
 
             //
             // NB. When called after AllowDarkModeForWindow, this also applies
@@ -117,6 +119,7 @@ namespace Google.Solutions.Mvvm.Theme
         private void StyleListView(ListView listView)
         {
             listView.HotTracking = false;
+            listView.BorderStyle = BorderStyle.None;
 
             //
             // NB. When called after AllowDarkModeForWindow, this also applies
