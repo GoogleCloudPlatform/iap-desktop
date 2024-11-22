@@ -74,7 +74,7 @@ namespace Google.Solutions.Mvvm.Controls
         {
             var flags =
                 PROGDLG.OPDONTDISPLAYSOURCEPATH |
-                PROGDLG.OPDONTDISPLAYSOURCEPATH |
+                PROGDLG.OPDONTDISPLAYDESTPATH |
                 PROGDLG.OPDONTDISPLAYLOCATIONS |
                 PROGDLG.MODAL;
 
