@@ -186,6 +186,19 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             }
         }
 
+        private void StyleSplitContainer(SplitContainer container)
+        {
+            if (!container.IsSplitterFixed)
+            {
+                //
+                // Make sure the splitter is visible and doesn't use
+                // the same back color as list views and other container
+                // controls.
+                //
+                container.BackColor = this.theme.Palette.Button.Background;
+            }
+        }
+
         private void StylePropertyGrid(PropertyGrid grid)
         {
             grid.CategorySplitterColor = this.theme.Palette.GridHeading.Background;
@@ -441,6 +454,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             controlTheme.AddRule<PropertyGrid>(c => StylePropertyGrid(c));
             controlTheme.AddRule<TreeView>(c => StyleTreeView(c));
             controlTheme.AddRule<ListView>(c => StyleListView(c));
+            controlTheme.AddRule<SplitContainer>(c => StyleSplitContainer(c));
             controlTheme.AddRule<PropertyGrid>(c => StylePropertyGrid(c));
             controlTheme.AddRule<ToolStrip>(c => StyleToolStrip(c));
             controlTheme.AddRule<Button>(c => StyleButton(c));

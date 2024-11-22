@@ -40,17 +40,20 @@ namespace Google.Solutions.Mvvm.Controls
         private readonly Label infoLabel = new Label();
         private readonly PictureBox icon = new PictureBox();
 
+        public NotificationBarPanel()
+        {
+            base.Dock = DockStyle.Fill;
+            base.FixedPanel = FixedPanel.Panel1;
+            base.Panel1.BackColor = SystemColors.Info;
+            base.IsSplitterFixed = true;
+        }
+
         //---------------------------------------------------------------------
         // Overrides.
         //---------------------------------------------------------------------
 
         protected override void OnCreateControl()
         {
-            base.Dock = DockStyle.Fill;
-            base.FixedPanel = FixedPanel.Panel1;
-            base.IsSplitterFixed = true;
-            base.Panel1.BackColor = SystemColors.Info;
-
             this.infoLabel.AutoEllipsis = true;
             this.infoLabel.AutoSize = false;
             this.infoLabel.TextAlign = ContentAlignment.MiddleLeft;
