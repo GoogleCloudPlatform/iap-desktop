@@ -79,14 +79,18 @@ namespace Google.Solutions.Mvvm.Controls
                 return 0;
             }
 
-            var imageIndex = this.fileIconsList.Images.IndexOfKey(fileType.TypeName);
+            //
+            // NB. fileIconsList.Images.IndexOfKey doesn't work reliably in
+            //     high-DPI mode, so we use .Images.Keys.IndexOf instead.
+            // 
+            var imageIndex = this.fileIconsList.Images.Keys.IndexOf(fileType.TypeName);
             if (imageIndex == -1)
             {
                 //
                 // Image not added to list yet.
                 //
                 this.fileIconsList.Images.Add(fileType.TypeName, fileType.FileIcon);
-                imageIndex = this.fileIconsList.Images.IndexOfKey(fileType.TypeName);
+                imageIndex = this.fileIconsList.Images.Keys.IndexOf(fileType.TypeName);
 
                 Debug.Assert(imageIndex != -1);
             }
@@ -97,14 +101,6 @@ namespace Google.Solutions.Mvvm.Controls
         public FileBrowser()
         {
             InitializeComponent();
-
-            //
-            // The first icon in the image list is used for the "Loading..."
-            // dummy node in the directory tree. Use the Find icon for that.
-            //
-            this.fileIconsList.Images.Add(
-                StockIcons.GetIcon(StockIcons.IconId.Find,
-                StockIcons.IconSize.Small));
 
             this.Disposed += (s, e) =>
             {
@@ -246,6 +242,14 @@ namespace Google.Solutions.Mvvm.Controls
             }
 
             this.fileSystem = fileSystem;
+
+            //
+            // The first icon in the image list is used for the "Loading..."
+            // dummy node in the directory tree. Use the Find icon for that.
+            //
+            this.fileIconsList.Images.Add(
+                StockIcons.GetIcon(StockIcons.IconId.Find,
+                StockIcons.IconSize.Small));
 
             //
             // Bind directory tree.
