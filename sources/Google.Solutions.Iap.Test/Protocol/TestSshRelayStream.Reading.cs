@@ -65,7 +65,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public void Read_WhenBufferIsTiny_ThenReadFailsWithIndexOutOfRangeException()
+        public async Task Read_WhenBufferIsTiny_ThenReadFailsWithIndexOutOfRangeException()
         {
             var stream = new MockStream()
             {
@@ -85,14 +85,14 @@ namespace Google.Solutions.Iap.Test.Protocol
 
             var buffer = new byte[SshRelayStream.MinReadSize - 1];
 
-            ExceptionAssert.ThrowsAggregateException<IndexOutOfRangeException>(() =>
-            {
-                relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token).Wait();
-            });
+            await ExceptionAssert
+                .ThrowsAsync<IndexOutOfRangeException>(
+                    () => relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token))
+                .ConfigureAwait(false);
         }
 
         [Test]
-        public void Read_WhenReadingTruncatedMessage_ThenReadFailsWithInvalidServerResponseException()
+        public async Task Read_WhenReadingTruncatedMessage_ThenReadFailsWithInvalidServerResponseException()
         {
             var stream = new MockStream()
             {
@@ -112,10 +112,10 @@ namespace Google.Solutions.Iap.Test.Protocol
 
             var buffer = new byte[SshRelayStream.MinReadSize];
 
-            ExceptionAssert.ThrowsAggregateException<SshRelayProtocolViolationException>(() =>
-            {
-                relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token).Wait();
-            });
+            await ExceptionAssert
+                .ThrowsAsync<SshRelayProtocolViolationException>(
+                    () => relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -212,7 +212,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public void Read_WhenAckIsZero_ThenReadFailsWithInvalidServerResponseException()
+        public async Task Read_WhenAckIsZero_ThenReadFailsWithInvalidServerResponseException()
         {
             var endpoint = new MockSshRelayEndpoint()
             {
@@ -228,12 +228,13 @@ namespace Google.Solutions.Iap.Test.Protocol
             };
             var relay = new SshRelayStream(endpoint);
 
+            var buffer = new byte[SshRelayStream.MinReadSize];
+
             // Receive invalid ACK.
-            ExceptionAssert.ThrowsAggregateException<SshRelayProtocolViolationException>(() =>
-            {
-                var buffer = new byte[SshRelayStream.MinReadSize];
-                var bytesRead = relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token).Result;
-            });
+            await ExceptionAssert
+                .ThrowsAsync<SshRelayProtocolViolationException>(
+                    () => relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -259,12 +260,13 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
+            var buffer = new byte[SshRelayStream.MinReadSize];
+
             // Receive invalid ACK for byte 10.
-            ExceptionAssert.ThrowsAggregateException<SshRelayProtocolViolationException>(() =>
-            {
-                var buffer = new byte[SshRelayStream.MinReadSize];
-                var bytesRead = relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token).Result;
-            });
+            await ExceptionAssert
+                .ThrowsAsync<SshRelayProtocolViolationException>(
+                    () => relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -382,10 +384,10 @@ namespace Google.Solutions.Iap.Test.Protocol
             Assert.AreEqual(1, bytesRead);
 
             // connection breaks, triggering a reconnect that will fail.
-            ExceptionAssert.ThrowsAggregateException<SshRelayConnectException>(() =>
-            {
-                relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token).Wait();
-            });
+            await ExceptionAssert
+                .ThrowsAsync<SshRelayConnectException>(
+                    () => relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -466,10 +468,10 @@ namespace Google.Solutions.Iap.Test.Protocol
             Assert.AreEqual(1, bytesRead);
 
             // connection breaks, triggering a reconnect that will fail.
-            ExceptionAssert.ThrowsAggregateException<SshRelayReconnectException>(() =>
-            {
-                relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token).Wait();
-            });
+            await ExceptionAssert
+                .ThrowsAsync<SshRelayReconnectException>(
+                    () => relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -635,10 +637,10 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .CloseAsync(this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(() =>
-            {
-                bytesRead = relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token).Result;
-            });
+            await ExceptionAssert
+                .ThrowsAsync<NetworkStreamClosedException>(
+                    () => relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token))
+                .ConfigureAwait(false);
         }
     }
 }
