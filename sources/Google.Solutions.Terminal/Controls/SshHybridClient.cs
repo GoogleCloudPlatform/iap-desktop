@@ -70,7 +70,6 @@ namespace Google.Solutions.Terminal.Controls
             this.container.Panel1Collapsed = true;
             this.container.Panel2Collapsed = true;
 
-            this.container.Panel2MinSize = 10;
             this.container.SplitterMoved += OnSplitterMoved;
 
             //
@@ -129,10 +128,10 @@ namespace Google.Solutions.Terminal.Controls
 
         private void OnSplitterMoved(object sender, SplitterEventArgs e)
         {
-            if (this.fileBrowserPanel.Height <= this.container.Panel2MinSize * 2)
+            if (this.fileBrowserPanel.Height <= this.Height / 10)
             {
                 //
-                // File browser panel resized to almost minimum size, hide entirely.
+                // File browser panel resized to < 10%>, hide entirely.
                 //
                 this.IsFileBrowserVisible = false;
             }
