@@ -232,6 +232,7 @@ namespace Google.Solutions.Ssh
                         using (var authenticatedSession = connectedSession.Authenticate(
                             this.credential,
                             this.keyboardHandler))
+                        using (Disposable.For(() => OnBeforeCloseSession()))
                         {
                             //
                             // Make sure the readyToSend handle remains valid throughout
@@ -397,8 +398,6 @@ namespace Google.Solutions.Ssh
                                     }
                                 } // while
                             } // nonblocking
-
-                            OnBeforeCloseSession();
                         }
                     }
                 }

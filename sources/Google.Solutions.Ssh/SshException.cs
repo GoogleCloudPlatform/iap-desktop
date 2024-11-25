@@ -49,7 +49,7 @@ namespace Google.Solutions.Ssh
         }
     }
 
-    public class SshConnectionClosedException : Exception
+    public class SshConnectionClosedException : OperationCanceledException
     {
         internal SshConnectionClosedException()
             : base(

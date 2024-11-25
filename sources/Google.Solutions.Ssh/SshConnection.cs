@@ -160,6 +160,17 @@ namespace Google.Solutions.Ssh
             Debug.Assert(this.IsRunningOnWorkerThread);
 
             //
+            // Cancel outstanding operations to release waiters.
+            //
+            lock (this.sendQueue)
+            {
+                foreach (var operation in this.sendQueue)
+                {
+                    operation.OnCancelled();
+                }
+            }
+
+            //
             // Close all open channels.
             //
             foreach (var channel in this.channels)
@@ -182,7 +193,15 @@ namespace Google.Solutions.Ssh
         {
             if (!this.IsConnected)
             {
-                throw new SshConnectionClosedException();
+                //
+                // NB. SshConnectionClosedException must be a subclass of
+                //     OperationCanceledException so that callers interpret
+                //     this as a kind of cancellation.
+                //
+                var e = new SshConnectionClosedException();
+                Debug.Assert(e is OperationCanceledException);
+
+                throw e;
             }
 
             lock (this.sendQueue)
@@ -328,6 +347,11 @@ namespace Google.Solutions.Ssh
             /// Mark the operation as failed.
             /// </summary>
             void OnFailed(Exception e);
+
+            /// <summary>
+            /// Cancel operation.
+            /// </summary>
+            void OnCancelled();
         }
 
         protected internal class SendOperation<TResult> : ISendOperation
@@ -387,6 +411,11 @@ namespace Google.Solutions.Ssh
             void ISendOperation.OnFailed(Exception e)
             {
                 this.completionSource.TrySetException(e);
+            }
+
+            void ISendOperation.OnCancelled()
+            {
+                this.completionSource.TrySetCanceled();
             }
 
             /// <summary>

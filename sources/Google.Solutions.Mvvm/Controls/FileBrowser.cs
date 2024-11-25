@@ -708,6 +708,9 @@ namespace Google.Solutions.Mvvm.Controls
                         //
                         // Perform the file copy in the background.
                         //
+                        // NB. If the underlying file system session is closed, 
+                        //     we expect I/O operations to be cancelled.
+                        //
                         await Task
                             .Run(async () =>
                                 {
