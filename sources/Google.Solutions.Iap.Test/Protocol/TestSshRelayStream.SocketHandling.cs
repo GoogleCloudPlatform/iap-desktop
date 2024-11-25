@@ -141,10 +141,10 @@ namespace Google.Solutions.Iap.Test.Protocol
 
                 using (var clientStream = new SshRelayStream(endpoint))
                 {
-                    ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(
-                        () => clientStream
-                            .ProbeConnectionAsync(TimeSpan.FromSeconds(1))
-                            .Wait());
+                    await ExceptionAssert
+                        .ThrowsAsync<SshRelayDeniedException>(
+                            () => clientStream.ProbeConnectionAsync(TimeSpan.FromSeconds(1)))
+                    .ConfigureAwait(false);
                 }
             }
         }
@@ -163,10 +163,10 @@ namespace Google.Solutions.Iap.Test.Protocol
 
                 using (var clientStream = new SshRelayStream(endpoint))
                 {
-                    ExceptionAssert.ThrowsAggregateException<SshRelayBackendNotFoundException>(
-                        () => clientStream
-                            .ProbeConnectionAsync(TimeSpan.FromSeconds(1))
-                            .Wait());
+                    await ExceptionAssert
+                        .ThrowsAsync<SshRelayBackendNotFoundException>(
+                            () => clientStream.ProbeConnectionAsync(TimeSpan.FromSeconds(1)))
+                        .ConfigureAwait(false);
                 }
             }
         }
@@ -183,10 +183,10 @@ namespace Google.Solutions.Iap.Test.Protocol
                 using (var clientStream = new SshRelayStream(endpoint))
                 {
                     var buffer = new byte[SshRelayStream.MinReadSize];
-                    ExceptionAssert.ThrowsAggregateException<IndexOutOfRangeException>(
-                        () => clientStream
-                            .ReadAsync(buffer, 1, buffer.Length - 1, CancellationToken.None)
-                            .Wait());
+                    await ExceptionAssert
+                        .ThrowsAsync<IndexOutOfRangeException>(
+                            () => clientStream.ReadAsync(buffer, 1, buffer.Length - 1, CancellationToken.None))
+                        .ConfigureAwait(false);
                 }
 
                 Assert.AreEqual(0, endpoint.ReconnectCalls);
@@ -237,10 +237,10 @@ namespace Google.Solutions.Iap.Test.Protocol
                 using (var clientStream = new SshRelayStream(endpoint))
                 {
                     var buffer = new byte[SshRelayStream.MinReadSize];
-                    ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(
-                        () => clientStream
-                            .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
-                            .Wait());
+                    await ExceptionAssert
+                        .ThrowsAsync<SshRelayDeniedException>(
+                            () => clientStream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None))
+                        .ConfigureAwait(false);
                     Assert.AreEqual(0, endpoint.ReconnectCalls);
                 }
             }
@@ -261,10 +261,10 @@ namespace Google.Solutions.Iap.Test.Protocol
                 using (var clientStream = new SshRelayStream(endpoint))
                 {
                     var buffer = new byte[SshRelayStream.MinReadSize];
-                    ExceptionAssert.ThrowsAggregateException<SshRelayConnectException>(
-                        () => clientStream
-                            .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
-                            .Wait());
+                    await ExceptionAssert
+                        .ThrowsAsync<SshRelayConnectException>(
+                            () => clientStream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None))
+                        .ConfigureAwait(false);
                     Assert.AreEqual(0, endpoint.ReconnectCalls);
                 }
             }
@@ -285,10 +285,10 @@ namespace Google.Solutions.Iap.Test.Protocol
                 using (var clientStream = new SshRelayStream(endpoint))
                 {
                     var buffer = new byte[SshRelayStream.MinReadSize];
-                    ExceptionAssert.ThrowsAggregateException<SshRelayReconnectException>(
-                        () => clientStream
-                            .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
-                            .Wait());
+                    await ExceptionAssert
+                        .ThrowsAsync<SshRelayReconnectException>(
+                            () => clientStream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None))
+                        .ConfigureAwait(false);
                     Assert.AreEqual(0, endpoint.ReconnectCalls);
                 }
             }
@@ -307,10 +307,10 @@ namespace Google.Solutions.Iap.Test.Protocol
 
                     var buffer = new byte[SshRelayStream.MinReadSize];
 
-                    ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(
-                        () => clientStream
-                            .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
-                            .Wait());
+                    await ExceptionAssert
+                        .ThrowsAsync<NetworkStreamClosedException>(
+                            () => clientStream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None))
+                        .ConfigureAwait(false);
                 }
             }
         }
@@ -327,10 +327,10 @@ namespace Google.Solutions.Iap.Test.Protocol
                 using (var clientStream = new SshRelayStream(endpoint))
                 {
                     var buffer = new byte[SshRelayStream.MinReadSize];
-                    ExceptionAssert.ThrowsAggregateException<SshRelayProtocolViolationException>(
-                        () => clientStream
-                            .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
-                            .Wait());
+                    await ExceptionAssert
+                        .ThrowsAsync<SshRelayProtocolViolationException>(
+                            () => clientStream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None))
+                        .ConfigureAwait(false);
                 }
             }
         }
@@ -469,10 +469,10 @@ namespace Google.Solutions.Iap.Test.Protocol
                 using (var clientStream = new SshRelayStream(endpoint))
                 {
                     var buffer = new byte[SshRelayStream.MaxWriteSize + 1];
-                    ExceptionAssert.ThrowsAggregateException<IndexOutOfRangeException>(
-                        () => clientStream
-                            .WriteAsync(buffer, 0, buffer.Length, CancellationToken.None)
-                            .Wait());
+                    await ExceptionAssert
+                        .ThrowsAsync<IndexOutOfRangeException>(
+                            () => clientStream.WriteAsync(buffer, 0, buffer.Length, CancellationToken.None))
+                        .ConfigureAwait(false);
                 }
 
                 Assert.AreEqual(0, endpoint.ReconnectCalls);

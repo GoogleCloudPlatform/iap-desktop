@@ -180,11 +180,11 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .ConfigureAwait(false);
 
             // Write another request - this should fail.
-            ExceptionAssert.ThrowsAggregateException<SshRelayConnectException>(() =>
-            {
-                request = new byte[] { 2 };
-                relay.WriteAsync(request, 0, request.Length, this.tokenSource.Token).Wait();
-            });
+            request = new byte[] { 2 };
+            await ExceptionAssert
+                .ThrowsAsync<SshRelayConnectException>(
+                    () => relay.WriteAsync(request, 0, request.Length, this.tokenSource.Token))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -217,11 +217,11 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .ConfigureAwait(false);
 
             // Write another request - this should fail.
-            ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(() =>
-            {
-                request = new byte[] { 2 };
-                relay.WriteAsync(request, 0, request.Length, this.tokenSource.Token).Wait();
-            });
+            request = new byte[] { 2 };
+            await ExceptionAssert
+                .ThrowsAsync<NetworkStreamClosedException>(
+                    () => relay.WriteAsync(request, 0, request.Length, this.tokenSource.Token))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -252,11 +252,11 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .ConfigureAwait(false);
 
             // Write another request - this should fail.
-            ExceptionAssert.ThrowsAggregateException<WebSocketStreamClosedByServerException>(() =>
-            {
-                request = new byte[] { 2 };
-                relay.WriteAsync(request, 0, request.Length, this.tokenSource.Token).Wait();
-            });
+            request = new byte[] { 2 };
+            await ExceptionAssert
+                .ThrowsAsync<WebSocketStreamClosedByServerException>(
+                    () => relay.WriteAsync(request, 0, request.Length, this.tokenSource.Token))
+                .ConfigureAwait(false);
         }
 
         [Test]
@@ -487,7 +487,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public void Write_WhenServerClosesConnectionWithNotAuthorizedCode_ThenWriteFailsWithUnauthorizedException()
+        public async Task Write_WhenServerClosesConnectionWithNotAuthorizedCode_ThenWriteFailsWithUnauthorizedException()
         {
             var stream = new MockStream()
             {
@@ -500,11 +500,11 @@ namespace Google.Solutions.Iap.Test.Protocol
             var relay = new SshRelayStream(endpoint);
 
             // Write first request - this should fail.
-            ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(() =>
-            {
-                var request = new byte[] { 2 };
-                relay.WriteAsync(request, 0, request.Length, this.tokenSource.Token).Wait();
-            });
+            var request = new byte[] { 2 };
+            await ExceptionAssert
+                .ThrowsAsync<SshRelayDeniedException>(
+                    () => relay.WriteAsync(request, 0, request.Length, this.tokenSource.Token))
+                .ConfigureAwait(false);
         }
     }
 }
