@@ -409,7 +409,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     () => client.ListSecurityKeysAsync(
                         new ProjectLocator(TestProject.ProjectId),
                         CancellationToken.None))
-                .ConfigureAwait(false); 
+                .ConfigureAwait(false);
         }
 
         [Test]

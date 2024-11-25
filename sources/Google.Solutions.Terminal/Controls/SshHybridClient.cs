@@ -97,8 +97,8 @@ namespace Google.Solutions.Terminal.Controls
             //
             // The browser can only be shown in logged-on state.
             //
-            get => 
-                this.State == ConnectionState.LoggedOn && 
+            get =>
+                this.State == ConnectionState.LoggedOn &&
                 this.BindingContext != null;
         }
 
@@ -228,19 +228,19 @@ namespace Google.Solutions.Terminal.Controls
                     this.fileBrowserPanel.Controls.Add(this.fileBrowser);
 
                     var fileSystem = new SftpFileSystem(fsChannel);
-                    this.fileBrowser.Disposed += (_, args) 
+                    this.fileBrowser.Disposed += (_, args)
                         => fileSystem.Dispose();
 
                     //
                     // Propagate browsing events.
                     //
-                    this.fileBrowser.FileCopyFailed += (_, args) 
+                    this.fileBrowser.FileCopyFailed += (_, args)
                         => this.FileBrowsingFailed?.Invoke(this, args);
-                    this.fileBrowser.NavigationFailed += (_, args) 
+                    this.fileBrowser.NavigationFailed += (_, args)
                         => this.FileBrowsingFailed?.Invoke(this, args);
 
                     this.fileBrowser.Bind(
-                        fileSystem, 
+                        fileSystem,
                         this.bindingContext!);
 
                     //
@@ -257,9 +257,9 @@ namespace Google.Solutions.Terminal.Controls
 
         public void BrowseFiles()
         {
-            if (!this.CanShowFileBrowser) 
-            { 
-                return; 
+            if (!this.CanShowFileBrowser)
+            {
+                return;
             }
 
             this.IsFileBrowserVisible = true;

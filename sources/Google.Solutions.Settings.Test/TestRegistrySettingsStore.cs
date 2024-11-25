@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Testing.Apis.Platform;
-using Microsoft.Win32;
 using NUnit.Framework;
 using System;
 

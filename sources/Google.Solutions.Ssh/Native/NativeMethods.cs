@@ -895,8 +895,8 @@ namespace Google.Solutions.Ssh.Native
             LIBSSH2_ERROR result;
 
             while ((result = (LIBSSH2_ERROR)
-                NativeMethods.libssh2_sftp_close_handle(this.handle)) 
-                == LIBSSH2_ERROR.EAGAIN) 
+                NativeMethods.libssh2_sftp_close_handle(this.handle))
+                == LIBSSH2_ERROR.EAGAIN)
             { };
 
             Debug.Assert(result == LIBSSH2_ERROR.NONE);

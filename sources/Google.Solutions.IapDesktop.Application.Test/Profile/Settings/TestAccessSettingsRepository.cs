@@ -387,7 +387,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
             {
                 var repository = new AccessSettingsRepository(
-                    settingsPath.CreateKey(), 
+                    settingsPath.CreateKey(),
                     machinePolicyPath.CreateKey(),
                     null);
 

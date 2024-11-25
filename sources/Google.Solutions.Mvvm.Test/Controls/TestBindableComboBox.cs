@@ -22,7 +22,6 @@
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using NUnit.Framework;
-using System.ComponentModel.DataAnnotations;
 using System.Threading;
 
 namespace Google.Solutions.Mvvm.Test.Controls

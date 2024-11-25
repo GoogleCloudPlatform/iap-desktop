@@ -71,7 +71,7 @@ namespace Google.Solutions.Mvvm.Controls
                 .ToList();
 
             Precondition.Expect(
-                standardButtons.Any(), 
+                standardButtons.Any(),
                 "At least one standard button is required");
 
             using (var commandButtonsHandle = LocalAllocSafeHandle.LocalAlloc(

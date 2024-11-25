@@ -24,7 +24,6 @@ using Google.Solutions.Settings.Collection;
 using Microsoft.Win32;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 {

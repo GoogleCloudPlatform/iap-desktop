@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Security;
 using Google.Solutions.Ssh.Cryptography;

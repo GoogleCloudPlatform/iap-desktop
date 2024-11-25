@@ -31,7 +31,6 @@ using Google.Solutions.Platform.Net;
 using Google.Solutions.Settings.Collection;
 using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application.Test;
-using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;

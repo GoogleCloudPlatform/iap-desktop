@@ -126,7 +126,7 @@ namespace Google.Solutions.Ssh.Test
                         null)
                     .ConfigureAwait(false))
                 {
-                    bool disconnectedRaised = false;
+                    var disconnectedRaised = false;
                     channel.Disconnected += (_, args) => disconnectedRaised = true;
 
                     await channel

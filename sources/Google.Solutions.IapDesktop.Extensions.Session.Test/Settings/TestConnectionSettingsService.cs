@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.Testing.Apis.Platform;
-using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;

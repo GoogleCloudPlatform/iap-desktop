@@ -99,7 +99,7 @@ namespace Google.Solutions.Mvvm.Theme
                 //
                 // Watch for new controls.
                 //
-                control.ControlAdded += (_, args) => 
+                control.ControlAdded += (_, args) =>
                 {
                     //
                     // Theming happens before a window is shown. Therefore,

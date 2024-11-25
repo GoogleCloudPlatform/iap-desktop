@@ -23,7 +23,6 @@ using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application.Test;
-using Microsoft.Win32;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Profile
@@ -103,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 var install = new Install(keyPath.Path);
 
                 keyPath.CreateKey().CreateSubKey("1.0");
-                
+
                 using (var profile = install.OpenProfile(null))
                 {
                     Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);

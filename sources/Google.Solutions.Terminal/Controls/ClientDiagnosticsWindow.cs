@@ -20,8 +20,8 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -139,7 +139,7 @@ namespace Google.Solutions.Terminal.Controls
         private class ClientBindingContext : IBindingContext
         {
             public void OnBindingCreated(
-                IComponent control, 
+                IComponent control,
                 IDisposable binding)
             {
             }
@@ -150,7 +150,7 @@ namespace Google.Solutions.Terminal.Controls
             }
 
             public void OnCommandFailed(
-                IWin32Window? window, 
+                IWin32Window? window,
                 ICommandBase command,
                 Exception exception)
             {

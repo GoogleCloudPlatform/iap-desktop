@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Threading;
-using System.Threading;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh;
+using System.Threading;
 
 namespace Google.Solutions.Terminal
 {

@@ -69,8 +69,8 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 Assert.IsTrue(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.PERMISSIONS));
                 Assert.AreEqual(
-                    FilePermissions.OwnerRead | 
-                        FilePermissions.OwnerWrite | 
+                    FilePermissions.OwnerRead |
+                        FilePermissions.OwnerWrite |
                         FilePermissions.Regular,
                     attributes.permissions);
             }

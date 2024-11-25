@@ -175,7 +175,7 @@ namespace Google.Solutions.Terminal
                     "Server",
                     false,
                     StockIcons.GetIcon(
-                        StockIcons.IconId.Server, 
+                        StockIcons.IconId.Server,
                         StockIcons.IconSize.Small)),
                 "Server",
                 string.Empty,
@@ -191,7 +191,7 @@ namespace Google.Solutions.Terminal
                     "Home",
                     false,
                     StockIcons.GetIcon(
-                        StockIcons.IconId.Folder, 
+                        StockIcons.IconId.Folder,
                         StockIcons.IconSize.Small)),
                 "Home",
                 ".",
@@ -357,9 +357,9 @@ namespace Google.Solutions.Terminal
                         ? $"{parent.Path}/{name}"
                         : name,
                       attributes,
-                      lastModified, 
+                      lastModified,
                       size,
-                      access) 
+                      access)
             { }
 
             public FileType Type { get; }

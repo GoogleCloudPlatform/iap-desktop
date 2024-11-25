@@ -72,8 +72,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
             file.SetupGet(i => i.Size).Returns(1);
             file.SetupGet(i => i.IsExpanded).Returns(false);
             file.SetupGet(i => i.Type).Returns(FileType.Lookup(
-                ".txt", 
-                System.IO.FileAttributes.Normal, 
+                ".txt",
+                System.IO.FileAttributes.Normal,
                 FileType.IconFlags.None));
 
             return file;
@@ -379,7 +379,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 browser.Bind(
                     fileSystem,
                     new Mock<IBindingContext>().Object);
-                
+
                 form.Show();
                 Application.DoEvents();
 
@@ -603,10 +603,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Size = new Size(800, 600)
             })
             {
-                var files = new[] 
+                var files = new[]
                 {
                     CreateDirectory().Object,
-                    CreateFile().Object 
+                    CreateFile().Object
                 };
 
                 var browser = new FileBrowser()
@@ -811,7 +811,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 var dataObject = new DataObject();
                 dataObject.SetData(
-                    DataFormats.FileDrop, 
+                    DataFormats.FileDrop,
                     new string[] { path });
 
                 Assert.IsEmpty(browser.GetPastableFiles(dataObject, false));
@@ -898,7 +898,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new string[] { sourceFile.FullName });
 
                 Assert.AreEqual(
-                    sourceFile.Name, 
+                    sourceFile.Name,
                     browser
                         .GetPastableFiles(dataObject, true)
                         .FirstOrDefault()?
@@ -922,7 +922,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 var taskDialog = new Mock<ITaskDialog>();
                 taskDialog
                     .Setup(d => d.ShowDialog(
-                        It.IsAny<IWin32Window>(), 
+                        It.IsAny<IWin32Window>(),
                         It.IsAny<TaskDialogParameters>()))
                     .Returns(DialogResult.Ignore);
 
@@ -1018,16 +1018,16 @@ namespace Google.Solutions.Mvvm.Test.Controls
         [Test]
         public async Task PasteFiles_WhenCopyFails_ThenUserCanIgnore()
         {
-            var sourceFiles = new[] 
+            var sourceFiles = new[]
             {
                 new FileInfo(Path.GetTempFileName()),
                 new FileInfo(Path.GetTempFileName())
             };
 
             using (File.Open(   // Lock first file.
-                sourceFiles[0].FullName, 
-                FileMode.Open, 
-                FileAccess.Write, 
+                sourceFiles[0].FullName,
+                FileMode.Open,
+                FileAccess.Write,
                 FileShare.Write))
             using (File.Open(   // Lock second file.
                 sourceFiles[1].FullName,
@@ -1062,7 +1062,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 var dataObject = new DataObject();
                 dataObject.SetData(
                     DataFormats.FileDrop,
-                    new string[] 
+                    new string[]
                     {
                         sourceFiles[0].FullName,
                         sourceFiles[1].FullName

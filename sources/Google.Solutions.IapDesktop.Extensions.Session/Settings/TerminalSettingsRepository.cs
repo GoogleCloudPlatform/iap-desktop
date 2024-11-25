@@ -19,15 +19,14 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Controls;
-using Google.Solutions.Settings.Collection;
 using Google.Solutions.Settings;
+using Google.Solutions.Settings.Collection;
 using Microsoft.Win32;
 using System;
-using System.Drawing;
-using Google.Solutions.Common.Util;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 {

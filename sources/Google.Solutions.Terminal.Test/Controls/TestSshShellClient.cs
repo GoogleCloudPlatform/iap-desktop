@@ -98,7 +98,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             using (var window = CreateWindow<SshShellClient>())
             {
                 window.Client.ServerEndpoint = new IPEndPoint(
-                    IPAddress.Parse(InvalidServer), 
+                    IPAddress.Parse(InvalidServer),
                     22);
                 window.Client.ConnectionTimeout = TimeSpan.FromSeconds(1);
 

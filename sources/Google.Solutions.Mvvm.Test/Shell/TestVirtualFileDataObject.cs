@@ -60,11 +60,11 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 });
 
                 Assert.IsInstanceOf<Stream>(dataObject.GetData(
-                    ShellDataFormats.CFSTR_FILEDESCRIPTORW, 
+                    ShellDataFormats.CFSTR_FILEDESCRIPTORW,
                     false));
 
                 Assert.IsInstanceOf<Stream>(dataObject.GetData(
-                    ShellDataFormats.CFSTR_FILECONTENTS, 
+                    ShellDataFormats.CFSTR_FILECONTENTS,
                     false));
             }
         }
@@ -85,7 +85,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 Array.Empty<VirtualFileDataObject.Descriptor>());
             dataObject.Dispose();
             Assert.IsNull(dataObject.GetData(
-                ShellDataFormats.CFSTR_FILEDESCRIPTORW, 
+                ShellDataFormats.CFSTR_FILEDESCRIPTORW,
                 false));
         }
 
@@ -128,7 +128,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
             var dataObject = new VirtualFileDataObject(
                 Array.Empty<VirtualFileDataObject.Descriptor>());
 
-            bool eventRaised = false;
+            var eventRaised = false;
             dataObject.AsyncOperationStarted += (_, args) => eventRaised = true;
             dataObject.StartOperation(null);
 
@@ -148,7 +148,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
             var dataObject = new VirtualFileDataObject(
                 Array.Empty<VirtualFileDataObject.Descriptor>());
 
-            bool eventRaised = false;
+            var eventRaised = false;
             dataObject.AsyncOperationCompleted += (_, args) =>
             {
                 eventRaised = true;
@@ -167,7 +167,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
             var dataObject = new VirtualFileDataObject(
                 Array.Empty<VirtualFileDataObject.Descriptor>());
 
-            bool eventRaised = false;
+            var eventRaised = false;
             dataObject.AsyncOperationCompleted += (_, args) =>
             {
                 eventRaised = true;

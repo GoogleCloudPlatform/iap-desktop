@@ -19,9 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Test
 {

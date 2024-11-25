@@ -26,7 +26,6 @@ using Google.Solutions.Platform.Security.Cryptography;
 using Google.Solutions.Testing.Apis.Cryptography;
 using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application.Test;
-using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -123,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         {
             return new AccessSettingsRepository(
                 RegistryKeyPath.ForCurrentTest().CreateKey(),
-                null, 
+                null,
                 null);
         }
 

@@ -163,7 +163,7 @@ namespace Google.Solutions.Mvvm.Shell
                     // Index out of range.
                     //
                     base.SetData(
-                        ShellDataFormats.CFSTR_FILECONTENTS, 
+                        ShellDataFormats.CFSTR_FILECONTENTS,
                         null);
                 }
             }
@@ -186,7 +186,7 @@ namespace Google.Solutions.Mvvm.Shell
             //     information is encoded in the FORMATETC parameter.
             //
 
-            if (formatetc.cfFormat == 
+            if (formatetc.cfFormat ==
                 (short)DataFormats.GetFormat(ShellDataFormats.CFSTR_FILECONTENTS).Id)
             {
                 //
@@ -265,7 +265,7 @@ namespace Google.Solutions.Mvvm.Shell
                     TYMED.TYMED_GDI
                 };
 
-                for (int i = 0; i < allowed.Length; i++)
+                for (var i = 0; i < allowed.Length; i++)
                 {
                     if ((tymed & allowed[i]) != 0)
                     {
@@ -318,7 +318,7 @@ namespace Google.Solutions.Mvvm.Shell
 
             this.IsOperationInProgress = false;
             this.AsyncOperationCompleted?.Invoke(
-                this, 
+                this,
                 ((HRESULT)hResult).Succeeded()
                     ? new AsyncOperationEventArgs(null)
                     : new AsyncOperationEventArgs(Marshal.GetExceptionForHR(hResult)));
@@ -480,7 +480,7 @@ namespace Google.Solutions.Mvvm.Shell
                 {
                     var buffer = new byte[structSize];
 
-                    for (int i = 0; i < fileDescriptors.Count; i++)
+                    for (var i = 0; i < fileDescriptors.Count; i++)
                     {
                         Marshal.StructureToPtr(
                             fileDescriptors[i].ToNativeFileDescriptor(true),
@@ -559,9 +559,9 @@ namespace Google.Solutions.Mvvm.Shell
                 get => this.stream.Length;
             }
 
-            public override long Position 
-            { 
-                get => this.stream.Position; 
+            public override long Position
+            {
+                get => this.stream.Position;
                 set => this.stream.Position = value;
             }
 
@@ -586,12 +586,12 @@ namespace Google.Solutions.Mvvm.Shell
                 // Keep reading until we reached the requested number
                 // of bytes or the end of the stream.
                 //
-                int totalBytesRead = 0;
+                var totalBytesRead = 0;
                 while (totalBytesRead < count)
                 {
                     var bytesRead = this.stream.Read(
-                        buffer, 
-                        offset + totalBytesRead, 
+                        buffer,
+                        offset + totalBytesRead,
                         count - totalBytesRead);
                     if (bytesRead > 0)
                     {
@@ -738,7 +738,7 @@ namespace Google.Solutions.Mvvm.Shell
             /// extraction has ended.
             /// </summary>
             void EndOperation(
-                [In] int hResult, 
+                [In] int hResult,
                 [In] IBindCtx pbcReserved,
                 [In] uint dwEffects);
         }

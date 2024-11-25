@@ -55,7 +55,7 @@ namespace Google.Solutions.Common.IO
         /// </summary>
         public static void CopyTo(
             this Stream source,
-            Stream destination, 
+            Stream destination,
             IProgress<int> progress,
             int bufferSize = DefaultBufferSize)
         {
@@ -90,17 +90,17 @@ namespace Google.Solutions.Common.IO
             int count;
             while ((count = await source
                 .ReadAsync(
-                    buffer, 
-                    0, 
-                    buffer.Length, 
+                    buffer,
+                    0,
+                    buffer.Length,
                     cancellationToken)
                 .ConfigureAwait(false)) != 0)
             {
                 await destination
                     .WriteAsync(
-                        buffer, 
-                        0, 
-                        count, 
+                        buffer,
+                        0,
+                        count,
                         cancellationToken)
                     .ConfigureAwait(false);
                 progress.Report(count);
@@ -118,9 +118,9 @@ namespace Google.Solutions.Common.IO
             CancellationToken cancellationToken)
         {
             return CopyToAsync(
-                source, 
-                destination, 
-                progress, 
+                source,
+                destination,
+                progress,
                 DefaultBufferSize,
                 cancellationToken);
         }

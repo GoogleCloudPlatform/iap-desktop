@@ -97,7 +97,7 @@ namespace Google.Solutions.Apis.Compute
                         //
                         var backoff = TimeSpan.FromMilliseconds(10 * attempt);
                         CommonTraceSource.Log.TraceWarning(
-                            "SetMetadata failed with {0} (code error {1}) - retrying after {2}", 
+                            "SetMetadata failed with {0} (code error {1}) - retrying after {2}",
                             e.Message,
                             apiException.Error?.Code,
                             backoff);

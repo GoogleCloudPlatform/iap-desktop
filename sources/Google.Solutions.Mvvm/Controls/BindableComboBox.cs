@@ -23,7 +23,6 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;

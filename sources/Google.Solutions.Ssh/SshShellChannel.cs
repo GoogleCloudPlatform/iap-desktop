@@ -86,7 +86,7 @@ namespace Google.Solutions.Ssh
         }
 
         public async Task ResizeAsync(
-            PseudoTerminalSize dimensions, 
+            PseudoTerminalSize dimensions,
             CancellationToken cancellationToken)
         {
             //
