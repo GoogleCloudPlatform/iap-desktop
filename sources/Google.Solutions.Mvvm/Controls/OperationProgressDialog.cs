@@ -62,6 +62,12 @@ namespace Google.Solutions.Mvvm.Controls
         /// Report that a chunk of bytes has been completed.
         /// </summary>
         void OnBytesCompleted(ulong delta);
+
+        /// <summary>
+        /// Indicate that the operation is temporarily blocked
+        /// by an error.
+        /// </summary>
+        bool IsBlockedByError { get; set;  }
     }
 
     [SkipCodeCoverage("UI code")]
@@ -101,6 +107,7 @@ namespace Google.Solutions.Mvvm.Controls
             private readonly ulong totalSize;
             private ulong itemsCompleted = 0;
             private ulong sizeCompleted = 0;
+            private bool blockedByError = false;
 
             public CancellationToken CancellationToken => this.cancellationTokenSource.Token;
 
@@ -153,6 +160,21 @@ namespace Google.Solutions.Mvvm.Controls
             {
                 this.sizeCompleted += delta;
                 UpdateProgress();
+            }
+
+            public bool IsBlockedByError 
+            {
+                get => this.blockedByError;
+                set 
+                {
+                    if (value != this.blockedByError)
+                    {
+                        this.blockedByError = value;
+                        this.dialog.SetMode(this.blockedByError
+                            ? PDMODE.ERRORSBLOCKING
+                            : PDMODE.RUN);
+                    }
+                }
             }
 
             public void Dispose()
