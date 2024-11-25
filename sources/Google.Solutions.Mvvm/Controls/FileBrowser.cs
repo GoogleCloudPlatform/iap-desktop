@@ -733,6 +733,13 @@ namespace Google.Solutions.Mvvm.Controls
                     }
                     catch (Exception e) when (!e.IsCancellation())
                     {
+                        //
+                        // Update dialog to avoid a situation where the
+                        // dialog still indicates that the copy is progressing
+                        // while we're showing an error dialog at the same time.
+                        //
+                        progressDialog.IsBlockedByError = true;
+
                         var parameters = new TaskDialogParameters(
                             "Copy files",
                             $"Unable to copy {file.Name}",
@@ -753,6 +760,7 @@ namespace Google.Solutions.Mvvm.Controls
                     }
                     finally
                     {
+                        progressDialog.IsBlockedByError = false;
                         progressDialog.OnItemCompleted();
                     }
                 }
