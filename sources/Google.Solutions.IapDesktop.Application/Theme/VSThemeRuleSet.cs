@@ -28,6 +28,7 @@ using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -212,6 +213,42 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             grid.HelpBackColor = this.theme.Palette.ToolWindowInnerTabInactive.Background;
             grid.HelpForeColor = this.theme.Palette.GridHeading.Text;
             grid.HelpBorderColor = this.theme.Palette.GridHeading.Background;
+
+            //
+            // The control uses a hard-coded 1px margin around labels,
+            // which causes the control to look very dense at high-DPI
+            // levels.
+            //
+            // By adjusting the private cachedRowHeight field, we can
+            // increase the top-margin, but not the bottom-margin. That's
+            // not ideal, but still slightly improves the look.
+            //
+            var deviceCaps = DeviceCapabilities.Current;
+            if (deviceCaps.IsHighDpi)
+            {
+                var gridView = typeof(PropertyGrid)
+                    .GetField("gridView", BindingFlags.Instance | BindingFlags.NonPublic)?
+                    .GetValue(grid);
+
+                if (gridView != null)
+                {
+                    var cachedRowHeight = gridView.GetType()
+                        .GetField("cachedRowHeight", BindingFlags.Instance | BindingFlags.NonPublic);
+
+                    if (cachedRowHeight != null)
+                    {
+                        var value = (int)cachedRowHeight.GetValue(gridView);
+                        if (value > 0)
+                        {
+                            //
+                            // Add 1px for each 25% of scaling.
+                            //
+                            var extra = (deviceCaps.ScaleToDpi(100) - 100) / 25;
+                            cachedRowHeight.SetValue(gridView, value + extra);
+                        }
+                    }
+                }
+            }
         }
 
         private void StyleToolStrip(ToolStrip strip)
