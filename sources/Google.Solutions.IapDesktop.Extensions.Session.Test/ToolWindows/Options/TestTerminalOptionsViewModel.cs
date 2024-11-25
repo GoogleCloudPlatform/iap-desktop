@@ -23,7 +23,6 @@ using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options;
 using Google.Solutions.Terminal.Controls;
 using Google.Solutions.Testing.Apis.Platform;
-using Microsoft.Win32;
 using NUnit.Framework;
 using System.Drawing;
 using System.Threading.Tasks;

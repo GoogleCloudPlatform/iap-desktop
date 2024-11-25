@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application.Test;
-using Microsoft.Win32;
 using NUnit.Framework;
 using System.Linq;
 using System.Threading.Tasks;

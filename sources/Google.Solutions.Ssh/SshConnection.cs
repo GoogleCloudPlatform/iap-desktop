@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Platform.IO;
 using Google.Solutions.Ssh.Native;
 using System;
@@ -27,9 +26,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
-using static Google.Solutions.Ssh.SshConnection;
 
 namespace Google.Solutions.Ssh
 {
@@ -191,7 +188,7 @@ namespace Google.Solutions.Ssh
             lock (this.sendQueue)
             {
                 var packet = new SendOperation<TResult>(
-                    callback, 
+                    callback,
                     terminateConnectionOnError);
                 this.sendQueue.Enqueue(packet);
 
@@ -218,7 +215,8 @@ namespace Google.Solutions.Ssh
             bool terminateConnectionOnError = true)
         {
             return RunAsync<object?>(
-                s => {
+                s =>
+                {
                     callback(s);
                     return null;
                 },
@@ -261,7 +259,8 @@ namespace Google.Solutions.Ssh
             }
 
             return RunAsync(
-                session => {
+                session =>
+                {
                     Debug.Assert(this.IsRunningOnWorkerThread);
 
                     using (session.Session.AsBlocking())
@@ -288,7 +287,8 @@ namespace Google.Solutions.Ssh
         public Task<SftpChannel> OpenFileSystemAsync()
         {
             return RunAsync(
-                session => {
+                session =>
+                {
                     Debug.Assert(this.IsRunningOnWorkerThread);
 
                     using (session.Session.AsBlocking())

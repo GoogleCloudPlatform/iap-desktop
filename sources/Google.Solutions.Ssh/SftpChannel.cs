@@ -109,7 +109,8 @@ namespace Google.Solutions.Ssh
             Precondition.ExpectNotEmpty(remotePath, nameof(remotePath));
 
             return this.Connection.RunAsync(
-                c => {
+                c =>
+                {
                     Debug.Assert(this.Connection.IsRunningOnWorkerThread);
 
                     using (c.Session.AsBlocking())
@@ -139,7 +140,7 @@ namespace Google.Solutions.Ssh
                 FileMode.Open => (LIBSSH2_FXF_FLAGS)0,
                 FileMode.Truncate => LIBSSH2_FXF_FLAGS.TRUNC,
                 FileMode.Append => LIBSSH2_FXF_FLAGS.APPEND,
-                
+
                 _ => throw new ArgumentException("The file mode is invalid"),
             };
 
@@ -154,7 +155,8 @@ namespace Google.Solutions.Ssh
             }
 
             return this.Connection.RunAsync<Stream>(
-                c => {
+                c =>
+                {
                     Debug.Assert(this.Connection.IsRunningOnWorkerThread);
 
                     using (c.Session.AsBlocking())

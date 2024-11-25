@@ -74,7 +74,7 @@ namespace Google.Solutions.Terminal.Controls
                 endpoint,
                 credential,
                 new SynchronizedKeyboardInteractiveHandler(
-                    this.KeyboardInteractiveHandler, 
+                    this.KeyboardInteractiveHandler,
                     syncContext))
             {
                 ConnectionTimeout = this.ConnectionTimeout,

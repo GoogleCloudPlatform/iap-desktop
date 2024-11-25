@@ -119,7 +119,7 @@ namespace Google.Solutions.Ssh
                 //
                 // Initiate dispose, but don't block the caller.
                 //
-                _ = this.CloseAsync();
+                _ = CloseAsync();
             }
         }
     }

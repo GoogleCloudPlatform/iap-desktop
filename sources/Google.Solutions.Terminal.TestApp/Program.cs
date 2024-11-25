@@ -20,8 +20,6 @@
 //
 
 using Google.Solutions.Common.Security;
-using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Ssh;
 using Google.Solutions.Terminal.Controls;
 using Microsoft.VisualBasic;
@@ -54,11 +52,11 @@ namespace Google.Solutions.Terminal.TestApp
             [Category(SshCategory)]
             public string? Password { get; set; }
 
-            public override ISshCredential? Credential 
-            { 
+            public override ISshCredential? Credential
+            {
                 get => this.Username != null
                     ? new StaticPasswordCredential(
-                        this.Username, 
+                        this.Username,
                         SecureStringExtensions.FromClearText(this.Password))
                     : null;
                 set => throw new InvalidOperationException();

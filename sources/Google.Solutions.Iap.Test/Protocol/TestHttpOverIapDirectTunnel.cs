@@ -134,7 +134,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             var buffer = new byte[SshRelayStream.MinReadSize];
 
             await ExceptionAssert
-                .ThrowsAsync<SshRelayConnectException>(() => 
+                .ThrowsAsync<SshRelayConnectException>(() =>
                     stream.WriteAsync(request, 0, request.Length, CancellationToken.None))
                 .ConfigureAwait(false);
         }

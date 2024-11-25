@@ -25,7 +25,6 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Settings;
 using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application.Test;
-using Microsoft.Win32;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
@@ -246,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 // Write & clear.
                 repository.Write(new OidcOfflineCredential(
                     OidcIssuer.Gaia, "openid", "rt", "idt"));
-                    repository.Clear();
+                repository.Clear();
 
                 // Read again.
                 Assert.IsFalse(repository.TryRead(out var _));

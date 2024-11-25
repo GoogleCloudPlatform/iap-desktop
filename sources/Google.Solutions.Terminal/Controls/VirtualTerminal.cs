@@ -265,7 +265,7 @@ namespace Google.Solutions.Terminal.Controls
             if (this.InvokeRequired)
             {
                 try
-                { 
+                {
                     Invoke(((Action)(() => OnDeviceError(e))));
                 }
                 catch (InvalidAsynchronousStateException) when (this.IsDisposed)
@@ -291,7 +291,7 @@ namespace Google.Solutions.Terminal.Controls
             if (this.InvokeRequired)
             {
                 try
-                { 
+                {
                     Invoke(((Action)(() => OnDeviceClosed())));
                 }
                 catch (InvalidAsynchronousStateException) when (this.IsDisposed)
@@ -470,7 +470,7 @@ namespace Google.Solutions.Terminal.Controls
             }
 
             NativeMethods.TerminalUserScroll(
-                Invariant.ExpectNotNull(this.terminal, "Terminal"), 
+                Invariant.ExpectNotNull(this.terminal, "Terminal"),
                 e.NewValue);
         }
 

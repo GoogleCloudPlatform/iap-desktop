@@ -473,7 +473,7 @@ namespace Google.Solutions.Mvvm.Controls
                 OnFileCopyFailed(e);
             }
         }
-            
+
         private void fileList_DragEnter(object sender, DragEventArgs args)
         {
             args.Effect = GetPastableFiles(args.Data, false).Any()
@@ -500,8 +500,8 @@ namespace Google.Solutions.Mvvm.Controls
         /// <summary>
         /// Create an IDataObject with the contents of the selected files.
         /// </summary>
-        [SuppressMessage("Usage", 
-            "VSTHRD002:Avoid problematic synchronous waits", 
+        [SuppressMessage("Usage",
+            "VSTHRD002:Avoid problematic synchronous waits",
             Justification = "Blocking calls made from worker thread")]
         internal VirtualFileDataObject CopySelectedFiles()
         {
@@ -517,7 +517,8 @@ namespace Google.Solutions.Mvvm.Controls
                     f.Name,
                     f.Size,
                     f.Attributes,
-                    () => {
+                    () =>
+                    {
                         //
                         // NB. We're in a synchronous execution path here,
                         //     so we can't open the file asynchronously.
@@ -542,7 +543,7 @@ namespace Google.Solutions.Mvvm.Controls
 
             dataObject.AsyncOperationFailed += (_, args) =>
             {
-                this.Invoke(new Action(() => OnFileCopyFailed(args.Exception)));
+                Invoke(new Action(() => OnFileCopyFailed(args.Exception)));
             };
 
             return dataObject;
@@ -750,7 +751,7 @@ namespace Google.Solutions.Mvvm.Controls
                             return;
                         }
                     }
-                    finally 
+                    finally
                     {
                         progressDialog.OnItemCompleted();
                     }
@@ -866,7 +867,7 @@ namespace Google.Solutions.Mvvm.Controls
                 // Force tree view to reload nodes in case a child
                 // directory was added.
                 //
-                if (this.directoryTree.SelectedNode 
+                if (this.directoryTree.SelectedNode
                     is BindableTreeView<IFileItem>.Node node)
                 {
                     node.Reload();

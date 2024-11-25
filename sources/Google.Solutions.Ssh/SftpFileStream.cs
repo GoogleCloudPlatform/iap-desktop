@@ -151,12 +151,13 @@ namespace Google.Solutions.Ssh
             //
             var bytesRead = await this.Connection
                 .RunAsync(
-                    session => {
+                    session =>
+                    {
                         Debug.Assert(this.Connection.IsRunningOnWorkerThread);
 
-                        using (session.Session.AsBlocking()) 
+                        using (session.Session.AsBlocking())
                         {
-                            if (offset == 0 && count == buffer.Length) 
+                            if (offset == 0 && count == buffer.Length)
                             {
                                 //
                                 // Use the supplied buffer.
@@ -171,7 +172,7 @@ namespace Google.Solutions.Ssh
                                 return (int)bytesRead;
                             }
                         }
-                    }, 
+                    },
                     false)
                 .ConfigureAwait(false);
 
@@ -182,7 +183,7 @@ namespace Google.Solutions.Ssh
         //----------------------------------------------------------------------
         // Writing.
         //----------------------------------------------------------------------
-        
+
         public override bool CanWrite
         {
             get => this.flags.HasFlag(LIBSSH2_FXF_FLAGS.WRITE);
@@ -221,7 +222,8 @@ namespace Google.Solutions.Ssh
             //
             await this.Connection
                 .RunAsync<object?>(
-                    session => {
+                    session =>
+                    {
                         Debug.Assert(this.Connection.IsRunningOnWorkerThread);
 
                         using (session.Session.AsBlocking())

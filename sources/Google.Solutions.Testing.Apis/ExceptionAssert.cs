@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Apis.Diagnostics;
 using Google.Solutions.Common.Util;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
@@ -61,8 +60,8 @@ namespace Google.Solutions.Testing.Apis
             }
 
             Assert.That(
-                caughtException, 
-                new ExceptionTypeConstraint(typeof(TActual)), 
+                caughtException,
+                new ExceptionTypeConstraint(typeof(TActual)),
                 message);
 
             return (TActual)caughtException!;

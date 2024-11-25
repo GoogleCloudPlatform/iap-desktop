@@ -30,7 +30,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.Mvvm.Binding
 {
     [SkipCodeCoverage("UI code")]
-    public partial class PropertiesView 
+    public partial class PropertiesView
         : CompositeForm, IView<PropertiesViewModel>, IThemedView
     {
         private IControlTheme? theme;

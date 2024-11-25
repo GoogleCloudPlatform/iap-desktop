@@ -36,7 +36,6 @@ using Google.Solutions.Platform.Security.Cryptography;
 using Google.Solutions.Settings.Collection;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Platform;
-using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;

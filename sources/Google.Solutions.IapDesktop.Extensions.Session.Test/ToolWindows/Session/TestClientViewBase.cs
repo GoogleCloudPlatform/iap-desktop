@@ -27,13 +27,11 @@ using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Terminal.Controls;
 using Google.Solutions.Testing.Apis.Platform;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Management;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Session
 {
@@ -71,18 +69,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         {
             public SampleSessionView(
                 IEventQueue eventQueue,
-                IExceptionDialog exceptionDialog) 
+                IExceptionDialog exceptionDialog)
                 : base(
-                    new Mock<IMainWindow>().Object, 
+                    new Mock<IMainWindow>().Object,
                     new ToolWindowStateRepository(
                         RegistryKeyPath.ForCurrentTest().CreateKey()),
-                    eventQueue, 
+                    eventQueue,
                     exceptionDialog,
                     new Mock<IBindingContext>().Object)
             {
             }
 
-            public override InstanceLocator Instance 
+            public override InstanceLocator Instance
                 => new InstanceLocator("project-1", "zone-1", "instance-1");
 
             public new SampleClient Client => base.Client!;

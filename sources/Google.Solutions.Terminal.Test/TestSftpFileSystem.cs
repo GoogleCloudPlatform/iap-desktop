@@ -170,7 +170,7 @@ namespace Google.Solutions.Terminal.Test
                     .ConfigureAwait(false);
 
                 CollectionAssert.AreEqual(
-                    new [] {fs.Home, fs.Drive},
+                    new[] { fs.Home, fs.Drive },
                     files);
             }
         }
@@ -184,8 +184,8 @@ namespace Google.Solutions.Terminal.Test
                 .ReturnsAsync(new[]
                 {
                     CreateFile(
-                        "dir", 
-                        FilePermissions.Directory | 
+                        "dir",
+                        FilePermissions.Directory |
                             FilePermissions.OwnerRead |
                             FilePermissions.OwnerExecute |
                             FilePermissions.OtherRead)
@@ -312,7 +312,7 @@ namespace Google.Solutions.Terminal.Test
                 true,
                 FilePermissions.OwnerRead);
             Assert.AreEqual(
-                FileAttributes.Directory, 
+                FileAttributes.Directory,
                 attributes);
         }
 
@@ -325,7 +325,7 @@ namespace Google.Solutions.Terminal.Test
                 true,
                 FilePermissions.OwnerRead);
             Assert.AreEqual(
-                FileAttributes.Directory | FileAttributes.Hidden, 
+                FileAttributes.Directory | FileAttributes.Hidden,
                 attributes);
         }
 
@@ -394,7 +394,7 @@ namespace Google.Solutions.Terminal.Test
                 var file = new Mock<IFileItem>();
                 file.SetupGet(f => f.Path).Returns("file.txt");
                 file.SetupGet(f => f.Type).Returns(new FileType("file", true, null!));
-                
+
                 await fs
                     .OpenFileAsync(file.Object, FileAccess.ReadWrite)
                     .ConfigureAwait(false);
@@ -421,9 +421,9 @@ namespace Google.Solutions.Terminal.Test
             {
                 ExceptionAssert.ThrowsAggregateException<UnauthorizedAccessException>(
                     () => fs.OpenFileAsync(
-                        fs.Root, 
-                        "file.txt", 
-                        FileMode.CreateNew, 
+                        fs.Root,
+                        "file.txt",
+                        FileMode.CreateNew,
                         FileAccess.ReadWrite).Wait());
             }
         }
@@ -436,9 +436,9 @@ namespace Google.Solutions.Terminal.Test
             {
                 await fs
                     .OpenFileAsync(
-                        fs.Drive, 
-                        "file.txt", 
-                        FileMode.CreateNew, 
+                        fs.Drive,
+                        "file.txt",
+                        FileMode.CreateNew,
                         FileAccess.ReadWrite)
                     .ConfigureAwait(false);
             }
@@ -461,7 +461,7 @@ namespace Google.Solutions.Terminal.Test
                 fs.DefaultFilePermissions = FilePermissions.OwnerExecute;
                 await fs
                     .OpenFileAsync(
-                        fs.Drive, 
+                        fs.Drive,
                         "file.txt",
                         FileMode.CreateNew,
                         FileAccess.ReadWrite)

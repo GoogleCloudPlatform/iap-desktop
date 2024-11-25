@@ -23,7 +23,6 @@ using Google.Solutions.IapDesktop.Core.ClientModel.Protocol;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.Testing.Apis;
 using NUnit.Framework;
-using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;

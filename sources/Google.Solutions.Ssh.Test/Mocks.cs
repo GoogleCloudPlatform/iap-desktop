@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Ssh.Cryptography;
 using NUnit.Framework;
 using System;
 

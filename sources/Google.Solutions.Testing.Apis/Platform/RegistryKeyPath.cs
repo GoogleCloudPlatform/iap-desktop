@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Iam.v1.Data;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;

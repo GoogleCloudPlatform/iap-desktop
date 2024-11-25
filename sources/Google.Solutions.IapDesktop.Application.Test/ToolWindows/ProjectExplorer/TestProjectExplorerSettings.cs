@@ -20,12 +20,10 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
 using Google.Solutions.Testing.Apis.Platform;
-using Microsoft.Win32;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplorer
