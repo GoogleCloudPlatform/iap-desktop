@@ -33,8 +33,6 @@ namespace Google.Solutions.Mvvm.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestScreenPicker
     {
-        private Form form;
-
         private class ScreenSelectorItem : IScreenPickerModelItem
         {
             public Rectangle ScreenBounds { get; set; }
@@ -42,6 +40,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
             public string DeviceName { get; set; }
 
             public bool IsSelected { get; set; }
+
+            public ScreenSelectorItem(string deviceName)
+            {
+                this.DeviceName = deviceName;
+            }
         }
 
         [Test]
@@ -52,11 +55,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Dock = DockStyle.Fill
             };
 
-            this.form = new Form();
-            this.form.Controls.Add(picker);
-            this.form.Show();
-            System.Windows.Forms.Application.DoEvents();
-            this.form.Close();
+            using (var form = new Form())
+            {
+                form.Controls.Add(picker);
+                form.Show();
+                System.Windows.Forms.Application.DoEvents();
+            }
         }
 
         [Test]
@@ -64,9 +68,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
         {
             var model = new ObservableCollection<ScreenSelectorItem>
             {
-                new ScreenSelectorItem()
+                new ScreenSelectorItem("first")
                 {
-                    DeviceName = "first",
                     ScreenBounds = new Rectangle()
                     {
                         X = -1000,
@@ -76,9 +79,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     }
                 },
 
-                new ScreenSelectorItem()
+                new ScreenSelectorItem("second")
                 {
-                    DeviceName = "second",
                     ScreenBounds = new Rectangle()
                     {
                         X = 500,
@@ -95,22 +97,24 @@ namespace Google.Solutions.Mvvm.Test.Controls
             };
 
             picker.BindCollection(model);
-            this.form = new Form()
+
+            using (var form = new Form()
             {
                 Width = 400,
                 Height = 400
-            };
-            this.form.Controls.Add(picker);
+            })
+            {
+                form.Controls.Add(picker);
 
-            this.form.Show();
-            System.Windows.Forms.Application.DoEvents();
+                form.Show();
+                System.Windows.Forms.Application.DoEvents();
 
-            Assert.AreEqual(2, picker.Screens.Count());
-            Assert.AreEqual(2, picker.Screens.First().Bounds.X);
-            Assert.AreEqual(2, picker.Screens.First().Bounds.Y);
+                Assert.AreEqual(2, picker.Screens.Count());
+                Assert.AreEqual(2, picker.Screens.First().Bounds.X);
+                Assert.AreEqual(2, picker.Screens.First().Bounds.Y);
 
-            Assert.AreEqual(this.form.ClientSize.Height - 2, picker.Screens.Last().Bounds.Y + picker.Screens.Last().Bounds.Height, 2);
-            this.form.Close();
+                Assert.AreEqual(form.ClientSize.Height - 2, picker.Screens.Last().Bounds.Y + picker.Screens.Last().Bounds.Height, 2);
+            }
         }
     }
 }

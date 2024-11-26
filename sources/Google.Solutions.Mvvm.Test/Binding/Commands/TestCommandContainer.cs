@@ -38,7 +38,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         private class NonObservableCommandContextSource<TContext> : IContextSource<TContext>
             where TContext : class
         {
-            public TContext Context { get; set; }
+            public TContext? Context { get; set; }
         }
 
         //---------------------------------------------------------------------
