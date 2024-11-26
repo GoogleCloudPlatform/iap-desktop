@@ -151,6 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 client.Credential = viewModel.Credential;
                 client.ConnectionTimeout = viewModel.Parameters.ConnectionTimeout;
                 client.Locale = viewModel.Parameters.Language;
+                client.EnableFileBrowser = viewModel.Parameters.EnableFileAccess;
                 client.KeyboardInteractiveHandler = new SshKeyboardInteractiveHandler(
                     this,
                     this.inputDialog,
