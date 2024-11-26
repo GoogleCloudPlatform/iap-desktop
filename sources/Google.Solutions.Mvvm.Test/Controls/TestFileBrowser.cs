@@ -1077,6 +1077,63 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
+        [Test]
+        public async Task PasteFiles_WhenCopyCancelled_ThenNoErrorShown()
+        {
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var taskDialog = new Mock<ITaskDialog>();
+                taskDialog
+                    .Setup(d => d.ShowDialog(
+                        It.IsAny<IWin32Window>(),
+                        It.IsAny<TaskDialogParameters>()))
+                    .Returns(DialogResult.Ignore);
+
+                var fileSystem = CreateFileSystem();
+                fileSystem
+                    .Setup(f => f.OpenFileAsync(
+                        It.IsAny<IFileItem>(),
+                        It.IsAny<string>(),
+                        FileMode.Create,
+                        FileAccess.Write))
+                    .ThrowsAsync(new OperationCanceledException());
+
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill,
+                    TaskDialog = taskDialog.Object
+                };
+                form.Controls.Add(browser);
+                browser.Bind(
+                    fileSystem.Object,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+                Application.DoEvents();
+
+                var dataObject = new DataObject();
+                dataObject.SetData(
+                    DataFormats.FileDrop,
+                    new string[]
+                    {
+                        Path.GetTempFileName()
+                    });
+
+                await browser
+                    .PasteFilesAsync(dataObject)
+                    .ConfigureAwait(true);
+                taskDialog.Verify(
+                    d => d.ShowDialog(browser, It.IsAny<TaskDialogParameters>()),
+                    Times.Never);
+                fileSystem.Verify(
+                    fs => fs.ListFilesAsync(It.IsAny<IFileItem>()),
+                    Times.Once);
+            }
+        }
+
         //---------------------------------------------------------------------
         // Dispose.
         //---------------------------------------------------------------------
