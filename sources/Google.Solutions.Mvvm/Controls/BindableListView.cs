@@ -38,7 +38,7 @@ namespace Google.Solutions.Mvvm.Controls
     {
         private ICollection<TModelItem>? model;
 
-        private readonly IDictionary<int, Func<TModelItem, string>> columnAccessors =
+        private readonly Dictionary<int, Func<TModelItem, string>> columnAccessors =
             new Dictionary<int, Func<TModelItem, string>>();
         private Func<TModelItem, int>? imageIndexAccessor = null;
 

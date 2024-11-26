@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Linq;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Moq;
@@ -39,6 +40,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
         {
             private string name;
             private int imageIndex;
+
+            public ViewModelItem(string name, int imageIndex = 0)
+            {
+                this.name = name;
+                this.imageIndex = imageIndex;
+            }
 
             public string Name
             {
@@ -63,12 +70,17 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
         private class ViewModel : ViewModelBase
         {
-            private ViewModelItem selectedItem = null;
-            private IEnumerable<ViewModelItem> selectedItems = null;
+            private ViewModelItem? selectedItem = null;
+            private IEnumerable<ViewModelItem>? selectedItems = null;
 
-            public ObservableCollection<ViewModelItem> Items { get; set; }
+            public ObservableCollection<ViewModelItem> Items { get; }
 
-            public ViewModelItem SelectedItem
+            public ViewModel(ObservableCollection<ViewModelItem> items)
+            {
+                this.Items = items;
+            }
+
+            public ViewModelItem? SelectedItem
             {
                 get => this.selectedItem;
                 set
@@ -79,7 +91,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
             public IEnumerable<ViewModelItem> SelectedItems
             {
-                get => this.selectedItems;
+                get => this.selectedItems.EnsureNotNull();
                 set
                 {
                     this.selectedItems = value;
@@ -92,31 +104,21 @@ namespace Google.Solutions.Mvvm.Test.Controls
         {
         }
 
-        //---------------------------------------------------------------------
-
-        private ModelListView listView;
-        private Form form;
-
-        [SetUp]
-        public void SetUp()
+        private class TestForm : Form
         {
-            this.listView = new ModelListView();
-            this.listView.Columns.Add(new ColumnHeader()
+            public ModelListView ListView { get; }
+
+            public TestForm()
             {
-                DisplayIndex = 0
-            });
-            this.listView.View = View.Details;
+                this.ListView = new ModelListView();
+                this.ListView.Columns.Add(new ColumnHeader()
+                {
+                    DisplayIndex = 0
+                });
+                this.ListView.View = View.Details;
 
-            this.form = new Form();
-            this.form.Controls.Add(this.listView);
-
-            this.form.Show();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            this.form.Close();
+                this.Controls.Add(this.ListView);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -128,12 +130,16 @@ namespace Google.Solutions.Mvvm.Test.Controls
         {
             var items = new ObservableCollection<ViewModelItem>
             {
-                new ViewModelItem()
+                new ViewModelItem("one")
             };
 
-            this.listView.BindCollection(items);
+            using (var form = new TestForm())
+            {
+                form.Show();
+                form.ListView.BindCollection(items);
 
-            Assert.AreEqual(1, this.listView.Items.Count);
+                Assert.AreEqual(1, form.ListView.Items.Count);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -143,24 +149,23 @@ namespace Google.Solutions.Mvvm.Test.Controls
         [Test]
         public void BindCollection_WhenModelPropertyIsUpdated_ThenColumnIsUpdated()
         {
-            var item = new ViewModelItem()
-            {
-                Name = "initial name"
-            };
-
+            var item = new ViewModelItem("initial name");
             var items = new ObservableCollection<ViewModelItem>
             {
                 item
             };
+            using (var form = new TestForm())
+            {
+                form.Show();
+                form.ListView.BindColumn(0, m => m.Name);
+                form.ListView.BindCollection(items);
 
-            this.listView.BindColumn(0, m => m.Name);
-            this.listView.BindCollection(items);
+                Assert.AreEqual("initial name", form.ListView.Items[0].SubItems[0].Text);
 
-            Assert.AreEqual("initial name", this.listView.Items[0].SubItems[0].Text);
+                item.Name = "new name";
 
-            item.Name = "new name";
-
-            Assert.AreEqual("new name", this.listView.Items[0].SubItems[0].Text);
+                Assert.AreEqual("new name", form.ListView.Items[0].SubItems[0].Text);
+            }
         }
 
         [Test]
@@ -168,23 +173,21 @@ namespace Google.Solutions.Mvvm.Test.Controls
         {
             var items = new ObservableCollection<ViewModelItem>
             {
-                new ViewModelItem()
-                {
-                    Name = "one"
-                }
+                new ViewModelItem("one")
             };
 
-            this.listView.BindColumn(0, m => m.Name);
-            this.listView.BindCollection(items);
-
-            Assert.AreEqual(1, this.listView.Items.Count);
-
-            items.Add(new ViewModelItem()
+            using (var form = new TestForm())
             {
-                Name = "two"
-            });
+                form.Show();
+                form.ListView.BindColumn(0, m => m.Name);
+                form.ListView.BindCollection(items);
 
-            Assert.AreEqual(2, this.listView.Items.Count);
+                Assert.AreEqual(1, form.ListView.Items.Count);
+
+                items.Add(new ViewModelItem("two"));
+
+                Assert.AreEqual(2, form.ListView.Items.Count);
+            }
         }
 
         [Test]
@@ -192,24 +195,22 @@ namespace Google.Solutions.Mvvm.Test.Controls
         {
             var items = new ObservableCollection<ViewModelItem>
             {
-                new ViewModelItem()
-                {
-                    Name = "one"
-                },
-                new ViewModelItem()
-                {
-                    Name = "two"
-                }
+                new ViewModelItem("one"),
+                new ViewModelItem("two")
             };
 
-            this.listView.BindColumn(0, m => m.Name);
-            this.listView.BindCollection(items);
+            using (var form = new TestForm())
+            {
+                form.Show();
+                form.ListView.BindColumn(0, m => m.Name);
+                form.ListView.BindCollection(items);
 
-            Assert.AreEqual(2, this.listView.Items.Count);
+                Assert.AreEqual(2, form.ListView.Items.Count);
 
-            items.RemoveAt(0);
+                items.RemoveAt(0);
 
-            Assert.AreEqual(1, this.listView.Items.Count);
+                Assert.AreEqual(1, form.ListView.Items.Count);
+            }
         }
 
         [Test]
@@ -217,113 +218,100 @@ namespace Google.Solutions.Mvvm.Test.Controls
         {
             var items = new ObservableCollection<ViewModelItem>
             {
-                new ViewModelItem()
-                {
-                    Name = "one"
-                },
-                new ViewModelItem()
-                {
-                    Name = "two"
-                }
+                new ViewModelItem("one"),
+                new ViewModelItem("two")
             };
 
-            this.listView.BindColumn(0, m => m.Name);
-            this.listView.BindCollection(items);
-
-            Assert.AreEqual(2, this.listView.Items.Count);
-            Assert.AreEqual("one", this.listView.Items[0].SubItems[0].Text);
-
-            items[0] = new ViewModelItem()
+            using (var form = new TestForm())
             {
-                Name = "three"
-            };
+                form.Show();
+                form.ListView.BindColumn(0, m => m.Name);
+                form.ListView.BindCollection(items);
 
-            Assert.AreEqual(2, this.listView.Items.Count);
-            Assert.AreEqual("three", this.listView.Items[0].SubItems[0].Text);
+                Assert.AreEqual(2, form.ListView.Items.Count);
+                Assert.AreEqual("one", form.ListView.Items[0].SubItems[0].Text);
+
+                items[0] = new ViewModelItem("three");
+
+                Assert.AreEqual(2, form.ListView.Items.Count);
+                Assert.AreEqual("three", form.ListView.Items[0].SubItems[0].Text);
+            }
         }
 
         [Test]
         public void BindCollection_WhenModelRemovesItem_ThenEventListenersAreRemoved()
         {
-            var item = new ViewModelItem()
-            {
-                Name = "initial name"
-            };
-
+            var item = new ViewModelItem("initial name");
             var items = new ObservableCollection<ViewModelItem>
             {
                 item
             };
 
-            this.listView.BindColumn(0, m => m.Name);
-            this.listView.BindCollection(items);
+            using (var form = new TestForm())
+            {
+                form.Show();
+                form.ListView.BindColumn(0, m => m.Name);
+                form.ListView.BindCollection(items);
 
-            Assert.IsTrue(item.HasPropertyChangeListeners);
+                Assert.IsTrue(item.HasPropertyChangeListeners);
 
-            items.RemoveAt(0);
+                items.RemoveAt(0);
 
-            Assert.IsFalse(item.HasPropertyChangeListeners);
+                Assert.IsFalse(item.HasPropertyChangeListeners);
+            }
         }
 
         [Test]
         public void BindCollection_WhenModelCleared_ThenEventListenersAreRemoved()
         {
-            var item = new ViewModelItem()
-            {
-                Name = "initial name"
-            };
-
+            var item = new ViewModelItem("initial name");
             var items = new ObservableCollection<ViewModelItem>
             {
                 item
             };
 
-            this.listView.BindColumn(0, m => m.Name);
-            this.listView.BindCollection(items);
+            using (var form = new TestForm())
+            {
+                form.Show();
+                form.ListView.BindColumn(0, m => m.Name);
+                form.ListView.BindCollection(items);
 
-            Assert.IsTrue(item.HasPropertyChangeListeners);
+                Assert.IsTrue(item.HasPropertyChangeListeners);
 
-            items.Clear();
+                items.Clear();
 
-            Assert.IsFalse(item.HasPropertyChangeListeners);
+                Assert.IsFalse(item.HasPropertyChangeListeners);
+            }
         }
 
         [Test]
         public void BindCollection_WhenModelIsRebound_ThenEventListenersAreRemoved()
         {
-            var item = new ViewModelItem()
-            {
-                Name = "initial name"
-            };
-
+            var item = new ViewModelItem("initial name");
             var items = new ObservableCollection<ViewModelItem>
             {
                 item
             };
 
-            this.listView.BindColumn(0, m => m.Name);
-            this.listView.BindCollection(items);
+            using (var form = new TestForm())
+            {
+                form.Show();
+                form.ListView.BindColumn(0, m => m.Name);
+                form.ListView.BindCollection(items);
 
-            Assert.IsTrue(item.HasPropertyChangeListeners);
+                Assert.IsTrue(item.HasPropertyChangeListeners);
 
-            this.listView.BindCollection(new ObservableCollection<ViewModelItem>());
+                form.ListView.BindCollection(new ObservableCollection<ViewModelItem>());
 
-            Assert.IsFalse(item.HasPropertyChangeListeners);
+                Assert.IsFalse(item.HasPropertyChangeListeners);
+            }
         }
 
         [Test]
         public void BindCollection_WhenModelChangesImageIndex_ThenControlIsUpdated()
         {
-            var item1 = new ViewModelItem()
-            {
-                Name = "one",
-                ImageIndex = 1
-            };
-            var item2 = new ViewModelItem()
-            {
-                Name = "two",
-                ImageIndex = 2
-            };
+            var item1 = new ViewModelItem("one", 1);
+            var item2 = new ViewModelItem("two", 2);
 
             var items = new ObservableCollection<ViewModelItem>
             {
@@ -331,16 +319,20 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 item2
             };
 
-            this.listView.BindColumn(0, m => m.Name);
-            this.listView.BindImageIndex(m => m.ImageIndex);
-            this.listView.BindCollection(items);
+            using (var form = new TestForm())
+            {
+                form.Show();
+                form.ListView.BindColumn(0, m => m.Name);
+                form.ListView.BindImageIndex(m => m.ImageIndex);
+                form.ListView.BindCollection(items);
 
-            Assert.AreEqual(1, this.listView.Items[0].ImageIndex);
-            Assert.AreEqual(2, this.listView.Items[1].ImageIndex);
+                Assert.AreEqual(1, form.ListView.Items[0].ImageIndex);
+                Assert.AreEqual(2, form.ListView.Items[1].ImageIndex);
 
-            item1.ImageIndex = 0;
-            Assert.AreEqual(0, this.listView.Items[0].ImageIndex);
-            Assert.AreEqual(2, this.listView.Items[1].ImageIndex);
+                item1.ImageIndex = 0;
+                Assert.AreEqual(0, form.ListView.Items[0].ImageIndex);
+                Assert.AreEqual(2, form.ListView.Items[1].ImageIndex);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -350,73 +342,61 @@ namespace Google.Solutions.Mvvm.Test.Controls
         [Test]
         public void SelectedModelItem_WhenControlChangesSelectedItem_ThenModelIsUpdated()
         {
-            var viewModel = new ViewModel()
-            {
-                Items = new ObservableCollection<ViewModelItem>
+            var viewModel = new ViewModel(
+                new ObservableCollection<ViewModelItem>
                 {
-                    new ViewModelItem()
-                    {
-                        Name = "one",
-                        ImageIndex = 1
-                    },
-                    new ViewModelItem()
-                    {
-                        Name = "two",
-                        ImageIndex = 2
-                    }
-                }
-            };
+                    new ViewModelItem("one", 1),
+                    new ViewModelItem("two", 2)
+                });
 
-            this.listView.BindColumn(0, m => m.Name);
-            this.listView.BindImageIndex(m => m.ImageIndex);
-            this.listView.BindCollection(viewModel.Items);
-            this.listView.BindProperty(
-                c => c.SelectedModelItem,
-                viewModel,
-                m => m.SelectedItem,
-                new Mock<IBindingContext>().Object);
+            using (var form = new TestForm())
+            {
+                form.Show();
+                form.ListView.BindColumn(0, m => m.Name);
+                form.ListView.BindImageIndex(m => m.ImageIndex);
+                form.ListView.BindCollection(viewModel.Items);
+                form.ListView.BindProperty(
+                    c => c.SelectedModelItem,
+                    viewModel,
+                    m => m.SelectedItem,
+                    new Mock<IBindingContext>().Object);
 
-            this.listView.Items[0].Selected = true;
+                form.ListView.Items[0].Selected = true;
 
-            Assert.IsNotNull(viewModel.SelectedItem);
-            Assert.AreEqual("one", viewModel.SelectedItem.Name);
+                Assert.IsNotNull(viewModel.SelectedItem);
+                Assert.AreEqual("one", viewModel.SelectedItem!.Name);
+            }
         }
 
         [Test]
         public void SelectedModelItem_WhenModelChangesSelectedItem_ThenControlIsUpdated()
         {
-            var viewModel = new ViewModel()
-            {
-                Items = new ObservableCollection<ViewModelItem>
+            var viewModel = new ViewModel(
+                new ObservableCollection<ViewModelItem>
                 {
-                    new ViewModelItem()
-                    {
-                        Name = "one",
-                        ImageIndex = 1
-                    },
-                    new ViewModelItem()
-                    {
-                        Name = "two",
-                        ImageIndex = 2
-                    }
-                }
-            };
+                    new ViewModelItem("one", 1),
+                    new ViewModelItem("two", 2)
+                });
 
-            this.listView.BindColumn(0, m => m.Name);
-            this.listView.BindImageIndex(m => m.ImageIndex);
-            this.listView.BindCollection(viewModel.Items);
-            this.listView.BindProperty(
-                c => c.SelectedModelItem,
-                viewModel,
-                m => m.SelectedItem,
-                new Mock<IBindingContext>().Object);
+            using (var form = new TestForm())
+            {
+                form.Show();
+                form.ListView.BindColumn(0, m => m.Name);
+                form.ListView.BindImageIndex(m => m.ImageIndex);
+                form.ListView.BindCollection(viewModel.Items);
+                form.ListView.BindProperty(
+                    c => c.SelectedModelItem,
+                    viewModel,
+                    m => m.SelectedItem,
+                    new Mock<IBindingContext>().Object);
 
-            Assert.IsFalse(this.listView.Items[0].Selected);
+                Assert.IsFalse(form.ListView.Items[0].Selected);
 
-            viewModel.SelectedItem = viewModel.Items[0];
+                viewModel.SelectedItem = viewModel.Items[0];
 
-            Assert.IsTrue(this.listView.Items[0].Selected);
-            Assert.IsFalse(this.listView.Items[1].Selected);
+                Assert.IsTrue(form.ListView.Items[0].Selected);
+                Assert.IsFalse(form.ListView.Items[1].Selected);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -426,74 +406,62 @@ namespace Google.Solutions.Mvvm.Test.Controls
         [Test]
         public void SelectedModelItems_WhenControlChangesSelectedItems_ThenModelIsUpdated()
         {
-            var viewModel = new ViewModel()
-            {
-                Items = new ObservableCollection<ViewModelItem>
+            var viewModel = new ViewModel(
+                new ObservableCollection<ViewModelItem>
                 {
-                    new ViewModelItem()
-                    {
-                        Name = "one",
-                        ImageIndex = 1
-                    },
-                    new ViewModelItem()
-                    {
-                        Name = "two",
-                        ImageIndex = 2
-                    }
-                }
-            };
+                    new ViewModelItem("one", 1),
+                    new ViewModelItem("two", 2)
+                });
 
-            this.listView.BindColumn(0, m => m.Name);
-            this.listView.BindImageIndex(m => m.ImageIndex);
-            this.listView.BindCollection(viewModel.Items);
-            this.listView.BindProperty(
-                c => c.SelectedModelItems,
-                viewModel,
-                m => m.SelectedItems,
-                new Mock<IBindingContext>().Object);
+            using (var form = new TestForm())
+            {
+                form.Show();
+                form.ListView.BindColumn(0, m => m.Name);
+                form.ListView.BindImageIndex(m => m.ImageIndex);
+                form.ListView.BindCollection(viewModel.Items);
+                form.ListView.BindProperty(
+                    c => c.SelectedModelItems,
+                    viewModel,
+                    m => m.SelectedItems,
+                    new Mock<IBindingContext>().Object);
 
-            this.listView.Items[0].Selected = true;
-            this.listView.Items[1].Selected = true;
+                form.ListView.Items[0].Selected = true;
+                form.ListView.Items[1].Selected = true;
 
-            Assert.IsNotNull(viewModel.SelectedItems);
-            Assert.AreEqual(2, viewModel.SelectedItems.Count());
+                Assert.IsNotNull(viewModel.SelectedItems);
+                Assert.AreEqual(2, viewModel.SelectedItems.Count());
+            }
         }
 
         [Test]
         public void SelectedModelItems_WhenModelChangesSelectedItems_ThenControlIsUpdated()
         {
-            var viewModel = new ViewModel()
-            {
-                Items = new ObservableCollection<ViewModelItem>
+            var viewModel = new ViewModel(
+                new ObservableCollection<ViewModelItem>
                 {
-                    new ViewModelItem()
-                    {
-                        Name = "one",
-                        ImageIndex = 1
-                    },
-                    new ViewModelItem()
-                    {
-                        Name = "two",
-                        ImageIndex = 2
-                    }
-                }
-            };
+                    new ViewModelItem("one", 1),
+                    new ViewModelItem("two", 2)
+                });
 
-            this.listView.BindColumn(0, m => m.Name);
-            this.listView.BindImageIndex(m => m.ImageIndex);
-            this.listView.BindCollection(viewModel.Items);
-            this.listView.BindProperty(
-                c => c.SelectedModelItems,
-                viewModel,
-                m => m.SelectedItems,
-                new Mock<IBindingContext>().Object);
+            using (var form = new TestForm())
+            {
+                form.Show();
+                form.ListView.BindColumn(0, m => m.Name);
+                form.ListView.BindImageIndex(m => m.ImageIndex);
+                form.ListView.BindCollection(viewModel.Items);
+                form.ListView.BindProperty(
+                    c => c.SelectedModelItems,
+                    viewModel,
+                    m => m.SelectedItems,
+                    new Mock<IBindingContext>().Object);
 
-            Assert.IsFalse(this.listView.Items[0].Selected);
+                Assert.IsFalse(form.ListView.Items[0].Selected);
 
-            viewModel.SelectedItems = viewModel.Items;
+                viewModel.SelectedItems = viewModel.Items;
 
-            Assert.IsTrue(this.listView.Items[0].Selected);
-            Assert.IsTrue(this.listView.Items[1].Selected);
+                Assert.IsTrue(form.ListView.Items[0].Selected);
+                Assert.IsTrue(form.ListView.Items[1].Selected);
+            }
         }
     }
 }
