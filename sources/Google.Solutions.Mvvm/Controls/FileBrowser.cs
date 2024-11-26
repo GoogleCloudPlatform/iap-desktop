@@ -708,6 +708,9 @@ namespace Google.Solutions.Mvvm.Controls
                         //
                         // Perform the file copy in the background.
                         //
+                        // NB. If the underlying file system session is closed, 
+                        //     we expect I/O operations to be cancelled.
+                        //
                         await Task
                             .Run(async () =>
                                 {
@@ -731,7 +734,15 @@ namespace Google.Solutions.Mvvm.Controls
                                 })
                             .ConfigureAwait(true);
                     }
-                    catch (Exception e) when (!e.IsCancellation())
+                    catch (Exception e) when (e.IsCancellation())
+                    {
+                        //
+                        // Ignore, and don't touch the UI because
+                        // it might no longer be in a good state.
+                        //
+                        return;
+                    }
+                    catch (Exception e)
                     {
                         //
                         // Update dialog to avoid a situation where the
@@ -753,7 +764,8 @@ namespace Google.Solutions.Mvvm.Controls
                             DialogResult.Ignore));
                         parameters.Buttons.Add(TaskDialogStandardButton.Cancel);
 
-                        if (this.TaskDialog.ShowDialog(this, parameters) == DialogResult.Cancel)
+                        if (this.TaskDialog.ShowDialog(this, parameters) 
+                            == DialogResult.Cancel)
                         {
                             return;
                         }
