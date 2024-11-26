@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var settings = new Mock<ISshSettings>();
             settings.SetupGet(s => s.PublicKeyType).Returns(keyTypeSetting.Object);
             settings.SetupGet(s => s.PublicKeyValidity).Returns(validitySetting.Object);
-            settings.SetupGet(s => s.IsPropagateLocaleEnabled).Returns(localeSetting.Object);
+            settings.SetupGet(s => s.EnableLocalePropagation).Returns(localeSetting.Object);
             settings.SetupGet(s => s.UsePersistentKey).Returns(usePersistentKeySetting.Object);
 
             var repository = new Mock<IRepository<ISshSettings>>();

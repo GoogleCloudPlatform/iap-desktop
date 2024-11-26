@@ -45,26 +45,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     UserProfile.SchemaVersion.Current);
 
                 var settings = repository.GetSettings();
-                settings.IsPropagateLocaleEnabled.Value = false;
+                settings.EnableLocalePropagation.Value = false;
                 settings.PublicKeyValidity.Value = 3600;
                 settings.PublicKeyType.Value = SshKeyType.EcdsaNistp256;
-                settings.IsFileAccessEnabled.Value = false;
+                settings.EnableFileAccess.Value = false;
                 repository.SetSettings(settings);
 
                 settings = repository.GetSettings();
-                Assert.IsFalse(settings.IsPropagateLocaleEnabled.Value);
+                Assert.IsFalse(settings.EnableLocalePropagation.Value);
                 Assert.AreEqual(3600, settings.PublicKeyValidity.Value);
                 Assert.AreEqual(SshKeyType.EcdsaNistp256, settings.PublicKeyType.Value);
-                Assert.IsFalse(settings.IsFileAccessEnabled.Value);
+                Assert.IsFalse(settings.EnableFileAccess.Value);
             }
         }
 
         //---------------------------------------------------------------------
-        // IsPropagateLocaleEnabled.
+        // EnableLocalePropagation.
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsPropagateLocaleEnabled_WhenKeyEmpty()
+        public void EnableLocalePropagation_WhenKeyEmpty()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     UserProfile.SchemaVersion.Current);
                 var settings = repository.GetSettings();
 
-                Assert.IsTrue(settings.IsPropagateLocaleEnabled.Value);
+                Assert.IsTrue(settings.EnableLocalePropagation.Value);
             }
         }
 
@@ -330,11 +330,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         //---------------------------------------------------------------------
-        // IsFileAccessEnabled.
+        // EnableFileAccess.
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsFileAccessEnabled_WhenKeyEmpty()
+        public void EnableFileAccess_WhenKeyEmpty()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
@@ -345,7 +345,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     UserProfile.SchemaVersion.Current);
                 var settings = repository.GetSettings();
 
-                Assert.IsTrue(settings.IsFileAccessEnabled.Value);
+                Assert.IsTrue(settings.EnableFileAccess.Value);
             }
         }
     }

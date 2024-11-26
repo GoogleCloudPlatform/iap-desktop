@@ -388,7 +388,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             context.Parameters.Port = (ushort)settings.SshPort.Value;
             context.Parameters.TransportType = settings.SshTransport.Value;
             context.Parameters.ConnectionTimeout = TimeSpan.FromSeconds(settings.SshConnectionTimeout.Value);
-            context.Parameters.Language = sshSettings.IsPropagateLocaleEnabled.Value
+            context.Parameters.Language = sshSettings.EnableLocalePropagation.Value
                 ? CultureInfo.CurrentUICulture
                 : null;
 

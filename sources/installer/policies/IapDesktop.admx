@@ -256,12 +256,12 @@
     </policy>
 
     <policy
-        name="IsFileAccessEnabled"
+        name="EnableFileAccess"
         class="Both"
-        displayName="$(string.IsFileAccessEnabled)"
-        explainText="$(string.IsFileAccessEnabled_Description)"
+        displayName="$(string.EnableFileAccess)"
+        explainText="$(string.EnableFileAccess_Description)"
         key="Software\Policies\Google\IapDesktop\1.0\Ssh"
-        valueName="IsFileAccessEnabled">
+        valueName="EnableFileAccess">
 
       <parentCategory ref="iapdesktop" />
       <supportedOn ref="windows:SUPPORTED_Windows8" />
