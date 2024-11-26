@@ -314,9 +314,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
         private class Observable : ViewModelBase
         {
-            private string text;
-            private string toolTip;
-            private Image image;
+            private string? text;
+            private string? toolTip;
+            private Image? image;
             private Keys shortcutKeys;
             private bool isVisible;
             private bool isEnabled;
@@ -325,8 +325,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
             public ToolStripItemDisplayStyle Style => ToolStripItemDisplayStyle.Text;
 
             public ObservableCollection<Observable> Children { get; set; }
+                = new ObservableCollection<Observable>();
 
-            public string Text
+            public string? Text
             {
                 get => this.text;
                 set
@@ -336,7 +337,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 }
             }
 
-            public string ToolTip
+            public string? ToolTip
             {
                 get => this.toolTip;
                 set
@@ -346,7 +347,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 }
             }
 
-            public Image Image
+            public Image? Image
             {
                 get => this.image;
                 set
