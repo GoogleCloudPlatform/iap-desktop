@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Settings;
 using System;
 using System.ComponentModel;
 using System.Globalization;
@@ -56,6 +57,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         /// Validity to apply when authorizing the public key.
         /// </summary>
         public TimeSpan PublicKeyValidity { get; set; } = DefaultPublicKeyValidity;
+
+        /// <summary>
+        /// Controls whether SFTP file access is allowed.
+        /// </summary>
+        public bool EnableFileAccess { get; set; } = true;
     }
 
     //-------------------------------------------------------------------------

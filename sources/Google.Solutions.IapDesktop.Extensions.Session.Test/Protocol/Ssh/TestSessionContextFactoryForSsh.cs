@@ -22,6 +22,7 @@
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Security;
+using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
@@ -34,10 +35,10 @@ using Google.Solutions.Platform.Security.Cryptography;
 using Google.Solutions.Settings;
 using Google.Solutions.Settings.Collection;
 using Google.Solutions.Ssh;
-using Google.Solutions.Ssh.Cryptography;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -51,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         private static readonly InstanceLocator SampleLocator
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-        private Mock<IProjectModelInstanceNode> CreateInstanceNodeMock(OperatingSystems os)
+        private static Mock<IProjectModelInstanceNode> CreateInstanceNodeMock(OperatingSystems os)
         {
             var vmNode = new Mock<IProjectModelInstanceNode>();
             vmNode.SetupGet(n => n.OperatingSystem).Returns(os);
@@ -60,36 +61,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             return vmNode;
         }
 
-        private IRepository<ISshSettings> CreateSshSettingsRepository(
-            bool usePersistentKey,
-            TimeSpan keyValidity)
+        private static IRepository<ISshSettings> CreateSshSettingsRepository(
+            IDictionary<string, string> settings)
         {
-            var keyTypeSetting = new Mock<ISetting<SshKeyType>>();
-            keyTypeSetting.SetupGet(s => s.Value).Returns(SshKeyType.Rsa3072);
-
-            var validitySetting = new Mock<ISetting<int>>();
-            validitySetting.SetupGet(s => s.Value).Returns((int)keyValidity.TotalSeconds);
-
-            var usePersistentKeySetting = new Mock<ISetting<bool>>();
-            usePersistentKeySetting.SetupGet(s => s.Value).Returns(usePersistentKey);
-
-            var localeSetting = new Mock<ISetting<bool>>();
-
-            var settings = new Mock<ISshSettings>();
-            settings.SetupGet(s => s.PublicKeyType).Returns(keyTypeSetting.Object);
-            settings.SetupGet(s => s.PublicKeyValidity).Returns(validitySetting.Object);
-            settings.SetupGet(s => s.EnableLocalePropagation).Returns(localeSetting.Object);
-            settings.SetupGet(s => s.UsePersistentKey).Returns(usePersistentKeySetting.Object);
-
             var repository = new Mock<IRepository<ISshSettings>>();
             repository
                 .Setup(r => r.GetSettings())
-                .Returns(settings.Object);
+                .Returns(new SshSettingsRepository.SshSettings(
+                    new DictionarySettingsStore(settings),
+                    UserProfile.SchemaVersion.Current));
 
             return repository.Object;
         }
 
-        private Mock<IKeyStore> CreateKeyStoreMock()
+        private static Mock<IKeyStore> CreateKeyStoreMock()
         {
             var keyStore = new Mock<IKeyStore>();
             keyStore
@@ -107,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             return keyStore;
         }
 
-        private Mock<IAuthorization> CreateAuthorizationMock()
+        private static Mock<IAuthorization> CreateAuthorizationMock()
         {
             var session = new Mock<IOidcSession>();
             session
@@ -151,7 +136,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<IRdpCredentialEditorFactory>().Object,
                 new Mock<IRdpCredentialCallback>().Object,
-                CreateSshSettingsRepository(true, TimeSpan.FromMinutes(1)));
+                CreateSshSettingsRepository(new Dictionary<string, string>
+                {
+                    { "UsePersistentKey", "true" },
+                    { "PublicKeyValidity", "60" } }
+                ));
 
             using (var context = (SshContext)await factory
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
@@ -190,7 +179,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<IRdpCredentialEditorFactory>().Object,
                 new Mock<IRdpCredentialCallback>().Object,
-                CreateSshSettingsRepository(true, TimeSpan.FromMinutes(1)));
+                CreateSshSettingsRepository(new Dictionary<string, string>
+                {
+                    { "UsePersistentKey", "true" },
+                    { "PublicKeyValidity", "60" } }
+                ));
 
             using (var context = (SshContext)await factory
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
@@ -220,7 +213,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task CreateSshSessionContext_UsesSshSettings()
         {
-            var sshSettingsRepository = CreateSshSettingsRepository(true, TimeSpan.FromDays(4));
+            var sshSettingsRepository = CreateSshSettingsRepository(
+                new Dictionary<string, string>
+                {
+                    { "UsePersistentKey", "true" },
+                    { "PublicKeyValidity", "86400" },
+                    { "EnableFileAccess", "false" } 
+                });
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService
                 .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
@@ -245,7 +244,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                Assert.AreEqual(TimeSpan.FromDays(4), context.Parameters.PublicKeyValidity);
+                Assert.AreEqual(TimeSpan.FromDays(1), context.Parameters.PublicKeyValidity);
+                Assert.IsFalse(context.Parameters.EnableFileAccess);
             }
         }
 
@@ -271,13 +271,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<IRdpCredentialEditorFactory>().Object,
                 new Mock<IRdpCredentialCallback>().Object,
-                CreateSshSettingsRepository(true, TimeSpan.FromMinutes(123)));
+                CreateSshSettingsRepository(new Dictionary<string, string>
+                {
+                    { "UsePersistentKey", "true" },
+                    { "PublicKeyValidity", "600" },
+                    { "PublicKeyType", "1" }
+                }));
 
             using (var context = await factory
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                Assert.AreEqual(TimeSpan.FromMinutes(123), context.Parameters.PublicKeyValidity);
+                Assert.AreEqual(TimeSpan.FromMinutes(10), context.Parameters.PublicKeyValidity);
             }
 
             keyStore.Verify(
@@ -312,7 +317,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IDirectTransportFactory>().Object,
                 new Mock<IRdpCredentialEditorFactory>().Object,
                 new Mock<IRdpCredentialCallback>().Object,
-                CreateSshSettingsRepository(false, TimeSpan.FromMinutes(123)));
+                CreateSshSettingsRepository(new Dictionary<string, string>
+                {
+                    { "UsePersistentKey", "false" },
+                    { "PublicKeyValidity", "600" } }
+                ));
 
             using (var context = await factory
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)

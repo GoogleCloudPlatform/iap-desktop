@@ -391,6 +391,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             context.Parameters.Language = sshSettings.EnableLocalePropagation.Value
                 ? CultureInfo.CurrentUICulture
                 : null;
+            context.Parameters.EnableFileAccess = sshSettings.EnableFileAccess.Value;
 
             return Task.FromResult<ISessionContext<ISshCredential, SshParameters>>(context);
         }

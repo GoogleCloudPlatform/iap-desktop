@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // Inner class.
         //---------------------------------------------------------------------
 
-        private class SshSettings : ISshSettings
+        internal class SshSettings : ISshSettings
         {
             public ISetting<bool> EnableLocalePropagation { get; }
             public ISetting<int> PublicKeyValidity { get; }
