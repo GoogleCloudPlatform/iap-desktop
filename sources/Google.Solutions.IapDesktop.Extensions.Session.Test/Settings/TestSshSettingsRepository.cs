@@ -45,17 +45,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     UserProfile.SchemaVersion.Current);
 
                 var settings = repository.GetSettings();
-                settings.PropagateLocale.Value = false;
+                settings.IsPropagateLocaleEnabled.Value = false;
                 settings.PublicKeyValidity.Value = 3600;
                 settings.PublicKeyType.Value = SshKeyType.EcdsaNistp256;
-                settings.AllowFileTransfers.Value = false;
+                settings.IsFileAccessEnabled.Value = false;
                 repository.SetSettings(settings);
 
                 settings = repository.GetSettings();
-                Assert.IsFalse(settings.PropagateLocale.Value);
+                Assert.IsFalse(settings.IsPropagateLocaleEnabled.Value);
                 Assert.AreEqual(3600, settings.PublicKeyValidity.Value);
                 Assert.AreEqual(SshKeyType.EcdsaNistp256, settings.PublicKeyType.Value);
-                Assert.IsFalse(settings.AllowFileTransfers.Value);
+                Assert.IsFalse(settings.IsFileAccessEnabled.Value);
             }
         }
 
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     UserProfile.SchemaVersion.Current);
                 var settings = repository.GetSettings();
 
-                Assert.IsTrue(settings.PropagateLocale.Value);
+                Assert.IsTrue(settings.IsPropagateLocaleEnabled.Value);
             }
         }
 
@@ -330,11 +330,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         //---------------------------------------------------------------------
-        // AllowFileTransfers.
+        // IsFileAccessEnabled.
         //---------------------------------------------------------------------
 
         [Test]
-        public void AllowFileTransfers_WhenKeyEmpty()
+        public void IsFileAccessEnabled_WhenKeyEmpty()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
@@ -345,7 +345,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     UserProfile.SchemaVersion.Current);
                 var settings = repository.GetSettings();
 
-                Assert.IsTrue(settings.AllowFileTransfers.Value);
+                Assert.IsTrue(settings.IsFileAccessEnabled.Value);
             }
         }
     }

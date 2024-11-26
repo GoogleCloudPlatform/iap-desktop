@@ -65,8 +65,8 @@
       <string id="UsePersistentKey">Enable SSH persistent key storage</string>
       <string id="UsePersistentKey_Description">Use persistent key for SSH authentication and store it in the user's Windows CNG key store.</string>
 
-      <string id="AllowFileTransfers">Enable SFTP file transfers</string>
-      <string id="AllowFileTransfers_Description">Allow users to browse, upload, and download files using SFTP.</string>
+      <string id="IsFileAccessEnabled">Enable SFTP file access</string>
+      <string id="IsFileAccessEnabled_Description">Allow users to browse, upload, and download files using SFTP.</string>
     </stringTable>
     <presentationTable>
       <presentation id="ProxyUrl">

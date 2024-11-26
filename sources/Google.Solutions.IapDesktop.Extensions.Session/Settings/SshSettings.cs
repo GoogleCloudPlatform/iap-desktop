@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// <summary>
         /// Enable propagation of current locate.
         /// </summary>
-        ISetting<bool> PropagateLocale { get; }
+        ISetting<bool> IsPropagateLocaleEnabled { get; }
 
         /// <summary>
         /// Gets or sets the validity of public keys uploaded
@@ -61,9 +61,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         ISetting<bool> UsePersistentKey { get; }
 
         /// <summary>
-        /// Controls whether SFTP file transfers are allowed.
+        /// Controls whether SFTP file access is allowed.
         /// </summary>
-        ISetting<bool> AllowFileTransfers { get; }
+        ISetting<bool> IsFileAccessEnabled { get; }
     }
 
     /// <summary>
@@ -107,15 +107,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
         private class SshSettings : ISshSettings
         {
-            public ISetting<bool> PropagateLocale { get; }
+            public ISetting<bool> IsPropagateLocaleEnabled { get; }
             public ISetting<int> PublicKeyValidity { get; }
             public ISetting<SshKeyType> PublicKeyType { get; }
             public ISetting<bool> UsePersistentKey { get; }
-            public ISetting<bool> AllowFileTransfers { get; }
+            public ISetting<bool> IsFileAccessEnabled { get; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
-                this.PropagateLocale,
+                this.IsPropagateLocaleEnabled,
                 this.PublicKeyValidity,
                 this.PublicKeyType,
                 this.UsePersistentKey
@@ -161,15 +161,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                     "Persist SSH signing key",
                     null,
                     true);
-                this.PropagateLocale = store.Read<bool>(
+                this.IsPropagateLocaleEnabled = store.Read<bool>(
                     "IsPropagateLocaleEnabled",
                     "IsPropagateLocaleEnabled",
                     null,
                     null,
                     true);
-                this.AllowFileTransfers = store.Read<bool>(
-                    "AllowFileTransfers",
-                    "AllowFileTransfers",
+                this.IsFileAccessEnabled = store.Read<bool>(
+                    "IsFileAccessEnabled",
+                    "IsFileAccessEnabled",
                     null,
                     null, 
                     true);
