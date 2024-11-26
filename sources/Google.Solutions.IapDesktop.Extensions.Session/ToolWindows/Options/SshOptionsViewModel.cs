@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 usePersistent => usePersistent && !settings.PublicKeyValidity.IsReadOnly);
 
             this.IsPropagateLocaleEnabled = ObservableProperty.Build(
-                settings.IsPropagateLocaleEnabled.Value);
+                settings.EnableLocalePropagation.Value);
 
             MarkDirtyWhenPropertyChanges(this.PublicKeyType);
             MarkDirtyWhenPropertyChanges(this.UsePersistentKey);
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             settings.PublicKeyValidity.Value =
                 (int)TimeSpan.FromDays((int)this.PublicKeyValidityInDays.Value).TotalSeconds;
 
-            settings.IsPropagateLocaleEnabled.Value = this.IsPropagateLocaleEnabled.Value;
+            settings.EnableLocalePropagation.Value = this.IsPropagateLocaleEnabled.Value;
         }
 
         //---------------------------------------------------------------------

@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// <summary>
         /// Enable propagation of current locate.
         /// </summary>
-        ISetting<bool> IsPropagateLocaleEnabled { get; }
+        ISetting<bool> EnableLocalePropagation { get; }
 
         /// <summary>
         /// Gets or sets the validity of public keys uploaded
@@ -59,6 +59,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// local key store.
         /// </summary>
         ISetting<bool> UsePersistentKey { get; }
+
+        /// <summary>
+        /// Controls whether SFTP file access is allowed.
+        /// </summary>
+        ISetting<bool> EnableFileAccess { get; }
     }
 
     /// <summary>
@@ -100,19 +105,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         // Inner class.
         //---------------------------------------------------------------------
 
-        private class SshSettings : ISshSettings
+        internal class SshSettings : ISshSettings
         {
-            public ISetting<bool> IsPropagateLocaleEnabled { get; private set; }
-            public ISetting<int> PublicKeyValidity { get; private set; }
-            public ISetting<SshKeyType> PublicKeyType { get; private set; }
-            public ISetting<bool> UsePersistentKey { get; private set; }
+            public ISetting<bool> EnableLocalePropagation { get; }
+            public ISetting<int> PublicKeyValidity { get; }
+            public ISetting<SshKeyType> PublicKeyType { get; }
+            public ISetting<bool> UsePersistentKey { get; }
+            public ISetting<bool> EnableFileAccess { get; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
-                this.IsPropagateLocaleEnabled,
+                this.EnableLocalePropagation,
                 this.PublicKeyValidity,
                 this.PublicKeyType,
-                this.UsePersistentKey
+                this.UsePersistentKey,
+                this.EnableFileAccess
             };
 
             internal SshSettings(
@@ -155,15 +162,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                     "Persist SSH signing key",
                     null,
                     true);
-
-                //
-                // User preferences. These cannot be overridden by policy.
-                //
-                this.IsPropagateLocaleEnabled = store.Read<bool>(
+                this.EnableLocalePropagation = store.Read<bool>(
                     "IsPropagateLocaleEnabled",
                     "IsPropagateLocaleEnabled",
                     null,
                     null,
+                    true);
+                this.EnableFileAccess = store.Read<bool>(
+                    "EnableFileAccess",
+                    "EnableFileAccess",
+                    null,
+                    null, 
                     true);
             }
         }

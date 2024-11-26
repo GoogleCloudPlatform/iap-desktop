@@ -35,16 +35,17 @@ namespace Google.Solutions.Terminal.Test.Controls
     public class TestSshHybridClient : SshClientFixtureBase
     {
         //---------------------------------------------------------------------
-        // File browser.
+        // IsFileBrowserVisible.
         //---------------------------------------------------------------------
 
         [WindowsFormsTest]
-        public async Task IsFileBrowserVisible()
+        public async Task IsFileBrowserVisible_WhenFileBrowserEnabled()
         {
             using (var window = CreateWindow<SshHybridClient>())
             {
                 window.Show();
 
+                Assert.IsTrue(window.Client.EnableFileBrowser);
                 Assert.IsFalse(window.Client.IsFileBrowserVisible);
                 Assert.IsFalse(window.Client.CanShowFileBrowser);
 
@@ -66,6 +67,40 @@ namespace Google.Solutions.Terminal.Test.Controls
 
                 window.Client.IsFileBrowserVisible = false;
                 await Task.Delay(TimeSpan.FromSeconds(2));
+
+                //
+                // Close window.
+                //
+                window.Close();
+
+                await window.Client
+                    .AwaitStateAsync(ConnectionState.NotConnected)
+                    .ConfigureAwait(true);
+            }
+        }
+
+        [WindowsFormsTest]
+        public async Task IsFileBrowserVisible_WhenFileBrowserDisabled()
+        {
+            using (var window = CreateWindow<SshHybridClient>())
+            {
+                window.Show();
+
+                window.Client.EnableFileBrowser = false;
+
+                Assert.IsFalse(window.Client.IsFileBrowserVisible);
+                Assert.IsFalse(window.Client.CanShowFileBrowser);
+
+                //
+                // Connect.
+                //
+                window.Client.Connect();
+                await window.Client
+                    .AwaitStateAsync(ConnectionState.LoggedOn)
+                    .ConfigureAwait(true);
+
+                Assert.IsFalse(window.Client.IsFileBrowserVisible);
+                Assert.IsFalse(window.Client.CanShowFileBrowser);
 
                 //
                 // Close window.

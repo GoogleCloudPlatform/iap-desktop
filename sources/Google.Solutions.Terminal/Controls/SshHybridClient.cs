@@ -24,6 +24,7 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Ssh;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -92,17 +93,13 @@ namespace Google.Solutions.Terminal.Controls
             ResumeLayout(false);
         }
 
-        public bool CanShowFileBrowser
+        /// <summary>
+        /// Enable binding.
+        /// </summary>
+        public override void Bind(IBindingContext bindingContext)
         {
-            //
-            // The browser can only be shown in logged-on state.
-            //
-            get =>
-                this.State == ConnectionState.LoggedOn &&
-                this.BindingContext != null;
+            this.bindingContext = bindingContext;
         }
-
-        public event EventHandler<ExceptionEventArgs>? FileBrowsingFailed;
 
         //---------------------------------------------------------------------
         // Overrides.
@@ -142,11 +139,31 @@ namespace Google.Solutions.Terminal.Controls
         //---------------------------------------------------------------------
 
         /// <summary>
-        /// Enable binding.
+        /// Raised when an SFTP operation related to file browsing failed.
         /// </summary>
-        public override void Bind(IBindingContext bindingContext)
+        public event EventHandler<ExceptionEventArgs>? FileBrowsingFailed;
+
+        /// <summary>
+        /// Enable file browser.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(SshCategory)]
+        public bool EnableFileBrowser { get; set; } = true;
+
+        /// <summary>
+        /// Check if the control is in a state that permits the
+        /// file browser to be shown.
+        /// </summary>
+        public bool CanShowFileBrowser
         {
-            this.bindingContext = bindingContext;
+            //
+            // The browser can only be shown in logged-on state.
+            //
+            get =>
+                this.EnableFileBrowser &&
+                this.State == ConnectionState.LoggedOn &&
+                this.BindingContext != null;
         }
 
         /// <summary>
