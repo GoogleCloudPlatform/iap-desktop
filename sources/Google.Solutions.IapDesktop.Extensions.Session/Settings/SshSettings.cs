@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// <summary>
         /// Enable propagation of current locate.
         /// </summary>
-        ISetting<bool> IsPropagateLocaleEnabled { get; }
+        ISetting<bool> PropagateLocale { get; }
 
         /// <summary>
         /// Gets or sets the validity of public keys uploaded
@@ -59,6 +59,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         /// local key store.
         /// </summary>
         ISetting<bool> UsePersistentKey { get; }
+
+        /// <summary>
+        /// Controls whether SFTP file transfers are allowed.
+        /// </summary>
+        ISetting<bool> AllowFileTransfers { get; }
     }
 
     /// <summary>
@@ -102,14 +107,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
         private class SshSettings : ISshSettings
         {
-            public ISetting<bool> IsPropagateLocaleEnabled { get; private set; }
-            public ISetting<int> PublicKeyValidity { get; private set; }
-            public ISetting<SshKeyType> PublicKeyType { get; private set; }
-            public ISetting<bool> UsePersistentKey { get; private set; }
+            public ISetting<bool> PropagateLocale { get; }
+            public ISetting<int> PublicKeyValidity { get; }
+            public ISetting<SshKeyType> PublicKeyType { get; }
+            public ISetting<bool> UsePersistentKey { get; }
+            public ISetting<bool> AllowFileTransfers { get; }
 
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
-                this.IsPropagateLocaleEnabled,
+                this.PropagateLocale,
                 this.PublicKeyValidity,
                 this.PublicKeyType,
                 this.UsePersistentKey
@@ -155,15 +161,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                     "Persist SSH signing key",
                     null,
                     true);
-
-                //
-                // User preferences. These cannot be overridden by policy.
-                //
-                this.IsPropagateLocaleEnabled = store.Read<bool>(
+                this.PropagateLocale = store.Read<bool>(
                     "IsPropagateLocaleEnabled",
                     "IsPropagateLocaleEnabled",
                     null,
                     null,
+                    true);
+                this.AllowFileTransfers = store.Read<bool>(
+                    "AllowFileTransfers",
+                    "AllowFileTransfers",
+                    null,
+                    null, 
                     true);
             }
         }

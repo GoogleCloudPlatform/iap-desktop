@@ -45,15 +45,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     UserProfile.SchemaVersion.Current);
 
                 var settings = repository.GetSettings();
-                settings.IsPropagateLocaleEnabled.Value = false;
+                settings.PropagateLocale.Value = false;
                 settings.PublicKeyValidity.Value = 3600;
                 settings.PublicKeyType.Value = SshKeyType.EcdsaNistp256;
+                settings.AllowFileTransfers.Value = false;
                 repository.SetSettings(settings);
 
                 settings = repository.GetSettings();
-                Assert.IsFalse(settings.IsPropagateLocaleEnabled.Value);
+                Assert.IsFalse(settings.PropagateLocale.Value);
                 Assert.AreEqual(3600, settings.PublicKeyValidity.Value);
                 Assert.AreEqual(SshKeyType.EcdsaNistp256, settings.PublicKeyType.Value);
+                Assert.IsFalse(settings.AllowFileTransfers.Value);
             }
         }
 
@@ -73,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     UserProfile.SchemaVersion.Current);
                 var settings = repository.GetSettings();
 
-                Assert.IsTrue(settings.IsPropagateLocaleEnabled.Value);
+                Assert.IsTrue(settings.PropagateLocale.Value);
             }
         }
 
@@ -324,6 +326,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 var settings = repository.GetSettings();
 
                 Assert.IsTrue(settings.UsePersistentKey.Value);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // AllowFileTransfers.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void AllowFileTransfers_WhenKeyEmpty()
+        {
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
+            {
+                var repository = new SshSettingsRepository(
+                    settingsPath.CreateKey(),
+                    null,
+                    null,
+                    UserProfile.SchemaVersion.Current);
+                var settings = repository.GetSettings();
+
+                Assert.IsTrue(settings.AllowFileTransfers.Value);
             }
         }
     }

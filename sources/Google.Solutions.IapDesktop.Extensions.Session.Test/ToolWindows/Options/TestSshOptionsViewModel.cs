@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsPropagateLocaleEnabled.Value = true;
+            settings.PropagateLocale.Value = true;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsPropagateLocaleEnabled.Value = false;
+            settings.PropagateLocale.Value = false;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
-            settings.IsPropagateLocaleEnabled.Value = true;
+            settings.PropagateLocale.Value = true;
             settingsRepository.SetSettings(settings);
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsPropagateLocaleEnabled.Value);
+            Assert.IsFalse(settings.PropagateLocale.Value);
         }
 
         [Test]
