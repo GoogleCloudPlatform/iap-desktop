@@ -43,17 +43,17 @@ namespace Google.Solutions.Mvvm.Test.Controls
             using (var progressBar = new LinearProgressBar())
             {
                 Assert.IsFalse(progressBar.Indeterminate);
-                Assert.IsNull(progressBar.timer);
+                Assert.IsNull(progressBar.Timer);
 
                 progressBar.Indeterminate = true;
                 progressBar.Indeterminate = true;
                 Assert.IsTrue(progressBar.Indeterminate);
-                Assert.IsNotNull(progressBar.timer);
+                Assert.IsNotNull(progressBar.Timer);
 
                 progressBar.Indeterminate = false;
                 progressBar.Indeterminate = false;
                 Assert.IsFalse(progressBar.Indeterminate);
-                Assert.IsNull(progressBar.timer);
+                Assert.IsNull(progressBar.Timer);
             }
         }
 
@@ -109,14 +109,15 @@ namespace Google.Solutions.Mvvm.Test.Controls
             {
                 form.Controls.Add(progressBar);
 
-                Assert.IsFalse(progressBar.timer.Enabled);
+                Assert.IsNotNull(progressBar.Timer);
+                Assert.IsFalse(progressBar.Timer!.Enabled);
 
                 form.Show();
                 progressBar.Visible = true;
-                Assert.IsTrue(progressBar.timer.Enabled);
+                Assert.IsTrue(progressBar.Timer.Enabled);
 
                 progressBar.Visible = false;
-                Assert.IsFalse(progressBar.timer.Enabled);
+                Assert.IsFalse(progressBar.Timer.Enabled);
 
                 form.Close();
             }

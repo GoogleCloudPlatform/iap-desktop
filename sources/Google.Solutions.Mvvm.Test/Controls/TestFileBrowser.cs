@@ -272,7 +272,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     fileSystem.Object,
                     new Mock<IBindingContext>().Object);
 
-                await browser.NavigateAsync((IEnumerable<string>)null);
+                await browser.NavigateAsync(null);
                 Application.DoEvents();
 
                 // Root directory is empty.
@@ -343,7 +343,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.Show();
                 Application.DoEvents();
 
-                Exception exception = null;
+                Exception? exception = null;
                 browser.NavigationFailed += (s, e) =>
                 {
                     exception = e.Exception;
@@ -415,7 +415,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     fileSystem,
                     new Mock<IBindingContext>().Object);
 
-                IFileItem currentDirectory = null;
+                IFileItem? currentDirectory = null;
                 browser.CurrentDirectoryChanged += (s, e) =>
                 {
                     currentDirectory = browser.CurrentDirectory;

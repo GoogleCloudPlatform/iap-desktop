@@ -33,10 +33,10 @@ namespace Google.Solutions.Mvvm.Test.Binding
     {
         private class ViewModelWithBareProperties : ViewModelBase
         {
-            private string one;
+            private string? one;
             private int two;
 
-            public string One
+            public string? One
             {
                 get => this.one;
                 set

@@ -565,10 +565,10 @@ namespace Google.Solutions.Mvvm.Test.Format
             var token2 = new MarkdownDocument.Token(MarkdownDocument.TokenType.Delimiter, ")");
 
             Assert.IsFalse(token1.Equals(token2));
-            Assert.IsFalse(token1.Equals(null));
-            Assert.IsFalse(token1 == token2);
-            Assert.IsFalse(token1 == null);
-            Assert.IsTrue(token1 != token2);
+            Assert.IsFalse(token1.Equals(null!));
+            Assert.IsFalse(token1! == token2);
+            Assert.IsFalse(token1! == null!);
+            Assert.IsTrue(token1! != token2);
         }
     }
 }

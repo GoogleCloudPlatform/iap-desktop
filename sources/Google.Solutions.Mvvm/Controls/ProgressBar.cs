@@ -33,7 +33,7 @@ namespace Google.Solutions.Mvvm.Controls
     /// </summary>
     public abstract class ProgressBarBase : Control
     {
-        internal Timer? timer;
+        internal Timer? Timer { get; private set; }
         private int value;
         private int maximum = 100;
         private int speed = 1;
@@ -78,30 +78,30 @@ namespace Google.Solutions.Mvvm.Controls
         [Category("Behavior")]
         public bool Indeterminate
         {
-            get => this.timer != null;
+            get => this.Timer != null;
             set
             {
-                if (value && this.timer == null)
+                if (value && this.Timer == null)
                 {
                     //
                     // Create a timer that advances the progress bar, but don't
                     // start it until the control is shown.
                     //
-                    this.timer = new Timer()
+                    this.Timer = new Timer()
                     {
                         Interval = 50,
                         Enabled = this.Visible && !this.DesignMode
                     };
-                    this.timer.Tick += (_, __) =>
+                    this.Timer.Tick += (_, __) =>
                     {
                         this.Value = (this.Value + this.Speed) % (this.Maximum + 1);
                     };
                 }
-                else if (!value && this.timer != null)
+                else if (!value && this.Timer != null)
                 {
-                    this.timer.Stop();
-                    this.timer.Dispose();
-                    this.timer = null;
+                    this.Timer.Stop();
+                    this.Timer.Dispose();
+                    this.Timer = null;
                 }
             }
         }
@@ -116,8 +116,8 @@ namespace Google.Solutions.Mvvm.Controls
 
             if (disposing)
             {
-                this.timer?.Stop();
-                this.timer?.Dispose();
+                this.Timer?.Stop();
+                this.Timer?.Dispose();
             }
         }
 
@@ -131,8 +131,8 @@ namespace Google.Solutions.Mvvm.Controls
                 // Only run the timer when the control is
                 // visible.
                 //
-                Debug.Assert(this.timer != null);
-                this.timer!.Enabled = this.Visible && !this.DesignMode;
+                Debug.Assert(this.Timer != null);
+                this.Timer!.Enabled = this.Visible && !this.DesignMode;
             }
         }
     }

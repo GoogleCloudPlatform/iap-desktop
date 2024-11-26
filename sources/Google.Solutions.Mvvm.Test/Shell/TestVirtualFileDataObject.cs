@@ -111,11 +111,12 @@ namespace Google.Solutions.Mvvm.Test.Shell
                         () => copiedStream.Object)
                 });
 
-            var stream = (Stream)dataObject.GetData(
+            var stream = (Stream?)dataObject.GetData(
                 ShellDataFormats.CFSTR_FILECONTENTS,
                 false);
-            Assert.AreEqual(2, stream.Length);
-            Assert.AreEqual(2, stream.Read(new byte[2], 0, 2));
+            Assert.IsNotNull(stream);
+            Assert.AreEqual(2, stream!.Length);
+            Assert.AreEqual(2, stream!.Read(new byte[2], 0, 2));
         }
 
         //----------------------------------------------------------------------

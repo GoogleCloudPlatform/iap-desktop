@@ -39,7 +39,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
         public void Ctor_WhenArgumentInvalid_ThenConstructorThrowsException()
         {
             Assert.Throws<ArgumentNullException>(
-                () => new SubclassCallback(new Control(), null));
+                () => new SubclassCallback(new Control(), null!));
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
                     throw new ArgumentException("test");
                 });
 
-                Exception exception = null;
+                Exception? exception = null;
                 callback.UnhandledException += (_, e) => exception = e;
 
                 //
