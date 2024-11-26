@@ -22,7 +22,7 @@
 <policyDefinitions 
     xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    revision="2.39" 
+    revision="2.44"
     schemaVersion="1.0" 
     xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
 
