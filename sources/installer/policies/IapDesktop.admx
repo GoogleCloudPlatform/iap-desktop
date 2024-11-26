@@ -254,5 +254,24 @@
         <decimal value="0" />
       </disabledValue>
     </policy>
+
+    <policy
+        name="AllowFileTransfers"
+        class="Both"
+        displayName="$(string.AllowFileTransfers)"
+        explainText="$(string.AllowFileTransfers_Description)"
+        key="Software\Policies\Google\IapDesktop\1.0\Ssh"
+        valueName="AllowFileTransfers">
+
+      <parentCategory ref="iapdesktop" />
+      <supportedOn ref="windows:SUPPORTED_Windows8" />
+
+      <enabledValue>
+        <decimal value="1" />
+      </enabledValue>
+      <disabledValue>
+        <decimal value="0" />
+      </disabledValue>
+    </policy>
   </policies>
 </policyDefinitions>
