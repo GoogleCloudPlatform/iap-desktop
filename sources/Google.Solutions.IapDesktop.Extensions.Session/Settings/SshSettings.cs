@@ -118,7 +118,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 this.EnableLocalePropagation,
                 this.PublicKeyValidity,
                 this.PublicKeyType,
-                this.UsePersistentKey
+                this.UsePersistentKey,
+                this.EnableFileAccess
             };
 
             internal SshSettings(
