@@ -36,8 +36,25 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
     {
         private class ViewModelWithCommand : ViewModelBase
         {
-            public ObservableProperty<CommandState> CommandState { get; set; }
+            public ViewModelWithCommand(ObservableCommand command)
+            {
+                this.Command = command;
+            }
+
             public ObservableCommand Command { get; set; }
+        }
+
+        private class ViewModelWithCommandAndState : ViewModelWithCommand
+        {
+            public ViewModelWithCommandAndState(
+                ObservableCommand command,
+                ObservableProperty<CommandState> commandState)
+                : base(command)
+            {
+                this.CommandState = commandState;
+            }
+
+            public ObservableProperty<CommandState> CommandState { get; set; }
         }
 
         //---------------------------------------------------------------------
@@ -54,10 +71,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 commandAvailable);
 
             using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command,
-            })
+            using (var viewModel = new ViewModelWithCommand(command))
             {
                 var button = new Button();
                 form.Controls.Add(button);
@@ -86,10 +100,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 commandAvailable);
 
             using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command,
-            })
+            using (var viewModel = new ViewModelWithCommand(command))
             {
                 var button = new Button()
                 {
@@ -124,10 +135,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 });
 
             using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command
-            })
+            using (var viewModel = new ViewModelWithCommand(command))
             {
                 form.Controls.Add(button);
 
@@ -154,10 +162,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 () => Task.CompletedTask);
 
             using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command
-            })
+            using (var viewModel = new ViewModelWithCommand(command))
             {
                 form.Controls.Add(button);
 
@@ -189,10 +194,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 () => throw new ArgumentException());
 
             using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command
-            })
+            using (var viewModel = new ViewModelWithCommand(command))
             {
                 form.Controls.Add(button);
 
@@ -226,10 +228,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 () => throw new TaskCanceledException());
 
             using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command
-            })
+            using (var viewModel = new ViewModelWithCommand(command))
             {
                 form.Controls.Add(button);
 
@@ -266,10 +265,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 () => { });
 
             using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command
-            })
+            using (var viewModel = new ViewModelWithCommand(command))
             {
                 form.Controls.Add(button);
 
@@ -298,10 +294,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 () => { });
 
             using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command
-            })
+            using (var viewModel = new ViewModelWithCommand(command))
             {
                 form.Controls.Add(button);
 
@@ -332,10 +325,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 commandAvailable);
 
             using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command,
-            })
+            using (var viewModel = new ViewModelWithCommand(command))
             {
                 var toolStrip = new ToolStrip();
                 form.Controls.Add(toolStrip);
@@ -366,10 +356,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 commandAvailable);
 
             using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command,
-            })
+            using (var viewModel = new ViewModelWithCommand(command))
             {
                 var toolStrip = new ToolStrip();
                 form.Controls.Add(toolStrip);
@@ -406,10 +393,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 });
 
             using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command
-            })
+            using (var viewModel = new ViewModelWithCommand(command))
             {
                 var toolStrip = new ToolStrip();
                 form.Controls.Add(toolStrip);
@@ -441,10 +425,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 () => { });
 
             using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command
-            })
+            using (var viewModel = new ViewModelWithCommand(command))
             {
                 var toolStrip = new ToolStrip();
                 form.Controls.Add(toolStrip);
@@ -475,10 +456,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 () => { });
 
             using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command
-            })
+            using (var viewModel = new ViewModelWithCommand(command))
             {
                 var toolStrip = new ToolStrip();
                 form.Controls.Add(toolStrip);
@@ -520,11 +498,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 Width = 400,
                 Height = 400
             })
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command,
-                CommandState = commandAvailable
-            })
+            using (var viewModel = new ViewModelWithCommandAndState(command, commandAvailable))
             {
                 var button = new Button()
                 {

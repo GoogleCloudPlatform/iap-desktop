@@ -4,7 +4,6 @@
     <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
     <AssemblyTitle>$(ProjectName)</AssemblyTitle>
     
-    <Nullable>disable</Nullable>
     <UseWindowsForms>True</UseWindowsForms>
     <Platforms>x64;x86;ARM64</Platforms>
   </PropertyGroup>

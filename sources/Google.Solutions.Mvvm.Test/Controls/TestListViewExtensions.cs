@@ -30,40 +30,31 @@ namespace Google.Solutions.Mvvm.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestListViewExtensions
     {
-        private ListView listView;
-        private Form form;
-
-        [SetUp]
-        public void SetUp()
+        private class TestForm : Form
         {
-            this.listView = new ListView();
-            this.listView.Columns.Add(new ColumnHeader()
+            public ListView ListView { get; }
+
+            public TestForm()
             {
-                Text = "The \"first\" header",
-                DisplayIndex = 0
-            });
-            this.listView.Columns.Add(new ColumnHeader()
-            {
-                Text = "The second header",
-                DisplayIndex = 0
-            });
-            this.listView.Items.Add(new ListViewItem(new[] {
-                "\"first\" item",
-                "-42"
-            }));
+                this.ListView = new ListView();
+                this.ListView.Columns.Add(new ColumnHeader()
+                {
+                    Text = "The \"first\" header",
+                    DisplayIndex = 0
+                });
+                this.ListView.Columns.Add(new ColumnHeader()
+                {
+                    Text = "The second header",
+                    DisplayIndex = 0
+                });
+                this.ListView.Items.Add(new ListViewItem(new[] {
+                    "\"first\" item",
+                    "-42"
+                }));
 
-            this.listView.View = View.Details;
-
-            this.form = new Form();
-            this.form.Controls.Add(this.listView);
-
-            this.form.Show();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            this.form.Close();
+                this.ListView.View = View.Details;
+                this.Controls.Add(this.ListView);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -73,29 +64,39 @@ namespace Google.Solutions.Mvvm.Test.Controls
         [Test]
         public void ToTabSeparatedText_WhenListPopulated_ThenToTabSeparatedTextSucceeds()
         {
-            var tsv = this.listView.ToTabSeparatedText(false);
+            using (var f = new TestForm())
+            {
+                f.Show();
 
-            Assert.AreEqual(
-                "\"The 'first' header\"\t\"The second header\"\r\n\"" +
-                "'first' item\"\t\"-42\"\r\n",
-                tsv);
+                var tsv = f.ListView.ToTabSeparatedText(false);
+
+                Assert.AreEqual(
+                    "\"The 'first' header\"\t\"The second header\"\r\n\"" +
+                    "'first' item\"\t\"-42\"\r\n",
+                    tsv);
+            }
         }
 
         [Test]
         public void ToHtml_WhenListPopulated_ThenToHtmlSucceeds()
         {
-            var html = this.listView.ToHtml(false);
 
-            Assert.AreEqual(
-                "<table>\r\n" +
-                "<tr>\r\n" +
-                "<th>The &quot;first&quot; header</th><th>The second header</th>\r\n" +
-                "</tr>\r\n" +
-                "<tr>\r\n" +
-                "<td>&quot;first&quot; item</td><td>-42</td>\r\n" +
-                "</tr>\r\n" +
-                "</table>\r\n",
-                html);
+            using (var f = new TestForm())
+            {
+                f.Show();
+                var html = f.ListView.ToHtml(false);
+
+                Assert.AreEqual(
+                    "<table>\r\n" +
+                    "<tr>\r\n" +
+                    "<th>The &quot;first&quot; header</th><th>The second header</th>\r\n" +
+                    "</tr>\r\n" +
+                    "<tr>\r\n" +
+                    "<td>&quot;first&quot; item</td><td>-42</td>\r\n" +
+                    "</tr>\r\n" +
+                    "</table>\r\n",
+                    html);
+            }
         }
     }
 }

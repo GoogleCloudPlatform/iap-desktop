@@ -36,11 +36,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
         public async Task Schedule_MultipleInvocationsAreCoalesced()
         {
             var invocations = 0;
-            DeferredCallback callback = null;
+            DeferredCallback? callback = null;
             using (callback = new DeferredCallback(
                 cb =>
                 {
-                    Assert.IsFalse(callback.IsPending);
+                    Assert.IsNotNull(callback);
+                    Assert.IsFalse(callback!.IsPending);
                     invocations++;
                 },
                 TimeSpan.FromMilliseconds(10)))

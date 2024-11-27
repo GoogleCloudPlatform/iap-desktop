@@ -788,7 +788,7 @@ namespace Google.Solutions.Mvvm.Controls
         // Publics.
         //---------------------------------------------------------------------
 
-        public async Task NavigateAsync(IEnumerable<string> path)
+        public async Task NavigateAsync(IEnumerable<string>? path)
         {
             Debug.Assert(!this.InvokeRequired, "Running on UI thread");
 

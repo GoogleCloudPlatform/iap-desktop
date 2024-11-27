@@ -38,7 +38,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         private class NonObservableCommandContextSource<TContext> : IContextSource<TContext>
             where TContext : class
         {
-            public TContext Context { get; set; }
+            public TContext? Context { get; set; }
         }
 
         //---------------------------------------------------------------------
@@ -229,7 +229,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 source,
                 new Mock<IBindingContext>().Object))
             {
-                string contextOfCallback = null;
+                string? contextOfCallback = null;
                 container.AddCommand(
                     new ContextCommand<string>(
                         "test",
@@ -498,7 +498,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 },
                 bindingContext.Object))
             {
-                Exception exception = null;
+                Exception? exception = null;
                 bindingContext.Setup(
                     ctx => ctx.OnCommandFailed(
                         null,

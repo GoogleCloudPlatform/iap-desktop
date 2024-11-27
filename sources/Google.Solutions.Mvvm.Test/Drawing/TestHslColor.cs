@@ -68,7 +68,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
             Assert.IsTrue(c.Equals(c));
             Assert.IsTrue(c.Equals(new HslColor(1.0f, 1.0f, 1.0f)));
             Assert.IsFalse(c.Equals(new HslColor(1.0f, 1.0f, 0.0f)));
-            Assert.IsFalse(c.Equals(null));
+            Assert.IsFalse(c.Equals(null!));
         }
 
         //---------------------------------------------------------------------

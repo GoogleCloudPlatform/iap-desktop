@@ -35,7 +35,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         public void WhenToolStripIsNull_ThenApplyToReturns()
         {
             var theme = new ToolStripItemTheme(true);
-            theme.ApplyTo(null);
+            theme.ApplyTo(null!);
         }
 
         [Test]

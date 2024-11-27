@@ -34,7 +34,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         [Test]
         public void WhenControlIsNull_ThenApplyToReturns()
         {
-            new ControlTheme().ApplyTo(null);
+            new ControlTheme().ApplyTo(null!);
         }
 
         //---------------------------------------------------------------------

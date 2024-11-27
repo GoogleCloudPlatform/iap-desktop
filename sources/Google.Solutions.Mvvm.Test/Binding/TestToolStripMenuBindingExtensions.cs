@@ -34,26 +34,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
     [Apartment(ApartmentState.STA)]
     public class TestToolStripMenuBindingExtensions
     {
-        private Form form;
-        private ContextMenuStrip contextMenu;
-
-        [SetUp]
-        public void SetUp()
+        private class TestForm : Form
         {
-            this.contextMenu = new ContextMenuStrip();
-
-            this.form = new Form
+            public TestForm()
             {
-                ContextMenuStrip = this.contextMenu
-            };
-            this.form.Show();
+                this.ContextMenuStrip = new ContextMenuStrip();
+            }
         }
 
-        [TearDown]
-        public void TearDown()
-        {
-            this.form.Close();
-        }
 
         //---------------------------------------------------------------------
         // BindItem.
@@ -62,82 +50,92 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void BindItem_WhenItemBound_ThenMenuPropertiesAreUpdated()
         {
-            var menuItem = new ToolStripMenuItem();
-            this.contextMenu.Items.Add(menuItem);
-
-            var model = new Observable()
+            using (var form = new TestForm())
             {
-                Text = "text",
-                ToolTip = "tooltip",
-                ShortcutKeys = Keys.F1,
-                IsVisible = true,
-                IsEnabled = false
-            };
+                form.Show();
 
-            menuItem.BindItem(
-                model,
-                m => m.IsSeparator,
-                m => m.Text,
-                m => m.ToolTip,
-                m => m.Image,
-                m => m.ShortcutKeys,
-                m => m.IsVisible,
-                m => m.IsEnabled,
-                m => m.Style,
-                m => m.Children,
-                _ => { },
-                new Mock<IBindingContext>().Object);
+                var menuItem = new ToolStripMenuItem();
+                form.ContextMenuStrip.Items.Add(menuItem);
 
-            Assert.AreEqual(model.Text, menuItem.Text);
-            Assert.AreEqual(model.ToolTip, menuItem.ToolTipText);
-            Assert.AreEqual(model.Image, menuItem.Image);
-            Assert.AreEqual(model.ShortcutKeys, menuItem.ShortcutKeys);
-            Assert.AreEqual(model.IsEnabled, menuItem.Enabled);
-            Assert.AreEqual(model.Style, menuItem.DisplayStyle);
+                var model = new Observable()
+                {
+                    Text = "text",
+                    ToolTip = "tooltip",
+                    ShortcutKeys = Keys.F1,
+                    IsVisible = true,
+                    IsEnabled = false
+                };
+
+                menuItem.BindItem(
+                    model,
+                    m => m.IsSeparator,
+                    m => m.Text,
+                    m => m.ToolTip,
+                    m => m.Image,
+                    m => m.ShortcutKeys,
+                    m => m.IsVisible,
+                    m => m.IsEnabled,
+                    m => m.Style,
+                    m => m.Children,
+                    _ => { },
+                    new Mock<IBindingContext>().Object);
+
+                Assert.AreEqual(model.Text, menuItem.Text);
+                Assert.AreEqual(model.ToolTip, menuItem.ToolTipText);
+                Assert.AreEqual(model.Image, menuItem.Image);
+                Assert.AreEqual(model.ShortcutKeys, menuItem.ShortcutKeys);
+                Assert.AreEqual(model.IsEnabled, menuItem.Enabled);
+                Assert.AreEqual(model.Style, menuItem.DisplayStyle);
+            }
         }
 
         [Test]
         public void BindItem_WhenItemBoundAndPropertiesChange_ThenMenuPropertiesAreUpdated()
         {
-            var menuItem = new ToolStripMenuItem();
-            this.contextMenu.Items.Add(menuItem);
-
-            var model = new Observable()
+            using (var form = new TestForm())
             {
-                Text = "text",
-                ToolTip = "tooltip",
-                ShortcutKeys = Keys.F1,
-                IsVisible = true,
-                IsEnabled = true
-            };
+                form.Show();
 
-            menuItem.BindItem(
-                model,
-                m => m.IsSeparator,
-                m => m.Text,
-                m => m.ToolTip,
-                m => m.Image,
-                m => m.ShortcutKeys,
-                m => m.IsVisible,
-                m => m.IsEnabled,
-                m => m.Style,
-                m => m.Children,
-                _ => { },
-                new Mock<IBindingContext>().Object);
+                var menuItem = new ToolStripMenuItem();
+                form.ContextMenuStrip.Items.Add(menuItem);
 
-            model.Text = "new text";
-            model.ToolTip = "new tooltip";
-            model.ShortcutKeys = Keys.F2;
-            model.IsVisible = false;
-            model.IsEnabled = false;
+                var model = new Observable()
+                {
+                    Text = "text",
+                    ToolTip = "tooltip",
+                    ShortcutKeys = Keys.F1,
+                    IsVisible = true,
+                    IsEnabled = true
+                };
 
-            Assert.AreEqual(model.Text, menuItem.Text);
-            Assert.AreEqual(model.ToolTip, menuItem.ToolTipText);
-            Assert.AreEqual(model.Image, menuItem.Image);
-            Assert.AreEqual(model.ShortcutKeys, menuItem.ShortcutKeys);
-            Assert.AreEqual(model.IsVisible, menuItem.Visible);
-            Assert.AreEqual(model.IsEnabled, menuItem.Enabled);
-            Assert.AreEqual(model.Style, menuItem.DisplayStyle);
+                menuItem.BindItem(
+                    model,
+                    m => m.IsSeparator,
+                    m => m.Text,
+                    m => m.ToolTip,
+                    m => m.Image,
+                    m => m.ShortcutKeys,
+                    m => m.IsVisible,
+                    m => m.IsEnabled,
+                    m => m.Style,
+                    m => m.Children,
+                    _ => { },
+                    new Mock<IBindingContext>().Object);
+
+                model.Text = "new text";
+                model.ToolTip = "new tooltip";
+                model.ShortcutKeys = Keys.F2;
+                model.IsVisible = false;
+                model.IsEnabled = false;
+
+                Assert.AreEqual(model.Text, menuItem.Text);
+                Assert.AreEqual(model.ToolTip, menuItem.ToolTipText);
+                Assert.AreEqual(model.Image, menuItem.Image);
+                Assert.AreEqual(model.ShortcutKeys, menuItem.ShortcutKeys);
+                Assert.AreEqual(model.IsVisible, menuItem.Visible);
+                Assert.AreEqual(model.IsEnabled, menuItem.Enabled);
+                Assert.AreEqual(model.Style, menuItem.DisplayStyle);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -147,33 +145,38 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void BindCollection_WhenCollectionBound_ThenMenuItemsAreUpdated()
         {
-            var menuItem = new ToolStripMenuItem("do not touch me");
-            this.contextMenu.Items.Add(menuItem);
-
-            var model = new ObservableCollection<Observable>();
-            for (var i = 0; i < 10; i++)
+            using (var form = new TestForm())
             {
-                model.Add(new Observable()
+                form.Show();
+
+                var menuItem = new ToolStripMenuItem("do not touch me");
+                form.ContextMenuStrip.Items.Add(menuItem);
+
+                var model = new ObservableCollection<Observable>();
+                for (var i = 0; i < 10; i++)
                 {
-                    Text = $"item #{i}",
-                });
+                    model.Add(new Observable()
+                    {
+                        Text = $"item #{i}",
+                    });
+                }
+
+                form.ContextMenuStrip.Items.BindCollection(
+                    model,
+                    m => m.IsSeparator,
+                    m => m.Text,
+                    m => m.ToolTip,
+                    m => m.Image,
+                    m => m.ShortcutKeys,
+                    m => m.IsVisible,
+                    m => m.IsEnabled,
+                    m => m.Style,
+                    m => m.Children,
+                    _ => { },
+                    new Mock<IBindingContext>().Object);
+
+                Assert.AreEqual(model.Count + 1, form.ContextMenuStrip.Items.Count);
             }
-
-            this.contextMenu.Items.BindCollection(
-                model,
-                m => m.IsSeparator,
-                m => m.Text,
-                m => m.ToolTip,
-                m => m.Image,
-                m => m.ShortcutKeys,
-                m => m.IsVisible,
-                m => m.IsEnabled,
-                m => m.Style,
-                m => m.Children,
-                _ => { },
-                new Mock<IBindingContext>().Object);
-
-            Assert.AreEqual(model.Count + 1, this.contextMenu.Items.Count);
         }
 
         [Test]
@@ -187,22 +190,27 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 }
             };
 
-            this.contextMenu.Items.BindCollection(
-                model,
-                m => m.IsSeparator,
-                m => m.Text,
-                m => m.ToolTip,
-                m => m.Image,
-                m => m.ShortcutKeys,
-                m => m.IsVisible,
-                m => m.IsEnabled,
-                m => m.Style,
-                m => m.Children,
-                _ => { },
-                new Mock<IBindingContext>().Object);
 
-            Assert.AreEqual(1, this.contextMenu.Items.Count);
-            Assert.IsInstanceOf<ToolStripSeparator>(this.contextMenu.Items[0]);
+            using (var form = new TestForm())
+            {
+                form.Show();
+                form.ContextMenuStrip.Items.BindCollection(
+                    model,
+                    m => m.IsSeparator,
+                    m => m.Text,
+                    m => m.ToolTip,
+                    m => m.Image,
+                    m => m.ShortcutKeys,
+                    m => m.IsVisible,
+                    m => m.IsEnabled,
+                    m => m.Style,
+                    m => m.Children,
+                    _ => { },
+                    new Mock<IBindingContext>().Object);
+
+                Assert.AreEqual(1, form.ContextMenuStrip.Items.Count);
+                Assert.IsInstanceOf<ToolStripSeparator>(form.ContextMenuStrip.Items[0]);
+            }
         }
 
         [Test]
@@ -219,37 +227,42 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 });
             }
 
-            this.contextMenu.Items.BindCollection(
-                model,
-                m => m.IsSeparator,
-                m => m.Text,
-                m => m.ToolTip,
-                m => m.Image,
-                m => m.ShortcutKeys,
-                m => m.IsVisible,
-                m => m.IsEnabled,
-                m => m.Style,
-                m => m.Children,
-                _ => { },
-                new Mock<IBindingContext>().Object);
 
-            model.Insert(1, new Observable()
+            using (var form = new TestForm())
             {
-                Text = "new item"
-            });
+                form.Show();
+                form.ContextMenuStrip.Items.BindCollection(
+                    model,
+                    m => m.IsSeparator,
+                    m => m.Text,
+                    m => m.ToolTip,
+                    m => m.Image,
+                    m => m.ShortcutKeys,
+                    m => m.IsVisible,
+                    m => m.IsEnabled,
+                    m => m.Style,
+                    m => m.Children,
+                    _ => { },
+                    new Mock<IBindingContext>().Object);
 
-            Assert.AreEqual(4, this.contextMenu.Items.Count);
+                model.Insert(1, new Observable()
+                {
+                    Text = "new item"
+                });
 
-            CollectionAssert.AreEquivalent(
-                new[] {
-                    "item #0",
-                    "new item",
-                    "item #1",
-                    "item #2"},
-                this.contextMenu.Items
-                    .OfType<ToolStripMenuItem>()
-                    .Select(i => i.Text)
-                    .ToList());
+                Assert.AreEqual(4, form.ContextMenuStrip.Items.Count);
+
+                CollectionAssert.AreEquivalent(
+                    new[] {
+                        "item #0",
+                        "new item",
+                        "item #1",
+                        "item #2"},
+                    form.ContextMenuStrip.Items
+                        .OfType<ToolStripMenuItem>()
+                        .Select(i => i.Text)
+                        .ToList());
+            }
         }
 
         [Test]
@@ -266,39 +279,44 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 });
             }
 
-            this.contextMenu.Items.BindCollection(
-                model,
-                m => m.IsSeparator,
-                m => m.Text,
-                m => m.ToolTip,
-                m => m.Image,
-                m => m.ShortcutKeys,
-                m => m.IsVisible,
-                m => m.IsEnabled,
-                m => m.Style,
-                m => m.Children,
-                _ => { },
-                new Mock<IBindingContext>().Object);
 
-            model.RemoveAt(1);
+            using (var form = new TestForm())
+            {
+                form.Show();
+                form.ContextMenuStrip.Items.BindCollection(
+                    model,
+                    m => m.IsSeparator,
+                    m => m.Text,
+                    m => m.ToolTip,
+                    m => m.Image,
+                    m => m.ShortcutKeys,
+                    m => m.IsVisible,
+                    m => m.IsEnabled,
+                    m => m.Style,
+                    m => m.Children,
+                    _ => { },
+                    new Mock<IBindingContext>().Object);
 
-            Assert.AreEqual(2, this.contextMenu.Items.Count);
+                model.RemoveAt(1);
 
-            CollectionAssert.AreEquivalent(
-                new[] {
-                    "item #0",
-                    "item #2"},
-                this.contextMenu.Items
-                    .OfType<ToolStripMenuItem>()
-                    .Select(i => i.Text)
-                    .ToList());
+                Assert.AreEqual(2, form.ContextMenuStrip.Items.Count);
+
+                CollectionAssert.AreEquivalent(
+                    new[] {
+                        "item #0",
+                        "item #2"},
+                    form.ContextMenuStrip.Items
+                        .OfType<ToolStripMenuItem>()
+                        .Select(i => i.Text)
+                        .ToList());
+            }
         }
 
         private class Observable : ViewModelBase
         {
-            private string text;
-            private string toolTip;
-            private Image image;
+            private string? text;
+            private string? toolTip;
+            private Image? image;
             private Keys shortcutKeys;
             private bool isVisible;
             private bool isEnabled;
@@ -307,8 +325,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
             public ToolStripItemDisplayStyle Style => ToolStripItemDisplayStyle.Text;
 
             public ObservableCollection<Observable> Children { get; set; }
+                = new ObservableCollection<Observable>();
 
-            public string Text
+            public string? Text
             {
                 get => this.text;
                 set
@@ -318,7 +337,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 }
             }
 
-            public string ToolTip
+            public string? ToolTip
             {
                 get => this.toolTip;
                 set
@@ -328,7 +347,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 }
             }
 
-            public Image Image
+            public Image? Image
             {
                 get => this.image;
                 set

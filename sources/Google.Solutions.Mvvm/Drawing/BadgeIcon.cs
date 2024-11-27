@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -51,10 +52,7 @@ namespace Google.Solutions.Mvvm.Drawing
 
         public static BadgeIcon ForTextInitial(string text)
         {
-            if (text == null || text.Length < 1)
-            {
-                throw new ArgumentException(nameof(text));
-            }
+            Precondition.ExpectNotEmpty(text, nameof(text));
 
             //
             // Generate a color based on the input text.

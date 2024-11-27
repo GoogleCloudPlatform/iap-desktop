@@ -43,10 +43,10 @@ namespace Google.Solutions.Mvvm.Test.Cache
                 this.ApplyCalls++;
             }
 
-            protected override Task<string> LoadModelAsync(string key, CancellationToken token)
+            protected override Task<string?> LoadModelAsync(string key, CancellationToken token)
             {
                 this.LoadModelCalls++;
-                return Task.FromResult("test");
+                return Task.FromResult<string?>("test");
             }
 
             public Task Reload() => base.InvalidateAsync();
@@ -55,7 +55,7 @@ namespace Google.Solutions.Mvvm.Test.Cache
         private class SlowViewModel : SampleViewModel
         {
             public int CancelCount = 0;
-            protected override async Task<string> LoadModelAsync(string key, CancellationToken token)
+            protected override async Task<string?> LoadModelAsync(string key, CancellationToken token)
             {
                 try
                 {

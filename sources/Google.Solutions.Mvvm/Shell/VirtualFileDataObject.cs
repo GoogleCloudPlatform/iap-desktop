@@ -295,7 +295,7 @@ namespace Google.Solutions.Mvvm.Shell
             pfIsOpAsync = this.IsAsync ? VariantBool.True : VariantBool.False;
         }
 
-        public void StartOperation([In] IBindCtx pbcReserved)
+        public void StartOperation([In] IBindCtx? pbcReserved)
         {
             ExpectNotDisposed();
 
@@ -303,7 +303,7 @@ namespace Google.Solutions.Mvvm.Shell
             this.AsyncOperationStarted?.Invoke(this, EventArgs.Empty);
         }
 
-        public void EndOperation([In] int hResult, [In] IBindCtx pbcReserved, [In] uint dwEffects)
+        public void EndOperation([In] int hResult, [In] IBindCtx? pbcReserved, [In] uint dwEffects)
         {
             ExpectNotDisposed();
             Precondition.Expect(this.IsOperationInProgress, "Operation not started");
@@ -725,7 +725,7 @@ namespace Google.Solutions.Mvvm.Shell
             /// data extraction is starting.
             /// </summary>
             /// <param name="pbcReserved"></param>
-            void StartOperation([In] IBindCtx pbcReserved);
+            void StartOperation([In] IBindCtx? pbcReserved);
 
             /// <summary>
             /// Called by the drop source to determine whether the target 
@@ -739,7 +739,7 @@ namespace Google.Solutions.Mvvm.Shell
             /// </summary>
             void EndOperation(
                 [In] int hResult,
-                [In] IBindCtx pbcReserved,
+                [In] IBindCtx? pbcReserved,
                 [In] uint dwEffects);
         }
     }
