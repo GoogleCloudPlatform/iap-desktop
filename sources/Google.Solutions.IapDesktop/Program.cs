@@ -329,6 +329,14 @@ namespace Google.Solutions.IapDesktop
                 ApplicationTraceSource.Log.TraceError(e);
             }
 
+            //
+            // Use the GDI-based TextRenderer class.
+            //
+            // NB. This must be set early, before the first window is created.
+            //
+            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+            System.Windows.Forms.Application.EnableVisualStyles();
+
 #if DEBUG
             ApplicationTraceSource.Log.Switch.Level = SourceLevels.Verbose;
             TerminalTraceSource.Log.Switch.Level = SourceLevels.Verbose;
@@ -436,9 +444,6 @@ namespace Google.Solutions.IapDesktop
                             "Setting DPI mode to {0} failed: {1}", dpiMode, e.Message);
                     }
                 }
-
-                System.Windows.Forms.Application.EnableVisualStyles();
-                System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 
                 //
                 // Load settings.
