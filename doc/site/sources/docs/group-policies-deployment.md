@@ -34,29 +34,18 @@ process of deploying IAP Desktop to users' workstations by using Active Director
 
     To use the Intune Settings Catalog to automate IAP Desktop deployments, do the following:
 
-    1.  Create an empty folder on your local computer.
-    1.  [Download the IAP Desktop MSI package](https://github.com/GoogleCloudPlatform/iap-desktop/releases) and 
-        save it to the empty folder.
-    1.  [Download the Microsoft Win32 Content Prep Tool :octicons-link-external-16:](https://github.com/microsoft/Microsoft-Win32-Content-Prep-Tool).
-    1.  Open a command prompt and convert the IAP Desktop MSI package into a `.intunewin` file:
-
-        ```
-        IntuneWinAppUtil -c FOLDER -s IapDesktopX64.msi -o .
-        ```
-
-        Replace `FOLDER` with the path of the folder that contains the IAP Desktop MSI package.
-
+    1.  [Download the IAP Desktop MSI package](https://github.com/GoogleCloudPlatform/iap-desktop/releases).        
     1.  In the [Intune admin center :octicons-link-external-16:](https://intune.microsoft.com/), go to
         **Apps > Windows.**.
     1.  Click **Add** and configure the following:
 
-        1.  Set **App type** to **Windows app (Win32)**.
+        1.  Set **App type** to **Line-of-business app**.
         1.  Click **Select**.
+
 
     1.  Click **Select app package** file and do the following:
 
-        1.  Select the `.intunewin` file that you created previously
-            by running `IntuneWinAppUtil`.
+        1.  Select the IAP Desktop MSI package that you downloaded previously.
         1.  Click **OK**.
 
     1.  On the **App information page**, do the following:
@@ -64,28 +53,12 @@ process of deploying IAP Desktop to users' workstations by using Active Director
         1.  Set **Publisher** to `Google`
         1.  Click **Next**.
 
-    1.  On the **Program** page, click **Next**.
-    1.  On the **Requirements** page, do the following:
-    
-        1.  Set **Operating systema architecture** to **64 bit**.
-        1.  Set **Minimum operating system** to **Windows 1607**.
-        1.  Click **Next**.
-
-    1.  On the **Detection rules** page, do the following:
-
-        1.  Set **Rules format** to **Manually configure detection rules**.
-        1.  Set **Rule type** to **MSI**.
-        1.  Click **OK**.
-        1.  Click **Next**.
-
-    1.  On the **Dependencies** page, click **Next**.
-    1.  On the **Supersedence** page, click **Next**.
     1.  On the **Assignments** page, do the following:
 
         1.  Select users who should be able to use IAP Desktop.
         1.  Click **Next**.
 
-    1.  Click **Create**.
+    1.  On the **Review + create** page, click **Create**.
 
 ## What's next
 
