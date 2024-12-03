@@ -68,7 +68,12 @@
         Type="raw"/>
     </Property>
 
-    <Property Id="WINDOWS_CURRENTBUILDNUMBER">
+    <Property Id="WINDOWS_CURRENTBUILDNUMBER" Secure="yes">
+      <!-- 
+        Property must be marked as secure, otherwise Windows Installer 
+        might (depending on policies and elevation state) reject to pass 
+        it to the install sequence.
+      --> 
       <RegistrySearch 
         Id="CurrentBuildNumberSearch"
         Root="HKLM"
