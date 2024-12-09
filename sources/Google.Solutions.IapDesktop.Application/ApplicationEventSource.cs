@@ -33,28 +33,5 @@ namespace Google.Solutions.IapDesktop.Application
         public const string ProviderGuid = "4B23296B-C25A-449C-91F2-897BDABAA1A8";
 
         public static ApplicationEventSource Log { get; } = new ApplicationEventSource();
-
-        //---------------------------------------------------------------------
-        // GUI commands.
-        //---------------------------------------------------------------------
-
-        public const int CommandExecutedId = 1;
-        public const int CommandFailedId = 2;
-
-        [Event(CommandExecutedId, Level = EventLevel.Informational)]
-        internal void CommandExecuted(string id)
-        {
-            WriteEvent(CommandExecutedId, id);
-        }
-
-        [Event(CommandFailedId, Level = EventLevel.Warning)]
-        internal void CommandFailed(
-            string id,
-            string type,
-            string error,
-            string? cause)
-        {
-            WriteEvent(CommandFailedId, id, type, error, cause);
-        }
     }
 }

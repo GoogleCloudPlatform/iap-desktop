@@ -21,9 +21,11 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -114,8 +116,13 @@ namespace Google.Solutions.Apis.Auth
                     //
                     this.store.Write(session.OfflineCredential);
 
-                    ApiEventSource.Log.OfflineCredentialActivated(
-                        this.Registration.Issuer.ToString());
+                    TelemetryLog.Current.Write(
+                        "app_auth_offline",
+                        new Dictionary<string, object>
+                        {
+                            { "issuer", this.Registration.Issuer.ToString()}
+                        });
+
                     ApiTraceSource.Log.TraceVerbose(
                         "Activating offline credential succeeded.");
 
@@ -132,9 +139,14 @@ namespace Google.Solutions.Apis.Auth
                     // we don't clear the store.
                     //
 
-                    ApiEventSource.Log.OfflineCredentialActivationFailed(
-                        this.Registration.Issuer.ToString(),
-                        e.FullMessage());
+                    TelemetryLog.Current.Write(
+                        "app_auth_offline_failed",
+                        new Dictionary<string, object>
+                        {
+                            { "issuer", this.Registration.Issuer.ToString()},
+                            { "error", e.FullMessage() }
+                        });
+
                     ApiTraceSource.Log.TraceWarning(
                         "Activating offline credential failed: {0}",
                         e.FullMessage());
@@ -184,8 +196,13 @@ namespace Google.Solutions.Apis.Auth
                 //
                 this.store.Write(session.OfflineCredential);
 
-                ApiEventSource.Log.Authorized(
-                    this.Registration.Issuer.ToString());
+                TelemetryLog.Current.Write(
+                    "app_auth",
+                    new Dictionary<string, object>
+                    {
+                        { "issuer", this.Registration.Issuer.ToString()}
+                    });
+
                 ApiTraceSource.Log.TraceVerbose(
                     "Browser-based authorization succeeded.");
 

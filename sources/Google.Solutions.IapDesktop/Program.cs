@@ -552,14 +552,14 @@ namespace Google.Solutions.IapDesktop
                 // Enable telemetry if the user allows it. Do this before
                 // authorization takes place.
                 //
-                preAuthLayer.AddSingleton<ITelemetryCollector>(new TelemetryCollector(
+                TelemetryLog.Current = new AnalyticsLog(
                     new MeasurementClient(
                         MeasurementClient.CreateEndpoint(),
                         Install.UserAgent,
                         AnalyticsStream.ApiKey,
                         AnalyticsStream.MeasurementId),
                     install,
-                    new Dictionary<string, string>()
+                    new Dictionary<string, object>()
                     {
                         { DefaultParameters.UserAgent, Install.UserAgent.ToApplicationName() },
                         { DefaultParameters.UserAgentArchitecture, ProcessEnvironment.ProcessArchitecture.ToString() },
@@ -571,8 +571,9 @@ namespace Google.Solutions.IapDesktop
                     })
                 {
                     Enabled = appSettings.IsTelemetryEnabled.Value
-                });
+                };
 
+                preAuthLayer.AddSingleton(TelemetryLog.Current);
                 preAuthLayer.AddTransient<AuthorizeView>();
                 preAuthLayer.AddTransient<AuthorizeViewModel>();
                 preAuthLayer.AddTransient<AuthorizeOptionsView>();

@@ -19,11 +19,13 @@
 // under the License.
 //
 
+using Google.Solutions.Common;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -74,11 +76,16 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             // because it might contain project names or other PII.
             //
             var unwrappedException = exception.Unwrap();
-            ApplicationEventSource.Log.CommandFailed(
-                command.Id,
-                command.GetType().FullName(),
-                unwrappedException.GetType().Name,
-                unwrappedException.InnerException?.GetType().Name);
+            TelemetryLog.Current.Write(
+                "app_cmd_failed",
+                new Dictionary<string, object>
+                {
+                    { "id", command.Id },
+                    { "type", command.GetType().FullName() },
+                    { "error", unwrappedException.GetType().Name },
+                    { "cause",  unwrappedException
+                        .InnerException?.GetType().Name ?? string.Empty },
+                });
 
             this.exceptionDialog.Show(
                 parent,
@@ -93,7 +100,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                 Debug.Assert(
                     !command.Id.Contains(" "),
                     "Command IDs must not contain spaces");
-                ApplicationEventSource.Log.CommandExecuted(command.Id);
+
+                TelemetryLog.Current.Write(
+                    "app_cmd_executed",
+                    new Dictionary<string, object>
+                    {
+                        { "id", command.Id }
+                    });
             }
         }
 

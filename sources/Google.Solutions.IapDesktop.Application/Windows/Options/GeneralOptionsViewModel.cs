@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common;
 using Google.Solutions.IapDesktop.Application.Client;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
@@ -35,20 +36,17 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
 {
     internal class GeneralOptionsViewModel : OptionsViewModelBase<IApplicationSettings>
     {
-        private readonly ITelemetryCollector telemetryCollector;
         private readonly IBrowserProtocolRegistry protocolRegistry;
 
         public GeneralOptionsViewModel(
             IRepository<IApplicationSettings> settingsRepository,
             IBrowserProtocolRegistry protocolRegistry,
-            ITelemetryCollector telemetryCollector,
             HelpClient helpService)
             : base("General", settingsRepository)
         {
             var settings = settingsRepository.GetSettings();
 
             this.protocolRegistry = protocolRegistry;
-            this.telemetryCollector = telemetryCollector;
 
             this.OpenBrowserIntegrationHelp = ObservableCommand.Build(
                 string.Empty,
@@ -108,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             // Apply telemetry settings so that we don't have
             // to relaunch.
             //
-            this.telemetryCollector.Enabled = this.IsTelemetryEnabled.Value;
+            TelemetryLog.Current.Enabled = this.IsTelemetryEnabled.Value;
         }
 
         private static string ExecutableLocation

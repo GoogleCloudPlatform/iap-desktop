@@ -118,6 +118,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
                 return this.preAuthorizedCredential!;
             }
+
+            //TODO: GA event
         }
 
         public override Task<ITransport> ConnectTransportAsync(

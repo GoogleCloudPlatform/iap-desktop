@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Client;
-using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
@@ -49,7 +48,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                     new GeneralOptionsViewModel(
                         appSettingsRepository,
                         serviceProvider.GetService<IBrowserProtocolRegistry>(),
-                        serviceProvider.GetService<ITelemetryCollector>(),
                         serviceProvider.GetService<HelpClient>()));
                 dialog.ViewModel.AddSheet(
                     new NetworkOptionsSheet(),
