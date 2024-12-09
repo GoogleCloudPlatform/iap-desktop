@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
     /// Listens to selected ETW events and reports them as
     /// Measurements to Google Analytics.
     /// </summary>
-    public interface ITelemetryCollector
+    public interface ITelemetryCollector // TODO: rename
     {
         /// <summary>
         /// Enable or disable telemetry collection.

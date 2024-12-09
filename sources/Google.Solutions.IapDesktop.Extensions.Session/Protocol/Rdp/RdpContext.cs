@@ -61,6 +61,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         public override Task<RdpCredential> AuthorizeCredentialAsync(
             CancellationToken cancellationToken)
         {
+            //TODO: GA event
+
             //
             // RDP credentials are ready to go.
             //
