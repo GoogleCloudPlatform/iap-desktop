@@ -21,10 +21,11 @@
 
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Application.Diagnostics
+namespace Google.Solutions.Common
 {
     /// <summary>
-    /// Telemetry log that drops all events.
+    /// Log for telemetry events. The default implementation drops
+    /// all events.
     /// </summary>
     public class TelemetryLog
     {

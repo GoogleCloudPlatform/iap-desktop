@@ -19,8 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Common;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
