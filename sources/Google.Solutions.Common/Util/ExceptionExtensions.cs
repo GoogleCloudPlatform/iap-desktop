@@ -32,6 +32,67 @@ namespace Google.Solutions.Common.Util
 {
     public static class ExceptionExtensions
     {
+        /// <summary>
+        /// Create a stack trace that looks like a default stack trace,
+        /// but additionally contains IL offsets.
+        /// </summary>
+        private static string CreateStackTraceWithOffsets(Exception e)
+        {
+            var buffer = new StringBuilder();
+            buffer.AppendLine($"{e.GetType().FullName}: {e.Message}");
+
+            foreach (var frame in new StackTrace(e, false)
+                .GetFrames()
+                .EnsureNotNull())
+            {
+                var method = frame.GetMethod();
+                var parameters = string.Join(
+                    ", ",
+                    method
+                        .GetParameters()
+                        .EnsureNotNull()
+                        .Select(p => $"{p.ParameterType.Name} {p.Name}"));
+
+                buffer.Append($"   at {method.ReflectedType.FullName}.{method.Name}({parameters})");
+                buffer.Append($" +IL_{frame.GetILOffset():x4}");
+
+                var line = frame.GetFileName();
+                if (line != null)
+                {
+                    buffer.Append($" in {line}:{frame.GetFileLineNumber()}");
+                }
+
+                buffer.AppendLine();
+            }
+
+            return buffer.ToString();
+        }
+
+        /// <summary>
+        /// Create a compact, single-line stack trace.
+        /// </summary>
+        private static string CreateCompactStackTrace(Exception e)
+        {
+            var buffer = new StringBuilder();
+            buffer.Append($"{e.GetType().Name}: {e.Message}");
+
+            if (new StackTrace(e, false)
+                .GetFrames()
+                .EnsureNotNull()
+                .Where(f => !f.GetMethod().ReflectedType.Namespace.StartsWith("System."))
+                .FirstOrDefault() is StackFrame frame)
+            {
+                var method = frame.GetMethod();
+                buffer.Append($" at {method.ReflectedType.FullName}.{method.Name}");
+            }
+
+            return buffer.ToString();
+        }
+
+        /// <summary>
+        /// Remove all enclosing <c>AggregateException</c> and 
+        /// <c>TargetInvocationException</c> exceptions.
+        /// </summary>
         public static Exception Unwrap(this Exception e)
         {
             if (e is AggregateException aggregate &&
@@ -50,6 +111,10 @@ namespace Google.Solutions.Common.Util
             }
         }
 
+        /// <summary>
+        /// Test if the exception, when unwrapped, is of a certain
+        /// type. Can be used in exception filters.
+        /// </summary>
         public static bool Is<T>(this Exception e) where T : Exception
         {
             return e.Unwrap() is T;
@@ -65,6 +130,9 @@ namespace Google.Solutions.Common.Util
             return e.Is<COMException>() || e.Is<InvalidComObjectException>();
         }
 
+        /// <summary>
+        /// Combine the exception message of all nested exceptions.
+        /// </summary>
         public static string FullMessage(this Exception exception)
         {
             var fullMessage = new StringBuilder();
@@ -82,49 +150,23 @@ namespace Google.Solutions.Common.Util
             return fullMessage.ToString();
         }
 
-        public static string ToString(this Exception exception, ExceptionFormatOptions options)
+        /// <summary>
+        /// Format an exception.
+        /// </summary>
+        public static string ToString(
+            this Exception exception, 
+            ExceptionFormatOptions options)
         {
             return options switch
             {
-                ExceptionFormatOptions.IncludeOffsets => StackTraceBuilder
-                    .CreateStackTraceWithOffsets(exception),
+                ExceptionFormatOptions.IncludeOffsets 
+                    => CreateStackTraceWithOffsets(exception),
+
+                ExceptionFormatOptions.Compact 
+                    => CreateCompactStackTrace(exception),
+
                 _ => exception.ToString(),
             };
-        }
-
-        private static class StackTraceBuilder
-        {
-            public static string CreateStackTraceWithOffsets(Exception e)
-            {
-                var stackTrace = new StackTrace(e, false);
-                var buffer = new StringBuilder();
-
-                buffer.AppendLine($"{e.GetType().FullName}: {e.Message}");
-
-                foreach (var frame in stackTrace.GetFrames().EnsureNotNull())
-                {
-                    var method = frame.GetMethod();
-                    var parameters = string.Join(
-                        ", ",
-                        method
-                            .GetParameters()
-                            .EnsureNotNull()
-                            .Select(p => $"{p.ParameterType.Name} {p.Name}"));
-
-                    buffer.Append($"   at {method.ReflectedType.FullName}.{method.Name}({parameters})");
-                    buffer.Append($" +IL_{frame.GetILOffset():x4}");
-
-                    var line = frame.GetFileName();
-                    if (line != null)
-                    {
-                        buffer.Append($" in {line}:{frame.GetFileLineNumber()}");
-                    }
-
-                    buffer.AppendLine();
-                }
-
-                return buffer.ToString();
-            }
         }
     }
 
@@ -138,6 +180,12 @@ namespace Google.Solutions.Common.Util
         /// <summary>
         /// Include IL offsets.
         /// </summary>
-        IncludeOffsets
+        IncludeOffsets,
+
+        /// <summary>
+        /// Single-line format that only contains the most relevant
+        /// information.
+        /// </summary>
+        Compact
     }
 }

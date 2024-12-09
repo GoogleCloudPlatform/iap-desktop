@@ -806,6 +806,19 @@ namespace Google.Solutions.IapDesktop
             //
             IsLoggingEnabled = false;
 
+            TelemetryLog.Current.Write(
+                "app_crash",
+                new Dictionary<string, object>
+                {
+                    //
+                    // Only include a base set of information that's
+                    // safe to not contain any PII.
+                    //
+                    { "error", e.GetType().Name },
+                    { "cause",  e.InnerException?.GetType().Name ?? string.Empty },
+                    { "location", e.ToString(ExceptionFormatOptions.Compact) }
+                });
+
             //
             // NB. This could be called on any thread, at any time, so avoid
             // touching the main form.
