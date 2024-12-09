@@ -20,12 +20,14 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common;
 using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -92,6 +94,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         public override async Task<ISshCredential> AuthorizeCredentialAsync(
             CancellationToken cancellationToken)
         {
+            ISshCredential credential;
+            string credentialType;
             if (this.UsePlatformManagedCredential)
             {
                 Debug.Assert(this.credentialFactory != null);
@@ -100,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 //
                 // Authorize the key using OS Login or metadata-based keys.
                 //
-                return await this.credentialFactory!
+                var platformCredential = await this.credentialFactory!
                     .CreateCredentialAsync(
                         this.Instance,
                         this.signer!,
@@ -109,6 +113,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                         KeyAuthorizationMethods.All,
                         cancellationToken)
                     .ConfigureAwait(false);
+
+                credential = platformCredential;
+                credentialType = platformCredential.AuthorizationMethod.ToString();
             }
             else
             {
@@ -116,10 +123,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 Debug.Assert(this.signer == null);
                 Debug.Assert(this.Parameters.PreferredUsername == null);
 
-                return this.preAuthorizedCredential!;
+                credential = this.preAuthorizedCredential!;
+                credentialType = "Custom";
             }
 
-            //TODO: GA event
+            TelemetryLog.Current.Write(
+                "session_ssh_auth",
+                new Dictionary<string, object>
+                {
+                    {
+                        "sshct", // Credential type
+                        credentialType
+                    }
+                });
+
+            return credential;
         }
 
         public override Task<ITransport> ConnectTransportAsync(

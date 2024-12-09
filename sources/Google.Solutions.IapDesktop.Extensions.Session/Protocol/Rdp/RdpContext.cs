@@ -20,8 +20,13 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
+using Google.Solutions.Platform.Net;
+using System.Collections.Generic;
+using System.Management;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -61,11 +66,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         public override Task<RdpCredential> AuthorizeCredentialAsync(
             CancellationToken cancellationToken)
         {
-            //TODO: GA event
-
             //
             // RDP credentials are ready to go.
             //
+
+            var isProbablyDomainCredential = new NetworkCredential(
+                this.Credential.User,
+                string.Empty,
+                this.Credential.Domain).IsDomainOrHostQualified();
+
+            TelemetryLog.Current.Write(
+                "session_rdp_auth",
+                new Dictionary<string, object>
+                {
+                    {
+                        "rdpct", // Credential type
+                        isProbablyDomainCredential ? "Domain" : "Local"
+                    }
+                });
+
             return Task.FromResult(this.Credential);
         }
 

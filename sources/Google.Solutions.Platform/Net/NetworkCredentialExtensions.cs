@@ -99,6 +99,47 @@ namespace Google.Solutions.Platform.Net
         }
 
         /// <summary>
+        /// Determine if the credential specifies a domain or specific hostname.
+        /// </summary>
+        public static bool IsDomainOrHostQualified(this NetworkCredential credential)
+        {
+            var trimmedUsername = credential.UserName?.Trim();
+            var trimmedDomain = credential.Domain?.Trim();
+
+            if (trimmedUsername == null || trimmedUsername.Length == 0)
+            {
+                return false;
+            }
+            else if (!string.IsNullOrEmpty(trimmedDomain) && trimmedDomain != ".")
+            {
+                //
+                // Domain specified separately.
+                //
+                return true;
+            }
+            else if (trimmedUsername.Contains('\\') && trimmedUsername[0] != '.')
+            {
+                //
+                // NetBIOS format: domain\username.
+                //
+                return true;
+            }
+            else if (trimmedUsername.Contains('@'))
+            {
+                //
+                // UPN format: username@domain.
+                //
+                // Leave as is, but clear domain field.
+                //
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Return the DNS or NetBios domain.
         /// </summary>
         public static string GetDomainComponent(this NetworkCredential credential)
