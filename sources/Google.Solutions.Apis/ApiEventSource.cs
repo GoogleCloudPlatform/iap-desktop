@@ -63,28 +63,5 @@ namespace Google.Solutions.Apis
             int attempt,
             string errorMessage)
             => WriteEvent(3, requestUri, errorMessage);
-
-        //---------------------------------------------------------------------
-        // Auth
-        //---------------------------------------------------------------------
-
-        public const int OfflineCredentialActivatedId = 100;
-        public const int OfflineCredentialActivationFailedId = 101;
-        public const int AuthorizedId = 102;
-
-        [Event(OfflineCredentialActivatedId, Level = EventLevel.Informational)]
-        internal void OfflineCredentialActivated(
-            string issuer)
-            => WriteEvent(OfflineCredentialActivatedId, issuer);
-
-        [Event(OfflineCredentialActivationFailedId, Level = EventLevel.Warning)]
-        internal void OfflineCredentialActivationFailed(
-            string issuer,
-            string error)
-            => WriteEvent(OfflineCredentialActivationFailedId, issuer, error);
-
-        [Event(AuthorizedId, Level = EventLevel.Informational)]
-        internal void Authorized(string issuer)
-            => WriteEvent(AuthorizedId, issuer);
     }
 }
