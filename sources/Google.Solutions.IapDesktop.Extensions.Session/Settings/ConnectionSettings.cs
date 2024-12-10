@@ -113,7 +113,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                     "is configured to always prompt for passwords upon connection (a server-side " +
                     "group policy)",
                 Categories.RdpSecurity,
-                Protocol.Rdp.RdpAutomaticLogon._Default);
+
+                //
+                // Adjust default based on local RDP policy. If the local policy
+                // disables saving, then there's a good chance that VMs might be
+                // configured to do the same.
+                //
+                // We don't treat this as a policy though, so users can change
+                // the setting.
+                //
+
+                LocalRdpPolicy.IsPasswordSavingDisabled
+                    ? Protocol.Rdp.RdpAutomaticLogon.Disabled
+                    : Protocol.Rdp.RdpAutomaticLogon._Default);
             this.RdpNetworkLevelAuthentication = store.Read<RdpNetworkLevelAuthentication>(
                 "NetworkLevelAuthentication",
                 "Network level authentication",
