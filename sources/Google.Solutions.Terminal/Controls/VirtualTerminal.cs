@@ -644,6 +644,7 @@ namespace Google.Solutions.Terminal.Controls
         // Terminal subclass.
         //---------------------------------------------------------------------
 
+        private bool terminalWindowDestructionBegun = false;
         private bool ignoreWmCharBecauseOfAccelerator = false;
         private string? selectionToCopyInKeyUp = null;
 
@@ -719,9 +720,32 @@ namespace Google.Solutions.Terminal.Controls
 
             Debug.Assert(!this.DesignMode);
 
+            var msgId = (WindowMessage)m.Msg;
+            if (msgId == WindowMessage.WM_DESTROY)
+            {
+                //
+                // Pass through and set a flag.
+                //
+                // From this point on, it's no longer safe to make 
+                // any further TerminalXxx P/Invoke calls. In
+                // particular, we must ignore the WM_KILLFOCUS 
+                // message that might be coming next.
+                //
+                this.terminalWindowDestructionBegun = true;
+                SubclassCallback.DefaultWndProc(ref m);
+                return;
+            }
+            else if (this.terminalWindowDestructionBegun)
+            {
+                //
+                // Pass through and skip all subclass logic.
+                //
+                SubclassCallback.DefaultWndProc(ref m);
+                return;
+            }
+
             var terminalHandle = Invariant.ExpectNotNull(this.terminal, "Terminal");
 
-            var msgId = (WindowMessage)m.Msg;
             switch (msgId)
             {
                 case WindowMessage.WM_SETFOCUS:
