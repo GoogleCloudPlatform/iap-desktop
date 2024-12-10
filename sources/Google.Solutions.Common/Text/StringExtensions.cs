@@ -85,7 +85,7 @@ namespace Google.Solutions.Common.Text
         /// <summary>
         /// Convert a whitespace string to null.
         /// </summary>
-        /// <returns>Input string, or null if it's whitespace</returns>
+        /// <returns>Input string, or null if it's empty or whitespace</returns>
         public static string? NullIfEmptyOrWhitespace(this string? s)
         {
             return string.IsNullOrWhiteSpace(s) ? null : s;
