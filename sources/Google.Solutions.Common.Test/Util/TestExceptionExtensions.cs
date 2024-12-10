@@ -127,20 +127,30 @@ namespace Google.Solutions.Common.Test.Util
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToString_WhenNoOptionsSet_ThenToStringReturnsStandardTrace()
+        public void ToString_WhenNoOptionsSet()
         {
             var ex = CreateException();
-            Assert.AreEqual(ex.ToString(), ex.ToString(ExceptionFormatOptions.None));
+            Assert.AreEqual(
+                ex.ToString(), 
+                ex.ToString(ExceptionFormatOptions.None));
         }
 
         [Test]
-        public void ToString_WhenIncludeOffsetOptionsSet_ThenToStringIncludesOffsets()
+        public void ToString_WhenIncludeOffsets()
         {
             var ex = CreateException();
-            var s = ex.ToString(ExceptionFormatOptions.IncludeOffsets);
             StringAssert.Contains(
                 "CreateException() +IL_00",
-                s);
+                ex.ToString(ExceptionFormatOptions.IncludeOffsets));
+        }
+
+        [Test]
+        public void ToString_WhenCompact()
+        {
+            var ex = CreateException();
+            Assert.AreEqual(
+                $"ArgumentException: sample at {GetType().FullName}.CreateException",
+                ex.ToString(ExceptionFormatOptions.Compact));
         }
 
         //---------------------------------------------------------------------
