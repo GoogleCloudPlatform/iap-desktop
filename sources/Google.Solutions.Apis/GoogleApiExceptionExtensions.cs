@@ -34,20 +34,41 @@ namespace Google.Solutions.Apis
     public static class GoogleApiExceptionExtensions
     {
         public static bool IsConstraintViolation(this GoogleApiException e)
-            => e.Error != null && e.Error.Code == 412;
+        {
+            return e.Error != null && e.Error.Code == 412;
+        }
 
         public static bool IsAccessDenied(this GoogleApiException e)
-            => e.Error != null && e.Error.Code == 403;
+        {
+            return e.Error != null && e.Error.Code == 403;
+        }
 
         public static bool IsNotFound(this GoogleApiException e)
-            => e.Error != null && e.Error.Code == 404;
+        {
+            return e.Error != null && e.Error.Code == 404;
+        }
 
         public static bool IsBadRequest(this GoogleApiException e)
-            => e.Error != null && e.Error.Code == 400 && e.Error.Message == "BAD REQUEST";
+        {
+            return e.Error != null && e.Error.Code == 400;
+        }
+
+        public static bool IsBadRequestCausedByServiceAccountAccessDenied(
+            this GoogleApiException e)
+        {
+            return IsBadRequest(e) && e.Error
+                .Errors
+                .EnsureNotNull()
+                .FirstOrDefault()
+                .Message == "SERVICE_ACCOUNT_ACCESS_DENIED";
+        }
 
         public static bool IsReauthError(this Exception e)
         {
-            // The TokenResponseException might be hiding in an AggregateException
+            //
+            // The TokenResponseException might be hiding in
+            // an AggregateException
+            //
             e = e.Unwrap();
 
             if (e is TokenResponseException tokenException)
@@ -61,7 +82,8 @@ namespace Google.Solutions.Apis
         }
 
 
-        public static bool IsAccessDeniedByVpcServiceControlPolicy(this GoogleApiException e)
+        public static bool IsAccessDeniedByVpcServiceControlPolicy(
+            this GoogleApiException e)
         {
             return e.IsAccessDenied() &&
                 !string.IsNullOrEmpty(e.Message) &&
@@ -72,7 +94,8 @@ namespace Google.Solutions.Apis
         /// Extract VPC SC troubleshooting ID.
         /// </summary>
         /// <returns>ID or null</returns>
-        public static string? VpcServiceControlTroubleshootingId(this GoogleApiException e)
+        public static string? VpcServiceControlTroubleshootingId(
+            this GoogleApiException e)
         {
             var rawJson = e.Error?.ErrorResponseContent;
             if (string.IsNullOrWhiteSpace(rawJson))
@@ -99,13 +122,15 @@ namespace Google.Solutions.Apis
             }
         }
 
-        public static HelpTopic? VpcServiceControlTroubleshootingLink(this GoogleApiException e)
+        public static HelpTopic? VpcServiceControlTroubleshootingLink(
+            this GoogleApiException e)
         {
             if (e.VpcServiceControlTroubleshootingId() is var id && id != null)
             {
                 return new HelpTopic(
                     "VPC Service Controls Troubleshooter",
-                    $"https://console.cloud.google.com/security/service-perimeter/troubleshoot;uniqueId={id}");
+                    $"https://console.cloud.google.com/security/" +
+                    $"service-perimeter/troubleshoot;uniqueId={id}");
             }
             else
             {
@@ -115,7 +140,8 @@ namespace Google.Solutions.Apis
 
         public static bool IsAccessDeniedError(this Exception e)
         {
-            return e.Unwrap() is GoogleApiException apiEx && apiEx.Error.Code == 403;
+            return e.Unwrap() is GoogleApiException apiEx && 
+                apiEx.Error.Code == 403;
         }
 
         //---------------------------------------------------------------------

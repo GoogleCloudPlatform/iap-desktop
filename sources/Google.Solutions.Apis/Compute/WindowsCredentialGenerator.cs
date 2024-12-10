@@ -185,7 +185,7 @@ namespace Google.Solutions.Apis.Compute
                         "to perform this action.",
                         HelpTopics.PermissionsToResetWindowsUser);
                 }
-                catch (GoogleApiException e) when (e.IsBadRequest())
+                catch (GoogleApiException e) when (e.IsBadRequestCausedByServiceAccountAccessDenied())
                 {
                     ApiTraceSource.Log.TraceVerbose(
                         "Setting request payload metadata failed with 400: {0} ({1})",
@@ -193,9 +193,9 @@ namespace Google.Solutions.Apis.Compute
                         e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
 
                     //
-                    // This slightly weirdly encoded error happens if the user has the necessary
-                    // permissions on the VM, but lacks ActAs permission on the associated 
-                    // service account.
+                    // This error happens if the user has the necessary
+                    // permissions on the VM, but lacks ActAs permission on
+                    // the associated service account.
                     //
 
                     throw new WindowsCredentialCreationFailedException(
