@@ -156,6 +156,7 @@ namespace Google.Solutions.Apis.Client
                                     //
                                     // To avoid losing the message here, map it to Reason.
                                     //
+                                    Message = e.Code,
                                     Reason = e.Message,
                                     Location = e.Location
                                 })

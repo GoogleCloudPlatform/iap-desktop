@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     "to perform this action.",
                     HelpTopics.ManagingMetadataAuthorizedKeys);
             }
-            catch (GoogleApiException e) when (e.IsBadRequest())
+            catch (GoogleApiException e) when (e.IsBadRequestCausedByServiceAccountAccessDenied())
             {
                 ApplicationTraceSource.Log.TraceVerbose(
                     "Setting request payload metadata failed with 400: {0} ({1})",
@@ -113,9 +113,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
 
                 //
-                // This slightly weirdly encoded error happens if the user has the necessary
-                // permissions on the VM, but lacks ActAs permission on the associated 
-                // service account.
+                // This error happens if the user has the necessary
+                // permissions on the VM, but lacks ActAs permission on
+                // the associated service account.
                 //
 
                 throw new SshKeyPushFailedException(

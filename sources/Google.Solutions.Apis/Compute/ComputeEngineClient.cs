@@ -93,8 +93,14 @@ namespace Google.Solutions.Apis.Compute
                         HelpTopics.ProjectAccessControl,
                         e);
                 }
-                catch (GoogleApiException e) when (e.IsNotFound())
+                catch (GoogleApiException e) when (
+                    e.IsNotFound() || 
+                    e.IsBadRequest())
                 {
+                    //
+                    // NB. The API may return a 400 instead of a 404.
+                    //
+
                     throw new ResourceNotFoundException(
                         $"The project {project.Name} does not exist",
                         e);
