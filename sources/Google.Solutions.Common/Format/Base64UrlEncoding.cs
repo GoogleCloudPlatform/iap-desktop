@@ -28,6 +28,9 @@ namespace Google.Solutions.Common.Format
     /// </summary>
     public class Base64UrlEncoding
     {
+        /// <summary>
+        /// Encode data.
+        /// </summary>
         public static string Encode(byte[] data)
         {
             var base64 = Convert.ToBase64String(data);
@@ -42,6 +45,9 @@ namespace Google.Solutions.Common.Format
                 .Replace('/', '_');
         }
 
+        /// <summary>
+        /// Decode data.
+        /// </summary>
         public static byte[] Decode(string encoded)
         {
             var base64 = encoded

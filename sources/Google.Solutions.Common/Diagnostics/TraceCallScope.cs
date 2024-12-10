@@ -24,6 +24,9 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Common.Diagnostics
 {
+    /// <summary>
+    /// Trace entry and exit of a scope.
+    /// </summary>
     public sealed class TraceCallScope : IDisposable
     {
         private readonly TraceSource source;

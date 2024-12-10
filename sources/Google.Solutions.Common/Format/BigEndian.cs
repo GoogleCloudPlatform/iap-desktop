@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using System;
-
 namespace Google.Solutions.Common.Format
 {
     /// <summary>
@@ -28,27 +26,27 @@ namespace Google.Solutions.Common.Format
     /// </summary>
     public static class BigEndian
     {
-        public static UInt16 DecodeUInt16(byte[] buffer, int offset)
+        public static ushort DecodeUInt16(byte[] buffer, int offset)
         {
-            return (UInt16)((int)buffer[offset] << 8 | (int)buffer[offset + 1]);
+            return (ushort)((int)buffer[offset] << 8 | (int)buffer[offset + 1]);
         }
 
-        public static void EncodeUInt16(UInt16 value, byte[] buffer, int offset)
+        public static void EncodeUInt16(ushort value, byte[] buffer, int offset)
         {
             buffer[offset] = (byte)(value >> 8);
             buffer[offset + 1] = (byte)(value);
         }
 
-        public static UInt32 DecodeUInt32(byte[] buffer, int offset)
+        public static uint DecodeUInt32(byte[] buffer, int offset)
         {
-            return (UInt32)(
-                (UInt32)buffer[offset + 0] << 24 |
-                (UInt32)buffer[offset + 1] << 16 |
-                (UInt32)buffer[offset + 2] << 8 |
-                (UInt32)buffer[offset + 3]);
+            return (uint)(
+                (uint)buffer[offset + 0] << 24 |
+                (uint)buffer[offset + 1] << 16 |
+                (uint)buffer[offset + 2] << 8 |
+                (uint)buffer[offset + 3]);
         }
 
-        public static void EncodeUInt32(UInt32 value, byte[] buffer, int offset)
+        public static void EncodeUInt32(uint value, byte[] buffer, int offset)
         {
             buffer[offset] = (byte)(value >> 24);
             buffer[offset + 1] = (byte)(value >> 16);
@@ -56,20 +54,20 @@ namespace Google.Solutions.Common.Format
             buffer[offset + 3] = (byte)(value);
         }
 
-        public static UInt64 DecodeUInt64(byte[] buffer, int offset)
+        public static ulong DecodeUInt64(byte[] buffer, int offset)
         {
-            return (UInt64)(
-                (UInt64)buffer[offset + 0] << 56 |
-                (UInt64)buffer[offset + 1] << 48 |
-                (UInt64)buffer[offset + 2] << 40 |
-                (UInt64)buffer[offset + 3] << 32 |
-                (UInt64)buffer[offset + 4] << 24 |
-                (UInt64)buffer[offset + 5] << 16 |
-                (UInt64)buffer[offset + 6] << 8 |
-                (UInt64)buffer[offset + 7]);
+            return (ulong)(
+                (ulong)buffer[offset + 0] << 56 |
+                (ulong)buffer[offset + 1] << 48 |
+                (ulong)buffer[offset + 2] << 40 |
+                (ulong)buffer[offset + 3] << 32 |
+                (ulong)buffer[offset + 4] << 24 |
+                (ulong)buffer[offset + 5] << 16 |
+                (ulong)buffer[offset + 6] << 8 |
+                (ulong)buffer[offset + 7]);
         }
 
-        public static void EncodeUInt64(UInt64 value, byte[] buffer, int offset)
+        public static void EncodeUInt64(ulong value, byte[] buffer, int offset)
         {
             buffer[offset] = (byte)(value >> 56);
             buffer[offset + 1] = (byte)(value >> 48);

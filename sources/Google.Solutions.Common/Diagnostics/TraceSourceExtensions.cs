@@ -26,6 +26,9 @@ using System.Runtime.CompilerServices;
 
 namespace Google.Solutions.Common.Diagnostics
 {
+    /// <summary>
+    /// Utility methods for <c>TraceSource</c>.
+    /// </summary>
     public static class TraceSourceExtensions
     {
         public static void TraceVerbose(this TraceSource source, string message)
@@ -73,107 +76,6 @@ namespace Google.Solutions.Common.Diagnostics
             [CallerMemberName] string? method = null)
         {
             return new TraceCallScope(source, method ?? "unknown");
-        }
-
-        public static void ForwardTo(
-            this TraceSource source,
-            TraceSource destination)
-        {
-            //
-            // Add a listener that propagates all events to the
-            // destination source. 
-            //
-            // NB. Simply copying the list of current listeners
-            // would work too, but could have unexpected effects
-            // if the list of listener changes over time.
-            // 
-            source.Switch = destination.Switch;
-            source.Listeners.Add(new ForwardingListener(destination));
-        }
-
-        private class ForwardingListener : TraceListener
-        {
-            private readonly TraceSource destination;
-
-            public ForwardingListener(TraceSource destination)
-            {
-                this.destination = destination.ExpectNotNull(nameof(destination));
-            }
-
-            public override void Flush() => this.destination.Flush();
-
-            public override void TraceData(
-                TraceEventCache eventCache,
-                string source,
-                TraceEventType eventType,
-                int id,
-                object data)
-                => this.destination.TraceData(eventType, id, data);
-
-            public override void TraceData(
-                TraceEventCache eventCache,
-                string source,
-                TraceEventType eventType,
-                int id,
-                params object[] data)
-                => this.destination.TraceData(eventType, id, data);
-
-            public override void TraceEvent(
-                TraceEventCache eventCache,
-                string source,
-                TraceEventType eventType,
-                int id)
-                => this.destination.TraceEvent(eventType, id);
-
-            public override void TraceEvent(
-                TraceEventCache eventCache,
-                string source,
-                TraceEventType eventType,
-                int id,
-                string message)
-                => this.destination.TraceEvent(eventType, id, message);
-
-            public override void TraceEvent(
-                TraceEventCache eventCache,
-                string source,
-                TraceEventType eventType,
-                int id,
-                string format,
-                params object[] args)
-                => this.destination.TraceEvent(eventType, id, format, args);
-
-            public override void TraceTransfer(
-                TraceEventCache eventCache,
-                string source,
-                int id,
-                string message,
-                Guid relatedActivityId)
-                => this.destination.TraceTransfer(id, message, relatedActivityId);
-
-            public override void Write(string message)
-                => this.destination.TraceInformation(message);
-
-            public override void Write(string message, string category)
-                => this.destination.TraceInformation(message);
-
-            public override void Write(object o)
-                => this.destination.TraceInformation(o?.ToString());
-
-            public override void Write(object o, string category)
-                => this.destination.TraceInformation(o?.ToString());
-
-            public override void WriteLine(string message)
-                => this.destination.TraceInformation(message);
-
-            public override void WriteLine(object o)
-                => this.destination.TraceInformation(o?.ToString());
-
-            public override void WriteLine(string message, string category)
-                => this.destination.TraceInformation(message);
-
-            public override void WriteLine(object o, string category)
-                => this.destination.TraceInformation(o?.ToString());
-
         }
     }
 }
