@@ -70,23 +70,5 @@ namespace Google.Solutions.Common.Linq
                 .ExpectNotNull(nameof(entries))
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
-
-        /// <summary>
-        /// Convert a dictionary to a NameValueCollection.
-        /// </summary>
-        public static NameValueCollection ToNameValueCollection(
-            this IDictionary<string, string> dictionary)
-        {
-            dictionary.ExpectNotNull(nameof(dictionary));
-
-            var collection = new NameValueCollection();
-
-            foreach (var pair in dictionary)
-            {
-                collection.Add(pair.Key, pair.Value);
-            }
-
-            return collection;
-        }
     }
 }

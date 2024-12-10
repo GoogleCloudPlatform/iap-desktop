@@ -23,19 +23,19 @@ using Google.Solutions.Common.Util;
 using System;
 using System.ComponentModel;
 
-
 namespace Google.Solutions.Common.Runtime
 {
+    /// <summary>
+    /// Utility methods for working with IDisposables.
+    /// </summary>
     public static class DisposableExtensions
     {
-        public static IComponent AsComponent(this IDisposable disposable)
+        /// <summary>
+        /// Wrap a disposable into a component.
+        /// </summary>
+        public static IComponent ToComponent(this IDisposable disposable)
         {
             return new DisposableComponent(disposable);
-        }
-
-        public static void Add(this IContainer container, IDisposable disposable)
-        {
-            container.Add(disposable.AsComponent());
         }
 
         private sealed class DisposableComponent : Component

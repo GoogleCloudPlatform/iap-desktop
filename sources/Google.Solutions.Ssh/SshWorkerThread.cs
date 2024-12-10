@@ -232,7 +232,7 @@ namespace Google.Solutions.Ssh
                         using (var authenticatedSession = connectedSession.Authenticate(
                             this.credential,
                             this.keyboardHandler))
-                        using (Disposable.For(() => OnBeforeCloseSession()))
+                        using (Disposable.Create(() => OnBeforeCloseSession()))
                         {
                             //
                             // Make sure the readyToSend handle remains valid throughout
@@ -248,7 +248,7 @@ namespace Google.Solutions.Ssh
                             // connection is done using blocking I/O again.
                             //
                             using (session.AsNonBlocking())
-                            using (Disposable.For(() => this.readyToSend.DangerousRelease()))
+                            using (Disposable.Create(() => this.readyToSend.DangerousRelease()))
                             using (var readyToReceive = NativeMethods.WSACreateEvent())
                             {
                                 //

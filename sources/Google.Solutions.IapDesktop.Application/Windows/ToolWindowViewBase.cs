@@ -141,11 +141,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             // is called *after* the ActiveX is disposed -- therefore,
             // register as a component.
             //
-            this.components.Add(Disposable.For((Action)(() =>
-            {
-                this.TabPageContextMenu = null;
-                this.TabPageContextMenuStrip = null;
-            })));
+            this.components.Add(Disposable
+                .Create((() =>
+                    {
+                        this.TabPageContextMenu = null;
+                        this.TabPageContextMenuStrip = null;
+                    }))
+                .ToComponent());
         }
 
         //---------------------------------------------------------------------

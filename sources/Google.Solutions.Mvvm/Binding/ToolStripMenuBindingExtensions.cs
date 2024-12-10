@@ -87,7 +87,7 @@ namespace Google.Solutions.Mvvm.Binding
             item.Click += OnClick;
             bindingContext.OnBindingCreated(
                 item,
-                Disposable.For(() => item.Click -= OnClick));
+                Disposable.Create(() => item.Click -= OnClick));
 
             if (item is ToolStripMenuItem toolStripMenuItem)
             {

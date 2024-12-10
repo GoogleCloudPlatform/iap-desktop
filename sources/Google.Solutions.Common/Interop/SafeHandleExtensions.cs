@@ -27,9 +27,13 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Interop
 {
+    /// <summary>
+    /// Utility methods for working with SafeHandles.
+    /// </summary>
     public static class SafeHandleExtensions
     {
-        public static readonly TimeSpan Infinite = TimeSpan.FromMilliseconds(int.MaxValue);
+        public static readonly TimeSpan Infinite 
+            = TimeSpan.FromMilliseconds(int.MaxValue);
 
         /// <summary>
         /// Create a wait handle for a handle so that you can 

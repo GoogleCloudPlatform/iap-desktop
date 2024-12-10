@@ -25,8 +25,14 @@ using System.Linq;
 
 namespace Google.Solutions.Common.Linq
 {
+    /// <summary>
+    /// Utility methods for working with Enumerables.
+    /// </summary>
     public static class EnumerableExtensions
     {
+        /// <summary>
+        /// Create a hashset from an enumerable.
+        /// </summary>
         public static HashSet<T> ToHashSet<T>(
             this IEnumerable<T> source,
             IEqualityComparer<T>? comparer = null)
@@ -37,7 +43,9 @@ namespace Google.Solutions.Common.Linq
         /// <summary>
         /// Ensure that an enumerable is not null.
         /// </summary>
-        /// <returns>The enumerable or an empty enumerable if it's null</returns>
+        /// <returns>
+        /// The enumerable or an empty enumerable if it's null
+        /// </returns>
         public static IEnumerable<T> EnsureNotNull<T>(
             this IEnumerable<T>? e)
         {
@@ -59,11 +67,9 @@ namespace Google.Solutions.Common.Linq
         /// Split an enumerable into multiple enumerables that
         /// each have a maximum size.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="source"></param>
-        /// <param name="chunkSize"></param>
-        /// <returns></returns>
-        public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, ushort chunkSize)
+        public static IEnumerable<IEnumerable<T>> Chunk<T>(
+            this IEnumerable<T> source, 
+            ushort chunkSize)
         {
             source.ExpectNotNull(nameof(source));
 
@@ -98,6 +104,5 @@ namespace Google.Solutions.Common.Linq
 
             yield return item;
         }
-
     }
 }

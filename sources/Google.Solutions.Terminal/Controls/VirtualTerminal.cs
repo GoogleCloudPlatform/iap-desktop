@@ -156,7 +156,7 @@ namespace Google.Solutions.Terminal.Controls
                 TerminalSubclassWndProc);
             this.terminalSubclass.UnhandledException += (_, ex)
                 => Application.OnThreadException(ex);
-            this.components.Add(this.terminalSubclass.AsComponent());
+            this.components.Add(this.terminalSubclass.ToComponent());
 
             //
             // Resize terminal so that it fills the entire control.

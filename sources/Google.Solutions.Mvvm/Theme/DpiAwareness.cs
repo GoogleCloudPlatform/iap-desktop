@@ -152,7 +152,7 @@ namespace Google.Solutions.Mvvm.Theme
                 throw new Win32Exception();
             }
 
-            return Disposable.For(() =>
+            return Disposable.Create(() =>
             {
                 if (NativeMethods.SetThreadDpiAwarenessContext(original) == IntPtr.Zero)
                 {

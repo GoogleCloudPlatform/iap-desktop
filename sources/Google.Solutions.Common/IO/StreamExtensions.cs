@@ -26,6 +26,9 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.IO
 {
+    /// <summary>
+    /// Utility methods for working with Streams.
+    /// </summary>
     public static class StreamExtensions
     {
         /// <summary>
@@ -70,7 +73,6 @@ namespace Google.Solutions.Common.IO
                 progress.Report(count);
             }
         }
-
 
         /// <summary>
         /// Reads the bytes from the current stream and 

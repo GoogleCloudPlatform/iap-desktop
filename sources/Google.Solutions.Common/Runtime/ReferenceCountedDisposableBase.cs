@@ -25,16 +25,33 @@ using System.Threading;
 
 namespace Google.Solutions.Common.Runtime
 {
+    /// <summary>
+    /// Base class that uses reference counting to determine
+    /// when a resource should be disposed. Thread-safe.
+    /// </summary>
     public abstract class ReferenceCountedDisposableBase : IDisposable
     {
         private int referenceCount = 1;
 
-        public bool IsDisposed => this.referenceCount == 0;
+        public bool IsDisposed
+        {
+            get
+            {
+                return this.referenceCount == 0;
+            }
+        }
 
+        /// <summary>
+        /// Disposes the object. Called when the reference count
+        /// has dropped to zero.
+        /// </summary>
         protected virtual void Dispose(bool disposing)
         {
         }
 
+        /// <summary>
+        /// Increment the reference count.
+        /// </summary>
         public uint AddReference()
         {
             var newRefCount = Interlocked.Increment(ref this.referenceCount);
@@ -46,6 +63,10 @@ namespace Google.Solutions.Common.Runtime
         // IDisposable.
         //---------------------------------------------------------------------
 
+        /// <summary>
+        /// Decrement the reference count. If the count drops to 0,
+        /// the object is disposed.
+        /// </summary>
         public void Dispose()
         {
             var newRefCount = Interlocked.Decrement(ref this.referenceCount);

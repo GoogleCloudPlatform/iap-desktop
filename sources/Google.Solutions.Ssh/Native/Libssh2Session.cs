@@ -225,7 +225,7 @@ namespace Google.Solutions.Ssh.Native
         public IDisposable AsBlocking()
         {
             this.IsBlocking = true;
-            return Disposable.For(() => this.IsBlocking = false);
+            return Disposable.Create(() => this.IsBlocking = false);
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace Google.Solutions.Ssh.Native
         public IDisposable AsNonBlocking()
         {
             this.IsBlocking = false;
-            return Disposable.For(() => this.IsBlocking = true);
+            return Disposable.Create(() => this.IsBlocking = true);
         }
 
         /// <summary>
@@ -329,7 +329,7 @@ namespace Google.Solutions.Ssh.Native
         {
             var originalTimeout = this.Timeout;
             this.Timeout = timeout;
-            return Disposable.For(() => this.Timeout = originalTimeout);
+            return Disposable.Create(() => this.Timeout = originalTimeout);
         }
 
         /// <summary>
