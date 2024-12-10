@@ -568,6 +568,7 @@ namespace Google.Solutions.IapDesktop
                         { "oscdp", DeviceCapabilities.Current.Dpi.ToString() },
                         { "ossdp", DeviceCapabilities.System.Dpi.ToString() },
                         { "apent", appSettingsRepository.IsPolicyPresent ? "1" : "0" },
+                        { "apsrt", serviceRoute == ServiceRoute.Public ? "Public" : "PSC" },
                     })
                 {
                     Enabled = appSettings.IsTelemetryEnabled.Value
