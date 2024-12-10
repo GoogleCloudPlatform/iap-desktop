@@ -30,11 +30,11 @@ namespace Google.Solutions.Common.Test.Security
     public class TestSecureStringExtensions
     {
         //---------------------------------------------------------------------
-        // AsClearText.
+        // ToClearText.
         //---------------------------------------------------------------------
 
         [Test]
-        public void AsClearText_WhenSecureStringIsNotNull_ThenAsClearTextReturnsString()
+        public void ToClearText_WhenSecureStringIsNotNull()
         {
             var s = new SecureString();
             s.AppendChar('t');
@@ -42,13 +42,13 @@ namespace Google.Solutions.Common.Test.Security
             s.AppendChar('s');
             s.AppendChar('t');
 
-            Assert.AreEqual("test", s.AsClearText());
+            Assert.AreEqual("test", s.ToClearText());
         }
 
         [Test]
-        public void AsClearText_WhenSecureStringIsNull_ThenAsClearTextReturnsEmpty()
+        public void ToClearText_WhenSecureStringIsNull()
         {
-            Assert.AreEqual(string.Empty, SecureStringExtensions.AsClearText(null));
+            Assert.AreEqual(string.Empty, SecureStringExtensions.ToClearText(null));
         }
 
         //---------------------------------------------------------------------
@@ -60,10 +60,10 @@ namespace Google.Solutions.Common.Test.Security
         {
             Assert.AreEqual(
                 "test",
-                SecureStringExtensions.FromClearText("test").AsClearText());
+                SecureStringExtensions.FromClearText("test").ToClearText());
             Assert.AreEqual(
                 string.Empty,
-                SecureStringExtensions.FromClearText(null).AsClearText());
+                SecureStringExtensions.FromClearText(null).ToClearText());
         }
     }
 }

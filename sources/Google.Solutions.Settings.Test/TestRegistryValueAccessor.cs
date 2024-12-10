@@ -93,7 +93,7 @@ namespace Google.Solutions.Settings.Test
                     accessor.Write(key, this.SampleData);
 
                     Assert.IsTrue(accessor.TryRead(key, out var read));
-                    Assert.AreEqual(this.SampleData.AsClearText(), read.AsClearText());
+                    Assert.AreEqual(this.SampleData.ToClearText(), read.ToClearText());
                 }
             }
         }

@@ -25,6 +25,9 @@ namespace Google.Solutions.Common.Threading
 {
     public static class CancellationTokenExtensions
     {
+        /// <summary>
+        /// Combine two CancellationTokens.
+        /// </summary>
         public static CancellationTokenSource Combine(
             this CancellationToken firstToken,
             CancellationToken secondToken)

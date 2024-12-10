@@ -19,46 +19,50 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Runtime;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Threading
 {
+    /// <summary>
+    /// Async lock, based on a <c>SemaphoreSlim</c>.
+    /// </summary>
     public sealed class AsyncLock : IDisposable
     {
         private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
 
-        public void Dispose()
-        {
-            this.semaphore.Dispose();
-        }
-
+        /// Acquire the lock asynchronously.
+        /// </summary>
+        /// <returns>Acquisition, dispose to release the lock.</returns>
         public async Task<IDisposable> AcquireAsync(CancellationToken token)
         {
-            await this.semaphore.WaitAsync(token).ConfigureAwait(false);
-            return new Acquisition(() => this.semaphore.Release());
+            await this.semaphore
+                .WaitAsync(token)
+                .ConfigureAwait(false);
+
+            return Disposable.Create(() => this.semaphore.Release());
         }
 
+        /// <summary>
+        /// Acquire the lock synchronously.
+        /// </summary>
+        /// <returns>Acquisition, dispose to release the lock.</returns>
         public IDisposable Acquire()
         {
             this.semaphore.Wait();
-            return new Acquisition(() => this.semaphore.Release());
+
+            return Disposable.Create(() => this.semaphore.Release());
         }
 
-        private class Acquisition : IDisposable
+        //----------------------------------------------------------------------
+        // IDisposable.
+        //----------------------------------------------------------------------
+
+        public void Dispose()
         {
-            private readonly Action release;
-
-            public Acquisition(Action release)
-            {
-                this.release = release;
-            }
-
-            public void Dispose()
-            {
-                this.release();
-            }
+            this.semaphore.Dispose();
         }
     }
 }

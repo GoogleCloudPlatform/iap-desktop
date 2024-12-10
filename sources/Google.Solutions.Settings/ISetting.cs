@@ -117,7 +117,7 @@ namespace Google.Solutions.Settings
         public static string GetClearTextValue(
             this ISetting<SecureString> setting)
         {
-            return setting.Value?.AsClearText();
+            return setting.Value?.ToClearText();
         }
 
         public static void SetClearTextValue(

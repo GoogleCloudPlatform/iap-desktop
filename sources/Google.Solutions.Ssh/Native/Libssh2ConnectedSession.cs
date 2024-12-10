@@ -466,7 +466,7 @@ namespace Google.Solutions.Ssh.Native
             {
                 SshEventSource.Log.PasswordAuthenticationInitiated(credential.Username);
 
-                var password = credential.Password.AsClearText();
+                var password = credential.Password.ToClearText();
 
                 if (string.IsNullOrEmpty(password))
                 {
@@ -485,7 +485,7 @@ namespace Google.Solutions.Ssh.Native
                     // methods.
                     //
                     Debug.Assert(newCredentials.Username == credential.Username);
-                    password = newCredentials.Password.AsClearText();
+                    password = newCredentials.Password.ToClearText();
                 }
 
                 var result = (LIBSSH2_ERROR)NativeMethods.libssh2_userauth_password_ex(

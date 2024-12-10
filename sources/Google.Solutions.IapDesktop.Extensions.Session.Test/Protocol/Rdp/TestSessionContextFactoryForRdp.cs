@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
 
             Assert.AreEqual(RdpParameters.ParameterSources.Inventory, context.Parameters.Sources);
             Assert.AreEqual("existinguser", context.Credential.User);
-            Assert.AreEqual("password", context.Credential.Password.AsClearText());
+            Assert.AreEqual("password", context.Credential.Password.ToClearText());
 
             Assert.IsTrue(settingsSaved);
         }
@@ -343,7 +343,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
             Assert.AreEqual(RdpParameters.ParameterSources.Url, context.Parameters.Sources);
             Assert.AreEqual("user", context.Credential.User);
             Assert.AreEqual("domain", context.Credential.Domain);
-            Assert.AreEqual("password", context.Credential.Password.AsClearText());
+            Assert.AreEqual("password", context.Credential.Password.ToClearText());
 
             callbackService.Verify(s => s.GetCredentialsAsync(
                 new Uri("http://mock"),
