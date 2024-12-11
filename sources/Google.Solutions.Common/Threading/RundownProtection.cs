@@ -40,7 +40,7 @@ namespace Google.Solutions.Common.Threading
             this.rundownEvent.Reset();
             Interlocked.Increment(ref this.acquisitions);
 
-            return Disposable.For(
+            return Disposable.Create(
                 () =>
                 {
                     if (Interlocked.Decrement(ref this.acquisitions) == 0)

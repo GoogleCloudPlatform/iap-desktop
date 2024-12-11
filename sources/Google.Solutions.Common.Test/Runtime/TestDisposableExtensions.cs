@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2022 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -25,36 +25,23 @@ using NUnit.Framework;
 namespace Google.Solutions.Common.Test.Runtime
 {
     [TestFixture]
-    public class TestDisposable
+    public class TestDisposableExtensions
     {
         //--------------------------------------------------------------------
-        // Dispose.
+        // ToComponent.
         //--------------------------------------------------------------------
 
         [Test]
-        public void Dispose_InvokesAction()
+        public void ToComponent()
         {
-            int invocations = 0;
-            using (Disposable.Create(() => invocations++))
+            var disposed = false;
+
+            using (Disposable
+                .Create(() => disposed = true)
+                .ToComponent())
             { }
 
-            Assert.AreEqual(1, invocations);
-        }
-
-        //--------------------------------------------------------------------
-        // Dispose.
-        //--------------------------------------------------------------------
-
-        [Test]
-        public void Dispose_WhenCalledTwice_InvokesActionOnce()
-        {
-            int invocations = 0;
-            var d = Disposable.Create(() => invocations++);
-
-            d.Dispose();
-            d.Dispose();
-
-            Assert.AreEqual(1, invocations);
+            Assert.IsTrue(disposed);
         }
     }
 }

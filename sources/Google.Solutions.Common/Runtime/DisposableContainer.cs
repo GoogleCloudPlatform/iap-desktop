@@ -41,6 +41,10 @@ namespace Google.Solutions.Common.Runtime
                 .ToList();
         }
 
+        /// <summary>
+        /// Add an disposable that should be disposed along
+        /// with the container.
+        /// </summary>
         public void Add(IDisposable disposable)
         {
             if (disposable != null)

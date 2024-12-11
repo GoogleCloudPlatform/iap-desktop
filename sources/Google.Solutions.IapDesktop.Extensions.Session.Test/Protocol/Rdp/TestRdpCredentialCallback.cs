@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
 
             Assert.AreEqual("user", credentials.User);
             Assert.AreEqual("domain", credentials.Domain);
-            Assert.AreEqual("password", credentials.Password.AsClearText());
+            Assert.AreEqual("password", credentials.Password.ToClearText());
         }
     }
 }

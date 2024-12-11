@@ -70,7 +70,7 @@ namespace Google.Solutions.Apis.Auth
             return new ClientSecrets
             {
                 ClientId = this.ClientId,
-                ClientSecret = this.clientSecret.AsClearText()
+                ClientSecret = this.clientSecret.ToClearText()
             };
         }
 

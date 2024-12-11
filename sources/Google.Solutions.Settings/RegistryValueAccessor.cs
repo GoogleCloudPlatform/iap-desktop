@@ -209,7 +209,7 @@ namespace Google.Solutions.Settings
                 if (value != null)
                 {
                     blob = ProtectedData.Protect(
-                        Encoding.UTF8.GetBytes(value.AsClearText()),
+                        Encoding.UTF8.GetBytes(value.ToClearText()),
                         Encoding.UTF8.GetBytes(this.Name), // Entropy
                         this.protectionScope);
                 }

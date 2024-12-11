@@ -28,12 +28,18 @@ namespace Google.Solutions.Common.Util
         private static readonly DateTimeOffset UnixEpoch =
             new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
+        /// <summary>
+        /// Convert a <c>DateTimeOffset</c> to a Unix timestamp.
+        /// </summary>
         public static long ToUnixTimeMicroseconds(this DateTimeOffset timestamp)
         {
             var duration = timestamp - UnixEpoch;
             return duration.Ticks / 10;
         }
 
+        /// <summary>
+        /// Convert a Unix timestamp to a <c>DateTimeOffset</c>.
+        /// </summary>
         public static DateTimeOffset FromUnixTimeMicroseconds(long millis)
         {
             return UnixEpoch.AddMilliseconds(millis / 1000);

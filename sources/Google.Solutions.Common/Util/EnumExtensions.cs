@@ -25,6 +25,9 @@ using System.Reflection;
 
 namespace Google.Solutions.Common.Util
 {
+    /// <summary>
+    /// Utility methods for working with enum flags.
+    /// </summary>
     public static class EnumExtensions
     {
         private static bool IsPowerOfTwo(int v)

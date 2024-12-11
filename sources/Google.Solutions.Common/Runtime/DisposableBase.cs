@@ -24,6 +24,9 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Common.Runtime
 {
+    /// <summary>
+    /// Base class for disposable objects.
+    /// </summary>
     public abstract class DisposableBase : IDisposable
     {
 #if DEBUG

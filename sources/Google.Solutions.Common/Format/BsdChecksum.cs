@@ -26,7 +26,7 @@ namespace Google.Solutions.Common.Format
 {
     /// <summary>
     /// BSD checksum implementation, adapted to allow 
-    /// checksums of arbitraty bit size (not just 16).
+    /// checksums of arbitrary bit size (not just 16).
     /// </summary>
     public class BsdChecksum
     {
@@ -35,12 +35,27 @@ namespace Google.Solutions.Common.Format
 
         public BsdChecksum(ushort lengthInBits)
         {
-            Debug.Assert(lengthInBits > 0 && lengthInBits <= 32);
+            Precondition.Expect(
+                lengthInBits > 0 && lengthInBits <= 32,
+                "Invalid checksum length");
+
             this.lengthInBits = lengthInBits;
         }
 
-        public uint Value => this.checksum;
+        /// <summary>
+        /// Get the checksum so far.
+        /// </summary>
+        public uint Value
+        {
+            get
+            {
+                return this.checksum;
+            }
+        }
 
+        /// <summary>
+        /// Incorporate data into the checksum.
+        /// </summary>
         public void Add(byte[] data)
         {
             data.ExpectNotNull(nameof(data));
@@ -48,7 +63,8 @@ namespace Google.Solutions.Common.Format
             var mask = (uint)(1 << this.lengthInBits) - 1;
             for (var i = 0; i < data.Length; i++)
             {
-                this.checksum = (this.checksum >> 1) + ((this.checksum & 1) << (this.lengthInBits - 1));
+                this.checksum = (this.checksum >> 1) + 
+                    ((this.checksum & 1) << (this.lengthInBits - 1));
                 this.checksum += data[i];
                 this.checksum &= mask;
             }

@@ -188,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 {
                     case RdpAutomaticLogon.Enabled:
                         this.Client.EnableCredentialPrompt = true;
-                        this.Client.Password = viewModel.Credential.Password?.AsClearText() ?? string.Empty;
+                        this.Client.Password = viewModel.Credential.Password?.ToClearText() ?? string.Empty;
                         break;
 
                     case RdpAutomaticLogon.Disabled:
@@ -198,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
                     case RdpAutomaticLogon.LegacyAbortOnFailure:
                         this.Client.EnableCredentialPrompt = false;
-                        this.Client.Password = viewModel.Credential.Password?.AsClearText() ?? string.Empty;
+                        this.Client.Password = viewModel.Credential.Password?.ToClearText() ?? string.Empty;
                         break;
                 }
 

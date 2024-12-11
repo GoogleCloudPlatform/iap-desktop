@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 
                 window.Client.MainWindow = window;
                 window.Client.Username = rdpCredential.User;
-                window.Client.Password = rdpCredential.Password.AsClearText();
+                window.Client.Password = rdpCredential.Password.ToClearText();
                 window.Client.Server = "localhost";
                 window.Client.ServerPort = (ushort)tunnel.Tunnel.LocalEndpoint.Port;
 
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 
                 window.Client.MainWindow = window;
                 window.Client.Username = rdpCredential.User;
-                window.Client.Password = rdpCredential.Password.AsClearText();
+                window.Client.Password = rdpCredential.Password.ToClearText();
                 window.Client.Server = "localhost";
                 window.Client.ServerPort = (ushort)tunnel.Tunnel.LocalEndpoint.Port;
 
@@ -237,7 +237,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
 
                 window.Client.MainWindow = window;
                 window.Client.Username = rdpCredential.User;
-                window.Client.Password = rdpCredential.Password.AsClearText();
+                window.Client.Password = rdpCredential.Password.ToClearText();
                 window.Client.Server = "localhost";
                 window.Client.ServerPort = (ushort)tunnel.Tunnel.LocalEndpoint.Port;
 

@@ -25,8 +25,15 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Threading
 {
+    /// <summary>
+    /// Utility methods for invoking callbacks on <c>ISynchronizeInvoke</c>
+    /// objects.
+    /// </summary>
     public static class SynchronousInvokeExtensions
     {
+        /// <summary>
+        /// Invoke a method and await its completion.
+        /// </summary>
         public static Task<TResult> InvokeAsync<TResult>(
             this ISynchronizeInvoke invoker,
             Func<Task<TResult>> action)
@@ -67,6 +74,9 @@ namespace Google.Solutions.Common.Threading
             }
         }
 
+        /// <summary>
+        /// Invoke a method and await its completion.
+        /// </summary>
         public static Task InvokeAsync(
             this ISynchronizeInvoke invoker,
             Func<Task> action)

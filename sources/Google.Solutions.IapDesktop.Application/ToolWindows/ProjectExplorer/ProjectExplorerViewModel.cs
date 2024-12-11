@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
         private IDisposable EnableLoadingStatus()
         {
             this.IsLoading = true;
-            return Disposable.For(() => this.IsLoading = false);
+            return Disposable.Create(() => this.IsLoading = false);
         }
 
         private static async Task RefreshAsync(ViewModelNode node)

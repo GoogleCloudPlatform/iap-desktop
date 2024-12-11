@@ -409,7 +409,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 .ConfigureAwait(false);
 
             Assert.AreEqual(generatedCredentials.UserName, settings.RdpUsername.Value);
-            Assert.AreEqual(generatedCredentials.Password, settings.RdpPassword.Value.AsClearText());
+            Assert.AreEqual(generatedCredentials.Password, settings.RdpPassword.Value.ToClearText());
             Assert.AreEqual(".", settings.RdpDomain.Value);
         }
 

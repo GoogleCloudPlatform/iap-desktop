@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     credential.Username);
                 Assert.AreEqual(
                     string.Empty,
-                    ((StaticPasswordCredential)credential).Password.AsClearText());
+                    ((StaticPasswordCredential)credential).Password.ToClearText());
             }
         }
 

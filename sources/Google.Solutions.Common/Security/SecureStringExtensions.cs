@@ -31,7 +31,7 @@ namespace Google.Solutions.Common.Security
         /// <summary>
         /// Convert SecureString to plain text.
         /// </summary>
-        public static string AsClearText(this SecureString? secureString)
+        public static string ToClearText(this SecureString? secureString)
         {
             return new NetworkCredential(string.Empty, secureString).Password;
         }

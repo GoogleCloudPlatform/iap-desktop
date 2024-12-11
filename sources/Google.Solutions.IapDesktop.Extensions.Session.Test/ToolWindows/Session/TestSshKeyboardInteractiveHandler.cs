@@ -163,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var credentials = handler.PromptForCredentials("username");
             Assert.IsInstanceOf<StaticPasswordCredential>(credentials);
             Assert.AreEqual("username", ((StaticPasswordCredential)credentials).Username);
-            Assert.AreEqual("password", ((StaticPasswordCredential)credentials).Password.AsClearText());
+            Assert.AreEqual("password", ((StaticPasswordCredential)credentials).Password.ToClearText());
         }
     }
 }

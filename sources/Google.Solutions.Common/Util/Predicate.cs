@@ -28,11 +28,17 @@ namespace Google.Solutions.Common.Util
     /// </summary>
     public static class Predicate
     {
+        /// <summary>
+        /// Create a predicate that checks if an integer is in a range.
+        /// </summary>
         public static Predicate<int> InRange(int minInclusive, int maxInclusive)
         {
             return v => v >= minInclusive && v <= maxInclusive;
         }
 
+        /// <summary>
+        /// Create a predicate that checks if an integer is in a range.
+        /// </summary>
         public static Predicate<long> InRange(long minInclusive, long maxInclusive)
         {
             return v => v >= minInclusive && v <= maxInclusive;

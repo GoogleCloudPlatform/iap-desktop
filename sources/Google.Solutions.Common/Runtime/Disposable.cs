@@ -23,6 +23,9 @@ using System;
 
 namespace Google.Solutions.Common.Runtime
 {
+    /// <summary>
+    /// Disposable that invokes an action on disposal.
+    /// </summary>
     public sealed class Disposable : IDisposable
     {
         private readonly Action dispose;
@@ -32,14 +35,28 @@ namespace Google.Solutions.Common.Runtime
             this.dispose = dispose;
         }
 
-        public static IDisposable For(Action dispose)
+        /// <summary>
+        /// Indicates if this object has been disposed.
+        /// </summary>
+        public bool IsDisposed { get; private set; }
+
+        /// <summary>
+        /// Create a disposable that invokes an action on disposal.
+        /// </summary>
+        /// <param name="dispose">Action to invoke</param>
+        /// <returns></returns>
+        public static IDisposable Create(Action dispose)
         {
             return new Disposable(dispose);
         }
 
         public void Dispose()
         {
-            this.dispose();
+            if (!this.IsDisposed)
+            {
+                this.dispose();
+                this.IsDisposed = true;
+            }
         }
     }
 }

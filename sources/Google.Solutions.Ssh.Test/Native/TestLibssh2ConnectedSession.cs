@@ -512,7 +512,7 @@ namespace Google.Solutions.Ssh.Test.Native
                         Assert.AreEqual("Password: ", prompt);
                         Assert.IsFalse(echo);
 
-                        return credential.Password.AsClearText();
+                        return credential.Password.ToClearText();
                     }
                 }))
             {

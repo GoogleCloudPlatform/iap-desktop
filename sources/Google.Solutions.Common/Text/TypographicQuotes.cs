@@ -43,6 +43,9 @@ namespace Google.Solutions.Common.Text
             { '\u2E42', '\'' }, // double low-reversed-9 quotation mark
         };
 
+        /// <summary>
+        /// Convert common typographic quotes to plain ASCII quotes.
+        /// </summary>
         public static string ToAsciiQuotes(string s)
         {
             Precondition.ExpectNotNull(s, nameof(s));
