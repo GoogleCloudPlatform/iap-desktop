@@ -475,7 +475,6 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddSingleton(new ToolWindowStateRepository(
                     profile.SettingsKey.CreateSubKey("ToolWindows")));
                 preAuthLayer.AddSingleton<IBindingContext, ViewBindingContext>();
-                preAuthLayer.AddTransient<IQuarantine, Quarantine>();
                 preAuthLayer.AddTransient<IBrowserProtocolRegistry, BrowserProtocolRegistry>();
 
                 //
