@@ -833,8 +833,6 @@ namespace Google.Solutions.Terminal.Controls
                         if (IsAcceleratorForCopyingCurrentSelection((Keys)keyParams.VirtualKey) &&
                             this.selectionToCopyInKeyUp != null)
                         {
-                            Debug.Assert(this.ignoreWmCharBecauseOfAccelerator);
-
                             //
                             // Continue the "copy" operation begun in WM_KEYDOWN.
                             //
@@ -857,12 +855,9 @@ namespace Google.Solutions.Terminal.Controls
 
                             NativeMethods.TerminalClearSelection(terminalHandle);
                             this.selectionToCopyInKeyUp = null;
-                            this.ignoreWmCharBecauseOfAccelerator = false;
                         }
                         else if (IsAcceleratorForPasting((Keys)keyParams.VirtualKey))
                         {
-                            Debug.Assert(this.ignoreWmCharBecauseOfAccelerator);
-
                             try
                             {
                                 var contents = Clipboard.GetText();
@@ -882,8 +877,6 @@ namespace Google.Solutions.Terminal.Controls
                                 // Clipboard busy, ignore.
                                 //
                             }
-
-                            this.ignoreWmCharBecauseOfAccelerator = false;
                         }
                         else
                         {
@@ -903,8 +896,9 @@ namespace Google.Solutions.Terminal.Controls
                         if (this.ignoreWmCharBecauseOfAccelerator)
                         {
                             //
-                            // Ignore these keys because they're part of an accelerator.
+                            // Ignore because it's part of an accelerator.
                             //
+                            this.ignoreWmCharBecauseOfAccelerator = false;
                         }
                         else
                         {
