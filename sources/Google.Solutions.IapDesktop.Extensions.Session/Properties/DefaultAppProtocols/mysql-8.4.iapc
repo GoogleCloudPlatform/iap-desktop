@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "name": "MySQL Shell 8.1",
+  "name": "MySQL Shell 8.4",
   "condition": "isInstance()",
   "remotePort": "3306",
   "client": {
-    "executable": "%ProgramW6432%\\MySQL\\MySQL Shell 8.1\\bin\\mysqlsh.exe",
+    "executable": "%ProgramW6432%\\MySQL\\MySQL Shell 8.4\\bin\\mysqlsh.exe",
     "arguments": "-h {host} -P {port} -u \"{username}\""
   }
 }
