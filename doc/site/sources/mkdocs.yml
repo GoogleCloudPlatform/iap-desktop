@@ -91,9 +91,11 @@ nav:
     - 'Administer VMs':
       - 'Use Remote Desktop': 'connect-windows.md'
       - 'Use SSH': 'connect-linux.md'
-    - 'Administer databases':
-      - 'SQL Server': 'connect-sqlserver.md'
-      - 'Other applications': 'connect-other-applications.md'
+    - 'Administer workloads':
+      - 'Access SQL Server': 'connect-sqlserver.md'
+      - 'Access MySQL, PostgreSQL': 'connect-mysql-postgresql.md'
+      - 'Access other applications': 'connect-other-applications.md'
+      - 'Set up a Cloud SQL Proxy VM': 'setup-cloudsql.md'
     - 'Use IAP Desktop':
       - 'Tool windows':
         - 'Connection settings': 'toolwindow-connection-settings.md'

@@ -13,11 +13,10 @@
 
     To follow the steps in this guide, make sure that you meet the following prerequisites:
 
-    *   You run SQL Server on a Compute Engine VM. IAP Desktop currently can't connect to Cloud SQL.
     *   You downloaded and installed [SQL Server Management Studio (SSMS) :octicons-link-external-16:](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms) on your computer.
     *   You [created a firewall rule](setup-iap.md) that allows IAP to connect to port <code>1433</code> of your SQL Server VM.
 
-You can use IAP Desktop to access SQL Server in two ways:
+You can use IAP Desktop to access SQL Server in two ways: 
 
 1.  You can let IAP Desktop launch and [connect SQL Server Management Studio](#connect-sql-server-management-studio)
     (SSMS) for you. IAP Desktop automatically establishes an
@@ -27,21 +26,28 @@ You can use IAP Desktop to access SQL Server in two ways:
 1.  You can let IAP Desktop [open a tunnel](#open-a-tunnel). You can then use any tool to
     connect to that tunnel and the tunnel remains open until you close IAP Desktop.
 
-## Prepare your project
-
-Depending on how you've deployed SQL Server, you might need to configure the
-[Cloud SQL Auth Proxy :octicons-link-external-16:](https://cloud.google.com/sql/docs/mysql/sql-proxy)
-before you can connect.
+The way IAP Desktop uses IAP-TCP to connect to SQL Server differs depending on
+whether you're running SQL Server on Compute Engine or using Cloud SQL for SQL Server:
 
 === "Compute Engine"
-
-    You don't need the Cloud SQL Auth Proxy.
+    
+    If you're running SQL Server on Compute Engine, you don't need any additional VM to
+    let IAP Desktop connect to SQL Server. The only prerequisite is 
+    [a firewall rule](setup-iap.md) that allows IAP-TCP to connect to
+    port <code>1433</code> of your SQL Server VM.
+    
+    ![Connect to SQL Server](images/connect-database-direct.png)
 
 === "Cloud SQL"
+    
+    If you're using Cloud SQL for SQL Server, you need an additional VM that runs the
+    [Cloud SQL Auth Proxy :octicons-link-external-16:](https://cloud.google.com/sql/docs/mysql/sql-proxy). This VM is necessary
+    because IAP-TCP doesn't support creating tunnels to managed services such as Cloud SQL.
+    
+    ![Connect to SQL Server](images/connect-database-sqlproxy.png)
 
-    You must set up a [Cloud SQL Auth Proxy VM](setup-cloudsql.md) to connect to SQL Server.
-    The extra VM is necessary because IAP-TCP doesn't support direct connections to Cloud SQL 
-    instances.
+    To deploy a Cloud SQL Auth Proxy VM, see [Set up a Cloud SQL Proxy VM](setup-cloudsql.md).
+
 
 ## Connect SQL Server Management Studio
 
