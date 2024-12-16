@@ -100,7 +100,7 @@ article li {
     border: 0.075rem solid lightgray;
     border-radius: 0.2rem;
     box-shadow: var(--md-shadow-z1);
-    padding: 0.2rem;
+    padding: 0.5rem;
 }
 
 .tabbed-labels {

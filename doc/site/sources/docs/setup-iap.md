@@ -49,26 +49,26 @@ To create a firewall rule, do the following:
     To allow RDP access to all VM instances in your network, run:
     
         gcloud compute firewall-rules create allow-rdp-ingress-from-iap \
-            --direction=INGRESS \
-            --action=allow \
-            --rules=tcp:3389 \
-            --source-ranges=35.235.240.0/20
+            --direction INGRESS \
+            --action allow \
+            --rules tcp:3389 \
+            --source-ranges 35.235.240.0/20
     
     For SSH access, run:
     
         gcloud compute firewall-rules create allow-ssh-ingress-from-iap \
-            --direction=INGRESS \
-            --action=allow \
-            --rules=tcp:22 \
-            --source-ranges=35.235.240.0/20
+            --direction INGRESS \
+            --action allow \
+            --rules tcp:22 \
+            --source-ranges 35.235.240.0/20
     
     For other protocols, run
     
         gcloud compute firewall-rules create allow-ingress-from-iap \
-            --direction=INGRESS \
-            --action=allow \
-            --rules=tcp:PORT \
-            --source-ranges=35.235.240.0/20
+            --direction INGRESS \
+            --action allow \
+            --rules tcp:PORT \
+            --source-ranges 35.235.240.0/20
     
     where <code>PORT</code> is the port used by the protocol.
 

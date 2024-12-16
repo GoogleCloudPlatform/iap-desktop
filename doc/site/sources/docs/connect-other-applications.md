@@ -12,14 +12,12 @@
 
     To follow the steps in this guide, make sure that you meet the following prerequisites:
 
-    *   Your server application runs on a Compute Engine VM. IAP Desktop currently can't connect to Cloud SQL 
-        or applications hosted on Kubernetes Engine.
     *   You [created a firewall rule](setup-iap.md) that allows IAP to connect to the port used by the server application.
           
 
 You can use IAP Desktop to access server applications in two ways:
 
-1.  You can let IAP Desktop launch and [connect a client application](#connect-a-client-application)
+1.  You can let IAP Desktop launch and [connect a client application](#connect-the-database-client)
     for you. IAP Desktop automatically establishes an
     [IAP TCP forwarding tunnel :octicons-link-external-16:](https://cloud.google.com/iap/docs/using-tcp-forwarding)
     and keeps the tunnel open until you close the client application.
@@ -35,21 +33,6 @@ You can use IAP Desktop to access server applications in two ways:
 ## Connect a client application
 
 To launch and connect a client application automatically, do the following:
-
-=== "MySQL Shell"
-
-    1.  In the **Project Explorer** tool window, right-click your database VM and select 
-        **Connect client application > MySQL Shell**.
-       
-        ![Connect MySQL shell](images/access-server-mysql.png){ width="400" }
-       
-        !!! note
-       
-            If you don't see the menu entry, then IAP Desktop wasn't able to
-            find a supported version of MySQL Shell on your computer.
-
-    1.  IAP Desktop now creates an [IAP TCP forwarding tunnel :octicons-link-external-16:](https://cloud.google.com/iap/docs/using-tcp-forwarding) and
-        launches MySQL shell.
 
 === "Chrome"
 
@@ -70,45 +53,18 @@ To launch and connect a client application automatically, do the following:
 
 You can let IAP Desktop open a tunnel and connect to tha tunnel by doing the following:
 
-=== "MySQL Workbench"
+=== "Server port"
 
     1.  In the **Project Explorer** tool window, right-click your database VM and select 
-        **Tunnel to > MySQL/MariaDB**.
-
-        ![Open tunnel](images/access-server-mysql-tunnel.png){ width="400" }
+        **Tunnel to > Other server port**.
+    1.  On the **Forward local port** dialog, enter the port number to connect to.
+    1.  Click **OK**:
 
         A notification appears:
 
         ![Baloon notification](images/access-server-baloon.png){ width="300" }
 
-    1.  Launch MySQL Workbench.
-    1.  In MySQL Workbench, go to **Database > Connect to database**.
-    1.  In the **Connect to database** dialog, configure the following:
-
-        *   **Hostname**: `127.0.0.1`
-        *   **Port**: Enter the port number indicated in the notification.
-
-    1.  Click **OK**.
-
-
-=== "pgAdmin"
-
-    1.  In the **Project Explorer** tool window, right-click your database VM and select 
-        **Tunnel to > PostgreSQL**.
-
-        A notification appears:
-
-        ![Baloon notification](images/access-server-baloon.png){ width="300" }
-
-    1.  Launch pgAdmin.
-    1.  Click **Add new server**.
-    1.  In the **Register server** dialog, enter a name for the server.
-    1.  Switch to the **Connection** tab and configure the following:
-
-        *   **Host name/address**: `127.0.0.1`
-        *   **Port**: Enter the port number indicated in the notification.
-
-    1.  Click **Save**.
+    You can now use any client application to connect to the forwarded port.
 
 === "Custom"
 
