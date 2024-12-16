@@ -27,6 +27,21 @@ You can use IAP Desktop to access SQL Server in two ways:
 1.  You can let IAP Desktop [open a tunnel](#open-a-tunnel). You can then use any tool to
     connect to that tunnel and the tunnel remains open until you close IAP Desktop.
 
+## Prepare your project
+
+Depending on how you've deployed SQL Server, you might need to configure the
+[Cloud SQL Auth Proxy :octicons-link-external-16:](https://cloud.google.com/sql/docs/mysql/sql-proxy)
+before you can connect.
+
+=== "Compute Engine"
+
+    You don't need the Cloud SQL Auth Proxy.
+
+=== "Cloud SQL"
+
+    You must set up a [Cloud SQL Auth Proxy VM](setup-cloudsql.md) to connect to SQL Server.
+    The extra VM is necessary because IAP-TCP doesn't support direct connections to Cloud SQL 
+    instances.
 
 ## Connect SQL Server Management Studio
 

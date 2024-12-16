@@ -91,8 +91,8 @@ nav:
     - 'Administer VMs':
       - 'Use Remote Desktop': 'connect-windows.md'
       - 'Use SSH': 'connect-linux.md'
-    - 'Access server applications':
-      - 'Access SQL Server': 'connect-sqlserver.md'
+    - 'Administer databases':
+      - 'SQL Server': 'connect-sqlserver.md'
       - 'Other applications': 'connect-other-applications.md'
     - 'Use IAP Desktop':
       - 'Tool windows':
