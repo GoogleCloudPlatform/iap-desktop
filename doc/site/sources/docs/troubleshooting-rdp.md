@@ -2,7 +2,7 @@
 
 ## :material-message-alert: Copy/paste doesn't work
 
-**Symptom**: Unable to copy and paste text or files over RDP
+**Symptom**: You can't copy and paste text or files over RDP
 
 This behavior can be caused by an invalid configuration or group policies.
 
