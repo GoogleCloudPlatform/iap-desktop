@@ -141,7 +141,7 @@ namespace Google.Solutions.Terminal.Controls
         public string TerminalType
         {
             get; set;
-        } = "xterm";
+        } = "xterm-256color";
 
         //---------------------------------------------------------------------
         // Inner types.
