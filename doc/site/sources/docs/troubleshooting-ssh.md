@@ -80,3 +80,13 @@ To use ephemeral keys, do the following:
 
 When you use an ephemeral key and IAP Desktop publishes the public key to OS Login or metadata, it 
 automatically limits the lifetime of the key to one day.
+
+
+## :material-message-alert: Copying text from the terminal stops working when running `vim`
+
+**Symptom**: Copying text from the terminal stops working when running `vim` (or certain other programs).
+
+This behavior is expected and a result of the way `vim` handles mouse input. To copy text from `vim`, 
+use the [`set mouse=r` option](https://vimdoc.sourceforge.net/htmldoc/options.html#'mouse'), or
+hold the **Shift** key while coping text.
+
