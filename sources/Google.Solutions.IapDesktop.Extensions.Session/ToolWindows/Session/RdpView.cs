@@ -187,18 +187,41 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 switch (viewModel.Parameters.UserAuthenticationBehavior)
                 {
                     case RdpAutomaticLogon.Enabled:
+                        //
+                        // Use stored credentials, but allow prompting in case
+                        // they're incomplete or wrong.
+                        //
                         this.Client.EnableCredentialPrompt = true;
-                        this.Client.Password = viewModel.Credential.Password?.ToClearText() ?? string.Empty;
+                        this.Client.Password = 
+                            viewModel.Credential.Password?.ToClearText() ?? string.Empty;
                         break;
 
                     case RdpAutomaticLogon.Disabled:
+                        //
+                        // Allow (and expect) a prompt.
+                        //
+                        // We "shouldn't" have a stored password -- but we might 
+                        // have one anyway:
+                        //
+                        // - Automatic logons might be auto-disabled by group policy,
+                        //   but the user might have stored a credential before that 
+                        //   group policy took effect (or before IAP Desktop started 
+                        //   considering that group policy).
+                        // - Automatic logons might be auto-disabled by group policy 
+                        //   (causing prompts to be suppressed), but the user might 
+                        //   have stored credentialsmanually.
+                        //
+                        // So if there is a password, use it.
+                        //
                         this.Client.EnableCredentialPrompt = true;
-                        // Leave password blank.
+                        this.Client.Password = 
+                            viewModel.Credential.Password?.ToClearText() ?? string.Empty;
                         break;
 
                     case RdpAutomaticLogon.LegacyAbortOnFailure:
                         this.Client.EnableCredentialPrompt = false;
-                        this.Client.Password = viewModel.Credential.Password?.ToClearText() ?? string.Empty;
+                        this.Client.Password = 
+                            viewModel.Credential.Password?.ToClearText() ?? string.Empty;
                         break;
                 }
 
