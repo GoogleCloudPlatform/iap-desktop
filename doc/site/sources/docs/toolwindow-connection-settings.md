@@ -214,14 +214,27 @@ These settings control which RDP security mechanism to apply.
     <tr>
         <td>Automatic logon</td>
         <td>
-            Controls whether IAP Desktop attempts to log you on automatically by using <a href="#windows-credentials">saved credentials</a>
-            or by offering to generate new Windows credentials.
-            <br><br>
-            Set this to <b>Disabled</b> for VMs that use the <a href="https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TerminalServer::TS_PASSWORD">Always prompt for password upon connection</a>
-            group policy setting to <a href="/iap-desktop/troubleshooting-rdp/#your-credentials-did-not-work-when-using-saved-credentials">
-            prevent duplicate password prompts</a>.
+            Controls how IAP Desktop behaves if you haven't configured any <a href="#windows-credentials">Windows credentials</a>.
+
+            <ul>
+            <li>
+                When set to <b>Enabled</b>, IAP Desktop proactively shows a credential prompt that offers a <i>Remember me</i> option
+                so that it can log you in automatically the next time.
+            </li>
+            <li>
+                When set to <b>Disabled</b>, IAP Desktop won't offer a <i>Remember me</i> option, and won't try
+                to log you in automatically unless you manually configure <a href="#windows-credentials">Windows credentials</a>.
+                <br><br>
+                Set this to <b>Disabled</b> for VMs that use the <a href="https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TerminalServer::TS_PASSWORD">Always prompt for password upon connection</a>
+                group policy setting to <a href="/iap-desktop/troubleshooting-rdp/#your-credentials-did-not-work-when-using-saved-credentials">
+                prevent duplicate password prompts</a>.
+            </li>
+            </ul>
+            The setting is automatically set to <b>Disabled</b> if your local computer is subject to the 
+            <a href="https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TerminalServer::TS_CLIENT_DISABLE_PASSWORD_SAVING_2">
+            Do not allow passwords to be saved</a> group policy. 
         </td>
-        <td>Enabled</td>
+        <td>See description</td>
     </tr>
     <tr>
         <td>Network level authentication</td>
