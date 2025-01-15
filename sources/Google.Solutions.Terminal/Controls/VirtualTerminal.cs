@@ -93,7 +93,7 @@ namespace Google.Solutions.Terminal.Controls
             {
                 this.caretBlinkTimer.Tick += (_, __) =>
                 {
-                    if (this.terminal != null)
+                    if (this.terminal != null && this.CanUseTerminal)
                     {
                         NativeMethods.TerminalBlinkCursor(this.terminal);
                     }
@@ -171,6 +171,29 @@ namespace Google.Solutions.Terminal.Controls
             {
                 NativeMethods.TerminalSetCursorVisible(this.terminal, false);
             }
+        }
+
+        /// <summary>
+        /// Check if it's safe to use the terminal control.
+        /// </summary>
+        private bool CanUseTerminal
+        {
+            get =>
+                !this.IsDisposed &&
+
+                //
+                // Don't touch the terminal in design mode because it might
+                // crash VS.
+                //
+                !this.DesignMode &&
+
+                //
+                // Don't touch the terminal if it's been closed already,
+                // or if it's already processed a WM_DESTROY message because
+                // that might cause an access violation.
+                //
+                this.terminal != null &&
+                !this.terminalWindowDestructionBegun;
         }
 
         //---------------------------------------------------------------------
@@ -403,7 +426,7 @@ namespace Google.Solutions.Terminal.Controls
                 return;
             }
 
-            if (this.terminal != null)
+            if (this.terminal != null && this.CanUseTerminal)
             {
                 NativeMethods.TerminalSendOutput(this.terminal, data);
             }
@@ -423,10 +446,10 @@ namespace Google.Solutions.Terminal.Controls
 
         protected virtual void OnThemeChanged()
         {
-            if (this.terminal == null || this.DesignMode)
+            if (this.terminal == null || !this.CanUseTerminal)
             {
                 //
-                // Handle not created yet, so we can ignore theme changes.
+                // Too early or late to process this event, ignore.
                 //
                 return;
             }
@@ -464,26 +487,22 @@ namespace Google.Solutions.Terminal.Controls
 
         private void OnScrollbarScrolled(object sender, ScrollEventArgs e)
         {
-            if (this.DesignMode)
+            if (this.terminal != null && this.CanUseTerminal)
             {
-                return;
+                NativeMethods.TerminalUserScroll(
+                    this.terminal,
+                    e.NewValue);
             }
-
-            NativeMethods.TerminalUserScroll(
-                Invariant.ExpectNotNull(this.terminal, "Terminal"),
-                e.NewValue);
         }
 
         private void OnScrollbarValueChanged(object sender, System.EventArgs e)
         {
-            if (this.DesignMode)
+            if (this.terminal != null && this.CanUseTerminal)
             {
-                return;
+                NativeMethods.TerminalUserScroll(
+                    this.terminal,
+                    this.scrollBar.Value);
             }
-
-            NativeMethods.TerminalUserScroll(
-                Invariant.ExpectNotNull(this.terminal, "Terminal"),
-                this.scrollBar.Value);
         }
 
         protected override bool ProcessDialogKey(Keys keyData)
@@ -560,7 +579,7 @@ namespace Google.Solutions.Terminal.Controls
             //
             // Notify terminal so that it can adjust dimensions.
             //
-            if (this.terminal != null)
+            if (this.terminal != null && this.CanUseTerminal)
             {
                 var scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
 
@@ -594,6 +613,8 @@ namespace Google.Solutions.Terminal.Controls
         {
             this.terminalSubclass?.Dispose();
             this.terminal?.Dispose();
+
+            this.terminal = null;
 
             base.DestroyHandle();
         }
