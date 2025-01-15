@@ -16,5 +16,6 @@
     <PackageReference Include="OpenCover" Version="4.6.519" />
     <PackageReference Include="ReportGenerator" Version="5.1.23" />
     <PackageReference Include="WiX" Version="3.14.1" />
+    
   </ItemGroup>
 </Project>
