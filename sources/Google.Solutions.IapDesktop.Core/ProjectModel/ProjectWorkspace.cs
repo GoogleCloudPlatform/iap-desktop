@@ -328,7 +328,8 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                         .ConfigureAwait(false);
 
                     //
-                    // Load zones for projects. This serves two purposes:
+                    // Load zones for all projects. This serves two purposes:
+                    //
                     // - On startup, it ensures that all zones are loaded in 
                     //   parallel, resulting in faster startup experience.
                     // - On force-reload, it ensures that we not only reload
@@ -355,12 +356,16 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                                 .Zones
                                 .ConfigureAwait(false);
                         }
-                        catch (ResourceAccessDeniedException)
+                        catch (Exception e) when (
+                            e.Is<ResourceAccessDeniedException>() ||
+                            e.Is<ResourceNotFoundException>())
                         {
                             //
-                            // Project inaccessible, ignore. The project will till show up
-                            // in the model, but it won't have its zones pre-loaded.
+                            // Project is inaccessible or it doesn't exist. The project will
+                            // still show up in the model, but with with an empty list of zones.
                             //
+                            this.cachedZones[loadProjectTask.Project] = 
+                                new List<IProjectModelZoneNode>();
                         }
                     }
                 }
