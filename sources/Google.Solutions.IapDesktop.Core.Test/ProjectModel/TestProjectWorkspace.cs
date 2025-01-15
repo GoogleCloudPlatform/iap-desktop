@@ -295,8 +295,60 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 new[] { "accessible-project", "inaccessible-project" },
                 model.Projects.Select(p => p.Project.Name).ToList());
 
-            // Only 1 or 2 projects should have been cached.
-            Assert.AreEqual(1, workspace.CachedProjectsCount);
+            Assert.AreEqual(2, workspace.CachedProjectsCount);
+        }
+
+        [Test]
+        public async Task GetRootNode_WhenSomeProjectsNotFound_ThenGetRootNodeLoadsOtherProjects()
+        {
+            var accessibleProject = new ProjectLocator("accessible-project");
+            var nonexistingProject = new ProjectLocator("nonexisting-project");
+
+            var computeAdapter = new Mock<IComputeEngineClient>();
+            computeAdapter.Setup(a => a.ListInstancesAsync(
+                    accessibleProject,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Array.Empty<Instance>());
+            computeAdapter.Setup(a => a.ListInstancesAsync(
+                    nonexistingProject,
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new ResourceNotFoundException("test", new Exception()));
+
+            var resourceManagerAdapter = new Mock<IResourceManagerClient>();
+            resourceManagerAdapter.Setup(a => a.GetProjectAsync(
+                    accessibleProject,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Google.Apis.CloudResourceManager.v1.Data.Project()
+                {
+                    ProjectId = "accessible-project",
+                    Name = "accessible-project"
+                });
+            resourceManagerAdapter.Setup(a => a.GetProjectAsync(
+                    nonexistingProject,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Google.Apis.CloudResourceManager.v1.Data.Project()
+                {
+                    ProjectId = "nonexisting-project",
+                    Name = "nonexisting-project"
+                });
+
+            var workspace = new ProjectWorkspace(
+                computeAdapter.Object,
+                resourceManagerAdapter.Object,
+                CreateProjectRepositoryMock(
+                    accessibleProject,
+                    nonexistingProject).Object,
+                new Mock<IEventQueue>().Object);
+
+            var model = await workspace
+                .GetRootNodeAsync(false, CancellationToken.None)
+                .ConfigureAwait(true);
+
+            CollectionAssert.AreEquivalent(
+                new[] { "accessible-project", "nonexisting-project" },
+                model.Projects.Select(p => p.Project.Name).ToList());
+
+            Assert.AreEqual(2, workspace.CachedProjectsCount);
         }
 
         [Test]

@@ -395,7 +395,9 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                         .Select(z => new ZoneViewModelNode(this.ViewModel, this, z))
                         .Cast<ViewModelNode>();
                 }
-                catch (Exception e) when (e.Is<ResourceAccessDeniedException>())
+                catch (Exception e) when (
+                    e.Is<ResourceAccessDeniedException>() ||
+                    e.Is<ResourceNotFoundException>())
                 {
                     //
                     // Letting these exception propagate could cause a flurry
