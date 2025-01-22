@@ -22,9 +22,9 @@ CONFIGURATION = Release
 PLATFORM = x86
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 2
+TAG = 3
 
-ICUSHIM_VERSION=1.0.0.$(TAG)
+ICUSHIM_VERSION=1.21.3231.$(TAG)
 ICUSHIM_PACKAGE_ID = Google.Solutions.IcuShim
 
 !if ("$(PLATFORM)" == "x86")

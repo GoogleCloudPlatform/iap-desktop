@@ -67,6 +67,13 @@ U_CAPI UText* U_EXPORT2 utext_setup(
     return NULL;
 }
 
+U_CAPI UText* U_EXPORT2 utext_close(
+    _In_ UText* ut)
+{
+    UNREFERENCED_PARAMETER(ut);
+    return NULL;
+}
+
 U_CAPI int64_t U_EXPORT2 uregex_start64(
     _In_ URegularExpression* regexp,
     _In_ int32_t groupNum,

@@ -21,13 +21,13 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 2
+TAG = 3
 
 #
 # Use the pre-built and signed Microsoft binaries.
 #
-TERMINAL_VERSION = 1.19.10821
-TERMINAL_TAG = 1.19.10821.0
+TERMINAL_VERSION = 1.21.3231.$(TAG)
+TERMINAL_TAG = 1.21.3231.0
 TERMINAL_PACKAGE_X86=https://github.com/microsoft/terminal/releases/download/v$(TERMINAL_TAG)/Microsoft.WindowsTerminal_$(TERMINAL_TAG)_x86.zip
 TERMINAL_PACKAGE_X64=https://github.com/microsoft/terminal/releases/download/v$(TERMINAL_TAG)/Microsoft.WindowsTerminal_$(TERMINAL_TAG)_x64.zip
 TERMINAL_PACKAGE_ARM64=https://github.com/microsoft/terminal/releases/download/v$(TERMINAL_TAG)/Microsoft.WindowsTerminal_$(TERMINAL_TAG)_arm64.zip
