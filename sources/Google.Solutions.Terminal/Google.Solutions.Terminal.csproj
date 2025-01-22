@@ -7,8 +7,8 @@
     <Platforms>x64;x86;ARM64</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Solutions.ThirdParty.Terminal" Version="1.19.10821" />
-    <PackageReference Include="Google.Solutions.IcuShim" Version="1.0.0.2" />
+    <PackageReference Include="Google.Solutions.ThirdParty.Terminal" Version="1.21.3231.3" />
+    <PackageReference Include="Google.Solutions.IcuShim" Version="1.21.3231.3" />
     <PackageReference Include="Google.Solutions.Tsc" Version="9.0.0.1" />
   </ItemGroup>
   <ItemGroup>
