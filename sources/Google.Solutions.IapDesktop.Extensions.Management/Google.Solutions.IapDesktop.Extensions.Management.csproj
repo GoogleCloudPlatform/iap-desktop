@@ -13,7 +13,7 @@
     <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.11" />
     <PackageReference Include="Google.Apis" Version="1.68.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
-    <PackageReference Include="Google.Apis.Compute.v1" Version="1.68.0.3470" />
+    <PackageReference Include="Google.Apis.Compute.v1" Version="1.68.0.3652" />
     <PackageReference Include="Google.Apis.Core" Version="1.68.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
