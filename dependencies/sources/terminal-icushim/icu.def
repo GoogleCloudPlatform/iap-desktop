@@ -3,6 +3,7 @@ EXPORTS
 	uregex_open
 	uregex_close
 	utext_setup
+	utext_close
 	uregex_start64
 	uregex_setTimeLimit
 	uregex_setStackLimit
