@@ -28,6 +28,7 @@ theme:
   favicon: images/favicon.ico
   features:
     - navigation.tabs
+    - navigation.tabs.sticky
     - content.code.copy
     - navigation.expand
   palette:
