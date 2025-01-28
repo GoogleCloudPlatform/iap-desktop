@@ -113,7 +113,7 @@ namespace Google.Solutions.Platform.Dispatch
         private async Task PumpEventsAsync()
         {
             var buffer = new char[1024];
-            while (true)
+            while (!this.IsDisposed)
             {
                 try
                 {
@@ -132,16 +132,23 @@ namespace Google.Solutions.Platform.Dispatch
                     {
                         this.OutputAvailable?.Invoke(
                             this,
-                            new PseudoTerminalDataEventArgs(new string(buffer, 0, charsRead)));
+                            new PseudoTerminalDataEventArgs(
+                                new string(buffer, 0, charsRead)));
                     }
                 }
                 catch (Exception) when (this.IsDisposed)
-                { }
+                {
+                    //
+                    // The pseudo console was closed or disposed while the
+                    // async read was pending. 
+                    //
+                }
                 catch (Exception e)
                 {
                     this.FatalError?.Invoke(
                         this,
                         new PseudoTerminalErrorEventArgs(e));
+                    return;
                 }
             }
         }
