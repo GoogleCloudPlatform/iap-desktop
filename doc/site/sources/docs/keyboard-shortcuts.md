@@ -193,14 +193,6 @@
    <td><code>Ctrl + V</code> or <code>Shift + Insert</code></td>
   </tr>
   <tr>
-   <td>Extend text selection to the right/right</td>
-   <td><code>Shift + Right</code>/<code>Shift + Left</code></td>
-  </tr>
-  <tr>
-   <td>Scroll up/down</td>
-   <td><code>Ctrl + Up</code>/<code>Ctrl + Down</code></td>
-  </tr>
-  <tr>
    <td>Scroll to top/bottom</td>
    <td><code>Ctrl + Home</code>/<code>Ctrl + End</code></td>
   </tr>
