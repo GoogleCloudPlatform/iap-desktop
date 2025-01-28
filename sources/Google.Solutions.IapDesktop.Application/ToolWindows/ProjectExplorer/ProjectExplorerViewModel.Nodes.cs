@@ -459,7 +459,9 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                 return allNodes
                     .Cast<InstanceViewModelNode>()
                     .Where(i => this.ViewModel.InstanceFilter == null ||
-                                i.InstanceNode.DisplayName.Contains(this.ViewModel.instanceFilter))
+                                i.InstanceNode.DisplayName.IndexOf(
+                                    this.ViewModel.InstanceFilter,
+                                    StringComparison.OrdinalIgnoreCase) >= 0)
                     .Where(i => (i.InstanceNode.OperatingSystem &
                                 this.ViewModel.OperatingSystemsFilter) != 0);
             }

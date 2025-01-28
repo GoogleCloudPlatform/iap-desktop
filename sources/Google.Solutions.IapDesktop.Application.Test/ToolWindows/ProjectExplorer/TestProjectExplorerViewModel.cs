@@ -324,7 +324,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task InstanceFilter_WhenInstanceFilterChanged_ThenViewModelIsUpdated()
+        public async Task InstanceFilter_WhenInstanceFilterChanged_ThenViewModelIsUpdated(
+            [Values("linux-zone", "Linux-Zone", "\tLINUX", " nux ")] 
+            string filterMatchingLinuxInstance)
         {
             var computeClient = CreateComputeEngineClient();
             var viewModel = CreateViewModel(
@@ -343,7 +345,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             var instances = await GetInstancesAsync(viewModel).ConfigureAwait(true);
             Assert.AreEqual(2, instances.Count);
 
-            viewModel.InstanceFilter = SampleLinuxInstanceInZone1.Name.Substring(4);
+            viewModel.InstanceFilter = filterMatchingLinuxInstance;
             instances = await GetInstancesAsync(viewModel).ConfigureAwait(true);
             Assert.AreEqual(1, instances.Count);
 
