@@ -240,6 +240,8 @@ namespace Google.Solutions.Mvvm.Shell
                         {
                             NativeMethods.GlobalFree(new HandleRef(medium, medium.unionmember));
                             medium.unionmember = IntPtr.Zero;
+
+                            throw;
                         }
                     }
                     else

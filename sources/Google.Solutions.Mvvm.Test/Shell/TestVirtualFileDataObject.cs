@@ -21,11 +21,11 @@
 
 using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Platform.Interop;
-using Moq;
 using NUnit.Framework;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -104,10 +104,11 @@ namespace Google.Solutions.Mvvm.Test.Shell
 
             var e = Assert.Throws<COMException>(
                 () => dataObject.GetData(
-                    new System.Runtime.InteropServices.ComTypes.FORMATETC()
+                    new FORMATETC()
                     {
-                        tymed = System.Runtime.InteropServices.ComTypes.TYMED.TYMED_ISTORAGE,
-                        cfFormat = (short)DataFormats.GetFormat(ShellDataFormats.CFSTR_FILECONTENTS).Id
+                        tymed = TYMED.TYMED_ISTORAGE,
+                        cfFormat = (short)DataFormats.GetFormat(
+                            ShellDataFormats.CFSTR_FILECONTENTS).Id
                     },
                     out var _));
             Assert.AreEqual(HRESULT.DV_E_TYMED, (HRESULT)e!.ErrorCode);
@@ -132,14 +133,15 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 dataObject.GetData(
                     new System.Runtime.InteropServices.ComTypes.FORMATETC()
                     {
-                        tymed = System.Runtime.InteropServices.ComTypes.TYMED.TYMED_ISTREAM |
-                            System.Runtime.InteropServices.ComTypes.TYMED.TYMED_ISTORAGE,
-                        cfFormat = (short)DataFormats.GetFormat(ShellDataFormats.CFSTR_FILECONTENTS).Id
+                        tymed = TYMED.TYMED_ISTREAM |
+                            TYMED.TYMED_ISTORAGE,
+                        cfFormat = (short)DataFormats.GetFormat(
+                            ShellDataFormats.CFSTR_FILECONTENTS).Id
                     },
                     out var medium);
 
                 Assert.AreEqual(
-                    System.Runtime.InteropServices.ComTypes.TYMED.TYMED_ISTREAM,
+                    TYMED.TYMED_ISTREAM,
                     medium.tymed);
                 Assert.AreNotEqual(
                     IntPtr.Zero,
@@ -167,18 +169,49 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 dataObject.GetData(
                     new System.Runtime.InteropServices.ComTypes.FORMATETC()
                     {
-                        tymed = System.Runtime.InteropServices.ComTypes.TYMED.TYMED_HGLOBAL |
-                            System.Runtime.InteropServices.ComTypes.TYMED.TYMED_ISTORAGE,
-                        cfFormat = (short)DataFormats.GetFormat(ShellDataFormats.CFSTR_FILECONTENTS).Id
+                        tymed = TYMED.TYMED_HGLOBAL |
+                            TYMED.TYMED_ISTORAGE,
+                        cfFormat = (short)DataFormats.GetFormat(
+                            ShellDataFormats.CFSTR_FILECONTENTS).Id
                     },
                     out var medium);
 
                 Assert.AreEqual(
-                    System.Runtime.InteropServices.ComTypes.TYMED.TYMED_HGLOBAL,
+                    TYMED.TYMED_HGLOBAL,
                     medium.tymed);
                 Assert.AreNotEqual(
                     IntPtr.Zero,
                     medium.unionmember);
+            }
+        }
+
+        [Test]
+        public void ComGetData_WhenOpeningStreamFails(
+            [Values(TYMED.TYMED_HGLOBAL, TYMED.TYMED_ISTREAM)]
+            TYMED tymed)
+        {
+            var content = Encoding.ASCII.GetBytes("Test");
+            using (var contentStream = new MemoryStream())
+            {
+                contentStream.Write(content, 0, content.Length);
+
+                var dataObject = (UCOMIDataObject)new VirtualFileDataObject(new[] {
+                    new VirtualFileDataObject.Descriptor(
+                        "file-1.txt",
+                        (ulong)content.Length,
+                        FileAttributes.Normal,
+                        () => throw new UnauthorizedAccessException()),
+                });
+
+                Assert.Throws<UnauthorizedAccessException>(
+                    () => dataObject.GetData(
+                        new System.Runtime.InteropServices.ComTypes.FORMATETC()
+                        {
+                            tymed = tymed,
+                            cfFormat = (short)DataFormats.GetFormat(
+                                ShellDataFormats.CFSTR_FILECONTENTS).Id
+                        },
+                        out var medium));
             }
         }
 
