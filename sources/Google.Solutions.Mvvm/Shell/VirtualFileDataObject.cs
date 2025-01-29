@@ -195,75 +195,103 @@ namespace Google.Solutions.Mvvm.Shell
             // Populate the medium.
             //
             medium = default;
-
-            var formatName = DataFormats.GetFormat(formatetc.cfFormat).Name;
-            this.IsOperationInProgress = true;
-
-            try
+            if (GetTymedUseable(formatetc.tymed))
             {
-                if ((formatetc.tymed & TYMED.TYMED_ISTREAM) != 0 &&
-                    GetData(formatName, false) is Stream dataStream)
-                {
-                    //
-                    // Return data as a COM IStream.
-                    //
-                    var streamPtr = Marshal.GetIUnknownForObject(new ComStream(dataStream));
+                var formatName = DataFormats.GetFormat(formatetc.cfFormat).Name;
+                this.IsOperationInProgress = true;
 
-                    medium.tymed = TYMED.TYMED_ISTREAM;
-                    medium.unionmember = streamPtr;
-                }
-                else if ((formatetc.tymed & TYMED.TYMED_HGLOBAL) != 0)
+                try
                 {
-                    //
-                    // Return data as an HGLOBAL. The base class can do
-                    // that for us.
-                    //
-                    medium.tymed = TYMED.TYMED_HGLOBAL;
-                    medium.unionmember = NativeMethods.GlobalAlloc(GHND | GMEM_DDESHARE, 1);
-                    if (medium.unionmember == IntPtr.Zero)
+                    if ((formatetc.tymed & TYMED.TYMED_ISTREAM) != 0 &&
+                        GetDataPresent(formatName) &&
+                        GetData(formatName, false) is Stream dataStream)
                     {
-                        throw new OutOfMemoryException();
+                        //
+                        // Return data as a COM IStream.
+                        //
+                        var streamPtr = Marshal.GetIUnknownForObject(new ComStream(dataStream));
+                    
+                        medium.tymed = TYMED.TYMED_ISTREAM;
+                        medium.unionmember = streamPtr;
                     }
-
-                    try
+                    else if ((formatetc.tymed & TYMED.TYMED_HGLOBAL) != 0)
                     {
                         //
-                        // Copy data. This will invoke GetData(format, autoConvert), which
-                        // in turn uses the cached index to provide the right data.
+                        // Return data as an HGLOBAL. The base class can do
+                        // that for us.
                         //
+                        medium.tymed = TYMED.TYMED_HGLOBAL;
+                        medium.unionmember = NativeMethods.GlobalAlloc(GHND | GMEM_DDESHARE, 1);
+                        if (medium.unionmember == IntPtr.Zero)
+                        {
+                            throw new OutOfMemoryException();
+                        }
 
+                        try
+                        {
+                            //
+                            // Copy data. This will invoke GetData(format, autoConvert), which
+                            // in turn uses the cached index to provide the right data.
+                            //
+
+                            ((UCOMIDataObject)this).GetDataHere(ref formatetc, ref medium);
+                        }
+                        catch (Exception)
+                        {
+                            NativeMethods.GlobalFree(new HandleRef(medium, medium.unionmember));
+                            medium.unionmember = IntPtr.Zero;
+                        }
+                    }
+                    else
+                    {
+                        medium.tymed = formatetc.tymed;
                         ((UCOMIDataObject)this).GetDataHere(ref formatetc, ref medium);
-                        return;
-                    }
-                    catch (Exception)
-                    {
-                        NativeMethods.GlobalFree(new HandleRef(medium, medium.unionmember));
-                        medium.unionmember = IntPtr.Zero;
-                        throw;
                     }
                 }
-                else
+                catch (Exception e)
                 {
-                    Marshal.ThrowExceptionForHR((int)HRESULT.DV_E_TYMED);
+                    if (e is COMException comEx && (
+                        comEx.HResult == (int)HRESULT.DV_E_FORMATETC ||
+                        comEx.HResult == (int)HRESULT.E_FAIL))
+                    {
+                        //
+                        // These can happen during format negotiation and 
+                        // aren't worth raising an event for.
+                        //
+                    }
+                    else if (this.IsAsync)
+                    {
+                        this.AsyncOperationFailed?.Invoke(this, new ExceptionEventArgs(e));
+                    }
+
+                    throw;
                 }
             }
-            catch (Exception e) 
+            else
             {
-                if (e is COMException comEx && (
-                    comEx.HResult == (int)HRESULT.DV_E_FORMATETC ||
-                    comEx.HResult == (int)HRESULT.E_FAIL))
+                Marshal.ThrowExceptionForHR((int)HRESULT.DV_E_TYMED);
+            }
+
+            bool GetTymedUseable(TYMED tymed)
+            {
+                var allowed = new TYMED[5]
                 {
-                    //
-                    // These can happen during format negotiation and 
-                    // aren't worth raising an event for.
-                    //
-                }
-                else if (this.IsAsync)
+                    TYMED.TYMED_HGLOBAL,
+                    TYMED.TYMED_ISTREAM,
+                    TYMED.TYMED_ENHMF,
+                    TYMED.TYMED_MFPICT,
+                    TYMED.TYMED_GDI
+                };
+
+                for (var i = 0; i < allowed.Length; i++)
                 {
-                    this.AsyncOperationFailed?.Invoke(this, new ExceptionEventArgs(e));
+                    if ((tymed & allowed[i]) != 0)
+                    {
+                        return true;
+                    }
                 }
 
-                throw;
+                return false;
             }
         }
 
