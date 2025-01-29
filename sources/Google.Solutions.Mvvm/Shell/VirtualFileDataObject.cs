@@ -194,12 +194,7 @@ namespace Google.Solutions.Mvvm.Shell
             //
             // Populate the medium.
             //
-
             medium = default;
-            if (!GetTymedUseable(formatetc.tymed))
-            {
-                Marshal.ThrowExceptionForHR((int)HRESULT.DV_E_TYMED);
-            }
 
             var formatName = DataFormats.GetFormat(formatetc.cfFormat).Name;
             this.IsOperationInProgress = true;
@@ -210,7 +205,7 @@ namespace Google.Solutions.Mvvm.Shell
                     GetData(formatName, false) is Stream dataStream)
                 {
                     //
-                    // Wrap the managed stream as a COM IStream.
+                    // Return data as a COM IStream.
                     //
                     var streamPtr = Marshal.GetIUnknownForObject(new ComStream(dataStream));
 
@@ -220,7 +215,8 @@ namespace Google.Solutions.Mvvm.Shell
                 else if ((formatetc.tymed & TYMED.TYMED_HGLOBAL) != 0)
                 {
                     //
-                    // Let the base class copy the stream into an HGLOBAL.
+                    // Return data as an HGLOBAL. The base class can do
+                    // that for us.
                     //
                     medium.tymed = TYMED.TYMED_HGLOBAL;
                     medium.unionmember = NativeMethods.GlobalAlloc(GHND | GMEM_DDESHARE, 1);
@@ -268,28 +264,6 @@ namespace Google.Solutions.Mvvm.Shell
                 }
 
                 throw;
-            }
-
-            bool GetTymedUseable(TYMED tymed)
-            {
-                var allowed = new TYMED[5]
-                {
-                    TYMED.TYMED_HGLOBAL,
-                    TYMED.TYMED_ISTREAM,
-                    TYMED.TYMED_ENHMF,
-                    TYMED.TYMED_MFPICT,
-                    TYMED.TYMED_GDI
-                };
-
-                for (var i = 0; i < allowed.Length; i++)
-                {
-                    if ((tymed & allowed[i]) != 0)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
             }
         }
 
