@@ -25,8 +25,11 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
+using UCOMIDataObject = System.Runtime.InteropServices.ComTypes.IDataObject;
 
 namespace Google.Solutions.Mvvm.Test.Shell
 {
@@ -89,34 +92,94 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 false));
         }
 
-        [Test]
-        public void GetData_ReturnsStreamThatGuaranteesFullReads()
-        {
-            var copiedStream = new Mock<Stream>();
-            copiedStream
-                .SetupGet(s => s.Length)
-                .Returns(2);
-            copiedStream
-                .Setup(s => s.Read(It.IsAny<byte[]>(), 0, 2))
-                .Returns(1);
-            copiedStream
-                .Setup(s => s.Read(It.IsAny<byte[]>(), 1, 1))
-                .Returns(1);
+        //----------------------------------------------------------------------
+        // GetData (COM).
+        //----------------------------------------------------------------------
 
-            var dataObject = new VirtualFileDataObject(new[] {
+        [Test]
+        public void ComGetData_WhenTymedUnsupported()
+        {
+            var dataObject = (UCOMIDataObject)new VirtualFileDataObject(
+                Array.Empty<VirtualFileDataObject.Descriptor>());
+
+            var e = Assert.Throws<COMException>(
+                () => dataObject.GetData(
+                    new System.Runtime.InteropServices.ComTypes.FORMATETC()
+                    {
+                        tymed = System.Runtime.InteropServices.ComTypes.TYMED.TYMED_ISTORAGE,
+                        cfFormat = (short)DataFormats.GetFormat(ShellDataFormats.CFSTR_FILECONTENTS).Id
+                    },
+                    out var _));
+            Assert.AreEqual(HRESULT.DV_E_TYMED, (HRESULT)e!.ErrorCode);
+        }
+
+        [Test]
+        public void ComGetData_WhenTymedIncludesStream()
+        {
+            var content = Encoding.ASCII.GetBytes("Test");
+            using (var contentStream = new MemoryStream())
+            {
+                contentStream.Write(content, 0, content.Length);
+
+                var dataObject = (UCOMIDataObject)new VirtualFileDataObject(new[] {
                     new VirtualFileDataObject.Descriptor(
                         "file-1.txt",
-                        2,
+                        (ulong)content.Length,
                         FileAttributes.Normal,
-                        () => copiedStream.Object)
+                        () => contentStream),
                 });
 
-            var stream = (Stream?)dataObject.GetData(
-                ShellDataFormats.CFSTR_FILECONTENTS,
-                false);
-            Assert.IsNotNull(stream);
-            Assert.AreEqual(2, stream!.Length);
-            Assert.AreEqual(2, stream!.Read(new byte[2], 0, 2));
+                dataObject.GetData(
+                    new System.Runtime.InteropServices.ComTypes.FORMATETC()
+                    {
+                        tymed = System.Runtime.InteropServices.ComTypes.TYMED.TYMED_ISTREAM |
+                            System.Runtime.InteropServices.ComTypes.TYMED.TYMED_ISTORAGE,
+                        cfFormat = (short)DataFormats.GetFormat(ShellDataFormats.CFSTR_FILECONTENTS).Id
+                    },
+                    out var medium);
+
+                Assert.AreEqual(
+                    System.Runtime.InteropServices.ComTypes.TYMED.TYMED_ISTREAM,
+                    medium.tymed);
+                Assert.AreNotEqual(
+                    IntPtr.Zero,
+                    medium.unionmember);
+            }
+
+        }
+
+        [Test]
+        public void ComGetData_WhenTymedIncludesHGlobal()
+        {
+            var content = Encoding.ASCII.GetBytes("Test");
+            using (var contentStream = new MemoryStream())
+            {
+                contentStream.Write(content, 0, content.Length);
+
+                var dataObject = (UCOMIDataObject)new VirtualFileDataObject(new[] {
+                    new VirtualFileDataObject.Descriptor(
+                        "file-1.txt",
+                        (ulong)content.Length,
+                        FileAttributes.Normal,
+                        () => contentStream),
+                });
+
+                dataObject.GetData(
+                    new System.Runtime.InteropServices.ComTypes.FORMATETC()
+                    {
+                        tymed = System.Runtime.InteropServices.ComTypes.TYMED.TYMED_HGLOBAL |
+                            System.Runtime.InteropServices.ComTypes.TYMED.TYMED_ISTORAGE,
+                        cfFormat = (short)DataFormats.GetFormat(ShellDataFormats.CFSTR_FILECONTENTS).Id
+                    },
+                    out var medium);
+
+                Assert.AreEqual(
+                    System.Runtime.InteropServices.ComTypes.TYMED.TYMED_HGLOBAL,
+                    medium.tymed);
+                Assert.AreNotEqual(
+                    IntPtr.Zero,
+                    medium.unionmember);
+            }
         }
 
         //----------------------------------------------------------------------
