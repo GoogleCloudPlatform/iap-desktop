@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Mvvm.Interop;
 using Google.Solutions.Platform.Interop;
 using System;
 using System.Collections.Generic;
@@ -137,17 +138,9 @@ namespace Google.Solutions.Mvvm.Shell
                 //     has completed.
                 //
 
-                //
-                // NB. DataObject (in SaveStreamToHandle) assumes that Stream.Read()
-                //     always reads the requested amount of data, but Stream
-                //     implementations are allowed to return _less_ than that.
-                //     To compensate, wrap the stream.
-                //
-
                 if (this.currentFile >= 0 && this.currentFile < this.Files.Count)
                 {
-                    var contentStream = new FullReadGuaranteeingStream(
-                        this.Files[this.currentFile].OpenStream());
+                    var contentStream = this.Files[this.currentFile].OpenStream();
                     this.openedContentStreams.Add(contentStream);
 
                     //
@@ -171,6 +164,15 @@ namespace Google.Solutions.Mvvm.Shell
             return base.GetData(format, autoConvert);
         }
 
+        /// <summary>
+        /// Get data to drop.
+        /// 
+        /// NB. This method differs in 2 ways from the base class implementation:
+        ///
+        ///     1. It extracts the index of the file that is currently
+        ///        being processed. This
+        ///     2. It adds support for TYMED_ISTREAM.
+        /// </summary>
         void UCOMIDataObject.GetData(ref FORMATETC formatetc, out STGMEDIUM medium)
         {
             if (this.disposed)
@@ -179,12 +181,6 @@ namespace Google.Solutions.Mvvm.Shell
                 medium.tymed = TYMED.TYMED_NULL;
                 return;
             }
-
-            //
-            // NB. The only purpose of overriding this method is to get the
-            //     index of the file that is currently being processed. This
-            //     information is encoded in the FORMATETC parameter.
-            //
 
             if (formatetc.cfFormat ==
                 (short)DataFormats.GetFormat(ShellDataFormats.CFSTR_FILECONTENTS).Id)
@@ -196,62 +192,86 @@ namespace Google.Solutions.Mvvm.Shell
             }
 
             //
-            // Now it would be good to call base.GetData(...), but that's not possible
-            // because the method is an EIMI. Therefore, we replicate its logic here.
+            // Populate the medium.
             //
-
             medium = default;
             if (GetTymedUseable(formatetc.tymed))
             {
-                if ((formatetc.tymed & TYMED.TYMED_HGLOBAL) != 0)
+                var formatName = DataFormats.GetFormat(formatetc.cfFormat).Name;
+                this.IsOperationInProgress = true;
+
+                try
                 {
-                    medium.tymed = TYMED.TYMED_HGLOBAL;
-                    medium.unionmember = NativeMethods.GlobalAlloc(GHND | GMEM_DDESHARE, 1);
-                    if (medium.unionmember == IntPtr.Zero)
+                    if ((formatetc.tymed & TYMED.TYMED_ISTREAM) != 0 &&
+                        GetDataPresent(formatName) &&
+                        GetData(formatName, false) is Stream dataStream)
                     {
-                        throw new OutOfMemoryException();
+                        //
+                        // Return data as a COM IStream.
+                        //
+                        var streamPtr = Marshal.GetIUnknownForObject(new ComStream(dataStream));
+                    
+                        medium.tymed = TYMED.TYMED_ISTREAM;
+                        medium.unionmember = streamPtr;
                     }
-
-                    try
+                    else if ((formatetc.tymed & TYMED.TYMED_HGLOBAL) != 0)
                     {
                         //
-                        // Copy data. This will invoke GetData(format, autoConvert), which
-                        // in turn uses the cached index to provide the right data.
+                        // Return data as an HGLOBAL. The base class can do
+                        // that for us.
                         //
-                        this.IsOperationInProgress = true;
+                        medium.tymed = TYMED.TYMED_HGLOBAL;
+                        medium.unionmember = NativeMethods.GlobalAlloc(GHND | GMEM_DDESHARE, 1);
+                        if (medium.unionmember == IntPtr.Zero)
+                        {
+                            throw new OutOfMemoryException();
+                        }
 
+                        try
+                        {
+                            //
+                            // Copy data. This will invoke GetData(format, autoConvert), which
+                            // in turn uses the cached index to provide the right data.
+                            //
+
+                            ((UCOMIDataObject)this).GetDataHere(ref formatetc, ref medium);
+                        }
+                        catch (Exception)
+                        {
+                            NativeMethods.GlobalFree(new HandleRef(medium, medium.unionmember));
+                            medium.unionmember = IntPtr.Zero;
+
+                            throw;
+                        }
+                    }
+                    else
+                    {
+                        medium.tymed = formatetc.tymed;
                         ((UCOMIDataObject)this).GetDataHere(ref formatetc, ref medium);
-                        return;
-                    }
-                    catch (Exception e)
-                    {
-                        NativeMethods.GlobalFree(new HandleRef(medium, medium.unionmember));
-                        medium.unionmember = IntPtr.Zero;
-
-                        if (e is COMException comEx && (
-                            comEx.HResult == DV_E_FORMATETC ||
-                            comEx.HResult == (int)HRESULT.E_FAIL))
-                        {
-                            //
-                            // These can happen during format negotiation and 
-                            // aren't worth raising an event for.
-                            //
-                        }
-                        else if (this.IsAsync)
-                        {
-                            this.AsyncOperationFailed?.Invoke(this, new ExceptionEventArgs(e));
-                        }
-
-                        throw;
                     }
                 }
+                catch (Exception e)
+                {
+                    if (e is COMException comEx && (
+                        comEx.HResult == (int)HRESULT.DV_E_FORMATETC ||
+                        comEx.HResult == (int)HRESULT.E_FAIL))
+                    {
+                        //
+                        // These can happen during format negotiation and 
+                        // aren't worth raising an event for.
+                        //
+                    }
+                    else if (this.IsAsync)
+                    {
+                        this.AsyncOperationFailed?.Invoke(this, new ExceptionEventArgs(e));
+                    }
 
-                medium.tymed = formatetc.tymed;
-                ((UCOMIDataObject)this).GetDataHere(ref formatetc, ref medium);
+                    throw;
+                }
             }
             else
             {
-                Marshal.ThrowExceptionForHR(DV_E_TYMED);
+                Marshal.ThrowExceptionForHR((int)HRESULT.DV_E_TYMED);
             }
 
             bool GetTymedUseable(TYMED tymed)
@@ -526,94 +546,6 @@ namespace Google.Solutions.Mvvm.Shell
             }
         }
 
-        /// <summary>
-        /// Stream that always reads the full amount of requested data,
-        /// even if the Stream contract doesn't require that.
-        /// </summary>
-        private class FullReadGuaranteeingStream : Stream
-        {
-            private readonly Stream stream;
-
-            public FullReadGuaranteeingStream(Stream stream)
-            {
-                this.stream = stream;
-            }
-
-            public override bool CanRead
-            {
-                get => this.stream.CanRead;
-            }
-
-            public override bool CanSeek
-            {
-                get => this.stream.CanSeek;
-            }
-
-            public override bool CanWrite
-            {
-                get => this.stream.CanWrite;
-            }
-
-            public override long Length
-            {
-                get => this.stream.Length;
-            }
-
-            public override long Position
-            {
-                get => this.stream.Position;
-                set => this.stream.Position = value;
-            }
-
-            public override void Flush()
-            {
-                this.stream.Flush();
-            }
-
-            public override long Seek(long offset, SeekOrigin origin)
-            {
-                return this.stream.Seek(offset, origin);
-            }
-
-            public override void SetLength(long value)
-            {
-                this.stream?.SetLength(value);
-            }
-
-            public override int Read(byte[] buffer, int offset, int count)
-            {
-                //
-                // Keep reading until we reached the requested number
-                // of bytes or the end of the stream.
-                //
-                var totalBytesRead = 0;
-                while (totalBytesRead < count)
-                {
-                    var bytesRead = this.stream.Read(
-                        buffer,
-                        offset + totalBytesRead,
-                        count - totalBytesRead);
-                    if (bytesRead > 0)
-                    {
-                        totalBytesRead += bytesRead;
-                    }
-                }
-
-                return totalBytesRead;
-            }
-
-            public override void Write(byte[] buffer, int offset, int count)
-            {
-                this.stream.Write(buffer, offset, count);
-            }
-
-            protected override void Dispose(bool disposing)
-            {
-                base.Dispose(disposing);
-                this.stream.Dispose();
-            }
-        }
-
         //----------------------------------------------------------------------
         // Interop declarations.
         //----------------------------------------------------------------------
@@ -629,9 +561,6 @@ namespace Google.Solutions.Mvvm.Shell
         private const uint GMEM_ZEROINIT = 0x0040;
         private const uint GHND = (GMEM_MOVEABLE | GMEM_ZEROINIT);
         private const uint GMEM_DDESHARE = 0x2000;
-
-        private const int DV_E_TYMED = unchecked((int)0x80040069);
-        private const int DV_E_FORMATETC = unchecked((int)0x80040064);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         internal struct FILEDESCRIPTORW

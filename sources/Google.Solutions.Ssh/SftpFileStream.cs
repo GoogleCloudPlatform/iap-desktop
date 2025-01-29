@@ -104,7 +104,8 @@ namespace Google.Solutions.Ssh
                 }
                 else
                 {
-                    return 0;
+                    throw new InvalidOperationException(
+                        "The file size is not available");
                 }
             }
         }
