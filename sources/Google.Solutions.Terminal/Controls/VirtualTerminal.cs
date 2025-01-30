@@ -105,6 +105,37 @@ namespace Google.Solutions.Terminal.Controls
         }
 
         /// <summary>
+        /// Sanitize text from clipboard before pasting.
+        /// </summary>
+        internal string SanitizeTextForPasting(string text)
+        {
+            //
+            // Replace pretty quotes bt ASCII quotes.
+            //
+            if (this.EnableTypographicQuoteConversion)
+            {
+                text = TypographicQuotes.ToAsciiQuotes(text);
+            }
+
+            //
+            // Sanitize the CRLFs here, because most applications (incl. bash)
+            // will otherwise interpret a CRLF as two line breaks.
+            //
+            text = text.Replace("\r\n", "\r");
+
+            //
+            // Use bracketing to ensure pasting multiple lines into
+            // a shell doesn't cause immediate execution.
+            //
+            if (this.EnableBracketedPaste)
+            {
+                text = "\u001b[200~" + text + "\u001b[201~";
+            }
+
+            return text;
+        }
+
+        /// <summary>
         /// Create terminal handle. This triggers the native DLL to be loaded.
         /// 
         /// For unit testing, it can be necessary to call this method explicitly.
@@ -389,20 +420,21 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         protected virtual void OnUserInput(string data)
         {
-            //
-            // When a user presses Enter, the terminal produces a CR (\r).
-            // This is in line with what you'd expect.
-            //
-            // If the user pastes text into the terminal (for example, by
-            // using a right-click, which is handled by the terminal itself),
-            // and the pasted text contains CRLFs, the the terminal doesn't
-            // covert these CRLFs to CRs. Instead, it passes through the CRLFs
-            // to this callback here.
-            //
-            // Sanitize the CRLFs here, because most applications (incl. bash)
-            // will otherwise interpret a CRLF as two line breaks.
-            //
-            data = data.Replace("\r\n", "\r");
+            if (this.currentSubclassedMessage == WindowMessage.WM_RBUTTONDOWN)
+            {
+                //
+                // Our subclass handles keyboard accelerators for pasting,
+                // and we make sure the pasted content is sanitized first.
+                //
+                // Right-click pasting is handled by the terminal itself
+                // (in src/cascadia/TerminalControl/HwndTerminal.cpp), but
+                // without sanitization.
+                //
+                // If we're receiving output during a WM_RBUTTONDOWN,
+                // then the output must be such unsanitized clipboard
+                // contents.
+                data = SanitizeTextForPasting(data);
+            }
 
             this.UserInput?.Invoke(this, new VirtualTerminalInputEventArgs(data));
         }
@@ -668,6 +700,7 @@ namespace Google.Solutions.Terminal.Controls
         private bool terminalWindowDestructionBegun = false;
         private bool ignoreWmCharBecauseOfAccelerator = false;
         private string? selectionToCopyInKeyUp = null;
+        private WindowMessage? currentSubclassedMessage;
 
         private void TerminalSubclassWndProc(ref Message m)
         {
@@ -752,6 +785,7 @@ namespace Google.Solutions.Terminal.Controls
                 // particular, we must ignore the WM_KILLFOCUS 
                 // message that might be coming next.
                 //
+                this.currentSubclassedMessage = null;
                 this.terminalWindowDestructionBegun = true;
                 SubclassCallback.DefaultWndProc(ref m);
                 return;
@@ -761,8 +795,13 @@ namespace Google.Solutions.Terminal.Controls
                 //
                 // Pass through and skip all subclass logic.
                 //
+                this.currentSubclassedMessage = null;
                 SubclassCallback.DefaultWndProc(ref m);
                 return;
+            }
+            else
+            {
+                this.currentSubclassedMessage = msgId;
             }
 
             var terminalHandle = Invariant.ExpectNotNull(this.terminal, "Terminal");
@@ -884,12 +923,7 @@ namespace Google.Solutions.Terminal.Controls
                                 var contents = Clipboard.GetText();
                                 if (!string.IsNullOrWhiteSpace(contents))
                                 {
-                                    if (this.EnableTypographicQuoteConversion)
-                                    {
-                                        contents = TypographicQuotes.ToAsciiQuotes(contents);
-                                    }
-
-                                    OnUserInput(contents);
+                                    OnUserInput(SanitizeTextForPasting(contents));
                                 }
                             }
                             catch (ExternalException)
