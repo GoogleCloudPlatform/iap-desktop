@@ -64,6 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.selectBackgroundColorButton = new System.Windows.Forms.Button();
             this.selectForegroundColorButton = new System.Windows.Forms.Button();
             this.selectFontButton = new System.Windows.Forms.Button();
+            this.bracketedPastingCheckBox = new System.Windows.Forms.CheckBox();
             this.clipboardBox.SuspendLayout();
             this.scollingBox.SuspendLayout();
             this.themeBox.SuspendLayout();
@@ -71,12 +72,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             // 
             // clipboardBox
             // 
+            this.clipboardBox.Controls.Add(this.bracketedPastingCheckBox);
             this.clipboardBox.Controls.Add(this.convertTypographicQuotesCheckBox);
             this.clipboardBox.Controls.Add(this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox);
             this.clipboardBox.Controls.Add(this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox);
             this.clipboardBox.Location = new System.Drawing.Point(4, 3);
             this.clipboardBox.Name = "clipboardBox";
-            this.clipboardBox.Size = new System.Drawing.Size(336, 89);
+            this.clipboardBox.Size = new System.Drawing.Size(336, 108);
             this.clipboardBox.TabIndex = 0;
             this.clipboardBox.TabStop = false;
             this.clipboardBox.Text = "Clipboard:";
@@ -114,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             // scollingBox
             // 
             this.scollingBox.Controls.Add(this.scrollUsingCtrlHomeEndcheckBox);
-            this.scollingBox.Location = new System.Drawing.Point(4, 100);
+            this.scollingBox.Location = new System.Drawing.Point(4, 118);
             this.scollingBox.Name = "scollingBox";
             this.scollingBox.Size = new System.Drawing.Size(336, 61);
             this.scollingBox.TabIndex = 2;
@@ -139,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.themeBox.Controls.Add(this.selectBackgroundColorButton);
             this.themeBox.Controls.Add(this.selectForegroundColorButton);
             this.themeBox.Controls.Add(this.selectFontButton);
-            this.themeBox.Location = new System.Drawing.Point(4, 168);
+            this.themeBox.Location = new System.Drawing.Point(4, 186);
             this.themeBox.Name = "themeBox";
             this.themeBox.Size = new System.Drawing.Size(336, 119);
             this.themeBox.TabIndex = 3;
@@ -205,6 +207,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.selectFontButton.UseVisualStyleBackColor = true;
             this.selectFontButton.Click += new System.EventHandler(this.selectFontButton_Click);
             // 
+            // bracketedPastingCheckBox
+            // 
+            this.bracketedPastingCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.bracketedPastingCheckBox.Location = new System.Drawing.Point(18, 78);
+            this.bracketedPastingCheckBox.Name = "bracketedPastingCheckBox";
+            this.bracketedPastingCheckBox.Size = new System.Drawing.Size(222, 17);
+            this.bracketedPastingCheckBox.TabIndex = 3;
+            this.bracketedPastingCheckBox.Text = "Enable bracketed pasting";
+            this.bracketedPastingCheckBox.UseVisualStyleBackColor = true;
+            // 
             // TerminalOptionsSheet
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -238,5 +250,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         private System.Windows.Forms.Button selectBackgroundColorButton;
         private BindableComboBox caretStyleCombobox;
         private System.Windows.Forms.Label caretStyle;
+        private System.Windows.Forms.CheckBox bracketedPastingCheckBox;
     }
 }

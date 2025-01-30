@@ -38,6 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         ISetting<bool> IsCopyPasteUsingCtrlCAndCtrlVEnabled { get; }
         ISetting<bool> IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; }
         ISetting<bool> IsQuoteConvertionOnPasteEnabled { get; }
+        ISetting<bool> IsBracketedPasteEnabled { get; }
         ISetting<bool> IsScrollingUsingCtrlHomeEndEnabled { get; }
         ISetting<string> FontFamily { get; }
         ISetting<int> FontSizeAsDword { get; }
@@ -97,6 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         public ISetting<bool> IsCopyPasteUsingCtrlCAndCtrlVEnabled { get; }
         public ISetting<bool> IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; }
         public ISetting<bool> IsQuoteConvertionOnPasteEnabled { get; }
+        public ISetting<bool> IsBracketedPasteEnabled { get; }
         public ISetting<bool> IsScrollingUsingCtrlHomeEndEnabled { get; }
         public ISetting<string> FontFamily { get; }
         public ISetting<int> FontSizeAsDword { get; }
@@ -109,6 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.IsCopyPasteUsingCtrlCAndCtrlVEnabled,
             this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled,
             this.IsQuoteConvertionOnPasteEnabled,
+            this.IsBracketedPasteEnabled,
             this.IsScrollingUsingCtrlHomeEndEnabled,
             this.FontFamily,
             this.FontSizeAsDword,
@@ -134,6 +137,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.IsQuoteConvertionOnPasteEnabled = store.Read<bool>(
                 "IsQuoteConvertionOnPasteEnabled",
                 "IsQuoteConvertionOnPasteEnabled",
+                null,
+                null,
+                true);
+            this.IsBracketedPasteEnabled = store.Read<bool>(
+                "IsBracketedPasteEnabled",
+                "IsBracketedPasteEnabled",
                 null,
                 null,
                 true);

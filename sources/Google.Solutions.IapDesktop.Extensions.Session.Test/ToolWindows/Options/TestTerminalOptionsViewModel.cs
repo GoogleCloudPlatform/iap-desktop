@@ -219,6 +219,66 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         //---------------------------------------------------------------------
+        // IsBracketedPasteEnabled.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void IsBracketedPasteEnabled_WhenSettingEnabled()
+        {
+            var settingsRepository = CreateTerminalSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.IsBracketedPasteEnabled.Value = true;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new TerminalOptionsViewModel(settingsRepository);
+
+            Assert.IsTrue(viewModel.IsBracketedPasteEnabled.Value);
+        }
+
+        [Test]
+        public void IsBracketedPasteEnabled_WhenSettingDisabled()
+        {
+            var settingsRepository = CreateTerminalSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.IsBracketedPasteEnabled.Value = false;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new TerminalOptionsViewModel(settingsRepository);
+
+            Assert.IsFalse(viewModel.IsBracketedPasteEnabled.Value);
+        }
+
+        [Test]
+        public async Task IsBracketedPasteEnabled_AppliesChange()
+        {
+            var settingsRepository = CreateTerminalSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.IsBracketedPasteEnabled.Value = true;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new TerminalOptionsViewModel(settingsRepository);
+            viewModel.IsBracketedPasteEnabled.Value = false;
+            await viewModel.ApplyChangesAsync();
+
+            settings = settingsRepository.GetSettings();
+            Assert.IsFalse(settings.IsBracketedPasteEnabled.Value);
+        }
+
+        [Test]
+        public void IsBracketedPasteEnabled_WhenChanged_ThenIsDirtyIsTrueUntilApplied()
+        {
+            var settingsRepository = CreateTerminalSettingsRepository();
+            var viewModel = new TerminalOptionsViewModel(settingsRepository);
+
+            Assert.IsFalse(viewModel.IsDirty.Value);
+
+            viewModel.IsBracketedPasteEnabled.Value =
+                !viewModel.IsBracketedPasteEnabled.Value;
+
+            Assert.IsTrue(viewModel.IsDirty.Value);
+        }
+
+        //---------------------------------------------------------------------
         // IsScrollingUsingCtrlHomeEndEnabled.
         //---------------------------------------------------------------------
 

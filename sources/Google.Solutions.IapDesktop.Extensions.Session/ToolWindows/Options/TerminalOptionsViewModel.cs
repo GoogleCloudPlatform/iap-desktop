@@ -46,6 +46,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value);
             this.IsQuoteConvertionOnPasteEnabled = ObservableProperty.Build(
                 settings.IsQuoteConvertionOnPasteEnabled.Value);
+            this.IsBracketedPasteEnabled = ObservableProperty.Build(
+                settings.IsBracketedPasteEnabled.Value);
             this.IsScrollingUsingCtrlHomeEndEnabled = ObservableProperty.Build(
                 settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
             this.TerminalFont = ObservableProperty.Build<Font>(new Font(
@@ -60,6 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             MarkDirtyWhenPropertyChanges(this.IsCopyPasteUsingCtrlCAndCtrlVEnabled);
             MarkDirtyWhenPropertyChanges(this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled);
             MarkDirtyWhenPropertyChanges(this.IsQuoteConvertionOnPasteEnabled);
+            MarkDirtyWhenPropertyChanges(this.IsBracketedPasteEnabled);
             MarkDirtyWhenPropertyChanges(this.IsScrollingUsingCtrlHomeEndEnabled);
             MarkDirtyWhenPropertyChanges(this.TerminalFont);
             MarkDirtyWhenPropertyChanges(this.TerminalForegroundColor);
@@ -83,6 +86,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value;
             settings.IsQuoteConvertionOnPasteEnabled.Value =
                 this.IsQuoteConvertionOnPasteEnabled.Value;
+            settings.IsBracketedPasteEnabled.Value =
+                this.IsBracketedPasteEnabled.Value;
             settings.IsScrollingUsingCtrlHomeEndEnabled.Value =
                 this.IsScrollingUsingCtrlHomeEndEnabled.Value;
             settings.FontFamily.Value =
@@ -109,6 +114,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         public ObservableProperty<bool> IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; }
 
         public ObservableProperty<bool> IsQuoteConvertionOnPasteEnabled { get; }
+
+        public ObservableProperty<bool> IsBracketedPasteEnabled { get; }
 
         public ObservableProperty<bool> IsScrollingUsingCtrlHomeEndEnabled { get; }
 
