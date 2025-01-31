@@ -71,6 +71,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 viewModel,
                 m => m.IsQuoteConvertionOnPasteEnabled,
                 bindingContext);
+            this.bracketedPastingCheckBox.BindObservableProperty(
+                c => c.Checked,
+                viewModel,
+                m => m.IsBracketedPasteEnabled,
+                bindingContext);
 
             //
             // Scrolling box.

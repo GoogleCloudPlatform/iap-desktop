@@ -147,5 +147,10 @@ namespace Google.Solutions.Terminal.Controls
         /// Scroll to bottom using Ctrl+Home.
         /// </summary>
         public bool EnableCtrlEnd { get; set; } = true;
+
+        /// <summary>
+        /// Use bracketed paste.
+        /// </summary>
+        public bool EnableBracketedPaste { get; set; } = false;
     }
 }

@@ -65,6 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             terminal.EnableCtrlInsert = settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value;
             terminal.EnableShiftInsert = settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value;
             terminal.EnableTypographicQuoteConversion = settings.IsQuoteConvertionOnPasteEnabled.Value;
+            terminal.EnableBracketedPaste = settings.IsBracketedPasteEnabled.Value;
             terminal.EnableCtrlHome = settings.IsScrollingUsingCtrlHomeEndEnabled.Value;
             terminal.EnableCtrlEnd = settings.IsScrollingUsingCtrlHomeEndEnabled.Value;
             terminal.Caret = settings.CaretStyle.Value;

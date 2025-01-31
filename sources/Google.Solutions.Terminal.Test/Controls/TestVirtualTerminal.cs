@@ -22,6 +22,7 @@
 using Google.Solutions.Platform.IO;
 using Google.Solutions.Terminal.Controls;
 using Moq;
+using Newtonsoft.Json.Converters;
 using NUnit.Framework;
 using System;
 using System.Drawing;
@@ -143,22 +144,6 @@ namespace Google.Solutions.Terminal.Test.Controls
                     form.VirtualTerminal,
                     "\u001b[D\u001b[D",
                     () => form.VirtualTerminal.SimulateKey(Keys.Left));
-
-                form.Close();
-            }
-        }
-
-        [Test]
-        public void UserInput_WhenDataContainsCrlf_ThenLineFeedsAreRemoved()
-        {
-            using (var form = TerminalForm.Create())
-            {
-                form.Show();
-
-                VirtualTerminalAssert.RaisesUserInputEvent(
-                    form.VirtualTerminal,
-                    "one\rtwo\rthree\r",
-                    () => form.VirtualTerminal.SimulateSend("one\r\ntwo\r\nthree\r\n"));
 
                 form.Close();
             }
@@ -363,6 +348,50 @@ namespace Google.Solutions.Terminal.Test.Controls
 
                 form.Close();
             }
+        }
+
+        //---------------------------------------------------------------------
+        // SanitizeTextForPasting.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void SanitizeTextForPasting_TypographicQuoteConversion()
+        {
+            var terminal = new VirtualTerminal()
+            {
+                EnableBracketedPaste = false,
+                EnableTypographicQuoteConversion = false,
+            };
+
+            Assert.AreEqual(
+                "\u00ABThis\u00BB\rand that", 
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that"));
+
+            terminal.EnableTypographicQuoteConversion = true;
+
+            Assert.AreEqual(
+                "\"This\"\rand that",
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that"));
+        }
+
+        [Test]
+        public void SanitizeTextForPasting_BracketedPasting()
+        {
+            var terminal = new VirtualTerminal()
+            {
+                EnableBracketedPaste = false,
+                EnableTypographicQuoteConversion = false,
+            };
+
+            Assert.AreEqual(
+                "\u00ABThis\u00BB\rand that",
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that"));
+
+            terminal.EnableBracketedPaste = true;
+
+            Assert.AreEqual(
+                "\u001b[200~\u00ABThis\u00BB\rand that\u001b[201~",
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that"));
         }
     }
 
