@@ -275,8 +275,8 @@ namespace Google.Solutions.Apis.Auth.Gaia
                 else
                 {
                     throw new AuthorizationFailedException(
-                        "Authorization failed because your computer is not enrolled in Endpoint " +
-                        "Verification.\n\n" + e.Error.ErrorDescription);
+                        "Authorization failed because a context-aware access requirement " +
+                        "was not met.\n\n" + e.Error.ErrorDescription);
 
                 }
             }

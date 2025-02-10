@@ -433,6 +433,7 @@ namespace Google.Solutions.Terminal.Controls
                 // If we're receiving output during a WM_RBUTTONDOWN,
                 // then the output must be such unsanitized clipboard
                 // contents.
+                //
                 data = SanitizeTextForPasting(data);
             }
 
