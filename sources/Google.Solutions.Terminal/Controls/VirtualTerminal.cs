@@ -773,6 +773,32 @@ namespace Google.Solutions.Terminal.Controls
                 };
             }
 
+            /// <summary>
+            /// Scroll the terminal up or down by a certain number of lines.
+            /// </summary>
+            void ScrollTerminal(int linesDelta)
+            {
+                var currentValue = this.scrollBar.Value;
+                if (linesDelta > 0)
+                {
+                    //
+                    // Scrolling up.
+                    //
+                    this.scrollBar.Value = Math.Max(
+                        this.scrollBar.Minimum,
+                        currentValue - linesDelta);
+                }
+                else
+                {
+                    //
+                    // Scrolling down.
+                    //
+                    this.scrollBar.Value = Math.Min(
+                        this.scrollBar.Maximum,
+                        currentValue - linesDelta);
+                }
+            }
+
             Debug.Assert(!this.DesignMode);
 
             var msgId = (WindowMessage)m.Msg;
@@ -1004,28 +1030,9 @@ namespace Google.Solutions.Terminal.Controls
                             //
                             // Translate delta to the number of lines (+/-) to scroll.
                             //
-                            var linesDelta =
-                                delta / 120 * SystemInformation.MouseWheelScrollLines;
-
-                            var currentValue = this.scrollBar.Value;
-                            if (linesDelta > 0)
-                            {
-                                //
-                                // Scrolling up.
-                                //
-                                this.scrollBar.Value = Math.Max(
-                                    this.scrollBar.Minimum,
-                                    currentValue - linesDelta);
-                            }
-                            else
-                            {
-                                //
-                                // Scrolling down.
-                                //
-                                this.scrollBar.Value = Math.Min(
-                                    this.scrollBar.Maximum,
-                                    currentValue - linesDelta);
-                            }
+                            var linesDelta = delta / 120 * 
+                                Math.Max(SystemInformation.MouseWheelScrollLines, 1);
+                            ScrollTerminal(linesDelta);
                         }
 
                         break;
