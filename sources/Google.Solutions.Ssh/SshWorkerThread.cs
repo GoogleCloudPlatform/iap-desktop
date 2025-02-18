@@ -339,6 +339,9 @@ namespace Google.Solutions.Ssh
                                             // 
                                             // Perform whatever receiving operation we need to do.
                                             //
+                                            // NB. We already reset the WSA event, so we must now read
+                                            // all data that's available.
+                                            //
                                             OnReadyToReceive(authenticatedSession);
                                         }
                                         else if (waitResult == NativeMethods.WSA_WAIT_EVENT_0 + 1)

@@ -152,38 +152,48 @@ namespace Google.Solutions.Ssh
             // to reuse the same buffer.
             //
 
-            var bytesReceived = this.nativeChannel.Read(this.receiveBuffer);
-            var endOfStream = this.nativeChannel.IsEndOfStream;
+            uint bytesReceived;
+            bool endOfStream;
 
-            var receivedData = this.receiveDecoder.Decode(
-                this.receiveBuffer,
-                0,
-                (int)bytesReceived);
-
-            try
+            //
+            // Read as much data as available.
+            //
+            do
             {
-                if (bytesReceived > 0)
+                bytesReceived = this.nativeChannel.Read(this.receiveBuffer);
+                endOfStream = this.nativeChannel.IsEndOfStream;
+
+                var receivedData = this.receiveDecoder.Decode(
+                    this.receiveBuffer,
+                    0,
+                    (int)bytesReceived);
+
+                try
                 {
-                    this.OutputAvailable?.Invoke(
-                        this,
-                        new PseudoTerminalDataEventArgs(receivedData));
+                    if (bytesReceived > 0)
+                    {
+                        this.OutputAvailable?.Invoke(
+                            this,
+                            new PseudoTerminalDataEventArgs(receivedData));
+                    }
+
+                    if (endOfStream)
+                    {
+                        //
+                        // End of stream reached, that means we're
+                        // disconnecting.
+                        //
+                        this.Disconnected?.Invoke(this, EventArgs.Empty);
+
+                        this.endOfStream.SetResult(null);
+                    }
                 }
-
-                if (endOfStream)
+                catch (Exception e)
                 {
-                    //
-                    // End of stream reached, that means we're
-                    // disconnecting.
-                    //
-                    this.Disconnected?.Invoke(this, EventArgs.Empty);
-
-                    this.endOfStream.SetResult(null);
+                    this.FatalError?.Invoke(this, new PseudoTerminalErrorEventArgs(e));
                 }
             }
-            catch (Exception e)
-            {
-                this.FatalError?.Invoke(this, new PseudoTerminalErrorEventArgs(e));
-            }
+            while (bytesReceived > 0 && !endOfStream);
         }
 
         internal override void OnReceiveError(Exception exception)

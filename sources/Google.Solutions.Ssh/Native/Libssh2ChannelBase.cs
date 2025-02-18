@@ -108,6 +108,10 @@ namespace Google.Solutions.Ssh.Native
                 {
                     return (uint)bytesRead;
                 }
+                else if (((LIBSSH2_ERROR)bytesRead) == LIBSSH2_ERROR.EAGAIN)
+                {
+                    return 0;
+                }
                 else
                 {
                     throw this.Session.CreateException((LIBSSH2_ERROR)bytesRead);
