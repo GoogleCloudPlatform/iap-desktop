@@ -333,6 +333,15 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
                         this.RootNode.DebugIsValidNode(this.selectedNode),
                     "Node detached");
 
+                if (this.selectedNode is CloudViewModelNode cloudNode &&
+                    !cloudNode.IsLoaded)
+                {
+                    //
+                    // Not fully initialized yet.
+                    //
+                    return null;
+                }
+
                 return this.selectedNode;
             }
             set
