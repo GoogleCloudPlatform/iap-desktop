@@ -74,14 +74,14 @@ jobs:
           
       - name: Set up Pages
         if: github.ref == 'refs/heads/master'
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v4
         
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         if: github.ref == 'refs/heads/master'
         with:
           path: 'doc/site/public'
           
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/master'
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
