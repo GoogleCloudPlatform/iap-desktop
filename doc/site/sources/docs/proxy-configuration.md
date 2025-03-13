@@ -47,8 +47,8 @@ permits HTTPS connections to the following domains:
 * `logging.googleapis.com`
 * `sts.googleapis.com`
 * `tunnel.cloudproxy.app`
-* `www.google-analytics.com`
 * `api.github.com`
+* `www.google-analytics.com` (optional)
 
 The IAP TCP forwarding tunnels that IAP Desktop uses to create SSH and RDP connections
 use WebSockets. Make sure that your proxy server permits WebSocket communication to the following domain:
