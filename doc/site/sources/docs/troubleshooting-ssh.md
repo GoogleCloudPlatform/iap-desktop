@@ -1,5 +1,20 @@
 #  Troubleshooting SSH issues
 
+## :material-message-alert: Pasted text looks garbled
+
+**Symptom**: When you paste text such as `example` to the terminal, it appears as `[200~example[201~` or `00~example01~`.
+
+IAP Desktop uses [bracketed pasting :octicons-link-external-16:](https://en.wikipedia.org/wiki/Bracketed-paste) by default. 
+This can cause pasted text to appear garbled if you're using a shell or running a program that doesn't support
+bracketed paste.
+
+To fix this issue, disable bracketed pasting:
+
+*   Go to **Tools > Options > Terminal**.
+*   Set **Enable bracketed pasting** to **Disabled**
+*   Click **OK**.
+
+
 ## :material-message-alert: Windows CNG key container or key store is inaccessible
 
 **Symptom**: When trying to connect to a Linux VM, you're seeing one of the following error messages:
