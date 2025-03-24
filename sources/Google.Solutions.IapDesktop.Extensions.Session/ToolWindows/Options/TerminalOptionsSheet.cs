@@ -80,10 +80,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             //
             // Scrolling box.
             //
-            this.scrollUsingCtrlHomeEndcheckBox.BindObservableProperty(
+            this.scrollUsingCtrlHomeEndCheckBox.BindObservableProperty(
                 c => c.Checked,
                 viewModel,
                 m => m.IsScrollingUsingCtrlHomeEndEnabled,
+                bindingContext);
+            this.scrollUsingCtrlPageUpDownCheckBox.BindObservableProperty(
+                c => c.Checked,
+                viewModel,
+                m => m.IsScrollingUsingCtrlPageUpDownEnabled,
                 bindingContext);
 
             //
