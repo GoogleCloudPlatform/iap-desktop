@@ -753,7 +753,7 @@ namespace Google.Solutions.Terminal.Controls
             {
                 if (ModifierKeys == Keys.Control && key == Keys.Home)
                 {
-                    return this.EnableCtrlHome;
+                    return this.EnableCtrlHomeEnd;
                 }
                 else
                 {
@@ -765,7 +765,7 @@ namespace Google.Solutions.Terminal.Controls
             {
                 if (ModifierKeys == Keys.Control && key == Keys.End)
                 {
-                    return this.EnableCtrlEnd;
+                    return this.EnableCtrlHomeEnd;
                 }
                 else
                 {
