@@ -763,7 +763,7 @@ namespace Google.Solutions.Terminal.Controls
 
             bool IsAcceleratorForScrollingToBottom(Keys key)
             {
-                if (ModifierKeys == Keys.Control && key == Keys.Home)
+                if (ModifierKeys == Keys.Control && key == Keys.End)
                 {
                     return this.EnableCtrlEnd;
                 }
@@ -959,6 +959,14 @@ namespace Google.Solutions.Terminal.Controls
                                 // Clipboard busy, ignore.
                                 //
                             }
+                        }
+                        else if (IsAcceleratorForScrollingToTop((Keys)keyParams.VirtualKey) ||
+                            IsAcceleratorForScrollingToBottom((Keys)keyParams.VirtualKey))
+                        {
+                            //
+                            // We handled these in WM_KEYUP already, so don't pass a stray
+                            // WM_KEYDOWN to the terminal.
+                            //
                         }
                         else
                         {
