@@ -147,13 +147,13 @@ namespace Google.Solutions.Platform.Test.Dispatch
             var pty = new Win32PseudoConsole(new PseudoTerminalSize(80, 24));
             pty.Dispose();
 
-            Assert.IsTrue(pty.IsClosed);
-            Assert.IsTrue(pty.Handle.IsClosed);
+            Assert.IsTrue(pty.IsClosed, "Close Pty");
+            Assert.IsTrue(pty.Handle.IsClosed, "Close handle");
 
-            Assert.IsTrue(pty.InputPipe.ReadSideHandle.IsClosed);
-            Assert.IsTrue(pty.InputPipe.WriteSideHandle.IsClosed);
-            Assert.IsTrue(pty.OutputPipe.ReadSideHandle.IsClosed);
-            Assert.IsTrue(pty.OutputPipe.WriteSideHandle.IsClosed);
+            Assert.IsTrue(pty.InputPipe.ReadSideHandle.IsClosed, "Close input/read");
+            Assert.IsTrue(pty.InputPipe.WriteSideHandle.IsClosed, "Close input/write");
+            Assert.IsTrue(pty.OutputPipe.ReadSideHandle.IsClosed, "Close output/read");
+            Assert.IsTrue(pty.OutputPipe.WriteSideHandle.IsClosed, "Close output/write");
         }
     }
 }

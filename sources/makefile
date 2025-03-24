@@ -292,7 +292,7 @@ test: $(NUNIT_ASSEMBLIES)
 		-register:user \
 		-returntargetcode \
 		-target:nunit3-console.exe \
-		"-targetargs:$(NUNIT_ASSEMBLIES) --result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl --agents=5 --where ""$(NUNIT_FILTER)""" \
+		"-targetargs:$(NUNIT_ASSEMBLIES) --result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl --workers=1 --process=Separate --agents=15 --where ""$(NUNIT_FILTER)""" \
 		-filter:"$(NUNIT_COVERAGE_FILTER)" \
 		"-excludebyattribute:*.SkipCodeCoverage*;*CompilerGenerated*" \
 		-output:opencovertests.xml
