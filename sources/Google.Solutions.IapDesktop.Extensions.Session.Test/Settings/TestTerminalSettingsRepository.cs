@@ -43,6 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 Assert.IsTrue(settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value);
                 Assert.IsTrue(settings.IsQuoteConvertionOnPasteEnabled.Value);
                 Assert.IsTrue(settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
+                Assert.IsTrue(settings.IsScrollingUsingCtrlPageUpDownEnabled.Value);
                 Assert.AreEqual(TerminalSettings.DefaultFontFamily, settings.FontFamily.Value);
                 Assert.AreEqual(
                     TerminalSettings.DefaultFontSize,

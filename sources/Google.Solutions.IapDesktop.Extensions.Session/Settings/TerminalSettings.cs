@@ -40,6 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         ISetting<bool> IsQuoteConvertionOnPasteEnabled { get; }
         ISetting<bool> IsBracketedPasteEnabled { get; }
         ISetting<bool> IsScrollingUsingCtrlHomeEndEnabled { get; }
+        ISetting<bool> IsScrollingUsingCtrlPageUpDownEnabled { get; }
         ISetting<string> FontFamily { get; }
         ISetting<int> FontSizeAsDword { get; }
         ISetting<int> ForegroundColorArgb { get; }
@@ -100,6 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         public ISetting<bool> IsQuoteConvertionOnPasteEnabled { get; }
         public ISetting<bool> IsBracketedPasteEnabled { get; }
         public ISetting<bool> IsScrollingUsingCtrlHomeEndEnabled { get; }
+        public ISetting<bool> IsScrollingUsingCtrlPageUpDownEnabled { get; }
         public ISetting<string> FontFamily { get; }
         public ISetting<int> FontSizeAsDword { get; }
         public ISetting<int> ForegroundColorArgb { get; }
@@ -113,6 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.IsQuoteConvertionOnPasteEnabled,
             this.IsBracketedPasteEnabled,
             this.IsScrollingUsingCtrlHomeEndEnabled,
+            this.IsScrollingUsingCtrlPageUpDownEnabled,
             this.FontFamily,
             this.FontSizeAsDword,
             this.ForegroundColorArgb,
@@ -149,6 +152,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.IsScrollingUsingCtrlHomeEndEnabled = store.Read<bool>(
                 "IsScrollingUsingCtrlHomeEndEnabled",
                 "IsScrollingUsingCtrlHomeEndEnabled",
+                null,
+                null,
+                true);
+            this.IsScrollingUsingCtrlPageUpDownEnabled = store.Read<bool>(
+                "IsScrollingUsingCtrlPageUpDownEnabled",
+                "IsScrollingUsingCtrlPageUpDownEnabled",
                 null,
                 null,
                 true);

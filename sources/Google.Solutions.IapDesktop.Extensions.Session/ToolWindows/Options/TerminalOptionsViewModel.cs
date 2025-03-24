@@ -50,6 +50,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 settings.IsBracketedPasteEnabled.Value);
             this.IsScrollingUsingCtrlHomeEndEnabled = ObservableProperty.Build(
                 settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
+            this.IsScrollingUsingCtrlPageUpDownEnabled = ObservableProperty.Build(
+                settings.IsScrollingUsingCtrlPageUpDownEnabled.Value);
             this.TerminalFont = ObservableProperty.Build<Font>(new Font(
                 settings.FontFamily.Value,
                 TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.Value)));
@@ -64,6 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             MarkDirtyWhenPropertyChanges(this.IsQuoteConvertionOnPasteEnabled);
             MarkDirtyWhenPropertyChanges(this.IsBracketedPasteEnabled);
             MarkDirtyWhenPropertyChanges(this.IsScrollingUsingCtrlHomeEndEnabled);
+            MarkDirtyWhenPropertyChanges(this.IsScrollingUsingCtrlPageUpDownEnabled);
             MarkDirtyWhenPropertyChanges(this.TerminalFont);
             MarkDirtyWhenPropertyChanges(this.TerminalForegroundColor);
             MarkDirtyWhenPropertyChanges(this.TerminalBackgroundColor);
@@ -90,6 +93,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 this.IsBracketedPasteEnabled.Value;
             settings.IsScrollingUsingCtrlHomeEndEnabled.Value =
                 this.IsScrollingUsingCtrlHomeEndEnabled.Value;
+            settings.IsScrollingUsingCtrlPageUpDownEnabled.Value =
+                this.IsScrollingUsingCtrlPageUpDownEnabled.Value;
             settings.FontFamily.Value =
                 this.TerminalFont.Value.FontFamily.Name;
             settings.FontSizeAsDword.Value =
@@ -118,6 +123,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         public ObservableProperty<bool> IsBracketedPasteEnabled { get; }
 
         public ObservableProperty<bool> IsScrollingUsingCtrlHomeEndEnabled { get; }
+
+        public ObservableProperty<bool> IsScrollingUsingCtrlPageUpDownEnabled { get; }
 
         public ObservableProperty<Font> TerminalFont { get; }
 

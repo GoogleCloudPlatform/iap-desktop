@@ -138,15 +138,16 @@ namespace Google.Solutions.Terminal.Controls
         public bool EnableTypographicQuoteConversion { get; set; } = true;
 
         /// <summary>
-        /// Scroll to top using Ctrl+Home.
+        /// Enable Ctrl+Home to scroll to top, Ctrl+End to scroll to bottom.
         /// </summary>
         [Category("Behavior")]
-        public bool EnableCtrlHome { get; set; } = true;
+        public bool EnableCtrlHomeEnd { get; set; } = true;
 
         /// <summary>
-        /// Scroll to bottom using Ctrl+Home.
+        /// Enable Ctrl+PageUp to scroll up, Ctrl+PageDown to scroll down.
         /// </summary>
-        public bool EnableCtrlEnd { get; set; } = true;
+        [Category("Behavior")]
+        public bool EnableCtrlPageUpDown { get; set; } = true;
 
         /// <summary>
         /// Use bracketed paste.

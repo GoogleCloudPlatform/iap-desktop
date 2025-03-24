@@ -339,6 +339,66 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         //---------------------------------------------------------------------
+        // IsScrollingUsingCtrlPageUpDownEnabled.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void IsScrollingUsingCtrlPageUpDownEnabled_WhenSettingEnabled()
+        {
+            var settingsRepository = CreateTerminalSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.IsScrollingUsingCtrlPageUpDownEnabled.Value = true;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new TerminalOptionsViewModel(settingsRepository);
+
+            Assert.IsTrue(viewModel.IsScrollingUsingCtrlPageUpDownEnabled.Value);
+        }
+
+        [Test]
+        public void IsScrollingUsingCtrlPageUpDownEnabled_WhenSettingDisabled()
+        {
+            var settingsRepository = CreateTerminalSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.IsScrollingUsingCtrlPageUpDownEnabled.Value = false;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new TerminalOptionsViewModel(settingsRepository);
+
+            Assert.IsFalse(viewModel.IsScrollingUsingCtrlPageUpDownEnabled.Value);
+        }
+
+        [Test]
+        public async Task IsScrollingUsingCtrlPageUpDownEnabled_AppliesChange()
+        {
+            var settingsRepository = CreateTerminalSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.IsScrollingUsingCtrlPageUpDownEnabled.Value = true;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new TerminalOptionsViewModel(settingsRepository);
+            viewModel.IsScrollingUsingCtrlPageUpDownEnabled.Value = false;
+            await viewModel.ApplyChangesAsync();
+
+            settings = settingsRepository.GetSettings();
+            Assert.IsFalse(settings.IsScrollingUsingCtrlPageUpDownEnabled.Value);
+        }
+
+        [Test]
+        public void IsScrollingUsingCtrlPageUpDownEnabled_WhenChanged_ThenIsDirtyIsTrueUntilApplied()
+        {
+            var settingsRepository = CreateTerminalSettingsRepository();
+            var viewModel = new TerminalOptionsViewModel(settingsRepository);
+
+            Assert.IsFalse(viewModel.IsDirty.Value);
+
+            viewModel.IsScrollingUsingCtrlPageUpDownEnabled.Value =
+                !viewModel.IsScrollingUsingCtrlPageUpDownEnabled.Value;
+
+            Assert.IsTrue(viewModel.IsDirty.Value);
+        }
+
+        //---------------------------------------------------------------------
         // TerminalFont.
         //---------------------------------------------------------------------
 

@@ -753,7 +753,7 @@ namespace Google.Solutions.Terminal.Controls
             {
                 if (ModifierKeys == Keys.Control && key == Keys.Home)
                 {
-                    return this.EnableCtrlHome;
+                    return this.EnableCtrlHomeEnd;
                 }
                 else
                 {
@@ -763,9 +763,33 @@ namespace Google.Solutions.Terminal.Controls
 
             bool IsAcceleratorForScrollingToBottom(Keys key)
             {
-                if (ModifierKeys == Keys.Control && key == Keys.Home)
+                if (ModifierKeys == Keys.Control && key == Keys.End)
                 {
-                    return this.EnableCtrlEnd;
+                    return this.EnableCtrlHomeEnd;
+                }
+                else
+                {
+                    return false;
+                };
+            }
+
+            bool IsAcceleratorForScrollingUpOnePage(Keys key)
+            {
+                if (ModifierKeys == Keys.Control && key == Keys.PageUp)
+                {
+                    return this.EnableCtrlPageUpDown;
+                }
+                else
+                {
+                    return false;
+                };
+            }
+
+            bool IsAcceleratorForScrollingDownOnePage(Keys key)
+            {
+                if (ModifierKeys == Keys.Control && key == Keys.PageDown)
+                {
+                    return this.EnableCtrlPageUpDown;
                 }
                 else
                 {
@@ -899,6 +923,14 @@ namespace Google.Solutions.Terminal.Controls
                         {
                             this.scrollBar.Value = this.scrollBar.Maximum;
                         }
+                        else if (IsAcceleratorForScrollingUpOnePage((Keys)keyParams.VirtualKey))
+                        {
+                            ScrollTerminal(this.Dimensions.Height);
+                        }
+                        else if (IsAcceleratorForScrollingDownOnePage((Keys)keyParams.VirtualKey))
+                        {
+                            ScrollTerminal(-this.Dimensions.Height);
+                        }
                         else
                         {
                             NativeMethods.TerminalSendKeyEvent(
@@ -959,6 +991,17 @@ namespace Google.Solutions.Terminal.Controls
                                 // Clipboard busy, ignore.
                                 //
                             }
+                        }
+                        else if (
+                            IsAcceleratorForScrollingToTop((Keys)keyParams.VirtualKey) ||
+                            IsAcceleratorForScrollingToBottom((Keys)keyParams.VirtualKey) ||
+                            IsAcceleratorForScrollingUpOnePage((Keys)keyParams.VirtualKey) ||
+                            IsAcceleratorForScrollingDownOnePage((Keys)keyParams.VirtualKey))
+                        {
+                            //
+                            // We handled these in WM_KEYUP already, so don't pass a stray
+                            // WM_KEYDOWN to the terminal.
+                            //
                         }
                         else
                         {
