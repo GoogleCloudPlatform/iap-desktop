@@ -26,7 +26,6 @@ PACKAGES_BUCKET = iapdesktop-kokoro-artifacts
 # Directories containing projects
 DIRS=\
     $(MAKEDIR)\sources\tsc \
-    $(MAKEDIR)\sources\vtnetcore \
     $(MAKEDIR)\sources\dockpanelsuite \
     $(MAKEDIR)\sources\libssh2-cng \
     $(MAKEDIR)\sources\terminal \
@@ -35,7 +34,6 @@ DIRS=\
 # Nuget packages to build
 PACKAGES=$(PACKAGES) \
 	$(MAKEDIR)\sources\tsc\obj\google.solutions.tsc.nupkg \
-    $(MAKEDIR)\sources\vtnetcore\obj\Google.Solutions.ThirdParty.Vtnetcore.nupkg \
     $(MAKEDIR)\sources\dockpanelsuite\obj\Google.Solutions.ThirdParty.DockPanelSuite.nupkg \
     $(MAKEDIR)\sources\libssh2-cng\obj\Google.Solutions.ThirdParty.Libssh2.Cng.nupkg \
     $(MAKEDIR)\sources\terminal\obj\Google.Solutions.ThirdParty.Terminal.nupkg \
@@ -78,5 +76,4 @@ clean distclean: $(DIRS)
         cd $(MAKEDIR)
 
     -rd /S /Q $(MAKEDIR)\NuGetPackages
-    -rd /S /Q $(MAKEDIR)\..\sources\packages\vtnetcore.*
     -rd /S /Q $(MAKEDIR)\..\sources\packages\libssh2.*
