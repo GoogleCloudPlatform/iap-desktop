@@ -930,7 +930,7 @@ namespace Google.Solutions.Terminal.Controls
                             {
                                 if (!string.IsNullOrWhiteSpace(this.selectionToCopyInKeyUp))
                                 {
-                                    Clipboard.SetText(this.selectionToCopyInKeyUp);
+                                    ClipboardUtil.SetText(this.selectionToCopyInKeyUp);
                                 }
                             }
                             catch (ExternalException)
@@ -995,6 +995,39 @@ namespace Google.Solutions.Terminal.Controls
                         break;
                     }
 
+                case WindowMessage.WM_LBUTTONDOWN:
+                case WindowMessage.WM_RBUTTONDOWN:
+                    {
+                        if (NativeMethods.TerminalIsSelectionActive(terminalHandle))
+                        {
+                            //
+                            // Get (and clear) selected text.
+                            //
+                            var selection = NativeMethods.TerminalGetSelection(terminalHandle);
+
+                            if (string.IsNullOrWhiteSpace(selection))
+                            {
+                                //
+                                // Clear clipboard instead of copying some whitespace.
+                                // This is concistent with how the Windows console
+                                // handles this case.
+                                //
+                                ClipboardUtil.Clear();
+                            }
+                            else
+                            { 
+                                ClipboardUtil.SetText(selection);
+                            }
+                        }
+
+                        //
+                        // Continue processing message.
+                        //
+                        // NB. In case of WM_RBUTTONDOWN, the terminal will cause 
+                        //     the copied text to be pasted right away.
+                        //
+                        goto default;
+                    }
 
                 case WindowMessage.WM_MOUSEWHEEL:
                     {
