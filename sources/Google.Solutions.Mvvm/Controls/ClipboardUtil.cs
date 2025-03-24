@@ -40,11 +40,26 @@ namespace Google.Solutions.Mvvm.Controls
                 return string.Empty;
             }
         }
+
         public static void SetText(string text)
         {
             try
             {
                 Clipboard.SetText(text);
+            }
+            catch (ExternalException)
+            {
+                //
+                // Clipboard busy, ignore.
+                //
+            }
+        }
+
+        public static void Clear()
+        {
+            try
+            {
+                Clipboard.Clear();
             }
             catch (ExternalException)
             {
