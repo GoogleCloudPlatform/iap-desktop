@@ -144,6 +144,12 @@ namespace Google.Solutions.Terminal.Controls
         public bool EnableCtrlHomeEnd { get; set; } = true;
 
         /// <summary>
+        /// Enable Ctrl+PageUp to scroll up, Ctrl+PageDown to scroll down.
+        /// </summary>
+        [Category("Behavior")]
+        public bool EnableCtrlPageUpDown { get; set; } = true;
+
+        /// <summary>
         /// Use bracketed paste.
         /// </summary>
         public bool EnableBracketedPaste { get; set; } = false;
