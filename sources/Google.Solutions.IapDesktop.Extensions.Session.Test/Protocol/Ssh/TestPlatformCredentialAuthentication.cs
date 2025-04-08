@@ -244,6 +244,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
+        [Ignore("Unreliable in CI because of IAM propagation delay")]
         public async Task Workforce_WhenInRole_ThenAuthenticationWithOsLoginSucceeds(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance(EnableOsLogin = true)] ResourceTask<InstanceLocator> instance,
