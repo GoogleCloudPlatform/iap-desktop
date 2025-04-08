@@ -196,6 +196,10 @@
    <td>Scroll to top/bottom</td>
    <td><code>Ctrl + Home</code>/<code>Ctrl + End</code></td>
   </tr>
+  <tr>
+   <td>Scroll up/down one screen</td>
+   <td><code>Ctrl + PageUp</code>/<code>Ctrl + PageDown</code></td>
+  </tr>
 </table>
 
 

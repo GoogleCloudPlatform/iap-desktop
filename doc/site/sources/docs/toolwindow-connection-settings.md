@@ -147,55 +147,60 @@ These settings control which local and remote resources you want to share.
         <th>Default</th>
     </tr>
     <tr>
-        <td>Audio mode</td>
+        <td>Audio playback</td>
         <td>Controls where to play back audio.</td>
-        <td>On this computer</td>
+        <td>Play on this computer</td>
     </tr>
     <tr>
-        <td>Apply Windows shortcuts</td>
-        <td>Controls whether IAP Desktop should send Windows shortcuts (such as <code>Win+R</code>) to the VM:
+        <td>Microphone</td>
+        <td>Share default input device so that you can use it on the remote VM.</td>
+        <td>Don't share</td>
+    </tr>
+    <tr>
+        <td>Windows shortcuts</td>
+        <td>Controls whether IAP Desktop redirects Windows shortcuts (such as <code>Win+R</code>) to the VM:
             <ul>
-                <li><b>On this computer</b>: Don't capture shortcuts and handle them locally instead.</li>
-                <li><b>On server</b>: Always capture shortcuts and handle them remotely.</li>
-                <li><b>Only in full-screen mode</b>: Only capture shortcuts when the Remote Desktop session is in full-screen mode.</li>
+                <li><b>Don't redirect</b>: Don't redirect shortcuts and handle them locally instead.</li>
+                <li><b>Redirect to remote VM</b>: Always redirect shortcuts and handle them remotely.</li>
+                <li><b>Redirect in full-screen</b>: Only redirect shortcuts when the Remote Desktop session is in full-screen mode.</li>
             </ul>
         </td>
         <td>Only in full-screen mode</td>
     </tr>
     <tr>
-        <td>Redirect clipboard</td>
-        <td>Share the local clipboard with the remote VM.</td>
-        <td>Enabled</td>
+        <td>Clipboard</td>
+        <td>Share clipboard contents between your local computer and the remote VM.</td>
+        <td>Share</td>
     </tr>
     <tr>
-        <td>Redirect printers</td>
-        <td>Share local printers with the remote VM.</td>
-        <td>Disabled</td>
+        <td>Printers</td>
+        <td>Share local printers so that you can use them on the remote VM.</td>
+        <td>Don't share</td>
     </tr>
     <tr>
-        <td>Redirect smart cards</td>
-        <td>Share local smart cards with the remote VM.</td>
-        <td>Disabled</td>
+        <td>Smart cards</td>
+        <td>Share smart cards so that you can use them on the remote VM.</td>
+        <td>Don't share</td>
     </tr>
     <tr>
-        <td>Redirect local ports</td>
-        <td>Share local ports with the remote VM.</td>
-        <td>Disabled</td>
+        <td>Local ports</td>
+        <td>Share local ports (COM, LPT) so that you can access them on the remote VM.</td>
+        <td>Don't share</td>
     </tr>
     <tr>
-        <td>Redirect drives</td>
-        <td>Share local drives with the remote VM.</td>
-        <td>Disabled</td>
+        <td>Drives</td>
+        <td>Share local drives so that you can access them on the remote VM.</td>
+        <td>Don't share</td>
     </tr>
     <tr>
-        <td>Redirect devices</td>
-        <td>Share local devices with the remote VM.</td>
-        <td>Disabled</td>
+        <td>Plug and Play devices</td>
+        <td>Share local Plug and Play devices so that you can use them on the remote VM.</td>
+        <td>Don't share</td>
     </tr>
     <tr>
-        <td>Redirect WebAuthn authenticators</td>
-        <td>Share WebAuthn authenticators with the remote VM.</td>
-        <td>Enabled</td>
+        <td>WebAuthn authenticators</td>
+        <td>Share WebAuthn authenticators and Windows Hello devices so that you can use WebAuthn on the remote VM.</td>
+        <td>Share</td>
     </tr>
 </table>
 
