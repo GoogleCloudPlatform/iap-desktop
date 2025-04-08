@@ -150,10 +150,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         [Description("Play on this computer")]
         PlayLocally = 0,
 
-        [Description("Play on server")]
+        [Description("Play on remote VM")]
         PlayOnServer = 1,
 
-        [Description("Do not play")]
+        [Description("Don't play")]
         DoNotPlay = 2,
 
         [Browsable(false)]
@@ -162,7 +162,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
     public enum RdpRedirectClipboard
     {
+        [Description("Don't share")]
         Disabled = 0,
+
+        [Description("Share")]
         Enabled = 1,
 
         [Browsable(false)]
@@ -215,7 +218,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
     public enum RdpRedirectPrinter
     {
+        [Description("Don't share")]
         Disabled = 0,
+
+        [Description("Share")]
         Enabled = 1,
 
         [Browsable(false)]
@@ -224,7 +230,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
     public enum RdpRedirectSmartCard
     {
+        [Description("Don't share")]
         Disabled = 0,
+
+        [Description("Share")]
         Enabled = 1,
 
         [Browsable(false)]
@@ -233,7 +242,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
     public enum RdpRedirectPort
     {
+        [Description("Don't share")]
         Disabled = 0,
+
+        [Description("Share")]
         Enabled = 1,
 
         [Browsable(false)]
@@ -242,7 +254,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
     public enum RdpRedirectDrive
     {
+        [Description("Don't share")]
         Disabled = 0,
+
+        [Description("Share")]
         Enabled = 1,
 
         [Browsable(false)]
@@ -251,7 +266,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
     public enum RdpRedirectDevice
     {
+        [Description("Don't share")]
         Disabled = 0,
+
+        [Description("Share")]
         Enabled = 1,
 
         [Browsable(false)]
@@ -260,7 +278,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
     public enum RdpRedirectWebAuthn
     {
+        [Description("Don't share")]
         Disabled = 0,
+
+        [Description("Share")]
         Enabled = 1,
 
         [Browsable(false)]
@@ -281,13 +302,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         //
         // NB. Values correspond to IMsRdpClientSecuredSettings::KeyboardHookMode.
         //
-        [Description("On this computer")]
+        [Description("Don't redirect")]
         Disabled = 0,
 
-        [Description("On server")]
+        [Description("Redirect to remote VM")]
         Enabled = 1,
 
-        [Description("Only in full-screen mode")]
+        [Description("Redirect in full-screen")]
         FullScreenOnly = 2,
 
         [Browsable(false)]
