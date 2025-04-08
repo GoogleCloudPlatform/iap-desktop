@@ -154,7 +154,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol
             context.Parameters.ConnectionBar = settings.RdpConnectionBar.Value;
             context.Parameters.AuthenticationLevel = settings.RdpAuthenticationLevel.Value;
             context.Parameters.ColorDepth = settings.RdpColorDepth.Value;
-            context.Parameters.AudioMode = settings.RdpAudioMode.Value;
+            context.Parameters.AudioPlayback = settings.RdpAudioPlayback.Value;
+            context.Parameters.AudioInput = settings.RdpAudioInput.Value;
             context.Parameters.NetworkLevelAuthentication = settings.RdpNetworkLevelAuthentication.Value;
             context.Parameters.UserAuthenticationBehavior = settings.RdpAutomaticLogon.Value;
             context.Parameters.RedirectClipboard = settings.RdpRedirectClipboard.Value;

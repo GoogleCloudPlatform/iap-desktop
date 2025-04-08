@@ -100,12 +100,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 "Color depth of remote desktop.",
                 Categories.RdpDisplay,
                 Protocol.Rdp.RdpColorDepth._Default);
-            this.RdpAudioMode = store.Read<RdpAudioMode>(
+            this.RdpAudioPlayback = store.Read<RdpAudioPlayback>(
                 "AudioMode",
                 "Audio playback",
                 "Select where to play audio.",
                 Categories.RdpResources,
-                Protocol.Rdp.RdpAudioMode._Default);
+                Protocol.Rdp.RdpAudioPlayback._Default);
+            this.RdpAudioInput = store.Read<RdpAudioInput>(
+                "RdpAudioInput",
+                "Microphone",
+                "Share default input device so that you can use it on the remote VM.",
+                Categories.RdpResources,
+                Protocol.Rdp.RdpAudioInput._Default);
             this.RdpAutomaticLogon = store.Read<RdpAutomaticLogon>(
                 "RdpUserAuthenticationBehavior",
                 "Automatic logon",
@@ -310,7 +316,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         public ISetting<RdpConnectionBarState> RdpConnectionBar { get; }
         public ISetting<RdpAuthenticationLevel> RdpAuthenticationLevel { get; }
         public ISetting<RdpColorDepth> RdpColorDepth { get; }
-        public ISetting<RdpAudioMode> RdpAudioMode { get; }
+        public ISetting<RdpAudioPlayback> RdpAudioPlayback { get; }
+        public ISetting<RdpAudioInput> RdpAudioInput { get; }
         public ISetting<RdpAutomaticLogon> RdpAutomaticLogon { get; }
         public ISetting<RdpNetworkLevelAuthentication> RdpNetworkLevelAuthentication { get; }
         public ISetting<int> RdpConnectionTimeout { get; }
@@ -348,7 +355,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.RdpDesktopSize,
             this.RdpDpiScaling,
 
-            this.RdpAudioMode,
+            this.RdpAudioPlayback,
+            this.RdpAudioInput,
             this.RdpHookWindowsKeys,
             this.RdpRedirectClipboard,
             this.RdpRedirectPrinter,

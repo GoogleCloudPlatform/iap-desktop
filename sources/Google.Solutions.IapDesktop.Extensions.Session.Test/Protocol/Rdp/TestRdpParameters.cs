@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
             Assert.AreEqual(RdpConnectionBarState._Default, parameters.ConnectionBar);
             Assert.AreEqual(RdpAuthenticationLevel._Default, parameters.AuthenticationLevel);
             Assert.AreEqual(RdpColorDepth._Default, parameters.ColorDepth);
-            Assert.AreEqual(RdpAudioMode._Default, parameters.AudioMode);
+            Assert.AreEqual(RdpAudioPlayback._Default, parameters.AudioPlayback);
             Assert.AreEqual(RdpNetworkLevelAuthentication._Default, parameters.NetworkLevelAuthentication);
             Assert.AreEqual(RdpAutomaticLogon._Default, parameters.UserAuthenticationBehavior);
             Assert.AreEqual(RdpRedirectClipboard._Default, parameters.RedirectClipboard);

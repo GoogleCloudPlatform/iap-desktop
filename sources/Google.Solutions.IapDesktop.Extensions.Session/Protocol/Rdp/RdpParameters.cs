@@ -34,7 +34,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         public RdpConnectionBarState ConnectionBar { get; set; } = RdpConnectionBarState._Default;
         public RdpAuthenticationLevel AuthenticationLevel { get; set; } = RdpAuthenticationLevel._Default;
         public RdpColorDepth ColorDepth { get; set; } = RdpColorDepth._Default;
-        public RdpAudioMode AudioMode { get; set; } = RdpAudioMode._Default;
+        public RdpAudioPlayback AudioPlayback { get; set; } = RdpAudioPlayback._Default;
+        public RdpAudioInput AudioInput { get; set; } = RdpAudioInput._Default;
         public RdpNetworkLevelAuthentication NetworkLevelAuthentication { get; set; } = RdpNetworkLevelAuthentication._Default;
         public RdpAutomaticLogon UserAuthenticationBehavior { get; set; } = RdpAutomaticLogon._Default;
         public RdpRedirectClipboard RedirectClipboard { get; set; } = RdpRedirectClipboard._Default;
@@ -145,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         _Default = TrueColor
     }
 
-    public enum RdpAudioMode
+    public enum RdpAudioPlayback
     {
         [Description("Play on this computer")]
         PlayLocally = 0,
@@ -158,6 +159,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
         [Browsable(false)]
         _Default = PlayLocally
+    }
+
+    public enum RdpAudioInput
+    {
+        [Description("Don't share")]
+        Disabled = 0,
+
+        [Description("Share")]
+        Enabled = 1,
+
+        [Browsable(false)]
+        _Default = Disabled
     }
 
     public enum RdpRedirectClipboard
