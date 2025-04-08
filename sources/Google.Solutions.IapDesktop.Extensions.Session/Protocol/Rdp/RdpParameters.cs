@@ -34,7 +34,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         public RdpConnectionBarState ConnectionBar { get; set; } = RdpConnectionBarState._Default;
         public RdpAuthenticationLevel AuthenticationLevel { get; set; } = RdpAuthenticationLevel._Default;
         public RdpColorDepth ColorDepth { get; set; } = RdpColorDepth._Default;
-        public RdpAudioMode AudioMode { get; set; } = RdpAudioMode._Default;
+        public RdpAudioPlayback AudioPlayback { get; set; } = RdpAudioPlayback._Default;
+        public RdpAudioInput AudioInput { get; set; } = RdpAudioInput._Default;
         public RdpNetworkLevelAuthentication NetworkLevelAuthentication { get; set; } = RdpNetworkLevelAuthentication._Default;
         public RdpAutomaticLogon UserAuthenticationBehavior { get; set; } = RdpAutomaticLogon._Default;
         public RdpRedirectClipboard RedirectClipboard { get; set; } = RdpRedirectClipboard._Default;
@@ -145,24 +146,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         _Default = TrueColor
     }
 
-    public enum RdpAudioMode
+    public enum RdpAudioPlayback
     {
         [Description("Play on this computer")]
         PlayLocally = 0,
 
-        [Description("Play on server")]
+        [Description("Play on remote VM")]
         PlayOnServer = 1,
 
-        [Description("Do not play")]
+        [Description("Don't play")]
         DoNotPlay = 2,
 
         [Browsable(false)]
         _Default = PlayLocally
     }
 
+    public enum RdpAudioInput
+    {
+        [Description("Don't share")]
+        Disabled = 0,
+
+        [Description("Share")]
+        Enabled = 1,
+
+        [Browsable(false)]
+        _Default = Disabled
+    }
+
     public enum RdpRedirectClipboard
     {
+        [Description("Don't share")]
         Disabled = 0,
+
+        [Description("Share")]
         Enabled = 1,
 
         [Browsable(false)]
@@ -215,7 +231,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
     public enum RdpRedirectPrinter
     {
+        [Description("Don't share")]
         Disabled = 0,
+
+        [Description("Share")]
         Enabled = 1,
 
         [Browsable(false)]
@@ -224,7 +243,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
     public enum RdpRedirectSmartCard
     {
+        [Description("Don't share")]
         Disabled = 0,
+
+        [Description("Share")]
         Enabled = 1,
 
         [Browsable(false)]
@@ -233,7 +255,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
     public enum RdpRedirectPort
     {
+        [Description("Don't share")]
         Disabled = 0,
+
+        [Description("Share")]
         Enabled = 1,
 
         [Browsable(false)]
@@ -242,7 +267,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
     public enum RdpRedirectDrive
     {
+        [Description("Don't share")]
         Disabled = 0,
+
+        [Description("Share")]
         Enabled = 1,
 
         [Browsable(false)]
@@ -251,7 +279,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
     public enum RdpRedirectDevice
     {
+        [Description("Don't share")]
         Disabled = 0,
+
+        [Description("Share")]
         Enabled = 1,
 
         [Browsable(false)]
@@ -260,7 +291,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
 
     public enum RdpRedirectWebAuthn
     {
+        [Description("Don't share")]
         Disabled = 0,
+
+        [Description("Share")]
         Enabled = 1,
 
         [Browsable(false)]
@@ -281,13 +315,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp
         //
         // NB. Values correspond to IMsRdpClientSecuredSettings::KeyboardHookMode.
         //
-        [Description("On this computer")]
+        [Description("Don't redirect")]
         Disabled = 0,
 
-        [Description("On server")]
+        [Description("Redirect to remote VM")]
         Enabled = 1,
 
-        [Description("Only in full-screen mode")]
+        [Description("Redirect in full-screen")]
         FullScreenOnly = 2,
 
         [Browsable(false)]

@@ -100,12 +100,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 "Color depth of remote desktop.",
                 Categories.RdpDisplay,
                 Protocol.Rdp.RdpColorDepth._Default);
-            this.RdpAudioMode = store.Read<RdpAudioMode>(
+            this.RdpAudioPlayback = store.Read<RdpAudioPlayback>(
                 "AudioMode",
-                "Audio mode",
-                "Redirect audio when playing on server.",
+                "Audio playback",
+                "Select where to play audio.",
                 Categories.RdpResources,
-                Protocol.Rdp.RdpAudioMode._Default);
+                Protocol.Rdp.RdpAudioPlayback._Default);
+            this.RdpAudioInput = store.Read<RdpAudioInput>(
+                "RdpAudioInput",
+                "Microphone",
+                "Share default input device so that you can use it on the remote VM.",
+                Categories.RdpResources,
+                Protocol.Rdp.RdpAudioInput._Default);
             this.RdpAutomaticLogon = store.Read<RdpAutomaticLogon>(
                 "RdpUserAuthenticationBehavior",
                 "Automatic logon",
@@ -130,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 "NetworkLevelAuthentication",
                 "Network level authentication",
                 "Secure connection using network level authentication (NLA). " +
-                    "Disable NLA only if the server uses a custom credential service provider." +
+                    "Disable NLA only if the VM uses a custom credential service provider." +
                     "Disabling NLA automatically enables server authentication.",
                 Categories.RdpSecurity,
                 Protocol.Rdp.RdpNetworkLevelAuthentication._Default);
@@ -159,50 +165,50 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 SessionTransportType._Default);
             this.RdpRedirectClipboard = store.Read<RdpRedirectClipboard>(
                 "RedirectClipboard",
-                "Redirect clipboard",
-                "Allow clipboard contents to be shared with remote desktop.",
+                "Clipboard",
+                "Share clipboard contents between your local computer and the remote VM.",
                 Categories.RdpResources,
                 Protocol.Rdp.RdpRedirectClipboard._Default);
             this.RdpRedirectPrinter = store.Read<RdpRedirectPrinter>(
                 "RdpRedirectPrinter",
-                "Redirect printers",
-                "Share local printers with remote desktop.",
+                "Printers",
+                "Share local printers so that you can use them on the remote VM.",
                 Categories.RdpResources,
                 Protocol.Rdp.RdpRedirectPrinter._Default);
             this.RdpRedirectSmartCard = store.Read<RdpRedirectSmartCard>(
                 "RdpRedirectSmartCard",
-                "Redirect smart cards",
-                "Share local smart carrds with remote desktop.",
+                "Smart cards",
+                "Share smart cards so that you can use them on the remote VM.",
                 Categories.RdpResources,
                 Protocol.Rdp.RdpRedirectSmartCard._Default);
             this.RdpRedirectPort = store.Read<RdpRedirectPort>(
                 "RdpRedirectPort",
-                "Redirect local ports",
-                "Share local ports (COM, LPT) with remote desktop.",
+                "Local ports",
+                "Share local ports (COM, LPT) so that you can access them on the remote VM.",
                 Categories.RdpResources,
                 Protocol.Rdp.RdpRedirectPort._Default);
             this.RdpRedirectDrive = store.Read<RdpRedirectDrive>(
                 "RdpRedirectDrive",
-                "Redirect drives",
-                "Share local drives with remote desktop.",
+                "Drives",
+                "Share local drives so that you can access them on the remote VM.",
                 Categories.RdpResources,
                 Protocol.Rdp.RdpRedirectDrive._Default);
             this.RdpRedirectDevice = store.Read<RdpRedirectDevice>(
                 "RdpRedirectDevice",
-                "Redirect devices",
-                "Share local devices with remote desktop.",
+                "Plug and Play devices",
+                "Share local Plug and Play devices so that you can use them on the remote VM.",
                 Categories.RdpResources,
                 Protocol.Rdp.RdpRedirectDevice._Default);
             this.RdpRedirectWebAuthn = store.Read<RdpRedirectWebAuthn>(
                 "RdpRedirectWebAuthn",
-                "Redirect WebAuthn authenticators",
-                "Use local security key or Windows Hello device for WebAuthn authentication.",
+                "WebAuthn authenticators",
+                "Share WebAuthn authenticators and Windows Hello devices so that you can use WebAuthn on the remote VM.",
                 Categories.RdpResources,
                 Protocol.Rdp.RdpRedirectWebAuthn._Default);
             this.RdpHookWindowsKeys = store.Read<RdpHookWindowsKeys>(
                 "RdpHookWindowsKeys",
-                "Apply Windows shortcuts",
-                "Enable Windows shortcuts (like Win+R)",
+                "Windows shortcuts",
+                "Redirect Windows shortcuts (like Win+R) to the remote VM.",
                 Categories.RdpResources,
                 Protocol.Rdp.RdpHookWindowsKeys._Default);
             this.RdpRestrictedAdminMode = store.Read<RdpRestrictedAdminMode>(
@@ -310,7 +316,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         public ISetting<RdpConnectionBarState> RdpConnectionBar { get; }
         public ISetting<RdpAuthenticationLevel> RdpAuthenticationLevel { get; }
         public ISetting<RdpColorDepth> RdpColorDepth { get; }
-        public ISetting<RdpAudioMode> RdpAudioMode { get; }
+        public ISetting<RdpAudioPlayback> RdpAudioPlayback { get; }
+        public ISetting<RdpAudioInput> RdpAudioInput { get; }
         public ISetting<RdpAutomaticLogon> RdpAutomaticLogon { get; }
         public ISetting<RdpNetworkLevelAuthentication> RdpNetworkLevelAuthentication { get; }
         public ISetting<int> RdpConnectionTimeout { get; }
@@ -348,7 +355,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.RdpDesktopSize,
             this.RdpDpiScaling,
 
-            this.RdpAudioMode,
+            this.RdpAudioPlayback,
+            this.RdpAudioInput,
             this.RdpHookWindowsKeys,
             this.RdpRedirectClipboard,
             this.RdpRedirectPrinter,

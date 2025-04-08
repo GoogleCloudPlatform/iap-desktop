@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.AreEqual(RdpConnectionBarState._Default, settings.RdpConnectionBar.Value);
             Assert.AreEqual(RdpAuthenticationLevel._Default, settings.RdpAuthenticationLevel.Value);
             Assert.AreEqual(RdpColorDepth._Default, settings.RdpColorDepth.Value);
-            Assert.AreEqual(RdpAudioMode._Default, settings.RdpAudioMode.Value);
+            Assert.AreEqual(RdpAudioPlayback._Default, settings.RdpAudioPlayback.Value);
             Assert.AreEqual(RdpRedirectClipboard._Default, settings.RdpRedirectClipboard.Value);
         }
 
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.AreEqual(RdpConnectionBarState._Default, settings.RdpConnectionBar.Value);
             Assert.AreEqual(RdpAuthenticationLevel._Default, settings.RdpAuthenticationLevel.Value);
             Assert.AreEqual(RdpColorDepth._Default, settings.RdpColorDepth.Value);
-            Assert.AreEqual(RdpAudioMode._Default, settings.RdpAudioMode.Value);
+            Assert.AreEqual(RdpAudioPlayback._Default, settings.RdpAudioPlayback.Value);
             Assert.AreEqual(RdpRedirectClipboard._Default, settings.RdpRedirectClipboard.Value);
         }
 
@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.AreEqual(RdpConnectionBarState._Default, settings.RdpConnectionBar.Value);
             Assert.AreEqual(RdpAuthenticationLevel._Default, settings.RdpAuthenticationLevel.Value);
             Assert.AreEqual(RdpColorDepth._Default, settings.RdpColorDepth.Value);
-            Assert.AreEqual(RdpAudioMode._Default, settings.RdpAudioMode.Value);
+            Assert.AreEqual(RdpAudioPlayback._Default, settings.RdpAudioPlayback.Value);
             Assert.AreEqual(RdpRedirectClipboard._Default, settings.RdpRedirectClipboard.Value);
         }
 
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.AreEqual(RdpConnectionBarState.Pinned, settings.RdpConnectionBar.Value);
             Assert.AreEqual(RdpAuthenticationLevel.AttemptServerAuthentication, settings.RdpAuthenticationLevel.Value);
             Assert.AreEqual(RdpColorDepth.DeepColor, settings.RdpColorDepth.Value);
-            Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.RdpAudioMode.Value);
+            Assert.AreEqual(RdpAudioPlayback.DoNotPlay, settings.RdpAudioPlayback.Value);
             Assert.AreEqual(RdpRedirectClipboard.Disabled, settings.RdpRedirectClipboard.Value);
             Assert.AreEqual(13389, settings.RdpPort.Value);
         }
@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var url = new IapRdpUrl(SampleLocator, queryParameters);
             var settings = new ConnectionSettings(url.Instance, new IapRdpUrlSettingsStore(url));
 
-            Assert.AreEqual(RdpAudioMode._Default, settings.RdpAudioMode.Value);
+            Assert.AreEqual(RdpAudioPlayback._Default, settings.RdpAudioPlayback.Value);
         }
 
         [Test]
@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var url = new IapRdpUrl(SampleLocator, queryParameters);
             var settings = new ConnectionSettings(url.Instance, new IapRdpUrlSettingsStore(url));
 
-            Assert.AreEqual(RdpAudioMode._Default, settings.RdpAudioMode.Value);
+            Assert.AreEqual(RdpAudioPlayback._Default, settings.RdpAudioPlayback.Value);
         }
 
         [Test]
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var url = new IapRdpUrl(SampleLocator, queryParameters);
             var settings = new ConnectionSettings(url.Instance, new IapRdpUrlSettingsStore(url));
 
-            Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.RdpAudioMode.Value);
+            Assert.AreEqual(RdpAudioPlayback.DoNotPlay, settings.RdpAudioPlayback.Value);
         }
     }
 }

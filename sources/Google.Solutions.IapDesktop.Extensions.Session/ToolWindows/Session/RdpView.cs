@@ -255,16 +255,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                     viewModel.Parameters.RedirectDrive == RdpRedirectDrive.Enabled;
                 this.Client.EnableDeviceRedirection =
                     viewModel.Parameters.RedirectDevice == RdpRedirectDevice.Enabled;
+                this.Client.EnableAudioCaptureRedirection = 
+                    viewModel.Parameters.AudioInput == RdpAudioInput.Enabled;
 
-                switch (viewModel.Parameters.AudioMode)
+                switch (viewModel.Parameters.AudioPlayback)
                 {
-                    case RdpAudioMode.PlayLocally:
+                    case RdpAudioPlayback.PlayLocally:
                         this.Client.AudioRedirectionMode = 0;
                         break;
-                    case RdpAudioMode.PlayOnServer:
+                    case RdpAudioPlayback.PlayOnServer:
                         this.Client.AudioRedirectionMode = 1;
                         break;
-                    case RdpAudioMode.DoNotPlay:
+                    case RdpAudioPlayback.DoNotPlay:
                         this.Client.AudioRedirectionMode = 2;
                         break;
                 }

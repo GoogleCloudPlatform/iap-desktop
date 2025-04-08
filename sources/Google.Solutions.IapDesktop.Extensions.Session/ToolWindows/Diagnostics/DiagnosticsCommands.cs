@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Diagnostics
                 WriteTextbox("CredentialCallbackUrl");
                 WriteCombobox<RdpConnectionBarState>("ConnectionBar");
                 WriteCombobox<RdpColorDepth>("ColorDepth");
-                WriteCombobox<RdpAudioMode>("AudioMode");
+                WriteCombobox<RdpAudioPlayback>("AudioMode");
                 WriteCombobox<RdpRedirectClipboard>("RedirectClipboard");
                 WriteCombobox<RdpRedirectPrinter>("RdpRedirectPrinter");
                 WriteCombobox<RdpRedirectSmartCard>("RdpRedirectSmartCard");

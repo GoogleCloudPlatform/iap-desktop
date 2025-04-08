@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Platform.Interop;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -541,6 +542,23 @@ namespace Google.Solutions.Terminal.Controls
             {
                 ExpectState(ConnectionState.NotConnected);
                 this.clientSecuredSettings.AudioRedirectionMode = value;
+            }
+        }
+
+        /// <summary>
+        /// Indicates whether the default audio input device is redirected from the 
+        /// client to the remote session.
+        /// </summary>
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Category(RdpCategory)]
+        public bool EnableAudioCaptureRedirection
+        {
+            get => this.clientAdvancedSettings.AudioCaptureRedirectionMode;
+            set
+            {
+                ExpectState(ConnectionState.NotConnected);
+                this.clientAdvancedSettings.AudioCaptureRedirectionMode = value;
             }
         }
 

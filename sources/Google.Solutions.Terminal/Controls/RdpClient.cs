@@ -55,7 +55,7 @@ namespace Google.Solutions.Terminal.Controls
 
         private readonly Google.Solutions.Tsc.MsRdpClient client;
         private readonly IMsRdpClientNonScriptable5 clientNonScriptable;
-        private readonly IMsRdpClientAdvancedSettings6 clientAdvancedSettings;
+        private readonly IMsRdpClientAdvancedSettings7 clientAdvancedSettings;
         private readonly IMsRdpClientSecuredSettings clientSecuredSettings;
         private readonly IMsRdpExtendedSettings clientExtendedSettings;
 
@@ -112,7 +112,7 @@ namespace Google.Solutions.Terminal.Controls
             this.clientNonScriptable.PromptForCredentials = false;
             this.clientNonScriptable.NegotiateSecurityLayer = true;
 
-            this.clientAdvancedSettings = this.client.AdvancedSettings7;
+            this.clientAdvancedSettings = this.client.AdvancedSettings8;
             this.clientAdvancedSettings.EnableCredSspSupport = true;
             this.clientAdvancedSettings.keepAliveInterval = 60000;
             this.clientAdvancedSettings.PerformanceFlags = 0; // Enable all features.
