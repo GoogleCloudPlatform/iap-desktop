@@ -153,7 +153,15 @@ These settings control which local and remote resources you want to share.
     </tr>
     <tr>
         <td>Microphone</td>
-        <td>Share default input device so that you can use it on the remote VM.</td>
+        <td>
+        Share default input device so that you can use it on the remote VM. 
+        <br/><br/>
+        This setting only applies if you've set <b>Audio playback</b> to <b>Play on this computer</b>.
+        <br/><br/>
+        Sharing your microphone with a Windows 10/11 VM typically doesn't require any additional configuration on the VM.
+        To share your microphone with a Windows Server VM, install the <i>Remote Desktop Session Host<i> role on the
+        VM and ensure that the <i>Windows Audio Service<i> is running.
+        </td>
         <td>Don't share</td>
     </tr>
     <tr>
