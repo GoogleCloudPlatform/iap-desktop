@@ -68,7 +68,7 @@ jobs:
       - name: Build site
         working-directory: doc/site/sources
         run: |
-          python -m pip install mkdocs-material
+          python -m pip install git+https://github.com/jpassing/mkdocs-material-smallscreen.git
           pwsh -File generate-releasenotes.ps1 > docs/release-notes.md
           python -m mkdocs build --site-dir ../public
           
