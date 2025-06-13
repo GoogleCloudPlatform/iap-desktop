@@ -19,5 +19,4 @@
     <Compile Update="Controls\RdpClient.ConnectionProperties.cs" />
     <Compile Update="Controls\RdpClient.cs" />
   </ItemGroup>
-
 </Project>
