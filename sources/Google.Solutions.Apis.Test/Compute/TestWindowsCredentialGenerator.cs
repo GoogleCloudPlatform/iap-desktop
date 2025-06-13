@@ -208,7 +208,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 cts.Cancel();
 
                 await ExceptionAssert
-                    .ThrowsAsync<TaskCanceledException>(() => adapter.CreateWindowsCredentialsAsync(
+                    .ThrowsAsync<OperationCanceledException>(() => adapter.CreateWindowsCredentialsAsync(
                         instanceLocator,
                         "test" + Guid.NewGuid().ToString().Substring(20),
                         UserFlags.AddToAdministrators,
