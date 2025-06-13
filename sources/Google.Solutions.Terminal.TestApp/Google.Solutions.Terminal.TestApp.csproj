@@ -14,5 +14,4 @@
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
   </ItemGroup>
-
 </Project>

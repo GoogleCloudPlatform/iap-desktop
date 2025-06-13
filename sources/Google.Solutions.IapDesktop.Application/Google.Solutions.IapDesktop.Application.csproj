@@ -11,10 +11,10 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.11" />
-    <PackageReference Include="Google.Apis" Version="1.68.0" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
-    <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.68.0.3356" />
-    <PackageReference Include="Google.Apis.Core" Version="1.68.0" />
+    <PackageReference Include="Google.Apis" Version="1.70.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.70.0" />
+    <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.69.0.3713" />
+    <PackageReference Include="Google.Apis.Core" Version="1.70.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>

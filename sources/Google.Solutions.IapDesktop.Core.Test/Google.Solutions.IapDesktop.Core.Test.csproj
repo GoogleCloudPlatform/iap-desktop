@@ -6,17 +6,17 @@
     <Platforms>x64;x86;ARM64</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Castle.Core" Version="5.1.1" />
-    <PackageReference Include="Google.Apis" Version="1.68.0" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
-    <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.68.0.3356" />
-    <PackageReference Include="Google.Apis.Compute.v1" Version="1.68.0.3652" />
-    <PackageReference Include="Google.Apis.Core" Version="1.68.0" />
+    <PackageReference Include="Castle.Core" Version="5.2.1" />
+    <PackageReference Include="Google.Apis" Version="1.70.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.70.0" />
+    <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.69.0.3713" />
+    <PackageReference Include="Google.Apis.Compute.v1" Version="1.69.0.3804" />
+    <PackageReference Include="Google.Apis.Core" Version="1.70.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NUnit" Version="3.14.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Configuration" />
