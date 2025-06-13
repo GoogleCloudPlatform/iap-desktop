@@ -436,7 +436,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.ProjectExplorer
             {
                 this.contextMenuCommands.Value.ExecuteDefaultCommand();
             }
-            else
+            else if (e.KeyCode != Keys.None)
             {
                 this.contextMenuCommands.Value.ExecuteCommandByKey(e.KeyCode);
             }
