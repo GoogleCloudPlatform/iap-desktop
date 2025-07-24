@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Threading;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,13 +30,40 @@ namespace Google.Solutions.Iap.Net
     /// Base class for a stream that only allows one reader and one writer
     /// at a time.
     /// </summary>
-    public abstract class SingleReaderSingleWriterStream : OneTimeUseStream
+    public abstract class SingleReaderSingleWriterStream : INetworkStream
     {
         private readonly SemaphoreSlim readerSemaphore = new SemaphoreSlim(1);
         private readonly SemaphoreSlim writerSemaphore = new SemaphoreSlim(1);
 
+        private volatile bool closed;
+        private readonly CancellationTokenSource forceCloseSource 
+            = new CancellationTokenSource();
+
+#if DEBUG
+        //
+        // Assign an ID to aid debugging.
+        //
+        private static int lastStreamId = 0;
+        private int streamId;
+#endif
+
+        protected SingleReaderSingleWriterStream()
+        {
+#if DEBUG
+            this.streamId = Interlocked.Increment(ref lastStreamId);
+#endif
+        }
+
+        private void VerifyStreamNotClosed()
+        {
+            if (this.closed)
+            {
+                throw new NetworkStreamClosedException("Stream is closed");
+            }
+        }
+
         //---------------------------------------------------------------------
-        // Methods to be overridden
+        // Abstract methods
         //---------------------------------------------------------------------
 
         protected abstract Task<int> ProtectedReadAsync(
@@ -49,14 +78,14 @@ namespace Google.Solutions.Iap.Net
             int count,
             CancellationToken cancellationToken);
 
-        public abstract Task ProtectedCloseAsync(CancellationToken cancellationToken);
-
+        public abstract Task ProtectedCloseAsync(
+            CancellationToken cancellationToken);
 
         //---------------------------------------------------------------------
-        // Publics
+        // INetworkStream
         //---------------------------------------------------------------------
 
-        protected override async Task<int> ReadAsyncWithCloseProtection(
+        public async Task<int> ReadAsync(
             byte[] buffer,
             int offset,
             int count,
@@ -68,13 +97,42 @@ namespace Google.Solutions.Iap.Net
                 // Acquire semaphore to ensure that only a single
                 // read operation is in flight at a time.
                 //
-                await this.readerSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+                await this.readerSemaphore
+                    .WaitAsync(cancellationToken)
+                    .ConfigureAwait(false);
 
-                return await ProtectedReadAsync(
-                    buffer,
-                    offset,
-                    count,
-                    cancellationToken).ConfigureAwait(false);
+                //
+                // Check flag while we own the semaphore.
+                //
+                VerifyStreamNotClosed();
+
+                //
+                // Cancel operation when the caller requests it or
+                // when the stream is closed.
+                //
+                using (var cancellationSource =
+                    cancellationToken.Combine(this.forceCloseSource.Token))
+                {
+                    var bytesRead = await
+                        ProtectedReadAsync(
+                            buffer,
+                            offset,
+                            count,
+                            cancellationSource.Token)
+                        .ConfigureAwait(false);
+
+                    if (bytesRead == 0)
+                    {
+                        this.closed = true;
+                    }
+
+                    return bytesRead;
+                }
+            }
+            catch (NetworkStreamClosedException)
+            {
+                this.closed = true;
+                throw;
             }
             finally
             {
@@ -82,7 +140,11 @@ namespace Google.Solutions.Iap.Net
             }
         }
 
-        protected override async Task WriteAsyncWithCloseProtection(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        public async Task WriteAsync(
+            byte[] buffer,
+            int offset,
+            int count,
+            CancellationToken cancellationToken)
         {
             try
             {
@@ -90,13 +152,34 @@ namespace Google.Solutions.Iap.Net
                 // Acquire semaphore to ensure that only a single
                 // write/close operation is in flight at a time.
                 //
-                await this.writerSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+                await this.writerSemaphore
+                    .WaitAsync(cancellationToken)
+                    .ConfigureAwait(false);
 
-                await ProtectedWriteAsync(
-                    buffer,
-                    offset,
-                    count,
-                    cancellationToken).ConfigureAwait(false);
+                //
+                // Check flag while we own the semaphore.
+                //
+                VerifyStreamNotClosed();
+
+                //
+                // Cancel operation when the caller requests it or
+                // when the stream is closed.
+                //
+                using (var cancellationSource =
+                    cancellationToken.Combine(this.forceCloseSource.Token))
+                {
+                    await ProtectedWriteAsync(
+                        buffer,
+                        offset,
+                        count,
+                        cancellationSource.Token)
+                    .ConfigureAwait(false);
+                }
+            }
+            catch (NetworkStreamClosedException)
+            {
+                this.closed = true;
+                throw;
             }
             finally
             {
@@ -104,31 +187,52 @@ namespace Google.Solutions.Iap.Net
             }
         }
 
-        protected override async Task CloseAsyncWithCloseProtection(CancellationToken cancellationToken)
+        public async Task CloseAsync(CancellationToken cancellationToken)
         {
             try
             {
                 //
+                // Cancel pending operations.
+                //
+                this.forceCloseSource.Cancel();
+
+                //
                 // Acquire semaphore to ensure that only a single
                 // write/close operation is in flight at a time.
                 //
-                await this.writerSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+                await this.readerSemaphore
+                    .WaitAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                await this.writerSemaphore
+                    .WaitAsync(cancellationToken)
+                    .ConfigureAwait(false);
 
-                await ProtectedCloseAsync(cancellationToken).ConfigureAwait(false);
+                await ProtectedCloseAsync(cancellationToken)
+                    .ConfigureAwait(false);
+
+                this.closed = true;
             }
             finally
             {
+                this.readerSemaphore.Release();
                 this.writerSemaphore.Release();
             }
         }
 
-        protected override void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {
                 this.readerSemaphore.Dispose();
                 this.writerSemaphore.Dispose();
+                this.forceCloseSource.Dispose();
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
