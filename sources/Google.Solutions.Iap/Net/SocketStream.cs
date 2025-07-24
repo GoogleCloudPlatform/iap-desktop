@@ -31,7 +31,7 @@ namespace Google.Solutions.Iap.Net
     /// <summary>
     ///  Raw socket stream.
     /// </summary>
-    public class SocketStream : OneTimeUseStream
+    public class SocketStream : INetworkStream
     {
         private readonly Socket socket;
         private readonly string remoteEndpoint;
@@ -128,10 +128,10 @@ namespace Google.Solutions.Iap.Net
 
 
         //---------------------------------------------------------------------
-        // OneTimeUseStream implementation
+        // INetworkStream
         //---------------------------------------------------------------------
 
-        protected override async Task<int> ReadAsyncWithCloseProtection(
+        public async Task<int> ReadAsync(
             byte[] buffer,
             int offset,
             int count,
@@ -150,7 +150,7 @@ namespace Google.Solutions.Iap.Net
             }
         }
 
-        protected override async Task WriteAsyncWithCloseProtection(
+        public async Task WriteAsync(
             byte[] buffer,
             int offset,
             int count,
@@ -169,7 +169,7 @@ namespace Google.Solutions.Iap.Net
             }
         }
 
-        protected override async Task CloseAsyncWithCloseProtection(CancellationToken cancellationToken)
+        public async Task CloseAsync(CancellationToken cancellationToken)
         {
             using (var args = new SocketAsyncEventArgs())
             {
@@ -183,12 +183,19 @@ namespace Google.Solutions.Iap.Net
             this.socket.Close();
         }
 
-        protected override void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {
                 this.socket.Close();
             }
+        }
+
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public override string ToString()
