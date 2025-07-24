@@ -45,7 +45,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
         }
 
-        protected async Task WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
+        protected async Task SendAndReceive(
             InstanceLocator locator,
             IAuthorization authorization,
             int messageSize,
