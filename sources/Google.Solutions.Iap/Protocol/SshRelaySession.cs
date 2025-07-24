@@ -54,6 +54,13 @@ namespace Google.Solutions.Iap.Protocol
     {
         private const uint MaxReconnects = 2;
 
+        /// <summary>
+        /// Maximum amount of data that can be read before an ACK
+        /// must be sent. The hard limit seems to be in the 1.5MB
+        /// range.
+        /// </summary>
+        internal const ulong MaxReadDataPerAck = 1024 * 1024;
+
         public ISshRelayTarget Endpoint { get; }
 
         //

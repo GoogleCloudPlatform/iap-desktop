@@ -241,6 +241,36 @@ namespace Google.Solutions.Iap.Protocol
 
                                     this.session.State.AddBytesReceived(dataLength);
 
+                                    if (this.session.State.BytesReceived - this.session.State.LastAckSent > 
+                                        SshRelaySession.MaxReadDataPerAck)
+                                    {
+                                        //
+                                        // We've read enough data that we really
+                                        // need to send an ACK, otherwise the server
+                                        // might stall the connection.
+                                        //
+                                        // If we're tunneling a chatty protocol,
+                                        // the ACKs are automatically taken care
+                                        // of by the send-side, but we can't rely
+                                        // on that.
+                                        //
+                                        // Instead of sending the ACK here, initiate 
+                                        // a zero-byte write. That way, the write is 
+                                        // done under the right lock and synchronized
+                                        // with other write operations that could 
+                                        // start any time.
+                                        //
+                                        await
+                                            WriteAsync(Array.Empty<byte>(), 0, 0, cancellationToken)
+                                            .ConfigureAwait(false);
+                                    }
+                                    else
+                                    {
+                                        //
+                                        // Don't send an ACK yet.
+                                        //
+                                    }
+
                                     return dataLength;
                                 }
                             case SshRelayMessageTag.ACK:
@@ -332,6 +362,14 @@ namespace Google.Solutions.Iap.Protocol
                             .ConfigureAwait(false);
 
                         this.session.State.LastAckSent = bytesToAck;
+                    }
+
+                    if (count == 0)
+                    {
+                        //
+                        // No data to send.
+                        //
+                        return 0;
                     }
 
                     //

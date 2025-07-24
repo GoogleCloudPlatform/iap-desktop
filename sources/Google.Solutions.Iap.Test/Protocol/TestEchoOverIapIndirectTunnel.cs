@@ -66,7 +66,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
+        public async Task SendAndReceive(
             [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)] ResourceTask<InstanceLocator> vm,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth,
             [Values(
@@ -77,13 +77,29 @@ namespace Google.Solutions.Iap.Test.Protocol
                 (int)SshRelayFormat.Data.MaxPayloadLength * 2)] int messageSize,
             [Values(1, 3)] int count)
         {
-            await WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
+            await SendAndReceive(
                     await vm,
                     await auth,
                     messageSize,
                     messageSize,
                     messageSize,
                     count)
+                .ConfigureAwait(false);
+        }
+
+        [Test]
+        public async Task SendAndReceive_WhenReadVolumeExceedsAmountWhereAckMustBeSent(
+            [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)] ResourceTask<InstanceLocator> vm,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth,
+            [Values(1500000, 2000000)] int size)
+        {
+            await SendAndReceive(
+                    await vm,
+                    await auth,
+                    size,
+                    SshRelayStream.MaxWriteSize,
+                    SshRelayStream.MaxWriteSize,
+                    1)
                 .ConfigureAwait(false);
         }
     }
