@@ -323,6 +323,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
+        [Ignore("b/434023421")]
         public async Task SignPublicKey_WhenUsingWorkforceSessionAndUserInRole_ThenSucceeds(
             [Credential(Type = PrincipalType.WorkforceIdentity, Role = PredefinedRole.ServiceUsageConsumer)]
             ResourceTask<IAuthorization> authorizationTask)
@@ -346,6 +347,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
+        [Ignore("b/434023421")]
         public async Task SignPublicKey_WhenUsingGaiaSession_ThenSucceeds(
             [Credential(Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
