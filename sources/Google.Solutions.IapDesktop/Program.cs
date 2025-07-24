@@ -124,7 +124,11 @@ namespace Google.Solutions.IapDesktop
                 {
                     var logFilePath = LogFile;
                     Directory.CreateDirectory(new FileInfo(logFilePath).DirectoryName);
-                    var logListener = new TextWriterTraceListener(logFilePath);
+
+                    var logListener = new TextWriterTraceListener(new StreamWriter(logFilePath)
+                    {
+                        AutoFlush = true
+                    });
 
                     foreach (var trace in TraceSources)
                     {
