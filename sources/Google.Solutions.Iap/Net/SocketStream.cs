@@ -29,9 +29,9 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Iap.Net
 {
     /// <summary>
-    ///  Raw socket stream.
+    /// A socket stream.
     /// </summary>
-    public class SocketStream : INetworkStream
+    public sea class SocketStream : INetworkStream
     {
         private readonly Socket socket;
         private readonly string remoteEndpoint;
@@ -126,9 +126,13 @@ namespace Google.Solutions.Iap.Net
             }
         }
 
+        public override string ToString()
+        {
+            return $"[Socket {this.remoteEndpoint}]";
+        }
 
         //---------------------------------------------------------------------
-        // INetworkStream
+        // INetworkStream.
         //---------------------------------------------------------------------
 
         public async Task<int> ReadAsync(
@@ -183,6 +187,10 @@ namespace Google.Solutions.Iap.Net
             this.socket.Close();
         }
 
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -191,16 +199,10 @@ namespace Google.Solutions.Iap.Net
             }
         }
 
-
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
-        }
-
-        public override string ToString()
-        {
-            return $"[Socket {this.remoteEndpoint}]";
         }
     }
 }

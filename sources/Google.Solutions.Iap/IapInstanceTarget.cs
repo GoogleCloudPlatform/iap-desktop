@@ -46,16 +46,6 @@ namespace Google.Solutions.Iap
         private const string SubprotocolName = "relay.tunnel.cloudproxy.app";
         private const string Origin = "bot:iap-tunneler";
 
-        public InstanceLocator VmInstance { get; }
-
-        public ushort Port { get; }
-
-        public string Interface { get; }
-
-        public UserAgent UserAgent { get; }
-
-        public bool IsMutualTlsEnabled => this.endpointDirections.UseClientCertificate;
-
         private readonly ServiceEndpointDirections endpointDirections;
         private readonly ICredential credential;
 
@@ -235,6 +225,34 @@ namespace Google.Solutions.Iap
             UserAgent userAgent)
             : this(endpointDetails, credential, vmInstance, port, nic, userAgent, null)
         { }
+
+        /// <summary>
+        /// Indicates if mTLS is enabled.
+        /// </summary>
+        public bool IsMutualTlsEnabled
+        {
+            get => this.endpointDirections.UseClientCertificate;
+        }
+
+        /// <summary>
+        /// Target VM instance.
+        /// </summary>
+        public InstanceLocator VmInstance { get; }
+
+        /// <summary>
+        /// Target port.
+        /// </summary>
+        public ushort Port { get; }
+
+        /// <summary>
+        /// Target network interface.
+        /// </summary>
+        public string Interface { get; }
+
+        /// <summary>
+        /// User-agent to use in HTTP requests.
+        /// </summary>
+        public UserAgent UserAgent { get; }
 
         /// <summary>
         /// Perform a probe to check whether the instance can be reached,

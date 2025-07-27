@@ -183,7 +183,7 @@ namespace Google.Solutions.Iap.Protocol
 
         public string? Sid => this.session.Sid;
 
-        protected override async Task<int> ProtectedReadAsync(
+        protected override async Task<int> ReadCoreAsync(
             byte[] buffer,
             int offset,
             int count,
@@ -326,7 +326,7 @@ namespace Google.Solutions.Iap.Protocol
                 cancellationToken);
         }
 
-        protected override async Task ProtectedWriteAsync(
+        protected override async Task WriteCoreAsync(
             byte[] buffer,
             int offset,
             int count,
@@ -417,7 +417,7 @@ namespace Google.Solutions.Iap.Protocol
                 cancellationToken);
         }
 
-        public override async Task ProtectedCloseAsync(CancellationToken cancellationToken)
+        public override async Task CloseCoreAsync(CancellationToken cancellationToken)
         {
             await this.session
                 .DisconnectAsync(cancellationToken)

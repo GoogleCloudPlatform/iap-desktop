@@ -66,25 +66,47 @@ namespace Google.Solutions.Iap.Net
         // Abstract methods
         //---------------------------------------------------------------------
 
-        protected abstract Task<int> ProtectedReadAsync(
+        /// <summary>
+        /// Read a sequence of bytes.
+        /// </summary>
+        /// <remarks>
+        /// The method is called with a semaphore held, ensuring that only
+        /// one read-operation can be in progress at a time.
+        /// </remarks>
+        protected abstract Task<int> ReadCoreAsync(
             byte[] buffer,
             int offset,
             int count,
             CancellationToken cancellationToken);
 
-        protected abstract Task ProtectedWriteAsync(
+        /// <summary>
+        /// Write a sequence of bytes.
+        /// </summary>
+        /// <remarks>
+        /// The method is called with a semaphore held, ensuring that only
+        /// one write-operation can be in progress at a time.
+        /// </remarks>
+        protected abstract Task WriteCoreAsync(
             byte[] buffer,
             int offset,
             int count,
             CancellationToken cancellationToken);
 
-        public abstract Task ProtectedCloseAsync(
+        /// <summary>
+        /// Close the stream. The method is called with semaphores held,
+        /// ensuring that no further read- or write can be in progress.
+        /// </summary>
+        public abstract Task CloseCoreAsync(
             CancellationToken cancellationToken);
 
         //---------------------------------------------------------------------
-        // INetworkStream
+        // INetworkStream.
         //---------------------------------------------------------------------
 
+        /// <summary>
+        /// Asynchronously reads a sequence of bytes from the current stream and 
+        /// advances the position within the stream by the number of bytes read.
+        /// </summary>
         public async Task<int> ReadAsync(
             byte[] buffer,
             int offset,
@@ -114,7 +136,7 @@ namespace Google.Solutions.Iap.Net
                     cancellationToken.Combine(this.forceCloseSource.Token))
                 {
                     var bytesRead = await
-                        ProtectedReadAsync(
+                        ReadCoreAsync(
                             buffer,
                             offset,
                             count,
@@ -140,6 +162,11 @@ namespace Google.Solutions.Iap.Net
             }
         }
 
+        /// <summary>
+        /// Asynchronously writes a sequence of bytes to the current stream and 
+        /// advances the current position within this stream by the number of 
+        /// bytes written.
+        /// </summary>
         public async Task WriteAsync(
             byte[] buffer,
             int offset,
@@ -168,7 +195,7 @@ namespace Google.Solutions.Iap.Net
                 using (var cancellationSource =
                     cancellationToken.Combine(this.forceCloseSource.Token))
                 {
-                    await ProtectedWriteAsync(
+                    await WriteCoreAsync(
                         buffer,
                         offset,
                         count,
@@ -187,6 +214,10 @@ namespace Google.Solutions.Iap.Net
             }
         }
 
+        /// <summary>
+        /// Cancel any outstanding read- or write operations and
+        /// close the stream.
+        /// </summary>
         public async Task CloseAsync(CancellationToken cancellationToken)
         {
             try
@@ -207,7 +238,7 @@ namespace Google.Solutions.Iap.Net
                     .WaitAsync(cancellationToken)
                     .ConfigureAwait(false);
 
-                await ProtectedCloseAsync(cancellationToken)
+                await CloseCoreAsync(cancellationToken)
                     .ConfigureAwait(false);
 
                 this.closed = true;
@@ -218,6 +249,10 @@ namespace Google.Solutions.Iap.Net
                 this.writerSemaphore.Release();
             }
         }
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
 
         protected virtual void Dispose(bool disposing)
         {
