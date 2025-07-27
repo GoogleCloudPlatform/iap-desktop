@@ -21,6 +21,7 @@
 
 using System.Reflection;
 using System.Runtime.CompilerServices;
-[assembly: AssemblyTrademark("Google LLC")]
 
+[assembly: AssemblyTrademark("Google LLC")]
 [assembly: InternalsVisibleTo("Google.Solutions.Iap.Test")]
+[assembly: InternalsVisibleTo("Google.Solutions.Core.Test")]

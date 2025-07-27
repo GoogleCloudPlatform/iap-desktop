@@ -29,7 +29,7 @@ namespace Google.Solutions.Iap.Net
     /// <summary>
     /// Extension methods for INetworkStream.
     /// </summary>
-    public static class NetworkStream
+    public static class NetworkStreamExtensions
     {
         /// <summary>
         /// Relay all received by one stream to another stream.
