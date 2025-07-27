@@ -43,7 +43,9 @@ namespace Google.Solutions.Iap.Test.Protocol
             IAuthorization authorization)
         {
             var policy = new Mock<IIapListenerPolicy>();
-            policy.Setup(p => p.IsClientAllowed(It.IsAny<IPEndPoint>())).Returns(true);
+            policy
+                .Setup(p => p.IsClientAllowed(It.IsAny<IPEndPoint>()))
+                .Returns(true);
 
             var client = new IapClient(
                 IapClient.CreateEndpoint(),
@@ -63,7 +65,10 @@ namespace Google.Solutions.Iap.Test.Protocol
 
             listener.ListenAsync(CancellationToken.None);
 
-            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            var socket = new Socket(
+                AddressFamily.InterNetwork,
+                SocketType.Stream,
+                ProtocolType.Tcp);
             socket.Connect(listener.LocalEndpoint);
 
             return new SocketStream(socket, new NetworkStatistics());
@@ -72,7 +77,9 @@ namespace Google.Solutions.Iap.Test.Protocol
         [Test]
         public async Task WhenServerNotListening_ThenReadReturnsZero(
             [LinuxInstance] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
+            
+            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            ResourceTask<IAuthorization> auth)
         {
             var locator = await vm;
             var stream = ConnectToWebServer(
@@ -82,11 +89,19 @@ namespace Google.Solutions.Iap.Test.Protocol
             var request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
             await stream
-                .WriteAsync(request, 0, request.Length, CancellationToken.None)
+                .WriteAsync(
+                    request,
+                    0,
+                    request.Length,
+                    CancellationToken.None)
                 .ConfigureAwait(false);
 
             var buffer = new byte[SshRelayStream.MinReadSize];
-            Assert.AreEqual(0, stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None).Result);
+            Assert.AreEqual(0, stream.ReadAsync(
+                buffer,
+                0,
+                buffer.Length,
+                CancellationToken.None).Result);
         }
     }
 }

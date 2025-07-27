@@ -129,7 +129,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task ProbeConnection_WhenReadFailsWithDeniedCloseCode_ThenProbeConnectionThrowsException(
+        public async Task ProbeConnection_WhenReadFailsWithDeniedCloseCode(
             [Values(
                 SshRelayCloseCode.NOT_AUTHORIZED)] SshRelayCloseCode code)
         {
@@ -143,14 +143,15 @@ namespace Google.Solutions.Iap.Test.Protocol
                 {
                     await ExceptionAssert
                         .ThrowsAsync<SshRelayDeniedException>(
-                            () => clientStream.ProbeConnectionAsync(TimeSpan.FromSeconds(1)))
+                            () => clientStream.ProbeConnectionAsync(
+                                TimeSpan.FromSeconds(1)))
                     .ConfigureAwait(false);
                 }
             }
         }
 
         [Test]
-        public async Task ProbeConnection_WhenReadFailsWithNotFoundCloseCode_ThenProbeConnectionThrowsException(
+        public async Task ProbeConnection_WhenReadFailsWithNotFoundCloseCode(
             [Values(
                 SshRelayCloseCode.LOOKUP_FAILED,
                 SshRelayCloseCode.LOOKUP_FAILED_RECONNECT)] SshRelayCloseCode code)
@@ -165,7 +166,8 @@ namespace Google.Solutions.Iap.Test.Protocol
                 {
                     await ExceptionAssert
                         .ThrowsAsync<SshRelayBackendNotFoundException>(
-                            () => clientStream.ProbeConnectionAsync(TimeSpan.FromSeconds(1)))
+                            () => clientStream.ProbeConnectionAsync(
+                                TimeSpan.FromSeconds(1)))
                         .ConfigureAwait(false);
                 }
             }
@@ -176,7 +178,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Read_WhenBufferSizeTooSmall_ThenReadThrowsException()
+        public async Task Read_WhenBufferSizeTooSmall()
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -185,7 +187,11 @@ namespace Google.Solutions.Iap.Test.Protocol
                     var buffer = new byte[SshRelayStream.MinReadSize];
                     await ExceptionAssert
                         .ThrowsAsync<IndexOutOfRangeException>(
-                            () => clientStream.ReadAsync(buffer, 1, buffer.Length - 1, CancellationToken.None))
+                            () => clientStream.ReadAsync(
+                                buffer,
+                                1,
+                                buffer.Length - 1,
+                                CancellationToken.None))
                         .ConfigureAwait(false);
                 }
 
@@ -194,7 +200,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task Read_WhenServerClosesConnectionNormally_ThenReadReturnsZeroAndDoesNotReconnect(
+        public async Task Read_WhenServerClosesConnectionNormally(
              [Values(
                 SshRelayCloseCode.DESTINATION_READ_FAILED,
                 SshRelayCloseCode.DESTINATION_WRITE_FAILED,
@@ -224,7 +230,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task Read_WhenServerClosesConnectionWithNotAuthorizedError_ThenReadReturnsZeroAndDoesNotReconnect(
+        public async Task Read_WhenServerClosesConnectionWithNotAuthorizedError(
              [Values(
                 SshRelayCloseCode.NOT_AUTHORIZED)] SshRelayCloseCode code)
         {
@@ -239,7 +245,11 @@ namespace Google.Solutions.Iap.Test.Protocol
                     var buffer = new byte[SshRelayStream.MinReadSize];
                     await ExceptionAssert
                         .ThrowsAsync<SshRelayDeniedException>(
-                            () => clientStream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None))
+                            () => clientStream.ReadAsync(
+                                buffer,
+                                0,
+                                buffer.Length,
+                                CancellationToken.None))
                         .ConfigureAwait(false);
                     Assert.AreEqual(0, endpoint.ReconnectCalls);
                 }
@@ -248,7 +258,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
 
         [Test]
-        public async Task Read_WhenServerClosesConnectionWithConnectError_ThenReadReturnsZeroAndDoesNotReconnect(
+        public async Task Read_WhenServerClosesConnectionWithConnectError(
              [Values(
                 SshRelayCloseCode.FAILED_TO_CONNECT_TO_BACKEND)] SshRelayCloseCode code)
         {
@@ -263,7 +273,11 @@ namespace Google.Solutions.Iap.Test.Protocol
                     var buffer = new byte[SshRelayStream.MinReadSize];
                     await ExceptionAssert
                         .ThrowsAsync<SshRelayConnectException>(
-                            () => clientStream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None))
+                            () => clientStream.ReadAsync(
+                                buffer,
+                                0,
+                                buffer.Length,
+                                CancellationToken.None))
                         .ConfigureAwait(false);
                     Assert.AreEqual(0, endpoint.ReconnectCalls);
                 }
@@ -271,7 +285,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task Read_WhenServerClosesConnectionWithReconnectError_ThenReadReturnsZeroAndDoesNotReconnect(
+        public async Task Read_WhenServerClosesConnectionWithReconnectError(
              [Values(
                 SshRelayCloseCode.SID_UNKNOWN,
                 SshRelayCloseCode.SID_IN_USE)] SshRelayCloseCode code)
@@ -287,7 +301,11 @@ namespace Google.Solutions.Iap.Test.Protocol
                     var buffer = new byte[SshRelayStream.MinReadSize];
                     await ExceptionAssert
                         .ThrowsAsync<SshRelayReconnectException>(
-                            () => clientStream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None))
+                            () => clientStream.ReadAsync(
+                                buffer,
+                                0,
+                                buffer.Length,
+                                CancellationToken.None))
                         .ConfigureAwait(false);
                     Assert.AreEqual(0, endpoint.ReconnectCalls);
                 }
@@ -295,7 +313,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task Read_WhenConnectionClosedByClient_ThenReadThrowsException()
+        public async Task Read_WhenConnectionClosedByClient()
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -309,14 +327,18 @@ namespace Google.Solutions.Iap.Test.Protocol
 
                     await ExceptionAssert
                         .ThrowsAsync<NetworkStreamClosedException>(
-                            () => clientStream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None))
+                            () => clientStream.ReadAsync(
+                                buffer,
+                                0,
+                                buffer.Length,
+                                CancellationToken.None))
                         .ConfigureAwait(false);
                 }
             }
         }
 
         [Test]
-        public async Task Read_WhenServerTruncatedMessage_ThenReadThrowsException()
+        public async Task Read_WhenServerTruncatedMessage()
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -329,7 +351,11 @@ namespace Google.Solutions.Iap.Test.Protocol
                     var buffer = new byte[SshRelayStream.MinReadSize];
                     await ExceptionAssert
                         .ThrowsAsync<SshRelayProtocolViolationException>(
-                            () => clientStream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None))
+                            () => clientStream.ReadAsync(
+                                buffer,
+                                0,
+                                buffer.Length,
+                                CancellationToken.None))
                         .ConfigureAwait(false);
                 }
             }
@@ -340,7 +366,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Read_WhenBufferSizeSufficient_ThenReadSucceeds()
+        public async Task Read_WhenBufferSizeSufficient()
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -375,7 +401,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Read_WhenServerClosesConnectionWithUnknownErrorBeforeAck_ThenReadConnectsAgain(
+        public async Task Read_WhenServerClosesConnectionWithUnknownErrorBeforeAck(
              [Values(
                 SshRelayCloseCode.INVALID_WEBSOCKET_OPCODE)] SshRelayCloseCode code)
         {
@@ -413,7 +439,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task Read_WhenServerClosesConnectionWithUnknownErrorAfterAck_ThenReadTriggersReconnect(
+        public async Task Read_WhenServerClosesConnectionWithUnknownErrorAfterAck(
              [Values(
                 SshRelayCloseCode.INVALID_WEBSOCKET_OPCODE)] SshRelayCloseCode code)
         {
@@ -462,7 +488,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Write_WhenBufferSizeTooBig_ThenWriteThrowsException()
+        public async Task Write_WhenBufferSizeTooBig()
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -471,7 +497,11 @@ namespace Google.Solutions.Iap.Test.Protocol
                     var buffer = new byte[SshRelayStream.MaxWriteSize + 1];
                     await ExceptionAssert
                         .ThrowsAsync<IndexOutOfRangeException>(
-                            () => clientStream.WriteAsync(buffer, 0, buffer.Length, CancellationToken.None))
+                            () => clientStream.WriteAsync(
+                                buffer,
+                                0,
+                                buffer.Length,
+                                CancellationToken.None))
                         .ConfigureAwait(false);
                 }
 
@@ -484,7 +514,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Write_WhenDataRead_ThenWriteSendsAck()
+        public async Task Write_WhenDataRead()
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -548,7 +578,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Write_WhenReconnecting_ThenWriteResendsUnackedData()
+        public async Task Write_WhenReconnecting()
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -586,7 +616,8 @@ namespace Google.Solutions.Iap.Test.Protocol
 
                     // Reconnect.
                     await endpoint.Server
-                        .CloseOutputAsync((WebSocketCloseStatus)SshRelayCloseCode.INVALID_WEBSOCKET_OPCODE)
+                        .CloseOutputAsync((WebSocketCloseStatus)
+                            SshRelayCloseCode.INVALID_WEBSOCKET_OPCODE)
                         .ConfigureAwait(false);
                     await clientStream
                         .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)

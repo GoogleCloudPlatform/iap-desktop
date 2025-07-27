@@ -51,7 +51,7 @@ namespace Google.Solutions.Iap.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void SetUsernameAsHostHeaderPatch_WhenPrefixNotRegistered_ThenSetUsernameAsHostHeaderPatchFails()
+        public void SetUsernameAsHostHeaderPatch_WhenPrefixNotRegistere()
         {
             var patch = new SystemPatch.SetUsernameAsHostHeaderPatch("unknown:");
 
@@ -59,7 +59,7 @@ namespace Google.Solutions.Iap.Test.Net
         }
 
         [Test]
-        public void SetUsernameAsHostHeaderPatch_WhenPrefixRegistered_ThenSetUsernameAsHostHeaderPatchSucceeds()
+        public void SetUsernameAsHostHeaderPatch_WhenPrefixRegistered()
         {
             WebRequest.RegisterPrefix(
                 TestHttpWebRequestCreate.Prefix,

@@ -35,7 +35,8 @@ namespace Google.Solutions.Iap.Test.Protocol
     [TestFixture]
     public class TestSshRelayStreamReading : IapFixtureBase
     {
-        private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource tokenSource 
+            = new CancellationTokenSource();
 
         [Test]
         public async Task Read_WhenPerformingFirstRead_ThenConnectionIsOpened()

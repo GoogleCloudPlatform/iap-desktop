@@ -51,8 +51,12 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         [Test]
         public async Task SendAndReceive(
-            [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth,
+            [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)] 
+            ResourceTask<InstanceLocator> vm,
+            
+            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            ResourceTask<IAuthorization> auth,
+            
             [Values(
                 1,
                 (int)SshRelayFormat.Data.MaxPayloadLength - 1,
@@ -79,7 +83,9 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         [Test]
         public async Task SendAndReceive_WhenReadVolumeExceedsAmountWhereAckMustBeSent(
-            [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)] ResourceTask<InstanceLocator> vm,
+            [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)]
+            ResourceTask<InstanceLocator> vm,
+            
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth,
             [Values(1500000, 2000000)] int size)
         {

@@ -47,7 +47,11 @@ namespace Google.Solutions.Iap.Test.Protocol
             return Task.Delay(0, CancellationToken.None);
         }
 
-        public Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        public Task<int> ReadAsync(
+            byte[] buffer,
+            int offset,
+            int count,
+            CancellationToken cancellationToken)
         {
             if (this.CloseCount > 0)
             {
@@ -62,7 +66,10 @@ namespace Google.Solutions.Iap.Test.Protocol
                     throw new OverflowException();
                 }
 
-                Array.Copy(this.ExpectedReadData[this.ReadCount], buffer, this.ExpectedReadData[this.ReadCount].Length);
+                Array.Copy(
+                    this.ExpectedReadData[this.ReadCount],
+                    buffer,
+                    this.ExpectedReadData[this.ReadCount].Length);
                 var result = Task.FromResult(this.ExpectedReadData[this.ReadCount].Length);
 
                 this.ReadCount++;
@@ -81,7 +88,11 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
         }
 
-        public Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        public Task WriteAsync(
+            byte[] buffer,
+            int offset,
+            int count,
+            CancellationToken cancellationToken)
         {
             if (this.CloseCount > 0)
             {
@@ -118,7 +129,8 @@ namespace Google.Solutions.Iap.Test.Protocol
 
     internal class MockSshRelayEndpoint : ISshRelayTarget
     {
-        public IList<INetworkStream> ExpectedStreams { get; set; } = new List<INetworkStream>();
+        public IList<INetworkStream> ExpectedStreams { get; set; } 
+            = new List<INetworkStream>();
 
         public INetworkStream ExpectedStream
         {
@@ -133,14 +145,19 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         public Task<INetworkStream> ConnectAsync(CancellationToken token)
         {
-            var result = Task.FromResult(this.ExpectedStreams[this.ConnectCount + this.ReconnectCount]);
+            var result = Task.FromResult(
+                this.ExpectedStreams[this.ConnectCount + this.ReconnectCount]);
             this.ConnectCount++;
             return result;
         }
 
-        public Task<INetworkStream> ReconnectAsync(string sid, ulong lastByteConsumedByClient, CancellationToken token)
+        public Task<INetworkStream> ReconnectAsync(
+            string sid,
+            ulong lastByteConsumedByClient,
+            CancellationToken token)
         {
-            var result = Task.FromResult(this.ExpectedStreams[this.ConnectCount + this.ReconnectCount]);
+            var result = Task.FromResult(
+                this.ExpectedStreams[this.ConnectCount + this.ReconnectCount]);
             this.ReconnectCount++;
             return result;
         }
