@@ -105,26 +105,30 @@ namespace Google.Solutions.Iap.Net
                 this.installed = false;
             }
 
-            private static void SetHeaderRestriction(string header, bool restricted)
+            private static void SetHeaderRestriction(
+                string header, 
+                bool restricted)
             {
                 //
-                // Headers like "User-Agent" are considered a "restricted header" by .NET.
-                // While most HTTP clases allow you to specify the header by using a 
-                // special property, the ClientWebSocket class does not.
+                // Headers like "User-Agent" are considered a "restricted header"
+                // by .NET. While most HTTP clases allow you to specify the header
+                // by using a special property, the ClientWebSocket class does not.
                 // 
                 // To overcome this limitation, the only option is to patch
                 // the libraries internal configuration. As this requires
-                // accessing internal and private fields, it might break at any time.
+                // accessing internal and private fields, it might break at
+                // any time.
                 // 
-                // It is therefore important that any code using restricted headers
-                // is written so that it gracefully handles failures.
+                // It is therefore important that any code using restricted
+                // headers is written so that it gracefully handles failures.
                 //
                 // The list of restricted headers is stored in a global 
                 // HeaderInfoTable object.
                 //
                 if (typeof(WebHeaderCollection).GetField(
                     "HInfo",
-                    BindingFlags.NonPublic | BindingFlags.Static) is FieldInfo hInfoField)
+                    BindingFlags.NonPublic | BindingFlags.Static) 
+                        is FieldInfo hInfoField)
                 {
                     var headerInfoTable = hInfoField.GetValue(null);
 
@@ -133,7 +137,8 @@ namespace Google.Solutions.Iap.Net
                     //
                     if (headerInfoTable.GetType().GetField(
                         "HeaderHashTable",
-                        BindingFlags.NonPublic | BindingFlags.Static) is FieldInfo headersField)
+                        BindingFlags.NonPublic | BindingFlags.Static)
+                            is FieldInfo headersField)
                     {
                         if (headersField.GetValue(null) is Hashtable headers)
                         {
@@ -144,7 +149,8 @@ namespace Google.Solutions.Iap.Net
                             if (headerInfo != null &&
                                 headerInfo.GetType().GetField(
                                     "IsRequestRestricted",
-                                    BindingFlags.NonPublic | BindingFlags.Instance) is FieldInfo restrictedField)
+                                    BindingFlags.NonPublic | BindingFlags.Instance) 
+                                        is FieldInfo restrictedField)
                             {
                                 restrictedField.SetValue(headerInfo, restricted);
                                 return;
@@ -153,7 +159,8 @@ namespace Google.Solutions.Iap.Net
                     }
                 }
 
-                throw new InvalidOperationException("Changing the header configuration failed");
+                throw new InvalidOperationException(
+                    "Changing the header configuration failed");
             }
         }
 
@@ -161,11 +168,12 @@ namespace Google.Solutions.Iap.Net
         /// CLientWebSocket (and possibly other classes) don't let callers
         /// override the Host header for requests.
         /// 
-        /// As a nasty workaround, install a custom IWebRequestCreate implementation
-        /// that extracts the userinfo part of an URL (http://userinfo@host/) 
-        /// and sets it as Host header.
+        /// As a nasty workaround, install a custom IWebRequestCreate 
+        /// implementation that extracts the userinfo part of an URL 
+        /// (http://userinfo@host/) and sets it as Host header.
         /// </summary>
-        internal class SetUsernameAsHostHeaderPatch : SystemPatch, IWebRequestCreate
+        internal class SetUsernameAsHostHeaderPatch :
+            SystemPatch, IWebRequestCreate
         {
             private readonly string prefix;
             private IWebRequestCreate? originalFactory;
@@ -176,7 +184,14 @@ namespace Google.Solutions.Iap.Net
                 Debug.Assert(this.prefix.EndsWith(":"));
             }
 
-            public override bool IsInstalled => this.originalFactory != null;
+            //---------------------------------------------------------------------
+            // Overrides.
+            //---------------------------------------------------------------------
+
+            public override bool IsInstalled
+            {
+                get =>  this.originalFactory != null;
+            }
 
             public override void Install()
             {
@@ -207,6 +222,10 @@ namespace Google.Solutions.Iap.Net
 
                 Debug.Assert(!this.IsInstalled);
             }
+
+            //---------------------------------------------------------------------
+            // Request factory methods.
+            //---------------------------------------------------------------------
 
             public WebRequest Create(Uri uri)
             {
@@ -253,7 +272,8 @@ namespace Google.Solutions.Iap.Net
 
                 if (!(prop?.GetValue(null) is ArrayList prefixes))
                 {
-                    throw new InvalidOperationException("Accessing WebRequest.PrefixList failed");
+                    throw new InvalidOperationException(
+                        "Accessing WebRequest.PrefixList failed");
                 }
 
                 foreach (var entry in prefixes)
@@ -265,19 +285,24 @@ namespace Google.Solutions.Iap.Net
                             "Accessing WebRequestPrefixElement.Prefix failed");
                     }
 
-                    if (prefixField.GetValue(entry) is string prefixValue && prefixValue == prefix)
+                    if (prefixField.GetValue(entry) is string prefixValue && 
+                        prefixValue == prefix)
                     {
-                        var creatorProperty = entry.GetType().GetProperty("Creator");
+                        var creatorProperty = entry
+                            .GetType()
+                            .GetProperty("Creator");
                         if (creatorProperty == null)
                         {
                             throw new InvalidOperationException(
                                 "Accessing WebRequestPrefixElement.Creator failed");
                         }
 
-                        if (!(creatorProperty.GetValue(entry) is IWebRequestCreate original))
+                        if (!(creatorProperty.GetValue(entry) 
+                            is IWebRequestCreate original))
                         {
                             throw new InvalidOperationException(
-                                "WebRequestPrefixElement.Creator uses an unexpected type");
+                                "WebRequestPrefixElement.Creator uses " +
+                                "an unexpected type");
 
                         }
 

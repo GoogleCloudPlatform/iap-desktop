@@ -99,10 +99,6 @@ namespace Google.Solutions.Iap.Net
             return false;
         }
 
-        //---------------------------------------------------------------------
-        // SingleReaderSingleWriterStream implementation
-        //---------------------------------------------------------------------
-
         private void VerifyConnectionNotClosedAlready()
         {
             if (this.closeByClientInitiated)
@@ -112,11 +108,15 @@ namespace Google.Solutions.Iap.Net
             }
         }
 
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
+
         /// <summary>
         /// Read until (a) the buffer is full or (b) the end of
         /// the frame has been reached.
         /// </summary>
-        protected override async Task<int> ProtectedReadAsync(
+        protected override async Task<int> ReadCoreAsync(
             byte[] buffer,
             int offset,
             int count,
@@ -164,11 +164,12 @@ namespace Google.Solutions.Iap.Net
                         result.CloseStatus);
 
                     //
-                    // In case of a normal close, it is preferable to simply return 0. But
-                    // if the connection was closed abnormally, the client needs to know
-                    // the details.
+                    // In case of a normal close, it is preferable to simply
+                    // return 0. But if the connection was closed abnormally,
+                    // the client needs to know the details.
                     //
-                    if (result.CloseStatus.Value != WebSocketCloseStatus.NormalClosure)
+                    if (result.CloseStatus.Value 
+                        != WebSocketCloseStatus.NormalClosure)
                     {
                         throw new WebSocketStreamClosedByServerException(
                             result.CloseStatus.Value,
@@ -186,7 +187,8 @@ namespace Google.Solutions.Iap.Net
                 IsSocketError(e, SocketError.ConnectionAborted) ||
                 IsWebSocketError(e, WebSocketError.ConnectionClosedPrematurely))
             {
-                IapTraceSource.Log.TraceVerbose("WebSocketStream.Read: connection aborted - {0}", e);
+                IapTraceSource.Log.TraceVerbose(
+                    "WebSocketStream.Read: connection aborted - {0}", e);
 
                 throw new WebSocketStreamClosedByServerException(
                     (WebSocketCloseStatus)1006, // Abnormal closure
@@ -194,7 +196,7 @@ namespace Google.Solutions.Iap.Net
             }
         }
 
-        protected override async Task ProtectedWriteAsync(
+        protected override async Task WriteCoreAsync(
             byte[] buffer,
             int offset,
             int count,
@@ -224,7 +226,8 @@ namespace Google.Solutions.Iap.Net
                 IsSocketError(e, SocketError.ConnectionAborted) ||
                 IsWebSocketError(e, WebSocketError.ConnectionClosedPrematurely))
             {
-                IapTraceSource.Log.TraceVerbose("WebSocketStream.Write: connection aborted - {0}", e);
+                IapTraceSource.Log.TraceVerbose(
+                    "WebSocketStream.Write: connection aborted - {0}", e);
 
                 throw new WebSocketStreamClosedByServerException(
                     (WebSocketCloseStatus)1006, // Abnormal closure
@@ -232,7 +235,8 @@ namespace Google.Solutions.Iap.Net
             }
         }
 
-        public override async Task ProtectedCloseAsync(CancellationToken cancellationToken)
+        public override async Task CloseCoreAsync(
+            CancellationToken cancellationToken)
         {
             VerifyConnectionNotClosedAlready();
 
@@ -262,7 +266,8 @@ namespace Google.Solutions.Iap.Net
         }
     }
 
-    public class WebSocketStreamClosedByClientException : NetworkStreamClosedException
+    public class WebSocketStreamClosedByClientException : 
+        NetworkStreamClosedException
     {
         public WebSocketStreamClosedByClientException()
             : base("The connection has already been closed by the client")
@@ -278,7 +283,8 @@ namespace Google.Solutions.Iap.Net
         }
     }
 
-    public class WebSocketStreamClosedByServerException : NetworkStreamClosedException
+    public class WebSocketStreamClosedByServerException : 
+        NetworkStreamClosedException
     {
         public WebSocketCloseStatus CloseStatus { get; private set; }
         public string CloseStatusDescription { get; private set; }

@@ -55,7 +55,11 @@ namespace Google.Solutions.Iap.Test.Util
             byte[] data)
         {
             var buffer = new byte[data.Length + 6];
-            var bytes = SshRelayFormat.Data.Encode(buffer, data, 0, (uint)data.Length);
+            var bytes = SshRelayFormat.Data.Encode(
+                buffer,
+                data,
+                0,
+                (uint)data.Length);
 
             await server
                 .SendBinaryFrameAsync(buffer, 0, (int)bytes)

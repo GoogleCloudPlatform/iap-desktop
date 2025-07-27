@@ -51,9 +51,12 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenBufferIsTiny_ThenReadingFailsWithIndexOutOfRangeException(
-            [LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
+        public async Task Read_WhenBufferIsTiny(
+            [LinuxInstance(InitializeScript = InstallApache)] 
+            ResourceTask<InstanceLocator> vm,
+
+            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            ResourceTask<IAuthorization> auth)
         {
             var locator = await vm;
             var stream = ConnectToWebServer(locator, await auth);
@@ -68,13 +71,18 @@ namespace Google.Solutions.Iap.Test.Protocol
 
             await ExceptionAssert
                 .ThrowsAsync<IndexOutOfRangeException>(
-                    () => stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None))
+                    () => stream.ReadAsync(
+                        buffer,
+                        0,
+                        buffer.Length,
+                        CancellationToken.None))
                 .ConfigureAwait(false);
         }
 
         [Test]
-        public async Task WhenConnectingWithInvalidAccessToken_ThenReadingFailsWithUnauthorizedException
-            ([LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm)
+        public async Task Read_WhenConnectingWithInvalidAccessToken(
+            [LinuxInstance(InitializeScript = InstallApache)]
+            ResourceTask<InstanceLocator> vm)
         {
             // NB. Fiddler might cause this test to fail.
 
@@ -94,14 +102,21 @@ namespace Google.Solutions.Iap.Test.Protocol
 
             await ExceptionAssert
                 .ThrowsAsync<SshRelayDeniedException>(
-                    () => stream.WriteAsync(request, 0, request.Length, CancellationToken.None))
+                    () => stream.WriteAsync(
+                        request,
+                        0,
+                        request.Length,
+                        CancellationToken.None))
                 .ConfigureAwait(false);
         }
 
         [Test]
-        public async Task WhenFirstWriteCompleted_ThenSidIsAvailable(
-            [LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
+        public async Task Read_WhenFirstWriteCompleted(
+            [LinuxInstance(InitializeScript = InstallApache)] 
+            ResourceTask<InstanceLocator> vm,
+
+            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            ResourceTask<IAuthorization> auth)
         {
             var locator = await vm;
             var stream = (SshRelayStream)ConnectToWebServer(
@@ -120,9 +135,10 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task WhenServerNotListening_ThenWriteFails(
+        public async Task Read_WhenServerNotListening(
             [LinuxInstance] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            ResourceTask<IAuthorization> auth)
         {
             var stream = ConnectToWebServer(
                 await vm,
@@ -135,7 +151,11 @@ namespace Google.Solutions.Iap.Test.Protocol
 
             await ExceptionAssert
                 .ThrowsAsync<SshRelayConnectException>(() =>
-                    stream.WriteAsync(request, 0, request.Length, CancellationToken.None))
+                    stream.WriteAsync(
+                        request,
+                        0,
+                        request.Length,
+                        CancellationToken.None))
                 .ConfigureAwait(false);
         }
     }

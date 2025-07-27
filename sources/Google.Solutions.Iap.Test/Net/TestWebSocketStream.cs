@@ -67,7 +67,7 @@ namespace Google.Solutions.Iap.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Read_WhenServerClosesConnectionWithError_ThenReadThrowsException()
+        public async Task Read_WhenServerClosesConnectionWithError()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -106,7 +106,7 @@ namespace Google.Solutions.Iap.Test.Net
         }
 
         [Test]
-        public async Task Read_WhenConnectionClosedByClient_ThenReadThrowsException()
+        public async Task Read_WhenConnectionClosedByClient()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -126,7 +126,7 @@ namespace Google.Solutions.Iap.Test.Net
         }
 
         [Test]
-        public async Task Read_WhenServerClosesConnectionNormally_ThenReadReturnsZero()
+        public async Task Read_WhenServerClosesConnectionNormally()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -148,7 +148,7 @@ namespace Google.Solutions.Iap.Test.Net
         }
 
         [Test]
-        public async Task Read_WhenServerClosesConnectionAndReadSizeZero_ThenReadSucceeds()
+        public async Task Read_WhenServerClosesConnectionAndReadSizeZero()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -172,7 +172,7 @@ namespace Google.Solutions.Iap.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Read_WhenFrameSizeEqualsReadSize_ThenReadSucceeds()
+        public async Task Read_WhenFrameSizeEqualsReadSize()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -195,7 +195,7 @@ namespace Google.Solutions.Iap.Test.Net
         }
 
         [Test]
-        public async Task Read_WhenFrameSizeEqualToTwiceReadSize_ThenReadSucceeds()
+        public async Task Read_WhenFrameSizeEqualToTwiceReadSize()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -225,7 +225,7 @@ namespace Google.Solutions.Iap.Test.Net
         }
 
         [Test]
-        public async Task Read_WhenFrameLessThanSizeTwiceReadSize_ThenReadSucceeds()
+        public async Task Read_WhenFrameLessThanSizeTwiceReadSize()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -258,7 +258,7 @@ namespace Google.Solutions.Iap.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Read_WhenFrameLessThanReadSize_ThenReadSucceeds()
+        public async Task Read_WhenFrameLessThanReadSize()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -297,7 +297,7 @@ namespace Google.Solutions.Iap.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Write_WhenServerClosedConnection_ThenWriteSucceeds()
+        public async Task Write_WhenServerClosedConnection()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -323,7 +323,7 @@ namespace Google.Solutions.Iap.Test.Net
         }
 
         [Test]
-        public async Task Write_WhenConnectionClosedByClient_ThenWriteThrowsException()
+        public async Task Write_WhenConnectionClosedByClient()
         {
             using (var connection = await this.Server.ConnectAsync())
             {
@@ -343,11 +343,11 @@ namespace Google.Solutions.Iap.Test.Net
         }
 
         //---------------------------------------------------------------------
-        // Write: closing.
+        // Close.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Write_WhenConnectionClosedByClient_TheCloseThrowsException()
+        public async Task Close_WhenConnectionClosedByClient()
         {
             using (var connection = await this.Server.ConnectAsync())
             {

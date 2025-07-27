@@ -93,7 +93,9 @@ namespace Google.Solutions.Iap.Test.Util
         public ServerWebSocketConnection Server { get; }
         public ClientWebSocket Client { get; }
 
-        public WebSocketConnection(ServerWebSocketConnection server, ClientWebSocket client)
+        public WebSocketConnection(
+            ServerWebSocketConnection server,
+            ClientWebSocket client)
         {
             this.Server = server;
             this.Client = client;

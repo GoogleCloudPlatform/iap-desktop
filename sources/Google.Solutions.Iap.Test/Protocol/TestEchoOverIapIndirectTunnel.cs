@@ -42,7 +42,9 @@ namespace Google.Solutions.Iap.Test.Protocol
             IAuthorization authorization)
         {
             var policy = new Mock<IIapListenerPolicy>();
-            policy.Setup(p => p.IsClientAllowed(It.IsAny<IPEndPoint>())).Returns(true);
+            policy
+                .Setup(p => p.IsClientAllowed(It.IsAny<IPEndPoint>()))
+                .Returns(true);
 
             var client = new IapClient(
                 IapClient.CreateEndpoint(),
@@ -59,7 +61,10 @@ namespace Google.Solutions.Iap.Test.Protocol
 
             listener.ListenAsync(CancellationToken.None);
 
-            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            var socket = new Socket(
+                AddressFamily.InterNetwork,
+                SocketType.Stream,
+                ProtocolType.Tcp);
             socket.Connect(listener.LocalEndpoint);
 
             return new SocketStream(socket, new NetworkStatistics());
@@ -67,8 +72,12 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         [Test]
         public async Task SendAndReceive(
-            [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth,
+            [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)] 
+            ResourceTask<InstanceLocator> vm,
+
+            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            ResourceTask<IAuthorization> auth,
+
             [Values(
                 1,
                 (int)SshRelayFormat.Data.MaxPayloadLength - 1,
@@ -89,8 +98,12 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         [Test]
         public async Task SendAndReceive_WhenReadVolumeExceedsAmountWhereAckMustBeSent(
-            [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth,
+            [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)] 
+            ResourceTask<InstanceLocator> vm,
+
+            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            ResourceTask<IAuthorization> auth,
+
             [Values(1500000, 2000000)] int size)
         {
             await SendAndReceive(

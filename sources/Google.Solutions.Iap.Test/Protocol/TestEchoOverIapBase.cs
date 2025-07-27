@@ -31,7 +31,8 @@ namespace Google.Solutions.Iap.Test.Protocol
 {
     public abstract class TestEchoOverIapBase : IapFixtureBase
     {
-        private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource tokenSource 
+            = new CancellationTokenSource();
 
         protected abstract INetworkStream ConnectToEchoServer(
             InstanceLocator vmRef,
@@ -93,7 +94,12 @@ namespace Google.Solutions.Iap.Test.Protocol
                             this.tokenSource.Token)
                         .ConfigureAwait(false);
 
-                    Array.Copy(readBuffer, 0, response, totalBytesRead, bytesRead);
+                    Array.Copy(
+                        readBuffer,
+                        0,
+                        response,
+                        totalBytesRead,
+                        bytesRead);
                     totalBytesRead += bytesRead;
 
                     if (bytesRead == 0 || totalBytesRead >= messageSize)

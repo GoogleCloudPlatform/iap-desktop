@@ -38,7 +38,8 @@ namespace Google.Solutions.Iap.Test.Protocol
     {
         [Test]
         public async Task ProbeConnection_WhenProjectDoesntExist(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            ResourceTask<IAuthorization> auth)
         {
             var client = new IapClient(
                 IapClient.CreateEndpoint(),
@@ -60,7 +61,8 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         [Test]
         public async Task ProbeConnection_WhenZoneDoesntExist(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            ResourceTask<IAuthorization> auth)
         {
             var client = new IapClient(
                 IapClient.CreateEndpoint(),
@@ -85,7 +87,8 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         [Test]
         public async Task ProbeConnection_WhenInstanceDoesntExist(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            ResourceTask<IAuthorization> auth)
         {
             var client = new IapClient(
                 IapClient.CreateEndpoint(),
@@ -110,8 +113,9 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         [Test]
         public async Task ProbeConnection_WhenInstanceExistsAndIsListening(
-             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)]
+            ResourceTask<IAuthorization> auth)
         {
             var client = new IapClient(
                 IapClient.CreateEndpoint(),
@@ -132,8 +136,9 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         [Test]
         public async Task ProbeConnection_WhenInstanceExistsButNotListening(
-             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            ResourceTask<IAuthorization> auth)
         {
             var client = new IapClient(
                 IapClient.CreateEndpoint(),
@@ -158,7 +163,8 @@ namespace Google.Solutions.Iap.Test.Protocol
         {
             var stream = new MockStream()
             {
-                ExpectServerCloseCodeOnRead = (WebSocketCloseStatus)SshRelayCloseCode.NOT_AUTHORIZED
+                ExpectServerCloseCodeOnRead =
+                    (WebSocketCloseStatus)SshRelayCloseCode.NOT_AUTHORIZED
             };
             var endpoint = new MockSshRelayEndpoint()
             {

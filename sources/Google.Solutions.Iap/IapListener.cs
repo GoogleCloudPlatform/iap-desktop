@@ -103,6 +103,77 @@ namespace Google.Solutions.Iap
             }
         }
 
+
+        private void RunListenerLoopAsync(CancellationToken token)
+        {
+            using (token.Register(this.listener.Stop))
+            {
+                while (this.ClientAcceptLimit == 0 || 
+                    this.ClientAcceptLimit > this.ClientsAccepted)
+                {
+                    try
+                    {
+                        var socket = this.listener.AcceptSocket();
+                        if (this.policy.IsClientAllowed(
+                            (IPEndPoint)socket.RemoteEndPoint))
+                        {
+                            IapTraceSource.Log.TraceInformation(
+                                "Connection from {0} allowed by policy", 
+                                socket.RemoteEndPoint);
+
+                        }
+                        else
+                        {
+                            IapTraceSource.Log.TraceWarning(
+                                "Connection from {0} rejected by policy", 
+                                socket.RemoteEndPoint);
+                            socket.Close();
+                            continue;
+                        }
+
+                        socket.NoDelay = true;
+
+                        var clientStream = new SocketStream(socket, this.Statistics);
+                        var serverStream = new SshRelayStream(this.server);
+
+                        OnClientConnected(clientStream.ToString());
+                        this.ClientsAccepted++;
+
+                        _ = Task.WhenAll(
+                                clientStream.RelayToAsync(
+                                    serverStream, 
+                                    SshRelayStream.MaxWriteSize, 
+                                    token),
+                                serverStream.RelayToAsync(
+                                    clientStream, 
+                                    SshRelayStream.MinReadSize, 
+                                    token))
+                            .ContinueWith(t =>
+                            {
+                                IapTraceSource.Log.TraceVerbose(
+                                    "SshRelayListener: Closed connection");
+
+                                if (t.IsFaulted)
+                                {
+                                    OnConnectionFailed(t.Exception);
+                                }
+
+                                OnClientDisconnected(clientStream.ToString());
+
+                                clientStream.Dispose();
+                                serverStream.Dispose();
+                            });
+                    }
+                    catch (SocketException e) 
+                    when (e.SocketErrorCode == SocketError.Interrupted)
+                    {
+                        // Operation cancelled, terminate gracefully.
+                        break;
+                    }
+                }
+            }
+        }
+
         //---------------------------------------------------------------------
         // Ctor
         //---------------------------------------------------------------------
@@ -168,7 +239,8 @@ namespace Google.Solutions.Iap
             {
                 this.listener.Start(BacklogLength);
             }
-            catch (SocketException e) when (e.SocketErrorCode == SocketError.AccessDenied)
+            catch (SocketException e)
+            when (e.SocketErrorCode == SocketError.AccessDenied)
             {
                 //
                 // This can happen if the endpoint overlaps with a persistent port
@@ -180,63 +252,7 @@ namespace Google.Solutions.Iap
             //
             // All communication is then handled asynchronously.
             //
-            return Task.Run(() =>
-            {
-                using (token.Register(this.listener.Stop))
-                {
-                    while (this.ClientAcceptLimit == 0 || this.ClientAcceptLimit > this.ClientsAccepted)
-                    {
-                        try
-                        {
-                            var socket = this.listener.AcceptSocket();
-                            if (this.policy.IsClientAllowed((IPEndPoint)socket.RemoteEndPoint))
-                            {
-                                IapTraceSource.Log.TraceInformation(
-                                    "Connection from {0} allowed by policy", socket.RemoteEndPoint);
-
-                            }
-                            else
-                            {
-                                IapTraceSource.Log.TraceWarning(
-                                    "Connection from {0} rejected by policy", socket.RemoteEndPoint);
-                                socket.Close();
-                                continue;
-                            }
-
-                            socket.NoDelay = true;
-
-                            var clientStream = new SocketStream(socket, this.Statistics);
-                            var serverStream = new SshRelayStream(this.server);
-
-                            OnClientConnected(clientStream.ToString());
-                            this.ClientsAccepted++;
-
-                            _ = Task.WhenAll(
-                                    clientStream.RelayToAsync(serverStream, SshRelayStream.MaxWriteSize, token),
-                                    serverStream.RelayToAsync(clientStream, SshRelayStream.MinReadSize, token))
-                                .ContinueWith(t =>
-                                {
-                                    IapTraceSource.Log.TraceVerbose("SshRelayListener: Closed connection");
-
-                                    if (t.IsFaulted)
-                                    {
-                                        OnConnectionFailed(t.Exception);
-                                    }
-
-                                    OnClientDisconnected(clientStream.ToString());
-
-                                    clientStream.Dispose();
-                                    serverStream.Dispose();
-                                });
-                        }
-                        catch (SocketException e) when (e.SocketErrorCode == SocketError.Interrupted)
-                        {
-                            // Operation cancelled, terminate gracefully.
-                            break;
-                        }
-                    }
-                }
-            });
+            return Task.Run(() => RunListenerLoopAsync(token));
         }
     }
 

@@ -38,7 +38,8 @@ namespace Google.Solutions.Iap.Test.Protocol
         protected const string InstallApache = "sudo apt-get install -y apache2";
 
         private const int RepeatCount = 5;
-        private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource tokenSource 
+            = new CancellationTokenSource();
 
         protected abstract INetworkStream ConnectToWebServer(
             InstanceLocator vmRef,
@@ -53,20 +54,28 @@ namespace Google.Solutions.Iap.Test.Protocol
 
             public void Accumulate(byte[] buffer, int offset, int count)
             {
-                this.response.Append(new ASCIIEncoding().GetString(buffer, offset, count));
+                this.response.Append(
+                    new ASCIIEncoding().GetString(buffer, offset, count));
                 this.TotalBytesRead += count;
 
                 if (this.response.ToString().IndexOf("\r\n\r\n") > 0)
                 {
                     // Full HTTP header read.
 
-                    var contentLengthMatch = new Regex("Content-Length: (\\d+)").Match(this.response.ToString());
-                    if (this.ExpectedBytes == int.MaxValue && contentLengthMatch.Success)
+                    var contentLengthMatch = new Regex("Content-Length: (\\d+)")
+                        .Match(this.response.ToString());
+
+                    if (this.ExpectedBytes == int.MaxValue && 
+                        contentLengthMatch.Success)
                     {
-                        this.ExpectedBytes = int.Parse(contentLengthMatch.Groups[1].Value);
+                        this.ExpectedBytes = int.Parse(
+                            contentLengthMatch.Groups[1].Value);
 
                         // Subtract header from bytes read.
-                        var headerLength = this.response.ToString().IndexOf("\r\n\r\n");
+                        var headerLength = this.response
+                            .ToString()
+                            .IndexOf("\r\n\r\n");
+
                         this.TotalBytesRead -= headerLength + 4;
                     }
                 }
@@ -76,9 +85,12 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test, Repeat(RepeatCount)]
-        public async Task WhenServerClosesConnectionAfterSingleHttpRequest_ThenRelayEnds(
-            [LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
+        public async Task Read_WhenServerClosesConnectionAfterSingleHttpRequest(
+            [LinuxInstance(InitializeScript = InstallApache)] 
+            ResourceTask<InstanceLocator> vm,
+
+            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            ResourceTask<IAuthorization> auth)
         {
             var stream = ConnectToWebServer(
                 await vm,
@@ -109,9 +121,12 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test, Repeat(RepeatCount)]
-        public async Task WhenServerClosesConnectionMultipleHttpRequests_ThenRelayEnds(
-            [LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
+        public async Task Read_WhenServerClosesConnectionMultipleHttpRequests(
+            [LinuxInstance(InitializeScript = InstallApache)]
+            ResourceTask<InstanceLocator> vm,
+
+            [Credential(Role = PredefinedRole.IapTunnelUser)]
+            ResourceTask<IAuthorization> auth)
         {
             var locator = await vm;
             var stream = ConnectToWebServer(
@@ -152,9 +167,12 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test, Repeat(RepeatCount)]
-        public async Task WhenClientClosesConnectionAfterSingleHttpRequest_ThenRelayEnds(
-            [LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
+        public async Task Read_WhenClientClosesConnectionAfterSingleHttpRequest(
+            [LinuxInstance(InitializeScript = InstallApache)] 
+            ResourceTask<InstanceLocator> vm,
+
+            [Credential(Role = PredefinedRole.IapTunnelUser)]
+            ResourceTask<IAuthorization> auth)
         {
             var locator = await vm;
             var stream = ConnectToWebServer(

@@ -86,18 +86,27 @@ namespace Google.Solutions.Iap
         {
             instance.ExpectNotNull(nameof(instance));
 
-            Precondition.ExpectNotNull(this.authorization.DeviceEnrollment, "DeviceEnrollment");
-            var directions = this.Endpoint.GetDirections(this.authorization.DeviceEnrollment.State);
+            Precondition.ExpectNotNull(
+                this.authorization.DeviceEnrollment, 
+                "DeviceEnrollment");
+
+            var directions = this.Endpoint
+                .GetDirections(this.authorization.DeviceEnrollment.State);
 
             X509Certificate2? clientCertificate = null;
             if (directions.UseClientCertificate)
             {
-                Debug.Assert(this.authorization.DeviceEnrollment.Certificate != null);
+                Debug.Assert(this.authorization
+                    .DeviceEnrollment
+                    .Certificate != null);
 
                 //
-                // Device is enrolled and we have a device certificate -> enable DCA.
+                // Device is enrolled and we have a device
+                // certificate -> enable DCA.
                 //
-                clientCertificate = this.authorization.DeviceEnrollment.Certificate;
+                clientCertificate = this.authorization
+                    .DeviceEnrollment
+                    .Certificate;
 
                 IapTraceSource.Log.TraceInformation(
                     "Using client certificate {0}", clientCertificate);

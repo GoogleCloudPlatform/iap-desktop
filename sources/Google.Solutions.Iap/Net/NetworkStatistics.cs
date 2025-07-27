@@ -23,13 +23,14 @@ using System.Threading;
 
 namespace Google.Solutions.Iap.Net
 {
+    /// <summary>
+    /// Tracks statistics about a session.
+    /// </summary>
     public class NetworkStatistics
     {
         private long bytesReceived = 0;
         private long bytesTransmitted = 0;
 
-        public ulong BytesReceived => (ulong)Interlocked.Read(ref this.bytesReceived);
-        public ulong BytesTransmitted => (ulong)Interlocked.Read(ref this.bytesTransmitted);
 
         public void OnReceiveCompleted(int bytesReceived)
         {
@@ -39,6 +40,22 @@ namespace Google.Solutions.Iap.Net
         public void OnTransmitCompleted(int bytesTransmitted)
         {
             Interlocked.Add(ref this.bytesTransmitted, bytesTransmitted);
+        }
+
+        /// <summary>
+        /// Total number of bytes received.
+        /// </summary>
+        public ulong BytesReceived
+        {
+            get => (ulong)Interlocked.Read(ref this.bytesReceived);
+        }
+
+        /// <summary>
+        /// Total number of bytes transmitted.
+        /// </summary>
+        public ulong BytesTransmitted
+        {
+            get => (ulong)Interlocked.Read(ref this.bytesTransmitted);
         }
     }
 }

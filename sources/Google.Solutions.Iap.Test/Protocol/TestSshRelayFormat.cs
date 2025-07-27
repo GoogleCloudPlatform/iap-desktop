@@ -39,7 +39,9 @@ namespace Google.Solutions.Iap.Test.Protocol
             {
                 var message = new byte[2];
 
-                var bytesWritten = SshRelayFormat.Tag.Encode(message, SshRelayMessageTag.ACK);
+                var bytesWritten = SshRelayFormat.Tag.Encode(
+                    message,
+                    SshRelayMessageTag.ACK);
 
                 Assert.AreEqual(2, bytesWritten);
                 CollectionAssert.AreEquivalent(
@@ -56,7 +58,9 @@ namespace Google.Solutions.Iap.Test.Protocol
                 var message = new byte[1];
 
                 Assert.Throws<ArgumentException>(
-                    () => SshRelayFormat.Tag.Encode(message, SshRelayMessageTag.ACK));
+                    () => SshRelayFormat.Tag.Encode(
+                        message, 
+                        SshRelayMessageTag.ACK));
             }
 
             [Test]
@@ -88,11 +92,13 @@ namespace Google.Solutions.Iap.Test.Protocol
         public class ConnectSuccessSid : IapFixtureBase
         {
             [Test]
-            public void Encode_WhenBufferSufficient_ThenEncodeSucceeds()
+            public void Encode_WhenBufferSufficient()
             {
                 var message = new byte[9];
 
-                var bytesWritten = SshRelayFormat.ConnectSuccessSid.Encode(message, "Sid");
+                var bytesWritten = SshRelayFormat.ConnectSuccessSid.Encode(
+                    message,
+                    "Sid");
 
                 Assert.AreEqual(9, bytesWritten);
                 CollectionAssert.AreEquivalent(
@@ -104,12 +110,14 @@ namespace Google.Solutions.Iap.Test.Protocol
                     },
                     message);
 
-                SshRelayFormat.ConnectSuccessSid.Decode(message, out var decodedSid);
+                SshRelayFormat.ConnectSuccessSid.Decode(
+                    message,
+                    out var decodedSid);
                 Assert.AreEqual("Sid", decodedSid);
             }
 
             [Test]
-            public void Encode_WhenBufferTooSmall_ThenEncodeThrowsException()
+            public void Encode_WhenBufferTooSmall()
             {
                 var message = new byte[8];
 
@@ -118,7 +126,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void Decode_WhenMessageComplete_ThenDecodeReturnsSid()
+            public void Decode_WhenMessageComplete()
             {
                 var message = new byte[] {
                     0, 1,
@@ -126,14 +134,16 @@ namespace Google.Solutions.Iap.Test.Protocol
                     (byte)'S', (byte)'i', (byte)'d'
                 };
 
-                var bytesRead = SshRelayFormat.ConnectSuccessSid.Decode(message, out var sid);
+                var bytesRead = SshRelayFormat.ConnectSuccessSid.Decode(
+                    message,
+                    out var sid);
 
                 Assert.AreEqual(9, bytesRead);
                 Assert.AreEqual("Sid", sid);
             }
 
             [Test]
-            public void Decode_WhenMessageTruncated_ThenDecodeThrowsException()
+            public void Decode_WhenMessageTruncated()
             {
                 var message = new byte[] {
                     0, 1,
@@ -142,7 +152,9 @@ namespace Google.Solutions.Iap.Test.Protocol
                 };
 
                 Assert.Throws<ArgumentException>(
-                    () => SshRelayFormat.ConnectSuccessSid.Decode(message, out var sid));
+                    () => SshRelayFormat.ConnectSuccessSid.Decode(
+                        message,
+                        out var sid));
             }
         }
 
@@ -154,11 +166,13 @@ namespace Google.Solutions.Iap.Test.Protocol
         public class ReconnectAck : IapFixtureBase
         {
             [Test]
-            public void Encode_WhenBufferSufficient_ThenEncodeSucceeds()
+            public void Encode_WhenBufferSufficient()
             {
                 var message = new byte[10];
 
-                var bytesWritten = SshRelayFormat.ReconnectAck.Encode(message, 42);
+                var bytesWritten = SshRelayFormat.ReconnectAck.Encode
+                    (message,
+                    42);
 
                 Assert.AreEqual(10, bytesWritten);
                 CollectionAssert.AreEquivalent(
@@ -174,7 +188,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void Encode_WhenBufferTooSmall_ThenEncodeThrowsException()
+            public void Encode_WhenBufferTooSmall()
             {
                 var message = new byte[9];
 
@@ -183,21 +197,23 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void Decode_WhenMessageComplete_ThenDecodeReturnsAck()
+            public void Decode_WhenMessageComplete()
             {
                 var message = new byte[] {
                     0, 2,
                     0, 0, 0, 0, 0, 0, 0, 3
                 };
 
-                var bytesRead = SshRelayFormat.ReconnectAck.Decode(message, out var ack);
+                var bytesRead = SshRelayFormat.ReconnectAck.Decode(
+                    message, 
+                    out var ack);
 
                 Assert.AreEqual(10, bytesRead);
                 Assert.AreEqual(3, ack);
             }
 
             [Test]
-            public void Decode_WhenMessageTruncated_ThenDecodeThrowsException()
+            public void Decode_WhenMessageTruncated()
             {
                 var message = new byte[] {
                     0, 1,
@@ -205,7 +221,9 @@ namespace Google.Solutions.Iap.Test.Protocol
                 };
 
                 Assert.Throws<ArgumentException>(
-                    () => SshRelayFormat.ReconnectAck.Decode(message, out var ack));
+                    () => SshRelayFormat.ReconnectAck.Decode(
+                        message, 
+                        out var ack));
             }
         }
 
@@ -217,7 +235,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         public class Ack : IapFixtureBase
         {
             [Test]
-            public void Encode_WhenBufferSufficient_ThenEncodeSucceeds()
+            public void Encode_WhenBufferSufficient()
             {
                 var message = new byte[10];
 
@@ -234,7 +252,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void Encode_WhenBufferTooSmall_ThenEncodeThrowsException()
+            public void Encode_WhenBufferTooSmall()
             {
                 var message = new byte[9];
 
@@ -243,7 +261,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void Decode_WhenMessageComplete_ThenDecodeReturnsAck()
+            public void Decode_WhenMessageComplete()
             {
                 var message = new byte[] {
                     0, 7,
@@ -257,7 +275,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void Decode_WhenMessageTruncated_ThenDecodeThrowsException()
+            public void Decode_WhenMessageTruncated()
             {
                 var message = new byte[] {
                     0, 7,
@@ -278,37 +296,49 @@ namespace Google.Solutions.Iap.Test.Protocol
         {
 
             [Test]
-            public void Encode_WhenDataIsEmpty_ThenEncodeThrowsException()
+            public void Encode_WhenDataIsEmpty()
             {
                 var message = new byte[SshRelayFormat.Data.MaxPayloadLength];
                 var data = Array.Empty<byte>();
 
                 Assert.Throws<ArgumentException>(
-                    () => SshRelayFormat.Data.Encode(message, data, 0, (uint)data.Length));
+                    () => SshRelayFormat.Data.Encode(
+                        message,
+                        data,
+                        0,
+                        (uint)data.Length));
             }
 
             [Test]
-            public void Encode_WhenDataTooLarge_ThenEncodeThrowsException()
+            public void Encode_WhenDataTooLarge()
             {
                 var message = new byte[SshRelayFormat.Data.MaxPayloadLength + 1];
                 var data = new byte[SshRelayFormat.Data.MaxPayloadLength + 1];
 
                 Assert.Throws<ArgumentException>(
-                    () => SshRelayFormat.Data.Encode(message, data, 0, (uint)data.Length));
+                    () => SshRelayFormat.Data.Encode(
+                        message,
+                        data,
+                        0,
+                        (uint)data.Length));
             }
 
             [Test]
-            public void Encode_WhenBufferTooSmall_ThenEncodeThrowsException()
+            public void Encode_WhenBufferTooSmall()
             {
                 var message = new byte[SshRelayFormat.MaxMessageSize - 1];
                 var data = new byte[SshRelayFormat.Data.MaxPayloadLength];
 
                 Assert.Throws<ArgumentException>(
-                    () => SshRelayFormat.Data.Encode(message, data, 0, (uint)data.Length));
+                    () => SshRelayFormat.Data.Encode(
+                        message,
+                        data,
+                        0,
+                        (uint)data.Length));
             }
 
             [Test]
-            public void Encode_WhenDataIsMaxSize_ThenEncodeSucceeds()
+            public void Encode_WhenDataIsMaxSize()
             {
                 var message = new byte[SshRelayFormat.MaxMessageSize];
                 var data = new byte[SshRelayFormat.Data.MaxPayloadLength];
@@ -327,7 +357,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void Encode_WhenIndexNotZero_ThenEncodeSucceeds()
+            public void Encode_WhenIndexNotZero()
             {
                 var message = new byte[7];
                 var data = new byte[SshRelayFormat.Data.MaxPayloadLength + 1];
@@ -351,7 +381,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void Decode_WhenMessageComplete_ThenDecodeReturnsData()
+            public void Decode_WhenMessageComplete()
             {
                 var message = new byte[] {
                     0, 4,
@@ -373,7 +403,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void Decode_WhenTargetIndexNotNull_ThenDecodeReturnsData()
+            public void Decode_WhenTargetIndexNotNull()
             {
                 var message = new byte[] {
                     0, 4,
@@ -395,7 +425,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void Decode_WhenBufferTooSmall_ThenDecodeThrowsException()
+            public void Decode_WhenBufferTooSmall()
             {
                 var message = new byte[] {
                     0, 4,
@@ -415,7 +445,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void Decode_WhenBufferTooSmallForData_ThenDecodeThrowsException()
+            public void Decode_WhenBufferTooSmallForData()
             {
                 var message = new byte[] {
                     0, 4,
@@ -443,7 +473,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         public class LongClose : IapFixtureBase
         {
             [Test]
-            public void Encode_WhenBufferTooSmall_ThenEncodeThrowsException()
+            public void Encode_WhenBufferTooSmall()
             {
                 var message = new byte[SshRelayFormat.LongClose.MinMessageLength - 1];
 
@@ -455,7 +485,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void Encode_WhenReasonEmpty_ThenEncodeSucceeds()
+            public void Encode_WhenReasonEmpty()
             {
                 var message = new byte[SshRelayFormat.LongClose.MinMessageLength];
 
@@ -468,7 +498,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void Decode_WhenMessageComplete_ThenDecodeReturnsData()
+            public void Decode_WhenMessageComplete()
             {
                 var message = new byte[] {
                     0, 10,
@@ -488,7 +518,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void Decode_WhenBufferTooSmall_ThenDecodeThrowsException()
+            public void Decode_WhenBufferTooSmall()
             {
                 var message = new byte[] {
                     0, 10,
