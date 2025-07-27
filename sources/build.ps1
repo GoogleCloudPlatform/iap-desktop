@@ -185,6 +185,7 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 	# $env:Google_Apis_Auth = 1.2.3
 	#
     $PackageReferences `
+        | Where-Object { $_.Include -ne $null } `
         | ForEach-Object { New-Item -Name $_.Include.Replace(".", "_") -value $_.Version -ItemType Variable -Path Env: -Force }
 }
 
