@@ -9,7 +9,7 @@
     <PackageReference Include="Castle.Core" Version="5.2.1" />
     <PackageReference Include="Google.Apis" Version="1.70.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.70.0" />
-    <PackageReference Include="Google.Apis.Compute.v1" Version="1.69.0.3804" />
+    <PackageReference Include="Google.Apis.Compute.v1" Version="1.70.0.3850" />
     <PackageReference Include="Google.Apis.Core" Version="1.70.0" />
     <PackageReference Include="Google.Solutions.ThirdParty.Libssh2.Cng" Version="1.11.104" />
     <PackageReference Include="Moq" Version="4.20.72" />

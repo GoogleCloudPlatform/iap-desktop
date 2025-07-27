@@ -132,4 +132,8 @@
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" />
+    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15" />
+  </ItemGroup>
 </Project>
