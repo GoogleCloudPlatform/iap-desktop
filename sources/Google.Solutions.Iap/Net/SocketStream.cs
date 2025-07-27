@@ -31,7 +31,7 @@ namespace Google.Solutions.Iap.Net
     /// <summary>
     /// A socket stream.
     /// </summary>
-    public sea class SocketStream : INetworkStream
+    public class SocketStream : INetworkStream
     {
         private readonly Socket socket;
         private readonly string remoteEndpoint;

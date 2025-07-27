@@ -343,11 +343,11 @@ namespace Google.Solutions.Iap.Test.Net
         }
 
         //---------------------------------------------------------------------
-        // Write: closing.
+        // Close.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Write_WhenConnectionClosedByClient()
+        public async Task Close_WhenConnectionClosedByClient()
         {
             using (var connection = await this.Server.ConnectAsync())
             {

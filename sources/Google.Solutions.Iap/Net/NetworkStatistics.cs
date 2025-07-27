@@ -32,12 +32,12 @@ namespace Google.Solutions.Iap.Net
         private long bytesTransmitted = 0;
 
 
-        internal void OnReceiveCompleted(int bytesReceived)
+        public void OnReceiveCompleted(int bytesReceived)
         {
             Interlocked.Add(ref this.bytesReceived, bytesReceived);
         }
 
-        internal void OnTransmitCompleted(int bytesTransmitted)
+        public void OnTransmitCompleted(int bytesTransmitted)
         {
             Interlocked.Add(ref this.bytesTransmitted, bytesTransmitted);
         }
