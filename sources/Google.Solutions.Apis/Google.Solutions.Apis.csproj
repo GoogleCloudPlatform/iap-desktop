@@ -10,10 +10,10 @@
     <PackageReference Include="Google.Apis" Version="1.70.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.70.0" />
     <PackageReference Include="Google.Apis.CloudOSLogin.v1" Version="1.69.0.3790" />
-    <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.69.0.3713" />
-    <PackageReference Include="Google.Apis.Compute.v1" Version="1.69.0.3804" />
+    <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.70.0.3809" />
+    <PackageReference Include="Google.Apis.Compute.v1" Version="1.70.0.3850" />
     <PackageReference Include="Google.Apis.Core" Version="1.70.0" />
-    <PackageReference Include="Google.Apis.Logging.v2" Version="1.69.0.3802" />
+    <PackageReference Include="Google.Apis.Logging.v2" Version="1.70.0.3837" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
@@ -48,5 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" />
+    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15" />
   </ItemGroup>
 </Project>

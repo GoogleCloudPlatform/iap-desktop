@@ -13,7 +13,7 @@
     <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.11" />
     <PackageReference Include="Google.Apis" Version="1.70.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.70.0" />
-    <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.69.0.3713" />
+    <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.70.0.3809" />
     <PackageReference Include="Google.Apis.Core" Version="1.70.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
@@ -228,5 +228,9 @@
     <Compile Remove="ToolWindows\Properties\PropertiesViewBase.cs" />
     <Compile Remove="ToolWindows\Properties\PropertiesViewBase.Designer.cs" />
     <Compile Remove="ToolWindows\Properties\PropertiesViewModelBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" />
+    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15" />
   </ItemGroup>
 </Project>

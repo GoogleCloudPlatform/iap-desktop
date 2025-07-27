@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Google.Apis" Version="1.70.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.70.0" />
-    <PackageReference Include="Google.Apis.Compute.v1" Version="1.69.0.3804" />
+    <PackageReference Include="Google.Apis.Compute.v1" Version="1.70.0.3850" />
     <PackageReference Include="Google.Apis.Core" Version="1.70.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
@@ -21,5 +21,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Apis\Google.Solutions.Apis.csproj" />
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" />
+    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15" />
   </ItemGroup>
 </Project>

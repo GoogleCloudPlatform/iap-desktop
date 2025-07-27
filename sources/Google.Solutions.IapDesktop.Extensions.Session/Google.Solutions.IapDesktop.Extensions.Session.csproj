@@ -17,7 +17,7 @@
     <PackageReference Include="Google.Apis" Version="1.70.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.70.0" />
     <PackageReference Include="Google.Apis.CloudOSLogin.v1" Version="1.69.0.3790" />
-    <PackageReference Include="Google.Apis.Compute.v1" Version="1.69.0.3804" />
+    <PackageReference Include="Google.Apis.Compute.v1" Version="1.70.0.3850" />
     <PackageReference Include="Google.Apis.Core" Version="1.70.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
@@ -192,5 +192,9 @@
     <EmbeddedResource Include="Properties\DefaultAppProtocols\mysql-tunnel.iapc" />
     <EmbeddedResource Include="Properties\DefaultAppProtocols\postgres-tunnel.iapc" />
     <EmbeddedResource Include="Properties\DefaultAppProtocols\sqlserver-tunnel.iapc" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" />
+    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15" />
   </ItemGroup>
 </Project>
