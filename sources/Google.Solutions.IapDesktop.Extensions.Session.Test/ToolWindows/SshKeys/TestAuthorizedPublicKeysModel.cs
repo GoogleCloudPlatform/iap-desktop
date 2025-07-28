@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 project,
                 new Dictionary<string, string>
                 {
-                    { Extensions.Session.Protocol.Ssh.Metadata.EnableOsLoginFlag, "true" },
+                    { ComputeMetadata.EnableOsLoginFlag, "true" },
                     { "ssh-keys", "alice:ssh-rsa ALICES-KEY alice@gmail.com" }
                 },
                 null);
@@ -254,7 +254,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 project,
                 new Dictionary<string, string>
                 {
-                    { Extensions.Session.Protocol.Ssh.Metadata.BlockProjectSshKeysFlag, "true" },
+                    { ComputeMetadata.BlockProjectSshKeysFlag, "true" },
                     { "ssh-keys", "alice:ssh-rsa ALICES-KEY alice@gmail.com" }
                 },
                 null);
@@ -305,7 +305,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 project,
                 new Dictionary<string, string>
                 {
-                    { Extensions.Session.Protocol.Ssh.Metadata.EnableOsLoginFlag, "true" },
+                    { ComputeMetadata.EnableOsLoginFlag, "true" },
                     { "ssh-keys", "alice:ssh-rsa ALICES-KEY alice@gmail.com" }
                 },
                 new Dictionary<string, string>
@@ -386,7 +386,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 },
                 new Dictionary<string, string>
                 {
-                    { Extensions.Session.Protocol.Ssh.Metadata.BlockProjectSshKeysFlag, "true" },
+                    { ComputeMetadata.BlockProjectSshKeysFlag, "true" },
                     { "ssh-keys", "bob:ssh-rsa BOBS-KEY bob@gmail.com" }
                 });
 

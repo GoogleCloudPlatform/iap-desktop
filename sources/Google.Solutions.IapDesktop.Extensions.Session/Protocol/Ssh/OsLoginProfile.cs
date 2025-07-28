@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
             if (os != OsLoginSystemType.Linux)
             {
-                throw new ArgumentException(nameof(os));
+                throw new ArgumentException("Unsupported OS", nameof(os));
             }
 
             if (validity.TotalSeconds <= 0)

@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(instance))
             {
-                var metdataKeyProcessor = await Metadata.ForInstance(
+                var metdataKeyProcessor = await InstanceMetadata.GetAsync(
                         this.computeClient,
                         this.resourceManagerAdapter,
                         instance,
