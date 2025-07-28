@@ -324,14 +324,6 @@ namespace Google.Solutions.Apis.Compute
             {
                 try
                 {
-                    //
-                    // Derive region from zone by cutting the "-x".
-                    //
-                    Precondition.Expect(
-                        zone.Name.Length > 2 && zone.Name[zone.Name.Length - 2] == '-',
-                        nameof(zone));
-                    var region = zone.Name.Substring(0, zone.Name.Length - 2);
-
                     var request = new BetaSignSshPublicKeyRequest(
                         this.service,
                         new BetaSignSshPublicKeyRequestData()
@@ -342,7 +334,7 @@ namespace Google.Solutions.Apis.Compute
                             ServiceAccount = attachedServiceAccountEmail,
                             SshPublicKey = key
                         },
-                        $"projects/{zone.ProjectId}/locations/{region}");
+                        $"projects/{zone.ProjectId}/locations/{zone.Region.Name}");
 
                     var response = await request
                         .ExecuteAsync(cancellationToken)

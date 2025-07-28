@@ -74,6 +74,19 @@ namespace Google.Solutions.Apis.Locator
             }
         }
 
+        /// <summary>
+        /// Region that this zone is based on.
+        /// </summary>
+        public RegionLocator Region
+        {
+            //
+            // Derive region from zone by cutting the "-x".
+            //
+            get => new RegionLocator(
+                this.Project, 
+                this.Name.Substring(0, this.Name.Length - 2));
+        }
+
         public override int GetHashCode()
         {
             return

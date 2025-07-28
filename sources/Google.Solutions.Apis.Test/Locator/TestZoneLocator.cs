@@ -31,14 +31,23 @@ namespace Google.Solutions.Apis.Test.Locator
     {
         protected override ZoneLocator CreateInstance()
         {
-            return new ZoneLocator("project-1", "zone-1");
+            return new ZoneLocator("project-1", "region1-a");
         }
 
         [Test]
         public void Project()
         {
-            var ref1 = new ZoneLocator("project-1", "zone-1");
+            var ref1 = new ZoneLocator("project-1", "region1-a");
             Assert.AreEqual(ref1.ProjectId, ref1.Project.Name);
+        }
+
+        [Test]
+        public void Region()
+        {
+            var zone = new ZoneLocator("project-1", "region1-a");
+            Assert.AreEqual(
+                zone.Region, 
+                new RegionLocator("project-1", "region1"));
         }
 
         //---------------------------------------------------------------------
