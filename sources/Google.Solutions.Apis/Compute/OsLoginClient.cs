@@ -310,89 +310,7 @@ namespace Google.Solutions.Apis.Compute
             string key,
             CancellationToken cancellationToken)
         {
-            using (ApiTraceSource.Log.TraceMethod().WithParameters(zone))
-            {
-                try
-                {
-                    var request = new ObsoleteBetaSignSshPublicKeyRequest(
-                        this.service,
-                        new ObsoleteBetaSignSshPublicKeyRequestData()
-                        {
-                            SshPublicKey = key
-                        },
-                        $"users/{this.EncodedUserPathComponent}/" +
-                        $"projects/{zone.ProjectId}/" +
-                        $"locations/{zone.Name}");
-
-                    if (this.authorization.Session is IWorkforcePoolSession)
-                    {
-                        //
-                        // This is a non-resourceful API. Charging to a client
-                        // project doesn't work with workforce identity, so we
-                        // have to do one of the following:
-                        //
-                        // (1) Pass an API key that's from the same project as the
-                        //     OAuth client.
-                        //
-                        // (2) Pass an API key from any project, and set the
-                        //     quota project.
-                        //
-                        //     This requires the user to have the
-                        //     serviceusage.services.use permission.
-                        //
-                        // Option (1) isn't viable currently, so we need to do (2).
-                        //
-
-                        request.UserProject = zone.ProjectId;
-                    }
-
-                    var response = await request
-                        .ExecuteAsync(cancellationToken)
-                        .ConfigureAwait(false);
-
-                    Invariant.ExpectNotNull(
-                        response.SignedSshPublicKey,
-                        "SignedSshPublicKey");
-
-                    return response.SignedSshPublicKey!;
-                }
-                catch (GoogleApiException e) when (
-                    e.Error != null &&
-                    e.Error.Code == 400 &&
-                    e.Error.Message != null &&
-                    e.Error.Message.Contains("google.posix_username"))
-                {
-                    throw new ExternalIdpNotConfiguredForOsLoginException(
-                        "Your workforce identity provider configuration doesn't " +
-                        "contain an attribute mapping for 'google.posix_username'. " +
-                        "This mapping is required for using OS Login.",
-                        e);
-                }
-                catch (GoogleApiException e) when (e.IsAccessDenied())
-                {
-                    if (e.Error?.Message is var message &&
-                        message != null &&
-                        message.Contains("roles/serviceusage.serviceUsageConsumer"))
-                    {
-                        throw new ResourceAccessDeniedException(
-                            "You do not have sufficient access to log in.\n\n" +
-                            "Because you've authenticated using workforce identity " +
-                            "federation, you additionally need the 'Service Usage " +
-                            "Consumer' role (or an equivalent custom role) to log " +
-                            "in.",
-                            HelpTopics.UseOsLoginWithWorkforceIdentity,
-                            e);
-                    }
-                    else
-                    {
-                        throw new ResourceAccessDeniedException(
-                            "You do not have sufficient access to log in: " +
-                            e.Error?.Message ?? "access denied",
-                            HelpTopics.ManagingOsLogin,
-                            e);
-                    }
-                }
-            }
+            throw new NotImplementedException();
         }
 
         public async Task<string> SignPublicKeyAsync(
@@ -578,7 +496,8 @@ namespace Google.Solutions.Apis.Compute
             CloudOSLoginBaseServiceRequest<BetaSignSshPublicKeyResponseData>
         {
             /// <summary>
-            /// Required. The parent for the signing request. Format: projects/{project}/locations/{location}
+            /// Required. The parent for the signing request. Format: 
+            /// projects/{project}/locations/{location}
             /// </summary>
             [RequestParameter("parent")]
             public virtual string Parent { get; private set; }
@@ -616,75 +535,6 @@ namespace Google.Solutions.Apis.Compute
                     ParameterType = "path",
                     DefaultValue = null,
                     Pattern = "^projects/[^/]+/locations/[^/]+$"
-                });
-                this.RequestParameters.Add("$userProject", new Parameter
-                {
-                    Name = "$userProject",
-                    IsRequired = false,
-                    ParameterType = "query",
-                    DefaultValue = null
-                });
-            }
-        }
-
-        [Obsolete]
-        private class ObsoleteBetaSignSshPublicKeyResponseData : IDirectResponseSchema
-        {
-            [JsonProperty("signedSshPublicKey")]
-            public virtual string? SignedSshPublicKey { get; set; }
-
-            public virtual string? ETag { get; set; }
-        }
-
-        [Obsolete]
-        private class ObsoleteBetaSignSshPublicKeyRequestData : IDirectResponseSchema
-        {
-            [JsonProperty("sshPublicKey")]
-            public virtual string? SshPublicKey { get; set; }
-
-            public virtual string? ETag { get; set; }
-        }
-
-        [Obsolete]
-        private class ObsoleteBetaSignSshPublicKeyRequest
-            : CloudOSLoginBaseServiceRequest<ObsoleteBetaSignSshPublicKeyResponseData>
-        {
-            [RequestParameter("parent")]
-            public virtual string Parent { get; private set; }
-            private ObsoleteBetaSignSshPublicKeyRequestData Body { get; set; }
-            public override string MethodName => "signSshPublicKey";
-            public override string HttpMethod => "POST";
-            public override string RestPath => "v1beta/{+parent}:signSshPublicKey";
-
-            [RequestParameter("$userProject")]
-            public virtual string? UserProject { get; set; }
-
-            public ObsoleteBetaSignSshPublicKeyRequest(
-                IClientService service,
-                ObsoleteBetaSignSshPublicKeyRequestData body,
-                string parent)
-                : base(service)
-            {
-                this.Parent = parent;
-                this.Body = body;
-                InitParameters();
-            }
-
-            protected override object GetBody()
-            {
-                return this.Body;
-            }
-
-            protected override void InitParameters()
-            {
-                base.InitParameters();
-                this.RequestParameters.Add("parent", new Parameter
-                {
-                    Name = "parent",
-                    IsRequired = true,
-                    ParameterType = "path",
-                    DefaultValue = null,
-                    Pattern = "^users/[^/]+/projects/[^/]+/locations/[^/]+$"
                 });
                 this.RequestParameters.Add("$userProject", new Parameter
                 {
