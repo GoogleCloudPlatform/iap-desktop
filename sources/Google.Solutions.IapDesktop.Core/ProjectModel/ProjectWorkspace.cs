@@ -33,6 +33,7 @@ using Google.Solutions.IapDesktop.Core.ProjectModel.Nodes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -124,6 +125,10 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         // Data loading (uncached).
         //---------------------------------------------------------------------
 
+        [SuppressMessage(
+            "Usage", 
+            "VSTHRD003:Avoid awaiting foreign Tasks", 
+            Justification = "")]
         private async Task<CloudNode> LoadProjectsAsync(
             CancellationToken token)
         {
