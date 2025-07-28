@@ -83,7 +83,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task ImportSshPublicKey_WhenUsingWorkforceSession_ThenThrowsException(
+        public async Task ImportSshPublicKey_WhenUsingWorkforceSession(
             [Credential(Type = PrincipalType.WorkforceIdentity)]
             ResourceTask<IAuthorization> authorization)
         {
@@ -104,7 +104,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task ImportSshPublicKey_WhenEmailAndCredentialMismatch_ThenThrowsException(
+        public async Task ImportSshPublicKey_WhenEmailAndCredentialMismatch(
             [Credential] ResourceTask<ICredential> credentialTask)
         {
             var authorization = CreateGaiaAuthorizationWithMismatchedUser(
@@ -158,7 +158,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task GetLoginProfile_WhenUsingWorkforceSession_ThenThrowsException(
+        public async Task GetLoginProfile_WhenUsingWorkforceSession(
             [Credential(Type = PrincipalType.WorkforceIdentity)]
             ResourceTask<IAuthorization> authorization)
         {
@@ -177,7 +177,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task GetLoginProfile_WhenEmailAndCredentialMismatch_ThenThrowsException(
+        public async Task GetLoginProfile_WhenEmailAndCredentialMismatch(
             [Credential] ResourceTask<ICredential> credentialTask)
         {
             var authorization = CreateGaiaAuthorizationWithMismatchedUser(
@@ -197,7 +197,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task GetLoginProfile_WhenEmailValid_ThenSucceeds(
+        public async Task GetLoginProfile_WhenEmailValid(
             [Credential(Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
@@ -221,7 +221,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task DeleteSshPublicKey_WhenUsingWorkforceSession_ThenThrowsException(
+        public async Task DeleteSshPublicKey_WhenUsingWorkforceSession(
             [Credential(Type = PrincipalType.WorkforceIdentity)]
             ResourceTask<IAuthorization> authorization)
         {
@@ -240,7 +240,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task DeleteSshPublicKey_WhenDeletingKeyTwice_ThenSucceeds(
+        public async Task DeleteSshPublicKey_WhenDeletingKeyTwice(
             [Credential(Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
@@ -297,7 +297,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task DeleteSshPublicKey_WhenDeletingNonexistingKey_ThenSucceeds(
+        public async Task DeleteSshPublicKey_WhenDeletingNonexistingKey(
             [Credential(Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
@@ -498,7 +498,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task ListSecurityKeys_WhenUsingWorkforceSession_ThenException(
+        public async Task ListSecurityKeys_WhenUsingWorkforceSession(
             [Credential(Type = PrincipalType.WorkforceIdentity)]
             ResourceTask<IAuthorization> authorization)
         {
@@ -517,7 +517,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task ListSecurityKeys_WhenEmailAndCredentialMismatch_ThenThrowsException(
+        public async Task ListSecurityKeys_WhenEmailAndCredentialMismatch(
             [Credential] ResourceTask<ICredential> credentialTask)
         {
             var authorization = CreateGaiaAuthorizationWithMismatchedUser(
@@ -538,7 +538,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task ListSecurityKeys_WhenEmailValid_ThenReturnsList(
+        public async Task ListSecurityKeys_WhenEmailValid(
             [Credential(Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
