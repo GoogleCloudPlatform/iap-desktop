@@ -441,6 +441,112 @@ namespace Google.Solutions.Apis.Compute
 
         #region Request entities
 
+        public class BetaSignSshPublicKeyRequestData : IDirectResponseSchema
+        {
+            /// <summary>
+            /// The App Engine instance to sign the SSH public key for. 
+            /// 
+            /// Expected format:
+            /// apps/{app}/services/{service}/versions/{version}/instances/{instance}
+            /// </summary>
+            [JsonProperty("appEngineInstance")]
+            public virtual string? AppEngineInstance { get; set; }
+
+            /// <summary>
+            /// The Compute instance to sign the SSH public key for. 
+            /// 
+            /// Expected format:
+            /// projects/{project}/zones/{zone}/instances/{numeric_instance_id}
+            /// </summary>
+            [JsonProperty("computeInstance")]
+            public virtual string? ComputeInstance { get; set; }
+
+            /// <summary>
+            /// Optional. The service account for the instance. 
+            /// </summary>
+            [JsonProperty("serviceAccount")]
+            public virtual string? ServiceAccount { get; set; }
+
+            /// <summary>
+            /// The SSH public key to sign.
+            /// </summary>
+            [JsonProperty("sshPublicKey")]
+            public virtual string? SshPublicKey { get; set; }
+
+            /// <summary>
+            /// The ETag of the item.
+            /// </summary>
+            public virtual string? ETag { get; set; }
+        }
+
+        public class BetaSignSshPublicKeyResponseData : IDirectResponseSchema
+        {
+            /// <summary>
+            /// The signed SSH public key to use in the SSH handshake.
+            /// </summary>
+            [JsonProperty("signedSshPublicKey")]
+            public virtual string? SignedSshPublicKey { get; set; }
+
+            /// <summary>
+            /// The ETag of the item.
+            /// </summary>
+            public virtual string? ETag { get; set; }
+        }
+
+
+        public class BetaSignSshPublicKeyRequest : 
+            CloudOSLoginBaseServiceRequest<BetaSignSshPublicKeyResponseData>
+        {
+            /// <summary>
+            /// Required. The parent for the signing request. Format: projects/{project}/locations/{location}
+            /// </summary>
+            [RequestParameter("parent")]
+            public virtual string Parent { get; private set; }
+
+            private BetaSignSshPublicKeyRequestData Body { get; set; }
+
+            public override string MethodName => "signSshPublicKey";
+            public override string HttpMethod => "POST";
+            public override string RestPath => "v1beta/{+parent}:signSshPublicKey";
+
+            public BetaSignSshPublicKeyRequest(
+                IClientService service, 
+                BetaSignSshPublicKeyRequestData body, 
+                string parent)
+                : base(service)
+            {
+                this.Parent = parent;
+                this.Body = body;
+                
+                InitParameters();
+            }
+
+            protected override object GetBody()
+            {
+                return this.Body;
+            }
+
+            protected override void InitParameters()
+            {
+                base.InitParameters();
+                this.RequestParameters.Add("parent", new Parameter
+                {
+                    Name = "parent",
+                    IsRequired = true,
+                    ParameterType = "path",
+                    DefaultValue = null,
+                    Pattern = "^projects/[^/]+/locations/[^/]+$"
+                });
+                this.RequestParameters.Add("$userProject", new Parameter
+                {
+                    Name = "$userProject",
+                    IsRequired = false,
+                    ParameterType = "query",
+                    DefaultValue = null
+                });
+            }
+        }
+
         [Obsolete]
         private class ObsoleteBetaSignSshPublicKeyResponseData : IDirectResponseSchema
         {
