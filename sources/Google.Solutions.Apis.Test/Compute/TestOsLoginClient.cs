@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Client;
@@ -61,6 +62,20 @@ namespace Google.Solutions.Apis.Test.Compute
                 .Returns(TestProject.DisabledEnrollment);
 
             return authorization.Object;
+        }
+
+        private static async Task<Instance> GetInstanceDetails(
+            IAuthorization authorization,
+            InstanceLocator instanceLocator)
+        {
+            var computeClient = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
+                authorization,
+                TestProject.UserAgent);
+
+            return await computeClient
+                .GetInstanceAsync(instanceLocator, CancellationToken.None)
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------
@@ -299,11 +314,11 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         //---------------------------------------------------------------------
-        // SignPublicKey.
+        // ONSOLETE - SignPublicKey.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task SignPublicKey_WhenUsingWorkforceSessionAndUserInNotRole_ThenThrowsException(
+        public async Task Obsolete_SignPublicKey_WhenUsingWorkforceSessionAndUserInNotRole_ThenThrowsException(
             [Credential(Type = PrincipalType.WorkforceIdentity)]
             ResourceTask<IAuthorization> authorizationTask)
         {
@@ -324,7 +339,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         [Ignore("b/434023421")]
-        public async Task SignPublicKey_WhenUsingWorkforceSessionAndUserInRole_ThenSucceeds(
+        public async Task Obsolete_SignPublicKey_WhenUsingWorkforceSessionAndUserInRole_ThenSucceeds(
             [Credential(Type = PrincipalType.WorkforceIdentity, Role = PredefinedRole.ServiceUsageConsumer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
@@ -348,7 +363,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         [Ignore("b/434023421")]
-        public async Task SignPublicKey_WhenUsingGaiaSession_ThenSucceeds(
+        public async Task Obsolete_SignPublicKey_WhenUsingGaiaSession_ThenSucceeds(
             [Credential(Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
@@ -361,6 +376,141 @@ namespace Google.Solutions.Apis.Test.Compute
             var certifiedKey = await client
                 .SignPublicKeyAsync(
                     new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
+                    $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            StringAssert.StartsWith(
+                "ecdsa-sha2-nistp256-cert-v01@openssh.com",
+                certifiedKey);
+        }
+
+        //---------------------------------------------------------------------
+        // SignPublicKey.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task SignPublicKey_WorkforceIdentity_WhenUserNotInRole(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceTask,
+            [Credential(
+                Type = PrincipalType.WorkforceIdentity,
+                Role = PredefinedRole.ComputeViewer)]
+            ResourceTask<IAuthorization> authorizationTask)
+        {
+            var instance = await GetInstanceDetails(
+                    await authorizationTask,
+                    await instanceTask)
+                .ConfigureAwait(false);
+
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                TestProject.ApiKey,
+                TestProject.UserAgent);
+
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(() => client
+                    .SignPublicKeyAsync(
+                        new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
+                        instance.Id!.Value,
+                        null,
+                        $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
+                        CancellationToken.None))
+                .ConfigureAwait(false);
+        }
+
+        [Test]
+        public async Task SignPublicKey_WorkforceIdentity_WhenUserInRole(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceTask,
+            [Credential(
+                Type = PrincipalType.WorkforceIdentity,
+                Roles = new [] {
+                    PredefinedRole.ComputeViewer,
+                    PredefinedRole.OsLogin,
+                })]
+            ResourceTask<IAuthorization> authorizationTask)
+        {
+            var instance = await GetInstanceDetails(
+                    await authorizationTask,
+                    await instanceTask)
+                .ConfigureAwait(false);
+
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                TestProject.ApiKey,
+                TestProject.UserAgent);
+
+            var certifiedKey = await client
+                .SignPublicKeyAsync(
+                    new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
+                    instance.Id!.Value,
+                    null,
+                    $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            StringAssert.StartsWith(
+                "ecdsa-sha2-nistp256-cert-v01@openssh.com",
+                certifiedKey);
+        }
+
+        [Test]
+        public async Task SignPublicKey_Gaia_WhenUserNotInRole(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceTask,
+            [Credential(Role = PredefinedRole.ComputeViewer)]
+            ResourceTask<IAuthorization> authorizationTask)
+        {
+            var instance = await GetInstanceDetails(
+                    await authorizationTask,
+                    await instanceTask)
+                .ConfigureAwait(false);
+
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                new ApiKey("unused"),
+                TestProject.UserAgent);
+
+
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(
+                    () => client
+                    .SignPublicKeyAsync(
+                        new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
+                        instance.Id!.Value,
+                        null,
+                        $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
+                        CancellationToken.None))
+                .ConfigureAwait(false);
+        }
+
+        [Test]
+        [Ignore("Not implemented server-side")]
+        public async Task SignPublicKey_Gaia_WhenUserInRole(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceTask,
+
+            [Credential(Roles = new [] { 
+                PredefinedRole.OsLogin, 
+                PredefinedRole.ComputeViewer })]
+            ResourceTask<IAuthorization> authorizationTask)
+        {
+            var instance = await GetInstanceDetails(
+                    await authorizationTask,
+                    await instanceTask)
+                .ConfigureAwait(false);
+
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                new ApiKey("unused"),
+                TestProject.UserAgent);
+
+            var certifiedKey = await client
+                .SignPublicKeyAsync(
+                    new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
+                    instance.Id!.Value,
+                    null,
                     $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
                     CancellationToken.None)
                 .ConfigureAwait(false);

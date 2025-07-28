@@ -398,6 +398,7 @@ namespace Google.Solutions.Apis.Compute
         public async Task<string> SignPublicKeyAsync(
             ZoneLocator zone,
             ulong instanceId,
+            string? attachedServiceAccountEmail,
             string key,
             CancellationToken cancellationToken)
         {
@@ -405,38 +406,25 @@ namespace Google.Solutions.Apis.Compute
             {
                 try
                 {
+                    //
+                    // Derive region from zone by cutting the "-x".
+                    //
+                    Precondition.Expect(
+                        zone.Name.Length > 2 && zone.Name[zone.Name.Length - 2] == '-',
+                        nameof(zone));
+                    var region = zone.Name.Substring(0, zone.Name.Length - 2);
+
                     var request = new BetaSignSshPublicKeyRequest(
                         this.service,
                         new BetaSignSshPublicKeyRequestData()
                         {
-                            ComputeInstance = $"projects/{zone.ProjectId}/zones/{zone.Name}/instances/{instanceId}",
-
-                            // TODO: Need service account?
+                            ComputeInstance = 
+                                $"projects/{zone.ProjectId}/" +
+                                $"zones/{zone.Name}/instances/{instanceId}",
+                            ServiceAccount = attachedServiceAccountEmail,
                             SshPublicKey = key
                         },
-                        $"projects/{zone.ProjectId}/locations/{zone.Name}"); // TODO: location = zone?
-
-                    if (this.authorization.Session is IWorkforcePoolSession)
-                    {
-                        //
-                        // This is a non-resourceful API. Charging to a client
-                        // project doesn't work with workforce identity, so we
-                        // have to do one of the following:
-                        //
-                        // (1) Pass an API key that's from the same project as the
-                        //     OAuth client.
-                        //
-                        // (2) Pass an API key from any project, and set the
-                        //     quota project.
-                        //
-                        //     This requires the user to have the
-                        //     serviceusage.services.use permission.
-                        //
-                        // Option (1) isn't viable currently, so we need to do (2).
-                        //
-
-                        // TODO: request.UserProject = zone.ProjectId;
-                    }
+                        $"projects/{zone.ProjectId}/locations/{region}");
 
                     var response = await request
                         .ExecuteAsync(cancellationToken)
