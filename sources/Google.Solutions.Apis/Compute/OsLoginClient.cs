@@ -395,6 +395,98 @@ namespace Google.Solutions.Apis.Compute
             }
         }
 
+        public async Task<string> SignPublicKeyAsync(
+            ZoneLocator zone,
+            ulong instanceId,
+            string key,
+            CancellationToken cancellationToken)
+        {
+            using (ApiTraceSource.Log.TraceMethod().WithParameters(zone))
+            {
+                try
+                {
+                    var request = new BetaSignSshPublicKeyRequest(
+                        this.service,
+                        new BetaSignSshPublicKeyRequestData()
+                        {
+                            ComputeInstance = $"projects/{zone.ProjectId}/zones/{zone.Name}/instances/{instanceId}",
+
+                            // TODO: Need service account?
+                            SshPublicKey = key
+                        },
+                        $"projects/{zone.ProjectId}/locations/{zone.Name}"); // TODO: location = zone?
+
+                    if (this.authorization.Session is IWorkforcePoolSession)
+                    {
+                        //
+                        // This is a non-resourceful API. Charging to a client
+                        // project doesn't work with workforce identity, so we
+                        // have to do one of the following:
+                        //
+                        // (1) Pass an API key that's from the same project as the
+                        //     OAuth client.
+                        //
+                        // (2) Pass an API key from any project, and set the
+                        //     quota project.
+                        //
+                        //     This requires the user to have the
+                        //     serviceusage.services.use permission.
+                        //
+                        // Option (1) isn't viable currently, so we need to do (2).
+                        //
+
+                        // TODO: request.UserProject = zone.ProjectId;
+                    }
+
+                    var response = await request
+                        .ExecuteAsync(cancellationToken)
+                        .ConfigureAwait(false);
+
+                    Invariant.ExpectNotNull(
+                        response.SignedSshPublicKey,
+                        "SignedSshPublicKey");
+
+                    return response.SignedSshPublicKey!;
+                }
+                catch (GoogleApiException e) when (
+                    e.Error != null &&
+                    e.Error.Code == 400 &&
+                    e.Error.Message != null &&
+                    e.Error.Message.Contains("google.posix_username"))
+                {
+                    throw new ExternalIdpNotConfiguredForOsLoginException(
+                        "Your workforce identity provider configuration doesn't " +
+                        "contain an attribute mapping for 'google.posix_username'. " +
+                        "This mapping is required for using OS Login.",
+                        e);
+                }
+                catch (GoogleApiException e) when (e.IsAccessDenied())
+                {
+                    if (e.Error?.Message is var message &&
+                        message != null &&
+                        message.Contains("roles/serviceusage.serviceUsageConsumer"))
+                    {
+                        throw new ResourceAccessDeniedException(
+                            "You do not have sufficient access to log in.\n\n" +
+                            "Because you've authenticated using workforce identity " +
+                            "federation, you additionally need the 'Service Usage " +
+                            "Consumer' role (or an equivalent custom role) to log " +
+                            "in.",
+                            HelpTopics.UseOsLoginWithWorkforceIdentity,
+                            e);
+                    }
+                    else
+                    {
+                        throw new ResourceAccessDeniedException(
+                            "You do not have sufficient access to log in: " +
+                            e.Error?.Message ?? "access denied",
+                            HelpTopics.ManagingOsLogin,
+                            e);
+                    }
+                }
+            }
+        }
+
         public async Task<IList<SecurityKey>> ListSecurityKeysAsync(
             ProjectLocator project,
             CancellationToken cancellationToken)
