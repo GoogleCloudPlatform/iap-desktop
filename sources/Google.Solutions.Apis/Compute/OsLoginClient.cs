@@ -64,9 +64,14 @@ namespace Google.Solutions.Apis.Compute
         /// <summary>
         /// Certify a user's public key.
         /// </summary>
-        /// <param name="zone"></param>
         /// <param name="key">public key, in OpenSSH format</param>
-        /// <returns></returns>
+        Task<string> SignPublicKeyAsync(
+            ZoneLocator zone,
+            ulong instanceId,
+            string? attachedServiceAccountEmail,
+            string key,
+            CancellationToken cancellationToken);
+
         [Obsolete]
         Task<string> SignPublicKeyAsync(
             ZoneLocator zone,
