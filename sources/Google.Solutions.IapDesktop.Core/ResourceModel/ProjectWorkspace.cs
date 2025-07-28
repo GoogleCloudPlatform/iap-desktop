@@ -31,6 +31,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -124,6 +125,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         /// <summary>
         /// Load list of projects from API.
         /// </summary>
+        [SuppressMessage("Usage", "VSTHRD003:Avoid awaiting foreign Tasks")]
         private static async Task<State> LoadStateAsync(
             IProjectWorkspaceSettings context,
             IAncestryCache ancestryCache,

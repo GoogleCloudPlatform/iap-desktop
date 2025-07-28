@@ -24,6 +24,7 @@ using Google.Solutions.Platform.IO;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -80,6 +81,7 @@ namespace Google.Solutions.Ssh
         public event EventHandler<PseudoTerminalErrorEventArgs>? FatalError;
         public event EventHandler<EventArgs>? Disconnected;
 
+        [SuppressMessage("Usage", "VSTHRD003:Avoid awaiting foreign Tasks")]
         public Task DrainAsync()
         {
             return this.endOfStream.Task;
