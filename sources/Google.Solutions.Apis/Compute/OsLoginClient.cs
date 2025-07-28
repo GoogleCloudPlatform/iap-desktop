@@ -209,18 +209,20 @@ namespace Google.Solutions.Apis.Compute
                         // Key wasn't added.
                         //
                         throw new ResourceAccessDeniedException(
-                            "You do not have sufficient permissions to publish an SSH " +
-                            "key to OS Login",
+                            "You do not have sufficient permissions to publish " +
+                            "an SSH key to OS Login",
                             HelpTopics.ManagingOsLogin,
-                            new GoogleApiException("oslogin", response.Details ?? string.Empty));
+                            new GoogleApiException(
+                                "oslogin", 
+                                response.Details ?? string.Empty));
                     }
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     //
                     // Likely reason: The user account is a consumer account or
-                    // an administrator has disabled POSIX account/SSH key information
-                    // updates in the Admin Console.
+                    // an administrator has disabled POSIX account/SSH key
+                    // information updates in the Admin Console.
                     //
                     throw new ResourceAccessDeniedException(
                         "You do not have sufficient permissions to use OS Login: " +
@@ -284,7 +286,9 @@ namespace Google.Solutions.Apis.Compute
                 try
                 {
                     await this.service.Users.SshPublicKeys
-                        .Delete($"users/{this.EncodedUserPathComponent}/sshPublicKeys/{fingerprint}")
+                        .Delete(
+                            $"users/{this.EncodedUserPathComponent}/" +
+                            $"sshPublicKeys/{fingerprint}")
                         .ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
@@ -314,7 +318,9 @@ namespace Google.Solutions.Apis.Compute
                         {
                             SshPublicKey = key
                         },
-                        $"users/{this.EncodedUserPathComponent}/projects/{zone.ProjectId}/locations/{zone.Name}");
+                        $"users/{this.EncodedUserPathComponent}/" +
+                        $"projects/{zone.ProjectId}/" +
+                        $"locations/{zone.Name}");
 
                     if (this.authorization.Session is IWorkforcePoolSession)
                     {
@@ -355,9 +361,9 @@ namespace Google.Solutions.Apis.Compute
                     e.Error.Message.Contains("google.posix_username"))
                 {
                     throw new ExternalIdpNotConfiguredForOsLoginException(
-                        "Your workforce identity provider configuration doesn't contain " +
-                        "an attribute mapping for 'google.posix_username'. This mapping is " +
-                        "required for using OS Login.",
+                        "Your workforce identity provider configuration doesn't " +
+                        "contain an attribute mapping for 'google.posix_username'. " +
+                        "This mapping is required for using OS Login.",
                         e);
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
@@ -368,9 +374,10 @@ namespace Google.Solutions.Apis.Compute
                     {
                         throw new ResourceAccessDeniedException(
                             "You do not have sufficient access to log in.\n\n" +
-                            "Because you've authenticated using workforce identity federation, " +
-                            "you additionally need the 'Service Usage Consumer' role " +
-                            "(or an equivalent custom role) to log in.",
+                            "Because you've authenticated using workforce identity " +
+                            "federation, you additionally need the 'Service Usage " +
+                            "Consumer' role (or an equivalent custom role) to log " +
+                            "in.",
                             HelpTopics.UseOsLoginWithWorkforceIdentity,
                             e);
                     }
@@ -500,7 +507,9 @@ namespace Google.Solutions.Apis.Compute
 
         private class BetaLoginProfile : IDirectResponseSchema
         {
-            /// <summary>The registered security key credentials for a user.</summary>
+            /// <summary>
+            /// The registered security key credentials for a user.
+            /// </summary>
             [JsonProperty("securityKeys")]
             public virtual IList<SecurityKey>? SecurityKeys { get; set; }
 
@@ -543,7 +552,8 @@ namespace Google.Solutions.Apis.Compute
             public virtual string? ETag { get; set; }
         }
 
-        private class BetaGetLoginProfileRequest : CloudOSLoginBaseServiceRequest<BetaLoginProfile>
+        private class BetaGetLoginProfileRequest : 
+            CloudOSLoginBaseServiceRequest<BetaLoginProfile>
         {
             public enum ViewEnum
             {
