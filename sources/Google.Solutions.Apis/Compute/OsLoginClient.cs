@@ -67,6 +67,7 @@ namespace Google.Solutions.Apis.Compute
         /// <param name="zone"></param>
         /// <param name="key">public key, in OpenSSH format</param>
         /// <returns></returns>
+        [Obsolete]
         Task<string> SignPublicKeyAsync(
             ZoneLocator zone,
             string key,
@@ -303,6 +304,7 @@ namespace Google.Solutions.Apis.Compute
             }
         }
 
+        [Obsolete]
         public async Task<string> SignPublicKeyAsync(
             ZoneLocator zone,
             string key,
