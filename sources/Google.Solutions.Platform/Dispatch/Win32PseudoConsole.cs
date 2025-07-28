@@ -24,6 +24,7 @@ using Google.Solutions.Platform.Interop;
 using Google.Solutions.Platform.IO;
 using Microsoft.Win32.SafeHandles;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -207,6 +208,7 @@ namespace Google.Solutions.Platform.Dispatch
             return this.inputWriter.WriteAsync(data);
         }
 
+        [SuppressMessage("Usage", "VSTHRD003:Avoid awaiting foreign Tasks")]
         public Task DrainAsync()
         {
             return this.pumpOutputTask;

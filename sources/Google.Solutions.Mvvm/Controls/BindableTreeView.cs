@@ -27,6 +27,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -303,7 +304,7 @@ namespace Google.Solutions.Mvvm.Controls
                 }
 
                 this.lazyLoadTriggered = true;
-                this.treeView.getChildrenAsyncFunc(this.Model)
+                _ = this.treeView.getChildrenAsyncFunc(this.Model)
                     .ContinueWith(t =>
                     {
                         try
@@ -386,6 +387,7 @@ namespace Google.Solutions.Mvvm.Controls
                     this.treeView.taskScheduler);
             }
 
+            [SuppressMessage("Usage", "VSTHRD003:Avoid awaiting foreign Tasks")]
             public Task ExpandAsync()
             {
                 Expand();

@@ -20,6 +20,7 @@
 //
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -95,6 +96,7 @@ namespace Google.Solutions.Mvvm.Controls
         /// <summary>
         /// Wait for deferred callback to complete. For testing.
         /// </summary>
+        [SuppressMessage("Usage", "VSTHRD003:Avoid awaiting foreign Tasks")]
         public Task WaitForCompletionAsync()
         {
             if (this.IsPending)

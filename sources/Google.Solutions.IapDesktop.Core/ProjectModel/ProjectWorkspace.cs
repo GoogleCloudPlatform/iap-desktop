@@ -125,10 +125,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         // Data loading (uncached).
         //---------------------------------------------------------------------
 
-        [SuppressMessage(
-            "Usage", 
-            "VSTHRD003:Avoid awaiting foreign Tasks", 
-            Justification = "")]
+        [SuppressMessage("Usage", "VSTHRD003:Avoid awaiting foreign Tasks")]
         private async Task<CloudNode> LoadProjectsAsync(
             CancellationToken token)
         {
@@ -318,6 +315,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
             }
         }
 
+        [SuppressMessage("Usage", "VSTHRD003:Avoid awaiting foreign Tasks")]
         public async Task<IProjectModelCloudNode> GetRootNodeAsync(
             bool forceReload,
             CancellationToken token)

@@ -24,6 +24,7 @@ using Google.Solutions.Ssh.Native;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
@@ -246,6 +247,7 @@ namespace Google.Solutions.Ssh
         // Publics.
         //---------------------------------------------------------------------
 
+        [SuppressMessage("Usage", "VSTHRD003:Avoid awaiting foreign Tasks")]
         public Task ConnectAsync()
         {
             StartConnection();
