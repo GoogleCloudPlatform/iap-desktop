@@ -75,10 +75,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Project()
                 {
-                    CommonInstanceMetadata = new Metadata()
+                    CommonInstanceMetadata = new Google.Apis.Compute.v1.Data.Metadata()
                     {
                         Items = projectMetadata?
-                            .Select(kvp => new Metadata.ItemsData()
+                            .Select(kvp => new Google.Apis.Compute.v1.Data.Metadata.ItemsData()
                             {
                                 Key = kvp.Key,
                                 Value = kvp.Value
@@ -93,10 +93,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Instance()
                 {
-                    Metadata = new Metadata()
+                    Metadata = new Google.Apis.Compute.v1.Data.Metadata()
                     {
                         Items = instanceMetadata?
-                            .Select(kvp => new Metadata.ItemsData()
+                            .Select(kvp => new Google.Apis.Compute.v1.Data.Metadata.ItemsData()
                             {
                                 Key = kvp.Key,
                                 Value = kvp.Value
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 project,
                 new Dictionary<string, string>
                 {
-                    { MetadataAuthorizedPublicKeyProcessor.EnableOsLoginFlag, "true" },
+                    { Extensions.Session.Protocol.Ssh.Metadata.EnableOsLoginFlag, "true" },
                     { "ssh-keys", "alice:ssh-rsa ALICES-KEY alice@gmail.com" }
                 },
                 null);
@@ -254,7 +254,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 project,
                 new Dictionary<string, string>
                 {
-                    { MetadataAuthorizedPublicKeyProcessor.BlockProjectSshKeysFlag, "true" },
+                    { Extensions.Session.Protocol.Ssh.Metadata.BlockProjectSshKeysFlag, "true" },
                     { "ssh-keys", "alice:ssh-rsa ALICES-KEY alice@gmail.com" }
                 },
                 null);
@@ -305,7 +305,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 project,
                 new Dictionary<string, string>
                 {
-                    { MetadataAuthorizedPublicKeyProcessor.EnableOsLoginFlag, "true" },
+                    { Extensions.Session.Protocol.Ssh.Metadata.EnableOsLoginFlag, "true" },
                     { "ssh-keys", "alice:ssh-rsa ALICES-KEY alice@gmail.com" }
                 },
                 new Dictionary<string, string>
@@ -386,7 +386,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 },
                 new Dictionary<string, string>
                 {
-                    { MetadataAuthorizedPublicKeyProcessor.BlockProjectSshKeysFlag, "true" },
+                    { Extensions.Session.Protocol.Ssh.Metadata.BlockProjectSshKeysFlag, "true" },
                     { "ssh-keys", "bob:ssh-rsa BOBS-KEY bob@gmail.com" }
                 });
 
@@ -468,12 +468,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             computeEngineMock.Verify(s => s.UpdateMetadataAsync(
                 It.IsAny<InstanceLocator>(),
-                It.IsAny<Action<Metadata>>(),
+                It.IsAny<Action<Google.Apis.Compute.v1.Data.Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Never);
 
             computeEngineMock.Verify(s => s.UpdateCommonInstanceMetadataAsync(
                 It.IsAny<ProjectLocator>(),
-                It.IsAny<Action<Metadata>>(),
+                It.IsAny<Action<Google.Apis.Compute.v1.Data.Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Never);
         }
 
@@ -499,12 +499,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             computeEngineMock.Verify(s => s.UpdateMetadataAsync(
                 It.IsAny<InstanceLocator>(),
-                It.IsAny<Action<Metadata>>(),
+                It.IsAny<Action<Google.Apis.Compute.v1.Data.Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Once);
 
             computeEngineMock.Verify(s => s.UpdateCommonInstanceMetadataAsync(
                 It.IsAny<ProjectLocator>(),
-                It.IsAny<Action<Metadata>>(),
+                It.IsAny<Action<Google.Apis.Compute.v1.Data.Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Never);
         }
 
@@ -538,12 +538,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             computeEngineMock.Verify(s => s.UpdateMetadataAsync(
                 It.IsAny<InstanceLocator>(),
-                It.IsAny<Action<Metadata>>(),
+                It.IsAny<Action<Google.Apis.Compute.v1.Data.Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Never);
 
             computeEngineMock.Verify(s => s.UpdateCommonInstanceMetadataAsync(
                 It.IsAny<ProjectLocator>(),
-                It.IsAny<Action<Metadata>>(),
+                It.IsAny<Action<Google.Apis.Compute.v1.Data.Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -577,12 +577,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             computeEngineMock.Verify(s => s.UpdateMetadataAsync(
                 It.IsAny<InstanceLocator>(),
-                It.IsAny<Action<Metadata>>(),
+                It.IsAny<Action<Google.Apis.Compute.v1.Data.Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Never);
 
             computeEngineMock.Verify(s => s.UpdateCommonInstanceMetadataAsync(
                 It.IsAny<ProjectLocator>(),
-                It.IsAny<Action<Metadata>>(),
+                It.IsAny<Action<Google.Apis.Compute.v1.Data.Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Once);
         }
     }

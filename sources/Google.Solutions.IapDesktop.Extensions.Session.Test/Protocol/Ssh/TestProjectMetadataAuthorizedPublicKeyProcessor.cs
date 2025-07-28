@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
         private static Mock<IComputeEngineClient> CreateComputeEngineClientMock(
             ProjectLocator project,
-            Metadata projectMetadata)
+            Google.Apis.Compute.v1.Data.Metadata projectMetadata)
         {
             var adapter = new Mock<IComputeEngineClient>();
             adapter
@@ -63,14 +63,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public async Task IsOsLoginEnabled_WhenValueIsTruthy_ThenIsOsLoginEnabledReturnsTrue(
             [Values("Y", "y\n", "True ", " 1 ")] string truthyValue)
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
+            var processor = await Session.Protocol.Ssh.Metadata.ForProject(
                     CreateComputeEngineClientMock(
                         SampleLocator,
-                        new Metadata()
+                        new Google.Apis.Compute.v1.Data.Metadata()
                         {
                             Items = new[]
                             {
-                                new Metadata.ItemsData()
+                                new Google.Apis.Compute.v1.Data.Metadata.ItemsData()
                                 {
                                     Key = "Enable-OsLogin",
                                     Value = truthyValue
@@ -88,14 +88,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public async Task IsOsLoginEnabled_WhenValueIsNotTruthy_ThenIsOsLoginEnabledReturnsFalse(
             [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
+            var processor = await Session.Protocol.Ssh.Metadata.ForProject(
                     CreateComputeEngineClientMock(
                         SampleLocator,
-                        new Metadata()
+                        new Google.Apis.Compute.v1.Data.Metadata()
                         {
                             Items = new[]
                             {
-                                new Metadata.ItemsData()
+                                new Google.Apis.Compute.v1.Data.Metadata.ItemsData()
                                 {
                                     Key = "Enable-OsLogin",
                                     Value = truthyValue
@@ -117,14 +117,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsTruthy(
             [Values("Y", "y\n", "True ", " 1 ")] string truthyValue)
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
+            var processor = await Session.Protocol.Ssh.Metadata.ForProject(
                     CreateComputeEngineClientMock(
                         SampleLocator,
-                        new Metadata()
+                        new Google.Apis.Compute.v1.Data.Metadata()
                         {
                             Items = new[]
                             {
-                                new Metadata.ItemsData()
+                                new Google.Apis.Compute.v1.Data.Metadata.ItemsData()
                                 {
                                     Key = "Enable-OsLogin-sk",
                                     Value = truthyValue
@@ -142,14 +142,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsNotTruthy(
             [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
+            var processor = await Session.Protocol.Ssh.Metadata.ForProject(
                     CreateComputeEngineClientMock(
                         SampleLocator,
-                        new Metadata()
+                        new Google.Apis.Compute.v1.Data.Metadata()
                         {
                             Items = new[]
                             {
-                                new Metadata.ItemsData()
+                                new Google.Apis.Compute.v1.Data.Metadata.ItemsData()
                                 {
                                     Key = "Enable-OsLogin-sk",
                                     Value = truthyValue
@@ -165,8 +165,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsMissing()
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
-                    CreateComputeEngineClientMock(SampleLocator, new Metadata()).Object,
+            var processor = await Session.Protocol.Ssh.Metadata.ForProject(
+                    CreateComputeEngineClientMock(SampleLocator, new Google.Apis.Compute.v1.Data.Metadata()).Object,
                     SampleLocator,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -181,8 +181,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task ListAuthorizedKeys_WhenMetadataIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
-                    CreateComputeEngineClientMock(SampleLocator, new Metadata()).Object,
+            var processor = await Session.Protocol.Ssh.Metadata.ForProject(
+                    CreateComputeEngineClientMock(SampleLocator, new Google.Apis.Compute.v1.Data.Metadata()).Object,
                     SampleLocator,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -195,14 +195,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task ListAuthorizedKeys_WhenMetadataItemIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
+            var processor = await Session.Protocol.Ssh.Metadata.ForProject(
                     CreateComputeEngineClientMock(
                         SampleLocator,
-                        new Metadata()
+                        new Google.Apis.Compute.v1.Data.Metadata()
                         {
                             Items = new[]
                             {
-                                new Metadata.ItemsData()
+                                new Google.Apis.Compute.v1.Data.Metadata.ItemsData()
                                 {
                                     Key = "ssh-keys",
                                 }
@@ -220,11 +220,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task ListAuthorizedKeys_WhenMetadataContainsKeys_ThenListAuthorizedKeysReturnsList()
         {
-            var metadata = new Metadata();
+            var metadata = new Google.Apis.Compute.v1.Data.Metadata();
             metadata.Add(
                 MetadataAuthorizedPublicKeySet.MetadataKey,
                 MetadataAuthorizedPublicKeySet
-                    .FromMetadata(new Metadata())
+                    .FromMetadata(new Google.Apis.Compute.v1.Data.Metadata())
                     .Add(new UnmanagedMetadataAuthorizedPublicKey(
                         "bob",
                         "ssh-rsa",
@@ -237,7 +237,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         "alice@example.com"))
                     .ToString());
 
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
+            var processor = await Session.Protocol.Ssh.Metadata.ForProject(
                 CreateComputeEngineClientMock(SampleLocator, metadata).Object,
                 SampleLocator,
                 CancellationToken.None)
@@ -254,11 +254,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task ListAuthorizedKeys_WhenMetadataContainsButMethodDoesNotMatch_ThenListAuthorizedKeysReturnsEmptyList()
         {
-            var metadata = new Metadata();
+            var metadata = new Google.Apis.Compute.v1.Data.Metadata();
             metadata.Add(
                 MetadataAuthorizedPublicKeySet.MetadataKey,
                 MetadataAuthorizedPublicKeySet
-                    .FromMetadata(new Metadata())
+                    .FromMetadata(new Google.Apis.Compute.v1.Data.Metadata())
                     .Add(new UnmanagedMetadataAuthorizedPublicKey(
                         "bob",
                         "ssh-rsa",
@@ -271,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         "alice@example.com"))
                     .ToString());
 
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
+            var processor = await Session.Protocol.Ssh.Metadata.ForProject(
                 CreateComputeEngineClientMock(SampleLocator, metadata).Object,
                 SampleLocator,
                 CancellationToken.None)
@@ -294,16 +294,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 "ssh-rsa",
                 "KEY-BOB",
                 "bob@example.com");
-            var metadata = new Metadata();
+            var metadata = new Google.Apis.Compute.v1.Data.Metadata();
             metadata.Add(
                 MetadataAuthorizedPublicKeySet.MetadataKey,
                 MetadataAuthorizedPublicKeySet
-                    .FromMetadata(new Metadata())
+                    .FromMetadata(new Google.Apis.Compute.v1.Data.Metadata())
                     .Add(bobsKey)
                     .ToString());
 
             var computeClient = CreateComputeEngineClientMock(SampleLocator, metadata);
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
+            var processor = await Session.Protocol.Ssh.Metadata.ForProject(
                     computeClient.Object,
                     SampleLocator,
                     CancellationToken.None)
@@ -317,7 +317,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             computeClient.Verify(a => a.UpdateCommonInstanceMetadataAsync(
                 It.IsAny<ProjectLocator>(),
-                It.IsAny<Action<Metadata>>(),
+                It.IsAny<Action<Google.Apis.Compute.v1.Data.Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Once);
         }
     }

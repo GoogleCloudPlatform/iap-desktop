@@ -62,13 +62,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Project()
                 {
-                    CommonInstanceMetadata = new Metadata()
+                    CommonInstanceMetadata = new Google.Apis.Compute.v1.Data.Metadata()
                     {
                         Items = new[]
                         {
-                            new Metadata.ItemsData()
+                            new Google.Apis.Compute.v1.Data.Metadata.ItemsData()
                             {
-                                Key = MetadataAuthorizedPublicKeyProcessor.EnableOsLoginFlag,
+                                Key = Extensions.Session.Protocol.Ssh.Metadata.EnableOsLoginFlag,
                                 Value = "true"
                             }
                         }

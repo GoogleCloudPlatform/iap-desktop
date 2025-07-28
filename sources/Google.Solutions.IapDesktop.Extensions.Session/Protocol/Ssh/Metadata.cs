@@ -40,7 +40,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {
-    public abstract class MetadataAuthorizedPublicKeyProcessor
+    public abstract class Metadata
     {
         public const string EnableOsLoginFlag = "enable-oslogin";
         public const string EnableOsLoginWithSecurityKeyFlag = "enable-oslogin-sk";
@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         public abstract bool AreProjectSshKeysBlocked { get; }
 
         internal static void AddPublicKeyToMetadata(
-            Metadata metadata,
+            Google.Apis.Compute.v1.Data.Metadata metadata,
             MetadataAuthorizedPublicKey newKey)
         {
             //
@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
 
         internal static void RemovePublicKeyFromMetadata(
-            Metadata metadata,
+            Google.Apis.Compute.v1.Data.Metadata metadata,
             MetadataAuthorizedPublicKey key)
         {
             //
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         // Publics.
         //---------------------------------------------------------------------
 
-        public static async Task<InstanceMetadataAuthorizedPublicKeyProcessor> ForInstance(
+        public static async Task<InstanceMetadata> ForInstance(
             IComputeEngineClient computeClient,
             IResourceManagerClient resourceManagerAdapter,
             InstanceLocator instance,
@@ -157,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     token)
                 .ConfigureAwait(false);
 
-            return new InstanceMetadataAuthorizedPublicKeyProcessor(
+            return new InstanceMetadata(
                 computeClient,
                 resourceManagerAdapter,
                 instance,
@@ -165,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 await projectDetailsTask);
         }
 
-        public static async Task<ProjectMetadataAuthorizedPublicKeyProcessor> ForProject(
+        public static async Task<ProjectMetadata> ForProject(
             IComputeEngineClient computeClient,
             ProjectLocator project,
             CancellationToken token)
@@ -177,13 +177,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 .GetProjectAsync(project, token)
                 .ConfigureAwait(false);
 
-            return new ProjectMetadataAuthorizedPublicKeyProcessor(
+            return new ProjectMetadata(
                 computeClient,
                 projectDetails);
         }
     }
 
-    public class ProjectMetadataAuthorizedPublicKeyProcessor : MetadataAuthorizedPublicKeyProcessor
+    public class ProjectMetadata : Metadata
     {
         private readonly IComputeEngineClient computeClient;
         private readonly Project projectDetails;
@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         public override bool AreProjectSshKeysBlocked
             => this.projectDetails.GetFlag(BlockProjectSshKeysFlag) == true;
 
-        internal ProjectMetadataAuthorizedPublicKeyProcessor(
+        internal ProjectMetadata(
             IComputeEngineClient computeClient,
             Project projectDetails)
         {
@@ -234,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
     }
 
-    public class InstanceMetadataAuthorizedPublicKeyProcessor : MetadataAuthorizedPublicKeyProcessor
+    public class InstanceMetadata : Metadata
     {
         private readonly IComputeEngineClient computeClient;
         private readonly IResourceManagerClient resourceManagerAdapter;
@@ -243,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         private readonly Instance instanceDetails;
         private readonly Project projectDetails;
 
-        internal InstanceMetadataAuthorizedPublicKeyProcessor(
+        internal InstanceMetadata(
             IComputeEngineClient computeClient,
             IResourceManagerClient resourceManagerAdapter,
             InstanceLocator instance,

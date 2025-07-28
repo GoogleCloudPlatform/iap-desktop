@@ -47,15 +47,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     "alice@example.com",
                     DateTime.Now.AddDays(-1)));
 
-            var metadata = new Metadata();
+            var metadata = new Google.Apis.Compute.v1.Data.Metadata();
             metadata.Add(
                 MetadataAuthorizedPublicKeySet.MetadataKey,
                 MetadataAuthorizedPublicKeySet
-                    .FromMetadata(new Metadata())
+                    .FromMetadata(new Google.Apis.Compute.v1.Data.Metadata())
                     .Add(expiredKey)
                     .ToString());
 
-            MetadataAuthorizedPublicKeyProcessor.AddPublicKeyToMetadata(
+            Session.Protocol.Ssh.Metadata.AddPublicKeyToMetadata(
                 metadata,
                 new ManagedMetadataAuthorizedPublicKey(
                     "alice-valid",
@@ -92,16 +92,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     "alice@example.com",
                     DateTime.Now.AddDays(+1)));
 
-            var metadata = new Metadata();
+            var metadata = new Google.Apis.Compute.v1.Data.Metadata();
             metadata.Add(
                 MetadataAuthorizedPublicKeySet.MetadataKey,
                 MetadataAuthorizedPublicKeySet
-                    .FromMetadata(new Metadata())
+                    .FromMetadata(new Google.Apis.Compute.v1.Data.Metadata())
                     .Add(expiredKey)
                     .Add(validKey)
                     .ToString());
 
-            MetadataAuthorizedPublicKeyProcessor.RemovePublicKeyFromMetadata(
+            Session.Protocol.Ssh.Metadata.RemovePublicKeyFromMetadata(
                 metadata,
                 validKey);
 

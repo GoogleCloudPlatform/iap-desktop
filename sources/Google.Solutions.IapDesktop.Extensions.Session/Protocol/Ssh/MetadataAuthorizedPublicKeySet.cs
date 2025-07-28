@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             this.Keys = keys;
         }
 
-        public static MetadataAuthorizedPublicKeySet FromMetadata(Metadata.ItemsData data)
+        public static MetadataAuthorizedPublicKeySet FromMetadata(Google.Apis.Compute.v1.Data.Metadata.ItemsData data)
         {
             Precondition.ExpectNotNull(data, nameof(data));
             if (data.Key != MetadataKey)
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     .ToList());
         }
 
-        public static MetadataAuthorizedPublicKeySet FromMetadata(Metadata data)
+        public static MetadataAuthorizedPublicKeySet FromMetadata(Google.Apis.Compute.v1.Data.Metadata data)
         {
             var item = data?.Items?.FirstOrDefault(i => i.Key == MetadataKey);
             if (item != null && !string.IsNullOrEmpty(item.Value))
