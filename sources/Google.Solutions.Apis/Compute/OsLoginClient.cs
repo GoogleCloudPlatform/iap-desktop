@@ -314,9 +314,9 @@ namespace Google.Solutions.Apis.Compute
             {
                 try
                 {
-                    var request = new BetaSignSshPublicKeyRequest(
+                    var request = new ObsoleteBetaSignSshPublicKeyRequest(
                         this.service,
-                        new BetaSignSshPublicKeyRequestData()
+                        new ObsoleteBetaSignSshPublicKeyRequestData()
                         {
                             SshPublicKey = key
                         },
@@ -441,7 +441,8 @@ namespace Google.Solutions.Apis.Compute
 
         #region Request entities
 
-        private class BetaSignSshPublicKeyResponseData : IDirectResponseSchema
+        [Obsolete]
+        private class ObsoleteBetaSignSshPublicKeyResponseData : IDirectResponseSchema
         {
             [JsonProperty("signedSshPublicKey")]
             public virtual string? SignedSshPublicKey { get; set; }
@@ -449,7 +450,8 @@ namespace Google.Solutions.Apis.Compute
             public virtual string? ETag { get; set; }
         }
 
-        private class BetaSignSshPublicKeyRequestData : IDirectResponseSchema
+        [Obsolete]
+        private class ObsoleteBetaSignSshPublicKeyRequestData : IDirectResponseSchema
         {
             [JsonProperty("sshPublicKey")]
             public virtual string? SshPublicKey { get; set; }
@@ -457,12 +459,13 @@ namespace Google.Solutions.Apis.Compute
             public virtual string? ETag { get; set; }
         }
 
-        private class BetaSignSshPublicKeyRequest
-            : CloudOSLoginBaseServiceRequest<BetaSignSshPublicKeyResponseData>
+        [Obsolete]
+        private class ObsoleteBetaSignSshPublicKeyRequest
+            : CloudOSLoginBaseServiceRequest<ObsoleteBetaSignSshPublicKeyResponseData>
         {
             [RequestParameter("parent")]
             public virtual string Parent { get; private set; }
-            private BetaSignSshPublicKeyRequestData Body { get; set; }
+            private ObsoleteBetaSignSshPublicKeyRequestData Body { get; set; }
             public override string MethodName => "signSshPublicKey";
             public override string HttpMethod => "POST";
             public override string RestPath => "v1beta/{+parent}:signSshPublicKey";
@@ -470,9 +473,9 @@ namespace Google.Solutions.Apis.Compute
             [RequestParameter("$userProject")]
             public virtual string? UserProject { get; set; }
 
-            public BetaSignSshPublicKeyRequest(
+            public ObsoleteBetaSignSshPublicKeyRequest(
                 IClientService service,
-                BetaSignSshPublicKeyRequestData body,
+                ObsoleteBetaSignSshPublicKeyRequestData body,
                 string parent)
                 : base(service)
             {
