@@ -414,7 +414,6 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        [Ignore("Not implemented server-side")]
         public async Task SignPublicKey_Gaia_WhenUserInRole(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceTask,
 
@@ -434,6 +433,12 @@ namespace Google.Solutions.Apis.Test.Compute
                 new ApiKey("unused"),
                 TestProject.UserAgent);
 
+            await client
+                .ProvisionPosixProfileAsync(
+                    TestProject.Region,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
             var certifiedKey = await client
                 .SignPublicKeyAsync(
                     new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
@@ -446,6 +451,46 @@ namespace Google.Solutions.Apis.Test.Compute
             StringAssert.StartsWith(
                 "ecdsa-sha2-nistp256-cert-v01@openssh.com",
                 certifiedKey);
+        }
+
+        //---------------------------------------------------------------------
+        // ProvisionPosixProfile.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task ProvisionPosixProfile_WorkforceIdentity(
+            [Credential(Type = PrincipalType.WorkforceIdentity)]
+            ResourceTask<IAuthorization> authorizationTask)
+        {
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                TestProject.ApiKey,
+                TestProject.UserAgent);
+
+            await client
+                .ProvisionPosixProfileAsync(
+                    TestProject.Region,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+        }
+
+        [Test]
+        public async Task ProvisionPosixProfile_Gaia(
+            [Credential(Role = PredefinedRole.StorageObjectViewer)]  // Unrelated role
+            ResourceTask<IAuthorization> authorizationTask)
+        {
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                TestProject.ApiKey,
+                TestProject.UserAgent);
+
+            await client
+                .ProvisionPosixProfileAsync(
+                    TestProject.Region,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------
