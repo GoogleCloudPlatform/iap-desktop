@@ -40,14 +40,25 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 {
-    public abstract class MetadataAuthorizedPublicKeyProcessor
+    public abstract class ComputeMetadata
     {
         public const string EnableOsLoginFlag = "enable-oslogin";
         public const string EnableOsLoginWithSecurityKeyFlag = "enable-oslogin-sk";
         public const string BlockProjectSshKeysFlag = "block-project-ssh-keys";
 
+        /// <summary>
+        /// Indicates if OS Login is enforced for the project or instance.
+        /// </summary>
         public abstract bool IsOsLoginEnabled { get; }
+
+        /// <summary>
+        /// Indicates if OS Login-SK is enforced for the project or instance.
+        /// </summary>
         public abstract bool IsOsLoginWithSecurityKeyEnabled { get; }
+
+        /// <summary>
+        /// Indicates if VMs in this project ignore project-level keys.
+        /// </summary>
         public abstract bool AreProjectSshKeysBlocked { get; }
 
         internal static void AddPublicKeyToMetadata(
@@ -128,44 +139,40 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public abstract IEnumerable<MetadataAuthorizedPublicKey> ListAuthorizedKeys(
            KeyAuthorizationMethods allowedMethods);
+    }
 
-        //---------------------------------------------------------------------
-        // Publics.
-        //---------------------------------------------------------------------
+    public class ProjectMetadata : ComputeMetadata
+    {
+        private readonly IComputeEngineClient computeClient;
+        private readonly Project projectDetails;
 
-        public static async Task<InstanceMetadataAuthorizedPublicKeyProcessor> ForInstance(
-            IComputeEngineClient computeClient,
-            IResourceManagerClient resourceManagerAdapter,
-            InstanceLocator instance,
-            CancellationToken token)
+        public override bool IsOsLoginEnabled
         {
-            Precondition.ExpectNotNull(computeClient, nameof(computeClient));
-            Precondition.ExpectNotNull(resourceManagerAdapter, nameof(resourceManagerAdapter));
-            Precondition.ExpectNotNull(instance, nameof(instance));
-
-            //
-            // Query metadata for instance and project in parallel.
-            //
-            var instanceDetailsTask = computeClient
-                .GetInstanceAsync(
-                    instance,
-                    token)
-                .ConfigureAwait(false);
-            var projectDetailsTask = computeClient
-                .GetProjectAsync(
-                    instance.Project,
-                    token)
-                .ConfigureAwait(false);
-
-            return new InstanceMetadataAuthorizedPublicKeyProcessor(
-                computeClient,
-                resourceManagerAdapter,
-                instance,
-                await instanceDetailsTask,
-                await projectDetailsTask);
+            get => this.projectDetails.GetFlag(EnableOsLoginFlag) == true;
         }
 
-        public static async Task<ProjectMetadataAuthorizedPublicKeyProcessor> ForProject(
+        public override bool IsOsLoginWithSecurityKeyEnabled
+        {
+            get => this.projectDetails.GetFlag(EnableOsLoginWithSecurityKeyFlag) == true;
+        }
+
+        public override bool AreProjectSshKeysBlocked
+        {
+            get => this.projectDetails.GetFlag(BlockProjectSshKeysFlag) == true;
+        }
+
+        private ProjectMetadata(
+            IComputeEngineClient computeClient,
+            Project projectDetails)
+        {
+            this.computeClient = computeClient;
+            this.projectDetails = projectDetails;
+        }
+
+        /// <summary>
+        /// Load and analyze project metadata.
+        /// </summary>
+        public static async Task<ProjectMetadata> GetAsync(
             IComputeEngineClient computeClient,
             ProjectLocator project,
             CancellationToken token)
@@ -177,32 +184,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 .GetProjectAsync(project, token)
                 .ConfigureAwait(false);
 
-            return new ProjectMetadataAuthorizedPublicKeyProcessor(
+            return new ProjectMetadata(
                 computeClient,
                 projectDetails);
-        }
-    }
-
-    public class ProjectMetadataAuthorizedPublicKeyProcessor : MetadataAuthorizedPublicKeyProcessor
-    {
-        private readonly IComputeEngineClient computeClient;
-        private readonly Project projectDetails;
-
-        public override bool IsOsLoginEnabled
-            => this.projectDetails.GetFlag(EnableOsLoginFlag) == true;
-
-        public override bool IsOsLoginWithSecurityKeyEnabled
-             => this.projectDetails.GetFlag(EnableOsLoginWithSecurityKeyFlag) == true;
-
-        public override bool AreProjectSshKeysBlocked
-            => this.projectDetails.GetFlag(BlockProjectSshKeysFlag) == true;
-
-        internal ProjectMetadataAuthorizedPublicKeyProcessor(
-            IComputeEngineClient computeClient,
-            Project projectDetails)
-        {
-            this.computeClient = computeClient;
-            this.projectDetails = projectDetails;
         }
 
         public override IEnumerable<MetadataAuthorizedPublicKey> ListAuthorizedKeys(
@@ -234,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
     }
 
-    public class InstanceMetadataAuthorizedPublicKeyProcessor : MetadataAuthorizedPublicKeyProcessor
+    public class InstanceMetadata : ComputeMetadata
     {
         private readonly IComputeEngineClient computeClient;
         private readonly IResourceManagerClient resourceManagerAdapter;
@@ -243,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         private readonly Instance instanceDetails;
         private readonly Project projectDetails;
 
-        internal InstanceMetadataAuthorizedPublicKeyProcessor(
+        private InstanceMetadata(
             IComputeEngineClient computeClient,
             IResourceManagerClient resourceManagerAdapter,
             InstanceLocator instance,
@@ -257,19 +241,68 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             this.projectDetails = projectDetails;
         }
 
+        /// <summary>
+        /// Load and analyze instance metadata.
+        /// </summary>
+        public static async Task<InstanceMetadata> GetAsync(
+            IComputeEngineClient computeClient,
+            IResourceManagerClient resourceManagerAdapter,
+            InstanceLocator instance,
+            CancellationToken token)
+        {
+            Precondition.ExpectNotNull(computeClient, nameof(computeClient));
+            Precondition.ExpectNotNull(resourceManagerAdapter, nameof(resourceManagerAdapter));
+            Precondition.ExpectNotNull(instance, nameof(instance));
+
+            //
+            // Query metadata for instance and project in parallel.
+            //
+            var instanceDetailsTask = computeClient
+                .GetInstanceAsync(
+                    instance,
+                    token)
+                .ConfigureAwait(false);
+            var projectDetailsTask = computeClient
+                .GetProjectAsync(
+                    instance.Project,
+                    token)
+                .ConfigureAwait(false);
+
+            return new InstanceMetadata(
+                computeClient,
+                resourceManagerAdapter,
+                instance,
+                await instanceDetailsTask,
+                await projectDetailsTask);
+        }
+
         public override bool IsOsLoginEnabled
-            => this.instanceDetails.GetFlag(this.projectDetails, EnableOsLoginFlag) == true;
+        {
+            get => this.instanceDetails.GetFlag(
+                this.projectDetails, 
+                EnableOsLoginFlag) == true;
+        }
 
         public override bool IsOsLoginWithSecurityKeyEnabled
-            => this.instanceDetails.GetFlag(this.projectDetails, EnableOsLoginWithSecurityKeyFlag) == true;
+        {
+            get => this.instanceDetails.GetFlag(
+                this.projectDetails, 
+                EnableOsLoginWithSecurityKeyFlag) == true;
+        }
 
         public override bool AreProjectSshKeysBlocked
-            => this.instanceDetails.GetFlag(this.projectDetails, BlockProjectSshKeysFlag) == true;
+        {
+            get => this.instanceDetails.GetFlag(
+                this.projectDetails, 
+                BlockProjectSshKeysFlag) == true;
+        }
 
         private bool IsLegacySshKeyPresent
-            => !string.IsNullOrEmpty(this.instanceDetails
+        {
+            get => !string.IsNullOrEmpty(this.instanceDetails
                 .Metadata
                 .GetValue(MetadataAuthorizedPublicKeySet.LegacyMetadataKey));
+        }
 
         public override IEnumerable<MetadataAuthorizedPublicKey> ListAuthorizedKeys(
             KeyAuthorizationMethods allowedMethods)
@@ -379,7 +412,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             }
             else if (allowedMethods.HasFlag(KeyAuthorizationMethods.ProjectMetadata))
             {
+                //
                 // Only project allowed.
+                //
                 if (blockProjectSshKeys)
                 {
                     throw new InvalidOperationException(
@@ -392,12 +427,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             }
             else if (allowedMethods.HasFlag(KeyAuthorizationMethods.InstanceMetadata))
             {
+                //
                 // Only instance allowed.
+                //
                 useInstanceKeySet = true;
             }
             else
             {
+                //
                 // Neither project nor instance allowed.
+                //
                 throw new ArgumentException(nameof(allowedMethods));
             }
 
@@ -443,7 +482,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                             await this.computeClient
                                 .UpdateMetadataAsync(
                                     this.instance,
-                                    metadata => AddPublicKeyToMetadata(metadata, metadataKey),
+                                    metadata => AddPublicKeyToMetadata(
+                                        metadata, 
+                                        metadataKey),
                                     token)
                                 .ConfigureAwait(false);
                         }
@@ -452,7 +493,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                             await this.computeClient
                                 .UpdateCommonInstanceMetadataAsync(
                                     this.instance.Project,
-                                    metadata => AddPublicKeyToMetadata(metadata, metadataKey),
+                                    metadata => AddPublicKeyToMetadata(
+                                        metadata, 
+                                        metadataKey),
                                     token)
                                .ConfigureAwait(false);
                         }
@@ -474,7 +517,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     {
         public IHelpTopic Help { get; }
 
-        public UnsupportedLegacySshKeyEncounteredException(
+        internal UnsupportedLegacySshKeyEncounteredException(
             string message,
             IHelpTopic helpTopic)
             : base(message)
@@ -487,7 +530,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
     {
         public IHelpTopic Help { get; }
 
-        public SshKeyPushFailedException(
+        internal SshKeyPushFailedException(
             string message,
             IHelpTopic helpTopic)
             : base(message)

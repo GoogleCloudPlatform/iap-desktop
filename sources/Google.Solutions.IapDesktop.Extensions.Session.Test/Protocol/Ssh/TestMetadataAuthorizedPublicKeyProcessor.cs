@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .Add(expiredKey)
                     .ToString());
 
-            MetadataAuthorizedPublicKeyProcessor.AddPublicKeyToMetadata(
+            ComputeMetadata.AddPublicKeyToMetadata(
                 metadata,
                 new ManagedMetadataAuthorizedPublicKey(
                     "alice-valid",
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .Add(validKey)
                     .ToString());
 
-            MetadataAuthorizedPublicKeyProcessor.RemovePublicKeyFromMetadata(
+            ComputeMetadata.RemovePublicKeyFromMetadata(
                 metadata,
                 validKey);
 

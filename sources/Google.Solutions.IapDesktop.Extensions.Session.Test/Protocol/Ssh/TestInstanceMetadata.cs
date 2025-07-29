@@ -39,7 +39,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
     [TestFixture]
-    public class TestInstanceMetadataAuthorizedPublicKeyProcessor
+    public class TestInstanceMetadata
     {
         private const string SampleEmailAddress = "bob@example.com";
         private static readonly InstanceLocator SampleLocator
@@ -151,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public async Task IsOsLoginEnabled_WhenValueIsTruthy_ThenIsOsLoginEnabledReturnsTrue(
             [Values("Y", "y\n", "True ", " 1 ")] string truthyValue)
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
                     new Metadata()
                     {
@@ -177,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public async Task IsOsLoginEnabled_WhenValueIsNotTruthy_ThenIsOsLoginEnabledReturnsFalse(
             [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
                     new Metadata()
                     {
@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task IsOsLoginEnabled_WhenOsLoginEnabledForProjectButDisabledForInstance_ThenIsOsLoginEnabledReturnsFalse()
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
                     new Metadata()
                     {
@@ -242,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsTruthy_ThenIsOsLoginWithSecurityKeyEnabledReturnsTrue(
             [Values("Y", "y\n", "True ", " 1 ")] string truthyValue)
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
                     new Metadata()
                     {
@@ -268,7 +268,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsNotTruthy_ThenIsOsLoginWithSecurityKeyEnabledReturnsFalse(
             [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
                     new Metadata()
                     {
@@ -293,7 +293,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsMissing_ThenIsOsLoginWithSecurityKeyEnabledReturnsFalse()
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
                     new Metadata(),
                     new Metadata()).Object,
@@ -308,7 +308,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task IsOsLoginWithSecurityKeyEnabled_WhenOsLoginWithSecurityKeyEnabledForProjectButDisabledForInstance_ThenIsOsLoginWithSecurityKeyEnabledReturnsFalse()
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
                     new Metadata()
                     {
@@ -348,7 +348,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public async Task AreProjectSshKeysBlocked_WhenValueIsTruthy_ThenAreProjectSshKeysBlockedReturnsTrue(
             [Values("Y", "y\n", "True ", " 1 ")] string truthyValue)
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
                     new Metadata()
                     {
@@ -374,7 +374,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         public async Task AreProjectSshKeysBlocked_WhenValueIsNotTruthy_ThenAreProjectSshKeysBlockedReturnsFalse(
             [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
                     new Metadata()
                     {
@@ -399,7 +399,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task AreProjectSshKeysBlocked_WhenProjectSshKeysBlockedForProjectButNotForInstance_ThenAreProjectSshKeysBlockedReturnsFalse()
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
                     new Metadata()
                     {
@@ -438,7 +438,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task AuthorizeKey_WhenLegacySshKeyPresent_ThenAuthorizeKeyAsyncThrowsUnsupportedLegacySshKeyEncounteredException()
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                     CreateComputeEngineAdapterMock(
                         legacySshKeyPresent: true,
                         projectWideKeysBlockedForProject: false,
@@ -478,7 +478,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     existingProjectKeySet: existingProjectKeySet,
                     existingInstanceKeySet: null);
 
-                var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                var processor = await InstanceMetadata.GetAsync(
                         computeClient.Object,
                         CreateResourceManagerAdapterMock(true).Object,
                         SampleLocator,
@@ -531,7 +531,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     existingProjectKeySet: existingProjectKeySet,
                     existingInstanceKeySet: null);
 
-                var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                var processor = await InstanceMetadata.GetAsync(
                         computeClient.Object,
                         CreateResourceManagerAdapterMock(true).Object,
                         SampleLocator,
@@ -586,7 +586,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     existingProjectKeySet: existingProjectKeySet,
                     existingInstanceKeySet: null);
 
-                var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                var processor = await InstanceMetadata.GetAsync(
                         computeClient.Object,
                         CreateResourceManagerAdapterMock(true).Object,
                         SampleLocator,
@@ -641,7 +641,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     existingProjectKeySet: existingProjectKeySet,
                     existingInstanceKeySet: null);
 
-                var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                var processor = await InstanceMetadata.GetAsync(
                         computeClient.Object,
                         CreateResourceManagerAdapterMock(true).Object,
                         SampleLocator,
@@ -686,7 +686,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 projectWideKeysBlockedForProject: true,
                 projectWideKeysBlockedForInstance: false);
 
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                     computeClient.Object,
                     CreateResourceManagerAdapterMock(true).Object,
                     SampleLocator,
@@ -724,7 +724,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 projectWideKeysBlockedForProject: false,
                 projectWideKeysBlockedForInstance: true);
 
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                     computeClient.Object,
                     CreateResourceManagerAdapterMock(true).Object,
                     SampleLocator,
@@ -762,7 +762,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 projectWideKeysBlockedForProject: false,
                 projectWideKeysBlockedForInstance: false);
 
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                     computeClient.Object,
                     CreateResourceManagerAdapterMock(false).Object,
                     SampleLocator,
@@ -800,7 +800,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 projectWideKeysBlockedForProject: true,
                 projectWideKeysBlockedForInstance: false);
 
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                     computeClient.Object,
                     CreateResourceManagerAdapterMock(true).Object,
                     SampleLocator,
@@ -825,7 +825,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 projectWideKeysBlockedForProject: false,
                 projectWideKeysBlockedForInstance: false);
 
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                     computeClient.Object,
                     CreateResourceManagerAdapterMock(true).Object,
                     SampleLocator,
@@ -863,7 +863,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 projectWideKeysBlockedForProject: false,
                 projectWideKeysBlockedForInstance: false);
 
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                     computeClient.Object,
                     CreateResourceManagerAdapterMock(true).Object,
                     SampleLocator,
@@ -914,7 +914,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 });
 
 
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                     computeClient.Object,
                     CreateResourceManagerAdapterMock(true).Object,
                     SampleLocator,
@@ -941,7 +941,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task ListAuthorizedKeys_WhenMetadataIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                     CreateComputeEngineClientMock(
                         new Metadata(),
                         new Metadata()).Object,
@@ -958,7 +958,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task ListAuthorizedKeys_WhenMetadataItemIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
                     new Metadata()
                     {
@@ -993,7 +993,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public async Task ListAuthorizedKeys_WhenMethodIsNeitherProjectNorInstance_ThenListAuthorizedKeysReturnsEmptyList()
         {
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                     CreateComputeEngineClientMock(
                         new Metadata(),
                         new Metadata()).Object,
@@ -1034,7 +1034,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         "bob@example.com"))
                     .ToString());
 
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                     CreateComputeEngineClientMock(
                         projectMetadata,
                         instanceMetadata).Object,
@@ -1076,7 +1076,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         "bob@example.com"))
                     .ToString());
 
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                     CreateComputeEngineClientMock(
                         projectMetadata,
                         instanceMetadata).Object,
@@ -1118,7 +1118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         "bob@example.com"))
                     .ToString());
 
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                     CreateComputeEngineClientMock(
                         projectMetadata,
                         instanceMetadata).Object,
@@ -1168,7 +1168,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 projectMetadata,
                 instanceMetadata);
 
-            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+            var processor = await InstanceMetadata.GetAsync(
                     computeClient.Object,
                     CreateResourceManagerAdapterMock(true).Object,
                     SampleLocator,

@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                     throw new ArgumentException(nameof(node));
                 }
 
-                var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
+                var processor = await ProjectMetadata.GetAsync(
                         computeClient,
                         project,
                         cancellationToken)
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
                 node is IProjectModelInstanceNode instanceNode &&
                 item.Key is MetadataAuthorizedPublicKey instanceMetadataKey)
             {
-                var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                var processor = await InstanceMetadata.GetAsync(
                         computeClient,
                         resourceManagerAdapter,
                         instanceNode.Instance,
@@ -146,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             //
             var osLoginKeysTask = osLoginService.ListAuthorizedKeysAsync(cancellationToken);
 
-            Task<MetadataAuthorizedPublicKeyProcessor>? metadataTask = null;
+            Task<ComputeMetadata>? metadataTask = null;
             if (!IsNodeSupported(node))
             {
                 //
@@ -156,20 +156,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys
             }
             else if (node is IProjectModelProjectNode projectNode)
             {
-                metadataTask = MetadataAuthorizedPublicKeyProcessor.ForProject(
+                metadataTask = ProjectMetadata.GetAsync(
                         computeClient,
                         projectNode.Project,
                         cancellationToken)
-                    .ContinueWith(t => (MetadataAuthorizedPublicKeyProcessor)t.Result);
+                    .ContinueWith(t => (ComputeMetadata)t.Result);
             }
             else if (node is IProjectModelInstanceNode instanceNode)
             {
-                metadataTask = MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                metadataTask = InstanceMetadata.GetAsync(
                         computeClient,
                         resourceManagerAdapter,
                         instanceNode.Instance,
                         cancellationToken)
-                    .ContinueWith(t => (MetadataAuthorizedPublicKeyProcessor)t.Result); ;
+                    .ContinueWith(t => (ComputeMetadata)t.Result); ;
             }
             else
             {

@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                         {
                             new Metadata.ItemsData()
                             {
-                                Key = MetadataAuthorizedPublicKeyProcessor.EnableOsLoginFlag,
+                                Key = ComputeMetadata.EnableOsLoginFlag,
                                 Value = "true"
                             }
                         }
