@@ -71,6 +71,11 @@ namespace Google.Solutions.Testing.Apis.Integration
         /// </summary>
         public static string Zone => Configuration.Zone;
 
+        /// <summary>
+        /// Region to run tests in.
+        /// </summary>
+        public static RegionLocator Region => new ZoneLocator(ProjectId, Zone).Region;
+
         public static ApiKey ApiKey => new ApiKey(Configuration.ApiKey);
 
         static TestProject()

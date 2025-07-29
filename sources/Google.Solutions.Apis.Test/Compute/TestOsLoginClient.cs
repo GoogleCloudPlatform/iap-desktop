@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Client;
@@ -63,12 +64,26 @@ namespace Google.Solutions.Apis.Test.Compute
             return authorization.Object;
         }
 
+        private static async Task<Instance> GetInstanceDetails(
+            IAuthorization authorization,
+            InstanceLocator instanceLocator)
+        {
+            var computeClient = new ComputeEngineClient(
+                ComputeEngineClient.CreateEndpoint(),
+                authorization,
+                TestProject.UserAgent);
+
+            return await computeClient
+                .GetInstanceAsync(instanceLocator, CancellationToken.None)
+                .ConfigureAwait(false);
+        }
+
         //---------------------------------------------------------------------
         // ImportSshPublicKey.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task ImportSshPublicKey_WhenUsingWorkforceSession_ThenThrowsException(
+        public async Task ImportSshPublicKey_WhenUsingWorkforceSession(
             [Credential(Type = PrincipalType.WorkforceIdentity)]
             ResourceTask<IAuthorization> authorization)
         {
@@ -89,7 +104,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task ImportSshPublicKey_WhenEmailAndCredentialMismatch_ThenThrowsException(
+        public async Task ImportSshPublicKey_WhenEmailAndCredentialMismatch(
             [Credential] ResourceTask<ICredential> credentialTask)
         {
             var authorization = CreateGaiaAuthorizationWithMismatchedUser(
@@ -143,7 +158,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task GetLoginProfile_WhenUsingWorkforceSession_ThenThrowsException(
+        public async Task GetLoginProfile_WhenUsingWorkforceSession(
             [Credential(Type = PrincipalType.WorkforceIdentity)]
             ResourceTask<IAuthorization> authorization)
         {
@@ -162,7 +177,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task GetLoginProfile_WhenEmailAndCredentialMismatch_ThenThrowsException(
+        public async Task GetLoginProfile_WhenEmailAndCredentialMismatch(
             [Credential] ResourceTask<ICredential> credentialTask)
         {
             var authorization = CreateGaiaAuthorizationWithMismatchedUser(
@@ -182,7 +197,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task GetLoginProfile_WhenEmailValid_ThenSucceeds(
+        public async Task GetLoginProfile_WhenEmailValid(
             [Credential(Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
@@ -206,7 +221,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task DeleteSshPublicKey_WhenUsingWorkforceSession_ThenThrowsException(
+        public async Task DeleteSshPublicKey_WhenUsingWorkforceSession(
             [Credential(Type = PrincipalType.WorkforceIdentity)]
             ResourceTask<IAuthorization> authorization)
         {
@@ -225,7 +240,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task DeleteSshPublicKey_WhenDeletingKeyTwice_ThenSucceeds(
+        public async Task DeleteSshPublicKey_WhenDeletingKeyTwice(
             [Credential(Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
@@ -282,7 +297,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task DeleteSshPublicKey_WhenDeletingNonexistingKey_ThenSucceeds(
+        public async Task DeleteSshPublicKey_WhenDeletingNonexistingKey(
             [Credential(Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
@@ -303,10 +318,18 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task SignPublicKey_WhenUsingWorkforceSessionAndUserInNotRole_ThenThrowsException(
-            [Credential(Type = PrincipalType.WorkforceIdentity)]
+        public async Task SignPublicKey_WorkforceIdentity_WhenUserNotInRole(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceTask,
+            [Credential(
+                Type = PrincipalType.WorkforceIdentity,
+                Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
+            var instance = await GetInstanceDetails(
+                    await authorizationTask,
+                    await instanceTask)
+                .ConfigureAwait(false);
+
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
@@ -317,17 +340,29 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ThrowsAsync<ResourceAccessDeniedException>(() => client
                     .SignPublicKeyAsync(
                         new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
+                        instance.Id!.Value,
+                        null,
                         $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
                         CancellationToken.None))
                 .ConfigureAwait(false);
         }
 
         [Test]
-        [Ignore("b/434023421")]
-        public async Task SignPublicKey_WhenUsingWorkforceSessionAndUserInRole_ThenSucceeds(
-            [Credential(Type = PrincipalType.WorkforceIdentity, Role = PredefinedRole.ServiceUsageConsumer)]
+        public async Task SignPublicKey_WorkforceIdentity_WhenUserInRole(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceTask,
+            [Credential(
+                Type = PrincipalType.WorkforceIdentity,
+                Roles = new [] {
+                    PredefinedRole.ComputeViewer,
+                    PredefinedRole.OsLogin,
+                })]
             ResourceTask<IAuthorization> authorizationTask)
         {
+            var instance = await GetInstanceDetails(
+                    await authorizationTask,
+                    await instanceTask)
+                .ConfigureAwait(false);
+
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
@@ -337,6 +372,8 @@ namespace Google.Solutions.Apis.Test.Compute
             var certifiedKey = await client
                 .SignPublicKeyAsync(
                     new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
+                    instance.Id!.Value,
+                    null,
                     $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -347,20 +384,66 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        [Ignore("b/434023421")]
-        public async Task SignPublicKey_WhenUsingGaiaSession_ThenSucceeds(
+        public async Task SignPublicKey_Gaia_WhenUserNotInRole(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceTask,
             [Credential(Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
+            var instance = await GetInstanceDetails(
+                    await authorizationTask,
+                    await instanceTask)
+                .ConfigureAwait(false);
+
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
                 new ApiKey("unused"),
                 TestProject.UserAgent);
 
+
+            await ExceptionAssert
+                .ThrowsAsync<ResourceAccessDeniedException>(
+                    () => client
+                    .SignPublicKeyAsync(
+                        new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
+                        instance.Id!.Value,
+                        null,
+                        $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
+                        CancellationToken.None))
+                .ConfigureAwait(false);
+        }
+
+        [Test]
+        public async Task SignPublicKey_Gaia_WhenUserInRole(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceTask,
+
+            [Credential(Roles = new [] { 
+                PredefinedRole.OsLogin, 
+                PredefinedRole.ComputeViewer })]
+            ResourceTask<IAuthorization> authorizationTask)
+        {
+            var instance = await GetInstanceDetails(
+                    await authorizationTask,
+                    await instanceTask)
+                .ConfigureAwait(false);
+
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                new ApiKey("unused"),
+                TestProject.UserAgent);
+
+            await client
+                .ProvisionPosixProfileAsync(
+                    TestProject.Region,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
             var certifiedKey = await client
                 .SignPublicKeyAsync(
                     new ZoneLocator(TestProject.ProjectId, TestProject.Zone),
+                    instance.Id!.Value,
+                    null,
                     $"ecdsa-sha2-nistp256 {SampleKeyNistp256}",
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -368,6 +451,46 @@ namespace Google.Solutions.Apis.Test.Compute
             StringAssert.StartsWith(
                 "ecdsa-sha2-nistp256-cert-v01@openssh.com",
                 certifiedKey);
+        }
+
+        //---------------------------------------------------------------------
+        // ProvisionPosixProfile.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task ProvisionPosixProfile_WorkforceIdentity(
+            [Credential(Type = PrincipalType.WorkforceIdentity)]
+            ResourceTask<IAuthorization> authorizationTask)
+        {
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                TestProject.ApiKey,
+                TestProject.UserAgent);
+
+            await client
+                .ProvisionPosixProfileAsync(
+                    TestProject.Region,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+        }
+
+        [Test]
+        public async Task ProvisionPosixProfile_Gaia(
+            [Credential(Role = PredefinedRole.StorageObjectViewer)]  // Unrelated role
+            ResourceTask<IAuthorization> authorizationTask)
+        {
+            var client = new OsLoginClient(
+                OsLoginClient.CreateEndpoint(),
+                await authorizationTask,
+                TestProject.ApiKey,
+                TestProject.UserAgent);
+
+            await client
+                .ProvisionPosixProfileAsync(
+                    TestProject.Region,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------
@@ -375,7 +498,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task ListSecurityKeys_WhenUsingWorkforceSession_ThenException(
+        public async Task ListSecurityKeys_WhenUsingWorkforceSession(
             [Credential(Type = PrincipalType.WorkforceIdentity)]
             ResourceTask<IAuthorization> authorization)
         {
@@ -394,7 +517,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task ListSecurityKeys_WhenEmailAndCredentialMismatch_ThenThrowsException(
+        public async Task ListSecurityKeys_WhenEmailAndCredentialMismatch(
             [Credential] ResourceTask<ICredential> credentialTask)
         {
             var authorization = CreateGaiaAuthorizationWithMismatchedUser(
@@ -415,7 +538,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task ListSecurityKeys_WhenEmailValid_ThenReturnsList(
+        public async Task ListSecurityKeys_WhenEmailValid(
             [Credential(Role = PredefinedRole.ComputeViewer)]
             ResourceTask<IAuthorization> authorizationTask)
         {

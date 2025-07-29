@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2019 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -25,32 +25,32 @@ using System.Text.RegularExpressions;
 namespace Google.Solutions.Apis.Locator
 {
     /// <summary>
-    /// Locator for zones. These locators are global, but differ from
+    /// Locator for regions. These locators are global, but differ from
     /// other global locators by not having a "global/" part in the URL.
     /// </summary>
-    public class ZoneLocator : ComputeEngineLocator, IEquatable<ZoneLocator>
+    public class RegionLocator : ComputeEngineLocator, IEquatable<RegionLocator>
     {
-        public override string ResourceType => "zones";
+        public override string ResourceType => "regions";
 
-        public ZoneLocator(string projectId, string name)
+        public RegionLocator(string projectId, string name)
             : base(projectId, name)
         {
         }
 
-        public ZoneLocator(ProjectLocator project, string name)
+        public RegionLocator(ProjectLocator project, string name)
             : this(project.Name, name)
         {
         }
 
-        public static bool TryParse(string path, out ZoneLocator? locator)
+        public static bool TryParse(string path, out RegionLocator? locator)
         {
             path = StripUrlPrefix(path);
 
-            var match = new Regex("(?:/compute/beta/)?projects/(.*)/zones/(.*)")
+            var match = new Regex("(?:/compute/beta/)?projects/(.*)/regions/(.*)")
                 .Match(path);
             if (match.Success)
             {
-                locator = new ZoneLocator(
+                locator = new RegionLocator(
                     match.Groups[1].Value,
                     match.Groups[2].Value);
                 return true;
@@ -62,7 +62,7 @@ namespace Google.Solutions.Apis.Locator
             }
         }
 
-        public static ZoneLocator Parse(string path)
+        public static RegionLocator Parse(string path)
         {
             if (TryParse(path, out var locator))
             {
@@ -70,21 +70,9 @@ namespace Google.Solutions.Apis.Locator
             }
             else
             {
-                throw new ArgumentException($"'{path}' is not a valid zone locator");
+                throw new ArgumentException(
+                    $"'{path}' is not a valid region locator");
             }
-        }
-
-        /// <summary>
-        /// Region that this zone is based on.
-        /// </summary>
-        public RegionLocator Region
-        {
-            //
-            // Derive region from zone by cutting the "-x".
-            //
-            get => new RegionLocator(
-                this.Project, 
-                this.Name.Substring(0, this.Name.Length - 2));
         }
 
         public override int GetHashCode()
@@ -99,7 +87,7 @@ namespace Google.Solutions.Apis.Locator
             return $"projects/{this.ProjectId}/{this.ResourceType}/{this.Name}";
         }
 
-        public bool Equals(ZoneLocator? other)
+        public bool Equals(RegionLocator? other)
         {
             return other is object &&
                 this.Name == other.Name &&
@@ -108,15 +96,15 @@ namespace Google.Solutions.Apis.Locator
 
         public override bool Equals(ComputeEngineLocator? obj)
         {
-            return obj is ZoneLocator locator && Equals(locator);
+            return obj is RegionLocator locator && Equals(locator);
         }
 
         public override bool Equals(object? obj)
         {
-            return obj is ZoneLocator locator && Equals(locator);
+            return obj is RegionLocator locator && Equals(locator);
         }
 
-        public static bool operator ==(ZoneLocator? obj1, ZoneLocator? obj2)
+        public static bool operator ==(RegionLocator? obj1, RegionLocator? obj2)
         {
             if (obj1 is null)
             {
@@ -126,7 +114,7 @@ namespace Google.Solutions.Apis.Locator
             return obj1.Equals(obj2);
         }
 
-        public static bool operator !=(ZoneLocator? obj1, ZoneLocator? obj2)
+        public static bool operator !=(RegionLocator? obj1, RegionLocator? obj2)
         {
             return !(obj1 == obj2);
         }

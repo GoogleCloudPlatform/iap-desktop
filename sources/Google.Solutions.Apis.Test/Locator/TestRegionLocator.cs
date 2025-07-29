@@ -26,28 +26,19 @@ using System;
 namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
-    public class TestZoneLocator
-        : TestLocatorFixtureBase<ZoneLocator>
+    public class TestRegionLocator
+        : TestLocatorFixtureBase<RegionLocator>
     {
-        protected override ZoneLocator CreateInstance()
+        protected override RegionLocator CreateInstance()
         {
-            return new ZoneLocator("project-1", "region1-a");
+            return new RegionLocator("project-1", "region-1");
         }
 
         [Test]
         public void Project()
         {
-            var ref1 = new ZoneLocator("project-1", "region1-a");
+            var ref1 = new RegionLocator("project-1", "region-1");
             Assert.AreEqual(ref1.ProjectId, ref1.Project.Name);
-        }
-
-        [Test]
-        public void Region()
-        {
-            var zone = new ZoneLocator("project-1", "region1-a");
-            Assert.AreEqual(
-                zone.Region, 
-                new RegionLocator("project-1", "region1"));
         }
 
         //---------------------------------------------------------------------
@@ -57,58 +48,58 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathIsValid()
         {
-            Assert.IsTrue(ZoneLocator.TryParse(
-                "projects/project-1/zones/us-central1-a",
+            Assert.IsTrue(RegionLocator.TryParse(
+                "projects/project-1/regions/us-central1",
                 out var ref1));
 
             Assert.IsNotNull(ref1);
-            Assert.AreEqual("zones", ref1!.ResourceType);
-            Assert.AreEqual("us-central1-a", ref1.Name);
+            Assert.AreEqual("regions", ref1!.ResourceType);
+            Assert.AreEqual("us-central1", ref1.Name);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
 
         [Test]
         public void TryParse_WhenQualifiedByComputeGoogleapisHost()
         {
-            Assert.IsTrue(ZoneLocator.TryParse(
-                "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a",
+            Assert.IsTrue(RegionLocator.TryParse(
+                "https://compute.googleapis.com/compute/v1/projects/project-1/regions/us-central1",
                 out var ref1));
 
             Assert.IsNotNull(ref1);
-            Assert.AreEqual("zones", ref1!.ResourceType);
-            Assert.AreEqual("us-central1-a", ref1.Name);
+            Assert.AreEqual("regions", ref1!.ResourceType);
+            Assert.AreEqual("us-central1", ref1.Name);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
 
         [Test]
         public void TryParse_WhenQualifiedByGoogleapisHost()
         {
-            Assert.IsTrue(ZoneLocator.TryParse(
-                "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a",
+            Assert.IsTrue(RegionLocator.TryParse(
+                "https://www.googleapis.com/compute/v1/projects/project-1/regions/us-central1",
                 out var ref1));
 
             Assert.IsNotNull(ref1);
-            Assert.AreEqual("zones", ref1!.ResourceType);
-            Assert.AreEqual("us-central1-a", ref1.Name);
+            Assert.AreEqual("regions", ref1!.ResourceType);
+            Assert.AreEqual("us-central1", ref1.Name);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
 
         [Test]
         public void TryParse_WhenPathLacksProject()
         {
-            Assert.IsFalse(ZoneLocator.TryParse(
-                "/project-1/project-1/zones/us-central1-a",
+            Assert.IsFalse(RegionLocator.TryParse(
+                "/project-1/project-1/regions/us-central1",
                 out var _));
         }
 
         [Test]
         public void TryParse_WhenPathInvalid()
         {
-            Assert.IsFalse(ZoneLocator.TryParse(
-                "projects/project-1/zone/us-central1-a",
+            Assert.IsFalse(RegionLocator.TryParse(
+                "projects/project-1/region/us-central1",
                 out var _));
-            Assert.IsFalse(ZoneLocator.TryParse(
-                "projects/project-1/zones",
+            Assert.IsFalse(RegionLocator.TryParse(
+                "projects/project-1/regions",
                 out var _));
         }
 
@@ -119,50 +110,50 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void Parse_WhenPathIsValid()
         {
-            var ref1 = ZoneLocator.Parse(
-                "projects/project-1/zones/us-central1-a");
+            var ref1 = RegionLocator.Parse(
+                "projects/project-1/regions/us-central1");
 
-            Assert.AreEqual("zones", ref1.ResourceType);
-            Assert.AreEqual("us-central1-a", ref1.Name);
+            Assert.AreEqual("regions", ref1.ResourceType);
+            Assert.AreEqual("us-central1", ref1.Name);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
 
         [Test]
         public void Parse_WhenQualifiedByComputeGoogleapisHost()
         {
-            var ref1 = ZoneLocator.Parse(
-                "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a");
+            var ref1 = RegionLocator.Parse(
+                "https://compute.googleapis.com/compute/v1/projects/project-1/regions/us-central1");
 
-            Assert.AreEqual("zones", ref1.ResourceType);
-            Assert.AreEqual("us-central1-a", ref1.Name);
+            Assert.AreEqual("regions", ref1.ResourceType);
+            Assert.AreEqual("us-central1", ref1.Name);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
 
         [Test]
         public void Parse_WhenQualifiedByGoogleapisHost()
         {
-            var ref1 = ZoneLocator.Parse(
-                "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a");
+            var ref1 = RegionLocator.Parse(
+                "https://www.googleapis.com/compute/v1/projects/project-1/regions/us-central1");
 
-            Assert.AreEqual("zones", ref1.ResourceType);
-            Assert.AreEqual("us-central1-a", ref1.Name);
+            Assert.AreEqual("regions", ref1.ResourceType);
+            Assert.AreEqual("us-central1", ref1.Name);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
 
         [Test]
         public void Parse_WhenPathLacksProject()
         {
-            Assert.Throws<ArgumentException>(() => ZoneLocator.Parse(
-                "/project-1/project-1/zones/us-central1-a"));
+            Assert.Throws<ArgumentException>(() => RegionLocator.Parse(
+                "/project-1/project-1/regions/us-central1"));
         }
 
         [Test]
         public void Parse_WhenPathInvalid()
         {
-            Assert.Throws<ArgumentException>(() => ZoneLocator.Parse(
-                "projects/project-1/zone/us-central1-a"));
-            Assert.Throws<ArgumentException>(() => ZoneLocator.Parse(
-                "projects/project-1/zones"));
+            Assert.Throws<ArgumentException>(() => RegionLocator.Parse(
+                "projects/project-1/region/us-central1"));
+            Assert.Throws<ArgumentException>(() => RegionLocator.Parse(
+                "projects/project-1/regions"));
         }
 
         //---------------------------------------------------------------------
@@ -172,8 +163,8 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void Equals_WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
         {
-            var ref1 = new ZoneLocator("proj-1", "us-central1-a");
-            var ref2 = new ZoneLocator("proj-2", "us-central1-a");
+            var ref1 = new RegionLocator("proj-1", "us-central1");
+            var ref2 = new RegionLocator("proj-2", "us-central1");
 
             Assert.IsFalse(ref1.Equals(ref2));
             Assert.IsFalse(ref1.Equals((object)ref2));
@@ -188,21 +179,21 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
         {
-            var path = "projects/project-1/zones/us-central1-a";
+            var path = "projects/project-1/regions/us-central1";
 
             Assert.AreEqual(
                 path,
-                ZoneLocator.Parse(path).ToString());
+                RegionLocator.Parse(path).ToString());
         }
 
         [Test]
         public void ToString_WhenCreatedFromUrl_ThenToStringReturnsPath()
         {
-            var path = "projects/project-1/zones/us-central1-a";
+            var path = "projects/project-1/regions/us-central1";
 
             Assert.AreEqual(
                 path,
-                ZoneLocator.Parse(
+                RegionLocator.Parse(
                     "https://www.googleapis.com/compute/v1/" + path).ToString());
         }
     }

@@ -64,9 +64,15 @@ namespace Google.Solutions.Apis.Compute
         /// <summary>
         /// Certify a user's public key.
         /// </summary>
-        /// <param name="zone"></param>
         /// <param name="key">public key, in OpenSSH format</param>
-        /// <returns></returns>
+        Task<string> SignPublicKeyAsync(
+            ZoneLocator zone,
+            ulong instanceId,
+            string? attachedServiceAccountEmail,
+            string key,
+            CancellationToken cancellationToken);
+
+        [Obsolete]
         Task<string> SignPublicKeyAsync(
             ZoneLocator zone,
             string key,
@@ -85,6 +91,13 @@ namespace Google.Solutions.Apis.Compute
         Task DeleteSshPublicKeyAsync(
             string fingerprint,
             CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Create a POSIX account if it doesn't exist.
+        /// </summary>
+        Task<PosixAccount> ProvisionPosixProfileAsync(
+           RegionLocator region,
+           CancellationToken cancellationToken);
 
         /// <summary>
         /// List enrolled U2F and WebAuthn security keys.
@@ -209,18 +222,20 @@ namespace Google.Solutions.Apis.Compute
                         // Key wasn't added.
                         //
                         throw new ResourceAccessDeniedException(
-                            "You do not have sufficient permissions to publish an SSH " +
-                            "key to OS Login",
+                            "You do not have sufficient permissions to publish " +
+                            "an SSH key to OS Login",
                             HelpTopics.ManagingOsLogin,
-                            new GoogleApiException("oslogin", response.Details ?? string.Empty));
+                            new GoogleApiException(
+                                "oslogin", 
+                                response.Details ?? string.Empty));
                     }
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     //
                     // Likely reason: The user account is a consumer account or
-                    // an administrator has disabled POSIX account/SSH key information
-                    // updates in the Admin Console.
+                    // an administrator has disabled POSIX account/SSH key
+                    // information updates in the Admin Console.
                     //
                     throw new ResourceAccessDeniedException(
                         "You do not have sufficient permissions to use OS Login: " +
@@ -284,7 +299,9 @@ namespace Google.Solutions.Apis.Compute
                 try
                 {
                     await this.service.Users.SshPublicKeys
-                        .Delete($"users/{this.EncodedUserPathComponent}/sshPublicKeys/{fingerprint}")
+                        .Delete(
+                            $"users/{this.EncodedUserPathComponent}/" +
+                            $"sshPublicKeys/{fingerprint}")
                         .ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
@@ -299,8 +316,19 @@ namespace Google.Solutions.Apis.Compute
             }
         }
 
+        [Obsolete]
+        public Task<string> SignPublicKeyAsync(
+            ZoneLocator zone,
+            string key,
+            CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<string> SignPublicKeyAsync(
             ZoneLocator zone,
+            ulong instanceId,
+            string? attachedServiceAccountEmail,
             string key,
             CancellationToken cancellationToken)
         {
@@ -312,31 +340,13 @@ namespace Google.Solutions.Apis.Compute
                         this.service,
                         new BetaSignSshPublicKeyRequestData()
                         {
+                            ComputeInstance = 
+                                $"projects/{zone.ProjectId}/" +
+                                $"zones/{zone.Name}/instances/{instanceId}",
+                            ServiceAccount = attachedServiceAccountEmail,
                             SshPublicKey = key
                         },
-                        $"users/{this.EncodedUserPathComponent}/projects/{zone.ProjectId}/locations/{zone.Name}");
-
-                    if (this.authorization.Session is IWorkforcePoolSession)
-                    {
-                        //
-                        // This is a non-resourceful API. Charging to a client
-                        // project doesn't work with workforce identity, so we
-                        // have to do one of the following:
-                        //
-                        // (1) Pass an API key that's from the same project as the
-                        //     OAuth client.
-                        //
-                        // (2) Pass an API key from any project, and set the
-                        //     quota project.
-                        //
-                        //     This requires the user to have the
-                        //     serviceusage.services.use permission.
-                        //
-                        // Option (1) isn't viable currently, so we need to do (2).
-                        //
-
-                        request.UserProject = zone.ProjectId;
-                    }
+                        $"projects/{zone.ProjectId}/locations/{zone.Region.Name}");
 
                     var response = await request
                         .ExecuteAsync(cancellationToken)
@@ -354,34 +364,55 @@ namespace Google.Solutions.Apis.Compute
                     e.Error.Message != null &&
                     e.Error.Message.Contains("google.posix_username"))
                 {
-                    throw new ExternalIdpNotConfiguredForOsLoginException(
-                        "Your workforce identity provider configuration doesn't contain " +
-                        "an attribute mapping for 'google.posix_username'. This mapping is " +
-                        "required for using OS Login.",
-                        e);
+                    throw new ExternalIdpNotConfiguredForOsLoginException(e);
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
-                    if (e.Error?.Message is var message &&
-                        message != null &&
-                        message.Contains("roles/serviceusage.serviceUsageConsumer"))
-                    {
-                        throw new ResourceAccessDeniedException(
-                            "You do not have sufficient access to log in.\n\n" +
-                            "Because you've authenticated using workforce identity federation, " +
-                            "you additionally need the 'Service Usage Consumer' role " +
-                            "(or an equivalent custom role) to log in.",
-                            HelpTopics.UseOsLoginWithWorkforceIdentity,
-                            e);
-                    }
-                    else
-                    {
-                        throw new ResourceAccessDeniedException(
-                            "You do not have sufficient access to log in: " +
-                            e.Error?.Message ?? "access denied",
-                            HelpTopics.ManagingOsLogin,
-                            e);
-                    }
+                    throw new ResourceAccessDeniedException(
+                        "You do not have sufficient access to log in: " +
+                        e.Error?.Message ?? "access denied",
+                        HelpTopics.ManagingOsLogin,
+                        e);
+                }
+            }
+        }
+
+        public async Task<PosixAccount> ProvisionPosixProfileAsync(
+            RegionLocator region,
+            CancellationToken cancellationToken)
+        {
+            using (ApiTraceSource.Log.TraceMethod().WithoutParameters())
+            {
+                try
+                {
+                    var request = new BetaProvisionPosixAccountRequest(
+                        this.service,
+                        new BetaProvisionPosixAccountRequestData()
+                        {
+                            Regions = new[] { region.Name }
+                        },
+                        $"users/{this.EncodedUserPathComponent}/projects/{region.ProjectId}");
+
+                    return await request
+                        .ExecuteAsync(cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (GoogleApiException e) when (
+                    e.Error != null &&
+                    e.Error.Code == 400 &&
+                    e.Error.Message != null &&
+                    e.Error.Message.Contains("google.posix_username"))
+                {
+                    throw new ExternalIdpNotConfiguredForOsLoginException(e);
+                }
+                catch (GoogleApiException e) when (e.IsAccessDenied())
+                {
+                    throw new ResourceAccessDeniedException(
+                        "You do not have sufficient access to create " +
+                        "a POSIX profile: " + 
+                        e.Error?.Message ?? "access denied",
+                        HelpTopics.ManagingOsLogin,
+                        e);
                 }
             }
         }
@@ -432,43 +463,83 @@ namespace Google.Solutions.Apis.Compute
 
         #region Request entities
 
-        private class BetaSignSshPublicKeyResponseData : IDirectResponseSchema
+        public class BetaSignSshPublicKeyRequestData : IDirectResponseSchema
         {
-            [JsonProperty("signedSshPublicKey")]
-            public virtual string? SignedSshPublicKey { get; set; }
+            /// <summary>
+            /// The App Engine instance to sign the SSH public key for. 
+            /// 
+            /// Expected format:
+            /// apps/{app}/services/{service}/versions/{version}/instances/{instance}
+            /// </summary>
+            [JsonProperty("appEngineInstance")]
+            public virtual string? AppEngineInstance { get; set; }
 
-            public virtual string? ETag { get; set; }
-        }
+            /// <summary>
+            /// The Compute instance to sign the SSH public key for. 
+            /// 
+            /// Expected format:
+            /// projects/{project}/zones/{zone}/instances/{numeric_instance_id}
+            /// </summary>
+            [JsonProperty("computeInstance")]
+            public virtual string? ComputeInstance { get; set; }
 
-        private class BetaSignSshPublicKeyRequestData : IDirectResponseSchema
-        {
+            /// <summary>
+            /// Optional. The service account for the instance. 
+            /// </summary>
+            [JsonProperty("serviceAccount")]
+            public virtual string? ServiceAccount { get; set; }
+
+            /// <summary>
+            /// The SSH public key to sign.
+            /// </summary>
             [JsonProperty("sshPublicKey")]
             public virtual string? SshPublicKey { get; set; }
 
+            /// <summary>
+            /// The ETag of the item.
+            /// </summary>
             public virtual string? ETag { get; set; }
         }
 
-        private class BetaSignSshPublicKeyRequest
-            : CloudOSLoginBaseServiceRequest<BetaSignSshPublicKeyResponseData>
+        public class BetaSignSshPublicKeyResponseData : IDirectResponseSchema
         {
+            /// <summary>
+            /// The signed SSH public key to use in the SSH handshake.
+            /// </summary>
+            [JsonProperty("signedSshPublicKey")]
+            public virtual string? SignedSshPublicKey { get; set; }
+
+            /// <summary>
+            /// The ETag of the item.
+            /// </summary>
+            public virtual string? ETag { get; set; }
+        }
+
+        public class BetaSignSshPublicKeyRequest : 
+            CloudOSLoginBaseServiceRequest<BetaSignSshPublicKeyResponseData>
+        {
+            /// <summary>
+            /// The parent for the signing request. Format: 
+            /// projects/{project}/locations/{location}
+            /// </summary>
             [RequestParameter("parent")]
             public virtual string Parent { get; private set; }
+
             private BetaSignSshPublicKeyRequestData Body { get; set; }
+
             public override string MethodName => "signSshPublicKey";
             public override string HttpMethod => "POST";
             public override string RestPath => "v1beta/{+parent}:signSshPublicKey";
 
-            [RequestParameter("$userProject")]
-            public virtual string? UserProject { get; set; }
-
             public BetaSignSshPublicKeyRequest(
-                IClientService service,
-                BetaSignSshPublicKeyRequestData body,
+                IClientService service, 
+                BetaSignSshPublicKeyRequestData body, 
                 string parent)
                 : base(service)
             {
                 this.Parent = parent;
                 this.Body = body;
+                
                 InitParameters();
             }
 
@@ -486,21 +557,74 @@ namespace Google.Solutions.Apis.Compute
                     IsRequired = true,
                     ParameterType = "path",
                     DefaultValue = null,
-                    Pattern = "^users/[^/]+/projects/[^/]+/locations/[^/]+$"
+                    Pattern = "^projects/[^/]+/locations/[^/]+$"
                 });
-                this.RequestParameters.Add("$userProject", new Parameter
+            }
+        }
+
+        public class BetaProvisionPosixAccountRequestData : IDirectResponseSchema
+        {
+            /// <summary>
+            /// Optional. The regions to wait for a POSIX account to be written 
+            /// to before returning a response. If unspecified, defaults to all 
+            /// regions. 
+            /// </summary>
+            [JsonProperty("regions")]
+            public virtual IList<string>? Regions { get; set; }
+
+            /// <summary>The ETag of the item.</summary>
+            public virtual string? ETag { get; set; }
+        }
+
+        public class BetaProvisionPosixAccountRequest : CloudOSLoginBaseServiceRequest<PosixAccount>
+        {
+            /// <summary>
+            /// The unique ID for the user in format `users/{user}/projects/{project}`.
+            /// </summary>
+            [RequestParameter("name")]
+            public virtual string Name { get; private set; }
+
+            public override string MethodName => "provisionPosixAccount";
+            public override string HttpMethod => "POST";
+            public override string RestPath => "v1beta/{+name}";
+
+            private BetaProvisionPosixAccountRequestData Body { get; set; }
+
+            public BetaProvisionPosixAccountRequest(
+                IClientService service,
+                BetaProvisionPosixAccountRequestData body,
+                string name)
+                : base(service)
+            {
+                this.Name = name;
+                this.Body = body;
+                InitParameters();
+            }
+
+            protected override object GetBody()
+            {
+                return this.Body;
+            }
+
+            protected override void InitParameters()
+            {
+                base.InitParameters();
+                this.RequestParameters.Add("name", new Parameter
                 {
-                    Name = "$userProject",
-                    IsRequired = false,
-                    ParameterType = "query",
-                    DefaultValue = null
+                    Name = "name",
+                    IsRequired = true,
+                    ParameterType = "path",
+                    DefaultValue = null,
+                    Pattern = "^users/[^/]+/projects/[^/]+$"
                 });
             }
         }
 
         private class BetaLoginProfile : IDirectResponseSchema
         {
-            /// <summary>The registered security key credentials for a user.</summary>
+            /// <summary>
+            /// The registered security key credentials for a user.
+            /// </summary>
             [JsonProperty("securityKeys")]
             public virtual IList<SecurityKey>? SecurityKeys { get; set; }
 
@@ -543,7 +667,8 @@ namespace Google.Solutions.Apis.Compute
             public virtual string? ETag { get; set; }
         }
 
-        private class BetaGetLoginProfileRequest : CloudOSLoginBaseServiceRequest<BetaLoginProfile>
+        private class BetaGetLoginProfileRequest : 
+            CloudOSLoginBaseServiceRequest<BetaLoginProfile>
         {
             public enum ViewEnum
             {
@@ -644,9 +769,12 @@ namespace Google.Solutions.Apis.Compute
         public IHelpTopic? Help { get; }
 
         public ExternalIdpNotConfiguredForOsLoginException(
-            string message,
             Exception inner)
-            : base(message, inner)
+            : base(
+                "Your workforce identity provider configuration doesn't " +
+                "contain an attribute mapping for 'google.posix_username'. " +
+                "This mapping is required for using OS Login.",
+                inner)
         {
             this.Help = HelpTopics.UseOsLoginWithWorkforceIdentity;
         }
