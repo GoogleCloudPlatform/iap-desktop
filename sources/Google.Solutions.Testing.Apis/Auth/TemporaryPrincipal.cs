@@ -89,7 +89,7 @@ namespace Google.Solutions.Testing.Apis.Auth
                     // Concurrent modification - back off and retry. 
                     //
                     await Task
-                        .Delay(backoff.GetNextBackOff(attempt))
+                        .Delay(backoff.GetNextBackOff(attempt + 1))
                         .ConfigureAwait(false);
                 }
             }
