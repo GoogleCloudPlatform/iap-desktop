@@ -169,15 +169,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 if (this.authorization.Session is IWorkforcePoolSession)
                 {
                     //
+                    // Make sure the user has a POSIX profile.
+                    //
+                    await this.client
+                        .ProvisionPosixProfileAsync(zone.Region, token)
+                        .ConfigureAwait(false);
+
+                    //
                     // Authorize the key by signing it.
                     //
                     // Note that we have no control over how long the
                     // certified key remains valid.
                     //
-
                     var certifiedKey = await this.client
                         .SignPublicKeyAsync(
                             zone,
+                            instanceId,
+                            attachedServiceAccount,
                             publicKey,
                             token)
                         .ConfigureAwait(false);

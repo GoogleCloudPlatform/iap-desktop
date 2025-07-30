@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
     public class TestOsLoginProfile
     {
         private static readonly ZoneLocator SampleZone =
-            new ZoneLocator("project-1", "zone-1");
+            new ZoneLocator("project-1", "region-1a");
 
         private static IAuthorization CreateAuthorization<TSession>()
             where TSession : class, IOidcSession
@@ -212,16 +212,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None), Times.Once());
                 Assert.AreEqual("joe", credential.Username);
                 Assert.AreEqual(KeyAuthorizationMethods.Oslogin, credential.AuthorizationMethod);
+
+                client.Verify(
+                    c => c.ProvisionPosixProfileAsync(
+                        It.IsAny<RegionLocator>(),
+                        It.IsAny<CancellationToken>()), 
+                    Times.Never);
             }
         }
 
         [Test]
         public async Task AuthorizeKey_WhenUsingWorkforceSession()
         {
+            var instanceId = 123u;
+            var serviceAccount = new ServiceAccountEmail("test@example.iam.gserviceaccount.com");
+
             var client = new Mock<IOsLoginClient>();
             client
                 .Setup(a => a.SignPublicKeyAsync(
-                    It.IsAny<ZoneLocator>(),
+                    SampleZone,
+                    instanceId,
+                    serviceAccount,
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync("ecdsa-sha2-nistp256-cert-v01@openssh.com AAAA joe");
@@ -234,21 +245,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             using (var credential = await profile
                 .AuthorizeKeyAsync(
                     SampleZone,
-                    123,
+                    instanceId,
                     OsLoginSystemType.Linux,
-                    null,
+                    serviceAccount,
                     signer,
                     TimeSpan.FromDays(1),
                     CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                client.Verify(c => c.SignPublicKeyAsync(
-                    SampleZone,
-                    signer.PublicKey.ToString(PublicKey.Format.OpenSsh),
-                    CancellationToken.None), Times.Once());
                 Assert.AreEqual("joe", credential.Username);
                 Assert.AreEqual(KeyAuthorizationMethods.Oslogin, credential.AuthorizationMethod);
                 Assert.IsInstanceOf<OsLoginCertificateSigner>(credential.Signer);
+
+                client.Verify(
+                    c => c.ProvisionPosixProfileAsync(
+                        SampleZone.Region,
+                        It.IsAny<CancellationToken>()),
+                    Times.Once);
             }
         }
 
