@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void LookupUsername_WhenProfileContainsMultipleAccounts_ThenLookupUsernamePrimary()
+        public void LookupUsername_WhenProfileContainsMultipleAccounts()
         {
             var loginProfile = new LoginProfile()
             {
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void LookupUsername_WhenProfileContainsNoAccount_ThenLookupUsernameThrowsException()
+        public void LookupUsername_WhenProfileContainsNoAccount()
         {
             Assert.Throws<InvalidOsLoginProfileException>(
                 () => OsLoginProfile.LookupUsername(new LoginProfile()));
@@ -107,46 +107,58 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void AuthorizeKey_WhenArgumentsIncomplete_ThenAuthorizeKeyAsyncThrowsArgumentException()
+        public void AuthorizeKey_WhenArgumentsIncomplete()
         {
             var profile = new OsLoginProfile(
                 new Mock<IOsLoginClient>().Object,
                 CreateAuthorization<IGaiaOidcSession>());
 
-            ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => profile.AuthorizeKeyAsync(
-                null!,
-                OsLoginSystemType.Linux,
-                new Mock<IAsymmetricKeySigner>().Object,
-                TimeSpan.FromDays(1),
-                CancellationToken.None).Wait());
+            ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(
+                () => profile.AuthorizeKeyAsync(
+                    null!,
+                    0,
+                    OsLoginSystemType.Linux,
+                    null,
+                    new Mock<IAsymmetricKeySigner>().Object,
+                    TimeSpan.FromDays(1),
+                    CancellationToken.None).Wait());
 
-            ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => profile.AuthorizeKeyAsync(
-                SampleZone,
-                OsLoginSystemType.Linux,
-                null!,
-                TimeSpan.FromDays(1),
-                CancellationToken.None).Wait());
+            ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(
+                () => profile.AuthorizeKeyAsync(
+                    SampleZone,
+                    0,
+                    OsLoginSystemType.Linux,
+                    null,
+                    null!,
+                    TimeSpan.FromDays(1),
+                    CancellationToken.None).Wait());
         }
 
         [Test]
-        public void AuthorizeKey_WhenValidityIsZeroOrNegative_ThenAuthorizeKeyAsyncThrowsArgumentException()
+        public void AuthorizeKey_WhenValidityIsZeroOrNegative()
         {
             var profile = new OsLoginProfile(
                 new Mock<IOsLoginClient>().Object,
                 CreateAuthorization<IGaiaOidcSession>());
 
-            ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => profile.AuthorizeKeyAsync(
-                SampleZone,
-                OsLoginSystemType.Linux,
-                new Mock<IAsymmetricKeySigner>().Object,
-                TimeSpan.FromDays(-1),
-                CancellationToken.None).Wait());
-            ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => profile.AuthorizeKeyAsync(
-                SampleZone,
-                OsLoginSystemType.Linux,
-                new Mock<IAsymmetricKeySigner>().Object,
-                TimeSpan.FromSeconds(0),
-                CancellationToken.None).Wait());
+            ExceptionAssert.ThrowsAggregateException<ArgumentException>(
+                () => profile.AuthorizeKeyAsync(
+                    SampleZone,
+                    0,
+                    OsLoginSystemType.Linux,
+                    null,
+                    new Mock<IAsymmetricKeySigner>().Object,
+                    TimeSpan.FromDays(-1),
+                    CancellationToken.None).Wait());
+            ExceptionAssert.ThrowsAggregateException<ArgumentException>(
+                () => profile.AuthorizeKeyAsync(
+                    SampleZone,
+                    0,
+                    OsLoginSystemType.Linux,
+                    null,
+                    new Mock<IAsymmetricKeySigner>().Object,
+                    TimeSpan.FromSeconds(0),
+                    CancellationToken.None).Wait());
         }
 
         //---------------------------------------------------------------------
@@ -154,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task AuthorizeKey_WhenUsingGaiaSession_ThenAuthorizeImportsKey()
+        public async Task AuthorizeKey_WhenUsingGaiaSession()
         {
             var client = new Mock<IOsLoginClient>();
             client
@@ -185,7 +197,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             using (var credential = await profile
                 .AuthorizeKeyAsync(
                     SampleZone,
+                    123,
                     OsLoginSystemType.Linux,
+                    null,
                     signer,
                     TimeSpan.FromDays(1),
                     CancellationToken.None)
@@ -202,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task AuthorizeKey_WhenUsingWorkforceSession_ThenAuthorizeSignsKey()
+        public async Task AuthorizeKey_WhenUsingWorkforceSession()
         {
             var client = new Mock<IOsLoginClient>();
             client
@@ -220,7 +234,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             using (var credential = await profile
                 .AuthorizeKeyAsync(
                     SampleZone,
+                    123,
                     OsLoginSystemType.Linux,
+                    null,
                     signer,
                     TimeSpan.FromDays(1),
                     CancellationToken.None)
@@ -241,7 +257,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task ListAuthorizedKeys_WhenProfileIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
+        public async Task ListAuthorizedKeys_WhenProfileIsEmpty()
         {
             var client = new Mock<IOsLoginClient>();
             client.Setup(a => a.GetLoginProfileAsync(
@@ -263,7 +279,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task ListAuthorizedKeys_WhenProfileContainsInvalidKeys_ThenListAuthorizedKeysIgnoresThem()
+        public async Task ListAuthorizedKeys_WhenProfileContainsInvalidKeys()
         {
             var client = new Mock<IOsLoginClient>();
             client.Setup(a => a.GetLoginProfileAsync(
@@ -319,7 +335,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task ListAuthorizedKeys_WhenProfileContainsKeyWithExpiryDate_ThenExpiryDateIsConverted()
+        public async Task ListAuthorizedKeys_WhenProfileContainsKeyWithExpiryDate()
         {
             var firstOfJan = new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
@@ -364,7 +380,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task DeleteAuthorizedKey_WhenKeyValid_ThenDeleteAuthorizedKeyDeletesKey()
+        public async Task DeleteAuthorizedKey_WhenKeyValid()
         {
             var client = new Mock<IOsLoginClient>();
             client.Setup(a => a.GetLoginProfileAsync(

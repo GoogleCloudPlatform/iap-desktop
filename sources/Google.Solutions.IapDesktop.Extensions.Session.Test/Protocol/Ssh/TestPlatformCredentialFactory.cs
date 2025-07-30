@@ -118,7 +118,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             osLoginService
                 .Setup(s => s.AuthorizeKeyAsync(
                         It.IsAny<ZoneLocator>(),
+                        It.IsAny<ulong>(),
                         It.Is((OsLoginSystemType os) => os == OsLoginSystemType.Linux),
+                        It.IsAny<ServiceAccountEmail>(),
                         It.IsAny<IAsymmetricKeySigner>(),
                         It.IsAny<TimeSpan>(),
                         It.IsAny<CancellationToken>()))

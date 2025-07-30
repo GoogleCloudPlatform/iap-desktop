@@ -50,7 +50,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         /// </summary>
         Task<PlatformCredential> AuthorizeKeyAsync(
             ZoneLocator zone,
+            ulong instanceId,
             OsLoginSystemType os,
+            ServiceAccountEmail? attachedServiceAccount,
             IAsymmetricKeySigner key,
             TimeSpan validity,
             CancellationToken token);
@@ -124,7 +126,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public async Task<PlatformCredential> AuthorizeKeyAsync(
             ZoneLocator zone,
+            ulong instanceId,
             OsLoginSystemType os,
+            ServiceAccountEmail? attachedServiceAccount,
             IAsymmetricKeySigner key,
             TimeSpan validity,
             CancellationToken token)
