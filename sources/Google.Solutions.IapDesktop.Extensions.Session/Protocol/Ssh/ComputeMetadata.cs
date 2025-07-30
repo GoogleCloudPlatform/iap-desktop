@@ -304,6 +304,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 .GetValue(MetadataAuthorizedPublicKeySet.LegacyMetadataKey));
         }
 
+        /// <summary>
+        /// Email of attached service account, if any.
+        /// </summary>
+        public string? AttachedServiceAccountEmail
+        {
+            get => this.instanceDetails.ServiceAccounts
+                .EnsureNotNull()
+                .FirstOrDefault()?
+                .Email;
+        }
+
         public override IEnumerable<MetadataAuthorizedPublicKey> ListAuthorizedKeys(
             KeyAuthorizationMethods allowedMethods)
         {

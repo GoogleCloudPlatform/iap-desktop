@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task IsOsLoginEnabled_WhenValueIsTruthy_ThenIsOsLoginEnabledReturnsTrue(
+        public async Task IsOsLoginEnabled_WhenValueIsTruthy(
             [Values("Y", "y\n", "True ", " 1 ")] string truthyValue)
         {
             var processor = await InstanceMetadata.GetAsync(
@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task IsOsLoginEnabled_WhenValueIsNotTruthy_ThenIsOsLoginEnabledReturnsFalse(
+        public async Task IsOsLoginEnabled_WhenValueIsNotTruthy(
             [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
         {
             var processor = await InstanceMetadata.GetAsync(
@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task IsOsLoginEnabled_WhenOsLoginEnabledForProjectButDisabledForInstance_ThenIsOsLoginEnabledReturnsFalse()
+        public async Task IsOsLoginEnabled_WhenOsLoginEnabledForProjectButDisabledForInstance()
         {
             var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
@@ -239,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsTruthy_ThenIsOsLoginWithSecurityKeyEnabledReturnsTrue(
+        public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsTruthy(
             [Values("Y", "y\n", "True ", " 1 ")] string truthyValue)
         {
             var processor = await InstanceMetadata.GetAsync(
@@ -265,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsNotTruthy_ThenIsOsLoginWithSecurityKeyEnabledReturnsFalse(
+        public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsNotTruthy(
             [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
         {
             var processor = await InstanceMetadata.GetAsync(
@@ -291,7 +291,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsMissing_ThenIsOsLoginWithSecurityKeyEnabledReturnsFalse()
+        public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsMissing()
         {
             var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
@@ -306,7 +306,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task IsOsLoginWithSecurityKeyEnabled_WhenOsLoginWithSecurityKeyEnabledForProjectButDisabledForInstance_ThenIsOsLoginWithSecurityKeyEnabledReturnsFalse()
+        public async Task IsOsLoginWithSecurityKeyEnabled_WhenOsLoginWithSecurityKeyEnabledForProjectButDisabledForInstance()
         {
             var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
@@ -345,7 +345,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task AreProjectSshKeysBlocked_WhenValueIsTruthy_ThenAreProjectSshKeysBlockedReturnsTrue(
+        public async Task AreProjectSshKeysBlocked_WhenValueIsTruthy(
             [Values("Y", "y\n", "True ", " 1 ")] string truthyValue)
         {
             var processor = await InstanceMetadata.GetAsync(
@@ -371,7 +371,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task AreProjectSshKeysBlocked_WhenValueIsNotTruthy_ThenAreProjectSshKeysBlockedReturnsFalse(
+        public async Task AreProjectSshKeysBlocked_WhenValueIsNotTruthy(
             [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
         {
             var processor = await InstanceMetadata.GetAsync(
@@ -397,7 +397,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task AreProjectSshKeysBlocked_WhenProjectSshKeysBlockedForProjectButNotForInstance_ThenAreProjectSshKeysBlockedReturnsFalse()
+        public async Task AreProjectSshKeysBlocked_WhenProjectSshKeysBlockedForProjectButNotForInstance()
         {
             var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
@@ -436,7 +436,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task AuthorizeKey_WhenLegacySshKeyPresent_ThenAuthorizeKeyAsyncThrowsUnsupportedLegacySshKeyEncounteredException()
+        public async Task AuthorizeKey_WhenLegacySshKeyPresent()
         {
             var processor = await InstanceMetadata.GetAsync(
                     CreateComputeEngineAdapterMock(
@@ -459,7 +459,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task AuthorizeKey_WhenExistingUnmanagedKeyFound_ThenKeyIsNotPushedAgain()
+        public async Task AuthorizeKey_WhenExistingUnmanagedKeyFound()
         {
             using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072))
             {
@@ -512,7 +512,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task AuthorizeKey_WhenExistingValidManagedKeyFound_ThenKeyIsNotPushedAgain()
+        public async Task AuthorizeKey_WhenExistingValidManagedKeyFound()
         {
             using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072))
             {
@@ -565,7 +565,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task AuthorizeKey_WhenExistingManagedKeyOfDifferentTypeFound_ThenNewKeyIsPushed()
+        public async Task AuthorizeKey_WhenExistingManagedKeyOfDifferentTypeFound()
         {
             using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072))
             {
@@ -620,7 +620,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task AuthorizeKey_WhenExpiredManagedKeyFound_ThenNewKeyIsPushed()
+        public async Task AuthorizeKey_WhenExpiredManagedKeyFound()
         {
             using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.Rsa3072))
             {
@@ -679,7 +679,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task AuthorizeKey_WhenProjectWideSshKeysBlockedInProject_ThenAuthorizeKeyAsyncPushesKeyToInstanceMetadata()
+        public async Task AuthorizeKey_WhenProjectWideSshKeysBlockedInProject()
         {
             var computeClient = CreateComputeEngineAdapterMock(
                 legacySshKeyPresent: false,
@@ -717,7 +717,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task AuthorizeKey_WhenProjectWideSshKeysBlockedInInstance_ThenAuthorizeKeyAsyncPushesKeyToInstanceMetadata()
+        public async Task AuthorizeKey_WhenProjectWideSshKeysBlockedInInstance()
         {
             var computeClient = CreateComputeEngineAdapterMock(
                 legacySshKeyPresent: false,
@@ -755,7 +755,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task AuthorizeKey_WhenProjectMetadataNotWritable_ThenAuthorizeKeyAsyncPushesKeyToInstanceMetadata()
+        public async Task AuthorizeKey_WhenProjectMetadataNotWritable()
         {
             var computeClient = CreateComputeEngineAdapterMock(
                 legacySshKeyPresent: false,
@@ -793,7 +793,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task AuthorizeKey_WhenProjectWideSshKeysBlockedButInstanceMetadataNotAllowed_ThenAuthorizeKeyThrowsInvalidOperationException()
+        public async Task AuthorizeKey_WhenProjectWideSshKeysBlockedButInstanceMetadataNotAllowed()
         {
             var computeClient = CreateComputeEngineAdapterMock(
                 legacySshKeyPresent: false,
@@ -818,7 +818,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task AuthorizeKey_WhenProjectMetadataNotAllowed_ThenAuthorizeKeyAsyncPushesKeyToInstanceMetadata()
+        public async Task AuthorizeKey_WhenProjectMetadataNotAllowed()
         {
             var computeClient = CreateComputeEngineAdapterMock(
                 legacySshKeyPresent: false,
@@ -856,7 +856,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task AuthorizeKey_WhenProjectAndInstanceMetadataAllowed_ThenAuthorizeKeyAsyncPushesKeyToProjectMetadata()
+        public async Task AuthorizeKey_WhenProjectAndInstanceMetadataAllowed()
         {
             var computeClient = CreateComputeEngineAdapterMock(
                 legacySshKeyPresent: false,
@@ -894,7 +894,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task AuthorizeKey_WhenMetadataUpdateFails_ThenAuthorizeKeyAsyncThrowsSshKeyPushFailedException(
+        public async Task AuthorizeKey_WhenMetadataUpdateFails(
             [Values(
                 HttpStatusCode.Forbidden,
                 HttpStatusCode.BadRequest)] HttpStatusCode httpStatus)
@@ -939,7 +939,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task ListAuthorizedKeys_WhenMetadataIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
+        public async Task ListAuthorizedKeys_WhenMetadataIsEmpty()
         {
             var processor = await InstanceMetadata.GetAsync(
                     CreateComputeEngineClientMock(
@@ -956,7 +956,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task ListAuthorizedKeys_WhenMetadataItemIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
+        public async Task ListAuthorizedKeys_WhenMetadataItemIsEmpty()
         {
             var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
@@ -991,7 +991,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task ListAuthorizedKeys_WhenMethodIsNeitherProjectNorInstance_ThenListAuthorizedKeysReturnsEmptyList()
+        public async Task ListAuthorizedKeys_WhenMethodIsNeitherProjectNorInstance()
         {
             var processor = await InstanceMetadata.GetAsync(
                     CreateComputeEngineClientMock(
@@ -1008,7 +1008,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task ListAuthorizedKeys_WhenMethodIsInstance_ThenListAuthorizedKeysReturnsInstanceKeys()
+        public async Task ListAuthorizedKeys_WhenMethodIsInstance()
         {
             var projectMetadata = new Metadata();
             projectMetadata.Add(
@@ -1050,7 +1050,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task ListAuthorizedKeys_WhenMethodIsProject_ThenListAuthorizedKeysReturnsInstanceKeys()
+        public async Task ListAuthorizedKeys_WhenMethodIsProject()
         {
             var projectMetadata = new Metadata();
             projectMetadata.Add(
@@ -1092,7 +1092,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task ListAuthorizedKeys_WhenMethodIsAll_ThenListAuthorizedKeysReturnsAllKeys()
+        public async Task ListAuthorizedKeys_WhenMethodIsAll()
         {
             var projectMetadata = new Metadata();
             projectMetadata.Add(
@@ -1140,7 +1140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task RemoveAuthorizedKey_WhenMethodIsAll_ThenRemoveAuthorizedKeyUpdatesProjectAndInstanceMetadata()
+        public async Task RemoveAuthorizedKey_WhenMethodIsAll()
         {
             var bobsKey = new UnmanagedMetadataAuthorizedPublicKey(
                 "bob",
@@ -1190,6 +1190,79 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 It.IsAny<InstanceLocator>(),
                 It.IsAny<Action<Metadata>>(),
                 It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        //---------------------------------------------------------------------
+        // AttachedServiceAccountEmail.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task AttachedServiceAccountEmail_WhenNoServiceAccountAttached()
+        {
+            var computeClient = new Mock<IComputeEngineClient>();
+            computeClient
+                .Setup(a => a.GetProjectAsync(
+                    It.IsAny<ProjectLocator>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Project()
+                {
+                });
+            computeClient
+                .Setup(a => a.GetInstanceAsync(
+                    It.IsAny<InstanceLocator>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Instance()
+                {
+                });
+
+            var processor = await InstanceMetadata
+                .GetAsync(
+                    computeClient.Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNull(processor.AttachedServiceAccountEmail);
+        }
+
+        [Test]
+        public async Task AttachedServiceAccountEmail_WhenServiceAccountAttached()
+        {
+            var computeClient = new Mock<IComputeEngineClient>();
+            computeClient
+                .Setup(a => a.GetProjectAsync(
+                    It.IsAny<ProjectLocator>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Project()
+                {
+                });
+            computeClient
+                .Setup(a => a.GetInstanceAsync(
+                    It.IsAny<InstanceLocator>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Instance()
+                {
+                    ServiceAccounts = new []
+                    {
+                        new ServiceAccount()
+                        {
+                            Email = "test@example.iam.gserviceaccount.com"
+                        }
+                    }
+                });
+
+            var processor = await InstanceMetadata
+                .GetAsync(
+                    computeClient.Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(
+                processor.AttachedServiceAccountEmail,
+                "test@example.iam.gserviceaccount.com");
         }
     }
 }
