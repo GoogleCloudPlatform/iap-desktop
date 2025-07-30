@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.CloudOSLogin.v1.Data;
+using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Apis.Compute;
@@ -35,6 +36,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -169,26 +171,46 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 if (this.authorization.Session is IWorkforcePoolSession)
                 {
                     //
-                    // Make sure the user has a POSIX profile.
+                    // Authorize the key by signing it. This may fail for
+                    // multiple reasons:
                     //
-                    await this.client
-                        .ProvisionPosixProfileAsync(zone.Region, token)
-                        .ConfigureAwait(false);
-
-                    //
-                    // Authorize the key by signing it.
+                    // - Missing OS Login permissions
+                    // - Missing actAs permission on the attached service account(if any)
+                    // - The user doesn't have a POSIX profile yet
                     //
                     // Note that we have no control over how long the
                     // certified key remains valid.
                     //
-                    var certifiedKey = await this.client
-                        .SignPublicKeyAsync(
-                            zone,
-                            instanceId,
-                            attachedServiceAccount,
-                            publicKey,
-                            token)
-                        .ConfigureAwait(false);
+                    string certifiedKey;
+                    try
+                    {
+                        certifiedKey = await this.client
+                            .SignPublicKeyAsync(
+                                zone,
+                                instanceId,
+                                attachedServiceAccount,
+                                publicKey,
+                                token)
+                            .ConfigureAwait(false);
+                    }
+                    catch (ResourceNotFoundException)
+                    {
+                        //
+                        // Crate a POSIX profile and try again.
+                        //
+                        await this.client
+                            .ProvisionPosixProfileAsync(zone.Region, token)
+                            .ConfigureAwait(false);
+
+                        certifiedKey = await this.client
+                            .SignPublicKeyAsync(
+                                zone,
+                                instanceId,
+                                attachedServiceAccount,
+                                publicKey,
+                                token)
+                            .ConfigureAwait(false);
+                    }
 
                     var certificateSigner = new OsLoginCertificateSigner(
                         key,

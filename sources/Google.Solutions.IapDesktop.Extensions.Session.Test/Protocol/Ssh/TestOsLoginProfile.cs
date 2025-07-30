@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.CloudOSLogin.v1.Data;
+using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Auth.Iam;
@@ -166,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task AuthorizeKey_WhenUsingGaiaSession()
+        public async Task AuthorizeKey_GaiaSession()
         {
             var client = new Mock<IOsLoginClient>();
             client
@@ -193,7 +194,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 client.Object,
                 CreateAuthorization<IGaiaOidcSession>());
 
-            using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.EcdsaNistp256))
+            using (var signer = AsymmetricKeySigner
+                .CreateEphemeral(SshKeyType.EcdsaNistp256))
             using (var credential = await profile
                 .AuthorizeKeyAsync(
                     SampleZone,
@@ -211,7 +213,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     TimeSpan.FromDays(1),
                     CancellationToken.None), Times.Once());
                 Assert.AreEqual("joe", credential.Username);
-                Assert.AreEqual(KeyAuthorizationMethods.Oslogin, credential.AuthorizationMethod);
+                Assert.AreEqual(
+                    KeyAuthorizationMethods.Oslogin, 
+                    credential.AuthorizationMethod);
 
                 client.Verify(
                     c => c.ProvisionPosixProfileAsync(
@@ -222,26 +226,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task AuthorizeKey_WhenUsingWorkforceSession()
+        public async Task AuthorizeKey_WorkforceSession_WhenPosixProfileNotFound()
         {
             var instanceId = 123u;
-            var serviceAccount = new ServiceAccountEmail("test@example.iam.gserviceaccount.com");
+            var serviceAccount = new ServiceAccountEmail(
+                "test@example.iam.gserviceaccount.com");
 
             var client = new Mock<IOsLoginClient>();
             client
-                .Setup(a => a.SignPublicKeyAsync(
+                .SetupSequence(a => a.SignPublicKeyAsync(
                     SampleZone,
                     instanceId,
                     serviceAccount,
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync("ecdsa-sha2-nistp256-cert-v01@openssh.com AAAA joe");
+                // Fail first call
+                .ThrowsAsync(new ResourceNotFoundException("Profile not found", null!))
+
+                // Succeed on second call
+                .ReturnsAsync(
+                    "ecdsa-sha2-nistp256-cert-v01@openssh.com AAAA joe");
 
             var profile = new OsLoginProfile(
                 client.Object,
                 CreateAuthorization<IWorkforcePoolSession>());
 
-            using (var signer = AsymmetricKeySigner.CreateEphemeral(SshKeyType.EcdsaNistp256))
+            using (var signer = AsymmetricKeySigner
+                .CreateEphemeral(SshKeyType.EcdsaNistp256))
             using (var credential = await profile
                 .AuthorizeKeyAsync(
                     SampleZone,
@@ -254,14 +265,67 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false))
             {
                 Assert.AreEqual("joe", credential.Username);
-                Assert.AreEqual(KeyAuthorizationMethods.Oslogin, credential.AuthorizationMethod);
-                Assert.IsInstanceOf<OsLoginCertificateSigner>(credential.Signer);
+                Assert.AreEqual(
+                    KeyAuthorizationMethods.Oslogin,
+                    credential.AuthorizationMethod);
+                Assert.IsInstanceOf<OsLoginCertificateSigner>(
+                    credential.Signer);
 
                 client.Verify(
                     c => c.ProvisionPosixProfileAsync(
                         SampleZone.Region,
                         It.IsAny<CancellationToken>()),
                     Times.Once);
+            }
+        }
+
+        [Test]
+        public async Task AuthorizeKey_WorkforceSession_WhenPosixProfileFound()
+        {
+            var instanceId = 123u;
+            var serviceAccount = new ServiceAccountEmail(
+                "test@example.iam.gserviceaccount.com");
+
+            var client = new Mock<IOsLoginClient>();
+            client
+                .Setup(a => a.SignPublicKeyAsync(
+                    SampleZone,
+                    instanceId,
+                    serviceAccount,
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(
+                    "ecdsa-sha2-nistp256-cert-v01@openssh.com AAAA joe");
+
+            var profile = new OsLoginProfile(
+                client.Object,
+                CreateAuthorization<IWorkforcePoolSession>());
+
+            using (var signer = AsymmetricKeySigner
+                .CreateEphemeral(SshKeyType.EcdsaNistp256))
+            using (var credential = await profile
+                .AuthorizeKeyAsync(
+                    SampleZone,
+                    instanceId,
+                    OsLoginSystemType.Linux,
+                    serviceAccount,
+                    signer,
+                    TimeSpan.FromDays(1),
+                    CancellationToken.None)
+                .ConfigureAwait(false))
+            {
+                Assert.AreEqual("joe", credential.Username);
+                Assert.AreEqual(
+                    KeyAuthorizationMethods.Oslogin, 
+                    credential.AuthorizationMethod);
+                Assert.IsInstanceOf<OsLoginCertificateSigner>(
+                    credential.Signer);
+
+                client.Verify(
+                    c => c.ProvisionPosixProfileAsync(
+                        SampleZone.Region,
+                        It.IsAny<CancellationToken>()),
+                    Times.Never);
             }
         }
 

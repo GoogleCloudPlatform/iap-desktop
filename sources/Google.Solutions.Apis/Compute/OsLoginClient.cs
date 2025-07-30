@@ -341,6 +341,12 @@ namespace Google.Solutions.Apis.Compute
                 {
                     throw new ExternalIdpNotConfiguredForOsLoginException(e);
                 }
+                catch (GoogleApiException e) when (e.IsNotFound())
+                {
+                    throw new ResourceNotFoundException(
+                        e.Error.Message ?? "The POSIX profile does not exist",
+                        e);
+                }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
