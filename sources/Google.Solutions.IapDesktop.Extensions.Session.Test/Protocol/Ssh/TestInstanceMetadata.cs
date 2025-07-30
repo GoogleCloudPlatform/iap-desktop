@@ -1193,11 +1193,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         //---------------------------------------------------------------------
-        // AttachedServiceAccountEmail.
+        // AttachedServiceAccount.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task AttachedServiceAccountEmail_WhenNoServiceAccountAttached()
+        public async Task AttachedServiceAccount_WhenNoServiceAccountAttached()
         {
             var computeClient = new Mock<IComputeEngineClient>();
             computeClient
@@ -1223,11 +1223,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(processor.AttachedServiceAccountEmail);
+            Assert.IsNull(processor.AttachedServiceAccount);
         }
 
         [Test]
-        public async Task AttachedServiceAccountEmail_WhenServiceAccountAttached()
+        public async Task AttachedServiceAccount_WhenServiceAccountAttached()
         {
             var computeClient = new Mock<IComputeEngineClient>();
             computeClient
@@ -1260,8 +1260,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
+            Assert.IsNotNull(processor.AttachedServiceAccount);
             Assert.AreEqual(
-                processor.AttachedServiceAccountEmail,
+                processor.AttachedServiceAccount!.Value,
                 "test@example.iam.gserviceaccount.com");
         }
     }

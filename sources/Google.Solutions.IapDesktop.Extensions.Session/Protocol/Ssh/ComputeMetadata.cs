@@ -307,12 +307,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         /// <summary>
         /// Email of attached service account, if any.
         /// </summary>
-        public string? AttachedServiceAccountEmail
+        public ServiceAccountEmail? AttachedServiceAccount
         {
-            get => this.instanceDetails.ServiceAccounts
-                .EnsureNotNull()
-                .FirstOrDefault()?
-                .Email;
+            get
+            {
+                if (this.instanceDetails.ServiceAccounts
+                    .EnsureNotNull()
+                    .FirstOrDefault()?
+                    .Email is string email)
+                {
+                    return new ServiceAccountEmail(email);
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
 
         public override IEnumerable<MetadataAuthorizedPublicKey> ListAuthorizedKeys(
