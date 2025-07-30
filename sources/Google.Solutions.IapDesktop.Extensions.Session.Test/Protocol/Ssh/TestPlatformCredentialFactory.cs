@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             return authorization;
         }
 
-        private Mock<IComputeEngineClient> CreateComputeEngineClientMock(
+        private static Mock<IComputeEngineClient> CreateComputeEngineClientMock(
             bool? osLoginEnabledForProject,
             bool? osLoginEnabledForInstance,
             bool osLogin2fa,

@@ -541,7 +541,6 @@ namespace Google.Solutions.IapDesktop
                         = accessSettings.ConnectionLimit.Value;
                 }
 
-                preAuthLayer.AddSingleton(OAuthClient.ApiKey);
                 preAuthLayer.AddSingleton(serviceRoute);
                 preAuthLayer.AddSingleton(GaiaOidcClient.CreateEndpoint(serviceRoute));
                 preAuthLayer.AddSingleton(WorkforcePoolClient.CreateEndpoint(serviceRoute));

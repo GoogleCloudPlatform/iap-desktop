@@ -59,7 +59,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     new OsLoginClient(
                         OsLoginClient.CreateEndpoint(),
                         authorization,
-                        TestProject.ApiKey,
                         TestProject.UserAgent),
                     authorization));
         }
