@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             metadata.Add(MetadataAuthorizedPublicKeySet.MetadataKey, newKeySet.ToString());
         }
 
-        protected async Task ModifyMetadataAndHandleErrorsAsync(
+        protected static async Task ModifyMetadataAndHandleErrorsAsync(
             Func<CancellationToken, Task> modifyMetadata,
             CancellationToken token)
         {
@@ -305,6 +305,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
 
         /// <summary>
+        /// Unique ID of the instance.
+        /// </summary>
+        public ulong InstanceId
+        {
+            get => this.instanceDetails.Id!.Value;
+        }
+
+        /// <summary>
         /// Email of attached service account, if any.
         /// </summary>
         public ServiceAccountEmail? AttachedServiceAccount
@@ -458,7 +466,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 //
                 // Neither project nor instance allowed.
                 //
-                throw new ArgumentException(nameof(allowedMethods));
+                throw new ArgumentException(
+                    "Unrecognized authorization method",
+                    nameof(allowedMethods));
             }
 
             var metadataKey = new ManagedMetadataAuthorizedPublicKey(

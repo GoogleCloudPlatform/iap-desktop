@@ -134,12 +134,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
             if (os != OsLoginSystemType.Linux)
             {
-                throw new ArgumentException("Unsupported OS", nameof(os));
+                throw new ArgumentException(
+                    "The OS is not supported",
+                    nameof(os));
             }
 
             if (validity.TotalSeconds <= 0)
             {
-                throw new ArgumentException(nameof(validity));
+                throw new ArgumentException(
+                    "Validity cannot be zero",
+                    nameof(validity));
             }
 
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(zone))

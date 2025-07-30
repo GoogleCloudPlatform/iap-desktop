@@ -68,7 +68,7 @@ namespace Google.Solutions.Apis.Compute
         Task<string> SignPublicKeyAsync(
             ZoneLocator zone,
             ulong instanceId,
-            string? attachedServiceAccountEmail,
+            ServiceAccountEmail? attachedServiceAccount,
             string key,
             CancellationToken cancellationToken);
 
@@ -328,7 +328,7 @@ namespace Google.Solutions.Apis.Compute
         public async Task<string> SignPublicKeyAsync(
             ZoneLocator zone,
             ulong instanceId,
-            string? attachedServiceAccountEmail,
+            ServiceAccountEmail? attachedServiceAccount,
             string key,
             CancellationToken cancellationToken)
         {
@@ -343,7 +343,7 @@ namespace Google.Solutions.Apis.Compute
                             ComputeInstance = 
                                 $"projects/{zone.ProjectId}/" +
                                 $"zones/{zone.Name}/instances/{instanceId}",
-                            ServiceAccount = attachedServiceAccountEmail,
+                            ServiceAccount = attachedServiceAccount?.Value,
                             SshPublicKey = key
                         },
                         $"projects/{zone.ProjectId}/locations/{zone.Region.Name}");
