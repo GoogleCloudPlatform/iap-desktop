@@ -72,12 +72,6 @@ namespace Google.Solutions.Apis.Compute
             string key,
             CancellationToken cancellationToken);
 
-        [Obsolete]
-        Task<string> SignPublicKeyAsync(
-            ZoneLocator zone,
-            string key,
-            CancellationToken cancellationToken);
-
         /// <summary>
         /// Read user's profile and published SSH keys.
         /// </summary>
@@ -304,15 +298,6 @@ namespace Google.Solutions.Apis.Compute
                         e);
                 }
             }
-        }
-
-        [Obsolete]
-        public Task<string> SignPublicKeyAsync(
-            ZoneLocator zone,
-            string key,
-            CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<string> SignPublicKeyAsync(
