@@ -107,6 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Instance()
                 {
+                    Id = 123,
                     Metadata = instanceMetadata
                 });
             return adapter;
