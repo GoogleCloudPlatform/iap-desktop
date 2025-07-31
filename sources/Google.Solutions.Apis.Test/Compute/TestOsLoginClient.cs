@@ -423,6 +423,7 @@ namespace Google.Solutions.Apis.Test.Compute
             await client
                 .ProvisionPosixProfileAsync(
                     TestProject.Region,
+                    null,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -457,6 +458,7 @@ namespace Google.Solutions.Apis.Test.Compute
             await client
                 .ProvisionPosixProfileAsync(
                     TestProject.Region,
+                    TestProject.ApiKey,
                     CancellationToken.None)
                 .ConfigureAwait(false);
         }
@@ -474,6 +476,7 @@ namespace Google.Solutions.Apis.Test.Compute
             await client
                 .ProvisionPosixProfileAsync(
                     TestProject.Region,
+                    TestProject.ApiKey,
                     CancellationToken.None)
                 .ConfigureAwait(false);
         }

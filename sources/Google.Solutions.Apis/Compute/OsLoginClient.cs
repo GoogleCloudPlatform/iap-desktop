@@ -89,9 +89,11 @@ namespace Google.Solutions.Apis.Compute
         /// <summary>
         /// Create a POSIX account if it doesn't exist.
         /// </summary>
+        /// <param name="apiKey">API key, only needed for headless auth</param>
         Task<PosixAccount> ProvisionPosixProfileAsync(
-           RegionLocator region,
-           CancellationToken cancellationToken);
+            RegionLocator region,
+            ApiKey? apiKey,
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// List enrolled U2F and WebAuthn security keys.
@@ -360,6 +362,7 @@ namespace Google.Solutions.Apis.Compute
 
         public async Task<PosixAccount> ProvisionPosixProfileAsync(
             RegionLocator region,
+            ApiKey? apiKey,
             CancellationToken cancellationToken)
         {
             using (ApiTraceSource.Log.TraceMethod().WithoutParameters())
@@ -372,7 +375,17 @@ namespace Google.Solutions.Apis.Compute
                         {
                             Regions = new[] { region.Name }
                         },
-                        $"users/{this.EncodedUserPathComponent}/projects/{region.ProjectId}");
+                        $"users/{this.EncodedUserPathComponent}/projects/{region.ProjectId}")
+                    {
+                        //
+                        // NB. An API key is only needed when using workforce
+                        //     identity with programmatic/headless authentication.
+                        //     In all other cases, there's a OAuth client ID, and
+                        //     thus a client project that the API can implicitly
+                        //     charge quota against.
+                        //
+                        Key = apiKey?.Value
+                    };
 
                     return await request
                         .ExecuteAsync(cancellationToken)

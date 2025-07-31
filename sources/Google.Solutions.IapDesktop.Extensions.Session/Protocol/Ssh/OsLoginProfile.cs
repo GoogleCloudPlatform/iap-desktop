@@ -199,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                         // Crate a POSIX profile and try again.
                         //
                         await this.client
-                            .ProvisionPosixProfileAsync(zone.Region, token)
+                            .ProvisionPosixProfileAsync(zone.Region, null, token)
                             .ConfigureAwait(false);
 
                         certifiedKey = await this.client

@@ -220,6 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 client.Verify(
                     c => c.ProvisionPosixProfileAsync(
                         It.IsAny<RegionLocator>(),
+                        null,
                         It.IsAny<CancellationToken>()), 
                     Times.Never);
             }
@@ -274,6 +275,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 client.Verify(
                     c => c.ProvisionPosixProfileAsync(
                         SampleZone.Region,
+                        null,
                         It.IsAny<CancellationToken>()),
                     Times.Once);
             }
@@ -324,6 +326,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 client.Verify(
                     c => c.ProvisionPosixProfileAsync(
                         SampleZone.Region,
+                        null,
                         It.IsAny<CancellationToken>()),
                     Times.Never);
             }
