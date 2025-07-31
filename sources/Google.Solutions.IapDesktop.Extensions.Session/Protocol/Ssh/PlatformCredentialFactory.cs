@@ -130,14 +130,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(instance))
             {
-                var metdataKeyProcessor = await InstanceMetadata.GetAsync(
+                var instanceMetadata = await InstanceMetadata.GetAsync(
                         this.computeClient,
                         this.resourceManagerAdapter,
                         instance,
                         token)
                     .ConfigureAwait(false);
 
-                var osLoginEnabled = metdataKeyProcessor.IsOsLoginEnabled;
+                var osLoginEnabled = instanceMetadata.IsOsLoginEnabled;
 
                 ApplicationTraceSource.Log.TraceVerbose(
                     "OS Login status for {0}: {1}", instance, osLoginEnabled);
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                             $"{instance.Name} requires OS Login");
                     }
 
-                    if (metdataKeyProcessor.IsOsLoginWithSecurityKeyEnabled)
+                    if (instanceMetadata.IsOsLoginWithSecurityKeyEnabled)
                     {
                         //
                         // VM requires security keys.
@@ -169,7 +169,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     return await this.osLoginProfile
                         .AuthorizeKeyAsync(
                             new ZoneLocator(instance.ProjectId, instance.Zone),
+                            instanceMetadata.InstanceId,
                             OsLoginSystemType.Linux,
+                            instanceMetadata.AttachedServiceAccount,
                             signer,
                             validity,
                             token)
@@ -182,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     // figure out whether that's project or instance
                     // metadata.
                     //
-                    return await metdataKeyProcessor
+                    return await instanceMetadata
                         .AuthorizeKeyAsync(
                             signer,
                             validity,

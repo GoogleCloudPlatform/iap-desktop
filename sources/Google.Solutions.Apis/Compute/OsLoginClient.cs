@@ -68,13 +68,7 @@ namespace Google.Solutions.Apis.Compute
         Task<string> SignPublicKeyAsync(
             ZoneLocator zone,
             ulong instanceId,
-            string? attachedServiceAccountEmail,
-            string key,
-            CancellationToken cancellationToken);
-
-        [Obsolete]
-        Task<string> SignPublicKeyAsync(
-            ZoneLocator zone,
+            ServiceAccountEmail? attachedServiceAccount,
             string key,
             CancellationToken cancellationToken);
 
@@ -95,9 +89,11 @@ namespace Google.Solutions.Apis.Compute
         /// <summary>
         /// Create a POSIX account if it doesn't exist.
         /// </summary>
+        /// <param name="apiKey">API key, only needed for headless auth</param>
         Task<PosixAccount> ProvisionPosixProfileAsync(
-           RegionLocator region,
-           CancellationToken cancellationToken);
+            RegionLocator region,
+            ApiKey? apiKey,
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// List enrolled U2F and WebAuthn security keys.
@@ -115,19 +111,9 @@ namespace Google.Solutions.Apis.Compute
         public OsLoginClient(
             ServiceEndpoint<OsLoginClient> endpoint,
             IAuthorization authorization,
-            ApiKey apiKey,
             UserAgent userAgent)
             : base(endpoint, authorization, userAgent)
         {
-            if (authorization.Session is IWorkforcePoolSession)
-            {
-                //
-                // When authenticating using workforce identity, we have
-                // to pass an API key to charge against.
-                //
-                this.Initializer.ApiKey = apiKey.Value;
-            }
-
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
             this.service = new CloudOSLoginService(this.Initializer);
         }
@@ -316,19 +302,10 @@ namespace Google.Solutions.Apis.Compute
             }
         }
 
-        [Obsolete]
-        public Task<string> SignPublicKeyAsync(
-            ZoneLocator zone,
-            string key,
-            CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<string> SignPublicKeyAsync(
             ZoneLocator zone,
             ulong instanceId,
-            string? attachedServiceAccountEmail,
+            ServiceAccountEmail? attachedServiceAccount,
             string key,
             CancellationToken cancellationToken)
         {
@@ -343,7 +320,7 @@ namespace Google.Solutions.Apis.Compute
                             ComputeInstance = 
                                 $"projects/{zone.ProjectId}/" +
                                 $"zones/{zone.Name}/instances/{instanceId}",
-                            ServiceAccount = attachedServiceAccountEmail,
+                            ServiceAccount = attachedServiceAccount?.Value,
                             SshPublicKey = key
                         },
                         $"projects/{zone.ProjectId}/locations/{zone.Region.Name}");
@@ -366,6 +343,12 @@ namespace Google.Solutions.Apis.Compute
                 {
                     throw new ExternalIdpNotConfiguredForOsLoginException(e);
                 }
+                catch (GoogleApiException e) when (e.IsNotFound())
+                {
+                    throw new ResourceNotFoundException(
+                        e.Error.Message ?? "The POSIX profile does not exist",
+                        e);
+                }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
@@ -379,6 +362,7 @@ namespace Google.Solutions.Apis.Compute
 
         public async Task<PosixAccount> ProvisionPosixProfileAsync(
             RegionLocator region,
+            ApiKey? apiKey,
             CancellationToken cancellationToken)
         {
             using (ApiTraceSource.Log.TraceMethod().WithoutParameters())
@@ -391,7 +375,17 @@ namespace Google.Solutions.Apis.Compute
                         {
                             Regions = new[] { region.Name }
                         },
-                        $"users/{this.EncodedUserPathComponent}/projects/{region.ProjectId}");
+                        $"users/{this.EncodedUserPathComponent}/projects/{region.ProjectId}")
+                    {
+                        //
+                        // NB. An API key is only needed when using workforce
+                        //     identity with programmatic/headless authentication.
+                        //     In all other cases, there's a OAuth client ID, and
+                        //     thus a client project that the API can implicitly
+                        //     charge quota against.
+                        //
+                        Key = apiKey?.Value
+                    };
 
                     return await request
                         .ExecuteAsync(cancellationToken)

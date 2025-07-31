@@ -90,7 +90,6 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorization,
-                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             await ExceptionAssert
@@ -113,7 +112,6 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 authorization,
-                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             await ExceptionAssert
@@ -134,7 +132,6 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
-                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             var key = "ssh-rsa notarealkey-" + Guid.NewGuid().ToString();
@@ -165,7 +162,6 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorization,
-                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             await ExceptionAssert
@@ -186,7 +182,6 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 authorization,
-                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             await ExceptionAssert
@@ -204,7 +199,6 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
-                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             var profile = await client
@@ -228,7 +222,6 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorization,
-                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             await ExceptionAssert
@@ -247,7 +240,6 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
-                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             var key = "ssh-rsa notarealkey-" + Guid.NewGuid().ToString();
@@ -304,7 +296,6 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
-                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             await client.DeleteSshPublicKeyAsync(
@@ -333,7 +324,6 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
-                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             await ExceptionAssert
@@ -366,7 +356,6 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
-                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             var certifiedKey = await client
@@ -397,7 +386,6 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
-                new ApiKey("unused"),
                 TestProject.UserAgent);
 
 
@@ -430,12 +418,12 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
-                new ApiKey("unused"),
                 TestProject.UserAgent);
 
             await client
                 .ProvisionPosixProfileAsync(
                     TestProject.Region,
+                    null,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -465,12 +453,12 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
-                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             await client
                 .ProvisionPosixProfileAsync(
                     TestProject.Region,
+                    TestProject.ApiKey,
                     CancellationToken.None)
                 .ConfigureAwait(false);
         }
@@ -483,12 +471,12 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
-                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             await client
                 .ProvisionPosixProfileAsync(
                     TestProject.Region,
+                    TestProject.ApiKey,
                     CancellationToken.None)
                 .ConfigureAwait(false);
         }
@@ -505,7 +493,6 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorization,
-                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             await ExceptionAssert
@@ -526,7 +513,6 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 authorization,
-                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             await ExceptionAssert
@@ -545,7 +531,6 @@ namespace Google.Solutions.Apis.Test.Compute
             var client = new OsLoginClient(
                 OsLoginClient.CreateEndpoint(),
                 await authorizationTask,
-                TestProject.ApiKey,
                 TestProject.UserAgent);
 
             var keys = await client

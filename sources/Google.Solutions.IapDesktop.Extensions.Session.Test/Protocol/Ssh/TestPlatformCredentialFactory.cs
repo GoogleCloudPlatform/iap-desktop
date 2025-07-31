@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             return authorization;
         }
 
-        private Mock<IComputeEngineClient> CreateComputeEngineClientMock(
+        private static Mock<IComputeEngineClient> CreateComputeEngineClientMock(
             bool? osLoginEnabledForProject,
             bool? osLoginEnabledForInstance,
             bool osLogin2fa,
@@ -107,6 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Instance()
                 {
+                    Id = 123,
                     Metadata = instanceMetadata
                 });
             return adapter;
@@ -118,7 +119,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             osLoginService
                 .Setup(s => s.AuthorizeKeyAsync(
                         It.IsAny<ZoneLocator>(),
+                        It.IsAny<ulong>(),
                         It.Is((OsLoginSystemType os) => os == OsLoginSystemType.Linux),
+                        It.IsAny<ServiceAccountEmail>(),
                         It.IsAny<IAsymmetricKeySigner>(),
                         It.IsAny<TimeSpan>(),
                         It.IsAny<CancellationToken>()))

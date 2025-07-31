@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.CloudOSLogin.v1.Data;
+using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Apis.Compute;
@@ -35,6 +36,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -50,7 +52,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         /// </summary>
         Task<PlatformCredential> AuthorizeKeyAsync(
             ZoneLocator zone,
+            ulong instanceId,
             OsLoginSystemType os,
+            ServiceAccountEmail? attachedServiceAccount,
             IAsymmetricKeySigner key,
             TimeSpan validity,
             CancellationToken token);
@@ -124,7 +128,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public async Task<PlatformCredential> AuthorizeKeyAsync(
             ZoneLocator zone,
+            ulong instanceId,
             OsLoginSystemType os,
+            ServiceAccountEmail? attachedServiceAccount,
             IAsymmetricKeySigner key,
             TimeSpan validity,
             CancellationToken token)
@@ -134,12 +140,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
             if (os != OsLoginSystemType.Linux)
             {
-                throw new ArgumentException("Unsupported OS", nameof(os));
+                throw new ArgumentException(
+                    "The OS is not supported",
+                    nameof(os));
             }
 
             if (validity.TotalSeconds <= 0)
             {
-                throw new ArgumentException(nameof(validity));
+                throw new ArgumentException(
+                    "Validity cannot be zero",
+                    nameof(validity));
             }
 
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(zone))
@@ -161,18 +171,46 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 if (this.authorization.Session is IWorkforcePoolSession)
                 {
                     //
-                    // Authorize the key by signing it.
+                    // Authorize the key by signing it. This may fail for
+                    // multiple reasons:
+                    //
+                    // - Missing OS Login permissions
+                    // - Missing actAs permission on the attached service account(if any)
+                    // - The user doesn't have a POSIX profile yet
                     //
                     // Note that we have no control over how long the
                     // certified key remains valid.
                     //
+                    string certifiedKey;
+                    try
+                    {
+                        certifiedKey = await this.client
+                            .SignPublicKeyAsync(
+                                zone,
+                                instanceId,
+                                attachedServiceAccount,
+                                publicKey,
+                                token)
+                            .ConfigureAwait(false);
+                    }
+                    catch (ResourceNotFoundException)
+                    {
+                        //
+                        // Crate a POSIX profile and try again.
+                        //
+                        await this.client
+                            .ProvisionPosixProfileAsync(zone.Region, null, token)
+                            .ConfigureAwait(false);
 
-                    var certifiedKey = await this.client
-                        .SignPublicKeyAsync(
-                            zone,
-                            publicKey,
-                            token)
-                        .ConfigureAwait(false);
+                        certifiedKey = await this.client
+                            .SignPublicKeyAsync(
+                                zone,
+                                instanceId,
+                                attachedServiceAccount,
+                                publicKey,
+                                token)
+                            .ConfigureAwait(false);
+                    }
 
                     var certificateSigner = new OsLoginCertificateSigner(
                         key,
