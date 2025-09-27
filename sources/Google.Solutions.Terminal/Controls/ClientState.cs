@@ -24,7 +24,7 @@ namespace Google.Solutions.Terminal.Controls
     /// <summary>
     /// Connection state of a client.
     /// </summary>
-    public enum ConnectionState
+    public enum ClientState
     {
         /// <summary>
         /// Client not connected yet or an existing connection has 

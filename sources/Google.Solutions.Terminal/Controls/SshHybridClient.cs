@@ -162,7 +162,7 @@ namespace Google.Solutions.Terminal.Controls
             //
             get =>
                 this.EnableFileBrowser &&
-                this.State == ConnectionState.LoggedOn &&
+                this.State == ClientState.LoggedOn &&
                 this.BindingContext != null;
         }
 

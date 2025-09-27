@@ -58,9 +58,9 @@ namespace Google.Solutions.Terminal.Controls
         private void OnDeviceError(object sender, VirtualTerminalErrorEventArgs e)
         {
             Debug.Assert(
-                this.State == ConnectionState.Connecting ||
-                this.State == ConnectionState.Connected ||
-                this.State == ConnectionState.LoggedOn);
+                this.State == ClientState.Connecting ||
+                this.State == ClientState.Connected ||
+                this.State == ClientState.LoggedOn);
 
             //
             // Propagate event so that the hosting form can show
@@ -98,7 +98,7 @@ namespace Google.Solutions.Terminal.Controls
 
         protected override void OnFormClosing(object sender, FormClosingEventArgs args)
         {
-            if (this.State == ConnectionState.Disconnecting)
+            if (this.State == ClientState.Disconnecting)
             {
                 //
                 // Form is being closed as a result of a disconnect
@@ -106,9 +106,9 @@ namespace Google.Solutions.Terminal.Controls
                 //
             }
             else if (
-                this.State == ConnectionState.Connecting ||
-                this.State == ConnectionState.Connected ||
-                this.State == ConnectionState.LoggedOn)
+                this.State == ClientState.Connecting ||
+                this.State == ClientState.Connected ||
+                this.State == ClientState.LoggedOn)
             {
                 //
                 // Initiate a disconnect.
@@ -134,7 +134,7 @@ namespace Google.Solutions.Terminal.Controls
         {
             Debug.Assert(!this.Terminal.IsDisposed);
 
-            ExpectState(ConnectionState.NotConnected);
+            ExpectState(ClientState.NotConnected);
             Precondition.Expect(this.IsHandleCreated, "Control must be created first");
 
             //
@@ -181,7 +181,7 @@ namespace Google.Solutions.Terminal.Controls
 
         public override void SendText(string text)
         {
-            ExpectState(ConnectionState.LoggedOn);
+            ExpectState(ClientState.LoggedOn);
             this.Terminal.SimulateSend(text);
         }
 
