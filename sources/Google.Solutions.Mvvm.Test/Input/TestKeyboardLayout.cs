@@ -34,13 +34,13 @@ namespace Google.Solutions.Mvvm.Test.Input
         //---------------------------------------------------------------------
 
         [Test]
-        public void TryMapVirtualKey_WhenCharUnmapped_ThenTryMapVirtualKeyReturnsFalse()
+        public void TryMapVirtualKey_WhenCharUnmapped()
         {
             Assert.IsFalse(KeyboardLayout.Current.TryMapVirtualKey('Ä', out var _));
         }
 
         [Test]
-        public void TryMapVirtualKey_WhenCharMapped_ThenTryMapVirtualKeyReturnsTrue()
+        public void TryMapVirtualKey_WhenCharMapped()
         {
             Assert.IsTrue(KeyboardLayout.Current.TryMapVirtualKey('A', out var vk));
             Assert.AreEqual(Keys.A | Keys.Shift, vk);
@@ -80,8 +80,7 @@ namespace Google.Solutions.Mvvm.Test.Input
         [Test]
         public void ToScanCodes()
         {
-            var scanCodes = KeyboardLayout.Current
-                .ToScanCodes(Keys.A | Keys.Shift)
+            var scanCodes = KeyboardLayout.ToScanCodes(Keys.A | Keys.Shift)
                 .ToList();
             Assert.AreEqual(2, scanCodes.Count);
         }

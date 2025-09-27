@@ -265,7 +265,7 @@ namespace Google.Solutions.Terminal.Controls
 
         /// <summary>
         /// The scale factor (as a percentage) applied to Windows Desktop
-        //  applications. See [MS-RDPBCGR] for details.
+        /// applications. See [MS-RDPBCGR] for details.
         /// </summary>
         internal uint DesktopScaleFactor
         {
@@ -933,15 +933,13 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         private void SendVirtualKey(Keys virtualKey)
         {
-            var keyboard = KeyboardLayout.Current;
-
             //
             // The RDP control sometimes swallows the first key combination
             // that is sent. So start by a harmless ESC.
             //
             if (this.keysSent++ == 0)
             {
-                var escScanCode = keyboard.ToScanCodes(Keys.Escape).First();
+                var escScanCode = KeyboardLayout.ToScanCodes(Keys.Escape).First();
                 SendScanCodes(
                      new short[] { 0 },
                      new int[] { (int)escScanCode });
@@ -951,8 +949,7 @@ namespace Google.Solutions.Terminal.Controls
             // Convert virtual key code (which might contain modifiers)
             // into a sequence of scan codes.
             //
-            var scanCodes = keyboard
-                .ToScanCodes(virtualKey)
+            var scanCodes = KeyboardLayout.ToScanCodes(virtualKey)
                 .Select(c => (int)c)
                 .ToArray();
 

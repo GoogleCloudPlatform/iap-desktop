@@ -60,7 +60,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [WindowsFormsTest]
-        public async Task Schedule_WhenCallbackDefersItself_ThenCallbackIsInvokedAgain()
+        public async Task Schedule_WhenCallbackDefersItself()
         {
             var invocations = 0;
             using (var callback = new DeferredCallback(
@@ -86,7 +86,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [WindowsFormsTest]
-        public async Task Schedule_WhenNoCallbackScheduled_ThenWaitForCompletionReturns()
+        public async Task Schedule_WhenNoCallbackScheduled()
         {
             var callback = new DeferredCallback(_ => { }, TimeSpan.FromSeconds(1));
             await callback
