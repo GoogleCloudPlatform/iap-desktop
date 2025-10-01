@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Castle.Core" Version="5.2.1" />
-    <PackageReference Include="Moq" Version="4.20.72" />
-    <PackageReference Include="NUnit" Version="3.14.0" />
-    <PackageReference Include="NUnit.Extension.VSProjectLoader" Version="3.9.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0">
+    <PackageReference Include="Castle.Core" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit.Extension.VSProjectLoader" />
+    <PackageReference Include="NUnit3TestAdapter" >
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>

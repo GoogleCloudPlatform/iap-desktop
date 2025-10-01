@@ -11,11 +11,11 @@
     <EmbeddedResource Include="ToolWindows\Install\About.md" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.11" />
-    <PackageReference Include="Google.Apis" Version="1.70.0" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.70.0" />
-    <PackageReference Include="Google.Apis.Core" Version="1.70.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" />
+    <PackageReference Include="Google.Apis" />
+    <PackageReference Include="Google.Apis.Auth" />
+    <PackageReference Include="Google.Apis.Core" />
+    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
@@ -42,9 +42,5 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Update="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" />
-    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15" />
   </ItemGroup>
 </Project>

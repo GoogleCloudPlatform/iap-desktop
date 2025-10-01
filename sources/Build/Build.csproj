@@ -12,8 +12,8 @@
       Comment out these references before running a solution-wide Update-Package.
     -->    
     
-    <PackageReference Include="OpenCover" Version="4.6.519" />
-    <PackageReference Include="ReportGenerator" Version="5.1.23" />
-    <PackageReference Include="WiX" Version="3.14.1" />
+    <PackageReference Include="OpenCover" />
+    <PackageReference Include="ReportGenerator" />
+    <PackageReference Include="WiX" />
   </ItemGroup>
 </Project>
