@@ -52,7 +52,7 @@ namespace Google.Solutions.Terminal.Controls
         private static readonly Dictionary<int, string> knownErrors = new Dictionary<int, string>
         {
             //
-            // Documented error descrriptions from 
+            // Documented error descriptions from 
             // https://docs.microsoft.com/en-us/windows/win32/termserv/imstscaxevents-onlogonerror
             //
             {-7, "Winlogon is displaying the Disconnect Refused dialog box."},
@@ -105,7 +105,7 @@ namespace Google.Solutions.Terminal.Controls
         private static readonly Dictionary<int, string> knownErrors = new Dictionary<int, string>
         {
             //
-            // Documented error descrriptions from 
+            // Documented error descriptions from 
             // https://docs.microsoft.com/en-us/windows/win32/termserv/imstscaxevents-onfatalerror
             //
             {0, "An unknown error has occurred." },
@@ -143,7 +143,7 @@ namespace Google.Solutions.Terminal.Controls
         private static readonly Dictionary<int, string> knownErrors = new Dictionary<int, string>
         {
             //
-            // Documented error descrriptions from 
+            // Documented error descriptions from 
             // https://docs.microsoft.com/en-us/windows/win32/termserv/imstscaxevents-ondisconnected
             //
             {0, "No information is available."},

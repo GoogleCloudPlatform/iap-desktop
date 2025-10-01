@@ -104,7 +104,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 await Task.Delay(TimeSpan.FromSeconds(1));
 
                 //
-                // Disonnect.
+                // Disconnect.
                 //
                 window.Close();
             }
@@ -161,7 +161,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 await Task.Delay(TimeSpan.FromSeconds(1));
 
                 //
-                // Disonnect.
+                // Disconnect.
                 //
                 window.Close();
             }

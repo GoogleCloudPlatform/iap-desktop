@@ -954,7 +954,7 @@ namespace Google.Solutions.Terminal.Controls
                 .ToArray();
 
             //
-            // If the key has modifers other than Shift, we have to send
+            // If the key has modifiers other than Shift, we have to send
             // separate DOWN and UP keystrokes for each scan code.
             //
             // Curiously, we must not do this for "normal" characters 
