@@ -144,7 +144,7 @@ namespace Google.Solutions.Terminal.Controls
         /// Wait until a certain state has been reached. Mainly
         /// intended for testing.
         /// </summary>
-        internal override async Task AwaitStateAsync(ConnectionState state)
+        internal override async Task AwaitStateAsync(ClientState state)
         {
             await base
                 .AwaitStateAsync(state)
@@ -179,14 +179,14 @@ namespace Google.Solutions.Terminal.Controls
         {
             base.OnFormClosing(sender, args);
 
-            if (this.State == ConnectionState.Disconnecting)
+            if (this.State == ClientState.Disconnecting)
             {
                 //
                 // Form is being closed as a result of a disconnect
                 // (not the other way round).
                 //
             }
-            else if (this.State == ConnectionState.Connecting)
+            else if (this.State == ClientState.Connecting)
             {
                 //
                 // Veto this event as it might cause the ActiveX to crash.
@@ -210,8 +210,8 @@ namespace Google.Solutions.Terminal.Controls
                 return;
             }
             else if (
-                this.State == ConnectionState.Connected ||
-                this.State == ConnectionState.LoggedOn)
+                this.State == ClientState.Connected ||
+                this.State == ClientState.LoggedOn)
             {
                 //
                 // Attempt an orderly disconnect.
@@ -265,7 +265,7 @@ namespace Google.Solutions.Terminal.Controls
 
         /// <summary>
         /// The scale factor (as a percentage) applied to Windows Desktop
-        //  applications. See [MS-RDPBCGR] for details.
+        /// applications. See [MS-RDPBCGR] for details.
         /// </summary>
         internal uint DesktopScaleFactor
         {
@@ -351,14 +351,14 @@ namespace Google.Solutions.Terminal.Controls
                     // to normal size. We must ignore that.
                     //
                 }
-                else if (this.State == ConnectionState.NotConnected)
+                else if (this.State == ClientState.NotConnected)
                 {
                     //
                     // Resize control only, no RDP involved yet.
                     //
                     this.client.Size = this.Size;
                 }
-                else if (this.State == ConnectionState.LoggedOn)
+                else if (this.State == ClientState.LoggedOn)
                 {
                     //
                     // It's safe to resize in this state.
@@ -366,8 +366,8 @@ namespace Google.Solutions.Terminal.Controls
                     DangerousResizeClient(this.Size);
                 }
                 else if (
-                    this.State == ConnectionState.Connecting ||
-                    this.State == ConnectionState.Connected)
+                    this.State == ClientState.Connecting ||
+                    this.State == ClientState.Connected)
                 {
                     //
                     // It's not safe to resize now, but it will
@@ -523,7 +523,7 @@ namespace Google.Solutions.Terminal.Controls
                     //
                     Connect();
                 }
-                else if (this.State != ConnectionState.Connecting && e.IsTimeout)
+                else if (this.State != ClientState.Connecting && e.IsTimeout)
                 {
                     //
                     // An already-established connection timed out, this is common when
@@ -573,7 +573,7 @@ namespace Google.Solutions.Terminal.Controls
 
         private void OnRdpConnecting(object sender, EventArgs e)
         {
-            Debug.Assert(this.State == ConnectionState.Connecting);
+            Debug.Assert(this.State == ClientState.Connecting);
 
             using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             { }
@@ -581,7 +581,7 @@ namespace Google.Solutions.Terminal.Controls
 
         private void OnRdpAuthenticationWarningDisplayed(object sender, EventArgs _)
         {
-            Debug.Assert(this.State == ConnectionState.Connecting);
+            Debug.Assert(this.State == ClientState.Connecting);
 
             using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
@@ -602,9 +602,9 @@ namespace Google.Solutions.Terminal.Controls
             IMsTscAxEvents_OnAutoReconnecting2Event args)
         {
             Debug.Assert(
-                this.State == ConnectionState.Connecting ||
-                this.State == ConnectionState.Connected ||
-                this.State == ConnectionState.LoggedOn);
+                this.State == ClientState.Connecting ||
+                this.State == ClientState.Connected ||
+                this.State == ClientState.LoggedOn);
 
             using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
@@ -644,7 +644,7 @@ namespace Google.Solutions.Terminal.Controls
 
         private void OnRdpAutoReconnected(object sender, EventArgs e)
         {
-            Debug.Assert(this.State == ConnectionState.Connecting);
+            Debug.Assert(this.State == ClientState.Connecting);
 
             using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
@@ -673,9 +673,9 @@ namespace Google.Solutions.Terminal.Controls
             IMsTscAxEvents_OnRemoteDesktopSizeChangeEvent e)
         {
             Debug.Assert(
-                this.State == ConnectionState.Connecting ||
-                this.State == ConnectionState.Connected ||
-                this.State == ConnectionState.LoggedOn);
+                this.State == ClientState.Connecting ||
+                this.State == ClientState.Connected ||
+                this.State == ClientState.LoggedOn);
 
             using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             { }
@@ -692,8 +692,8 @@ namespace Google.Solutions.Terminal.Controls
         private void OnRdpRequestGoFullScreen(object sender, EventArgs e)
         {
             Debug.Assert(
-                this.State == ConnectionState.Connected ||
-                this.State == ConnectionState.LoggedOn);
+                this.State == ClientState.Connected ||
+                this.State == ClientState.LoggedOn);
 
             if (this.fullScreenContext == null)
             {
@@ -710,8 +710,8 @@ namespace Google.Solutions.Terminal.Controls
         private void OnRdpRequestLeaveFullScreen(object sender, EventArgs e)
         {
             Debug.Assert(
-                this.State == ConnectionState.LoggedOn ||
-                (this.State == ConnectionState.Connecting && !this.ContainerFullScreen));
+                this.State == ClientState.LoggedOn ||
+                (this.State == ClientState.Connecting && !this.ContainerFullScreen));
 
             this.ContainerFullScreen = false;
         }
@@ -758,7 +758,7 @@ namespace Google.Solutions.Terminal.Controls
         {
             Debug.Assert(!this.client.IsDisposed);
 
-            ExpectState(ConnectionState.NotConnected);
+            ExpectState(ClientState.NotConnected);
             Precondition.ExpectNotEmpty(this.Server, nameof(this.Server));
             Precondition.ExpectNotEmpty(this.Server, nameof(this.Username));
 
@@ -885,8 +885,8 @@ namespace Google.Solutions.Terminal.Controls
         /// <remarks>Errors are reported via events, not exceptions</remarks>
         public void Reconnect()
         {
-            Debug.Assert(this.State == ConnectionState.LoggedOn);
-            if (this.State != ConnectionState.LoggedOn)
+            Debug.Assert(this.State == ClientState.LoggedOn);
+            if (this.State != ClientState.LoggedOn)
             {
                 return;
             }
@@ -933,15 +933,13 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         private void SendVirtualKey(Keys virtualKey)
         {
-            var keyboard = KeyboardLayout.Current;
-
             //
             // The RDP control sometimes swallows the first key combination
             // that is sent. So start by a harmless ESC.
             //
             if (this.keysSent++ == 0)
             {
-                var escScanCode = keyboard.ToScanCodes(Keys.Escape).First();
+                var escScanCode = KeyboardLayout.ToScanCodes(Keys.Escape).First();
                 SendScanCodes(
                      new short[] { 0 },
                      new int[] { (int)escScanCode });
@@ -951,13 +949,12 @@ namespace Google.Solutions.Terminal.Controls
             // Convert virtual key code (which might contain modifiers)
             // into a sequence of scan codes.
             //
-            var scanCodes = keyboard
-                .ToScanCodes(virtualKey)
+            var scanCodes = KeyboardLayout.ToScanCodes(virtualKey)
                 .Select(c => (int)c)
                 .ToArray();
 
             //
-            // If the key has modifers other than Shift, we have to send
+            // If the key has modifiers other than Shift, we have to send
             // separate DOWN and UP keystrokes for each scan code.
             //
             // Curiously, we must not do this for "normal" characters 
@@ -1010,8 +1007,8 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         public void ShowSecurityScreen()
         {
-            Debug.Assert(this.State == ConnectionState.LoggedOn);
-            if (this.State != ConnectionState.LoggedOn)
+            Debug.Assert(this.State == ClientState.LoggedOn);
+            if (this.State != ClientState.LoggedOn)
             {
                 return;
             }
@@ -1027,8 +1024,8 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         public void ShowTaskManager()
         {
-            Debug.Assert(this.State == ConnectionState.LoggedOn);
-            if (this.State != ConnectionState.LoggedOn)
+            Debug.Assert(this.State == ClientState.LoggedOn);
+            if (this.State != ClientState.LoggedOn)
             {
                 return;
             }
@@ -1049,8 +1046,8 @@ namespace Google.Solutions.Terminal.Controls
         /// </remarks>
         public void Logoff()
         {
-            Debug.Assert(this.State == ConnectionState.LoggedOn);
-            if (this.State != ConnectionState.LoggedOn)
+            Debug.Assert(this.State == ClientState.LoggedOn);
+            if (this.State != ClientState.LoggedOn)
             {
                 return;
             }
@@ -1094,8 +1091,8 @@ namespace Google.Solutions.Terminal.Controls
         /// </summary>
         public override void SendText(string text)
         {
-            Debug.Assert(this.State == ConnectionState.LoggedOn);
-            if (this.State != ConnectionState.LoggedOn)
+            Debug.Assert(this.State == ClientState.LoggedOn);
+            if (this.State != ClientState.LoggedOn)
             {
                 return;
             }
@@ -1306,7 +1303,7 @@ namespace Google.Solutions.Terminal.Controls
         [Browsable(false)]
         public bool CanEnterFullScreen
         {
-            get => this.State == ConnectionState.LoggedOn && !IsFullScreenFormVisible;
+            get => this.State == ClientState.LoggedOn && !IsFullScreenFormVisible;
         }
 
         /// <summary>

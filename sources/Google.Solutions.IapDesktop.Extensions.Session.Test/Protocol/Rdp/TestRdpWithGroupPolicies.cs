@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
                 window.Client.Connect();
 
                 await window.Client
-                    .AwaitStateAsync(ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ClientState.LoggedOn)
                     .ConfigureAwait(true);
 
                 window.Close();
@@ -247,7 +247,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
                 window.Client.Connect();
 
                 await window.Client
-                    .AwaitStateAsync(ConnectionState.LoggedOn)
+                    .AwaitStateAsync(ClientState.LoggedOn)
                     .ConfigureAwait(true);
 
                 window.Close();

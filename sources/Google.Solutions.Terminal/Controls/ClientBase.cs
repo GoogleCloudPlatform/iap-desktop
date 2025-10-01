@@ -42,7 +42,7 @@ namespace Google.Solutions.Terminal.Controls
     /// </summary>
     public abstract class ClientBase : ParentedUserControl
     {
-        private ConnectionState state = ConnectionState.NotConnected;
+        private ClientState state = ClientState.NotConnected;
 
         /// <summary>
         /// Connection state has changed.
@@ -113,9 +113,9 @@ namespace Google.Solutions.Terminal.Controls
                 //     
 
                 this.statePanel.Visible = !this.IsContainerFullScreen && (
-                    this.State == ConnectionState.NotConnected ||
-                    this.State == ConnectionState.Disconnecting ||
-                    this.State == ConnectionState.Connecting);
+                    this.State == ClientState.NotConnected ||
+                    this.State == ClientState.Disconnecting ||
+                    this.State == ClientState.Connecting);
             };
             this.statePanel.ConnectButtonClicked += (_, args) => Connect();
         }
@@ -140,7 +140,7 @@ namespace Google.Solutions.Terminal.Controls
         /// Current state of the connection.
         /// </summary>
         [Browsable(false)]
-        public ConnectionState State
+        public ClientState State
         {
             get => this.state;
             private set // Only to be mutated by OnXxx methods.
@@ -159,7 +159,7 @@ namespace Google.Solutions.Terminal.Controls
             this.StateChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        protected void ExpectState(ConnectionState expectedState)
+        protected void ExpectState(ClientState expectedState)
         {
             if (this.State != expectedState)
             {
@@ -172,7 +172,7 @@ namespace Google.Solutions.Terminal.Controls
         /// Wait until a certain state has been reached. Mainly
         /// intended for testing.
         /// </summary>
-        internal virtual async Task AwaitStateAsync(ConnectionState state)
+        internal virtual async Task AwaitStateAsync(ClientState state)
         {
             Debug.Assert(!this.InvokeRequired);
 
@@ -181,7 +181,7 @@ namespace Google.Solutions.Terminal.Controls
                 return;
             }
 
-            var completionSource = new TaskCompletionSource<ConnectionState>();
+            var completionSource = new TaskCompletionSource<ClientState>();
 
             void onStateChanged(object sender, EventArgs args)
             {
@@ -201,14 +201,14 @@ namespace Google.Solutions.Terminal.Controls
 
         protected virtual void OnBeforeConnect()
         {
-            this.State = ConnectionState.Connecting;
+            this.State = ClientState.Connecting;
         }
 
         protected virtual void OnConnectionFailed(Exception e)
         {
             this.ConnectionFailed?.Invoke(this, new ExceptionEventArgs(e));
 
-            this.State = ConnectionState.NotConnected;
+            this.State = ClientState.NotConnected;
         }
 
         protected virtual void OnConnectionClosed(DisconnectReason reason)
@@ -217,22 +217,22 @@ namespace Google.Solutions.Terminal.Controls
                 this,
                 new ConnectionClosedEventArgs(reason));
 
-            this.State = ConnectionState.NotConnected;
+            this.State = ClientState.NotConnected;
         }
 
         protected virtual void OnAfterConnect()
         {
-            this.State = ConnectionState.Connected;
+            this.State = ClientState.Connected;
         }
 
         protected virtual void OnAfterLogin()
         {
-            this.State = ConnectionState.LoggedOn;
+            this.State = ClientState.LoggedOn;
         }
 
         protected virtual void OnBeforeDisconnect()
         {
-            this.State = ConnectionState.Disconnecting;
+            this.State = ClientState.Disconnecting;
         }
 
         //---------------------------------------------------------------------

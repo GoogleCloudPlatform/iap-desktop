@@ -50,7 +50,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.serverEndpoint;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.serverEndpoint = value;
             }
         }
@@ -66,7 +66,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.credential;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.credential = value;
             }
         }
@@ -82,7 +82,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.keyboardInteractiveHandler;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.keyboardInteractiveHandler = value;
             }
         }
@@ -98,7 +98,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.banner;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.banner = value;
             }
         }
@@ -114,7 +114,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.connectionTimeout;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.connectionTimeout = value;
             }
         }
@@ -130,7 +130,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.locale;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.locale = value;
             }
         }

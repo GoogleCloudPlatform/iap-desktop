@@ -89,8 +89,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         {
             get =>
                 this.Client != null && (
-                this.Client.State == ConnectionState.Connected ||
-                this.Client.State == ConnectionState.LoggedOn);
+                this.Client.State == ClientState.Connected ||
+                this.Client.State == ClientState.LoggedOn);
         }
 
         //---------------------------------------------------------------------
@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
 
         private void OnClientStateChanged(object sender, System.EventArgs e)
         {
-            if (this.Client!.State == ConnectionState.Connected)
+            if (this.Client!.State == ClientState.Connected)
             {
                 _ = this.eventQueue.PublishAsync(new SessionStartedEvent(this.Instance));
             }

@@ -42,7 +42,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.client.Server;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.client.Server = value;
             }
         }
@@ -58,7 +58,7 @@ namespace Google.Solutions.Terminal.Controls
             get => (ushort)this.client.AdvancedSettings7.RDPPort;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientAdvancedSettings.RDPPort = value;
             }
         }
@@ -74,7 +74,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.client.Domain;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.client.Domain = value;
             }
         }
@@ -90,7 +90,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.client.UserName;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.client.UserName = value;
             }
         }
@@ -106,7 +106,7 @@ namespace Google.Solutions.Terminal.Controls
             get => "*";
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientAdvancedSettings.ClearTextPassword = value;
             }
         }
@@ -122,7 +122,7 @@ namespace Google.Solutions.Terminal.Controls
             get => TimeSpan.FromSeconds(this.clientAdvancedSettings.singleConnectionTimeout);
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
 
                 //
                 // Apply timeouts. Note that the control might take
@@ -162,7 +162,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.clientAdvancedSettings.EnableCredSspSupport;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientAdvancedSettings.EnableCredSspSupport = value;
 
                 if (!value)
@@ -186,7 +186,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.clientAdvancedSettings.AuthenticationLevel;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientAdvancedSettings.AuthenticationLevel = value;
             }
         }
@@ -202,7 +202,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.clientNonScriptable.AllowPromptingForCredentials;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientNonScriptable.AllowPromptingForCredentials = value;
             }
         }
@@ -248,7 +248,7 @@ namespace Google.Solutions.Terminal.Controls
             }
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientExtendedSettings.set_Property("RestrictedLogon", value);
             }
         }
@@ -283,7 +283,7 @@ namespace Google.Solutions.Terminal.Controls
             }
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientExtendedSettings.set_Property("DisableCredentialsDelegation", value);
                 this.clientExtendedSettings.set_Property("RedirectedAuthentication", value);
             }
@@ -304,7 +304,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.clientAdvancedSettings.DisplayConnectionBar;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientAdvancedSettings.DisplayConnectionBar = value;
             }
         }
@@ -320,7 +320,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.clientAdvancedSettings.ConnectionBarShowMinimizeButton;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientAdvancedSettings.ConnectionBarShowMinimizeButton = value;
             }
         }
@@ -336,7 +336,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.clientAdvancedSettings.PinConnectionBar;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientAdvancedSettings.PinConnectionBar = value;
             }
         }
@@ -352,7 +352,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.clientNonScriptable.ConnectionBarText;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientNonScriptable.ConnectionBarText = value;
             }
         }
@@ -372,7 +372,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.clientAdvancedSettings.RedirectClipboard;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientAdvancedSettings.RedirectClipboard = value;
             }
         }
@@ -388,7 +388,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.clientAdvancedSettings.RedirectPrinters;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientAdvancedSettings.RedirectPrinters = value;
             }
         }
@@ -404,7 +404,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.clientAdvancedSettings.RedirectSmartCards;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientAdvancedSettings.RedirectSmartCards = value;
             }
         }
@@ -420,7 +420,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.clientAdvancedSettings.RedirectDrives;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientAdvancedSettings.RedirectDrives = value;
             }
         }
@@ -436,7 +436,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.clientAdvancedSettings.RedirectDevices;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientAdvancedSettings.RedirectDevices = value;
             }
         }
@@ -452,7 +452,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.clientAdvancedSettings.RedirectPorts;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientAdvancedSettings.RedirectPorts = value;
             }
         }
@@ -516,7 +516,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.clientSecuredSettings.KeyboardHookMode;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientSecuredSettings.KeyboardHookMode = value;
             }
         }
@@ -540,7 +540,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.clientSecuredSettings.AudioRedirectionMode;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientSecuredSettings.AudioRedirectionMode = value;
             }
         }
@@ -557,7 +557,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.clientAdvancedSettings.AudioCaptureRedirectionMode;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.clientAdvancedSettings.AudioCaptureRedirectionMode = value;
             }
         }
@@ -573,7 +573,7 @@ namespace Google.Solutions.Terminal.Controls
             get => this.client.ColorDepth;
             set
             {
-                ExpectState(ConnectionState.NotConnected);
+                ExpectState(ClientState.NotConnected);
                 this.client.ColorDepth = value;
             }
         }

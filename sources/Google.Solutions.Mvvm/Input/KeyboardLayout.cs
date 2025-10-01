@@ -104,7 +104,7 @@ namespace Google.Solutions.Mvvm.Input
         /// <summary>
         /// Convert a virtual key chords into a sequence of scan codes.
         /// </summary>
-        public IEnumerable<uint> ToScanCodes(Keys chord)
+        public static IEnumerable<uint> ToScanCodes(Keys chord)
         {
             foreach (var vk in TranslateModifiers(chord))
             {

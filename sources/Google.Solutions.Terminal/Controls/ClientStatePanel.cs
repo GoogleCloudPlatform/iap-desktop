@@ -32,7 +32,7 @@ namespace Google.Solutions.Terminal.Controls
     /// </summary>
     internal class ClientStatePanel : UserControl
     {
-        private ConnectionState state;
+        private ClientState state;
         private readonly Panel panel;
         private readonly Label stateLabel;
         private readonly LinearProgressBar progressBar;
@@ -87,7 +87,7 @@ namespace Google.Solutions.Terminal.Controls
             this.connectButton.Click += (sender, args)
                 => this.ConnectButtonClicked?.Invoke(sender, args);
 
-            this.State = ConnectionState.NotConnected;
+            this.State = ClientState.NotConnected;
 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = AutoScaleMode.Dpi;
@@ -98,7 +98,7 @@ namespace Google.Solutions.Terminal.Controls
         /// <summary>
         /// Update controls to reflect connection state.
         /// </summary>
-        public ConnectionState State
+        public ClientState State
         {
             get => this.state;
             set
@@ -107,19 +107,19 @@ namespace Google.Solutions.Terminal.Controls
 
                 switch (value)
                 {
-                    case ConnectionState.NotConnected:
+                    case ClientState.NotConnected:
                         this.stateLabel.Text = "Session disconnected";
                         this.progressBar.Visible = false;
                         this.connectButton.Visible = true;
                         break;
 
-                    case ConnectionState.Connecting:
+                    case ClientState.Connecting:
                         this.stateLabel.Text = "Connecting...";
                         this.progressBar.Visible = true;
                         this.connectButton.Visible = false;
                         break;
 
-                    case ConnectionState.Disconnecting:
+                    case ClientState.Disconnecting:
                         this.stateLabel.Text = "Disconnecting...";
                         this.progressBar.Visible = false;
                         this.connectButton.Visible = false;

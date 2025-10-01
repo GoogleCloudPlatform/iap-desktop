@@ -137,7 +137,7 @@ namespace Google.Solutions.Terminal.Controls
         {
             get
             {
-                ExpectState(ConnectionState.LoggedOn);
+                ExpectState(ClientState.LoggedOn);
                 return this.connection!;
             }
         }
