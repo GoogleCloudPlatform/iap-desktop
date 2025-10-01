@@ -10,9 +10,9 @@
     <PostBuildEvent />
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Apis.Core" Version="1.70.0" />
-    <PackageReference Include="Google.Solutions.ThirdParty.Libssh2.Cng" Version="1.11.104" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Google.Apis.Core" />
+    <PackageReference Include="Google.Solutions.ThirdParty.Libssh2.Cng" />
+    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.ComponentModel.DataAnnotations" />

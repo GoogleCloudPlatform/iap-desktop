@@ -7,7 +7,7 @@
     <Platforms>x64;x86;ARM64</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />

@@ -10,15 +10,15 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.11" />
-    <PackageReference Include="Google.Apis" Version="1.70.0" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.70.0" />
-    <PackageReference Include="Google.Apis.Compute.v1" Version="1.70.0.3850" />
-    <PackageReference Include="Google.Apis.Core" Version="1.70.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
-    <PackageReference Include="System.Text.Encoding" Version="4.3.0" />
-    <PackageReference Include="System.Text.Encoding.Extensions" Version="4.3.0" />
+    <PackageReference Include="Google.Solutions.ThirdParty.DockPanelSuite" />
+    <PackageReference Include="Google.Apis" />
+    <PackageReference Include="Google.Apis.Auth" />
+    <PackageReference Include="Google.Apis.Compute.v1" />
+    <PackageReference Include="Google.Apis.Core" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="System.Diagnostics.TraceSource" />
+    <PackageReference Include="System.Text.Encoding" />
+    <PackageReference Include="System.Text.Encoding.Extensions" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Configuration" />
