@@ -169,10 +169,10 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 		exit $LastExitCode
 	}
 
-    $PackageReferences = ` 
-        Get-ChildItem -Recurse -Include "*.csproj" `
-            | % { [xml](Get-Content $_) | Select-Xml "//PackageReference" | Select-Object -ExpandProperty Node } `
-            | sort -Property Include -Unique
+    $PackageReferences = [xml](Get-Content .\Directory.Packages.props) `
+        | Select-Xml "//PackageVersion"  `
+        | Select-Object -ExpandProperty Node `
+        | sort -Property Include -Unique
         
 	#
 	# Add all tools to PATH.
