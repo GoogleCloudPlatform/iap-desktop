@@ -1003,12 +1003,39 @@ namespace Google.Solutions.Terminal.Controls
         }
 
         /// <summary>
+        /// Indicates if the client is in a state that permits
+        /// showing the security screen.
+        /// </summary>
+        public bool CanShowSecurityScreen
+        {
+            get => this.State == ClientState.LoggedOn;
+        }
+
+        /// <summary>
+        /// Indicates if the client is in a state that permits
+        /// showing the task manager.
+        /// </summary>
+        public bool CanShowTaskManager
+        {
+            get => this.State == ClientState.LoggedOn;
+        }
+
+        /// <summary>
+        /// Indicates if the client is in a state that permits
+        /// logging off.
+        /// </summary>
+        public bool CanLogoff
+        {
+            get => this.State == ClientState.LoggedOn;
+        }
+
+        /// <summary>
         /// Simulate a key chord to show the security screen.
         /// </summary>
         public void ShowSecurityScreen()
         {
             Debug.Assert(this.State == ClientState.LoggedOn);
-            if (this.State != ClientState.LoggedOn)
+            if (!this.CanShowSecurityScreen)
             {
                 return;
             }
@@ -1020,12 +1047,12 @@ namespace Google.Solutions.Terminal.Controls
         }
 
         /// <summary>
-        /// Simulate a key chord toopen task manager.
+        /// Simulate a key chord to open task manager.
         /// </summary>
         public void ShowTaskManager()
         {
             Debug.Assert(this.State == ClientState.LoggedOn);
-            if (this.State != ClientState.LoggedOn)
+            if (!this.CanShowTaskManager)
             {
                 return;
             }
@@ -1040,14 +1067,14 @@ namespace Google.Solutions.Terminal.Controls
         /// Log off user (as opposed to disconnecting the session).
         /// </summary>
         /// <remarks>
-        /// There's no API to log off the user programatically, so
+        /// There's no API to log off the user programmatically, so
         /// we have to make a best-effort attempt of initiating a logoff
         /// by sending keystrokes.
         /// </remarks>
         public void Logoff()
         {
             Debug.Assert(this.State == ClientState.LoggedOn);
-            if (this.State != ClientState.LoggedOn)
+            if (!this.CanLogoff)
             {
                 return;
             }
