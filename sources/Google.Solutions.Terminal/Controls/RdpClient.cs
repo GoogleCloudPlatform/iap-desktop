@@ -1303,7 +1303,9 @@ namespace Google.Solutions.Terminal.Controls
         [Browsable(false)]
         public bool CanEnterFullScreen
         {
-            get => this.State == ClientState.LoggedOn && !IsFullScreenFormVisible;
+            get => this.State == ClientState.LoggedOn &&
+                !IsFullScreenFormVisible &&
+                !this.IsFullScreen;
         }
 
         /// <summary>

@@ -117,6 +117,16 @@ namespace Google.Solutions.Terminal.Controls
         public abstract void Connect();
 
         /// <summary>
+        /// Indicates whether the connection is in a state that permits sending 
+        /// key strokes.
+        /// </summary>
+        [Browsable(false)]
+        public bool CanSendText
+        {
+            get => this.State == ClientState.LoggedOn;
+        }
+
+        /// <summary>
         /// Simulate key strokes to send a piece of text.
         /// </summary>
         public abstract void SendText(string text);
