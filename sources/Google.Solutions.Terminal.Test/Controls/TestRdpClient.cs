@@ -320,6 +320,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Assert.IsFalse(window.Client.CanShowTaskManager);
                 Assert.IsFalse(window.Client.CanShowSecurityScreen);
                 Assert.IsFalse(window.Client.CanEnterFullScreen);
+                Assert.IsFalse(window.Client.CanReconnect);
                 Assert.IsFalse(window.Client.CanLogoff);
 
                 //
@@ -332,7 +333,8 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Assert.IsTrue(window.Client.CanSendText);
                 Assert.IsTrue(window.Client.CanShowTaskManager);
                 Assert.IsTrue(window.Client.CanShowSecurityScreen);
-                Assert.IsTrue(window.Client.CanEnterFullScreen); ;
+                Assert.IsTrue(window.Client.CanEnterFullScreen);
+                Assert.IsTrue(window.Client.CanReconnect);
                 Assert.IsTrue(window.Client.CanLogoff);
 
                 window.Client.Logoff();
@@ -343,7 +345,8 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Assert.IsFalse(window.Client.CanSendText);
                 Assert.IsFalse(window.Client.CanShowTaskManager);
                 Assert.IsFalse(window.Client.CanShowSecurityScreen);
-                Assert.IsFalse(window.Client.CanEnterFullScreen); ;
+                Assert.IsFalse(window.Client.CanEnterFullScreen);
+                Assert.IsFalse(window.Client.CanReconnect);
                 Assert.IsFalse(window.Client.CanLogoff);
 
                 window.Close();

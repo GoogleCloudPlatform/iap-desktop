@@ -237,7 +237,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             if (e.IsCancellation())
             {
                 //
-                // The user cancelled, nervemind.
+                // The user cancelled, never mind.
                 //
                 return;
             }
@@ -253,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             if (e.IsCancellation())
             {
                 //
-                // The user cancelled, nervemind.
+                // The user cancelled, never mind.
                 //
                 return;
             }
