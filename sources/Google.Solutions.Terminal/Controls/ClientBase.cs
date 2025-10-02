@@ -31,7 +31,9 @@ using System.Windows.Forms;
 namespace Google.Solutions.Terminal.Controls
 {
     /// <summary>
-    /// Base class for terminal clients.
+    /// Base class for terminal clients. A terminal client implements a 
+    /// certain protocol (such as RDP or SSH) and a UI control to
+    /// interact with it.
     /// 
     /// Some operations only work reliably when the control is in a certain
     /// state. In particular, this applies to the MSTSCAX client (which won't
@@ -42,34 +44,8 @@ namespace Google.Solutions.Terminal.Controls
     /// </summary>
     public abstract class ClientBase : ParentedUserControl
     {
-        private ClientState state = ClientState.NotConnected;
-
-        /// <summary>
-        /// Connection state has changed.
-        /// </summary>
-        public event EventHandler? StateChanged;
-
-        /// <summary>
-        /// Connection closed abnormally.
-        /// </summary>
-        public event EventHandler<ExceptionEventArgs>? ConnectionFailed;
-
-        /// <summary>
-        /// Connection closed normally.
-        /// </summary>
-        public event EventHandler<ConnectionClosedEventArgs>? ConnectionClosed;
-
-        /// <summary>
-        /// Connect to server.
-        /// </summary>
-        public abstract void Connect();
-
-        /// <summary>
-        /// Simulate key strokes to send a piece of text.
-        /// </summary>
-        public abstract void SendText(string text);
-
         private readonly ClientStatePanel statePanel;
+        private ClientState state = ClientState.NotConnected;
 
         protected ClientBase()
         {
@@ -120,8 +96,30 @@ namespace Google.Solutions.Terminal.Controls
             this.statePanel.ConnectButtonClicked += (_, args) => Connect();
         }
 
-        public virtual void Bind(IBindingContext bindingContext)
-        { }
+        /// <summary>
+        /// Connection state has changed.
+        /// </summary>
+        public event EventHandler? StateChanged;
+
+        /// <summary>
+        /// Connection closed abnormally.
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? ConnectionFailed;
+
+        /// <summary>
+        /// Connection closed normally.
+        /// </summary>
+        public event EventHandler<ConnectionClosedEventArgs>? ConnectionClosed;
+
+        /// <summary>
+        /// Connect to server.
+        /// </summary>
+        public abstract void Connect();
+
+        /// <summary>
+        /// Simulate key strokes to send a piece of text.
+        /// </summary>
+        public abstract void SendText(string text);
 
         /// <summary>
         /// Check if the client is currently hosted in a full-screen container.
@@ -131,6 +129,9 @@ namespace Google.Solutions.Terminal.Controls
         {
             get => false;
         }
+
+        public virtual void Bind(IBindingContext bindingContext)
+        { }
 
         //---------------------------------------------------------------------
         // Connection state tracking.
