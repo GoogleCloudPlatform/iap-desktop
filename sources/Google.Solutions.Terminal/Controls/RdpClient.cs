@@ -886,7 +886,7 @@ namespace Google.Solutions.Terminal.Controls
         public void Reconnect()
         {
             Debug.Assert(this.State == ClientState.LoggedOn);
-            if (this.State != ClientState.LoggedOn)
+            if (!this.CanReconnect)
             {
                 return;
             }
@@ -1025,6 +1025,15 @@ namespace Google.Solutions.Terminal.Controls
         /// logging off.
         /// </summary>
         public bool CanLogoff
+        {
+            get => this.State == ClientState.LoggedOn;
+        }
+
+        /// <summary>
+        /// Indicates if the client is in a state that permits
+        /// reconnecting.
+        /// </summary>
+        public bool CanReconnect
         {
             get => this.State == ClientState.LoggedOn;
         }
