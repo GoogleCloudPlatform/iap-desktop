@@ -67,12 +67,12 @@ namespace Google.Solutions.Terminal.Test.Controls
             return window;
         }
 
-        private async Task AwaitStateAsync(
+        private static async Task AwaitStateAsync(
             ClientDiagnosticsWindow<RdpClient> window,
             ClientState state)
         {
             await window.Client
-                .AwaitStateAsync(state)
+                .AwaitStateAsync(state, CancellationToken.None)
                 .ConfigureAwait(true);
             await Task
                 .Delay(TimeSpan.FromSeconds(1))
@@ -129,8 +129,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 // Connect.
                 //
                 window.Client.Connect();
-                await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
 
                 //
@@ -266,21 +265,45 @@ namespace Google.Solutions.Terminal.Test.Controls
             {
                 window.Client.Server = InvalidServer;
                 window.Client.ConnectionTimeout = TimeSpan.FromSeconds(1);
+                window.Silent = true;
 
                 window.Show();
-
-                ExceptionEventArgs? eventArgs = null;
-                window.Client.ConnectionFailed += (_, e) => eventArgs = e;
 
                 //
                 // Connect to non-existing server.
                 //
                 window.Client.Connect();
-                await AwaitStateAsync(window, ClientState.NotConnected)
+
+                await ExceptionAssert.ThrowsAsync<RdpDisconnectedException>(
+                    () => AwaitStateAsync(window, ClientState.Connected))
                     .ConfigureAwait(true);
 
-                Assert.NotNull(eventArgs);
-                Assert.IsInstanceOf<RdpDisconnectedException>(eventArgs!.Exception);
+                window.Close();
+            }
+        }
+
+        [WindowsFormsTest]
+        public async Task AwaitState_WhenCancelled()
+        {
+            using (var window = CreateWindow())
+            {
+                window.Client.Server = InvalidServer;
+                window.Client.ConnectionTimeout = TimeSpan.FromSeconds(1);
+                window.Silent = true;
+
+                window.Show();
+
+                //
+                // Cancel before connecting.
+                //
+                var tokenSource = new CancellationTokenSource();
+                tokenSource.CancelAfter(TimeSpan.FromMilliseconds(10));
+
+                await ExceptionAssert.ThrowsAsync<TaskCanceledException>(
+                    () => window.Client.AwaitStateAsync(
+                        ClientState.Connected,
+                        tokenSource.Token))
+                    .ConfigureAwait(true);
 
                 window.Close();
             }

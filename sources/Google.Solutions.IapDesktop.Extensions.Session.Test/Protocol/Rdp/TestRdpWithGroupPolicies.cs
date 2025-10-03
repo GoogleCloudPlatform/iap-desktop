@@ -35,7 +35,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
 {
     [TestFixture]
     [UsesCloudResources]
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
                 window.Client.Connect();
 
                 await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                    .AwaitStateAsync(ClientState.LoggedOn, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 window.Close();
@@ -247,7 +247,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Controls
                 window.Client.Connect();
 
                 await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                    .AwaitStateAsync(ClientState.LoggedOn, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 window.Close();

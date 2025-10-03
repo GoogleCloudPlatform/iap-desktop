@@ -131,10 +131,19 @@ namespace Google.Solutions.Terminal.Controls
             splitContainer.EndInit();
             ResumeLayout(false);
 
-            client.ConnectionFailed += (_, args)
-                => ShowError("Connection failed", args.Exception);
+            client.ConnectionFailed += (_, args) =>
+            {
+                if (!this.Silent)
+                {
+                    ShowError("Connection failed", args.Exception);
+                }
+            };
         }
 
+        /// <summary>
+        /// Suppress error dialogs.
+        /// </summary>
+        public bool Silent { get; set; }
 
         private class ClientBindingContext : IBindingContext
         {

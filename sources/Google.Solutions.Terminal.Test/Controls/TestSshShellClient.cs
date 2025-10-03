@@ -52,7 +52,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Client.Connect();
                 await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                    .AwaitStateAsync(ClientState.LoggedOn, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 //
@@ -60,7 +60,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.WindowState = FormWindowState.Maximized;
                 await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                    .AwaitStateAsync(ClientState.LoggedOn, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 await Task.Delay(TimeSpan.FromSeconds(1));
@@ -70,7 +70,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.WindowState = FormWindowState.Minimized;
                 await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                    .AwaitStateAsync(ClientState.LoggedOn, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 await Task.Delay(TimeSpan.FromSeconds(1));
@@ -80,7 +80,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.WindowState = FormWindowState.Normal;
                 await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                    .AwaitStateAsync(ClientState.LoggedOn, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 await Task.Delay(TimeSpan.FromSeconds(1));
@@ -112,7 +112,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Client.Connect();
                 await window.Client
-                    .AwaitStateAsync(ClientState.NotConnected)
+                    .AwaitStateAsync(ClientState.NotConnected, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 Assert.NotNull(eventArgs);
@@ -134,7 +134,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Client.Connect();
                 await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                    .AwaitStateAsync(ClientState.LoggedOn, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 ClientBase.ConnectionClosedEventArgs? eventArgs = null;
@@ -146,7 +146,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 window.Close();
 
                 await window.Client
-                    .AwaitStateAsync(ClientState.NotConnected)
+                    .AwaitStateAsync(ClientState.NotConnected, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 Assert.NotNull(eventArgs);
@@ -166,13 +166,13 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Client.Connect();
                 await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                    .AwaitStateAsync(ClientState.LoggedOn, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 window.Client.SendText("exit\r\n");
 
                 await window.Client
-                    .AwaitStateAsync(ClientState.NotConnected)
+                    .AwaitStateAsync(ClientState.NotConnected, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 window.Close();

@@ -33,6 +33,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -144,10 +145,12 @@ namespace Google.Solutions.Terminal.Controls
         /// Wait until a certain state has been reached. Mainly
         /// intended for testing.
         /// </summary>
-        internal override async Task AwaitStateAsync(ClientState state)
+        internal override async Task AwaitStateAsync(
+            ClientState state,
+            CancellationToken cancellationToken)
         {
             await base
-                .AwaitStateAsync(state)
+                .AwaitStateAsync(state, cancellationToken)
                 .ConfigureAwait(true);
 
             //

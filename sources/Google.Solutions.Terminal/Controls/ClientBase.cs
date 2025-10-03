@@ -25,6 +25,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -183,7 +184,9 @@ namespace Google.Solutions.Terminal.Controls
         /// Wait until a certain state has been reached. Mainly
         /// intended for testing.
         /// </summary>
-        internal virtual async Task AwaitStateAsync(ClientState state)
+        internal virtual async Task AwaitStateAsync(
+            ClientState state,
+            CancellationToken cancellationToken)
         {
             Debug.Assert(!this.InvokeRequired);
 
@@ -194,20 +197,46 @@ namespace Google.Solutions.Terminal.Controls
 
             var completionSource = new TaskCompletionSource<ClientState>();
 
-            void onStateChanged(object sender, EventArgs args)
+            //
+            // Register for relevant events.
+            //
+            void onStateChanged(object? sender, EventArgs args)
             {
                 if (this.State == state)
                 {
-                    this.StateChanged -= onStateChanged;
                     completionSource.SetResult(this.State);
                 }
             }
 
-            this.StateChanged += onStateChanged;
+            void onConnectionFailed(object? sender, ExceptionEventArgs args)
+            {
+                completionSource.SetException(args.Exception);
+            }
 
-            await completionSource
-                .Task
-                .ConfigureAwait(true);
+            this.StateChanged += onStateChanged;
+            this.ConnectionFailed += onConnectionFailed;
+
+            //
+            // Wait till one of the events trigger or the
+            // operation is cancelled.
+            //
+
+            var registration = cancellationToken
+                .Register(() => completionSource.TrySetCanceled());
+
+            try
+            {
+                await completionSource
+                    .Task
+                    .ConfigureAwait(true);
+            }
+            finally
+            {
+                registration.Dispose();
+
+                this.StateChanged -= onStateChanged;
+                this.ConnectionFailed -= onConnectionFailed;
+            }
         }
 
         protected virtual void OnBeforeConnect()
