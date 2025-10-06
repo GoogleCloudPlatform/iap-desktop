@@ -54,7 +54,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Client.Connect();
                 await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                    .AwaitStateAsync(ClientState.LoggedOn, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 Assert.IsFalse(window.Client.IsFileBrowserVisible);
@@ -74,7 +74,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 window.Close();
 
                 await window.Client
-                    .AwaitStateAsync(ClientState.NotConnected)
+                    .AwaitStateAsync(ClientState.NotConnected, CancellationToken.None)
                     .ConfigureAwait(true);
             }
         }
@@ -96,7 +96,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Client.Connect();
                 await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                    .AwaitStateAsync(ClientState.LoggedOn, CancellationToken.None)
                     .ConfigureAwait(true);
 
                 Assert.IsFalse(window.Client.IsFileBrowserVisible);
@@ -108,7 +108,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 window.Close();
 
                 await window.Client
-                    .AwaitStateAsync(ClientState.NotConnected)
+                    .AwaitStateAsync(ClientState.NotConnected, CancellationToken.None)
                     .ConfigureAwait(true);
             }
         }

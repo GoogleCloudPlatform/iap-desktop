@@ -57,13 +57,26 @@ namespace Google.Solutions.Terminal.Test.Controls
         {
             var window = new ClientDiagnosticsWindow<RdpClient>(new RdpClient());
             window.Client.MainWindow = window;
-            window.Client.Username = $".\\{username}";
+            window.Client.Domain = ".";
+            window.Client.Username = username;
             window.Client.Password = password;
             window.Client.Server = Dns.GetHostEntry(serverName)
                 .AddressList
                 .First()
                 .ToString();
             return window;
+        }
+
+        private static async Task AwaitStateAsync(
+            ClientDiagnosticsWindow<RdpClient> window,
+            ClientState state)
+        {
+            await window.Client
+                .AwaitStateAsync(state, CancellationToken.None)
+                .ConfigureAwait(true);
+            await Task
+                .Delay(TimeSpan.FromSeconds(1))
+                .ConfigureAwait(true);
         }
 
         [WindowsFormsTest]
@@ -79,29 +92,22 @@ namespace Google.Solutions.Terminal.Test.Controls
                 // Connect.
                 //
                 window.Client.Connect();
-                await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
 
                 //
                 // Maximize.
                 //
                 window.WindowState = FormWindowState.Maximized;
-                await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
-
-                await Task.Delay(TimeSpan.FromSeconds(1));
 
                 //
                 // Restore.
                 //
                 window.WindowState = FormWindowState.Normal;
-                await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
-
-                await Task.Delay(TimeSpan.FromSeconds(1));
 
                 //
                 // Disconnect.
@@ -123,8 +129,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 // Connect.
                 //
                 window.Client.Connect();
-                await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
 
                 //
@@ -135,30 +140,22 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Assert.IsTrue(window.Client.TryEnterFullScreen(null));
                 Assert.IsTrue(window.Client.IsFullScreen);
 
-                await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
-                await Task.Delay(TimeSpan.FromSeconds(1));
 
                 //
                 // Minimize.
                 //
                 window.WindowState = FormWindowState.Minimized;
-                await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
-
-                await Task.Delay(TimeSpan.FromSeconds(1));
 
                 //
                 // Restore.
                 //
                 window.WindowState = FormWindowState.Normal;
-                await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
-
-                await Task.Delay(TimeSpan.FromSeconds(1));
 
                 //
                 // Disconnect.
@@ -180,8 +177,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 // Connect.
                 //
                 window.Client.Connect();
-                await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
 
                 //
@@ -196,10 +192,8 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Assert.IsTrue(window.Client.IsFullScreen);
                 Assert.IsFalse(window.Client.CanEnterFullScreen);
 
-                await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
-                await Task.Delay(TimeSpan.FromSeconds(1));
 
                 //
                 // Leave full-screen.
@@ -207,10 +201,8 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Assert.IsTrue(window.Client.TryLeaveFullScreen());
                 Assert.IsFalse(window.Client.IsFullScreen);
 
-                await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
-                await Task.Delay(TimeSpan.FromSeconds(1));
 
                 //
                 // Enter full-screen again.
@@ -220,10 +212,8 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Assert.IsTrue(window.Client.TryEnterFullScreen(null));
                 Assert.IsTrue(window.Client.IsFullScreen);
 
-                await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
-                await Task.Delay(TimeSpan.FromSeconds(1));
 
                 //
                 // Leave full-screen again.
@@ -232,7 +222,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 Assert.IsFalse(window.Client.IsFullScreen);
 
                 //
-                // Disonnect.
+                // Disconnect.
                 //
                 window.Close();
             }
@@ -249,8 +239,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 // Connect.
                 //
                 window.Client.Connect();
-                await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
 
                 RdpClient.ConnectionClosedEventArgs? eventArgs = null;
@@ -261,8 +250,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 window.Close();
 
-                await window.Client
-                    .AwaitStateAsync(ClientState.NotConnected)
+                await AwaitStateAsync(window, ClientState.NotConnected)
                     .ConfigureAwait(true);
 
                 Assert.NotNull(eventArgs);
@@ -271,28 +259,51 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [WindowsFormsTest]
-        public async Task Connect_WhenServerInvalid_ThenRaisesEvent()
+        public async Task Connect_WhenServerInvalid()
         {
             using (var window = CreateWindow())
             {
                 window.Client.Server = InvalidServer;
                 window.Client.ConnectionTimeout = TimeSpan.FromSeconds(1);
+                window.Silent = true;
 
                 window.Show();
-
-                ExceptionEventArgs? eventArgs = null;
-                window.Client.ConnectionFailed += (_, e) => eventArgs = e;
 
                 //
                 // Connect to non-existing server.
                 //
                 window.Client.Connect();
-                await window.Client
-                    .AwaitStateAsync(ClientState.NotConnected)
+
+                await ExceptionAssert.ThrowsAsync<RdpDisconnectedException>(
+                    () => AwaitStateAsync(window, ClientState.Connected))
                     .ConfigureAwait(true);
 
-                Assert.NotNull(eventArgs);
-                Assert.IsInstanceOf<RdpDisconnectedException>(eventArgs!.Exception);
+                window.Close();
+            }
+        }
+
+        [WindowsFormsTest]
+        public async Task AwaitState_WhenCancelled()
+        {
+            using (var window = CreateWindow())
+            {
+                window.Client.Server = InvalidServer;
+                window.Client.ConnectionTimeout = TimeSpan.FromSeconds(1);
+                window.Silent = true;
+
+                window.Show();
+
+                //
+                // Cancel before connecting.
+                //
+                var tokenSource = new CancellationTokenSource();
+                tokenSource.CancelAfter(TimeSpan.FromMilliseconds(10));
+
+                await ExceptionAssert.ThrowsAsync<TaskCanceledException>(
+                    () => window.Client.AwaitStateAsync(
+                        ClientState.Connected,
+                        tokenSource.Token))
+                    .ConfigureAwait(true);
 
                 window.Close();
             }
@@ -309,15 +320,57 @@ namespace Google.Solutions.Terminal.Test.Controls
                 // Connect.
                 //
                 window.Client.Connect();
-                await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
 
                 window.Client.Logoff();
 
-                await window.Client
-                    .AwaitStateAsync(ClientState.NotConnected)
+                await AwaitStateAsync(window, ClientState.NotConnected)
                     .ConfigureAwait(true);
+
+                window.Close();
+            }
+        }
+
+        [WindowsFormsTest]
+        public async Task CanXxx()
+        {
+            using (var window = CreateWindow())
+            {
+                window.Show();
+
+                Assert.IsFalse(window.Client.CanSendText);
+                Assert.IsFalse(window.Client.CanShowTaskManager);
+                Assert.IsFalse(window.Client.CanShowSecurityScreen);
+                Assert.IsFalse(window.Client.CanEnterFullScreen);
+                Assert.IsFalse(window.Client.CanReconnect);
+                Assert.IsFalse(window.Client.CanLogoff);
+
+                //
+                // Connect.
+                //
+                window.Client.Connect();
+                await AwaitStateAsync(window, ClientState.LoggedOn)
+                    .ConfigureAwait(true);
+
+                Assert.IsTrue(window.Client.CanSendText);
+                Assert.IsTrue(window.Client.CanShowTaskManager);
+                Assert.IsTrue(window.Client.CanShowSecurityScreen);
+                Assert.IsTrue(window.Client.CanEnterFullScreen);
+                Assert.IsTrue(window.Client.CanReconnect);
+                Assert.IsTrue(window.Client.CanLogoff);
+
+                window.Client.Logoff();
+
+                await AwaitStateAsync(window, ClientState.NotConnected)
+                    .ConfigureAwait(true);
+
+                Assert.IsFalse(window.Client.CanSendText);
+                Assert.IsFalse(window.Client.CanShowTaskManager);
+                Assert.IsFalse(window.Client.CanShowSecurityScreen);
+                Assert.IsFalse(window.Client.CanEnterFullScreen);
+                Assert.IsFalse(window.Client.CanReconnect);
+                Assert.IsFalse(window.Client.CanLogoff);
 
                 window.Close();
             }
@@ -334,8 +387,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 // Connect.
                 //
                 window.Client.Connect();
-                await window.Client
-                    .AwaitStateAsync(ClientState.LoggedOn)
+                await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
 
                 var connectionClosedEvents = 0;
@@ -350,11 +402,9 @@ namespace Google.Solutions.Terminal.Test.Controls
                 {
                     window.Client.Reconnect();
 
-                    await window.Client
-                        .AwaitStateAsync(ClientState.NotConnected)
+                    await AwaitStateAsync(window, ClientState.NotConnected)
                         .ConfigureAwait(true);
-                    await window.Client
-                        .AwaitStateAsync(ClientState.LoggedOn)
+                    await AwaitStateAsync(window, ClientState.LoggedOn)
                         .ConfigureAwait(true);
                 }
 

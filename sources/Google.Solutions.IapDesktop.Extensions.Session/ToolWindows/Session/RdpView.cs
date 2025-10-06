@@ -209,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                         //   considering that group policy).
                         // - Automatic logons might be auto-disabled by group policy 
                         //   (causing prompts to be suppressed), but the user might 
-                        //   have stored credentialsmanually.
+                        //   have stored credentials manually.
                         //
                         // So if there is a password, use it.
                         //
@@ -354,7 +354,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             else
             {
                 //
-                // Use all configured screns.
+                // Use all configured screens.
                 //
                 // NB. The list of devices might include devices that
                 // do not exist anymore. 

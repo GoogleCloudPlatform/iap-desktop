@@ -33,6 +33,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -144,10 +145,12 @@ namespace Google.Solutions.Terminal.Controls
         /// Wait until a certain state has been reached. Mainly
         /// intended for testing.
         /// </summary>
-        internal override async Task AwaitStateAsync(ClientState state)
+        internal override async Task AwaitStateAsync(
+            ClientState state,
+            CancellationToken cancellationToken)
         {
             await base
-                .AwaitStateAsync(state)
+                .AwaitStateAsync(state, cancellationToken)
                 .ConfigureAwait(true);
 
             //
@@ -886,7 +889,7 @@ namespace Google.Solutions.Terminal.Controls
         public void Reconnect()
         {
             Debug.Assert(this.State == ClientState.LoggedOn);
-            if (this.State != ClientState.LoggedOn)
+            if (!this.CanReconnect)
             {
                 return;
             }
@@ -1003,12 +1006,48 @@ namespace Google.Solutions.Terminal.Controls
         }
 
         /// <summary>
+        /// Indicates if the client is in a state that permits
+        /// showing the security screen.
+        /// </summary>
+        public bool CanShowSecurityScreen
+        {
+            get => this.State == ClientState.LoggedOn;
+        }
+
+        /// <summary>
+        /// Indicates if the client is in a state that permits
+        /// showing the task manager.
+        /// </summary>
+        public bool CanShowTaskManager
+        {
+            get => this.State == ClientState.LoggedOn;
+        }
+
+        /// <summary>
+        /// Indicates if the client is in a state that permits
+        /// logging off.
+        /// </summary>
+        public bool CanLogoff
+        {
+            get => this.State == ClientState.LoggedOn;
+        }
+
+        /// <summary>
+        /// Indicates if the client is in a state that permits
+        /// reconnecting.
+        /// </summary>
+        public bool CanReconnect
+        {
+            get => this.State == ClientState.LoggedOn;
+        }
+
+        /// <summary>
         /// Simulate a key chord to show the security screen.
         /// </summary>
         public void ShowSecurityScreen()
         {
             Debug.Assert(this.State == ClientState.LoggedOn);
-            if (this.State != ClientState.LoggedOn)
+            if (!this.CanShowSecurityScreen)
             {
                 return;
             }
@@ -1020,12 +1059,12 @@ namespace Google.Solutions.Terminal.Controls
         }
 
         /// <summary>
-        /// Simulate a key chord toopen task manager.
+        /// Simulate a key chord to open task manager.
         /// </summary>
         public void ShowTaskManager()
         {
             Debug.Assert(this.State == ClientState.LoggedOn);
-            if (this.State != ClientState.LoggedOn)
+            if (!this.CanShowTaskManager)
             {
                 return;
             }
@@ -1040,14 +1079,14 @@ namespace Google.Solutions.Terminal.Controls
         /// Log off user (as opposed to disconnecting the session).
         /// </summary>
         /// <remarks>
-        /// There's no API to log off the user programatically, so
+        /// There's no API to log off the user programmatically, so
         /// we have to make a best-effort attempt of initiating a logoff
         /// by sending keystrokes.
         /// </remarks>
         public void Logoff()
         {
             Debug.Assert(this.State == ClientState.LoggedOn);
-            if (this.State != ClientState.LoggedOn)
+            if (!this.CanLogoff)
             {
                 return;
             }
@@ -1303,7 +1342,9 @@ namespace Google.Solutions.Terminal.Controls
         [Browsable(false)]
         public bool CanEnterFullScreen
         {
-            get => this.State == ClientState.LoggedOn && !IsFullScreenFormVisible;
+            get => this.State == ClientState.LoggedOn &&
+                !IsFullScreenFormVisible &&
+                !this.IsFullScreen;
         }
 
         /// <summary>
