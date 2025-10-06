@@ -172,7 +172,13 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
     $PackageReferences = [xml](Get-Content .\Directory.Packages.props) `
         | Select-Xml "//PackageVersion"  `
         | Select-Object -ExpandProperty Node `
-        | sort -Property Include -Unique
+        | sort -Property Include -Unique `
+        | ForEach-Object {
+            [PSCustomObject]@{
+                Include = $_.Include
+                Version = $_.Version.Replace("]", "").Replace("[", "")
+            }
+        }
         
 	#
 	# Add all tools to PATH.
