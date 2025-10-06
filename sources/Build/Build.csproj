@@ -7,11 +7,7 @@
     <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
     <Platforms>x64;x86;ARM64</Platforms>
   </PropertyGroup>
-  <ItemGroup><!-- 
-      These packages contain tools and we must use specific versions of them. 
-      Comment out these references before running a solution-wide Update-Package.
-    -->    
-    
+  <ItemGroup>    
     <PackageReference Include="OpenCover" />
     <PackageReference Include="ReportGenerator" />
     <PackageReference Include="WiX" />
