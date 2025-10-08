@@ -45,8 +45,6 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     /// by the organization they belong to.
     /// </summary>
     public class ProjectWorkspace :
-        IEntitySearcher<WildcardQuery, Organization>,
-        IEntityNavigator<OrganizationLocator, Project>,
         IAsyncEntityAspectProvider<OrganizationLocator, Organization>,
         IAsyncEntityAspectProvider<ProjectLocator, Project>
     {
@@ -327,19 +325,6 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         // Projects.
         //----------------------------------------------------------------------
 
-        public async Task<IEnumerable<Project>> ListDescendantsAsync(
-            OrganizationLocator locator,
-            CancellationToken cancellationToken)
-        {
-            var state = await GetStateAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            return state.Projects
-                .Values
-                .Where(p => p.Organization == locator)
-                .ToList();
-        }
-
         public async Task<Project?> QueryAspectAsync(
             ProjectLocator locator,
             CancellationToken cancellationToken)
@@ -353,16 +338,6 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         //----------------------------------------------------------------------
         // Organizations.
         //----------------------------------------------------------------------
-
-        public async Task<IEnumerable<Organization>> SearchAsync(
-            WildcardQuery query,
-            CancellationToken cancellationToken)
-        {
-            var state = await GetStateAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            return state.Organizations.Values;
-        }
 
         public async Task<Organization?> QueryAspectAsync(
             OrganizationLocator locator,
