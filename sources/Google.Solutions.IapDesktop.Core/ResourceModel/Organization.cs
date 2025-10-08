@@ -42,14 +42,13 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Core.EntityModel;
 
 namespace Google.Solutions.IapDesktop.Core.ResourceModel
 {
     /// <summary>
     /// A Google Cloud organization.
     /// </summary>
-    public class Organization : IEntity<OrganizationLocator>
+    public class Organization : IResource<OrganizationLocator>
     {
         /// <summary>
         /// Default organzization, used in places where the actual

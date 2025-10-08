@@ -42,14 +42,13 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Core.EntityModel;
 
 namespace Google.Solutions.IapDesktop.Core.ResourceModel
 {
     /// <summary>
     /// A set of instances
     /// </summary>
-    public interface IInstanceSet : IEntity<ComputeEngineLocator>
+    public interface IInstanceSet : IResource<ComputeEngineLocator>
     {
     }
 }

@@ -42,14 +42,13 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapDesktop.Core.EntityModel;
 
 namespace Google.Solutions.IapDesktop.Core.ResourceModel
 {
     /// <summary>
     /// A Google Cloud project.
     /// </summary>
-    public class Project : IEntity<ProjectLocator>
+    public class Project : IResource<ProjectLocator>
     {
         public Project(
             OrganizationLocator organizationLocator,

@@ -21,12 +21,13 @@
 
 using Google.Solutions.Apis.Locator;
 
-namespace Google.Solutions.IapDesktop.Core.EntityModel
+namespace Google.Solutions.IapDesktop.Core.ResourceModel
 {
     /// <summary>
-    /// An entity that can be looked up by a locator.
+    /// A resource that can be looked up by a locator.
     /// </summary>
-    public interface IEntity<out TLocator> where TLocator : ILocator
+    public interface IResource<out TLocator> 
+        where TLocator : ILocator
     {
         /// <summary>
         /// Display name, might differ from the name
