@@ -44,9 +44,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     /// Contains a user-selected set of projects, aggregated
     /// by the organization they belong to.
     /// </summary>
-    public class ProjectWorkspace :
-        IAsyncEntityAspectProvider<OrganizationLocator, Organization>,
-        IAsyncEntityAspectProvider<ProjectLocator, Project>
+    public class ProjectWorkspace 
     {
         private readonly IProjectWorkspaceSettings settings;
         private readonly IAncestryCache ancestryCache;
