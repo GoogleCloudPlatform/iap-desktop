@@ -281,32 +281,6 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
                         p.CrmProject != null)));
         }
 
-        private async Task<State> GetStateAsync(
-            CancellationToken cancellationToken)
-        {
-            using (await this.cacheLock
-                .AcquireAsync(cancellationToken)
-                .ConfigureAwait(false))
-            {
-                if (this.cache == null || this.cacheIsDirty)
-                {
-                    //
-                    // Populate cache. If this fails, we rethrow the exception
-                    // and try again next time.
-                    //
-                    this.cache = await LoadStateAsync(
-                        this.settings,
-                        this.ancestryCache,
-                        this.resourceManager,
-                        cancellationToken)
-                        .ConfigureAwait(false);
-                    this.cacheIsDirty = false;
-                }
-
-                return this.cache;
-            }
-        }
-
         /// <summary>
         /// Preload cache.
         /// </summary>
@@ -317,34 +291,6 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
                 this.ancestryCache,
                 this.resourceManager,
                 CancellationToken.None);
-        }
-
-        //----------------------------------------------------------------------
-        // Projects.
-        //----------------------------------------------------------------------
-
-        public async Task<Project?> QueryAspectAsync(
-            ProjectLocator locator,
-            CancellationToken cancellationToken)
-        {
-            var state = await GetStateAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            return state.Projects.TryGet(locator);
-        }
-
-        //----------------------------------------------------------------------
-        // Organizations.
-        //----------------------------------------------------------------------
-
-        public async Task<Organization?> QueryAspectAsync(
-            OrganizationLocator locator,
-            CancellationToken cancellationToken)
-        {
-            var state = await GetStateAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            return state.Organizations.TryGet(locator);
         }
     }
 
