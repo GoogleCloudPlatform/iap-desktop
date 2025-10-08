@@ -38,27 +38,4 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
         /// </remarks>
         IEnumerable<ProjectLocator> Projects { get; }
     }
-
-    /// <summary>
-    /// Cache for project ancestry information.
-    /// </summary>
-    public interface IAncestryCache
-    {
-        /// <summary>
-        /// Get cached project's ancestry, in top-to-bottom order.
-        /// 
-        /// The ancestry path might be incomplete or empty if the current 
-        /// doesn't have sufficient access to resolve the full ancestry.
-        /// </summary>
-        /// <returns>false if ancestry hasn't been set before</returns>
-        bool TryGetAncestry(ProjectLocator project, out OrganizationLocator? ancestry);
-
-        /// <summary>
-        /// Cache project ancestry path, in top-to-bottom order.
-        /// 
-        /// The ancestry path might be incomplete or empty if the current 
-        /// doesn't have sufficient access to resolve the full ancestry.
-        /// </summary>
-        void SetAncestry(ProjectLocator project, OrganizationLocator ancestry);
-    }
 }

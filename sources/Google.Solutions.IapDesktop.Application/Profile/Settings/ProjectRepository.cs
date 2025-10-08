@@ -32,8 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 {
     public class ProjectRepository :
         IProjectSettingsRepository,
-        IProjectWorkspaceSettings,
-        IAncestryCache
+        IProjectWorkspaceSettings
     {
         /// <summary>
         /// Multi-SZ value to store ancestry information.
@@ -85,43 +84,6 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             get => this.BaseKey
                 .GetSubKeyNames()
                 .Select(projectId => new ProjectLocator(projectId));
-        }
-
-        //---------------------------------------------------------------------
-        // IAncestryCache.
-        //---------------------------------------------------------------------
-
-        public void SetAncestry(
-            ProjectLocator project,
-            OrganizationLocator ancestry)
-        {
-            using (var key = OpenRegistryKey(project.Name))
-            {
-                key.SetValue(
-                    AncestryValueName,
-                    new[] { ancestry.ToString() },
-                    RegistryValueKind.MultiString);
-            }
-        }
-
-        public bool TryGetAncestry(
-            ProjectLocator project,
-            out OrganizationLocator? ancestry)
-        {
-            using (var key = OpenRegistryKey(project.Name))
-            {
-                if (key.GetValue(AncestryValueName, null) is string[] value &&
-                    value.Length > 0 &&
-                    OrganizationLocator.TryParse(value[0], out ancestry))
-                {
-                    return true;
-                }
-                else
-                {
-                    ancestry = null;
-                    return false;
-                }
-            }
         }
 
         //---------------------------------------------------------------------
