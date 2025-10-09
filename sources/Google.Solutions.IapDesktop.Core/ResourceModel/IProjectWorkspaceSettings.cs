@@ -21,19 +21,21 @@
 
 using Google.Solutions.Apis.Locator;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.ComponentModel;
 
-namespace Google.Solutions.IapDesktop.Core.EntityModel.Query
+namespace Google.Solutions.IapDesktop.Core.ResourceModel
 {
     /// <summary>
-    /// Result of an entity query.
+    /// Persistent settings for a workspace.
     /// </summary>
-    public class EntityQueryResult<TEntity>
-        : ReadOnlyCollection<EntityQueryResultItem<TEntity>>
-        where TEntity : IEntity<ILocator>
+    public interface IProjectWorkspaceSettings : INotifyPropertyChanged
     {
-        public EntityQueryResult(IList<EntityQueryResultItem<TEntity>> list) : base(list)
-        {
-        }
+        /// <summary>
+        /// List of projects in this workspace.
+        /// </summary>
+        /// <remarks>
+        /// Raises a PropertyChanged events when changed.
+        /// </remarks>
+        IEnumerable<ProjectLocator> Projects { get; }
     }
 }
