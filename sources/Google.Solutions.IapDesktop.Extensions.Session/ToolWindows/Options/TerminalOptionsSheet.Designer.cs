@@ -57,15 +57,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox = new System.Windows.Forms.CheckBox();
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox = new System.Windows.Forms.CheckBox();
             this.scollingBox = new System.Windows.Forms.GroupBox();
+            this.scrollUsingCtrlPageUpDownCheckBox = new System.Windows.Forms.CheckBox();
             this.scrollUsingCtrlHomeEndCheckBox = new System.Windows.Forms.CheckBox();
             this.themeBox = new System.Windows.Forms.GroupBox();
             this.caretStyle = new System.Windows.Forms.Label();
+            this.caretStyleCombobox = new Google.Solutions.Mvvm.Controls.BindableComboBox();
             this.terminalLook = new System.Windows.Forms.Label();
             this.selectBackgroundColorButton = new System.Windows.Forms.Button();
             this.selectForegroundColorButton = new System.Windows.Forms.Button();
             this.selectFontButton = new System.Windows.Forms.Button();
-            this.scrollUsingCtrlPageUpDownCheckBox = new System.Windows.Forms.CheckBox();
-            this.caretStyleCombobox = new Google.Solutions.Mvvm.Controls.BindableComboBox();
             this.clipboardBox.SuspendLayout();
             this.scollingBox.SuspendLayout();
             this.themeBox.SuspendLayout();
@@ -89,9 +89,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.bracketedPastingCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.bracketedPastingCheckBox.Location = new System.Drawing.Point(18, 78);
             this.bracketedPastingCheckBox.Name = "bracketedPastingCheckBox";
-            this.bracketedPastingCheckBox.Size = new System.Drawing.Size(222, 17);
+            this.bracketedPastingCheckBox.Size = new System.Drawing.Size(290, 17);
             this.bracketedPastingCheckBox.TabIndex = 3;
-            this.bracketedPastingCheckBox.Text = "Enable bracketed pasting";
+            this.bracketedPastingCheckBox.Text = "Use bracketed-paste when pasting multiple lines of text";
             this.bracketedPastingCheckBox.UseVisualStyleBackColor = true;
             // 
             // convertTypographicQuotesCheckBox
@@ -135,6 +135,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.scollingBox.TabStop = false;
             this.scollingBox.Text = "Scrolling:";
             // 
+            // scrollUsingCtrlPageUpDownCheckBox
+            // 
+            this.scrollUsingCtrlPageUpDownCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.scrollUsingCtrlPageUpDownCheckBox.Location = new System.Drawing.Point(18, 42);
+            this.scrollUsingCtrlPageUpDownCheckBox.Name = "scrollUsingCtrlPageUpDownCheckBox";
+            this.scrollUsingCtrlPageUpDownCheckBox.Size = new System.Drawing.Size(250, 17);
+            this.scrollUsingCtrlPageUpDownCheckBox.TabIndex = 8;
+            this.scrollUsingCtrlPageUpDownCheckBox.Text = "Use Ctrl+&PageUp/Ctrl+PageDown to scroll up/down";
+            this.scrollUsingCtrlPageUpDownCheckBox.UseVisualStyleBackColor = true;
+            // 
             // scrollUsingCtrlHomeEndCheckBox
             // 
             this.scrollUsingCtrlHomeEndCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
@@ -168,6 +178,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.caretStyle.Size = new System.Drawing.Size(59, 13);
             this.caretStyle.TabIndex = 12;
             this.caretStyle.Text = "Caret style:";
+            // 
+            // caretStyleCombobox
+            // 
+            this.caretStyleCombobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.caretStyleCombobox.FormattingEnabled = true;
+            this.caretStyleCombobox.Location = new System.Drawing.Point(94, 20);
+            this.caretStyleCombobox.Name = "caretStyleCombobox";
+            this.caretStyleCombobox.Size = new System.Drawing.Size(150, 21);
+            this.caretStyleCombobox.TabIndex = 8;
             // 
             // terminalLook
             // 
@@ -209,25 +228,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.selectFontButton.Text = "Font...";
             this.selectFontButton.UseVisualStyleBackColor = true;
             this.selectFontButton.Click += new System.EventHandler(this.selectFontButton_Click);
-            // 
-            // scrollUsingCtrlPageUpDownCheckBox
-            // 
-            this.scrollUsingCtrlPageUpDownCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.scrollUsingCtrlPageUpDownCheckBox.Location = new System.Drawing.Point(18, 42);
-            this.scrollUsingCtrlPageUpDownCheckBox.Name = "scrollUsingCtrlPageUpDownCheckBox";
-            this.scrollUsingCtrlPageUpDownCheckBox.Size = new System.Drawing.Size(250, 17);
-            this.scrollUsingCtrlPageUpDownCheckBox.TabIndex = 8;
-            this.scrollUsingCtrlPageUpDownCheckBox.Text = "Use Ctrl+&PageUp/Ctrl+PageDown to scroll up/down";
-            this.scrollUsingCtrlPageUpDownCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // caretStyleCombobox
-            // 
-            this.caretStyleCombobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.caretStyleCombobox.FormattingEnabled = true;
-            this.caretStyleCombobox.Location = new System.Drawing.Point(94, 20);
-            this.caretStyleCombobox.Name = "caretStyleCombobox";
-            this.caretStyleCombobox.Size = new System.Drawing.Size(150, 21);
-            this.caretStyleCombobox.TabIndex = 8;
             // 
             // TerminalOptionsSheet
             // 
