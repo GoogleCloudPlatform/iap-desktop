@@ -23,6 +23,11 @@
 
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+
+    <!-- suppress warnings about System.Net.Http conflict resolution -->
+    <MSBuildWarningsAsMessages>
+      $(MSBuildWarningsAsMessages);MSB3277
+    </MSBuildWarningsAsMessages>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugType>full</DebugType>
