@@ -325,7 +325,7 @@ namespace Google.Solutions.Ssh.Test
                         Assert.AreEqual(0, outputStream.Length);
 
                         Assert.Throws<NotSupportedException>(
-                            () => outputStream.Read(new byte[1], 0, 1));
+                            () => _ = outputStream.Read(new byte[1], 0, 1));
 
                         var data = Encoding.ASCII.GetBytes("'Some data'");
                         outputStream.Write(data, 1, data.Length - 2);

@@ -40,14 +40,14 @@ namespace Google.Solutions.Mvvm.Test.Controls
         private class ModelNode : ViewModelBase
         {
             private int imageIndex;
-            private string name;
+            private string? name;
             private bool expanded = false;
 
             public ObservableCollection<ModelNode> Children = new ObservableCollection<ModelNode>();
 
             public string Name
             {
-                get => this.name;
+                get => this.name!;
                 set
                 {
                     this.name = value;
@@ -93,8 +93,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
         //---------------------------------------------------------------------
 
+#pragma warning disable CS8618 // Non-nullable field 
         private ModelTreeView tree;
         private Form form;
+#pragma warning restore CS8618 
 
         [SetUp]
         public void SetUp()

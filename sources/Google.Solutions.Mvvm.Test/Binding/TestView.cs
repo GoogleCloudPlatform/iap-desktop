@@ -49,7 +49,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
         private class SampleView : Form, IView<SampleViewModel>
         {
-            public SampleViewModel ViewModel { get; private set; }
+            public SampleViewModel? ViewModel { get; private set; }
 
             public void Bind(SampleViewModel viewModel, IBindingContext bindingContext)
             {
