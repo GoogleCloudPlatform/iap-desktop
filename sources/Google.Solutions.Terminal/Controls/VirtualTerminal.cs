@@ -110,7 +110,7 @@ namespace Google.Solutions.Terminal.Controls
         internal string SanitizeTextForPasting(string text)
         {
             //
-            // Replace pretty quotes bt ASCII quotes.
+            // Replace pretty quotes with ASCII quotes.
             //
             if (this.EnableTypographicQuoteConversion)
             {
@@ -122,6 +122,12 @@ namespace Google.Solutions.Terminal.Controls
             // will otherwise interpret a CRLF as two line breaks.
             //
             text = text.Replace("\r\n", "\r");
+
+            //
+            // Remove excess whitespace at end. Keep leading whitespace
+            // as it can be intentional.
+            //
+            text = text.TrimEnd();
 
             //
             // Use bracketing to ensure pasting multiple lines into

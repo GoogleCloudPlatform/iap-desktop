@@ -375,6 +375,16 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
+        public void SanitizeTextForPasting_SanitizeWhitespace()
+        {
+            var terminal = new VirtualTerminal();
+
+            Assert.AreEqual(
+                "\t\r  one\t\rtwo",
+                terminal.SanitizeTextForPasting("\t\r\n  one\t\r\ntwo \t\r\n "));
+        }
+
+        [Test]
         public void SanitizeTextForPasting_BracketedPasting()
         {
             var terminal = new VirtualTerminal()
