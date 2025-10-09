@@ -375,7 +375,37 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void SanitizeTextForPasting_BracketedPasting()
+        public void SanitizeTextForPasting_SanitizeWhitespace()
+        {
+            var terminal = new VirtualTerminal();
+
+            Assert.AreEqual(
+                "\t\r  one\t\rtwo",
+                terminal.SanitizeTextForPasting("\t\r\n  one\t\r\ntwo \t\r\n "));
+        }
+
+        [Test]
+        public void SanitizeTextForPasting_BracketedPasting_SingleLine()
+        {
+            var terminal = new VirtualTerminal()
+            {
+                EnableBracketedPaste = false,
+                EnableTypographicQuoteConversion = false,
+            };
+
+            Assert.AreEqual(
+                "\u00ABThis\u00BBand that",
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BBand that\n"));
+
+            terminal.EnableBracketedPaste = true;
+
+            Assert.AreEqual(
+                "\u00ABThis\u00BBand that",
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BBand that\n"));
+        }
+
+        [Test]
+        public void SanitizeTextForPasting_BracketedPasting_MultiLine()
         {
             var terminal = new VirtualTerminal()
             {
@@ -385,13 +415,13 @@ namespace Google.Solutions.Terminal.Test.Controls
 
             Assert.AreEqual(
                 "\u00ABThis\u00BB\rand that",
-                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that"));
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that\n"));
 
             terminal.EnableBracketedPaste = true;
 
             Assert.AreEqual(
                 "\u001b[200~\u00ABThis\u00BB\rand that\u001b[201~",
-                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that"));
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that\n"));
         }
     }
 

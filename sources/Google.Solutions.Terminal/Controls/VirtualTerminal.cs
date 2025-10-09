@@ -110,7 +110,7 @@ namespace Google.Solutions.Terminal.Controls
         internal string SanitizeTextForPasting(string text)
         {
             //
-            // Replace pretty quotes bt ASCII quotes.
+            // Replace pretty quotes with ASCII quotes.
             //
             if (this.EnableTypographicQuoteConversion)
             {
@@ -124,10 +124,25 @@ namespace Google.Solutions.Terminal.Controls
             text = text.Replace("\r\n", "\r");
 
             //
-            // Use bracketing to ensure pasting multiple lines into
-            // a shell doesn't cause immediate execution.
+            // Remove excess whitespace at end. Keep leading whitespace
+            // as it can be intentional.
             //
-            if (this.EnableBracketedPaste)
+            text = text.TrimEnd();
+
+            //
+            // Pasting multiple lines at once can inadvertently
+            // cause the shell to execute commands before the user
+            // gets a chance to press Enter.
+            //
+            // By using bracketed paste, we can avoid that problem,
+            // but at the expense of possibly causing issues if we're
+            // pasting to a password prompt.
+            //
+            // By restricting bracketed paste to multi-line paste,
+            // we mitigate the risk of breaking password prompts
+            // while maintaining most of the benefits.
+            //
+            if (this.EnableBracketedPaste && text.Contains("\r"))
             {
                 text = "\u001b[200~" + text + "\u001b[201~";
             }
