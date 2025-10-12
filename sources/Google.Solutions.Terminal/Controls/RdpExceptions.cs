@@ -213,13 +213,14 @@ namespace Google.Solutions.Terminal.Controls
         public bool IsUserDisconnectedLocally =>
             this.DisconnectReason == 1;
 
-        public bool IsUserDisconnectedRemotely =>
+        public bool IsUserDisconnectedByUser =>
             this.DisconnectReason == 2;
 
-        public bool IsIgnorable =>
-            this.DisconnectReason <= 3 ||
-            this.DisconnectReason == 263 ||  // Dismissed server auth warning.
-            this.DisconnectReason == 7943;   // Dismissed login prompt.
+        public bool IsUserDisconnectedByServer =>
+            this.DisconnectReason == 3;
+
+        public bool IsServerAuthenticationWarningDismissed =>
+            this.DisconnectReason == 263;
 
         public bool IsLogonAborted =>
             this.DisconnectReason == 7943;

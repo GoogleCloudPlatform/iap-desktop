@@ -537,7 +537,7 @@ namespace Google.Solutions.Terminal.Controls
                     //
                     OnConnectionClosed(DisconnectReason.SessionTimeout);
                 }
-                else if (e.IsUserDisconnectedRemotely)
+                else if (e.IsUserDisconnectedByUser)
                 {
                     //
                     // User signed out or clicked Start > Disconnect. 
@@ -558,7 +558,13 @@ namespace Google.Solutions.Terminal.Controls
                     //
                     OnConnectionClosed(DisconnectReason.DisconnectedByUser);
                 }
-                else if (!e.IsIgnorable)
+                else if (e.IsUserDisconnectedByServer || e.IsServerAuthenticationWarningDismissed)
+                {
+                    //
+                    // Ignore.
+                    //
+                }
+                else
                 {
                     OnConnectionFailed(e);
                 }
