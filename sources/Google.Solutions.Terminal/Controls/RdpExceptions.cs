@@ -207,7 +207,6 @@ namespace Google.Solutions.Terminal.Controls
         public int DisconnectReason { get; }
 
         public bool IsTimeout =>
-            this.DisconnectReason == 3 ||
             this.DisconnectReason == 264;
 
         public bool IsUserDisconnectedLocally =>
@@ -225,24 +224,22 @@ namespace Google.Solutions.Terminal.Controls
         public bool IsLogonAborted =>
             this.DisconnectReason == 7943;
 
-        private static string CreateMessage(int disconnectReason, string description)
+        private static string CreateMessage(int disconnectReason, string? description)
         {
             var message = new StringBuilder();
             if (!string.IsNullOrWhiteSpace(description))
             {
                 message.Append(description);
-                message.Append("\n\n");
             }
-
-            if (knownErrors.TryGetValue(disconnectReason, out var reasonText))
+            else if (knownErrors.TryGetValue(disconnectReason, out var reasonText))
             {
                 message.Append(reasonText);
             }
 
-            if (disconnectReason == 3 || disconnectReason == 264)
+            if (disconnectReason == 264)
             {
                 message.Append(
-                    " Consider increasing the connection " +
+                    "\n\nConsider increasing the connection " +
                     "timeout in the connection settings.");
             }
 
