@@ -28,6 +28,7 @@ using Google.Solutions.Platform.Interop;
 using MSTSCLib;
 using System;
 using System.ComponentModel;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -195,7 +196,7 @@ namespace Google.Solutions.Terminal.Controls
                 // Veto this event as it might cause the ActiveX to crash.
                 //
                 TerminalTraceSource.Log.TraceVerbose(
-                    "RdpCLient: Aborting FormClosing because control is in connecting");
+                    "RdpClient: Aborting FormClosing because control is in connecting");
 
                 args.Cancel = true;
                 return;
@@ -496,8 +497,10 @@ namespace Google.Solutions.Terminal.Controls
             IMsTscAxEvents_OnDisconnectedEvent args)
         {
             var e = new RdpDisconnectedException(
-                    args.discReason,
-                    this.client.GetErrorDescription((uint)args.discReason, 0));
+                args.discReason,
+                this.client.GetErrorDescription(
+                    (uint)args.discReason,
+                    (uint)this.client.ExtendedDisconnectReason));
 
             using (TerminalTraceSource.Log.TraceMethod().WithParameters(e.Message))
             {
@@ -537,6 +540,15 @@ namespace Google.Solutions.Terminal.Controls
                     //
                     OnConnectionClosed(DisconnectReason.SessionTimeout);
                 }
+                else if (e.IsUserDisconnectedByServer)
+                {
+                    //
+                    // Disconnected by the server, possibly because the user 
+                    // lacks the privilege for remote logons.
+                    //
+
+                    OnConnectionFailed(e);
+                }
                 else if (e.IsUserDisconnectedByUser)
                 {
                     //
@@ -558,7 +570,7 @@ namespace Google.Solutions.Terminal.Controls
                     //
                     OnConnectionClosed(DisconnectReason.DisconnectedByUser);
                 }
-                else if (e.IsUserDisconnectedByServer || e.IsServerAuthenticationWarningDismissed)
+                else if (e.IsServerAuthenticationWarningDismissed)
                 {
                     //
                     // Ignore.
