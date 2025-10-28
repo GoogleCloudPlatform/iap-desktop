@@ -3,7 +3,7 @@
 
     To follow the steps in this section, make sure that you meet the following prerequisites:
 
-    *   [ ] You're using Windows 8.1, Windows Server 2012, or higher.
+    *   [ ] You're using Windows 10, Windows Server 2019, or higher.
     *   [ ] Your computer has internet access (direct or via a [proxy server](proxy-configuration.md)).
 
     You do not need admin rights [unless you install on Windows Server](troubleshooting.md). 
