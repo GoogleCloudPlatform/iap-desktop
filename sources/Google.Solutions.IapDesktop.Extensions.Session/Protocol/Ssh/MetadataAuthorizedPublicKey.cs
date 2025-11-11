@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
 
         public override bool Equals(object? obj)
-            => Equals(obj as ManagedMetadataAuthorizedPublicKey);
+            => Equals(obj as MetadataAuthorizedPublicKey);
 
         public bool Equals(MetadataAuthorizedPublicKey? other)
         {
@@ -160,7 +160,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
     }
 
-    public class UnmanagedMetadataAuthorizedPublicKey : MetadataAuthorizedPublicKey, IAuthorizedPublicKey
+    public class UnmanagedMetadataAuthorizedPublicKey 
+        : MetadataAuthorizedPublicKey, IAuthorizedPublicKey
     {
         public override string? Email { get; }
 
@@ -188,7 +189,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
     }
 
-    public class ManagedMetadataAuthorizedPublicKey : MetadataAuthorizedPublicKey, IAuthorizedPublicKey
+    public class ManagedMetadataAuthorizedPublicKey 
+        : MetadataAuthorizedPublicKey, IAuthorizedPublicKey
     {
         public PublicKeyMetadata Metadata { get; }
 

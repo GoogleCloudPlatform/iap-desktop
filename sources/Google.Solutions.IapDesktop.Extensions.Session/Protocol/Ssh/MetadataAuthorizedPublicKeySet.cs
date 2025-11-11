@@ -37,14 +37,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         public const string LegacyMetadataKey = "sshKeys";
         public const string MetadataKey = "ssh-keys";
 
-        public IEnumerable<MetadataAuthorizedPublicKey> Keys { get; }
+        /// <summary>
+        /// Keys, can be a mix of TMetadataAuthorizedPublicKey and
+        /// T:UnrecognizedKey.
+        /// </summary>
+        private readonly ICollection<object> keys;
+
+        /// <summary>
+        /// Authorized keys.
+        /// </summary>
+        public IEnumerable<MetadataAuthorizedPublicKey> Keys
+        {
+            get => this.keys.OfType<MetadataAuthorizedPublicKey>();
+        }
 
         //---------------------------------------------------------------------
         // Metadata.
         //---------------------------------------------------------------------
-        private MetadataAuthorizedPublicKeySet(IEnumerable<MetadataAuthorizedPublicKey> keys)
+
+        private MetadataAuthorizedPublicKeySet(ICollection<object> keys)
         {
-            this.Keys = keys;
+            this.keys = keys;
         }
 
         public static MetadataAuthorizedPublicKeySet FromMetadata(Metadata.ItemsData data)
@@ -59,8 +72,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 data.Value
                     .Split('\n')
                     .Where(line => !string.IsNullOrWhiteSpace(line))
-                    .Select(line => MetadataAuthorizedPublicKey.Parse(line.Trim()))
-                    .ToList());
+                    .Select(line => MetadataAuthorizedPublicKey.Parse(line.Trim())) // TODO: TryParse
+                    .ToList<object>());
         }
 
         public static MetadataAuthorizedPublicKeySet FromMetadata(Metadata data)
@@ -73,11 +86,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             else
             {
                 return new MetadataAuthorizedPublicKeySet(
-                    Enumerable.Empty<MetadataAuthorizedPublicKey>());
+                    Array.Empty<object>());
             }
         }
 
-        public MetadataAuthorizedPublicKeySet Add(MetadataAuthorizedPublicKey key)
+        public MetadataAuthorizedPublicKeySet Add(MetadataAuthorizedPublicKey key) // TODO: check keeps unrecognized
         {
             if (Contains(key))
             {
@@ -85,14 +98,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             }
             else
             {
-                return new MetadataAuthorizedPublicKeySet(this.Keys.ConcatItem(key));
+                return new MetadataAuthorizedPublicKeySet(
+                    this.keys.ConcatItem(key).ToList());
             }
         }
 
         public MetadataAuthorizedPublicKeySet RemoveExpiredKeys()
         {
-            return new MetadataAuthorizedPublicKeySet(
-                this.Keys.Where(k =>
+            return new MetadataAuthorizedPublicKeySet(this.keys
+                .Where(k =>
                 {
                     if (k is ManagedMetadataAuthorizedPublicKey managed)
                     {
@@ -100,26 +114,67 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     }
                     else
                     {
-                        // Unmanaged keys never expire.
+                        //
+                        // Keep unmanaged and unrecognized keys, these never expire.
+                        //
                         return true;
                     }
-                }));
+                })
+                .ToList());
         }
 
         public bool Contains(MetadataAuthorizedPublicKey key)
         {
-            return this.Keys.Any(k => k.Equals(key));
+            return this.keys.Any(k => k.Equals(key));
         }
 
-        public MetadataAuthorizedPublicKeySet Remove(MetadataAuthorizedPublicKey key)
+        public MetadataAuthorizedPublicKeySet Remove(MetadataAuthorizedPublicKey key) // TODO: test keeps unrecognized keys
         {
-            return new MetadataAuthorizedPublicKeySet(
-                this.Keys.Where(k => !k.Equals(key)));
+            return new MetadataAuthorizedPublicKeySet(this.keys
+                .Where(k => !k.Equals(key))
+                .ToList());
         }
 
-        public override string ToString()
+        public override string ToString() // TODO: test keeps unrecognized keys
         {
-            return string.Join("\n", this.Keys);
+            return string.Join("\n", this.keys);
+        }
+
+        //---------------------------------------------------------------------
+        // Private types.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// A key that is malformed or unrecognized for other reasons.
+        /// </summary>
+        private class UnrecognizedKey
+        {
+            /// <summary>
+            /// Raw, unparsed value.
+            /// </summary>
+            private string Value { get; }
+
+            public UnrecognizedKey(string value)
+            {
+                this.Value = value;
+            }
+
+            public override string ToString()
+            {
+                return this.Value;
+            }
+
+            public override int GetHashCode()
+            {
+                return this.Value.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                return 
+                    obj is UnrecognizedKey key && 
+                    Equals(key.Value, this.Value);
+            }
         }
     }
 }
