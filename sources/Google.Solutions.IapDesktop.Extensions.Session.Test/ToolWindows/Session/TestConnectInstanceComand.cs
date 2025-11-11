@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Execute_WhenRdpSessionFound_ThenExecuteDoesNotCreateNewSession()
+        public async Task Execute_WhenRdpSessionFound()
         {
             var contextFactory = new Mock<ISessionContextFactory>();
             var sessionBroker = new Mock<ISessionBroker>();
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task Execute_WhenNoRdpSessionFound_ThenExecuteCreatesNewSession()
+        public async Task Execute_WhenNoRdpSessionFound()
         {
             var instance = CreateInstanceNode(OperatingSystems.Windows).Object;
 
@@ -180,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Execute_WhenSshSessionFoundAndForceNewIsFalse_ThenExecuteDoesNotCreateNewSession()
+        public async Task Execute_WhenSshSessionFoundAndForceNewIsFalse()
         {
             var context = new Mock<ISessionContext<ISshCredential, SshParameters>>();
             var contextFactory = new Mock<ISessionContextFactory>();
@@ -225,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task Execute_WhenSshSessionFoundAndForceNewIsTrue_ThenExecuteCreatesNewSession()
+        public async Task Execute_WhenSshSessionFoundAndForceNewIsTrue()
         {
             var instance = CreateInstanceNode(OperatingSystems.Linux).Object;
 
@@ -266,7 +266,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task Execute_WhenNoSshSessionFound_ThenExecuteCreatesNewSession()
+        public async Task Execute_WhenNoSshSessionFound()
         {
             var instance = CreateInstanceNode(OperatingSystems.Linux).Object;
 

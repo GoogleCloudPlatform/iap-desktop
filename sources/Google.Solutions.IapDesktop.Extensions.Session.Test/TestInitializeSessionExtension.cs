@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenDirectoryNotFound_ThenLoadAndRegisterCustomAppProtocolsReturns()
+        public async Task WhenDirectoryNotFound()
         {
             var registry = new ProtocolRegistry();
             await InitializeSessionExtension
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test
         }
 
         [Test]
-        public async Task WhenDirectoryContainsIapcFiles_ThenLoadAndRegisterCustomAppProtocolsLoadsFiles()
+        public async Task WhenDirectoryContainsIapcFiles()
         {
             var dir = Directory.CreateDirectory(
                 Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()));

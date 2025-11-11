@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsPropagateLocaleEnabled_WhenSettingEnabled_ThenIsPropagateLocaleEnabledIsTrue()
+        public void IsPropagateLocaleEnabled_WhenSettingEnabled()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public void IsPropagateLocaleEnabled_WhenSettingDisabled_ThenIsPropagateLocaleEnabledIsTrue()
+        public void IsPropagateLocaleEnabled_WhenSettingDisabled()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public async Task IsPropagateLocaleEnabled_WhenDisablingIsPropagateLocaleEnabled_ThenChangeIsApplied()
+        public async Task IsPropagateLocaleEnabled_WhenDisablingIsPropagateLocaleEnabled()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public void IsPropagateLocaleEnabled_WhenIsPropagateLocaleEnabledChanged_ThenIsDirtyIsTrueUntilApplied()
+        public void IsPropagateLocaleEnabled_WhenIsPropagateLocaleEnabledChanged()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         //---------------------------------------------------------------------
 
         [Test]
-        public void UsePersistentKey_WhenSettingEnabled_ThenUsePersistentKeyIsTrue()
+        public void UsePersistentKey_WhenSettingEnabled()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public void UsePersistentKey_WhenSettingDisabled_ThenUsePersistentKeyIsTrue()
+        public void UsePersistentKey_WhenSettingDisabled()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public void UsePersistentKey_WhenSettingDisabledByPolicy_ThenIsUsePersistentKeyEditableIsFalse()
+        public void UsePersistentKey_WhenSettingDisabledByPolicy()
         {
             var settingsRepository = CreateSettingsRepository(
                 new Dictionary<string, object>
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public async Task UsePersistentKey_WhenDisablingUsePersistentKey_ThenChangeIsApplied()
+        public async Task UsePersistentKey_WhenDisablingUsePersistentKey()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public void UsePersistentKey_WhenUsePersistentKeyChanged_ThenIsDirtyIsTrueUntilApplied()
+        public void UsePersistentKey_WhenUsePersistentKeyChanged()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -206,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         //---------------------------------------------------------------------
 
         [Test]
-        public void PublicKeyValidityInDays_WhenSettingPopulated_ThenPublicKeyValidityInDaysHasCorrectValue()
+        public void PublicKeyValidityInDays_WhenSettingPopulated()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -220,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public void PublicKeyValidityInDays_WhenSettingPopulatedByPolicy_ThenIsPublicKeyValidityInDaysEditableIsFalse()
+        public void PublicKeyValidityInDays_WhenSettingPopulatedByPolicy()
         {
             var settingsRepository = CreateSettingsRepository(
                 new Dictionary<string, object>
@@ -239,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public async Task PublicKeyValidityInDays_WhenChangingPublicKeyValidityInDays_ThenChangeIsApplied()
+        public async Task PublicKeyValidityInDays_WhenChangingPublicKeyValidityInDays()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -256,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public void PublicKeyValidityInDays_WhenPublicKeyValidityInDaysChanged_ThenIsDirtyIsTrueUntilApplied()
+        public void PublicKeyValidityInDays_WhenPublicKeyValidityInDaysChanged()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new SshOptionsViewModel(settingsRepository);
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         //---------------------------------------------------------------------
 
         [Test]
-        public void PublicKeyType_WhenSettingPopulated_ThenPublicKeyTypeHasCorrectValue()
+        public void PublicKeyType_WhenSettingPopulated()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -287,7 +287,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public void PublicKeyType_WhenSettingPopulatedByPolicy_ThenIsPublicKeyTypeEditableIsFalse()
+        public void PublicKeyType_WhenSettingPopulatedByPolicy()
         {
             var settingsRepository = CreateSettingsRepository(
                 new Dictionary<string, object>
@@ -306,7 +306,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public async Task PublicKeyType_WhenChangingPublicKeyType_ThenChangeIsApplied()
+        public async Task PublicKeyType_WhenChangingPublicKeyType()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -323,7 +323,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public void PublicKeyType_WhenPublicKeyTypeChanged_ThenIsDirtyIsTrueUntilApplied()
+        public void PublicKeyType_WhenPublicKeyTypeChanged()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new SshOptionsViewModel(settingsRepository);

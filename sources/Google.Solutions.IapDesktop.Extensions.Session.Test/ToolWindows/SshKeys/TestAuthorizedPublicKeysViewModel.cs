@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task SwitchToModel_WhenCloudNode_ThenListIsDisabled()
+        public async Task SwitchToModel_WhenCloudNode()
         {
             var viewModel = CreateViewModel();
 
@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         }
 
         [Test]
-        public async Task SwitchToModel_WhenZoneNode_ThenListIsDisabled()
+        public async Task SwitchToModel_WhenZoneNode()
         {
             var viewModel = CreateViewModel();
 
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         }
 
         [Test]
-        public async Task SwitchToModel_WhenProjectNode_ThenListIsPopulated()
+        public async Task SwitchToModel_WhenProjectNode()
         {
             var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
@@ -163,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         }
 
         [Test]
-        public async Task SwitchToModel_WhenInstanceNode_ThenListIsPopulated()
+        public async Task SwitchToModel_WhenInstanceNode()
         {
             var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Linux);
@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Filter_WhenFilterSet_ThenFilteredPackagesContainsPackagesThatMatchTerm()
+        public async Task Filter_WhenFilterSet()
         {
             var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
@@ -220,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task SelectedItem_WhenSwitchingNodes_ThenSelectedItemisCleared()
+        public async Task SelectedItem_WhenSwitchingNodes()
         {
             var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
@@ -248,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task IsDeleteButtonEnabled_WhenItemSelected_ThenDeleteButtonIsEnabled()
+        public async Task IsDeleteButtonEnabled_WhenItemSelected()
         {
             var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
@@ -271,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task DeleteSelectedItem_WhenConfirmationIsNo_ThenDeleteSelectedItemAsyncDoesNothing()
+        public async Task DeleteSelectedItem_WhenConfirmationIsNo()
         {
             var confirmationMock = new Mock<IConfirmationDialog>();
             confirmationMock.Setup(d => d.Confirm(

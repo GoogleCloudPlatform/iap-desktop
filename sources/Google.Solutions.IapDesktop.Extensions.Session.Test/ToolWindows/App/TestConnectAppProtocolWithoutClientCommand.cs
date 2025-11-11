@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsAvailable_WhenContextOfWrongType_ThenQueryStateReturnsUnavailable()
+        public void IsAvailable_WhenContextOfWrongType()
         {
             var command = new ConnectAppProtocolWithoutClientCommand(
                 new SynchronousJobService(),
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         }
 
         [Test]
-        public void IsAvailable_WhenContextIsInstance_ThenQueryStateReturnsEnabled()
+        public void IsAvailable_WhenContextIsInstance()
         {
             var command = new ConnectAppProtocolWithoutClientCommand(
                 new SynchronousJobService(),

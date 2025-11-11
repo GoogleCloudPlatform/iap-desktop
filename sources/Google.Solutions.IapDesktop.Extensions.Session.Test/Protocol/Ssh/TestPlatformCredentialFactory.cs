@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void CreateUsernameForMetadata_WhenPreferredUsernameIsInvalid_ThenCreateUsernameForMetadataThrowsException(
+        public void CreateUsernameForMetadata_WhenPreferredUsernameIsInvalid(
             [Values("", " ", "!user")] string username)
         {
             var authorizer = new PlatformCredentialFactory(
@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
 
         [Test]
-        public void CreateUsernameForMetadata_WhenPreferredUsernameIsValid_ThenCreateUsernameForMetadataReturnsPreferredUsername()
+        public void CreateUsernameForMetadata_WhenPreferredUsernameIsValid()
         {
             var authorizer = new PlatformCredentialFactory(
                 CreateAuthorizationMock(SampleEmailAddress).Object,
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void CreateUsernameForMetadata_WhenPreferredUsernameNullButSessionUsernameValid_ThenCreateUsernameForMetadataGeneratesUsername()
+        public void CreateUsernameForMetadata_WhenPreferredUsernameNullButSessionUsernameValid()
         {
             var authorizer = new PlatformCredentialFactory(
                 CreateAuthorizationMock("j@ex.ample").Object,
@@ -180,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void CreateUsernameForMetadata_WhenPreferredUsernameNullAndSessionUsernameTooLong_ThenCreateUsernameForMetadataStripsUsername()
+        public void CreateUsernameForMetadata_WhenPreferredUsernameNullAndSessionUsernameTooLong()
         {
             var authorizer = new PlatformCredentialFactory(
                 CreateAuthorizationMock("ABCDEFGHIJKLMNOPQRSTUVWXYZabcxyz0@ex.ample").Object,
@@ -198,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task CreateCredential_WhenOsLoginEnabledForProject_ThenUsesOsLogin()
+        public async Task CreateCredential_WhenOsLoginEnabledForProject()
         {
             var service = new PlatformCredentialFactory(
                 CreateAuthorizationMock(SampleEmailAddress).Object,
@@ -226,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task CreateCredential_WhenOsLoginEnabledForInstance_ThenUsesOsLogin()
+        public async Task CreateCredential_WhenOsLoginEnabledForInstance()
         {
             var service = new PlatformCredentialFactory(
                 CreateAuthorizationMock(SampleEmailAddress).Object,
@@ -254,7 +254,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task CreateCredential_WhenOsLoginDisabledForProjectButEnabledForInstance_ThenUsesOsLogin()
+        public async Task CreateCredential_WhenOsLoginDisabledForProjectButEnabledForInstance()
         {
             var service = new PlatformCredentialFactory(
                 CreateAuthorizationMock(SampleEmailAddress).Object,
@@ -282,7 +282,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task CreateCredential_WhenOsLoginEnabledForProjectButDisabledForInstance_ThenPushesKeyToMetadata()
+        public async Task CreateCredential_WhenOsLoginEnabledForProjectButDisabledForInstance()
         {
             var computeClient = CreateComputeEngineClientMock(
                 osLoginEnabledForProject: true,
@@ -319,7 +319,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void CreateCredential_WhenOsLoginEnabledForProjectButOsLoginNotAllowed_ThenThrowsInvalidOperationException()
+        public void CreateCredential_WhenOsLoginEnabledForProjectButOsLoginNotAllowed()
         {
             var service = new PlatformCredentialFactory(
                 CreateAuthorizationMock(SampleEmailAddress).Object,
@@ -342,7 +342,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void CreateCredential_WhenOsLoginEnabledForInstanceButOsLoginNotAllowed_ThenThrowsInvalidOperationException()
+        public void CreateCredential_WhenOsLoginEnabledForInstanceButOsLoginNotAllowed()
         {
             var service = new PlatformCredentialFactory(
                 CreateAuthorizationMock(SampleEmailAddress).Object,
@@ -365,7 +365,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void CreateCredential_WhenOsLoginWithSecurityKeyEnabledForInstance_ThenThrowsNotImplementedException()
+        public void CreateCredential_WhenOsLoginWithSecurityKeyEnabledForInstance()
         {
             var service = new PlatformCredentialFactory(
                 CreateAuthorizationMock(SampleEmailAddress).Object,

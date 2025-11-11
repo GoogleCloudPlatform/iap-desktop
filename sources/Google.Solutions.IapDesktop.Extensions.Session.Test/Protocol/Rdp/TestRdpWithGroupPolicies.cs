@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         }
 
         [WindowsFormsTest]
-        public async Task Connect_WhenNlaDisabledAndServerRequiresNla_ThenErrorIsShownAndWindowIsClosed(
+        public async Task Connect_WhenNlaDisabledAndServerRequiresNla(
             [WindowsInstance] ResourceTask<InstanceLocator> instanceTask,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> authTask)
         {

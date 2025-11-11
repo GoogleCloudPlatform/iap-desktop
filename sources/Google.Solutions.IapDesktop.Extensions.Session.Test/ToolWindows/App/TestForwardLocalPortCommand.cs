@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         //---------------------------------------------------------------------
 
         [Test]
-        public void CreateContext_WhenInputDialogCancelled_ThenCreateContextThrowsException()
+        public void CreateContext_WhenInputDialogCancelled()
         {
             string? input = null;
             var inputDialog = new Mock<IInputDialog>();
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         }
 
         [Test]
-        public async Task CreateContext_WhenPortProvided_ThenCreateContextReturnsContext()
+        public async Task CreateContext_WhenPortProvided()
         {
             var input = "8080";
             var inputDialog = new Mock<IInputDialog>();
@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Execute_WhenPortProvided_ThenExecuteShowsBalloon()
+        public async Task Execute_WhenPortProvided()
         {
             var input = "8080";
             var inputDialog = new Mock<IInputDialog>();

@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void FromMetadata_WhenMetadataIsEmpry_ThenFromMetadataThrowsArgumentException()
+        public void FromMetadata_WhenMetadataIsEmpry()
         {
             var metadata = new Metadata();
 
@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void FromMetadata_WhenMetadataContainsDifferentKeys_ThenFromMetadataThrowsArgumentException()
+        public void FromMetadata_WhenMetadataContainsDifferentKeys()
         {
             var metadata = new Metadata()
             {
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void FromMetadata_WhenMetadataItemHasWrongKey_ThenFromMetadataThrowsArgumentException()
+        public void FromMetadata_WhenMetadataItemHasWrongKey()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void FromMetadata_WhenMetadataItemContainsJunk_ThenFromMetadataThrowsArgumentException()
+        public void FromMetadata_WhenMetadataItemContainsJunk()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void FromMetadata_WhenMetadataItemIsEmpty_ThenKeySetIsEmpty()
+        public void FromMetadata_WhenMetadataItemIsEmpty()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void FromMetadata_WhenMetadataItemContainsData_ThenKeySetIsPopulated()
+        public void FromMetadata_WhenMetadataItemContainsData()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void FromMetadata_WhenMetadataItemContainsUnnecessaryWhitespace_ThenKeySetIsPopulated()
+        public void FromMetadata_WhenMetadataItemContainsUnnecessaryWhitespace()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void Add_WhenAddingDuplicateKey_ThenAddReturnsThis()
+        public void Add_WhenAddingDuplicateKey()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void Add_WhenAddingNewKey_ThenAddReturnsNewSet()
+        public void Add_WhenAddingNewKey()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void Add_WhenSetContainsEntriesWithEmptyUsername_ThenAddMaintainsEntry()
+        public void Add_WhenSetContainsEntriesWithEmptyUsername()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -191,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void Remove_WhenKeyNotFound_ThenRemoveReturnsEquivalentSet()
+        public void Remove_WhenKeyNotFound()
         {
             var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(new Metadata())
                 .Add(MetadataAuthorizedPublicKey.Parse("alice:ssh-rsa KEY1 alice@example.com"))
@@ -209,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void Remove_WhenKeyFound_ThenRemoveReturnsSetWithoutKey()
+        public void Remove_WhenKeyFound()
         {
             var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(new Metadata())
                 .Add(MetadataAuthorizedPublicKey.Parse("alice:ssh-rsa KEY1 alice@example.com"))
@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void RemoveExpiredKeys_WhenKeyExpired_ThenRemoveExpiredKeysStripsKey()
+        public void RemoveExpiredKeys_WhenKeyExpired()
         {
             var metadata = new Metadata.ItemsData()
             {

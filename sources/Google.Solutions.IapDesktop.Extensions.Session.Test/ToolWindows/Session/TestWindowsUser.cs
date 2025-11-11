@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public void SuggestUsername_WhenEmailCompliant_ThenReturnsName()
+        public void SuggestUsername_WhenEmailCompliant()
         {
             Assert.AreEqual(
                 "bob.b",
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void SuggestUsername_WhenEmailTooLong_ThenReturnsName()
+        public void SuggestUsername_WhenEmailTooLong()
         {
             Assert.AreEqual(
                 "bob01234567890123456",
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void SuggestUsername_WhenEmailNull_ThenReturnsDefault()
+        public void SuggestUsername_WhenEmailNull()
         {
             Assert.AreEqual(
                 Environment.UserName,
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void SuggestUsername_WhenEmailInvalid_ThenReturnsDefault()
+        public void SuggestUsername_WhenEmailInvalid()
         {
             Assert.AreEqual(
                 Environment.UserName,

@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         //---------------------------------------------------------------------
 
         [Test]
-        public void ContextMenuOpen_WhenApplicable_ThenContextMenuOpenIsEnabled()
+        public void ContextMenuOpen_WhenApplicable()
         {
             var context = new Mock<IProjectModelProjectNode>();
 
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         }
 
         [Test]
-        public void ContextMenuOpen_WhenNotApplicable_ThenContextMenuOpenIsUnavailable()
+        public void ContextMenuOpen_WhenNotApplicable()
         {
             var context = new Mock<IProjectModelNode>();
 

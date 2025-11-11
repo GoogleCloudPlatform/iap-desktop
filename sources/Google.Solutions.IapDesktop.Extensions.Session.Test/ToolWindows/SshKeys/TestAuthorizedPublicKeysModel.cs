@@ -113,28 +113,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsNodeSupported_WhenNodeIsCloudNode_ThenIsNodeSupportedReturnsFalse()
+        public void IsNodeSupported_WhenNodeIsCloudNode()
         {
             Assert.IsFalse(AuthorizedPublicKeysModel.IsNodeSupported(
                 new Mock<IProjectModelCloudNode>().Object));
         }
 
         [Test]
-        public void IsNodeSupported_WhenNodeIsZoneNode_ThenIsNodeSupportedReturnsFalse()
+        public void IsNodeSupported_WhenNodeIsZoneNode()
         {
             Assert.IsFalse(AuthorizedPublicKeysModel.IsNodeSupported(
                 new Mock<IProjectModelZoneNode>().Object));
         }
 
         [Test]
-        public void IsNodeSupported_WhenNodeIsProjectNode_ThenIsNodeSupportedReturnsFalse()
+        public void IsNodeSupported_WhenNodeIsProjectNode()
         {
             Assert.IsTrue(AuthorizedPublicKeysModel.IsNodeSupported(
                 new Mock<IProjectModelProjectNode>().Object));
         }
 
         [Test]
-        public void IsNodeSupported_WhenNodeIsWindowsInstance_ThenIsNodeSupportedReturnsFalse()
+        public void IsNodeSupported_WhenNodeIsWindowsInstance()
         {
             var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.OperatingSystem)
@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         }
 
         [Test]
-        public void IsNodeSupported_WhenNodeIsLinuxInstance_ThenIsNodeSupportedReturnsFalse()
+        public void IsNodeSupported_WhenNodeIsLinuxInstance()
         {
             var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.OperatingSystem)
@@ -158,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Load_WhenScopeIsCloud_ThenLoadReturnsNull()
+        public async Task Load_WhenScopeIsCloud()
         {
             var model = await AuthorizedPublicKeysModel.LoadAsync(
                     new Mock<IComputeEngineClient>().Object,
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         }
 
         [Test]
-        public async Task Load_WhenScopeIsProjectAndOsLoginEnabled_ThenModelIncludesOsLoginKeys()
+        public async Task Load_WhenScopeIsProjectAndOsLoginEnabled()
         {
             var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
             var osLoginServiceMock = new Mock<IOsLoginProfile>();
@@ -207,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         }
 
         [Test]
-        public async Task Load_WhenScopeIsProjectAndOsLoginDisabled_ThenModelIncludesProjectKeys()
+        public async Task Load_WhenScopeIsProjectAndOsLoginDisabled()
         {
             var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
             var osLoginServiceMock = new Mock<IOsLoginProfile>();
@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         }
 
         [Test]
-        public async Task Load_WhenScopeIsProjectAndOsLoginDisabledAndProjectKeysBlocked_ThenModelIncludesNoKeys()
+        public async Task Load_WhenScopeIsProjectAndOsLoginDisabledAndProjectKeysBlocked()
         {
             var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
             var osLoginServiceMock = new Mock<IOsLoginProfile>();
@@ -278,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Load_WhenScopeIsZone_ThenLoadReturnsNull()
+        public async Task Load_WhenScopeIsZone()
         {
             var model = await AuthorizedPublicKeysModel.LoadAsync(
                     new Mock<IComputeEngineClient>().Object,
@@ -292,7 +292,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         }
 
         [Test]
-        public async Task Load_WhenScopeIsInstanceAndOsLoginEnabled_ThenModelIncludesOsLoginKeys()
+        public async Task Load_WhenScopeIsInstanceAndOsLoginEnabled()
         {
             var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
             var osLoginServiceMock = new Mock<IOsLoginProfile>();
@@ -330,7 +330,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         }
 
         [Test]
-        public async Task Load_WhenScopeIsInstanceAndOsLoginDisabled_ThenModelIncludesProjectAndInstanceKeys()
+        public async Task Load_WhenScopeIsInstanceAndOsLoginDisabled()
         {
             var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
             var osLoginServiceMock = new Mock<IOsLoginProfile>();
@@ -369,7 +369,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         }
 
         [Test]
-        public async Task Load_WhenScopeIsInstanceAndOsLoginDisabledAndProjectKeysBlocked_ThenModelIncludesInstanceKeys()
+        public async Task Load_WhenScopeIsInstanceAndOsLoginDisabledAndProjectKeysBlocked()
         {
             var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
             var osLoginServiceMock = new Mock<IOsLoginProfile>();
@@ -411,7 +411,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task DeleteFromOsLogin_WhenAuthorizationMethodIsInstanceMetadata_ThenDeleteFromOsLoginDoesNothing()
+        public async Task DeleteFromOsLogin_WhenAuthorizationMethodIsInstanceMetadata()
         {
             var osLoginServiceMock = new Mock<IOsLoginProfile>();
 
@@ -429,7 +429,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         }
 
         [Test]
-        public async Task DeleteFromOsLogin_WhenAuthorizationMethodIsOslogin_ThenDeleteFromOsLoginDeletesKey()
+        public async Task DeleteFromOsLogin_WhenAuthorizationMethodIsOslogin()
         {
             var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
             var osLoginServiceMock = new Mock<IOsLoginProfile>();
@@ -452,7 +452,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task DeleteFromMetadata_WhenAuthorizationMethodIsOslogin_ThenDeleteFromMetadataDoesNothing()
+        public async Task DeleteFromMetadata_WhenAuthorizationMethodIsOslogin()
         {
             var computeEngineMock = new Mock<IComputeEngineClient>();
 
@@ -478,7 +478,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         }
 
         [Test]
-        public async Task DeleteFromMetadata_WhenAuthorizationMethodIsInstanceMetadataAndNodeIsInstance_ThenDeleteFromOsLoginDeletesKeyDeletesInstanceMetadata()
+        public async Task DeleteFromMetadata_WhenAuthorizationMethodIsInstanceMetadataAndNodeIsInstance()
         {
             var computeEngineMock = new Mock<IComputeEngineClient>();
 
@@ -509,7 +509,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         }
 
         [Test]
-        public async Task DeleteFromMetadata_WhenAuthorizationMethodIsProjectMetadataAndNodeIsInstance_ThenDeleteFromOsLoginDeletesKeyDeletesProjectMetadata()
+        public async Task DeleteFromMetadata_WhenAuthorizationMethodIsProjectMetadataAndNodeIsInstance()
         {
             var projectId = new ProjectLocator("project-1");
             var computeEngineMock = new Mock<IComputeEngineClient>();
@@ -548,7 +548,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         }
 
         [Test]
-        public async Task DeleteFromMetadata_WhenAuthorizationMethodIsProjectMetadataAndNodeIsProject_ThenDeleteFromOsLoginDeletesKeyDeletesProjectMetadata()
+        public async Task DeleteFromMetadata_WhenAuthorizationMethodIsProjectMetadataAndNodeIsProject()
         {
             var projectId = new ProjectLocator("project-1");
             var computeEngineMock = new Mock<IComputeEngineClient>();

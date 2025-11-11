@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task CreateRdpSessionContext_WhenUsingForcePasswordPromptFlag_ThenCreateRdpSessionContextPrompts()
+        public async Task CreateRdpSessionContext_WhenUsingForcePasswordPromptFlag()
         {
             var settings = new ConnectionSettings(SampleLocator);
             settings.RdpUsername.Value = "existinguser";
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         }
 
         [Test]
-        public async Task CreateRdpSessionContext_WhenUsingDefaultFlags_ThenCreateRdpSessionContextByNodeUsesPersistentCredentials()
+        public async Task CreateRdpSessionContext_WhenUsingDefaultFlags()
         {
             var settings = new ConnectionSettings(SampleLocator);
             settings.RdpUsername.Value = "existinguser";
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task CreateRdpSessionContext_WhenNoCredentialsExist_ThenCreateRdpSessionContextByUrlUsesEmptyCredentials()
+        public async Task CreateRdpSessionContext_WhenNoCredentialsExist()
         {
             var url = IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance");
 
@@ -221,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         }
 
         [Test]
-        public async Task CreateRdpSessionContext_WhenCredentialsExist_ThenCreateRdpSessionContextByUrlUsesStoredCredentials()
+        public async Task CreateRdpSessionContext_WhenCredentialsExist()
         {
             var url = IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance-1?username=john%20doe");
             var settings = new ConnectionSettings(url.Instance);
@@ -270,7 +270,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         //---------------------------------------------------------------------
 
         [Test]
-        public void CreateRdpSessionContext_WhenUrlCallbackFails_ThenCreateRdpSessionContextByUrlThrowsException()
+        public void CreateRdpSessionContext_WhenUrlCallbackFails()
         {
             var callbackService = new Mock<IRdpCredentialCallback>();
             callbackService.Setup(
@@ -303,7 +303,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
 
 
         [Test]
-        public async Task CreateRdpSessionContext_WhenUrlCallbackSucceeds_ThenCreateRdpSessionContextByUrlUsesCallbackCredentials()
+        public async Task CreateRdpSessionContext_WhenUrlCallbackSucceeds()
         {
             var url = IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance-1?username=john%20doe&CredentialCallbackUrl=http://mock");
 

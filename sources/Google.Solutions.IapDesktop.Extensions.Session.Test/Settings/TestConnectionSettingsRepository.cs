@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void GetProjectSettings_WhenProjectIdDoesNotExist_ThenGetProjectSettingsThrowsKeyNotFoundException()
+        public void GetProjectSettings_WhenProjectIdDoesNotExist()
         {
             var repository = new ConnectionSettingsRepository(CreateProjectRepository());
 
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void GetProjectSettings_WhenProjectIdExists_ThenGetProjectSettingsReturnsDefaults()
+        public void GetProjectSettings_WhenProjectIdExists()
         {
             var project = new ProjectLocator("project-1");
 
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void GetProjectSettings_WhenProjectSettingsSaved_ThenGetProjectSettingsReturnsData()
+        public void GetProjectSettings_WhenProjectSettingsSaved()
         {
             var project = new ProjectLocator("project-1");
 
@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void GetProjectSettings_WhenProjectSettingsSavedTwice_ThenGetProjectSettingsReturnsLatestData()
+        public void GetProjectSettings_WhenProjectSettingsSavedTwice()
         {
             var project = new ProjectLocator("project-1");
 
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void GetProjectSettings_WhenProjectSettingsDeleted_ThenGetProjectSettingsThrowsKeyNotFoundException()
+        public void GetProjectSettings_WhenProjectSettingsDeleted()
         {
             var project = new ProjectLocator("project-1");
 
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void GetZoneSettings_WhenProjectIdDoesNotExist_ThenGetZoneSettingsThrowsKeyNotFoundException()
+        public void GetZoneSettings_WhenProjectIdDoesNotExist()
         {
             var zone = new ZoneLocator("project-1", "zone-1");
 
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void GetZoneSettings_WhenZoneIdDoesNotExist_ThenGetZoneSettingsReturnsDefaults()
+        public void GetZoneSettings_WhenZoneIdDoesNotExist()
         {
             var zone = new ZoneLocator("project-1", "zone-1");
 
@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void GetZoneSettings_WhenSetValidZoneSettings_ThenGetZoneSettingsReturnSameValues()
+        public void GetZoneSettings_WhenSetValidZoneSettings()
         {
             var zone = new ZoneLocator("project-1", "zone-1");
 
@@ -215,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void GetZoneSettings_WhenProjectSettingsDeleted_ThenGetZoneSettingsAreDeletedToo()
+        public void GetZoneSettings_WhenProjectSettingsDeleted()
         {
             var zone = new ZoneLocator("project-1", "zone-1");
 
@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void GetInstanceSettings_WhenProjectIdDoesNotExist_ThenGetInstanceSettingsThrowsKeyNotFoundException()
+        public void GetInstanceSettings_WhenProjectIdDoesNotExist()
         {
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 
@@ -252,7 +252,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void GetInstanceSettings_WhenInstanceIdDoesNotExist_ThenGetZoneSettingsReturnsDefaults()
+        public void GetInstanceSettings_WhenInstanceIdDoesNotExist()
         {
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 
@@ -289,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void GetInstanceSettings_WhenSetValidInstanceSettings_ThenGetInstanceSettingsReturnSameValues()
+        public void GetInstanceSettings_WhenSetValidInstanceSettings()
         {
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 
@@ -339,7 +339,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void GetInstanceSettings_WhenProjectSettingsDeleted_ThenGetInstanceSettingsAreDeletedToo()
+        public void GetInstanceSettings_WhenProjectSettingsDeleted()
         {
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 
@@ -364,7 +364,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void GetInstanceSettingsByUrl_WhenProjectIdDoesNotExist_ThenGetInstanceSettingsByUrlReturnsUrlSettings()
+        public void GetInstanceSettingsByUrl_WhenProjectIdDoesNotExist()
         {
             var url = IapRdpUrl.FromString(
                 "iap-rdp:///project-1/zone-1/instance-1?username=john%20doe&RdpPort=13389");
@@ -384,7 +384,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void GetInstanceSettingsByUrl_WhenProjectFound_ThenGetInstanceSettingsByUrlReturnsMergedSettings()
+        public void GetInstanceSettingsByUrl_WhenProjectFound()
         {
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 

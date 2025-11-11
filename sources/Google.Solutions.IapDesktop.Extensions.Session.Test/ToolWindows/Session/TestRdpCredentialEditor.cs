@@ -251,7 +251,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public void CreateCredentials_WhenUsernameProvided_ThenCreateCredentialsShowsUsername()
+        public void CreateCredentials_WhenUsernameProvided()
         {
             var newCredentialViewModel = new NewCredentialsViewModel();
             var newCredentialDialogFactory =
@@ -282,7 +282,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
 
         [Test]
-        public void CreateCredentials_WhensUsernameIsNullOrEmpty_ThenCreateCredentialsShowsUsername(
+        public void CreateCredentials_WhensUsernameIsNullOrEmpty(
             [Values("", null)] string username)
         {
             var newCredentialViewModel = new NewCredentialsViewModel();
@@ -313,7 +313,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task CreateCredentials_WhenDialogConfirmed_ThenCreateCredentialsReturnsCredentials()
+        public async Task CreateCredentials_WhenDialogConfirmed()
         {
             var newCredentialViewModel = new NewCredentialsViewModel();
             var newCredentialDialogFactory =
@@ -355,7 +355,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task CreateCredentials_WhenUsernameProvidedAndSilentIsTrue_ThenCreateCredentialsReturnsCredentials()
+        public async Task CreateCredentials_WhenUsernameProvidedAndSilentIsTrue()
         {
             var generatedCredentials = new NetworkCredential("generated", "password");
 
@@ -418,7 +418,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task AmendCredentials_WhenNlaDisabled_ThenAmendCredentialsReturns()
+        public async Task AmendCredentials_WhenNlaDisabled()
         {
             var settings = new ConnectionSettings(SampleInstance);
             settings.RdpNetworkLevelAuthentication.Value = RdpNetworkLevelAuthentication.Disabled;
@@ -442,7 +442,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task AmendCredentials_WhenAutomaticLogonDisabled_ThenAmendCredentialsReturns()
+        public async Task AmendCredentials_WhenAutomaticLogonDisabled()
         {
             var settings = new ConnectionSettings(SampleInstance);
             settings.RdpAutomaticLogon.Value = RdpAutomaticLogon.Disabled;
@@ -470,7 +470,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task AmendCredentials_WhenCredentialGenerationForcedAndUserAllowedToGenerateCredentials_ThenAmendCredentialsReplacesCredentials()
+        public async Task AmendCredentials_WhenCredentialGenerationForcedAndUserAllowedToGenerateCredentials()
         {
             var generatedCredentials = new NetworkCredential("generated", "password");
 
@@ -494,7 +494,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task AmendCredentials_WhenCredentialGenerationForcedAndUserNotAllowedToGenerateCredentials_ThenAmendCredentialsShowsCredentialPrompt()
+        public async Task AmendCredentials_WhenCredentialGenerationForcedAndUserNotAllowedToGenerateCredentials()
         {
             var promptedCredentials = new NetworkCredential("user", "password");
 
@@ -526,7 +526,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         [TestCase(RdpCredentialGenerationBehavior.Allow)]
         [TestCase(RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound)]
-        public async Task AmendCredentials_WhenCredentialGenerationAllowedAndUserAllowedToGenerateCredentials_ThenAmendCredentialsShowsTaskDialog(
+        public async Task AmendCredentials_WhenCredentialGenerationAllowedAndUserAllowedToGenerateCredentials(
             RdpCredentialGenerationBehavior behavior)
         {
             var taskDialog = new Mock<ITaskDialog>();
@@ -554,7 +554,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         [TestCase(RdpCredentialGenerationBehavior.Allow)]
         [TestCase(RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound)]
-        public async Task AmendCredentials_WhenCredentialGenerationAllowedAndUserNotAllowedToGenerateCredentials_ThenAmendCredentialsShowsCredentialPrompt(
+        public async Task AmendCredentials_WhenCredentialGenerationAllowedAndUserNotAllowedToGenerateCredentials(
             RdpCredentialGenerationBehavior behavior)
         {
             var taskDialog = new Mock<ITaskDialog>();
@@ -584,7 +584,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         [TestCase(RdpCredentialGenerationBehavior.Allow)]
         [TestCase(RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound)]
-        public async Task AmendCredentials_WhenCredentialGenerationAllowedAndCredentialsComplete_ThenAmendCredentialsReturns(
+        public async Task AmendCredentials_WhenCredentialGenerationAllowedAndCredentialsComplete(
             RdpCredentialGenerationBehavior behavior)
         {
             var settings = new ConnectionSettings(SampleInstance);
@@ -626,7 +626,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task AmendCredentials_WhenCredentialGenerationDisallowedAndUserAllowedToGenerateCredentials_ThenAmendCredentialsShowsCredentialPrompt()
+        public async Task AmendCredentials_WhenCredentialGenerationDisallowedAndUserAllowedToGenerateCredentials()
         {
             var taskDialog = new Mock<ITaskDialog>();
 
