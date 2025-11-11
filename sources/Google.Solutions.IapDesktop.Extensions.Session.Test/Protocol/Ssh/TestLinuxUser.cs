@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void SuggestUsername_WhenSessionUsernameIsEmail_ThenSuggestUsernameGeneratesUsername()
+        public void SuggestUsername_WhenSessionUsernameIsEmail()
         {
             var session = CreateSession("j@ex.ample");
             var username = LinuxUser.SuggestUsername(session);
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void SuggestUsername_WhenSessionUsernameNotAnEmail_ThenSuggestUsernameGeneratesUsername()
+        public void SuggestUsername_WhenSessionUsernameNotAnEmail()
         {
             var session = CreateSession("NOTANEMAILADDRESS");
             var username = LinuxUser.SuggestUsername(session);
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void SuggestUsername_WhenSessionUsernameTooLong_ThenSuggestUsernameStripsUsername()
+        public void SuggestUsername_WhenSessionUsernameTooLong()
         {
             var session = CreateSession("ABCDEFGHIJKLMNOPQRSTUVWXYZabcxyz0@ex.ample");
             var username = LinuxUser.SuggestUsername(session);
@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void SuggestUsername_WhenUsernameContainsInvalidChars_ThenSuggestUsernameReplacesChars()
+        public void SuggestUsername_WhenUsernameContainsInvalidChars()
         {
             var session = CreateSession("1+9@ex.ample");
             var username = LinuxUser.SuggestUsername(session);
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void SuggestUsername_WhenUsernameContainsUpperCaseChars_ThenSuggestUsernameReplacesChars()
+        public void SuggestUsername_WhenUsernameContainsUpperCaseChars()
         {
             var session = CreateSession("ABC@ex.ample");
             var username = LinuxUser.SuggestUsername(session);

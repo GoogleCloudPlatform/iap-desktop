@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void Get_WhenCalledTwice_ThenGetReturnsSameObject(
+        public void Get_WhenCalledTwice(
             [Values(
                 SshKeyType.Rsa3072,
                 SshKeyType.EcdsaNistp256,
@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void Get_WhenTypesDiffer_ThenGetReturnsDifferentObjects()
+        public void Get_WhenTypesDiffer()
         {
             var signer1 = EphemeralKeySigners.Get(SshKeyType.Rsa3072);
             var signer2 = EphemeralKeySigners.Get(SshKeyType.EcdsaNistp256);

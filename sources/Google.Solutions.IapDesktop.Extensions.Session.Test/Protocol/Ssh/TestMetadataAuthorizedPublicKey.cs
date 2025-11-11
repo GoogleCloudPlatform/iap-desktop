@@ -46,6 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             )]
             string line)
         {
+            Assert.IsFalse(MetadataAuthorizedPublicKey.TryParse(line, out var _));
             Assert.Throws<ArgumentException>(() => MetadataAuthorizedPublicKey.Parse(line));
         }
 

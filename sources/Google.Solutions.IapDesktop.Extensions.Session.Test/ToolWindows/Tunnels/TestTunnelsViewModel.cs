@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Tunnel
         //---------------------------------------------------------------------
 
         [Test]
-        public void List_WhenTunnelCreatedOrClosed_ThenListRefreshes()
+        public void List_WhenTunnelCreatedOrClosed()
         {
             var invoke = new Mock<ISynchronizeInvoke>();
             invoke.SetupGet(i => i.InvokeRequired).Returns(false);
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Tunnel
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsRefreshButtonEnabled_WhenTunnelsListEmpty_ThenRefreshButtonIsDisabled()
+        public void IsRefreshButtonEnabled_WhenTunnelsListEmpty()
         {
             var factory = new Mock<IIapTransportFactory>(); factory
                  .SetupGet(f => f.Pool)
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Tunnel
         }
 
         [Test]
-        public void IsRefreshButtonEnabled_WhenOneTunnelOpen_ThenRefreshButtonIsEnabled()
+        public void IsRefreshButtonEnabled_WhenOneTunnelOpen()
         {
             var factory = new Mock<IIapTransportFactory>();
             factory

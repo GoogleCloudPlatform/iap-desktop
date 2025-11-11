@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public void EnterFullScreen_WhenApplicable_ThenEnterFullScreenIsEnabled(
+        public void EnterFullScreen_WhenApplicable(
             [Values(
                 FullScreenMode.SingleScreen,
                 FullScreenMode.AllScreens)] FullScreenMode mode)
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void EnterFullScreen_WhenNotApplicable_ThenEnterFullScreenIsDisabled(
+        public void EnterFullScreen_WhenNotApplicable(
             [Values(
                 FullScreenMode.SingleScreen,
                 FullScreenMode.AllScreens)] FullScreenMode mode)
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public void Close_WhenApplicable_ThenCloseIsEnabled()
+        public void Close_WhenApplicable()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);
@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void Close_WhenNotApplicable_ThenCloseIsDisabled()
+        public void Close_WhenNotApplicable()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);
@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public void CloseAll_WhenApplicable_ThenCloseAllIsEnabled()
+        public void CloseAll_WhenApplicable()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);
@@ -181,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public void CloseAllButThis_WhenApplicable_ThenCloseAllButThisIsEnabled()
+        public void CloseAllButThis_WhenApplicable()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);
@@ -222,7 +222,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public void ShowSecurityScreen_WhenApplicable_ThenShowSecurityScreenIsEnabled()
+        public void ShowSecurityScreen_WhenApplicable()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);
@@ -236,7 +236,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void ShowSecurityScreen_WhenNotApplicable_ThenShowSecurityScreenIsDisabled()
+        public void ShowSecurityScreen_WhenNotApplicable()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public void ShowTaskManager_WhenApplicable_ThenShowTaskManagerIsEnabled()
+        public void ShowTaskManager_WhenApplicable()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);
@@ -274,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void ShowTaskManager_WhenNotApplicable_ThenShowTaskManagerIsDisabled()
+        public void ShowTaskManager_WhenNotApplicable()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);
@@ -298,7 +298,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public void Logoff_WhenApplicable_ThenLogoffIsEnabled()
+        public void Logoff_WhenApplicable()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);
@@ -312,7 +312,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void Logoff_WhenNotApplicable_ThenLogoffIsDisabled()
+        public void Logoff_WhenNotApplicable()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);
@@ -336,7 +336,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public void TypeClipboardText_WhenApplicable_ThenTypeClipboardTextIsEnabled()
+        public void TypeClipboardText_WhenApplicable()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);
@@ -350,7 +350,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void TypeClipboardText_WhenNotApplicable_ThenTypeClipboardTextIsDisabled()
+        public void TypeClipboardText_WhenNotApplicable()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);
@@ -374,7 +374,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public void TransferFiles_WhenApplicable_ThenTransferFilesIsEnabled()
+        public void TransferFiles_WhenApplicable()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);
@@ -389,7 +389,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void TransferFiles_WhenNotConnected_ThenTransferFilesIsDisabled()
+        public void TransferFiles_WhenNotConnected()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);
@@ -409,7 +409,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public void TransferFiles_WhenFileTransferNotSupported_ThenTransferFilesIsDisabled()
+        public void TransferFiles_WhenFileTransferNotSupported()
         {
             var sessionCommands = new SessionCommands(
                 new Mock<ISessionBroker>().Object);

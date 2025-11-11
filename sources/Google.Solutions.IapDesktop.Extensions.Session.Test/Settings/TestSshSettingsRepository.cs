@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
     public class TestSshSettingsRepository
     {
         [Test]
-        public void WhenSettingsSaved_ThenSettingsCanBeRead()
+        public void WhenSettingsSaved()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void PublicKeyType_WhenSchemaVersionIsOld_ThenPublicKeyTypeIsRsa()
+        public void PublicKeyType_WhenSchemaVersionIsOld()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void PublicKeyType_WhenSchemaVersionIsNew_ThenPublicKeyTypeIsEcdsa()
+        public void PublicKeyType_WhenSchemaVersionIsNew()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void PublicKeyType_WhenPublicKeyTypeInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
+        public void PublicKeyType_WhenPublicKeyTypeInvalid()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void PublicKeyType_WhenPublicKeyTypeValidAndUserPolicySet_ThenPolicyWins()
+        public void PublicKeyType_WhenPublicKeyTypeValidAndUserPolicySet()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void PublicKeyType_WhenPublicKeyTypeValidAndMachinePolicySet_ThenPolicyWins()
+        public void PublicKeyType_WhenPublicKeyTypeValidAndMachinePolicySet()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
@@ -181,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void PublicKeyType_WhenPublicKeyTypeValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
+        public void PublicKeyType_WhenPublicKeyTypeValidAndUserAndMachinePolicySet()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
@@ -208,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void PublicKeyValidity_WhenKeyEmpty_ThenPublicKeyValidityIs30days()
+        public void PublicKeyValidity_WhenKeyEmpty()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
@@ -224,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void PublicKeyValidity_WhenPublicKeyValidityInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
+        public void PublicKeyValidity_WhenPublicKeyValidityInvalid()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
@@ -243,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void PublicKeyValidity_WhenPublicKeyValidityValidAndUserPolicySet_ThenPolicyWins()
+        public void PublicKeyValidity_WhenPublicKeyValidityValidAndUserPolicySet()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
@@ -265,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void PublicKeyValidity_WhenPublicKeyValidityValidAndMachinePolicySet_ThenPolicyWins()
+        public void PublicKeyValidity_WhenPublicKeyValidityValidAndMachinePolicySet()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
@@ -287,7 +287,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void PublicKeyValidity_WhenPublicKeyValidityValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
+        public void PublicKeyValidity_WhenPublicKeyValidityValidAndUserAndMachinePolicySet()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))

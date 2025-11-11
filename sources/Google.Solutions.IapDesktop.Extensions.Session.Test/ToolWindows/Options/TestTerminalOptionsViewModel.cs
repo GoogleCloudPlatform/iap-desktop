@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public void IsCopyPasteUsingCtrlCAndCtrlVEnabled_WhenChanged_ThenIsDirtyIsTrueUntilApplied()
+        public void IsCopyPasteUsingCtrlCAndCtrlVEnabled_WhenChanged()
         {
             var settingsRepository = CreateTerminalSettingsRepository();
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public void IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled_WhenChanged_ThenIsDirtyIsTrueUntilApplied()
+        public void IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled_WhenChanged()
         {
             var settingsRepository = CreateTerminalSettingsRepository();
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
@@ -205,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public void IsQuoteConvertionOnPasteEnabled_WhenChanged_ThenIsDirtyIsTrueUntilApplied()
+        public void IsQuoteConvertionOnPasteEnabled_WhenChanged()
         {
             var settingsRepository = CreateTerminalSettingsRepository();
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
@@ -265,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public void IsBracketedPasteEnabled_WhenChanged_ThenIsDirtyIsTrueUntilApplied()
+        public void IsBracketedPasteEnabled_WhenChanged()
         {
             var settingsRepository = CreateTerminalSettingsRepository();
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
@@ -325,7 +325,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public void IsScrollingUsingCtrlHomeEndEnabled_WhenChanged_ThenIsDirtyIsTrueUntilApplied()
+        public void IsScrollingUsingCtrlHomeEndEnabled_WhenChanged()
         {
             var settingsRepository = CreateTerminalSettingsRepository();
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
@@ -385,7 +385,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public void IsScrollingUsingCtrlPageUpDownEnabled_WhenChanged_ThenIsDirtyIsTrueUntilApplied()
+        public void IsScrollingUsingCtrlPageUpDownEnabled_WhenChanged()
         {
             var settingsRepository = CreateTerminalSettingsRepository();
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
@@ -403,7 +403,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         //---------------------------------------------------------------------
 
         [Test]
-        public void TerminalFont_WhenSettingPresent_ThenTerminalFontIsSet()
+        public void TerminalFont_WhenSettingPresent()
         {
             var settingsRepository = CreateTerminalSettingsRepository();
             var font = new Font(FontFamily.GenericMonospace, 24.0f);
@@ -420,7 +420,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public async Task TerminalFont_WhenFontChanged_ThenChangeIsApplied()
+        public async Task TerminalFont_WhenFontChanged()
         {
             var settingsRepository = CreateTerminalSettingsRepository();
             var font = new Font(FontFamily.GenericMonospace, 24.0f);
@@ -443,7 +443,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         //---------------------------------------------------------------------
 
         [Test]
-        public void ForegroundColor_WhenSettingPresent_ThenForegroundColorIsSet()
+        public void ForegroundColor_WhenSettingPresent()
         {
             var color = Color.Red;
 
@@ -460,7 +460,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public async Task ForegroundColor_WhenForegroundColorChanged_ThenChangeIsApplied()
+        public async Task ForegroundColor_WhenForegroundColorChanged()
         {
             var settingsRepository = CreateTerminalSettingsRepository();
 
@@ -481,7 +481,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         //---------------------------------------------------------------------
 
         [Test]
-        public void BackgroundColor_WhenSettingPresent_ThenBackgroundColorIsSet()
+        public void BackgroundColor_WhenSettingPresent()
         {
             var color = Color.Red;
 
@@ -498,7 +498,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public async Task BackgroundColor_WhenBackgroundColorChanged_ThenChangeIsApplied()
+        public async Task BackgroundColor_WhenBackgroundColorChanged()
         {
             var settingsRepository = CreateTerminalSettingsRepository();
 
@@ -552,7 +552,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
         }
 
         [Test]
-        public void CaretStyle_WhenChanged_ThenIsDirtyIsTrueUntilApplied()
+        public void CaretStyle_WhenChanged()
         {
             var settingsRepository = CreateTerminalSettingsRepository();
             var viewModel = new TerminalOptionsViewModel(settingsRepository);

@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
     public class TestTerminalSettingsRepository
     {
         [Test]
-        public void GetSettings_WhenKeyEmpty_ThenDefaultsAreProvided()
+        public void GetSettings_WhenKeyEmpty()
         {
             using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         [Test]
-        public void SetSettings_WhenSettingsChanged_ThenEventIsFired()
+        public void SetSettings_WhenSettingsChanged()
         {
             using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {

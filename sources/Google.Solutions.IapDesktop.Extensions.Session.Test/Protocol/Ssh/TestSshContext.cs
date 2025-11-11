@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void AuthorizeCredential_WhenUsingPlatformManagedCredential_ThenAuthorizeCredentialCreatesCredential()
+        public void AuthorizeCredential_WhenUsingPlatformManagedCredential()
         {
             var credential = new PlatformCredential(
                 new Mock<IAsymmetricKeySigner>().Object,
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void AuthorizeCredential_WhenUsingPreAuthorizedCredential_ThenAuthorizeCredentialReturnsCredential()
+        public void AuthorizeCredential_WhenUsingPreAuthorizedCredential()
         {
             var credential = new StaticPasswordCredential("user", "password");
 
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task ConnectTransport_WhenTransportTypeIsIap_ThenConnectTransportCreatesIapTransport()
+        public async Task ConnectTransport_WhenTransportTypeIsIap()
         {
             var transport = new Mock<ITransport>();
             transport.SetupGet(t => t.Endpoint).Returns(new IPEndPoint(IPAddress.Loopback, 123));
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task ConnectTransport_WhenTransportTypeIsVpcInternal_ThenConnectTransportCreatesDirectTransport()
+        public async Task ConnectTransport_WhenTransportTypeIsVpcInternal()
         {
             var transport = new Mock<ITransport>();
             var factory = new Mock<IDirectTransportFactory>();

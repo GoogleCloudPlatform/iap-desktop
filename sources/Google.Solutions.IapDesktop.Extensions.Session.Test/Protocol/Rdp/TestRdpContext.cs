@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task ConnectTransport_WhenTransportTypeIsIap_ThenConnectTransportCreatesIapTransport()
+        public async Task ConnectTransport_WhenTransportTypeIsIap()
         {
             var transport = new Mock<ITransport>();
             transport.SetupGet(t => t.Endpoint).Returns(new IPEndPoint(IPAddress.Loopback, 123));
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         }
 
         [Test]
-        public async Task ConnectTransport_WhenTransportTypeIsVpcInternal_ThenConnectTransportCreatesDirectTransport()
+        public async Task ConnectTransport_WhenTransportTypeIsVpcInternal()
         {
             var transport = new Mock<ITransport>();
             var factory = new Mock<IDirectTransportFactory>();

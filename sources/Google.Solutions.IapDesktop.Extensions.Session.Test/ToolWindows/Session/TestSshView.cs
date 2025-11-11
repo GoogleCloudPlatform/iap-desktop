@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Connect_WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed(
+        public async Task Connect_WhenPortNotListening(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
             var unboundEndpoint = new IPEndPoint(IPAddress.Loopback, 1);
@@ -146,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Connect_WhenCredentialsInvalid_ThenErrorIsShownAndWindowIsClosed(
+        public async Task Connect_WhenCredentialsInvalid(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<IAuthorization> auth)
         {
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         }
 
         [Test]
-        public async Task Connect_WhenWindowChangedToFloating_ThenConnectionSurvives(
+        public async Task Connect_WhenWindowChangedToFloating(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Roles = new[] {
                 PredefinedRole.IapTunnelUser,

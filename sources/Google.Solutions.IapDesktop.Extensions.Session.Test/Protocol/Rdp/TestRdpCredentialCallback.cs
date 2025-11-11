@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         //----------------------------------------------------------------------
 
         [Test]
-        public async Task GetCredentials_WhenServerReturnsEmptyResult_ThenGetCredentialsReturnsEmptyCredentials()
+        public async Task GetCredentials_WhenServerReturnsEmptyResult()
         {
             var adapter = new Mock<IExternalRestClient>();
             adapter
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         }
 
         [Test]
-        public void GetCredentials_WhenServerRequestFails_ThenGetCredentialsThrowsException()
+        public void GetCredentials_WhenServerRequestFails()
         {
             var adapter = new Mock<IExternalRestClient>();
             adapter
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         }
 
         [Test]
-        public void GetCredentials_WhenServerReturnsInvalidResponse_ThenGetCredentialsThrowsException()
+        public void GetCredentials_WhenServerReturnsInvalidResponse()
         {
             var adapter = new Mock<IExternalRestClient>();
             adapter
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         }
 
         [Test]
-        public void GetCredentials_WhenServerRequestTimesOut_ThenGetCredentialsThrowsException()
+        public void GetCredentials_WhenServerRequestTimesOut()
         {
             var adapter = new Mock<IExternalRestClient>();
             adapter
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         }
 
         [Test]
-        public async Task GetCredentials_WhenServerReturnsResult_ThenGetCredentialsReturnsCredentials()
+        public async Task GetCredentials_WhenServerReturnsResult()
         {
             var adapter = new Mock<IExternalRestClient>();
             adapter

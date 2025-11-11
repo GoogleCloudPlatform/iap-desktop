@@ -91,7 +91,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             this.PublicKey = key;
         }
 
-        public static MetadataAuthorizedPublicKey Parse(string line)
+        public static bool TryParse(
+            string line,
+            out MetadataAuthorizedPublicKey? result)
         {
             line = line.Trim();
             Debug.Assert(!line.Contains('\n'));
@@ -107,11 +109,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata>(
                         managedMatch.Groups[5].Value);
 
-                return new ManagedMetadataAuthorizedPublicKey(
+                result = new ManagedMetadataAuthorizedPublicKey(
                     managedMatch.Groups[1].Value,
                     managedMatch.Groups[2].Value,
                     managedMatch.Groups[3].Value,
                     keyMetadata!);
+                return true;
             }
             else if (unmanagedKeyPattern.Match(line) is var unmanagedMatch &&
                 unmanagedMatch.Success)
@@ -119,11 +122,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 //
                 // This is an unmanaged key.
                 //
-                return new UnmanagedMetadataAuthorizedPublicKey(
+                result = new UnmanagedMetadataAuthorizedPublicKey(
                     unmanagedMatch.Groups[1].Value,
                     unmanagedMatch.Groups[2].Value,
                     unmanagedMatch.Groups[3].Value,
                     unmanagedMatch.Groups[4].Value.NullIfEmptyOrWhitespace()?.Trim());
+                return true;
+            }
+            else
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        public static MetadataAuthorizedPublicKey Parse(string line)
+        {
+            if (TryParse(line, out var result)) 
+            {
+                return result!;
             }
             else
             {
@@ -141,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
 
         public override bool Equals(object? obj)
-            => Equals(obj as ManagedMetadataAuthorizedPublicKey);
+            => Equals(obj as MetadataAuthorizedPublicKey);
 
         public bool Equals(MetadataAuthorizedPublicKey? other)
         {
@@ -160,7 +177,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
     }
 
-    public class UnmanagedMetadataAuthorizedPublicKey : MetadataAuthorizedPublicKey, IAuthorizedPublicKey
+    public class UnmanagedMetadataAuthorizedPublicKey 
+        : MetadataAuthorizedPublicKey, IAuthorizedPublicKey
     {
         public override string? Email { get; }
 
@@ -188,7 +206,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
     }
 
-    public class ManagedMetadataAuthorizedPublicKey : MetadataAuthorizedPublicKey, IAuthorizedPublicKey
+    public class ManagedMetadataAuthorizedPublicKey 
+        : MetadataAuthorizedPublicKey, IAuthorizedPublicKey
     {
         public PublicKeyMetadata Metadata { get; }
 

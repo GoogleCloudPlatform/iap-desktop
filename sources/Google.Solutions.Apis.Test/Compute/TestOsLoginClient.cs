@@ -234,7 +234,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task DeleteSshPublicKey_WhenDeletingKeyTwice(
-            [Credential(Role = PredefinedRole.ComputeViewer)]
+            [Credential(Role = PredefinedRole.OsLogin)]
             ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(
@@ -290,7 +290,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public async Task DeleteSshPublicKey_WhenDeletingNonexistingKey(
-            [Credential(Role = PredefinedRole.ComputeViewer)]
+            [Credential(Role = PredefinedRole.ServiceUsageConsumer)]
             ResourceTask<IAuthorization> authorizationTask)
         {
             var client = new OsLoginClient(

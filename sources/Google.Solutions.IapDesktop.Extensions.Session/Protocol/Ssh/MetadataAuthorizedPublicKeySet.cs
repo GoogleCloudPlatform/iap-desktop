@@ -37,14 +37,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         public const string LegacyMetadataKey = "sshKeys";
         public const string MetadataKey = "ssh-keys";
 
-        public IEnumerable<MetadataAuthorizedPublicKey> Keys { get; }
+        /// <summary>
+        /// Items, can be a mix of TMetadataAuthorizedPublicKey and
+        /// T:UnrecognizedKey.
+        /// </summary>
+        internal ICollection<object> Items { get; }
+
+        /// <summary>
+        /// Authorized keys.
+        /// </summary>
+        public IEnumerable<MetadataAuthorizedPublicKey> Keys
+        {
+            get => this.Items.OfType<MetadataAuthorizedPublicKey>();
+        }
 
         //---------------------------------------------------------------------
         // Metadata.
         //---------------------------------------------------------------------
-        private MetadataAuthorizedPublicKeySet(IEnumerable<MetadataAuthorizedPublicKey> keys)
+
+        private MetadataAuthorizedPublicKeySet(ICollection<object> keys)
         {
-            this.Keys = keys;
+            this.Items = keys;
         }
 
         public static MetadataAuthorizedPublicKeySet FromMetadata(Metadata.ItemsData data)
@@ -59,7 +72,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 data.Value
                     .Split('\n')
                     .Where(line => !string.IsNullOrWhiteSpace(line))
-                    .Select(line => MetadataAuthorizedPublicKey.Parse(line.Trim()))
+                    .Select(line => {
+                        if (MetadataAuthorizedPublicKey.TryParse(line, out var key))
+                        {
+                            return (object)key!;
+                        }
+                        else
+                        {
+                            //
+                            // Junk or a malformed key.
+                            //
+                            return new UnrecognizedContent(line);
+                        }
+                    }) 
                     .ToList());
         }
 
@@ -73,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             else
             {
                 return new MetadataAuthorizedPublicKeySet(
-                    Enumerable.Empty<MetadataAuthorizedPublicKey>());
+                    Array.Empty<object>());
             }
         }
 
@@ -85,14 +110,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             }
             else
             {
-                return new MetadataAuthorizedPublicKeySet(this.Keys.ConcatItem(key));
+                return new MetadataAuthorizedPublicKeySet(
+                    this.Items.ConcatItem(key).ToList());
             }
         }
 
         public MetadataAuthorizedPublicKeySet RemoveExpiredKeys()
         {
-            return new MetadataAuthorizedPublicKeySet(
-                this.Keys.Where(k =>
+            return new MetadataAuthorizedPublicKeySet(this.Items
+                .Where(k =>
                 {
                     if (k is ManagedMetadataAuthorizedPublicKey managed)
                     {
@@ -100,26 +126,67 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                     }
                     else
                     {
-                        // Unmanaged keys never expire.
+                        //
+                        // Keep unmanaged and unrecognized keys, these never expire.
+                        //
                         return true;
                     }
-                }));
+                })
+                .ToList());
         }
 
         public bool Contains(MetadataAuthorizedPublicKey key)
         {
-            return this.Keys.Any(k => k.Equals(key));
+            return this.Items.Any(k => k.Equals(key));
         }
 
-        public MetadataAuthorizedPublicKeySet Remove(MetadataAuthorizedPublicKey key)
+        public MetadataAuthorizedPublicKeySet Remove(MetadataAuthorizedPublicKey key) 
         {
-            return new MetadataAuthorizedPublicKeySet(
-                this.Keys.Where(k => !k.Equals(key)));
+            return new MetadataAuthorizedPublicKeySet(this.Items
+                .Where(k => !k.Equals(key))
+                .ToList());
         }
 
-        public override string ToString()
+        public override string ToString() 
         {
-            return string.Join("\n", this.Keys);
+            return string.Join("\n", this.Items);
+        }
+
+        //---------------------------------------------------------------------
+        // Private types.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// A line in the key set that can't be parsed as a key.
+        /// </summary>
+        private class UnrecognizedContent
+        {
+            /// <summary>
+            /// Raw, unparsed value.
+            /// </summary>
+            private string Value { get; }
+
+            public UnrecognizedContent(string value)
+            {
+                this.Value = value;
+            }
+
+            public override string ToString()
+            {
+                return this.Value;
+            }
+
+            public override int GetHashCode()
+            {
+                return this.Value.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                return 
+                    obj is UnrecognizedContent key && 
+                    Equals(key.Value, this.Value);
+            }
         }
     }
 }

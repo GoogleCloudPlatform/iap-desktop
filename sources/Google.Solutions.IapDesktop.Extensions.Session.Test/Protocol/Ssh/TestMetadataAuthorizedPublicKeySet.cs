@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void FromMetadata_WhenMetadataIsEmpry_ThenFromMetadataThrowsArgumentException()
+        public void FromMetadata_WhenMetadataIsEmpry()
         {
             var metadata = new Metadata();
 
@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void FromMetadata_WhenMetadataContainsDifferentKeys_ThenFromMetadataThrowsArgumentException()
+        public void FromMetadata_WhenMetadataContainsDifferentKeys()
         {
             var metadata = new Metadata()
             {
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void FromMetadata_WhenMetadataItemHasWrongKey_ThenFromMetadataThrowsArgumentException()
+        public void FromMetadata_WhenMetadataItemHasWrongKey()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void FromMetadata_WhenMetadataItemContainsJunk_ThenFromMetadataThrowsArgumentException()
+        public void FromMetadata_WhenMetadataItemContainsJunk()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -81,12 +81,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 Value = "junk junk junk "
             };
 
-            Assert.Throws<ArgumentException>(
-                () => MetadataAuthorizedPublicKeySet.FromMetadata(metadata));
+            var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata);
+            Assert.AreEqual(0, keySet.Keys.Count());
+            Assert.AreEqual(1, keySet.Items.Count());
         }
 
         [Test]
-        public void FromMetadata_WhenMetadataItemIsEmpty_ThenKeySetIsEmpty()
+        public void FromMetadata_WhenMetadataItemIsEmpty()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -98,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void FromMetadata_WhenMetadataItemContainsData_ThenKeySetIsPopulated()
+        public void FromMetadata_WhenMetadataItemContainsData()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -112,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void FromMetadata_WhenMetadataItemContainsUnnecessaryWhitespace_ThenKeySetIsPopulated()
+        public void FromMetadata_WhenMetadataItemContainsUnnecessaryWhitespace()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -134,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void Add_WhenAddingDuplicateKey_ThenAddReturnsThis()
+        public void Add_WhenAddingDuplicateKey()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -150,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void Add_WhenAddingNewKey_ThenAddReturnsNewSet()
+        public void Add_WhenAddingNewKey()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -166,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void Add_WhenSetContainsEntriesWithEmptyUsername_ThenAddMaintainsEntry()
+        public void Add_WhenSetContainsEntriesWithEmptyUsername()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -186,12 +187,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             Assert.AreEqual("", keySet.Keys.First(k => k.PublicKey == "phantomkey3").PosixUsername);
         }
 
+        [Test]
+        public void Add_WhenSetContainsUnrecognizedContent()
+        {
+            var metadata = new Metadata.ItemsData()
+            {
+                Key = MetadataAuthorizedPublicKeySet.MetadataKey,
+                Value = $"alice:ssh-rsa key alice\n" +
+                        $"junk\n" +
+                        $"junk:ssh-rsa phantomkey3 google-ssh {{\n" +
+                        $"moe:ssh-rsa key2 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(1):O}\"}}\n"
+            };
+
+            var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata)
+                .RemoveExpiredKeys()
+                .Add(MetadataAuthorizedPublicKey.Parse("bob:ssh-rsa key2 bob"));
+
+            Assert.AreEqual(3, keySet.Keys.Count());
+            Assert.AreEqual(5, keySet.Items.Count());
+        }
+
         //---------------------------------------------------------------------
         // Remove.
         //---------------------------------------------------------------------
 
         [Test]
-        public void Remove_WhenKeyNotFound_ThenRemoveReturnsEquivalentSet()
+        public void Remove_WhenKeyNotFound()
         {
             var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(new Metadata())
                 .Add(MetadataAuthorizedPublicKey.Parse("alice:ssh-rsa KEY1 alice@example.com"))
@@ -209,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public void Remove_WhenKeyFound_ThenRemoveReturnsSetWithoutKey()
+        public void Remove_WhenKeyFound()
         {
             var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(new Metadata())
                 .Add(MetadataAuthorizedPublicKey.Parse("alice:ssh-rsa KEY1 alice@example.com"))
@@ -225,12 +246,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             Assert.AreEqual(1, newKeySet.Keys.Count());
         }
 
+        [Test]
+        public void Remove_WhenSetContainsUnrecognizedContent()
+        {
+            var metadata = new Metadata.ItemsData()
+            {
+                Key = MetadataAuthorizedPublicKeySet.MetadataKey,
+                Value = $"alice:ssh-rsa key alice\n" +
+                        $"junk\n" +
+                        $"junk:ssh-rsa phantomkey3 google-ssh {{\n" +
+                        $"moe:ssh-rsa key2 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(1):O}\"}}\n"
+            };
+
+            var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata);
+            var alice = keySet.Keys.First(k => k.PosixUsername == "alice");
+
+            keySet = keySet.Remove(alice);
+
+            Assert.AreEqual(1, keySet.Keys.Count());
+            Assert.AreEqual(3, keySet.Items.Count());
+        }
+
         //---------------------------------------------------------------------
         // RemoveExpiredKeys.
         //---------------------------------------------------------------------
 
         [Test]
-        public void RemoveExpiredKeys_WhenKeyExpired_ThenRemoveExpiredKeysStripsKey()
+        public void RemoveExpiredKeys_WhenKeyExpired()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -245,6 +287,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             Assert.AreEqual(2, keySet.Keys.Count());
             Assert.IsFalse(keySet.Keys.Any(k => k.PosixUsername == "joe"));
+        }
+
+        //---------------------------------------------------------------------
+        // ToString.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void ToString_WhenSetContainsUnrecognizedContent()
+        {
+            var metadata = new Metadata.ItemsData()
+            {
+                Key = MetadataAuthorizedPublicKeySet.MetadataKey,
+                Value = $"alice:ssh-rsa key alice\n" +
+                        $"junk\n" +
+                        $"junk:ssh-rsa phantomkey3 google-ssh {{\n" +
+                        $"moe:ssh-rsa key2 moe@example.com\"}}"
+            };
+
+            var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata);
+
+            Assert.AreEqual(metadata.Value, keySet.ToString());
         }
     }
 }

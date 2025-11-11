@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task CreateSshSessionContext_WhenPublicKeyAuthEnabled_ThenCreateSshSessionContextUsesPlatformCredential()
+        public async Task CreateSshSessionContext_WhenPublicKeyAuthEnabled()
         {
             var settings = new ConnectionSettings(SampleLocator);
             settings.SshPort.Value = 2222;
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task CreateSshSessionContext_WhenPublicKeyAuthDisabled_ThenCreateSshSessionContextUsesPasswordCredential(
+        public async Task CreateSshSessionContext_WhenPublicKeyAuthDisabled(
             [Values("user", "", null)] string username)
         {
             var settings = new ConnectionSettings(SampleLocator);
@@ -250,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task CreateSshSessionContext_WhenUsePersistentKeyIsTrue_ThenCreateSshSessionContextOpensSshKey()
+        public async Task CreateSshSessionContext_WhenUsePersistentKeyIsTrue()
         {
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService
@@ -296,7 +296,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         }
 
         [Test]
-        public async Task CreateSshSessionContext_WhenUsePersistentKeyIsFalse_ThenCreateSshSessionContextUsesEphemeralKey()
+        public async Task CreateSshSessionContext_WhenUsePersistentKeyIsFalse()
         {
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService

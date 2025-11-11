@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task SwitchToModel_WhenCloudNode_ThenInspectedObjectIsNull()
+        public async Task SwitchToModel_WhenCloudNode()
         {
             var service = CreateConnectionSettingsService();
 
@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
         }
 
         [Test]
-        public async Task SwitchToModel_WhenProjectNode_ThenInspectedObjectIsSet()
+        public async Task SwitchToModel_WhenProjectNode()
         {
             var service = CreateConnectionSettingsService();
 
@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
         }
 
         [Test]
-        public async Task SwitchToModel_WhenZoneNode_ThenInspectedObjectIsSet()
+        public async Task SwitchToModel_WhenZoneNode()
         {
             var service = CreateConnectionSettingsService();
 
@@ -209,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
         }
 
         [Test]
-        public async Task SwitchToModel_WhenInstanceNode_ThenInspectedObjectIsSet()
+        public async Task SwitchToModel_WhenInstanceNode()
         {
             var service = CreateConnectionSettingsService();
 

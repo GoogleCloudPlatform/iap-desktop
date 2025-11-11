@@ -29,15 +29,14 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
     [TestFixture]
-    public class TestMetadataAuthorizedPublicKeyProcessor
+    public class TestComputeMetadata
     {
-
         //---------------------------------------------------------------------
         // AddPublicKeyToMetadata.
         //---------------------------------------------------------------------
 
         [Test]
-        public void AddPublicKeyToMetadata_WhenMetadataHasExpiredKeys_ThenAddPublicKeyToMetadataRemovesExpiredKeys()
+        public void AddPublicKeyToMetadata_WhenMetadataHasExpiredKeys()
         {
             var expiredKey = new ManagedMetadataAuthorizedPublicKey(
                 "alice-expired",
@@ -74,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public void RemovePublicKeyFromMetadata_WhenMetadataHasExpiredKeys_ThenRemoveAuthorizedKeyLeavesThemAsIs()
+        public void RemovePublicKeyFromMetadata_WhenMetadataHasExpiredKeys()
         {
             var expiredKey = new ManagedMetadataAuthorizedPublicKey(
                 "alice-expired",

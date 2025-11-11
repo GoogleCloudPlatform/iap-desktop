@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
         //---------------------------------------------------------------------
 
         [Test]
-        public void ContextMenuOpen_WhenApplicable_ThenContextMenuOpenIsEnabled()
+        public void ContextMenuOpen_WhenApplicable()
         {
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
         }
 
         [Test]
-        public void ContextMenuOpen_WhenNotApplicable_ThenContextMenuOpenIsUnavailable()
+        public void ContextMenuOpen_WhenNotApplicable()
         {
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToolbarOpen_WhenApplicable_ThenToolbarOpenIsEnabled()
+        public void ToolbarOpen_WhenApplicable()
         {
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
         }
 
         [Test]
-        public void ToolbarOpen_WhenNotApplicable_ThenToolbarOpenIsDisabled()
+        public void ToolbarOpen_WhenNotApplicable()
         {
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService
