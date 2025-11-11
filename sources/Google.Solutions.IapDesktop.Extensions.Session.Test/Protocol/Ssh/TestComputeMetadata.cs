@@ -29,9 +29,8 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 {
     [TestFixture]
-    public class TestMetadataAuthorizedPublicKeyProcessor
+    public class TestComputeMetadata
     {
-
         //---------------------------------------------------------------------
         // AddPublicKeyToMetadata.
         //---------------------------------------------------------------------

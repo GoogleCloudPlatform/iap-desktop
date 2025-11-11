@@ -81,8 +81,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 Value = "junk junk junk "
             };
 
-            Assert.Throws<ArgumentException>(
-                () => MetadataAuthorizedPublicKeySet.FromMetadata(metadata));
+            var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata);
+            Assert.AreEqual(0, keySet.Keys.Count());
+            Assert.AreEqual(1, keySet.Items.Count());
         }
 
         [Test]
@@ -186,6 +187,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             Assert.AreEqual("", keySet.Keys.First(k => k.PublicKey == "phantomkey3").PosixUsername);
         }
 
+        [Test]
+        public void Add_WhenSetContainsUnrecognizedContent()
+        {
+            var metadata = new Metadata.ItemsData()
+            {
+                Key = MetadataAuthorizedPublicKeySet.MetadataKey,
+                Value = $"alice:ssh-rsa key alice\n" +
+                        $"junk\n" +
+                        $"junk:ssh-rsa phantomkey3 google-ssh {{\n" +
+                        $"moe:ssh-rsa key2 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(1):O}\"}}\n"
+            };
+
+            var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata)
+                .RemoveExpiredKeys()
+                .Add(MetadataAuthorizedPublicKey.Parse("bob:ssh-rsa key2 bob"));
+
+            Assert.AreEqual(3, keySet.Keys.Count());
+            Assert.AreEqual(5, keySet.Items.Count());
+        }
+
         //---------------------------------------------------------------------
         // Remove.
         //---------------------------------------------------------------------
@@ -225,6 +246,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             Assert.AreEqual(1, newKeySet.Keys.Count());
         }
 
+        [Test]
+        public void Remove_WhenSetContainsUnrecognizedContent()
+        {
+            var metadata = new Metadata.ItemsData()
+            {
+                Key = MetadataAuthorizedPublicKeySet.MetadataKey,
+                Value = $"alice:ssh-rsa key alice\n" +
+                        $"junk\n" +
+                        $"junk:ssh-rsa phantomkey3 google-ssh {{\n" +
+                        $"moe:ssh-rsa key2 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(1):O}\"}}\n"
+            };
+
+            var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata);
+            var alice = keySet.Keys.First(k => k.PosixUsername == "alice");
+
+            keySet = keySet.Remove(alice);
+
+            Assert.AreEqual(1, keySet.Keys.Count());
+            Assert.AreEqual(3, keySet.Items.Count());
+        }
+
         //---------------------------------------------------------------------
         // RemoveExpiredKeys.
         //---------------------------------------------------------------------
@@ -245,6 +287,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             Assert.AreEqual(2, keySet.Keys.Count());
             Assert.IsFalse(keySet.Keys.Any(k => k.PosixUsername == "joe"));
+        }
+
+        //---------------------------------------------------------------------
+        // ToString.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void ToString_WhenSetContainsUnrecognizedContent()
+        {
+            var metadata = new Metadata.ItemsData()
+            {
+                Key = MetadataAuthorizedPublicKeySet.MetadataKey,
+                Value = $"alice:ssh-rsa key alice\n" +
+                        $"junk\n" +
+                        $"junk:ssh-rsa phantomkey3 google-ssh {{\n" +
+                        $"moe:ssh-rsa key2 moe@example.com\"}}"
+            };
+
+            var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata);
+
+            Assert.AreEqual(metadata.Value, keySet.ToString());
         }
     }
 }

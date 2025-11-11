@@ -38,17 +38,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         public const string MetadataKey = "ssh-keys";
 
         /// <summary>
-        /// Keys, can be a mix of TMetadataAuthorizedPublicKey and
+        /// Items, can be a mix of TMetadataAuthorizedPublicKey and
         /// T:UnrecognizedKey.
         /// </summary>
-        private readonly ICollection<object> keys;
+        internal ICollection<object> Items { get; }
 
         /// <summary>
         /// Authorized keys.
         /// </summary>
         public IEnumerable<MetadataAuthorizedPublicKey> Keys
         {
-            get => this.keys.OfType<MetadataAuthorizedPublicKey>();
+            get => this.Items.OfType<MetadataAuthorizedPublicKey>();
         }
 
         //---------------------------------------------------------------------
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         private MetadataAuthorizedPublicKeySet(ICollection<object> keys)
         {
-            this.keys = keys;
+            this.Items = keys;
         }
 
         public static MetadataAuthorizedPublicKeySet FromMetadata(Metadata.ItemsData data)
@@ -72,8 +72,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 data.Value
                     .Split('\n')
                     .Where(line => !string.IsNullOrWhiteSpace(line))
-                    .Select(line => MetadataAuthorizedPublicKey.Parse(line.Trim())) // TODO: TryParse
-                    .ToList<object>());
+                    .Select(line => {
+                        if (MetadataAuthorizedPublicKey.TryParse(line, out var key))
+                        {
+                            return (object)key!;
+                        }
+                        else
+                        {
+                            //
+                            // Junk or a malformed key.
+                            //
+                            return new UnrecognizedContent(line);
+                        }
+                    }) 
+                    .ToList());
         }
 
         public static MetadataAuthorizedPublicKeySet FromMetadata(Metadata data)
@@ -90,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             }
         }
 
-        public MetadataAuthorizedPublicKeySet Add(MetadataAuthorizedPublicKey key) // TODO: check keeps unrecognized
+        public MetadataAuthorizedPublicKeySet Add(MetadataAuthorizedPublicKey key)
         {
             if (Contains(key))
             {
@@ -99,13 +111,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             else
             {
                 return new MetadataAuthorizedPublicKeySet(
-                    this.keys.ConcatItem(key).ToList());
+                    this.Items.ConcatItem(key).ToList());
             }
         }
 
         public MetadataAuthorizedPublicKeySet RemoveExpiredKeys()
         {
-            return new MetadataAuthorizedPublicKeySet(this.keys
+            return new MetadataAuthorizedPublicKeySet(this.Items
                 .Where(k =>
                 {
                     if (k is ManagedMetadataAuthorizedPublicKey managed)
@@ -125,19 +137,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public bool Contains(MetadataAuthorizedPublicKey key)
         {
-            return this.keys.Any(k => k.Equals(key));
+            return this.Items.Any(k => k.Equals(key));
         }
 
-        public MetadataAuthorizedPublicKeySet Remove(MetadataAuthorizedPublicKey key) // TODO: test keeps unrecognized keys
+        public MetadataAuthorizedPublicKeySet Remove(MetadataAuthorizedPublicKey key) 
         {
-            return new MetadataAuthorizedPublicKeySet(this.keys
+            return new MetadataAuthorizedPublicKeySet(this.Items
                 .Where(k => !k.Equals(key))
                 .ToList());
         }
 
-        public override string ToString() // TODO: test keeps unrecognized keys
+        public override string ToString() 
         {
-            return string.Join("\n", this.keys);
+            return string.Join("\n", this.Items);
         }
 
         //---------------------------------------------------------------------
@@ -145,16 +157,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         //---------------------------------------------------------------------
 
         /// <summary>
-        /// A key that is malformed or unrecognized for other reasons.
+        /// A line in the key set that can't be parsed as a key.
         /// </summary>
-        private class UnrecognizedKey
+        private class UnrecognizedContent
         {
             /// <summary>
             /// Raw, unparsed value.
             /// </summary>
             private string Value { get; }
 
-            public UnrecognizedKey(string value)
+            public UnrecognizedContent(string value)
             {
                 this.Value = value;
             }
@@ -172,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             public override bool Equals(object obj)
             {
                 return 
-                    obj is UnrecognizedKey key && 
+                    obj is UnrecognizedContent key && 
                     Equals(key.Value, this.Value);
             }
         }
