@@ -64,6 +64,7 @@ namespace Google.Solutions.Terminal.Controls
         private readonly DeferredCallback deferResize;
 
         private bool reconnectPending = false;
+        private int connectionAttempt = 0;
 
         private int keysSent = 0;
 
@@ -788,6 +789,7 @@ namespace Google.Solutions.Terminal.Controls
             // reconnects in sequence.
             //
             this.reconnectPending = false;
+            connectionAttempt++;
 
             if (this.EnableWebAuthnRedirection)
             {
@@ -849,18 +851,39 @@ namespace Google.Solutions.Terminal.Controls
             //     > 100 Off              On
             //     > 100 Off              Off
             // 
-            if (this.DesktopScaleFactor is var desktopFactor)
+            try
             {
-                this.clientExtendedSettings.set_Property(
-                    "DesktopScaleFactor",
-                    desktopFactor);
-            }
+                if (this.DesktopScaleFactor is var desktopFactor)
+                {
+                    this.clientExtendedSettings.set_Property(
+                        "DesktopScaleFactor",
+                        desktopFactor);
+                }
 
-            if (this.DeviceScaleFactor is var deviceFactor)
+                if (this.DeviceScaleFactor is var deviceFactor)
+                {
+                    this.clientExtendedSettings.set_Property(
+                        "DeviceScaleFactor",
+                        deviceFactor);
+                }
+            }
+            catch (COMException e) when (e.HResult == (int)HRESULT.E_FAIL)
             {
-                this.clientExtendedSettings.set_Property(
-                    "DeviceScaleFactor",
-                    deviceFactor);
+                //
+                // Applying the properties can fail spuriously. If that happens,
+                // rethrow with additional context information.
+                //
+                var exception = new InvalidOperationException(
+                    $"The display scaling settings are invalid or could not be applied",
+                    e);
+
+                exception.Data["Attempt"] = this.connectionAttempt;
+                exception.Data["Desktop"] = this.DesktopScaleFactor;
+                exception.Data["Device"] = this.DeviceScaleFactor;
+                exception.Data["Resize"] = this.EnableAutoResize;
+                exception.Data["Dpi"] = this.EnableDpiScaling;
+
+                throw exception;
             }
 
             //
