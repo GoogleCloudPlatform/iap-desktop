@@ -25,6 +25,7 @@ using Google.Solutions.Mvvm.Diagnostics;
 using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Platform;
 using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
@@ -69,6 +70,11 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
                 for (var ex = this.exception; ex != null; ex = ex.InnerException)
                 {
                     text.Append(ex.ToString(ExceptionFormatOptions.IncludeOffsets));
+                    foreach (DictionaryEntry dataItem in ex.Data)
+                    {
+                        text.Append($"\n   {dataItem.Key}: {dataItem.Value}");
+                    }
+
                     text.Append("\n\n");
                 }
 

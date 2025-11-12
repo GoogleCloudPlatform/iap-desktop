@@ -873,16 +873,17 @@ namespace Google.Solutions.Terminal.Controls
                 // Applying the properties can fail spuriously. If that happens,
                 // rethrow with additional context information.
                 //
-                throw new InvalidOperationException(
+                var exception = new InvalidOperationException(
                     $"The display scaling settings are invalid or could not be applied",
-                    new InvalidOperationException(
-                        "Details: " +
-                        $"Attempt={this.connectionAttempt}, " +
-                        $"Desktop={this.DesktopScaleFactor}, " +
-                        $"Device={this.DeviceScaleFactor}, " +
-                        $"Resize={this.EnableAutoResize}, " +
-                        $"Dpi={this.EnableDpiScaling}", e));
-                
+                    e);
+
+                exception.Data["Attempt"] = this.connectionAttempt;
+                exception.Data["Desktop"] = this.DesktopScaleFactor;
+                exception.Data["Device"] = this.DeviceScaleFactor;
+                exception.Data["Resize"] = this.EnableAutoResize;
+                exception.Data["Dpi"] = this.EnableDpiScaling;
+
+                throw exception;
             }
 
             //
