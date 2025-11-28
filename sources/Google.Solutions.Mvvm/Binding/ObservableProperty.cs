@@ -117,21 +117,17 @@ namespace Google.Solutions.Mvvm.Binding
             this.viewModel = viewModel.ExpectNotNull(nameof(viewModel));
         }
 
-        private ISynchronizeInvoke? Invoker
-        {
-            get => (ISynchronizeInvoke?)this.viewModel.View;
-        }
 
         public override void RaisePropertyChange()
         {
-            if (this.Invoker is ISynchronizeInvoke invoker &&
+            if (this.viewModel.View is ISynchronizeInvoke invoker &&
                 invoker.InvokeRequired)
             {
                 //
                 // We're on the wrong thread (not the GUI thread,
                 // presumably).
                 //
-                this.Invoker.BeginInvoke(
+                invoker.BeginInvoke(
                     (Action)(() => base.RaisePropertyChange()),
                     null);
             }
