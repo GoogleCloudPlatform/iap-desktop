@@ -312,7 +312,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                     else
                     {
                         //
-                        // No valid credentials present, request user to authroize
+                        // No valid credentials present, request user to authorize
                         // by showing the "Sign In" button.
                         //
                         this.IsSignOnControlVisible.Value = true;

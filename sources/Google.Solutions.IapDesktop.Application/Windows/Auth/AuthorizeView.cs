@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -166,12 +167,23 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                 // NB. Wait until handle has been created so that BeginInvoke
                 // calls work properly.
                 //
-                this.HandleCreated += (_, __) => viewModel
-                    .TryLoadExistingAuthorizationCommand
-                    .ExecuteAsync(CancellationToken.None)
-                    .ContinueWith(
-                        t => Debug.Assert(false, "Should never throw an exception"),
-                        TaskContinuationOptions.OnlyOnFaulted);
+                this.HandleCreated += onHandleCreated;
+
+                void onHandleCreated(object sender, EventArgs args)
+                {
+                    //
+                    // Prevent another invocation (although that should
+                    // not happen under normal circumstances).
+                    //
+                    this.HandleCreated -= onHandleCreated;
+
+                    _ = viewModel
+                        .TryLoadExistingAuthorizationCommand
+                        .ExecuteAsync(CancellationToken.None)
+                        .ContinueWith(
+                            t => Debug.Assert(false, "Should never throw an exception"),
+                            TaskContinuationOptions.OnlyOnFaulted);
+                };
             }
         }
     }

@@ -117,50 +117,15 @@ namespace Google.Solutions.Mvvm.Binding
             this.viewModel = viewModel.ExpectNotNull(nameof(viewModel));
         }
 
-        internal ISynchronizeInvoke Invoker
+        private ISynchronizeInvoke? Invoker
         {
-            get
-            {
-                Debug.Assert(this.viewModel.View != null);
-                Debug.Assert(this.viewModel.View is ISynchronizeInvoke);
-
-                if (this.viewModel.View == null)
-                {
-                    throw new InvalidOperationException(
-                        "View model is not bound to a view");
-                }
-
-                return ((ISynchronizeInvoke)this.viewModel.View);
-            }
-        }
-
-        /// <summary>
-        /// Get or set the value, raises a change event.
-        /// </summary>
-        public override T Value
-        {
-            get
-            {
-                //
-                // NB. The value might be read after the view model has been
-                // detached from the view. Therefore, don't even try to
-                // acuire a lock (which isn't necessary anyway).
-                //
-                return base.Value;
-            }
-            set
-            {
-                lock (this.Invoker)
-                {
-                    base.Value = value;
-                    RaisePropertyChange();
-                }
-            }
+            get => (ISynchronizeInvoke?)this.viewModel.View;
         }
 
         public override void RaisePropertyChange()
         {
-            if (this.Invoker.InvokeRequired)
+            if (this.Invoker is ISynchronizeInvoke invoker &&
+                invoker.InvokeRequired)
             {
                 //
                 // We're on the wrong thread (not the GUI thread,
