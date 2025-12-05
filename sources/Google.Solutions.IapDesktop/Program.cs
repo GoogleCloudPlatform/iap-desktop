@@ -70,6 +70,7 @@ using Google.Solutions.Settings.Collection;
 using Google.Solutions.Ssh;
 using Google.Solutions.Terminal;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -809,6 +810,8 @@ namespace Google.Solutions.IapDesktop
             //
             IsLoggingEnabled = false;
 
+            e = e.Unwrap();
+
             TelemetryLog.Current.Write(
                 "app_crash",
                 new Dictionary<string, object>
@@ -817,9 +820,21 @@ namespace Google.Solutions.IapDesktop
                     // Only include a base set of information that's
                     // safe to not contain any PII.
                     //
+                    // NB. GA crops values above a certain length.
+                    //
                     { "error", e.GetType().Name },
                     { "cause",  e.InnerException?.GetType().Name ?? string.Empty },
-                    { "location", e.ToString(ExceptionFormatOptions.Compact) }
+                    { "location", e.ToString(ExceptionFormatOptions.Compact) },
+
+                    //
+                    // Extra details for selected exceptions.
+                    //
+                    { "detail", (e as ObjectDisposedException)?.ObjectName ?? string.Empty},
+                    { "data", string.Join(
+                        ";", 
+                        e.Data
+                            .OfType<DictionaryEntry>()
+                            .Select(e => $"{e.Key}={e.Value}")) }
                 });
 
             //
