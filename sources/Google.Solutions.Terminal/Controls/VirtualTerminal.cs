@@ -69,7 +69,7 @@ namespace Google.Solutions.Terminal.Controls
             InitializeComponent();
 
             //
-            // Adjust scrollbar withdt to match system settings.
+            // Adjust scrollbar to match system settings.
             //
             this.scrollBar.Width = SystemInformation.VerticalScrollBarWidth;
             this.scrollBar.Location = new Point(this.Width - this.scrollBar.Width, 0);

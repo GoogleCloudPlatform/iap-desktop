@@ -74,7 +74,7 @@ namespace Google.Solutions.Terminal.Controls
         /// <summary>
         /// Default color scheme, equivalent to the "Campbell" theme
         /// used by the Windows Terminal.
-        /// <see cref="https://learn.microsoft.com/en-us/windows/terminal/customize-settings/color-schemes"/>
+        /// <see href="https://learn.microsoft.com/en-us/windows/terminal/customize-settings/color-schemes"/>
         /// </summary>
         public static VirtualTerminalColors Default
         {
