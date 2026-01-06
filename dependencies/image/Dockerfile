@@ -146,8 +146,6 @@ RUN Add-Type -AssemblyName "System.IO.Compression.FileSystem"; `
     $OldPath = [Environment]::GetEnvironmentVariable(\"PATH\", \"Machine\"); `
     [Environment]::SetEnvironmentVariable(\"PATH\", $OldPath + \";${ExtractedPackage}\bin\", \"Machine\"); `
     $env:PATH = [Environment]::GetEnvironmentVariable('PATH', 'Machine'); `
-    gcloud components install gsutil
-    #as gcloud is already installed no need to install gsutil again
 
 #
 # Install cygwin and packages
