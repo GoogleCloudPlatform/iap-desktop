@@ -67,7 +67,7 @@ publish: $(PACKAGES)
     !nuget add $** -Source $(MAKEDIR)\NuGetPackages
 
 !if ( "$(KOKORO_BUILD_NUMBER)" != "" ) 
-    gsutil cp -r NuGetPackages/* gs://$(PACKAGES_BUCKET)/NuGetPackages/
+    gcloud storage cp --recursive NuGetPackages/* gs://$(PACKAGES_BUCKET)/NuGetPackages/
 !endif
 
 clean distclean: $(DIRS)
