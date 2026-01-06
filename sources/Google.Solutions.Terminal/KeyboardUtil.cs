@@ -55,13 +55,29 @@ namespace Google.Solutions.Terminal
                 WParam = new IntPtr(virtualKeyCode),
             };
 
-            yield return new Message()
+            var hkl = NativeMethods.GetKeyboardLayout(0);
+            var buffer = new StringBuilder(2);
+            if (NativeMethods.ToUnicodeEx(
+                virtualKeyCode,
+                scanCode,
+                keyboardState,
+                buffer,
+                buffer.Capacity,
+                0,
+                hkl) > 0)
             {
-                HWnd = hwnd,
-                Msg = (int)WindowMessage.WM_CHAR,
-                LParam = new IntPtr((scanCode & 0xFF) << 16),
-                WParam = new IntPtr(virtualKeyCode),
-            };
+                //
+                // NB. ToUnicodeEx can produce multiple characters for dead keys.
+                //     We're ignoring that for simplicity as this is for testing.
+                //
+                yield return new Message()
+                {
+                    HWnd = hwnd,
+                    Msg = (int)WindowMessage.WM_CHAR,
+                    LParam = new IntPtr((scanCode & 0xFF) << 16),
+                    WParam = new IntPtr(buffer[0]),
+                };
+            }
 
             yield return new Message()
             {

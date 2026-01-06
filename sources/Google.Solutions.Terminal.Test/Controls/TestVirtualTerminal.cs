@@ -98,11 +98,11 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         //---------------------------------------------------------------------
-        // UserInput - key handling.
+        // SimulateKey
         //---------------------------------------------------------------------
 
         [Test]
-        public void UserInput_WhenCharKey_ThenTerminalSendsData()
+        public void SimulateKey_CharKey()
         {
             using (var form = TerminalForm.Create())
             {
@@ -110,7 +110,7 @@ namespace Google.Solutions.Terminal.Test.Controls
 
                 VirtualTerminalAssert.RaisesUserInputEvent(
                     form.VirtualTerminal,
-                    "A",
+                    "a",
                     () => form.VirtualTerminal.SimulateKey(Keys.A));
 
                 form.Close();
@@ -118,7 +118,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void UserInput_WhenEnterKey_ThenTerminalSendsData()
+        public void SimulateKey_EnterKey()
         {
             using (var form = TerminalForm.Create())
             {
@@ -134,7 +134,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void UserInput_WhenLeftKey_ThenTerminalSendsData()
+        public void SimulateKey_LeftKey()
         {
             using (var form = TerminalForm.Create())
             {
@@ -142,7 +142,7 @@ namespace Google.Solutions.Terminal.Test.Controls
 
                 VirtualTerminalAssert.RaisesUserInputEvent(
                     form.VirtualTerminal,
-                    "\u001b[D\u001b[D",
+                    "\u001b[D",
                     () => form.VirtualTerminal.SimulateKey(Keys.Left));
 
                 form.Close();
@@ -212,7 +212,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void ForeColor_WhenChanged_ThenRaisesEvent()
+        public void ForeColor_WhenChanged()
         {
             using (var form = TerminalForm.Create())
             {
@@ -229,7 +229,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void BackColor_WhenChanged_ThenRaisesEvent()
+        public void BackColor_WhenChanged()
         {
             using (var form = TerminalForm.Create())
             {
@@ -246,7 +246,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void Font_WhenChanged_ThenRaisesEvent()
+        public void Font_WhenChanged()
         {
             using (var form = TerminalForm.Create())
             {
@@ -263,7 +263,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void SelectionBackColor_WhenChanged_ThenRaisesEvent()
+        public void SelectionBackColor_WhenChanged()
         {
             using (var form = TerminalForm.Create())
             {
@@ -280,7 +280,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void SelectionBackgroundAlpha_WhenChanged_ThenRaisesEvent()
+        public void SelectionBackgroundAlpha_WhenChanged()
         {
             using (var form = TerminalForm.Create())
             {
@@ -297,7 +297,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void CaretStyle_WhenChanged_ThenRaisesEvent()
+        public void CaretStyle_WhenChanged()
         {
             using (var form = TerminalForm.Create())
             {
@@ -332,7 +332,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         }
 
         [Test]
-        public void Dimensions_WhenMinimized_ThenDimensionsAreKept()
+        public void Dimensions_WhenMinimized_KeepsDimensions()
         {
             using (var form = TerminalForm.Create())
             {
