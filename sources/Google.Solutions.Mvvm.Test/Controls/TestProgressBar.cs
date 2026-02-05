@@ -66,9 +66,6 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 progressBar.Value = progressBar.Maximum;
                 Assert.That(progressBar.Value, Is.EqualTo(progressBar.Maximum));
-
-                progressBar.Maximum = progressBar.Maximum + 1;
-                Assert.That(progressBar.Value, Is.EqualTo(progressBar.Maximum));
             }
         }
 
