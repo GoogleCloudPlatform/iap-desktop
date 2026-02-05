@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 new Mock<IBrowser>().Object);
 
             var time = DateTime.Now;
-            Assert.IsTrue(command.IsAutomatedCheckDue(time));
+            Assert.That(command.IsAutomatedCheckDue(time), Is.True);
 
             policy.Verify(p => p.IsUpdateCheckDue(time), Times.Once);
         }
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 new Mock<ITaskDialog>().Object,
                 new Mock<IBrowser>().Object);
 
-            Assert.AreEqual(ReleaseFeedOptions.IncludeCanaryReleases, command.FeedOptions);
+            Assert.That(command.FeedOptions, Is.EqualTo(ReleaseFeedOptions.IncludeCanaryReleases));
         }
 
         [Test]
@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 new Mock<ITaskDialog>().Object,
                 new Mock<IBrowser>().Object);
 
-            Assert.AreEqual(ReleaseFeedOptions.None, command.FeedOptions);
+            Assert.That(command.FeedOptions, Is.EqualTo(ReleaseFeedOptions.None));
         }
 
         //---------------------------------------------------------------------
@@ -439,7 +439,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
 
             command.PromptForAction(release.Object);
 
-            Assert.AreEqual(release.Object.TagVersion, command.LastSurveyVersion);
+            Assert.That(command.LastSurveyVersion, Is.EqualTo(release.Object.TagVersion));
         }
 
         //---------------------------------------------------------------------

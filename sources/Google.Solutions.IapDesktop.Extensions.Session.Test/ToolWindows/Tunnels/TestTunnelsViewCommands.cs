@@ -42,9 +42,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Tunnel
             var commands = new TunnelsViewCommands(
                 new Mock<IToolWindowHost>().Object);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.WindowMenuOpen.QueryState(context.Object));
+            Assert.That(
+                commands.WindowMenuOpen.QueryState(context.Object), Is.EqualTo(CommandState.Enabled));
         }
     }
 }

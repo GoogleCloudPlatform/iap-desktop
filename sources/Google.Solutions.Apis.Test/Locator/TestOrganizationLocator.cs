@@ -40,26 +40,26 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathIsValid_TryParseReturnsObject()
         {
-            Assert.IsTrue(OrganizationLocator.TryParse(
+            Assert.That(OrganizationLocator.TryParse(
                 "organizations/12345678900001",
-                out var ref1));
+                out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
-            Assert.AreEqual("organizations", ref1!.ResourceType);
-            Assert.AreEqual(12345678900001, ref1.Id);
+            Assert.That(ref1, Is.Not.Null);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("organizations"));
+            Assert.That(ref1.Id, Is.EqualTo(12345678900001));
         }
 
         [Test]
         public void TryParse_WhenPathLacksOrganization_TryParseThrowsArgumentException()
         {
-            Assert.IsFalse(OrganizationLocator.TryParse("/1", out var _));
+            Assert.That(OrganizationLocator.TryParse("/1", out var _), Is.False);
         }
 
         [Test]
         public void TryParse_WhenPathInvalid_TryParseThrowsArgumentException(
             [Values("x/1", "organizations/", "organizations/0xxx")] string path)
         {
-            Assert.IsFalse(OrganizationLocator.TryParse(path, out var _));
+            Assert.That(OrganizationLocator.TryParse(path, out var _), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -70,9 +70,9 @@ namespace Google.Solutions.Apis.Test.Locator
         public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
         {
             var path = "organizations/12345678900001";
-            Assert.IsTrue(OrganizationLocator.TryParse(path, out var locator));
+            Assert.That(OrganizationLocator.TryParse(path, out var locator), Is.True);
 
-            Assert.AreEqual(path, locator!.ToString());
+            Assert.That(locator!.ToString(), Is.EqualTo(path));
         }
     }
 }

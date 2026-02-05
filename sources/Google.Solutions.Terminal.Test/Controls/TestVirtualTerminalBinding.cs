@@ -111,7 +111,7 @@ namespace Google.Solutions.Terminal.Test.Controls
 
                 virtualTerminal.SimulateSend("data");
 
-                Assert.IsNotNull(exception);
+                Assert.That(exception, Is.Not.Null);
                 Assert.IsInstanceOf<ArgumentException>(exception);
             }
         }
@@ -178,7 +178,7 @@ namespace Google.Solutions.Terminal.Test.Controls
 
                 virtualTerminal.Dimensions = new PseudoTerminalSize(81, 25);
 
-                Assert.IsNotNull(exception);
+                Assert.That(exception, Is.Not.Null);
                 Assert.IsInstanceOf<ArgumentException>(exception);
             }
         }
@@ -203,7 +203,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                     d => d.FatalError += null,
                     new PseudoTerminalErrorEventArgs(new ArgumentException()));
 
-                Assert.IsNotNull(exception);
+                Assert.That(exception, Is.Not.Null);
                 Assert.IsInstanceOf<ArgumentException>(exception);
             }
         }
@@ -226,7 +226,7 @@ namespace Google.Solutions.Terminal.Test.Controls
 
                 device.Raise(d => d.Disconnected += null, EventArgs.Empty);
 
-                Assert.IsTrue(deviceClosedEventRaised);
+                Assert.That(deviceClosedEventRaised, Is.True);
             }
         }
 
@@ -248,7 +248,7 @@ namespace Google.Solutions.Terminal.Test.Controls
 
                 device.Raise(d => d.OutputAvailable += null, new PseudoTerminalDataEventArgs("data"));
 
-                Assert.AreEqual("data", data);
+                Assert.That(data, Is.EqualTo("data"));
             }
         }
     }

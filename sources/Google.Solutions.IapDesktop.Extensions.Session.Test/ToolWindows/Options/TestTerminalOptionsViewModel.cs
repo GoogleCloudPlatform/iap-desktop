@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsTrue(viewModel.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value);
+            Assert.That(viewModel.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value, Is.True);
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value);
+            Assert.That(viewModel.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value, Is.False);
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value);
+            Assert.That(settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value, Is.False);
         }
 
         [Test]
@@ -90,12 +90,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var settingsRepository = CreateTerminalSettingsRepository();
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             viewModel.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value =
                 !viewModel.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsTrue(viewModel.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value);
+            Assert.That(viewModel.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value, Is.True);
         }
 
         [Test]
@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value);
+            Assert.That(viewModel.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value, Is.False);
         }
 
         [Test]
@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value);
+            Assert.That(settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value, Is.False);
         }
 
         [Test]
@@ -150,12 +150,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var settingsRepository = CreateTerminalSettingsRepository();
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             viewModel.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value =
                 !viewModel.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsTrue(viewModel.IsQuoteConvertionOnPasteEnabled.Value);
+            Assert.That(viewModel.IsQuoteConvertionOnPasteEnabled.Value, Is.True);
         }
 
         [Test]
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsQuoteConvertionOnPasteEnabled.Value);
+            Assert.That(viewModel.IsQuoteConvertionOnPasteEnabled.Value, Is.False);
         }
 
         [Test]
@@ -201,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsQuoteConvertionOnPasteEnabled.Value);
+            Assert.That(settings.IsQuoteConvertionOnPasteEnabled.Value, Is.False);
         }
 
         [Test]
@@ -210,12 +210,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var settingsRepository = CreateTerminalSettingsRepository();
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             viewModel.IsQuoteConvertionOnPasteEnabled.Value =
                 !viewModel.IsQuoteConvertionOnPasteEnabled.Value;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsTrue(viewModel.IsBracketedPasteEnabled.Value);
+            Assert.That(viewModel.IsBracketedPasteEnabled.Value, Is.True);
         }
 
         [Test]
@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsBracketedPasteEnabled.Value);
+            Assert.That(viewModel.IsBracketedPasteEnabled.Value, Is.False);
         }
 
         [Test]
@@ -261,7 +261,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsBracketedPasteEnabled.Value);
+            Assert.That(settings.IsBracketedPasteEnabled.Value, Is.False);
         }
 
         [Test]
@@ -270,12 +270,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var settingsRepository = CreateTerminalSettingsRepository();
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             viewModel.IsBracketedPasteEnabled.Value =
                 !viewModel.IsBracketedPasteEnabled.Value;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -292,7 +292,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsTrue(viewModel.IsScrollingUsingCtrlHomeEndEnabled.Value);
+            Assert.That(viewModel.IsScrollingUsingCtrlHomeEndEnabled.Value, Is.True);
         }
 
         [Test]
@@ -305,7 +305,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsScrollingUsingCtrlHomeEndEnabled.Value);
+            Assert.That(viewModel.IsScrollingUsingCtrlHomeEndEnabled.Value, Is.False);
         }
 
         [Test]
@@ -321,7 +321,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
+            Assert.That(settings.IsScrollingUsingCtrlHomeEndEnabled.Value, Is.False);
         }
 
         [Test]
@@ -330,12 +330,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var settingsRepository = CreateTerminalSettingsRepository();
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             viewModel.IsScrollingUsingCtrlHomeEndEnabled.Value =
                 !viewModel.IsScrollingUsingCtrlHomeEndEnabled.Value;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -352,7 +352,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsTrue(viewModel.IsScrollingUsingCtrlPageUpDownEnabled.Value);
+            Assert.That(viewModel.IsScrollingUsingCtrlPageUpDownEnabled.Value, Is.True);
         }
 
         [Test]
@@ -365,7 +365,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsScrollingUsingCtrlPageUpDownEnabled.Value);
+            Assert.That(viewModel.IsScrollingUsingCtrlPageUpDownEnabled.Value, Is.False);
         }
 
         [Test]
@@ -381,7 +381,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsScrollingUsingCtrlPageUpDownEnabled.Value);
+            Assert.That(settings.IsScrollingUsingCtrlPageUpDownEnabled.Value, Is.False);
         }
 
         [Test]
@@ -390,12 +390,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var settingsRepository = CreateTerminalSettingsRepository();
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             viewModel.IsScrollingUsingCtrlPageUpDownEnabled.Value =
                 !viewModel.IsScrollingUsingCtrlPageUpDownEnabled.Value;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -415,8 +415,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.AreEqual(font.Name, viewModel.TerminalFont.Value.Name);
-            Assert.AreEqual(font.Size, viewModel.TerminalFont.Value.Size);
+            Assert.That(viewModel.TerminalFont.Value.Name, Is.EqualTo(font.Name));
+            Assert.That(viewModel.TerminalFont.Value.Size, Is.EqualTo(font.Size));
         }
 
         [Test]
@@ -427,15 +427,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
             viewModel.TerminalFont.Value = font;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
             await viewModel.ApplyChangesAsync();
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             var settings = settingsRepository.GetSettings();
-            Assert.AreEqual(font.Name, settings.FontFamily.Value);
-            Assert.AreEqual(
-                TerminalSettings.DwordFromFontSize(font.Size),
-                settings.FontSizeAsDword.Value);
+            Assert.That(settings.FontFamily.Value, Is.EqualTo(font.Name));
+            Assert.That(
+                settings.FontSizeAsDword.Value, Is.EqualTo(TerminalSettings.DwordFromFontSize(font.Size)));
         }
 
         //---------------------------------------------------------------------
@@ -454,9 +453,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.AreEqual(color.R, viewModel.TerminalForegroundColor.Value.R);
-            Assert.AreEqual(color.G, viewModel.TerminalForegroundColor.Value.G);
-            Assert.AreEqual(color.B, viewModel.TerminalForegroundColor.Value.B);
+            Assert.That(viewModel.TerminalForegroundColor.Value.R, Is.EqualTo(color.R));
+            Assert.That(viewModel.TerminalForegroundColor.Value.G, Is.EqualTo(color.G));
+            Assert.That(viewModel.TerminalForegroundColor.Value.B, Is.EqualTo(color.B));
         }
 
         [Test]
@@ -468,12 +467,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
             viewModel.TerminalForegroundColor.Value = color;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
             await viewModel.ApplyChangesAsync();
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             var settings = settingsRepository.GetSettings();
-            Assert.AreEqual(color.ToArgb(), settings.ForegroundColorArgb.Value);
+            Assert.That(settings.ForegroundColorArgb.Value, Is.EqualTo(color.ToArgb()));
         }
 
         //---------------------------------------------------------------------
@@ -492,9 +491,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.AreEqual(color.R, viewModel.TerminalBackgroundColor.Value.R);
-            Assert.AreEqual(color.G, viewModel.TerminalBackgroundColor.Value.G);
-            Assert.AreEqual(color.B, viewModel.TerminalBackgroundColor.Value.B);
+            Assert.That(viewModel.TerminalBackgroundColor.Value.R, Is.EqualTo(color.R));
+            Assert.That(viewModel.TerminalBackgroundColor.Value.G, Is.EqualTo(color.G));
+            Assert.That(viewModel.TerminalBackgroundColor.Value.B, Is.EqualTo(color.B));
         }
 
         [Test]
@@ -506,12 +505,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
             viewModel.TerminalBackgroundColor.Value = color;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
             await viewModel.ApplyChangesAsync();
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             var settings = settingsRepository.GetSettings();
-            Assert.AreEqual(color.ToArgb(), settings.BackgroundColorArgb.Value);
+            Assert.That(settings.BackgroundColorArgb.Value, Is.EqualTo(color.ToArgb()));
         }
 
         //---------------------------------------------------------------------
@@ -528,9 +527,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.AreEqual(
-                VirtualTerminal.CaretStyle.SteadyBlock,
-                viewModel.CaretStyle.Value);
+            Assert.That(
+                viewModel.CaretStyle.Value, Is.EqualTo(VirtualTerminal.CaretStyle.SteadyBlock));
         }
 
         [Test]
@@ -546,9 +544,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.AreEqual(
-                VirtualTerminal.CaretStyle.BlinkingBlock,
-                viewModel.CaretStyle.Value);
+            Assert.That(
+                viewModel.CaretStyle.Value, Is.EqualTo(VirtualTerminal.CaretStyle.BlinkingBlock));
         }
 
         [Test]
@@ -557,11 +554,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var settingsRepository = CreateTerminalSettingsRepository();
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             viewModel.CaretStyle.Value = VirtualTerminal.CaretStyle.BlinkingBlock;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
     }
 }

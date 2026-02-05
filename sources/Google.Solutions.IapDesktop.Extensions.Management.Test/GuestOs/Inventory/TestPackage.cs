@@ -35,13 +35,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                 "architecture",
                 "version");
 
-            Assert.AreEqual("Package", package.PackageType);
-            Assert.AreEqual("name", package.PackageId);
+            Assert.That(package.PackageType, Is.EqualTo("Package"));
+            Assert.That(package.PackageId, Is.EqualTo("name"));
             Assert.IsNull(package.Description);
-            Assert.AreEqual("version", package.Version);
+            Assert.That(package.Version, Is.EqualTo("version"));
             Assert.IsNull(package.Weblink);
             Assert.IsNull(package.InstalledOn);
-            Assert.AreEqual(PackageCriticality.NonCritical, package.Criticality);
+            Assert.That(package.Criticality, Is.EqualTo(PackageCriticality.NonCritical));
         }
 
         [Test]
@@ -52,13 +52,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                 null,
                 null);
 
-            Assert.AreEqual("Package", package.PackageType);
+            Assert.That(package.PackageType, Is.EqualTo("Package"));
             Assert.IsNull(package.PackageId);
             Assert.IsNull(package.Description);
             Assert.IsNull(package.Version);
             Assert.IsNull(package.Weblink);
             Assert.IsNull(package.InstalledOn);
-            Assert.AreEqual(PackageCriticality.NonCritical, package.Criticality);
+            Assert.That(package.Criticality, Is.EqualTo(PackageCriticality.NonCritical));
         }
     }
 }

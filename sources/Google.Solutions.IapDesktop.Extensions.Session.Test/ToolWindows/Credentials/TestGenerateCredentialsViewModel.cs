@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 Username = string.Empty
             };
 
-            Assert.IsFalse(viewModel.IsUsernameReserved);
+            Assert.That(viewModel.IsUsernameReserved, Is.False);
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 Username = "i am bob"
             };
 
-            Assert.IsFalse(viewModel.IsUsernameReserved);
+            Assert.That(viewModel.IsUsernameReserved, Is.False);
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 Username = "GUEST"
             };
 
-            Assert.IsTrue(viewModel.IsUsernameReserved);
+            Assert.That(viewModel.IsUsernameReserved, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 Username = string.Empty
             };
 
-            Assert.IsFalse(viewModel.IsOkButtonEnabled);
+            Assert.That(viewModel.IsOkButtonEnabled, Is.False);
         }
 
         [Test]
@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 Username = "i am bob"
             };
 
-            Assert.IsTrue(viewModel.IsOkButtonEnabled);
+            Assert.That(viewModel.IsOkButtonEnabled, Is.True);
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Creden
                 Username = "GUEST"
             };
 
-            Assert.IsFalse(viewModel.IsOkButtonEnabled);
+            Assert.That(viewModel.IsOkButtonEnabled, Is.False);
         }
     }
 }

@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var metadata = new Metadata();
 
-            CollectionAssert.IsEmpty(MetadataAuthorizedPublicKeySet.FromMetadata(metadata).Keys);
+            Assert.That(MetadataAuthorizedPublicKeySet.FromMetadata(metadata).Keys, Is.Empty);
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 }
             };
 
-            CollectionAssert.IsEmpty(MetadataAuthorizedPublicKeySet.FromMetadata(metadata).Keys);
+            Assert.That(MetadataAuthorizedPublicKeySet.FromMetadata(metadata).Keys, Is.Empty);
         }
 
         [Test]
@@ -82,8 +82,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             };
 
             var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata);
-            Assert.AreEqual(0, keySet.Keys.Count());
-            Assert.AreEqual(1, keySet.Items.Count());
+            Assert.That(keySet.Keys.Count(), Is.EqualTo(0));
+            Assert.That(keySet.Items.Count(), Is.EqualTo(1));
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 Value = " "
             };
 
-            CollectionAssert.IsEmpty(MetadataAuthorizedPublicKeySet.FromMetadata(metadata).Keys);
+            Assert.That(MetadataAuthorizedPublicKeySet.FromMetadata(metadata).Keys, Is.Empty);
         }
 
         [Test]
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             };
 
             var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata);
-            Assert.AreEqual(2, keySet.Keys.Count());
+            Assert.That(keySet.Keys.Count(), Is.EqualTo(2));
         }
 
         [Test]
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             };
 
             var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata);
-            Assert.AreEqual(4, keySet.Keys.Count());
+            Assert.That(keySet.Keys.Count(), Is.EqualTo(4));
         }
 
         //---------------------------------------------------------------------
@@ -145,9 +145,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata);
 
-            Assert.AreSame(
-                keySet,
-                keySet.Add(MetadataAuthorizedPublicKey.Parse("alice:ssh-rsa key notalice")));
+            Assert.That(
+                keySet.Add(MetadataAuthorizedPublicKey.Parse("alice:ssh-rsa key notalice")), Is.SameAs(keySet));
         }
 
         [Test]
@@ -163,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .Add(MetadataAuthorizedPublicKey.Parse("bob:ssh-rsa key notalice"))
                 .Add(MetadataAuthorizedPublicKey.Parse("bob:ssh-rsa key2 bob"));
 
-            Assert.AreEqual(3, keySet.Keys.Count());
+            Assert.That(keySet.Keys.Count(), Is.EqualTo(3));
         }
 
         [Test]
@@ -182,9 +181,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .RemoveExpiredKeys()
                 .Add(MetadataAuthorizedPublicKey.Parse("bob:ssh-rsa key2 bob"));
 
-            Assert.AreEqual(5, keySet.Keys.Count());
-            Assert.AreEqual("", keySet.Keys.First(k => k.PublicKey == "phantomkey2").PosixUsername);
-            Assert.AreEqual("", keySet.Keys.First(k => k.PublicKey == "phantomkey3").PosixUsername);
+            Assert.That(keySet.Keys.Count(), Is.EqualTo(5));
+            Assert.That(keySet.Keys.First(k => k.PublicKey == "phantomkey2").PosixUsername, Is.EqualTo(""));
+            Assert.That(keySet.Keys.First(k => k.PublicKey == "phantomkey3").PosixUsername, Is.EqualTo(""));
         }
 
         [Test]
@@ -203,8 +202,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .RemoveExpiredKeys()
                 .Add(MetadataAuthorizedPublicKey.Parse("bob:ssh-rsa key2 bob"));
 
-            Assert.AreEqual(3, keySet.Keys.Count());
-            Assert.AreEqual(5, keySet.Items.Count());
+            Assert.That(keySet.Keys.Count(), Is.EqualTo(3));
+            Assert.That(keySet.Items.Count(), Is.EqualTo(5));
         }
 
         //---------------------------------------------------------------------
@@ -226,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             var newKeySet = keySet.Remove(keyToRemove);
 
-            CollectionAssert.AreEquivalent(keySet.Keys, newKeySet.Keys);
+            Assert.That(newKeySet.Keys, Is.EquivalentTo(keySet.Keys));
         }
 
         [Test]
@@ -243,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 "alice@example.com");
 
             var newKeySet = keySet.Remove(keyToRemove);
-            Assert.AreEqual(1, newKeySet.Keys.Count());
+            Assert.That(newKeySet.Keys.Count(), Is.EqualTo(1));
         }
 
         [Test]
@@ -263,8 +262,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             keySet = keySet.Remove(alice);
 
-            Assert.AreEqual(1, keySet.Keys.Count());
-            Assert.AreEqual(3, keySet.Items.Count());
+            Assert.That(keySet.Keys.Count(), Is.EqualTo(1));
+            Assert.That(keySet.Items.Count(), Is.EqualTo(3));
         }
 
         //---------------------------------------------------------------------
@@ -285,8 +284,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata)
                 .RemoveExpiredKeys();
 
-            Assert.AreEqual(2, keySet.Keys.Count());
-            Assert.IsFalse(keySet.Keys.Any(k => k.PosixUsername == "joe"));
+            Assert.That(keySet.Keys.Count(), Is.EqualTo(2));
+            Assert.That(keySet.Keys.Any(k => k.PosixUsername == "joe"), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -307,7 +306,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata);
 
-            Assert.AreEqual(metadata.Value, keySet.ToString());
+            Assert.That(keySet.ToString(), Is.EqualTo(metadata.Value));
         }
     }
 }

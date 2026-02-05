@@ -88,7 +88,7 @@ namespace Google.Solutions.Apis.Test.Client
                 .CreateHttpClient(new Google.Apis.Http.CreateHttpClientArgs())
                 .GetInnerHandler();
 
-            Assert.IsTrue(handler.UseProxy);
+            Assert.That(handler.UseProxy, Is.True);
         }
 
         [Test]
@@ -108,7 +108,7 @@ namespace Google.Solutions.Apis.Test.Client
                 .CreateHttpClient(new Google.Apis.Http.CreateHttpClientArgs())
                 .GetInnerHandler();
 
-            Assert.IsFalse(handler.UseProxy);
+            Assert.That(handler.UseProxy, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -132,7 +132,7 @@ namespace Google.Solutions.Apis.Test.Client
                 .CreateHttpClient(new Google.Apis.Http.CreateHttpClientArgs())
                 .GetInnerHandler();
 
-            Assert.AreEqual(0, handler.ClientCertificates.Count);
+            Assert.That(handler.ClientCertificates.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -152,7 +152,7 @@ namespace Google.Solutions.Apis.Test.Client
                 .CreateHttpClient(new Google.Apis.Http.CreateHttpClientArgs())
                 .GetInnerHandler();
 
-            Assert.AreEqual(1, handler.ClientCertificates.Count);
+            Assert.That(handler.ClientCertificates.Count, Is.EqualTo(1));
         }
     }
 }

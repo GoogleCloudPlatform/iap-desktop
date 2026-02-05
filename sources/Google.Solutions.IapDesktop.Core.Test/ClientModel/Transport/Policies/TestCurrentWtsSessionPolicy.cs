@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         [Test]
         public void ToString_ReturnsName()
         {
-            Assert.AreEqual("Current WTS session", new CurrentWtsSessionPolicy().ToString());
+            Assert.That(new CurrentWtsSessionPolicy().ToString(), Is.EqualTo("Current WTS session"));
         }
 
         //---------------------------------------------------------------------
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
             var endpoint = new IPEndPoint(IPAddress.Parse("10.0.0.1"), 1111);
             var policy = new CurrentWtsSessionPolicy();
 
-            Assert.IsFalse(policy.IsClientAllowed(endpoint));
+            Assert.That(policy.IsClientAllowed(endpoint), Is.False);
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
             var endpoint = new IPEndPoint(IPAddress.Loopback, 445);
             var policy = new CurrentWtsSessionPolicy();
 
-            Assert.IsFalse(policy.IsClientAllowed(endpoint));
+            Assert.That(policy.IsClientAllowed(endpoint), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -77,13 +77,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         public void IsClientProcessAllowed_WhenProcessIdCurrent()
         {
             var pid = (uint)Process.GetCurrentProcess().Id;
-            Assert.IsTrue(new CurrentWtsSessionPolicy().IsClientProcessAllowed(pid));
+            Assert.That(new CurrentWtsSessionPolicy().IsClientProcessAllowed(pid), Is.True);
         }
 
         [Test]
         public void IsClientProcessAllowed_WhenProcessIdNotFound()
         {
-            Assert.IsFalse(new CurrentWtsSessionPolicy().IsClientProcessAllowed(uint.MaxValue));
+            Assert.That(new CurrentWtsSessionPolicy().IsClientProcessAllowed(uint.MaxValue), Is.False);
         }
     }
 }

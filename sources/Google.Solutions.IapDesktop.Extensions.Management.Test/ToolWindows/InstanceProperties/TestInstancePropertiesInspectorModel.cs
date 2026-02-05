@@ -66,19 +66,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(locator.Name, model.InstanceName);
+            Assert.That(model.InstanceName, Is.EqualTo(locator.Name));
             Assert.IsNull(model.Hostname);
-            Assert.AreEqual("RUNNING", model.Status);
-            Assert.IsNotNull(model.InternalIp);
-            Assert.IsNotNull(model.ExternalIp);
-            Assert.IsNotNull(model.Licenses);
-            Assert.AreEqual(model.IsOsInventoryInformationPopulated
-                ? FeatureFlag.Enabled : FeatureFlag.Disabled, model.OsInventory);
-            Assert.AreEqual(FeatureFlag.Disabled, model.Diagnostics);
-            Assert.AreEqual(FeatureFlag.Enabled, model.GuestAttributes);
-            Assert.IsFalse(model.IsSoleTenant);
-            Assert.AreEqual(WindowsInstanceAttribute.DefaultMachineType, model.MachineType);
-            Assert.IsFalse(model.Tags.Any());
+            Assert.That(model.Status, Is.EqualTo("RUNNING"));
+            Assert.That(model.InternalIp, Is.Not.Null);
+            Assert.That(model.ExternalIp, Is.Not.Null);
+            Assert.That(model.Licenses, Is.Not.Null);
+            Assert.That(model.OsInventory, Is.EqualTo(model.IsOsInventoryInformationPopulated
+                ? FeatureFlag.Enabled : FeatureFlag.Disabled));
+            Assert.That(model.Diagnostics, Is.EqualTo(FeatureFlag.Disabled));
+            Assert.That(model.GuestAttributes, Is.EqualTo(FeatureFlag.Enabled));
+            Assert.That(model.IsSoleTenant, Is.False);
+            Assert.That(model.MachineType, Is.EqualTo(WindowsInstanceAttribute.DefaultMachineType));
+            Assert.That(model.Tags.Any(), Is.False);
         }
 
         [Test]
@@ -112,10 +112,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(locator.Name, model.InstanceName);
-            Assert.AreEqual("RUNNING", model.Status);
+            Assert.That(model.InstanceName, Is.EqualTo(locator.Name));
+            Assert.That(model.Status, Is.EqualTo("RUNNING"));
 
-            Assert.IsFalse(model.IsOsInventoryInformationPopulated);
+            Assert.That(model.IsOsInventoryInformationPopulated, Is.False);
             Assert.IsNull(model.Architecture);
             Assert.IsNull(model.KernelVersion);
             Assert.IsNull(model.OperatingSystemFullName);
@@ -137,10 +137,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                 project,
                 instance,
                 null);
-            Assert.AreEqual(FeatureFlag.Disabled, model.OsInventory);
-            Assert.AreEqual(FeatureFlag.Disabled, model.Diagnostics);
-            Assert.AreEqual(FeatureFlag.Disabled, model.SerialPortAccess);
-            Assert.AreEqual(FeatureFlag.Disabled, model.GuestAttributes);
+            Assert.That(model.OsInventory, Is.EqualTo(FeatureFlag.Disabled));
+            Assert.That(model.Diagnostics, Is.EqualTo(FeatureFlag.Disabled));
+            Assert.That(model.SerialPortAccess, Is.EqualTo(FeatureFlag.Disabled));
+            Assert.That(model.GuestAttributes, Is.EqualTo(FeatureFlag.Disabled));
         }
 
         [Test]
@@ -236,10 +236,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                 project,
                 instance,
                 null);
-            Assert.AreEqual(FeatureFlag.Disabled, model.OsLogin);
-            Assert.AreEqual(FeatureFlag.Disabled, model.OsLogin2FA);
-            Assert.AreEqual(FeatureFlag.Enabled, model.BlockProjectSshKeys);
-            Assert.AreEqual(FeatureFlag.Disabled, model.OsLoginWithSecurityKey);
+            Assert.That(model.OsLogin, Is.EqualTo(FeatureFlag.Disabled));
+            Assert.That(model.OsLogin2FA, Is.EqualTo(FeatureFlag.Disabled));
+            Assert.That(model.BlockProjectSshKeys, Is.EqualTo(FeatureFlag.Enabled));
+            Assert.That(model.OsLoginWithSecurityKey, Is.EqualTo(FeatureFlag.Disabled));
         }
 
         [Test]
@@ -276,8 +276,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                 project,
                 instance,
                 null);
-            Assert.AreEqual(FeatureFlag.Enabled, model.OsLogin2FA);
-            Assert.AreEqual(FeatureFlag.Enabled, model.OsLoginWithSecurityKey);
+            Assert.That(model.OsLogin2FA, Is.EqualTo(FeatureFlag.Enabled));
+            Assert.That(model.OsLoginWithSecurityKey, Is.EqualTo(FeatureFlag.Enabled));
         }
 
         //---------------------------------------------------------------------
@@ -295,9 +295,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                 project,
                 instance,
                 null);
-            Assert.AreEqual(
-                new InternalDnsName.ZonalName(SampleLocator).Name,
-                model.InternalZonalDnsName);
+            Assert.That(
+                model.InternalZonalDnsName, Is.EqualTo(new InternalDnsName.ZonalName(SampleLocator).Name));
         }
     }
 }

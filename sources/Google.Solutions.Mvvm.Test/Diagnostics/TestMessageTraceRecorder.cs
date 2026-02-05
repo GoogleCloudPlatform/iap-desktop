@@ -48,11 +48,11 @@ namespace Google.Solutions.Mvvm.Test.Diagnostics
             RecordMessage(recorder, 2);
 
             var trace = recorder.Capture();
-            Assert.AreEqual(3, trace.History.Count);
+            Assert.That(trace.History.Count, Is.EqualTo(3));
 
-            Assert.AreEqual(0, trace.History[0].Msg);
-            Assert.AreEqual(1, trace.History[1].Msg);
-            Assert.AreEqual(2, trace.History[2].Msg);
+            Assert.That(trace.History[0].Msg, Is.EqualTo(0));
+            Assert.That(trace.History[1].Msg, Is.EqualTo(1));
+            Assert.That(trace.History[2].Msg, Is.EqualTo(2));
         }
 
         [Test]
@@ -65,11 +65,11 @@ namespace Google.Solutions.Mvvm.Test.Diagnostics
             RecordMessage(recorder, 4);
 
             var trace = recorder.Capture();
-            Assert.AreEqual(3, trace.History.Count);
+            Assert.That(trace.History.Count, Is.EqualTo(3));
 
-            Assert.AreEqual(2, trace.History[0].Msg);
-            Assert.AreEqual(3, trace.History[1].Msg);
-            Assert.AreEqual(4, trace.History[2].Msg);
+            Assert.That(trace.History[0].Msg, Is.EqualTo(2));
+            Assert.That(trace.History[1].Msg, Is.EqualTo(3));
+            Assert.That(trace.History[2].Msg, Is.EqualTo(4));
         }
     }
 }

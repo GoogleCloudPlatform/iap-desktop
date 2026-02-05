@@ -75,8 +75,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 CreateTunnelProfile(),
                 IapTunnelFlags.None))
             {
-                Assert.AreEqual(3, tunnel.Statistics.BytesReceived);
-                Assert.AreEqual(1, tunnel.Statistics.BytesTransmitted);
+                Assert.That(tunnel.Statistics.BytesReceived, Is.EqualTo(3));
+                Assert.That(tunnel.Statistics.BytesTransmitted, Is.EqualTo(1));
             }
         }
 
@@ -91,9 +91,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 CreateTunnelProfile(),
                 IapTunnelFlags.None))
             {
-                Assert.AreEqual(
-                    SampleLoopbackEndpoint,
-                    tunnel.LocalEndpoint);
+                Assert.That(
+                    tunnel.LocalEndpoint, Is.EqualTo(SampleLoopbackEndpoint));
             }
         }
 
@@ -110,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 profile,
                 IapTunnelFlags.None))
             {
-                Assert.AreSame(profile, tunnel.Details);
+                Assert.That(tunnel.Details, Is.SameAs(profile));
             }
         }
 
@@ -127,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 profile,
                 IapTunnelFlags.None))
             {
-                Assert.AreEqual(SampleInstance, tunnel.TargetInstance);
+                Assert.That(tunnel.TargetInstance, Is.EqualTo(SampleInstance));
             }
         }
 
@@ -144,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 profile,
                 IapTunnelFlags.None))
             {
-                Assert.AreEqual(22, tunnel.TargetPort);
+                Assert.That(tunnel.TargetPort, Is.EqualTo(22));
             }
         }
 
@@ -161,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 profile,
                 IapTunnelFlags.None))
             {
-                Assert.AreEqual(profile.Policy, tunnel.Policy);
+                Assert.That(tunnel.Policy, Is.EqualTo(profile.Policy));
             }
         }
 
@@ -179,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 profile,
                 IapTunnelFlags.None))
             {
-                Assert.AreEqual(profile.Protocol, tunnel.Protocol);
+                Assert.That(tunnel.Protocol, Is.EqualTo(profile.Protocol));
             }
         }
 
@@ -203,10 +202,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 CreateTunnelProfile(),
                 IapTunnelFlags.None))
             {
-                Assert.IsFalse(token.IsCancellationRequested);
+                Assert.That(token.IsCancellationRequested, Is.False);
             }
 
-            Assert.IsTrue(token.IsCancellationRequested);
+            Assert.That(token.IsCancellationRequested, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -231,9 +230,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 CreateTunnelProfile(),
                 IapTunnelFlags.None))
             {
-                Assert.IsFalse(token.IsCancellationRequested);
-                Assert.AreSame(listenTask, tunnel.CloseAsync());
-                Assert.IsTrue(token.IsCancellationRequested);
+                Assert.That(token.IsCancellationRequested, Is.False);
+                Assert.That(tunnel.CloseAsync(), Is.SameAs(listenTask));
+                Assert.That(token.IsCancellationRequested, Is.True);
             }
         }
 
@@ -279,8 +278,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 new Mock<ISshRelayTarget>().Object,
                 CancellationToken.None));
 
-            Assert.AreEqual(5, factory.ProbedPorts.Count);
-            Assert.AreEqual(5, factory.ProbedPorts.Distinct().Count());
+            Assert.That(factory.ProbedPorts.Count, Is.EqualTo(5));
+            Assert.That(factory.ProbedPorts.Distinct().Count(), Is.EqualTo(5));
         }
     }
 }

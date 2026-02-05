@@ -77,7 +77,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             window.ViewModel.AddSheet(sheetView, new SampleSheetViewModel());
             window.Form.Show();
 
-            Assert.IsTrue(sheetView.Bound);
+            Assert.That(sheetView.Bound, Is.True);
 
             window.Form.Close();
         }

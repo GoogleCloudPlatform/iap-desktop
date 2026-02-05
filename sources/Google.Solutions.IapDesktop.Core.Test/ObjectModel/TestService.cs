@@ -49,9 +49,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             registry.AddTransient<ServiceWithDefaultConstructor>();
 
             var service = registry.GetService<Service<ServiceWithDefaultConstructor>>();
-            Assert.IsNotNull(service);
-            Assert.IsNotNull(service.Activate());
-            Assert.AreNotSame(service.Activate(), service.Activate());
+            Assert.That(service, Is.Not.Null);
+            Assert.That(service.Activate(), Is.Not.Null);
+
+            var obj1 = service.Activate();
+            var obj2 = service.Activate();
+
+            Assert.That(obj1, Is.Not.SameAs(obj2));
         }
 
         [Test]
@@ -61,9 +65,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             registry.AddSingleton<ServiceWithDefaultConstructor>();
 
             var service = registry.GetService<Service<ServiceWithDefaultConstructor>>();
-            Assert.IsNotNull(service);
-            Assert.IsNotNull(service.Activate());
-            Assert.AreSame(service.Activate(), service.Activate());
+            Assert.That(service, Is.Not.Null);
+            Assert.That(service.Activate(), Is.Not.Null);
+
+            var obj1 = service.Activate();
+            var obj2 = service.Activate();
+            Assert.That(obj1, Is.SameAs(obj2));
         }
     }
 }

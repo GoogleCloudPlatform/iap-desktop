@@ -89,14 +89,14 @@ namespace Google.Solutions.Apis.Test.Logging
                     string.Empty,
                     stream =>
                     {
-                        Assert.IsNotNull(stream);
+                        Assert.That(stream, Is.Not.Null);
                         callbackInvoked = true;
                         return null;
                     },
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsTrue(callbackInvoked);
+            Assert.That(callbackInvoked, Is.True);
         }
     }
 }

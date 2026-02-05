@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         [Test]
         public void ToString_ReturnsName()
         {
-            Assert.AreEqual("Allow all", new AllowAllPolicy().ToString());
+            Assert.That(new AllowAllPolicy().ToString(), Is.EqualTo("Allow all"));
         }
     }
 }

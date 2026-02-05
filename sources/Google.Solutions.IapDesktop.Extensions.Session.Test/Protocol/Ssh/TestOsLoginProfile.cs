@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 }
             };
 
-            Assert.AreEqual("joe3", OsLoginProfile.LookupUsername(loginProfile));
+            Assert.That(OsLoginProfile.LookupUsername(loginProfile), Is.EqualTo("joe3"));
         }
 
         [Test]
@@ -212,10 +212,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     signer.PublicKey.ToString(PublicKey.Format.OpenSsh),
                     TimeSpan.FromDays(1),
                     CancellationToken.None), Times.Once());
-                Assert.AreEqual("joe", credential.Username);
-                Assert.AreEqual(
-                    KeyAuthorizationMethods.Oslogin, 
-                    credential.AuthorizationMethod);
+                Assert.That(credential.Username, Is.EqualTo("joe"));
+                Assert.That(
+                    credential.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
 
                 client.Verify(
                     c => c.ProvisionPosixProfileAsync(
@@ -265,10 +264,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                Assert.AreEqual("joe", credential.Username);
-                Assert.AreEqual(
-                    KeyAuthorizationMethods.Oslogin,
-                    credential.AuthorizationMethod);
+                Assert.That(credential.Username, Is.EqualTo("joe"));
+                Assert.That(
+                    credential.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
                 Assert.IsInstanceOf<OsLoginCertificateSigner>(
                     credential.Signer);
 
@@ -316,10 +314,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                Assert.AreEqual("joe", credential.Username);
-                Assert.AreEqual(
-                    KeyAuthorizationMethods.Oslogin, 
-                    credential.AuthorizationMethod);
+                Assert.That(credential.Username, Is.EqualTo("joe"));
+                Assert.That(
+                    credential.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
                 Assert.IsInstanceOf<OsLoginCertificateSigner>(
                     credential.Signer);
 
@@ -355,7 +352,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ListAuthorizedKeysAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            CollectionAssert.IsEmpty(keys);
+            Assert.That(keys, Is.Empty);
         }
 
         [Test]
@@ -407,10 +404,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ListAuthorizedKeysAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(1, keys.Count());
-            Assert.AreEqual("bob@gmail.com", keys.First().Email);
-            Assert.AreEqual("ssh-rsa", keys.First().KeyType);
-            Assert.AreEqual("AAAA", keys.First().PublicKey);
+            Assert.That(keys.Count(), Is.EqualTo(1));
+            Assert.That(keys.First().Email, Is.EqualTo("bob@gmail.com"));
+            Assert.That(keys.First().KeyType, Is.EqualTo("ssh-rsa"));
+            Assert.That(keys.First().PublicKey, Is.EqualTo("AAAA"));
             Assert.IsNull(keys.First().ExpireOn);
         }
 
@@ -448,11 +445,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ListAuthorizedKeysAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(1, keys.Count());
-            Assert.AreEqual("bob@gmail.com", keys.First().Email);
-            Assert.AreEqual("ssh-rsa", keys.First().KeyType);
-            Assert.AreEqual("AAAA", keys.First().PublicKey);
-            Assert.AreEqual(firstOfJan.Date, keys.First().ExpireOn);
+            Assert.That(keys.Count(), Is.EqualTo(1));
+            Assert.That(keys.First().Email, Is.EqualTo("bob@gmail.com"));
+            Assert.That(keys.First().KeyType, Is.EqualTo("ssh-rsa"));
+            Assert.That(keys.First().PublicKey, Is.EqualTo("AAAA"));
+            Assert.That(keys.First().ExpireOn, Is.EqualTo(firstOfJan.Date));
         }
 
         //---------------------------------------------------------------------

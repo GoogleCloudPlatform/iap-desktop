@@ -38,9 +38,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
         {
             var bound = new Bound<string>();
 
-            Assert.IsFalse(bound.HasValue);
+            Assert.That(bound.HasValue, Is.False);
             bound.Value = "test";
-            Assert.IsTrue(bound.HasValue);
+            Assert.That(bound.HasValue, Is.True);
         }
 
         //-----------------------------------------------------------
@@ -62,7 +62,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Value = "test"
             };
 
-            Assert.AreEqual("test", bound.Value);
+            Assert.That(bound.Value, Is.EqualTo("test"));
         }
 
         [Test]
@@ -96,7 +96,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             };
 
             var stringValue = bound.Value;
-            Assert.AreEqual("test", stringValue);
+            Assert.That(stringValue, Is.EqualTo("test"));
         }
 
         //-----------------------------------------------------------
@@ -107,7 +107,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         public void ToString_WhenNotInitialized_ThenToStringReturnsEmpty()
         {
             var bound = new Bound<string>();
-            Assert.AreEqual("", bound.ToString());
+            Assert.That(bound.ToString(), Is.EqualTo(""));
         }
 
         [Test]
@@ -117,7 +117,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             {
                 Value = "test"
             };
-            Assert.AreEqual("test", bound.ToString());
+            Assert.That(bound.ToString(), Is.EqualTo("test"));
         }
     }
 }

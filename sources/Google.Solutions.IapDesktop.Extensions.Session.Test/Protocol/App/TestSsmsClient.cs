@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         public void IsAvailable_WhenSsmsNotAvailable()
         {
             var client = new SsmsClient(null);
-            Assert.IsFalse(client.IsAvailable);
+            Assert.That(client.IsAvailable, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
 
         [Test]
         public void FormatArguments_WhenNlaDisabledAndUsernameEmpty(
-            [Values("", " ", null)] string emptyish)
+            [Values("", " ", null)] string? emptyish)
         {
             var transport = new Mock<ITransport>();
             transport.SetupGet(t => t.Target).Returns(SampleInstance);
@@ -78,9 +78,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
                 NetworkLevelAuthentication = AppNetworkLevelAuthenticationState.Disabled
             };
 
-            Assert.AreEqual(
-                "-S 127.0.0.2\\instance-1.zone-1.c.project-1.internal,11443 -U sa",
-                client.FormatArguments(transport.Object, parameters));
+            Assert.That(
+                client.FormatArguments(transport.Object, parameters), Is.EqualTo("-S 127.0.0.2\\instance-1.zone-1.c.project-1.internal,11443 -U sa"));
         }
 
         [Test]
@@ -99,9 +98,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
                 NetworkLevelAuthentication = AppNetworkLevelAuthenticationState.Disabled
             };
 
-            Assert.AreEqual(
-                "-S 127.0.0.2\\instance-1.zone-1.c.project-1.internal,11443 -U \"username\"",
-                client.FormatArguments(transport.Object, parameters));
+            Assert.That(
+                client.FormatArguments(transport.Object, parameters), Is.EqualTo("-S 127.0.0.2\\instance-1.zone-1.c.project-1.internal,11443 -U \"username\""));
         }
 
         [Test]
@@ -140,9 +138,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
                 NetworkLevelAuthentication = AppNetworkLevelAuthenticationState.Enabled
             };
 
-            Assert.AreEqual(
-                "-S 127.0.0.2\\instance-1.zone-1.c.project-1.internal,11443 -E",
-                client.FormatArguments(transport.Object, parameters));
+            Assert.That(
+                client.FormatArguments(transport.Object, parameters), Is.EqualTo("-S 127.0.0.2\\instance-1.zone-1.c.project-1.internal,11443 -E"));
         }
     }
 }

@@ -41,14 +41,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         [Test]
         public void IsAvailable_WhenExecutableNotFound()
         {
-            Assert.IsFalse(new AppProtocolClient("x:\\doesnotexist.exe", null).IsAvailable);
-            Assert.IsFalse(new AppProtocolClient("NUL.exe", null).IsAvailable);
+            Assert.That(new AppProtocolClient("x:\\doesnotexist.exe", null).IsAvailable, Is.False);
+            Assert.That(new AppProtocolClient("NUL.exe", null).IsAvailable, Is.False);
         }
 
         [Test]
         public void IsAvailable_WhenExecutableExists()
         {
-            Assert.IsTrue(new AppProtocolClient(CmdExe, null).IsAvailable);
+            Assert.That(new AppProtocolClient(CmdExe, null).IsAvailable, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -80,9 +80,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
             var parameters = new AppProtocolParameters();
 
-            Assert.AreEqual(
-                "/port 8080 /host 127.0.0.2 /ignore {HOST}{Port}} {foo}}} /user }",
-                client.FormatArguments(transport.Object, parameters));
+            Assert.That(
+                client.FormatArguments(transport.Object, parameters), Is.EqualTo("/port 8080 /host 127.0.0.2 /ignore {HOST}{Port}} {foo}}} /user }"));
         }
 
         [Test]
@@ -102,9 +101,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 PreferredUsername = "root",
             };
 
-            Assert.AreEqual(
-                "/port 8080 /host 127.0.0.2 /ignore {HOST}{Port}} {foo}}} /user root}",
-                client.FormatArguments(transport.Object, parameters));
+            Assert.That(
+                client.FormatArguments(transport.Object, parameters), Is.EqualTo("/port 8080 /host 127.0.0.2 /ignore {HOST}{Port}} {foo}}} /user root}"));
         }
 
         [Test]
@@ -135,15 +133,15 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
         [Test]
         public void IsUsernameRequired_WhenArgumentsDoNotUseUsername(
-            [Values(null, " ", "{U}")] string arguments)
+            [Values(null, " ", "{U}")] string? arguments)
         {
-            Assert.IsFalse(new AppProtocolClient("NUL.exe", arguments).IsUsernameRequired);
+            Assert.That(new AppProtocolClient("NUL.exe", arguments).IsUsernameRequired, Is.False);
         }
 
         [Test]
         public void IsUsernameRequiredWhenArgumentsUseUsername()
         {
-            Assert.IsTrue(new AppProtocolClient("NUL.exe", "/u '{username}'").IsUsernameRequired);
+            Assert.That(new AppProtocolClient("NUL.exe", "/u '{username}'").IsUsernameRequired, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -153,12 +151,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         [Test]
         public void ToString_ReturnsExecutableAndArguments()
         {
-            Assert.AreEqual(
-                "cmd.exe",
-                new AppProtocolClient("cmd.exe", null).ToString());
-            Assert.AreEqual(
-                "cmd.exe args",
-                new AppProtocolClient("cmd.exe", "args").ToString());
+            Assert.That(
+                new AppProtocolClient("cmd.exe", null).ToString(), Is.EqualTo("cmd.exe"));
+            Assert.That(
+                new AppProtocolClient("cmd.exe", "args").ToString(), Is.EqualTo("cmd.exe args"));
         }
 
         //---------------------------------------------------------------------
@@ -171,9 +167,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var app1 = new AppProtocolClient("cmd1.exe", "args");
             var app2 = new AppProtocolClient("cmd2.exe", "args");
 
-            Assert.IsFalse(app1.Equals(app2));
-            Assert.IsTrue(app1 != app2);
-            Assert.AreNotEqual(app1.GetHashCode(), app2.GetHashCode());
+            Assert.That(app1.Equals(app2), Is.False);
+            Assert.That(app1 != app2, Is.True);
+            Assert.That(app2.GetHashCode(), Is.Not.EqualTo(app1.GetHashCode()));
         }
 
         [Test]
@@ -182,9 +178,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var app1 = new AppProtocolClient("cmd.exe", "args");
             var app2 = new AppProtocolClient("cmd.exe", null);
 
-            Assert.IsFalse(app1.Equals(app2));
-            Assert.IsTrue(app1 != app2);
-            Assert.AreNotEqual(app1.GetHashCode(), app2.GetHashCode());
+            Assert.That(app1.Equals(app2), Is.False);
+            Assert.That(app1 != app2, Is.True);
+            Assert.That(app2.GetHashCode(), Is.Not.EqualTo(app1.GetHashCode()));
         }
     }
 }

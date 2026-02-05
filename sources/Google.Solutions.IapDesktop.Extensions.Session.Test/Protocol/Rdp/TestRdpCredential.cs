@@ -36,29 +36,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         public void ToString_WhenDomainSet()
         {
             var credential = new RdpCredential("user", "domain", new SecureString());
-            Assert.AreEqual("domain\\user", credential.ToString());
+            Assert.That(credential.ToString(), Is.EqualTo("domain\\user"));
         }
 
         [Test]
         public void ToString_WhenUserNullOrEmpty()
         {
-            Assert.AreEqual(
-                "(empty)",
-                new RdpCredential("", null, new SecureString()).ToString());
-            Assert.AreEqual(
-                "(empty)",
-                new RdpCredential("", "", new SecureString()).ToString());
+            Assert.That(
+                new RdpCredential("", null, new SecureString()).ToString(), Is.EqualTo("(empty)"));
+            Assert.That(
+                new RdpCredential("", "", new SecureString()).ToString(), Is.EqualTo("(empty)"));
         }
 
         [Test]
         public void ToString_WhenDomainNullOrEmpty()
         {
-            Assert.AreEqual(
-                "user",
-                new RdpCredential("user", null, new SecureString()).ToString());
-            Assert.AreEqual(
-                "user",
-                new RdpCredential("user", "", new SecureString()).ToString());
+            Assert.That(
+                new RdpCredential("user", null, new SecureString()).ToString(), Is.EqualTo("user"));
+            Assert.That(
+                new RdpCredential("user", "", new SecureString()).ToString(), Is.EqualTo("user"));
         }
     }
 }

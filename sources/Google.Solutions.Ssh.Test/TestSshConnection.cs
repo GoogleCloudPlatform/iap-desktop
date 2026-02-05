@@ -127,9 +127,8 @@ namespace Google.Solutions.Ssh.Test
                     new CultureInfo("en-AU"))
                 .ConfigureAwait(false);
 
-            StringAssert.Contains(
-                "LC_ALL=en_AU.UTF-8",
-                output.ToString());
+            Assert.That(
+                output.ToString(), Does.Contain("LC_ALL=en_AU.UTF-8"));
         }
 
         [Test]
@@ -143,9 +142,8 @@ namespace Google.Solutions.Ssh.Test
                     new CultureInfo("en-AU"))
                 .ConfigureAwait(false);
 
-            StringAssert.Contains(
-                "LC_ALL=\r\n",
-                output.ToString());
+            Assert.That(
+                output.ToString(), Does.Contain("LC_ALL=\r\n"));
         }
 
         [Test]
@@ -157,9 +155,8 @@ namespace Google.Solutions.Ssh.Test
                     null)
                 .ConfigureAwait(false);
 
-            StringAssert.Contains(
-                "LC_ALL=\r\n",
-                output.ToString());
+            Assert.That(
+                output.ToString(), Does.Contain("LC_ALL=\r\n"));
         }
 
         //---------------------------------------------------------------------

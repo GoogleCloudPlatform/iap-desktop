@@ -98,12 +98,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             viewModel.IsTailEnabled = true;
 
             var tailCts = viewModel.TailCancellationTokenSource;
-            Assert.IsNotNull(tailCts, "tailing");
+            Assert.That(tailCts, Is.Not.Null, "tailing");
 
             viewModel.IsTailEnabled = false;
 
             // CTS cancelled => not tailing.
-            Assert.IsTrue(tailCts!.IsCancellationRequested, "tailing stopped");
+            Assert.That(tailCts!.IsCancellationRequested, Is.True, "tailing stopped");
             Assert.IsNull(viewModel.TailCancellationTokenSource);
         }
 
@@ -141,12 +141,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             viewModel.IsTailBlocked = false;
 
             var tailCts = viewModel.TailCancellationTokenSource;
-            Assert.IsNotNull(tailCts, "tailing");
+            Assert.That(tailCts, Is.Not.Null, "tailing");
 
             viewModel.IsTailBlocked = true;
 
             // CTS cancelled => not tailing.
-            Assert.IsTrue(tailCts!.IsCancellationRequested, "tailing stopped");
+            Assert.That(tailCts!.IsCancellationRequested, Is.True, "tailing stopped");
             Assert.IsNull(viewModel.TailCancellationTokenSource);
         }
 
@@ -164,9 +164,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsEnableTailingButtonEnabled);
-            Assert.IsFalse(viewModel.IsOutputBoxEnabled);
-            StringAssert.Contains(SerialOutputViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            Assert.That(viewModel.IsEnableTailingButtonEnabled, Is.False);
+            Assert.That(viewModel.IsOutputBoxEnabled, Is.False);
+            Assert.That(viewModel.WindowTitle, Does.Contain(SerialOutputViewModel.DefaultWindowTitle));
         }
         [Test]
         public async Task SwitchToModel_WhenStoppedInstanceNode_ThenControlsAreDisabled(
@@ -179,9 +179,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
                 .SwitchToModelAsync(node)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsEnableTailingButtonEnabled);
-            Assert.IsFalse(viewModel.IsOutputBoxEnabled);
-            StringAssert.Contains(SerialOutputViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            Assert.That(viewModel.IsEnableTailingButtonEnabled, Is.False);
+            Assert.That(viewModel.IsOutputBoxEnabled, Is.False);
+            Assert.That(viewModel.WindowTitle, Does.Contain(SerialOutputViewModel.DefaultWindowTitle));
         }
 
         [Test]
@@ -197,12 +197,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
             var instanceLocator = await testInstance;
 
-            Assert.IsTrue(viewModel.IsEnableTailingButtonEnabled);
-            Assert.IsTrue(viewModel.IsOutputBoxEnabled);
-            StringAssert.Contains("Finished running startup scripts", viewModel.Output);
+            Assert.That(viewModel.IsEnableTailingButtonEnabled, Is.True);
+            Assert.That(viewModel.IsOutputBoxEnabled, Is.True);
+            Assert.That(viewModel.Output, Does.Contain("Finished running startup scripts"));
 
-            StringAssert.Contains(SerialOutputViewModel.DefaultWindowTitle, viewModel.WindowTitle);
-            StringAssert.Contains(instanceLocator.Name, viewModel.WindowTitle);
+            Assert.That(viewModel.WindowTitle, Does.Contain(SerialOutputViewModel.DefaultWindowTitle));
+            Assert.That(viewModel.WindowTitle, Does.Contain(instanceLocator.Name));
         }
     }
 }

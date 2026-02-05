@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         [Test]
         public void DisplayName()
         {
-            Assert.AreEqual("isInstance()", InstanceTrait.Instance.DisplayName);
+            Assert.That(InstanceTrait.Instance.DisplayName, Is.EqualTo("isInstance()"));
         }
 
         //---------------------------------------------------------------------
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         [Test]
         public void ToString_ReturnsExpression()
         {
-            Assert.AreEqual("isInstance()", InstanceTrait.Instance.ToString());
+            Assert.That(InstanceTrait.Instance.ToString(), Is.EqualTo("isInstance()"));
         }
 
         //---------------------------------------------------------------------
@@ -59,17 +59,17 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
 
         [Test]
         public void TryParse_WhenExpressionIsNullOrEmpty(
-            [Values(" \t", "", null)] string expression)
+            [Values(" \t", "", null)] string? expression)
         {
-            Assert.IsFalse(InstanceTrait.TryParse(expression, out var _));
+            Assert.That(InstanceTrait.TryParse(expression, out var _), Is.False);
         }
 
         [Test]
         public void TryParse_WhenExpressionIsValid(
             [Values("isInstance()", " isInstance(  \n) \n\r\t ")] string expression)
         {
-            Assert.IsTrue(InstanceTrait.TryParse(expression, out var trait));
-            Assert.IsNotNull(trait);
+            Assert.That(InstanceTrait.TryParse(expression, out var trait), Is.True);
+            Assert.That(trait, Is.Not.Null);
         }
     }
 }

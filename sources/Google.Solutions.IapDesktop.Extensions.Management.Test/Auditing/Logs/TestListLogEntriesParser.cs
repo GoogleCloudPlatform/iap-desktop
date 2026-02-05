@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                 events.Add);
 
             Assert.IsNull(token);
-            Assert.AreEqual(0, events.Count);
+            Assert.That(events.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -100,8 +100,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                 new JsonTextReader(new StringReader(json)),
                 events.Add);
 
-            Assert.AreEqual("EAE4oeeNuZes8rwyStsEIhoiCgoIZ", token);
-            Assert.AreEqual(1, events.Count);
+            Assert.That(token, Is.EqualTo("EAE4oeeNuZes8rwyStsEIhoiCgoIZ"));
+            Assert.That(events.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -119,8 +119,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                 new JsonTextReader(new StringReader(json)),
                 events.Add);
 
-            Assert.AreEqual("EAE4oeeNuZes8rwyStsEIhoiCgoIZ", token);
-            Assert.AreEqual(0, events.Count);
+            Assert.That(token, Is.EqualTo("EAE4oeeNuZes8rwyStsEIhoiCgoIZ"));
+            Assert.That(events.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -221,16 +221,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                 new JsonTextReader(new StringReader(json)),
                 events.Add);
 
-            Assert.AreEqual(2, events.Count());
+            Assert.That(events.Count(), Is.EqualTo(2));
 
             Assert.IsInstanceOf(typeof(DeleteInstanceEvent), events.First());
             var deleteEvent = (DeleteInstanceEvent)events.First();
-            Assert.AreEqual("instance-1", deleteEvent.Instance?.Name);
+            Assert.That(deleteEvent.Instance?.Name, Is.EqualTo("instance-1"));
 
 
             Assert.IsInstanceOf(typeof(StartInstanceEvent), events.Last());
             var startEvent = (StartInstanceEvent)events.Last();
-            Assert.AreEqual("instance-2", startEvent.Instance?.Name);
+            Assert.That(startEvent.Instance?.Name, Is.EqualTo("instance-2"));
         }
 
         [Test]
@@ -330,11 +330,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                 new JsonTextReader(new StringReader(json)),
                 events.Add);
 
-            Assert.AreEqual(2, events.Count());
+            Assert.That(events.Count(), Is.EqualTo(2));
 
             Assert.IsInstanceOf(typeof(DeleteInstanceEvent), events.First());
             var deleteEvent = (DeleteInstanceEvent)events.First();
-            Assert.AreEqual("instance-1", deleteEvent.Instance?.Name);
+            Assert.That(deleteEvent.Instance?.Name, Is.EqualTo("instance-1"));
 
             Assert.IsInstanceOf(typeof(UnknownEvent), events.Last());
         }
@@ -353,7 +353,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                 new JsonTextReader(new StringReader(json)),
                 events.Add);
 
-            Assert.AreEqual(0, events.Count());
+            Assert.That(events.Count(), Is.EqualTo(0));
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                 ProfileName = "Föö"
             };
 
-            Assert.IsTrue(viewModel.IsProfileNameInvalid);
+            Assert.That(viewModel.IsProfileNameInvalid, Is.True);
         }
 
         [Test]
@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         {
             var viewModel = new NewProfileViewModel();
 
-            Assert.IsFalse(viewModel.IsProfileNameInvalid);
+            Assert.That(viewModel.IsProfileNameInvalid, Is.False);
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                 ProfileName = "Valid name"
             };
 
-            Assert.IsFalse(viewModel.IsProfileNameInvalid);
+            Assert.That(viewModel.IsProfileNameInvalid, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                 ProfileName = "Föö"
             };
 
-            Assert.IsFalse(viewModel.IsOkButtonEnabled);
+            Assert.That(viewModel.IsOkButtonEnabled, Is.False);
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         {
             var viewModel = new NewProfileViewModel();
 
-            Assert.IsFalse(viewModel.IsOkButtonEnabled);
+            Assert.That(viewModel.IsOkButtonEnabled, Is.False);
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                 ProfileName = "Valid name"
             };
 
-            Assert.IsTrue(viewModel.IsOkButtonEnabled);
+            Assert.That(viewModel.IsOkButtonEnabled, Is.True);
         }
     }
 }

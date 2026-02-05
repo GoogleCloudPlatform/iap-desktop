@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new Mock<IWin32ProcessFactory>().Object,
                 SampleLocator);
 
-            Assert.IsFalse(context.CanLaunchClient);
+            Assert.That(context.CanLaunchClient, Is.False);
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new Mock<IWin32ProcessFactory>().Object,
                 SampleLocator);
 
-            Assert.IsFalse(context.CanLaunchClient);
+            Assert.That(context.CanLaunchClient, Is.False);
         }
 
         [Test]
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new Mock<IWin32ProcessFactory>().Object,
                 SampleLocator);
 
-            Assert.IsTrue(context.CanLaunchClient);
+            Assert.That(context.CanLaunchClient, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
             using (var process = context.LaunchClient(transport.Object))
             {
-                Assert.IsNotNull(process);
+                Assert.That(process, Is.Not.Null);
 
                 processFactory.Verify(
                     f => f.CreateProcess("client.exe", "args"),
@@ -235,7 +235,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             })
             using (var process = context.LaunchClient(transport.Object))
             {
-                Assert.IsNotNull(process);
+                Assert.That(process, Is.Not.Null);
 
                 processFactory.Verify(
                     f => f.CreateProcessAsUser(

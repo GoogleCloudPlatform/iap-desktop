@@ -99,9 +99,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 CreateFactory(null),
                 new Mock<INotifyDialog>().Object);
 
-            Assert.AreEqual(
-                $"{command.GetType().Name}.app-1",
-                command.Id);
+            Assert.That(
+                command.Id, Is.EqualTo($"{command.GetType().Name}.app-1"));
         }
 
         //---------------------------------------------------------------------
@@ -116,15 +115,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 CreateFactory(null),
                 new Mock<INotifyDialog>().Object);
 
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                command.QueryState(new Mock<IProjectModelCloudNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                command.QueryState(new Mock<IProjectModelProjectNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                command.QueryState(new Mock<IProjectModelZoneNode>().Object));
+            Assert.That(
+                command.QueryState(new Mock<IProjectModelCloudNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                command.QueryState(new Mock<IProjectModelProjectNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                command.QueryState(new Mock<IProjectModelZoneNode>().Object), Is.EqualTo(CommandState.Unavailable));
         }
 
         [Test]
@@ -135,9 +131,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 CreateFactory(null),
                 new Mock<INotifyDialog>().Object);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                command.QueryState(new Mock<IProjectModelInstanceNode>().Object));
+            Assert.That(
+                command.QueryState(new Mock<IProjectModelInstanceNode>().Object), Is.EqualTo(CommandState.Enabled));
         }
 
         //---------------------------------------------------------------------

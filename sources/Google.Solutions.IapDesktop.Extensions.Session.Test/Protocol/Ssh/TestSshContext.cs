@@ -72,11 +72,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 key,
                 SampleInstance);
 
-            Assert.AreSame(
-                credential,
+            Assert.That(
                 context
                     .AuthorizeCredentialAsync(CancellationToken.None)
-                    .Result);
+                    .Result, Is.SameAs(credential));
         }
 
         [Test]
@@ -90,11 +89,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 credential,
                 SampleInstance);
 
-            Assert.AreSame(
-                credential,
+            Assert.That(
                 context
                     .AuthorizeCredentialAsync(CancellationToken.None)
-                    .Result);
+                    .Result, Is.SameAs(credential));
         }
 
         //---------------------------------------------------------------------
@@ -131,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConnectTransportAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreSame(transport.Object, sshTransport);
+            Assert.That(sshTransport, Is.SameAs(transport.Object));
         }
 
         [Test]
@@ -160,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConnectTransportAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreSame(transport.Object, sshTransport);
+            Assert.That(sshTransport, Is.SameAs(transport.Object));
         }
     }
 }

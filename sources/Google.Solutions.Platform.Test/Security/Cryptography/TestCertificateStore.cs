@@ -115,14 +115,12 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
             var certificates = store.ListUserCertificates(
                 cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
 
-            Assert.IsNotNull(certificates);
-            Assert.AreEqual(1, certificates.Count());
-            Assert.AreEqual(
-                ExampleCertificate.Thumbprint,
-                certificates.First().Thumbprint);
-            Assert.AreEqual(
-                ExampleCertitficateSubject,
-                certificates.First().Subject);
+            Assert.That(certificates, Is.Not.Null);
+            Assert.That(certificates.Count(), Is.EqualTo(1));
+            Assert.That(
+                certificates.First().Thumbprint, Is.EqualTo(ExampleCertificate.Thumbprint));
+            Assert.That(
+                certificates.First().Subject, Is.EqualTo(ExampleCertitficateSubject));
         }
 
         [Test]
@@ -133,8 +131,8 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
             var store = new CertificateStore();
             var certificates = store.ListUserCertificates(cert => false);
 
-            Assert.IsNotNull(certificates);
-            CollectionAssert.IsEmpty(certificates);
+            Assert.That(certificates, Is.Not.Null);
+            Assert.That(certificates, Is.Empty);
         }
 
         //---------------------------------------------------------------------
@@ -150,8 +148,8 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
             var certificates = store.ListMachineCertificates(
                 cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
 
-            Assert.IsNotNull(certificates);
-            CollectionAssert.IsEmpty(certificates);
+            Assert.That(certificates, Is.Not.Null);
+            Assert.That(certificates, Is.Empty);
         }
 
         [Test]
@@ -162,8 +160,8 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
             var store = new CertificateStore();
             var certificates = store.ListMachineCertificates(cert => false);
 
-            Assert.IsNotNull(certificates);
-            CollectionAssert.IsEmpty(certificates);
+            Assert.That(certificates, Is.Not.Null);
+            Assert.That(certificates, Is.Empty);
         }
     }
 }

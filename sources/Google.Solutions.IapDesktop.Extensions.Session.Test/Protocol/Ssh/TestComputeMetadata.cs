@@ -64,8 +64,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         "alice@example.com",
                         DateTime.Now.AddDays(+1))));
 
-            StringAssert.DoesNotContain("alice-expired", metadata.Items.First().Value);
-            StringAssert.Contains("alice-valid", metadata.Items.First().Value);
+            Assert.That(metadata.Items.First().Value, Does.Not.Contain("alice-expired"));
+            Assert.That(metadata.Items.First().Value, Does.Contain("alice-valid"));
         }
 
         //---------------------------------------------------------------------
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 metadata,
                 validKey);
 
-            StringAssert.Contains("alice-expired", metadata.Items.First().Value);
+            Assert.That(metadata.Items.First().Value, Does.Contain("alice-expired"));
         }
     }
 }

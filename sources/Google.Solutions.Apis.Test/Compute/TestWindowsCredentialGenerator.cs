@@ -120,7 +120,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(username, credentials.UserName);
+            Assert.That(credentials.UserName, Is.EqualTo(username));
             Assert.IsEmpty(credentials.Domain);
             Assert.IsNotEmpty(credentials.Password);
         }
@@ -153,7 +153,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(username, credentials.UserName);
+            Assert.That(credentials.UserName, Is.EqualTo(username));
             Assert.IsEmpty(credentials.Domain);
             Assert.IsNotEmpty(credentials.Password);
         }
@@ -186,7 +186,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(username, credentials.UserName);
+            Assert.That(credentials.UserName, Is.EqualTo(username));
             Assert.IsEmpty(credentials.Domain);
             Assert.IsNotEmpty(credentials.Password);
         }
@@ -266,7 +266,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 .IsGrantedPermissionToCreateWindowsCredentialsAsync(locator)
                 .ConfigureAwait(false);
 
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -286,7 +286,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 .IsGrantedPermissionToCreateWindowsCredentialsAsync(locator)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(result);
+            Assert.That(result, Is.False);
         }
 
         [Test]
@@ -332,7 +332,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     UserFlags.AddToAdministrators,
                     CancellationToken.None)
                 .ConfigureAwait(false);
-            Assert.IsNotNull(result.Password);
+            Assert.That(result.Password, Is.Not.Null);
         }
 
         [Test]
@@ -382,7 +382,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     UserFlags.AddToAdministrators,
                     CancellationToken.None)
                 .ConfigureAwait(false);
-            Assert.IsNotNull(result.Password);
+            Assert.That(result.Password, Is.Not.Null);
         }
     }
 }

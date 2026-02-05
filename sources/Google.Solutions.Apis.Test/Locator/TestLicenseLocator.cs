@@ -38,7 +38,7 @@ namespace Google.Solutions.Apis.Test.Locator
         public void Project()
         {
             var ref1 = new LicenseLocator("project-1", "type-1");
-            Assert.AreEqual(ref1.ProjectId, ref1.Project.Name);
+            Assert.That(ref1.Project.Name, Is.EqualTo(ref1.ProjectId));
         }
 
         //---------------------------------------------------------------------
@@ -48,62 +48,62 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathIsValid()
         {
-            Assert.IsTrue(LicenseLocator.TryParse(
+            Assert.That(LicenseLocator.TryParse(
                 "projects/project-1/global/licenses/windows-10-enterprise-byol",
-                out var ref1));
+                out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
-            Assert.AreEqual("licenses", ref1!.ResourceType);
-            Assert.AreEqual("windows-10-enterprise-byol", ref1.Name);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1, Is.Not.Null);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("licenses"));
+            Assert.That(ref1.Name, Is.EqualTo("windows-10-enterprise-byol"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
         public void TryParse_WhenQualifiedByComputeGoogleapisHost()
         {
-            Assert.IsTrue(LicenseLocator.TryParse(
+            Assert.That(LicenseLocator.TryParse(
                 "https://compute.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol",
-                out var ref1));
+                out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
-            Assert.AreEqual("licenses", ref1!.ResourceType);
-            Assert.AreEqual("windows-10-enterprise-byol", ref1.Name);
-            Assert.AreEqual("windows-cloud", ref1.ProjectId);
+            Assert.That(ref1, Is.Not.Null);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("licenses"));
+            Assert.That(ref1.Name, Is.EqualTo("windows-10-enterprise-byol"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("windows-cloud"));
         }
 
         [Test]
         public void TryParse_WhenQualifiedByGoogleapisHost()
         {
-            Assert.IsTrue(LicenseLocator.TryParse(
+            Assert.That(LicenseLocator.TryParse(
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol",
-                out var ref1));
+                out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
-            Assert.AreEqual("licenses", ref1!.ResourceType);
-            Assert.AreEqual("windows-10-enterprise-byol", ref1.Name);
-            Assert.AreEqual("windows-cloud", ref1.ProjectId);
+            Assert.That(ref1, Is.Not.Null);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("licenses"));
+            Assert.That(ref1.Name, Is.EqualTo("windows-10-enterprise-byol"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("windows-cloud"));
         }
 
         [Test]
         public void TryParse_WhenPathLacksProject()
         {
-            Assert.IsFalse(LicenseLocator.TryParse(
+            Assert.That(LicenseLocator.TryParse(
                 "/project-1/project-1/global/licenses/windows-10-enterprise-byol",
-                out var _));
+                out var _), Is.False);
         }
 
         [Test]
         public void TryParse_WhenPathInvalid()
         {
-            Assert.IsFalse(LicenseLocator.TryParse(
+            Assert.That(LicenseLocator.TryParse(
                 "projects/project-1/notglobal/licenses/windows-10-enterprise-byol",
-                out var _));
-            Assert.IsFalse(LicenseLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(LicenseLocator.TryParse(
                 "/project-1/global/licenses/windows-10-enterprise-byol",
-                out var _));
-            Assert.IsFalse(LicenseLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(LicenseLocator.TryParse(
                 "/",
-                out var _));
+                out var _), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -116,9 +116,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = LicenseLocator.Parse(
                 "projects/project-1/global/licenses/windows-10-enterprise-byol");
 
-            Assert.AreEqual("licenses", ref1.ResourceType);
-            Assert.AreEqual("windows-10-enterprise-byol", ref1.Name);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("licenses"));
+            Assert.That(ref1.Name, Is.EqualTo("windows-10-enterprise-byol"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -127,9 +127,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = LicenseLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol");
 
-            Assert.AreEqual("licenses", ref1.ResourceType);
-            Assert.AreEqual("windows-10-enterprise-byol", ref1.Name);
-            Assert.AreEqual("windows-cloud", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("licenses"));
+            Assert.That(ref1.Name, Is.EqualTo("windows-10-enterprise-byol"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("windows-cloud"));
         }
 
         [Test]
@@ -138,9 +138,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = LicenseLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol");
 
-            Assert.AreEqual("licenses", ref1.ResourceType);
-            Assert.AreEqual("windows-10-enterprise-byol", ref1.Name);
-            Assert.AreEqual("windows-cloud", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("licenses"));
+            Assert.That(ref1.Name, Is.EqualTo("windows-10-enterprise-byol"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("windows-cloud"));
         }
 
         [Test]
@@ -171,10 +171,10 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = new LicenseLocator("proj-1", "windows-10-enterprise-byol");
             var ref2 = new LicenseLocator("proj-2", "windows-10-enterprise-byol");
 
-            Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object?)ref2));
-            Assert.IsFalse(ref1 == ref2);
-            Assert.IsTrue(ref1 != ref2);
+            Assert.That(ref1.Equals(ref2), Is.False);
+            Assert.That(ref1.Equals((object?)ref2), Is.False);
+            Assert.That(ref1 == ref2, Is.False);
+            Assert.That(ref1 != ref2, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -186,9 +186,8 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var path = "projects/project-1/global/licenses/windows-10-enterprise-byol";
 
-            Assert.AreEqual(
-                path,
-                LicenseLocator.Parse(path).ToString());
+            Assert.That(
+                LicenseLocator.Parse(path).ToString(), Is.EqualTo(path));
         }
 
         [Test]
@@ -196,10 +195,9 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var path = "projects/project-1/global/licenses/windows-10-enterprise-byol";
 
-            Assert.AreEqual(
-                path,
+            Assert.That(
                 LicenseLocator.Parse(
-                    "https://www.googleapis.com/compute/v1/" + path).ToString());
+                    "https://www.googleapis.com/compute/v1/" + path).ToString(), Is.EqualTo(path));
         }
 
         //---------------------------------------------------------------------
@@ -211,7 +209,7 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var locator = LicenseLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol");
-            Assert.IsTrue(locator.IsWindowsLicense());
+            Assert.That(locator.IsWindowsLicense(), Is.True);
         }
 
         [Test]
@@ -219,7 +217,7 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var locator = LicenseLocator.Parse(
                 "projects/my-project/global/licenses/windows-10-enterprise-byol");
-            Assert.IsFalse(locator.IsWindowsLicense());
+            Assert.That(locator.IsWindowsLicense(), Is.False);
         }
 
         [Test]
@@ -227,7 +225,7 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var locator = LicenseLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol");
-            Assert.IsTrue(locator.IsWindowsByolLicense());
+            Assert.That(locator.IsWindowsByolLicense(), Is.True);
         }
 
         [Test]
@@ -235,7 +233,7 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var locator = LicenseLocator.Parse(
                 "projects/windows-cloud/global/licenses/windows-2016");
-            Assert.IsFalse(locator.IsWindowsByolLicense());
+            Assert.That(locator.IsWindowsByolLicense(), Is.False);
         }
     }
 }

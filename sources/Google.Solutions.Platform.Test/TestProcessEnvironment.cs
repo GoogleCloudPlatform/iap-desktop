@@ -33,9 +33,8 @@ namespace Google.Solutions.Platform.Test
         [Test]
         public void NativeArchitecture()
         {
-            Assert.AreNotEqual(
-                Architecture.Unknown,
-                ProcessEnvironment.NativeArchitecture);
+            Assert.That(
+                ProcessEnvironment.NativeArchitecture, Is.Not.EqualTo(Architecture.Unknown));
         }
 
         //---------------------------------------------------------------------
@@ -55,9 +54,8 @@ namespace Google.Solutions.Platform.Test
 #error Unknown architecture
 #endif
 
-            Assert.AreEqual(
-                expected,
-                ProcessEnvironment.ProcessArchitecture);
+            Assert.That(
+                ProcessEnvironment.ProcessArchitecture, Is.EqualTo(expected));
         }
     }
 }

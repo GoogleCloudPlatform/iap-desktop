@@ -80,12 +80,12 @@ namespace Google.Solutions.Mvvm.Test.Binding
                     _ => { },
                     new Mock<IBindingContext>().Object);
 
-                Assert.AreEqual(model.Text, menuItem.Text);
-                Assert.AreEqual(model.ToolTip, menuItem.ToolTipText);
-                Assert.AreEqual(model.Image, menuItem.Image);
-                Assert.AreEqual(model.ShortcutKeys, menuItem.ShortcutKeys);
-                Assert.AreEqual(model.IsEnabled, menuItem.Enabled);
-                Assert.AreEqual(model.Style, menuItem.DisplayStyle);
+                Assert.That(menuItem.Text, Is.EqualTo(model.Text));
+                Assert.That(menuItem.ToolTipText, Is.EqualTo(model.ToolTip));
+                Assert.That(menuItem.Image, Is.EqualTo(model.Image));
+                Assert.That(menuItem.ShortcutKeys, Is.EqualTo(model.ShortcutKeys));
+                Assert.That(menuItem.Enabled, Is.EqualTo(model.IsEnabled));
+                Assert.That(menuItem.DisplayStyle, Is.EqualTo(model.Style));
             }
         }
 
@@ -128,13 +128,13 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 model.IsVisible = false;
                 model.IsEnabled = false;
 
-                Assert.AreEqual(model.Text, menuItem.Text);
-                Assert.AreEqual(model.ToolTip, menuItem.ToolTipText);
-                Assert.AreEqual(model.Image, menuItem.Image);
-                Assert.AreEqual(model.ShortcutKeys, menuItem.ShortcutKeys);
-                Assert.AreEqual(model.IsVisible, menuItem.Visible);
-                Assert.AreEqual(model.IsEnabled, menuItem.Enabled);
-                Assert.AreEqual(model.Style, menuItem.DisplayStyle);
+                Assert.That(menuItem.Text, Is.EqualTo(model.Text));
+                Assert.That(menuItem.ToolTipText, Is.EqualTo(model.ToolTip));
+                Assert.That(menuItem.Image, Is.EqualTo(model.Image));
+                Assert.That(menuItem.ShortcutKeys, Is.EqualTo(model.ShortcutKeys));
+                Assert.That(menuItem.Visible, Is.EqualTo(model.IsVisible));
+                Assert.That(menuItem.Enabled, Is.EqualTo(model.IsEnabled));
+                Assert.That(menuItem.DisplayStyle, Is.EqualTo(model.Style));
             }
         }
 
@@ -175,7 +175,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                     _ => { },
                     new Mock<IBindingContext>().Object);
 
-                Assert.AreEqual(model.Count + 1, form.ContextMenuStrip.Items.Count);
+                Assert.That(form.ContextMenuStrip.Items.Count, Is.EqualTo(model.Count + 1));
             }
         }
 
@@ -208,7 +208,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                     _ => { },
                     new Mock<IBindingContext>().Object);
 
-                Assert.AreEqual(1, form.ContextMenuStrip.Items.Count);
+                Assert.That(form.ContextMenuStrip.Items.Count, Is.EqualTo(1));
                 Assert.IsInstanceOf<ToolStripSeparator>(form.ContextMenuStrip.Items[0]);
             }
         }
@@ -250,18 +250,17 @@ namespace Google.Solutions.Mvvm.Test.Binding
                     Text = "new item"
                 });
 
-                Assert.AreEqual(4, form.ContextMenuStrip.Items.Count);
+                Assert.That(form.ContextMenuStrip.Items.Count, Is.EqualTo(4));
 
-                CollectionAssert.AreEquivalent(
-                    new[] {
-                        "item #0",
-                        "new item",
-                        "item #1",
-                        "item #2"},
+                Assert.That(
                     form.ContextMenuStrip.Items
                         .OfType<ToolStripMenuItem>()
                         .Select(i => i.Text)
-                        .ToList());
+                        .ToList(), Is.EquivalentTo(new[] {
+                        "item #0",
+                        "new item",
+                        "item #1",
+                        "item #2"}));
             }
         }
 
@@ -299,16 +298,15 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
                 model.RemoveAt(1);
 
-                Assert.AreEqual(2, form.ContextMenuStrip.Items.Count);
+                Assert.That(form.ContextMenuStrip.Items.Count, Is.EqualTo(2));
 
-                CollectionAssert.AreEquivalent(
-                    new[] {
-                        "item #0",
-                        "item #2"},
+                Assert.That(
                     form.ContextMenuStrip.Items
                         .OfType<ToolStripMenuItem>()
                         .Select(i => i.Text)
-                        .ToList());
+                        .ToList(), Is.EquivalentTo(new[] {
+                        "item #0",
+                        "item #2"}));
             }
         }
 

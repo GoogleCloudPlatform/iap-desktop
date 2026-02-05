@@ -92,8 +92,8 @@ namespace Google.Solutions.Settings.Test
                     var accessor = CreateAccessor("test");
                     accessor.Write(key, this.SampleData);
 
-                    Assert.IsTrue(accessor.TryRead(key, out var read));
-                    Assert.AreEqual(this.SampleData.ToClearText(), read.ToClearText());
+                    Assert.That(accessor.TryRead(key, out var read), Is.True);
+                    Assert.That(read.ToClearText(), Is.EqualTo(this.SampleData.ToClearText()));
                 }
             }
         }
@@ -118,8 +118,8 @@ namespace Google.Solutions.Settings.Test
             [Test]
             public void IsValid()
             {
-                Assert.IsTrue(CreateAccessor("test").IsValid(Drink.Coffee));
-                Assert.IsFalse(CreateAccessor("test").IsValid((Drink)(-1)));
+                Assert.That(CreateAccessor("test").IsValid(Drink.Coffee), Is.True);
+                Assert.That(CreateAccessor("test").IsValid((Drink)(-1)), Is.False);
             }
         }
     }

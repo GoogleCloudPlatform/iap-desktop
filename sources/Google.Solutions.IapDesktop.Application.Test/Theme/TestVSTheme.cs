@@ -37,8 +37,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Theme
         {
             var theme = VSTheme.GetLightTheme();
 
-            Assert.IsNotNull(theme);
-            Assert.IsNotNull(theme.ColorPalette);
+            Assert.That(theme, Is.Not.Null);
+            Assert.That(theme.ColorPalette, Is.Not.Null);
         }
 
         [Test]
@@ -46,8 +46,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Theme
         {
             var theme = VSTheme.GetDarkTheme();
 
-            Assert.IsNotNull(theme);
-            Assert.IsNotNull(theme.ColorPalette);
+            Assert.That(theme, Is.Not.Null);
+            Assert.That(theme.ColorPalette, Is.Not.Null);
         }
     }
 }

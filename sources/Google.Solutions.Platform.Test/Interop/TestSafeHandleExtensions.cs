@@ -42,11 +42,11 @@ namespace Google.Solutions.Platform.Test.Interop
             using (var handle = Process.GetCurrentProcess().SafeHandle)
             {
                 var waitHandle = handle.ToWaitHandle(false);
-                Assert.IsFalse(handle.IsInvalid);
+                Assert.That(handle.IsInvalid, Is.False);
 
                 // Dispose should be a no-op.
                 waitHandle.Dispose();
-                Assert.IsFalse(handle.IsInvalid);
+                Assert.That(handle.IsInvalid, Is.False);
             }
         }
 
@@ -55,11 +55,11 @@ namespace Google.Solutions.Platform.Test.Interop
         {
             var handle = Process.GetCurrentProcess().SafeHandle;
             var waitHandle = handle.ToWaitHandle(false);
-            Assert.IsFalse(handle.IsInvalid);
+            Assert.That(handle.IsInvalid, Is.False);
 
             // Dispose closes the underlying handle.
             waitHandle.Dispose();
-            Assert.IsFalse(handle.IsInvalid);
+            Assert.That(handle.IsInvalid, Is.False);
         }
 
         //---------------------------------------------------------------------

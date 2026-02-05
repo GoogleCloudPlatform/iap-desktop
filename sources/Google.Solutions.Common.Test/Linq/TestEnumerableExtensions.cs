@@ -37,8 +37,8 @@ namespace Google.Solutions.Common.Test.Linq
         public void EnsureNotNull_WhenEnumIsNull_EnsureNotNullReturnsEmpty()
         {
             IEnumerable<string>? e = null;
-            Assert.IsNotNull(e.EnsureNotNull());
-            Assert.AreEqual(0, e.EnsureNotNull().Count());
+            Assert.That(e.EnsureNotNull(), Is.Not.Null);
+            Assert.That(e.EnsureNotNull().Count(), Is.EqualTo(0));
         }
 
         //---------------------------------------------------------------------
@@ -51,7 +51,7 @@ namespace Google.Solutions.Common.Test.Linq
             var list = new[] { "a", "b" };
             var lookup = new[] { "c", "d" };
 
-            Assert.IsFalse(list.ContainsAll(lookup));
+            Assert.That(list.ContainsAll(lookup), Is.False);
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace Google.Solutions.Common.Test.Linq
             var list = new[] { "a", "b" };
             var lookup = new[] { "b", "c" };
 
-            Assert.IsFalse(list.ContainsAll(lookup));
+            Assert.That(list.ContainsAll(lookup), Is.False);
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace Google.Solutions.Common.Test.Linq
             var list = new[] { "a", "b", "c", "d" };
             var lookup = new[] { "c", "d" };
 
-            Assert.IsTrue(list.ContainsAll(lookup));
+            Assert.That(list.ContainsAll(lookup), Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -82,8 +82,8 @@ namespace Google.Solutions.Common.Test.Linq
             var list = new[] { "a", "b", "c" };
             var chunks = list.Chunk(4);
 
-            Assert.AreEqual(1, chunks.Count());
-            Assert.AreEqual(3, chunks.First().Count());
+            Assert.That(chunks.Count(), Is.EqualTo(1));
+            Assert.That(chunks.First().Count(), Is.EqualTo(3));
         }
 
         [Test]
@@ -92,9 +92,9 @@ namespace Google.Solutions.Common.Test.Linq
             var list = new[] { "a", "b", "c", "d" };
             var chunks = list.Chunk(2);
 
-            Assert.AreEqual(2, chunks.Count());
-            CollectionAssert.AreEqual(new[] { "a", "b" }, chunks.First());
-            CollectionAssert.AreEqual(new[] { "c", "d" }, chunks.Skip(1).First());
+            Assert.That(chunks.Count(), Is.EqualTo(2));
+            Assert.That(chunks.First(), Is.EqualTo(new[] { "a", "b" }).AsCollection);
+            Assert.That(chunks.Skip(1).First(), Is.EqualTo(new[] { "c", "d" }).AsCollection);
         }
 
         [Test]
@@ -103,9 +103,9 @@ namespace Google.Solutions.Common.Test.Linq
             var list = new[] { "a", "b", "c" };
             var chunks = list.Chunk(2);
 
-            Assert.AreEqual(2, chunks.Count());
-            CollectionAssert.AreEqual(new[] { "a", "b" }, chunks.First());
-            CollectionAssert.AreEqual(new[] { "c" }, chunks.Skip(1).First());
+            Assert.That(chunks.Count(), Is.EqualTo(2));
+            Assert.That(chunks.First(), Is.EqualTo(new[] { "a", "b" }).AsCollection);
+            Assert.That(chunks.Skip(1).First(), Is.EqualTo(new[] { "c" }).AsCollection);
         }
 
         //---------------------------------------------------------------------
@@ -118,8 +118,8 @@ namespace Google.Solutions.Common.Test.Linq
             var e = Enumerable.Empty<string>()
                 .ConcatItem("test");
 
-            Assert.AreEqual(1, e.Count());
-            Assert.AreEqual("test", e.First());
+            Assert.That(e.Count(), Is.EqualTo(1));
+            Assert.That(e.First(), Is.EqualTo("test"));
         }
 
         [Test]
@@ -128,9 +128,9 @@ namespace Google.Solutions.Common.Test.Linq
             var e = new[] { "foo", "bar" }
                 .ConcatItem("test");
 
-            Assert.AreEqual(3, e.Count());
-            Assert.AreEqual("foo", e.First());
-            Assert.AreEqual("test", e.Last());
+            Assert.That(e.Count(), Is.EqualTo(3));
+            Assert.That(e.First(), Is.EqualTo("foo"));
+            Assert.That(e.Last(), Is.EqualTo("test"));
         }
     }
 }

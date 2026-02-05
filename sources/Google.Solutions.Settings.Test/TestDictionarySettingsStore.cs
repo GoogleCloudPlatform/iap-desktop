@@ -39,18 +39,14 @@ namespace Google.Solutions.Settings.Test
                 { "color", "3" }
             });
 
-            Assert.AreEqual(
-                "a string",
-                store.Read<string>("string", "desc", null, null, null).Value);
-            Assert.AreEqual(
-                -42,
-                store.Read("int", "desc", null, null, 0).Value);
-            Assert.AreEqual(
-                1000000000000001L,
-                store.Read<long>("long", "desc", null, null, 0).Value);
-            Assert.AreEqual(
-                ConsoleColor.DarkCyan,
-                store.Read("color", "desc", null, null, ConsoleColor.Black).Value);
+            Assert.That(
+                store.Read<string>("string", "desc", null, null, null).Value, Is.EqualTo("a string"));
+            Assert.That(
+                store.Read("int", "desc", null, null, 0).Value, Is.EqualTo(-42));
+            Assert.That(
+                store.Read<long>("long", "desc", null, null, 0).Value, Is.EqualTo(1000000000000001L));
+            Assert.That(
+                store.Read("color", "desc", null, null, ConsoleColor.Black).Value, Is.EqualTo(ConsoleColor.DarkCyan));
         }
 
         [Test]
@@ -63,12 +59,11 @@ namespace Google.Solutions.Settings.Test
             v.Value = "a string";
             store.Write(v);
 
-            CollectionAssert.AreEquivalent(
-                new Dictionary<string, string>()
+            Assert.That(
+                dict, Is.EquivalentTo(new Dictionary<string, string>()
                 {
                     { "string", "a string" },
-                },
-                dict);
+                }));
         }
     }
 }

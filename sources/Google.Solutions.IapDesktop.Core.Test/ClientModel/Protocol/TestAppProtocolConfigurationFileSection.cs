@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
         [Test]
         public void ParseName_WhenValueIsNullOrEmpty(
-            [Values(" ", "", null)] string value)
+            [Values(" ", "", null)] string? value)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
             {
@@ -54,14 +54,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
         [Test]
         public void ParseCondition_WhenConditionIsNullOrEmpty(
-            [Values(" ", "", null)] string condition)
+            [Values(" ", "", null)] string? condition)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
             {
                 Condition = condition
             };
 
-            CollectionAssert.IsEmpty(section.ParseCondition());
+            Assert.That(section.ParseCondition(), Is.Empty);
         }
 
         [Test]
@@ -74,9 +74,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             };
 
             var traits = section.ParseCondition();
-            CollectionAssert.IsNotEmpty(traits);
+            Assert.That(traits, Is.Not.Empty);
 
-            Assert.IsTrue(traits.All(t => t is InstanceTrait));
+            Assert.That(traits.All(t => t is InstanceTrait), Is.True);
         }
 
         [Test]
@@ -88,12 +88,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             };
 
             var traits = section.ParseCondition();
-            CollectionAssert.IsNotEmpty(traits);
+            Assert.That(traits, Is.Not.Empty);
 
-            Assert.AreEqual(3, traits.Count());
-            Assert.IsTrue(traits.Any(t => t is InstanceTrait));
-            Assert.IsTrue(traits.Any(t => t is WindowsTrait));
-            Assert.IsTrue(traits.Any(t => t is LinuxTrait));
+            Assert.That(traits.Count(), Is.EqualTo(3));
+            Assert.That(traits.Any(t => t is InstanceTrait), Is.True);
+            Assert.That(traits.Any(t => t is WindowsTrait), Is.True);
+            Assert.That(traits.Any(t => t is LinuxTrait), Is.True);
         }
 
         [Test]
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
         [Test]
         public void ParseRemotePort_WhenValueIsNullOrEmpty(
-            [Values(null, "", " \n")] string value)
+            [Values(null, "", " \n")] string? value)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
             {
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 RemotePort = "80"
             };
 
-            Assert.AreEqual(80, section.ParseRemotePort());
+            Assert.That(section.ParseRemotePort(), Is.EqualTo(80));
         }
 
         //---------------------------------------------------------------------
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
         [Test]
         public void ParseLocalEndpoint_WhenValueIsNullOrEmpty(
-            [Values(null, "", " \n")] string value)
+            [Values(null, "", " \n")] string? value)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
             {
@@ -179,24 +179,21 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         [Test]
         public void ParseLocalEndpoint_WhenValueIsValid()
         {
-            Assert.AreEqual(
-                new IPEndPoint(IPAddress.Loopback, 80),
+            Assert.That(
                 new AppProtocolConfigurationFile.MainSection()
                 {
                     LocalPort = "80"
-                }.ParseLocalEndpoint());
-            Assert.AreEqual(
-                new IPEndPoint(IPAddress.Loopback, 80),
+                }.ParseLocalEndpoint(), Is.EqualTo(new IPEndPoint(IPAddress.Loopback, 80)));
+            Assert.That(
                 new AppProtocolConfigurationFile.MainSection()
                 {
                     LocalPort = "127.0.0.1:80"
-                }.ParseLocalEndpoint());
-            Assert.AreEqual(
-                new IPEndPoint(IPAddress.Parse("127.0.0.2"), 80),
+                }.ParseLocalEndpoint(), Is.EqualTo(new IPEndPoint(IPAddress.Loopback, 80)));
+            Assert.That(
                 new AppProtocolConfigurationFile.MainSection()
                 {
                     LocalPort = "127.0.0.2:80"
-                }.ParseLocalEndpoint());
+                }.ParseLocalEndpoint(), Is.EqualTo(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 80)));
         }
 
         //---------------------------------------------------------------------
@@ -211,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
         [Test]
         public void ParseClientSection_WhenClientExecutableIsNullOrEmpty(
-            [Values(null, "", " \n")] string value)
+            [Values(null, "", " \n")] string? value)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
             {
@@ -237,13 +234,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             };
 
             var client = (AppProtocolClient?)section.ParseClientSection();
-            Assert.IsNotNull(client);
+            Assert.That(client, Is.Not.Null);
 
             var programsFolder = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
 
-            StringAssert.Contains(programsFolder, client!.Executable);
-            StringAssert.Contains(programsFolder, client.ArgumentsTemplate);
-            StringAssert.Contains("{host}", client.ArgumentsTemplate);
+            Assert.That(client!.Executable, Does.Contain(programsFolder));
+            Assert.That(client.ArgumentsTemplate, Does.Contain(programsFolder));
+            Assert.That(client.ArgumentsTemplate, Does.Contain("{host}"));
         }
 
         [Test]
@@ -258,8 +255,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             };
 
             var client = (AppProtocolClient?)section.ParseClientSection();
-            Assert.IsNotNull(client);
-            Assert.IsTrue(File.Exists(client!.Executable));
+            Assert.That(client, Is.Not.Null);
+            Assert.That(File.Exists(client!.Executable), Is.True);
         }
 
         [Test]
@@ -275,8 +272,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             };
 
             var client = (AppProtocolClient?)section.ParseClientSection();
-            Assert.IsNotNull(client);
-            Assert.AreEqual(fileName, client!.Executable);
+            Assert.That(client, Is.Not.Null);
+            Assert.That(client!.Executable, Is.EqualTo(fileName));
         }
     }
 }

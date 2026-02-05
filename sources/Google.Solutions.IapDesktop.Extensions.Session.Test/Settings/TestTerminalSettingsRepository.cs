@@ -39,21 +39,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.IsTrue(settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value);
-                Assert.IsTrue(settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value);
-                Assert.IsTrue(settings.IsQuoteConvertionOnPasteEnabled.Value);
-                Assert.IsTrue(settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
-                Assert.IsTrue(settings.IsScrollingUsingCtrlPageUpDownEnabled.Value);
-                Assert.AreEqual(TerminalSettings.DefaultFontFamily, settings.FontFamily.Value);
-                Assert.AreEqual(
-                    TerminalSettings.DefaultFontSize,
-                    TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.Value));
-                Assert.AreEqual(
-                    TerminalSettings.DefaultBackgroundColor.ToArgb(),
-                    settings.BackgroundColorArgb.Value);
-                Assert.AreEqual(
-                    Color.White.ToArgb(),
-                    settings.ForegroundColorArgb.Value);
+                Assert.That(settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value, Is.True);
+                Assert.That(settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value, Is.True);
+                Assert.That(settings.IsQuoteConvertionOnPasteEnabled.Value, Is.True);
+                Assert.That(settings.IsScrollingUsingCtrlHomeEndEnabled.Value, Is.True);
+                Assert.That(settings.IsScrollingUsingCtrlPageUpDownEnabled.Value, Is.True);
+                Assert.That(settings.FontFamily.Value, Is.EqualTo(TerminalSettings.DefaultFontFamily));
+                Assert.That(
+                    TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.Value), Is.EqualTo(TerminalSettings.DefaultFontSize));
+                Assert.That(
+                    settings.BackgroundColorArgb.Value, Is.EqualTo(TerminalSettings.DefaultBackgroundColor.ToArgb()));
+                Assert.That(
+                    settings.ForegroundColorArgb.Value, Is.EqualTo(Color.White.ToArgb()));
             }
         }
 
@@ -67,18 +64,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 var eventFired = false;
                 repository.SettingsChanged += (sender, args) =>
                 {
-                    Assert.AreSame(repository, sender);
-                    Assert.IsFalse(args.Data.IsScrollingUsingCtrlHomeEndEnabled.Value);
+                    Assert.That(sender, Is.SameAs(repository));
+                    Assert.That(args.Data.IsScrollingUsingCtrlHomeEndEnabled.Value, Is.False);
                     eventFired = true;
                 };
 
                 var settings = repository.GetSettings();
-                Assert.IsTrue(settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
+                Assert.That(settings.IsScrollingUsingCtrlHomeEndEnabled.Value, Is.True);
                 settings.IsScrollingUsingCtrlHomeEndEnabled.Value = false;
 
                 repository.SetSettings(settings);
 
-                Assert.IsTrue(eventFired);
+                Assert.That(eventFired, Is.True);
             }
         }
     }

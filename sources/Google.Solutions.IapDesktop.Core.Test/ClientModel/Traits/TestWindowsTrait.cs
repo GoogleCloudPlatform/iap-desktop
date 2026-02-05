@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         [Test]
         public void DisplayName()
         {
-            Assert.AreEqual("isWindows()", WindowsTrait.Instance.DisplayName);
+            Assert.That(WindowsTrait.Instance.DisplayName, Is.EqualTo("isWindows()"));
         }
 
         //---------------------------------------------------------------------
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         [Test]
         public void ToString_ReturnsExpression()
         {
-            Assert.AreEqual("isWindows()", WindowsTrait.Instance.ToString());
+            Assert.That(WindowsTrait.Instance.ToString(), Is.EqualTo("isWindows()"));
         }
 
         //---------------------------------------------------------------------
@@ -59,17 +59,17 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
 
         [Test]
         public void TryParse_WhenExpressionIsNullOrEmpty(
-            [Values(" \t", "", null)] string expression)
+            [Values(" \t", "", null)] string? expression)
         {
-            Assert.IsFalse(WindowsTrait.TryParse(expression, out var _));
+            Assert.That(WindowsTrait.TryParse(expression, out var _), Is.False);
         }
 
         [Test]
         public void TryParse_WhenExpressionIsValid(
             [Values("isWindows()", " isWindows(  \n) \n\r\t ")] string expression)
         {
-            Assert.IsTrue(WindowsTrait.TryParse(expression, out var trait));
-            Assert.IsNotNull(trait);
+            Assert.That(WindowsTrait.TryParse(expression, out var trait), Is.True);
+            Assert.That(trait, Is.Not.Null);
         }
 
     }

@@ -102,21 +102,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
               ";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r));
+            Assert.That(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r), Is.True);
 
             var e = (SetCommonInstanceMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.Principal);
-            Assert.AreEqual("project-1", e.ProjectId);
-            Assert.AreEqual("NOTICE", e.Severity);
+            Assert.That(e.Principal, Is.EqualTo("user@example.com"));
+            Assert.That(e.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Severity, Is.EqualTo("NOTICE"));
             Assert.IsNull(e.Status);
 
-            Assert.AreEqual("1.2.3.4", e.SourceHost);
-            Assert.AreEqual("IAP-Desktop/1.0.1.0", e.UserAgent);
+            Assert.That(e.SourceHost, Is.EqualTo("1.2.3.4"));
+            Assert.That(e.UserAgent, Is.EqualTo("IAP-Desktop/1.0.1.0"));
 
-            Assert.AreEqual(
-                "Linux SSH keys or metadata update from 1.2.3.4 using IAP-Desktop/1.0.1.0 (operation started)",
-                e.Message);
+            Assert.That(
+                e.Message, Is.EqualTo("Linux SSH keys or metadata update from 1.2.3.4 using IAP-Desktop/1.0.1.0 (operation started)"));
         }
 
         [Test]
@@ -155,19 +154,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r));
+            Assert.That(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r), Is.True);
 
             var e = (SetCommonInstanceMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.Principal);
-            Assert.AreEqual("project-1", e.ProjectId);
-            Assert.AreEqual("NOTICE", e.Severity);
+            Assert.That(e.Principal, Is.EqualTo("user@example.com"));
+            Assert.That(e.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Severity, Is.EqualTo("NOTICE"));
             Assert.IsNull(e.Status);
 
             Assert.IsNull(e.SourceHost);
             Assert.IsNull(e.UserAgent);
 
-            Assert.AreEqual("Linux SSH keys or metadata update from (unknown) using (unknown agent) (operation completed)", e.Message);
+            Assert.That(e.Message, Is.EqualTo("Linux SSH keys or metadata update from (unknown) using (unknown agent) (operation completed)"));
         }
 
 
@@ -215,19 +214,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r));
+            Assert.That(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r), Is.True);
 
             var e = (SetCommonInstanceMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.Principal);
-            Assert.AreEqual("project-1", e.ProjectId);
-            Assert.AreEqual("NOTICE", e.Severity);
+            Assert.That(e.Principal, Is.EqualTo("user@example.com"));
+            Assert.That(e.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Severity, Is.EqualTo("NOTICE"));
             Assert.IsNull(e.Status);
 
             Assert.IsNull(e.SourceHost);
             Assert.IsNull(e.UserAgent);
 
-            Assert.AreEqual("Linux SSH keys update from (unknown) using (unknown agent) (operation completed)", e.Message);
+            Assert.That(e.Message, Is.EqualTo("Linux SSH keys update from (unknown) using (unknown agent) (operation completed)"));
         }
 
         [Test]
@@ -301,23 +300,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r));
+            Assert.That(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r), Is.True);
 
             var e = (SetCommonInstanceMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.Principal);
-            Assert.AreEqual("project-1", e.ProjectId);
-            Assert.AreEqual("ERROR", e.Severity);
-            Assert.AreEqual(7, e.Status?.Code);
-            Assert.AreEqual("Required iam.serviceAccounts.actAs permission for projects/project-1", e.Status?.Message);
+            Assert.That(e.Principal, Is.EqualTo("user@example.com"));
+            Assert.That(e.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Severity, Is.EqualTo("ERROR"));
+            Assert.That(e.Status?.Code, Is.EqualTo(7));
+            Assert.That(e.Status?.Message, Is.EqualTo("Required iam.serviceAccounts.actAs permission for projects/project-1"));
 
-            Assert.AreEqual("1.2.3.4", e.SourceHost);
-            Assert.AreEqual("IAP-Desktop/1.1", e.UserAgent);
+            Assert.That(e.SourceHost, Is.EqualTo("1.2.3.4"));
+            Assert.That(e.UserAgent, Is.EqualTo("IAP-Desktop/1.1"));
 
-            Assert.AreEqual(
-                "Linux SSH keys or metadata update from 1.2.3.4 using IAP-Desktop/1.1 failed " +
-                "[Required iam.serviceAccounts.actAs permission for projects/project-1]",
-                e.Message);
+            Assert.That(
+                e.Message, Is.EqualTo("Linux SSH keys or metadata update from 1.2.3.4 using IAP-Desktop/1.1 failed " +
+                "[Required iam.serviceAccounts.actAs permission for projects/project-1]"));
         }
     }
 }

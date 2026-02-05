@@ -117,7 +117,7 @@ namespace Google.Solutions.Iap.Test
                 22,
                 IapClient.DefaultNetworkInterface);
 
-            Assert.IsFalse(target.IsMutualTlsEnabled);
+            Assert.That(target.IsMutualTlsEnabled, Is.False);
             Assert.IsNull(target.ClientCertificate);
         }
 
@@ -140,8 +140,8 @@ namespace Google.Solutions.Iap.Test
                 22,
                 IapClient.DefaultNetworkInterface);
 
-            Assert.IsTrue(target.IsMutualTlsEnabled);
-            Assert.IsNotNull(target.ClientCertificate);
+            Assert.That(target.IsMutualTlsEnabled, Is.True);
+            Assert.That(target.ClientCertificate, Is.Not.Null);
         }
     }
 }

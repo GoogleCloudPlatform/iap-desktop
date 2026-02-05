@@ -55,7 +55,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
                 form.Shown += (_, __) => form.Close();
                 form.Show();
 
-                Assert.AreEqual(form.Handle, callback.WindowHandle);
+                Assert.That(callback.WindowHandle, Is.EqualTo(form.Handle));
             }
         }
 
@@ -81,7 +81,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
                 form.Shown += (_, __) => form.Close();
                 form.Show();
 
-                Assert.AreNotEqual(0, messagesReceived);
+                Assert.That(messagesReceived, Is.Not.EqualTo(0));
             }
         }
 
@@ -104,7 +104,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
                 form.Shown += (_, __) => form.Close();
                 form.Show();
 
-                Assert.IsNotNull(exception);
+                Assert.That(exception, Is.Not.Null);
             }
         }
 
@@ -129,7 +129,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
             form.Show();
             form.Dispose();
 
-            Assert.IsTrue(callback.IsDisposed);
+            Assert.That(callback.IsDisposed, Is.True);
         }
     }
 }

@@ -35,29 +35,29 @@ namespace Google.Solutions.Apis.Test.Compute
         public void TryParse_WhenNameIsZonal_ThenReturnsZonalName()
         {
             var name = "instance-1.zone-1.c.project-1.internal";
-            Assert.IsTrue(InternalDnsName.TryParse(name, out var parsed));
-            Assert.IsNotNull(parsed);
+            Assert.That(InternalDnsName.TryParse(name, out var parsed), Is.True);
+            Assert.That(parsed, Is.Not.Null);
             Assert.IsInstanceOf<InternalDnsName.ZonalName>(parsed);
-            Assert.AreEqual(name, parsed!.Name);
-            Assert.AreEqual(name, parsed.ToString());
+            Assert.That(parsed!.Name, Is.EqualTo(name));
+            Assert.That(parsed.ToString(), Is.EqualTo(name));
         }
 
         [Test]
         public void TryParse_WhenNameIsGlobal_ThenReturnsGlobalName()
         {
             var name = "instance-1.c.project-1.internal";
-            Assert.IsTrue(InternalDnsName.TryParse(name, out var parsed));
-            Assert.IsNotNull(parsed);
+            Assert.That(InternalDnsName.TryParse(name, out var parsed), Is.True);
+            Assert.That(parsed, Is.Not.Null);
             Assert.IsInstanceOf<InternalDnsName.GlobalName>(parsed);
-            Assert.AreEqual(name, parsed!.Name);
-            Assert.AreEqual(name, parsed.ToString());
+            Assert.That(parsed!.Name, Is.EqualTo(name));
+            Assert.That(parsed.ToString(), Is.EqualTo(name));
         }
 
         [Test]
         public void TryParse_WhenNameIsInvalid_ThenReturnsFalse(
-            [Values(null, "", " ", ".internal", "example.com")] string name)
+            [Values(null, "", " ", ".internal", "example.com")] string? name)
         {
-            Assert.IsFalse(InternalDnsName.TryParse(name, out var _));
+            Assert.That(InternalDnsName.TryParse(name, out var _), Is.False);
         }
     }
 }

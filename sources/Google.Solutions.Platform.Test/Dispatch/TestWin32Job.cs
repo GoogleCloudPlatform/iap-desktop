@@ -50,11 +50,11 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
                 job.Add(process);
                 process.Resume();
-                Assert.IsTrue(process.IsRunning);
+                Assert.That(process.IsRunning, Is.True);
 
                 job.Dispose();
 
-                Assert.IsFalse(process.IsRunning);
+                Assert.That(process.IsRunning, Is.False);
             }
         }
 
@@ -69,11 +69,11 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
                 job.Add(process);
                 process.Resume();
-                Assert.IsTrue(process.IsRunning);
+                Assert.That(process.IsRunning, Is.True);
 
                 job.Dispose();
 
-                Assert.IsTrue(process.IsRunning);
+                Assert.That(process.IsRunning, Is.True);
                 process.Terminate(0);
             }
         }
@@ -92,14 +92,14 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 CmdExe,
                 null))
             {
-                Assert.IsFalse(job.Contains(process));
-                Assert.IsFalse(job.Contains(process.Id));
+                Assert.That(job.Contains(process), Is.False);
+                Assert.That(job.Contains(process.Id), Is.False);
 
                 job.Add(process);
                 job.Add(process); // Again.
 
-                Assert.IsTrue(job.Contains(process));
-                Assert.IsTrue(job.Contains(process.Id));
+                Assert.That(job.Contains(process), Is.True);
+                Assert.That(job.Contains(process.Id), Is.True);
             }
         }
 
@@ -122,7 +122,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             using (var job = new Win32Job(true))
             {
-                CollectionAssert.IsEmpty(job.ProcessIds);
+                Assert.That(job.ProcessIds, Is.Empty);
             }
         }
 
@@ -139,9 +139,9 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 job.Add(process2);
 
                 var ids = job.ProcessIds;
-                Assert.AreEqual(2, ids.Count());
-                CollectionAssert.Contains(ids, process1.Id);
-                CollectionAssert.Contains(ids, process2.Id);
+                Assert.That(ids.Count(), Is.EqualTo(2));
+                Assert.That(ids, Has.Member(process1.Id));
+                Assert.That(ids, Has.Member(process2.Id));
             }
         }
 
@@ -188,7 +188,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 job.Add(process);
 
                 var waitTask = job.WaitForProcessesAsync(TimeSpan.MaxValue, CancellationToken.None);
-                Assert.IsFalse(waitTask.IsCompleted);
+                Assert.That(waitTask.IsCompleted, Is.False);
 
                 process.Resume();
                 process.Terminate(0);

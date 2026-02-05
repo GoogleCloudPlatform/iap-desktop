@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         [Test]
         public void DisplayName()
         {
-            Assert.AreEqual("isLinux()", LinuxTrait.Instance.DisplayName);
+            Assert.That(LinuxTrait.Instance.DisplayName, Is.EqualTo("isLinux()"));
         }
 
         //---------------------------------------------------------------------
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         [Test]
         public void ToString_ReturnsExpression()
         {
-            Assert.AreEqual("isLinux()", LinuxTrait.Instance.ToString());
+            Assert.That(LinuxTrait.Instance.ToString(), Is.EqualTo("isLinux()"));
         }
 
         //---------------------------------------------------------------------
@@ -59,17 +59,17 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
 
         [Test]
         public void TryParse_WhenExpressionIsNullOrEmpty(
-            [Values(" \t", "", null)] string expression)
+            [Values(" \t", "", null)] string? expression)
         {
-            Assert.IsFalse(LinuxTrait.TryParse(expression, out var _));
+            Assert.That(LinuxTrait.TryParse(expression, out var _), Is.False);
         }
 
         [Test]
         public void TryParse_WhenExpressionIsValid(
             [Values("isLinux()", " isLinux(  \n) \n\r\t ")] string expression)
         {
-            Assert.IsTrue(LinuxTrait.TryParse(expression, out var trait));
-            Assert.IsNotNull(trait);
+            Assert.That(LinuxTrait.TryParse(expression, out var trait), Is.True);
+            Assert.That(trait, Is.Not.Null);
         }
 
     }

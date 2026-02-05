@@ -64,7 +64,7 @@ namespace Google.Solutions.Settings.Test
                 var accessor = CreateAccessor("test");
                 accessor.Write(dictionary, this.SampleData);
 
-                Assert.IsFalse(accessor.TryRead(dictionary, out var _));
+                Assert.That(accessor.TryRead(dictionary, out var _), Is.False);
             }
         }
 
@@ -76,8 +76,8 @@ namespace Google.Solutions.Settings.Test
             [Test]
             public void IsValid()
             {
-                Assert.IsTrue(CreateAccessor("test").IsValid(ConsoleColor.Blue));
-                Assert.IsFalse(CreateAccessor("test").IsValid((ConsoleColor)(-1)));
+                Assert.That(CreateAccessor("test").IsValid(ConsoleColor.Blue), Is.True);
+                Assert.That(CreateAccessor("test").IsValid((ConsoleColor)(-1)), Is.False);
             }
         }
     }

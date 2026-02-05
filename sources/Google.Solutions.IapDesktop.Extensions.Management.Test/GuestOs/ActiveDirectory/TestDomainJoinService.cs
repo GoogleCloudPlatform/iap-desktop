@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
         {
             var script = DomainJoinService.CreateStartupScript(Guid.Empty);
 
-            StringAssert.Contains(Guid.Empty.ToString(), script);
+            Assert.That(script, Does.Contain(Guid.Empty.ToString()));
         }
 
         //---------------------------------------------------------------------
@@ -103,8 +103,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(Guid.Empty.ToString(), message.OperationId);
-            Assert.AreEqual("test-message", message.MessageType);
+            Assert.That(message.OperationId, Is.EqualTo(Guid.Empty.ToString()));
+            Assert.That(message.MessageType, Is.EqualTo("test-message"));
         }
 
         //---------------------------------------------------------------------

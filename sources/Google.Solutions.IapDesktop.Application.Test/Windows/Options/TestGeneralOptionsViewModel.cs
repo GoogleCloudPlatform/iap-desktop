@@ -83,8 +83,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new Mock<IBrowserProtocolRegistry>().Object,
                 new HelpClient());
 
-            Assert.IsTrue(viewModel.IsUpdateCheckEnabled.Value);
-            Assert.IsTrue(viewModel.IsUpdateCheckEditable.Value);
+            Assert.That(viewModel.IsUpdateCheckEnabled.Value, Is.True);
+            Assert.That(viewModel.IsUpdateCheckEditable.Value, Is.True);
         }
 
         [Test]
@@ -100,8 +100,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new Mock<IBrowserProtocolRegistry>().Object,
                 new HelpClient());
 
-            Assert.IsFalse(viewModel.IsUpdateCheckEnabled.Value);
-            Assert.IsTrue(viewModel.IsUpdateCheckEditable.Value);
+            Assert.That(viewModel.IsUpdateCheckEnabled.Value, Is.False);
+            Assert.That(viewModel.IsUpdateCheckEditable.Value, Is.True);
         }
 
         [Test]
@@ -122,8 +122,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new Mock<IBrowserProtocolRegistry>().Object,
                 new HelpClient());
 
-            Assert.IsFalse(viewModel.IsUpdateCheckEnabled.Value);
-            Assert.IsFalse(viewModel.IsUpdateCheckEditable.Value);
+            Assert.That(viewModel.IsUpdateCheckEnabled.Value, Is.False);
+            Assert.That(viewModel.IsUpdateCheckEditable.Value, Is.False);
         }
 
         [Test]
@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsUpdateCheckEnabled.Value);
+            Assert.That(settings.IsUpdateCheckEnabled.Value, Is.False);
         }
 
         [Test]
@@ -155,11 +155,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new Mock<IBrowserProtocolRegistry>().Object,
                 new HelpClient());
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             viewModel.IsUpdateCheckEnabled.Value = !viewModel.IsUpdateCheckEnabled.Value;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         [Test]
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new Mock<IBrowserProtocolRegistry>().Object,
                 new HelpClient());
 
-            Assert.AreEqual("never", viewModel.LastUpdateCheck);
+            Assert.That(viewModel.LastUpdateCheck, Is.EqualTo("never"));
         }
 
         [Test]
@@ -187,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new Mock<IBrowserProtocolRegistry>().Object,
                 new HelpClient());
 
-            Assert.AreNotEqual("never", viewModel.LastUpdateCheck);
+            Assert.That(viewModel.LastUpdateCheck, Is.Not.EqualTo("never"));
         }
 
         //---------------------------------------------------------------------
@@ -203,12 +203,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new Mock<IBrowserProtocolRegistry>().Object,
                 new HelpClient());
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             viewModel.IsBrowserIntegrationEnabled.Value =
                 !viewModel.IsBrowserIntegrationEnabled.Value;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         [Test]
@@ -268,8 +268,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new Mock<IBrowserProtocolRegistry>().Object,
                 new HelpClient());
 
-            Assert.IsTrue(viewModel.IsTelemetryEnabled.Value);
-            Assert.IsTrue(viewModel.IsTelemetryEditable.Value);
+            Assert.That(viewModel.IsTelemetryEnabled.Value, Is.True);
+            Assert.That(viewModel.IsTelemetryEditable.Value, Is.True);
         }
 
         [Test]
@@ -285,8 +285,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new Mock<IBrowserProtocolRegistry>().Object,
                 new HelpClient());
 
-            Assert.IsFalse(viewModel.IsTelemetryEnabled.Value);
-            Assert.IsTrue(viewModel.IsTelemetryEditable.Value);
+            Assert.That(viewModel.IsTelemetryEnabled.Value, Is.False);
+            Assert.That(viewModel.IsTelemetryEditable.Value, Is.True);
         }
 
         [Test]
@@ -307,8 +307,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new Mock<IBrowserProtocolRegistry>().Object,
                 new HelpClient());
 
-            Assert.IsFalse(viewModel.IsTelemetryEnabled.Value);
-            Assert.IsFalse(viewModel.IsTelemetryEditable.Value);
+            Assert.That(viewModel.IsTelemetryEnabled.Value, Is.False);
+            Assert.That(viewModel.IsTelemetryEditable.Value, Is.False);
         }
 
         [Test]
@@ -330,8 +330,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsTrue(settings.IsTelemetryEnabled.Value);
-            Assert.IsTrue(TelemetryLog.Current.Enabled);
+            Assert.That(settings.IsTelemetryEnabled.Value, Is.True);
+            Assert.That(TelemetryLog.Current.Enabled, Is.True);
         }
 
         [Test]
@@ -353,8 +353,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsTelemetryEnabled.Value);
-            Assert.IsFalse(TelemetryLog.Current.Enabled);
+            Assert.That(settings.IsTelemetryEnabled.Value, Is.False);
+            Assert.That(TelemetryLog.Current.Enabled, Is.False);
         }
 
         [Test]
@@ -366,11 +366,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new Mock<IBrowserProtocolRegistry>().Object,
                 new HelpClient());
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             viewModel.IsTelemetryEnabled.Value = !viewModel.IsTelemetryEnabled.Value;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
     }
 }

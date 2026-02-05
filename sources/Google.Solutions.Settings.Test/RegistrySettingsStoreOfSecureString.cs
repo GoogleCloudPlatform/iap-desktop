@@ -47,18 +47,18 @@ namespace Google.Solutions.Settings.Test
                     "category",
                     null);
 
-                Assert.IsFalse(setting.IsSpecified);
-                Assert.IsTrue(setting.IsDefault);
+                Assert.That(setting.IsSpecified, Is.False);
+                Assert.That(setting.IsDefault, Is.True);
 
                 setting.SetClearTextValue("value");
 
-                Assert.IsTrue(setting.IsSpecified);
-                Assert.IsFalse(setting.IsDefault);
+                Assert.That(setting.IsSpecified, Is.True);
+                Assert.That(setting.IsDefault, Is.False);
 
                 setting.Value = setting.DefaultValue;
 
-                Assert.IsTrue(setting.IsSpecified);
-                Assert.IsTrue(setting.IsDefault);
+                Assert.That(setting.IsSpecified, Is.True);
+                Assert.That(setting.IsDefault, Is.True);
             }
         }
 
@@ -78,14 +78,14 @@ namespace Google.Solutions.Settings.Test
                     "category",
                     null);
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
                 Assert.IsNull(setting.Value);
-                Assert.IsTrue(setting.IsDefault);
-                Assert.IsFalse(setting.IsDirty);
-                Assert.IsFalse(setting.IsReadOnly);
+                Assert.That(setting.IsDefault, Is.True);
+                Assert.That(setting.IsDirty, Is.False);
+                Assert.That(setting.IsReadOnly, Is.False);
             }
         }
 
@@ -101,14 +101,14 @@ namespace Google.Solutions.Settings.Test
                     "category",
                     null);
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
                 Assert.IsNull(setting.Value);
-                Assert.IsTrue(setting.IsDefault);
-                Assert.IsFalse(setting.IsDirty);
-                Assert.IsFalse(setting.IsReadOnly);
+                Assert.That(setting.IsDefault, Is.True);
+                Assert.That(setting.IsDirty, Is.False);
+                Assert.That(setting.IsReadOnly, Is.False);
             }
         }
 
@@ -126,15 +126,15 @@ namespace Google.Solutions.Settings.Test
                     "category",
                     null);
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
                 Assert.IsNull(setting.Value);
                 Assert.IsNull(setting.GetClearTextValue());
-                Assert.IsTrue(setting.IsDefault);
-                Assert.IsFalse(setting.IsDirty);
-                Assert.IsFalse(setting.IsReadOnly);
+                Assert.That(setting.IsDefault, Is.True);
+                Assert.That(setting.IsDirty, Is.False);
+                Assert.That(setting.IsReadOnly, Is.False);
             }
         }
 
@@ -153,7 +153,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = SecureStringExtensions.FromClearText("red");
                 key.Write(setting);
 
-                Assert.IsNotNull(key.BackingKey.GetValue("test"));
+                Assert.That(key.BackingKey.GetValue("test"), Is.Not.Null);
 
                 // Now read again.
 
@@ -164,13 +164,13 @@ namespace Google.Solutions.Settings.Test
                     "category",
                     null);
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual("red", setting.GetClearTextValue());
-                Assert.IsFalse(setting.IsDefault);
-                Assert.IsFalse(setting.IsDirty);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
+                Assert.That(setting.GetClearTextValue(), Is.EqualTo("red"));
+                Assert.That(setting.IsDefault, Is.False);
+                Assert.That(setting.IsDirty, Is.False);
             }
         }
 
@@ -193,7 +193,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = SecureStringExtensions.FromClearText("green");
                 key.Write(setting);
 
-                Assert.IsNotNull(key.BackingKey.GetValue("test"));
+                Assert.That(key.BackingKey.GetValue("test"), Is.Not.Null);
             }
         }
 
@@ -212,7 +212,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = SecureStringExtensions.FromClearText("red");
                 key.Write(setting);
 
-                Assert.IsNotNull(key.BackingKey.GetValue("test"));
+                Assert.That(key.BackingKey.GetValue("test"), Is.Not.Null);
 
                 // Now write again.
 
@@ -248,8 +248,8 @@ namespace Google.Solutions.Settings.Test
 
                 setting.Value = null;
 
-                Assert.IsTrue(setting.IsDefault);
-                Assert.IsFalse(setting.IsDirty);
+                Assert.That(setting.IsDefault, Is.True);
+                Assert.That(setting.IsDirty, Is.False);
             }
         }
 
@@ -267,8 +267,8 @@ namespace Google.Solutions.Settings.Test
 
                 setting.Value = null;
 
-                Assert.IsTrue(setting.IsDefault);
-                Assert.IsFalse(setting.IsDirty);
+                Assert.That(setting.IsDefault, Is.True);
+                Assert.That(setting.IsDirty, Is.False);
             }
         }
 
@@ -286,8 +286,8 @@ namespace Google.Solutions.Settings.Test
 
                 setting.Value = SecureStringExtensions.FromClearText("yellow");
 
-                Assert.IsFalse(setting.IsDefault);
-                Assert.IsTrue(setting.IsDirty);
+                Assert.That(setting.IsDefault, Is.False);
+                Assert.That(setting.IsDirty, Is.True);
             }
         }
 

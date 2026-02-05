@@ -44,9 +44,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             var runningVm = new Mock<IProjectModelInstanceNode>();
             runningVm.SetupGet(n => n.IsRunning).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuOpenCom1.QueryState(runningVm.Object));
+            Assert.That(
+                commands.ContextMenuOpenCom1.QueryState(runningVm.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -58,9 +57,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             var stoppedVm = new Mock<IProjectModelInstanceNode>();
             stoppedVm.SetupGet(n => n.IsRunning).Returns(false);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ContextMenuOpenCom1.QueryState(stoppedVm.Object));
+            Assert.That(
+                commands.ContextMenuOpenCom1.QueryState(stoppedVm.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         [Test]
@@ -69,15 +67,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new SerialOutputCommands(toolWindowHost.Object);
 
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuOpenCom1.QueryState(new Mock<IProjectModelCloudNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuOpenCom1.QueryState(new Mock<IProjectModelProjectNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuOpenCom1.QueryState(new Mock<IProjectModelZoneNode>().Object));
+            Assert.That(
+                commands.ContextMenuOpenCom1.QueryState(new Mock<IProjectModelCloudNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                commands.ContextMenuOpenCom1.QueryState(new Mock<IProjectModelProjectNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                commands.ContextMenuOpenCom1.QueryState(new Mock<IProjectModelZoneNode>().Object), Is.EqualTo(CommandState.Unavailable));
         }
 
         //---------------------------------------------------------------------
@@ -92,9 +87,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
             var commands = new SerialOutputCommands(toolWindowHost.Object);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.WindowMenuOpenCom1.QueryState(context.Object));
+            Assert.That(
+                commands.WindowMenuOpenCom1.QueryState(context.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         //---------------------------------------------------------------------
@@ -109,9 +103,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
             var commands = new SerialOutputCommands(toolWindowHost.Object);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.WindowMenuOpenCom3.QueryState(context.Object));
+            Assert.That(
+                commands.WindowMenuOpenCom3.QueryState(context.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         //---------------------------------------------------------------------
@@ -126,9 +119,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
             var commands = new SerialOutputCommands(toolWindowHost.Object);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.WindowMenuOpenCom4.QueryState(context.Object));
+            Assert.That(
+                commands.WindowMenuOpenCom4.QueryState(context.Object), Is.EqualTo(CommandState.Enabled));
         }
     }
 }

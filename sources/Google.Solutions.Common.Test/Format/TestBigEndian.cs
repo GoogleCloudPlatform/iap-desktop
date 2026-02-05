@@ -32,10 +32,10 @@ namespace Google.Solutions.Common.Test.Format
         {
             var buffer = new byte[2];
             BigEndian.EncodeUInt16(ushort.MaxValue, buffer, 0);
-            Assert.AreEqual(ushort.MaxValue, BigEndian.DecodeUInt16(buffer, 0));
+            Assert.That(BigEndian.DecodeUInt16(buffer, 0), Is.EqualTo(ushort.MaxValue));
 
             BigEndian.EncodeUInt16(0xABCD, buffer, 0);
-            Assert.AreEqual(0xABCD, BigEndian.DecodeUInt16(buffer, 0));
+            Assert.That(BigEndian.DecodeUInt16(buffer, 0), Is.EqualTo(0xABCD));
         }
 
         [Test]
@@ -43,9 +43,9 @@ namespace Google.Solutions.Common.Test.Format
         {
             var buffer = new byte[4];
             BigEndian.EncodeUInt16(ushort.MaxValue, buffer, 2);
-            Assert.AreEqual(0, buffer[0]);
-            Assert.AreEqual(0, buffer[1]);
-            Assert.AreEqual(ushort.MaxValue, BigEndian.DecodeUInt16(buffer, 2));
+            Assert.That(buffer[0], Is.EqualTo(0));
+            Assert.That(buffer[1], Is.EqualTo(0));
+            Assert.That(BigEndian.DecodeUInt16(buffer, 2), Is.EqualTo(ushort.MaxValue));
         }
 
         [Test]
@@ -53,10 +53,10 @@ namespace Google.Solutions.Common.Test.Format
         {
             var buffer = new byte[4];
             BigEndian.EncodeUInt32(uint.MaxValue, buffer, 0);
-            Assert.AreEqual(uint.MaxValue, BigEndian.DecodeUInt32(buffer, 0));
+            Assert.That(BigEndian.DecodeUInt32(buffer, 0), Is.EqualTo(uint.MaxValue));
 
             BigEndian.EncodeUInt32(0xABCDEF12, buffer, 0);
-            Assert.AreEqual(0xABCDEF12, BigEndian.DecodeUInt32(buffer, 0));
+            Assert.That(BigEndian.DecodeUInt32(buffer, 0), Is.EqualTo(0xABCDEF12));
         }
 
         [Test]
@@ -64,11 +64,11 @@ namespace Google.Solutions.Common.Test.Format
         {
             var buffer = new byte[8];
             BigEndian.EncodeUInt64(ulong.MaxValue, buffer, 0);
-            Assert.AreEqual(ulong.MaxValue, BigEndian.DecodeUInt64(buffer, 0));
+            Assert.That(BigEndian.DecodeUInt64(buffer, 0), Is.EqualTo(ulong.MaxValue));
 
 
             BigEndian.EncodeUInt64(0xABCDEF12DEADBEEFL, buffer, 0);
-            Assert.AreEqual(0xABCDEF12DEADBEEFL, BigEndian.DecodeUInt64(buffer, 0));
+            Assert.That(BigEndian.DecodeUInt64(buffer, 0), Is.EqualTo(0xABCDEF12DEADBEEFL));
         }
     }
 }

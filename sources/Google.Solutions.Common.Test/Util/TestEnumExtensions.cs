@@ -45,24 +45,24 @@ namespace Google.Solutions.Common.Test.Util
         public void IsSingleFlag_WhenZero_ThenIsSingleFlagReturnsFalse()
         {
             var e = SampleFlags.Zero;
-            Assert.IsFalse(e.IsSingleFlag());
-            Assert.IsFalse(e.IsFlagCombination());
+            Assert.That(e.IsSingleFlag(), Is.False);
+            Assert.That(e.IsFlagCombination(), Is.False);
         }
 
         [Test]
         public void IsSingleFlag_WhenOneFlagSet_ThenIsSingleFlagReturnsTrue()
         {
             var e = SampleFlags.Four;
-            Assert.IsTrue(e.IsSingleFlag());
-            Assert.IsFalse(e.IsFlagCombination());
+            Assert.That(e.IsSingleFlag(), Is.True);
+            Assert.That(e.IsFlagCombination(), Is.False);
         }
 
         [Test]
         public void IsSingleFlag_WhenTwoFlagsSet_ThenIsSingleFlagReturnsFalse()
         {
             var e = SampleFlags.One | SampleFlags.Four;
-            Assert.IsFalse(e.IsSingleFlag());
-            Assert.IsTrue(e.IsFlagCombination());
+            Assert.That(e.IsSingleFlag(), Is.False);
+            Assert.That(e.IsFlagCombination(), Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -72,25 +72,25 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void IsValidFlagCombination_WhenAllFlagsClear_ThenIsValidFlagCombinationReturnsTrue()
         {
-            Assert.IsTrue(SampleFlags.Zero.IsValidFlagCombination());
+            Assert.That(SampleFlags.Zero.IsValidFlagCombination(), Is.True);
         }
 
         [Test]
         public void IsValidFlagCombination_WhenOneFlagSet_ThenIsValidFlagCombinationReturnsTrue()
         {
-            Assert.IsTrue(SampleFlags.One.IsValidFlagCombination());
+            Assert.That(SampleFlags.One.IsValidFlagCombination(), Is.True);
         }
 
         [Test]
         public void IsValidFlagCombination_WhenMultipleFlagsSet_ThenIsValidFlagCombinationReturnsTrue()
         {
-            Assert.IsTrue((SampleFlags.One | SampleFlags.Four).IsValidFlagCombination());
+            Assert.That((SampleFlags.One | SampleFlags.Four).IsValidFlagCombination(), Is.True);
         }
 
         [Test]
         public void IsValidFlagCombination_WhenNonexistingFlagSet_ThenIsValidFlagCombinationReturnsFalse()
         {
-            Assert.IsFalse((SampleFlags.One | (SampleFlags)16).IsValidFlagCombination());
+            Assert.That((SampleFlags.One | (SampleFlags)16).IsValidFlagCombination(), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -110,8 +110,8 @@ namespace Google.Solutions.Common.Test.Util
         {
             var a = SampleEnumWithAttributes.WithAttribute
                 .GetAttribute<System.ComponentModel.DescriptionAttribute>();
-            Assert.IsNotNull(a);
-            Assert.AreEqual("With attribute", a!.Description);
+            Assert.That(a, Is.Not.Null);
+            Assert.That(a!.Description, Is.EqualTo("With attribute"));
         }
 
         [Test]

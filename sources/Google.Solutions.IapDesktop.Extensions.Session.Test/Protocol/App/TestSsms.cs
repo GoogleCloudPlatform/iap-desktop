@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
                 return;
             }
 
-            Assert.IsTrue(File.Exists(ssms!.ExecutablePath));
+            Assert.That(File.Exists(ssms!.ExecutablePath), Is.True);
         }
     }
 }

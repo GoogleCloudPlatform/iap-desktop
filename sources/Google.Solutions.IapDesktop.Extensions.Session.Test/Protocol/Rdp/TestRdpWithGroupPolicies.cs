@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                     .ConfigureAwait(true);
 
                 Assert.IsInstanceOf<RdpDisconnectedException>(eventArgs.Exception);
-                Assert.AreEqual(2825, ((RdpDisconnectedException)eventArgs.Exception).DisconnectReason);
+                Assert.That(((RdpDisconnectedException)eventArgs.Exception).DisconnectReason, Is.EqualTo(2825));
             }
         }
 

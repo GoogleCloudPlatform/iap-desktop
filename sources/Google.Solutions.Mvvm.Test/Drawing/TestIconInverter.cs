@@ -118,8 +118,8 @@ namespace Google.Solutions.Mvvm.Test.Drawing
                 ColorFactor = .8f
             };
 
-            Assert.IsTrue(inverter.Invert(icon));
-            Assert.IsFalse(inverter.Invert(icon));
+            Assert.That(inverter.Invert(icon), Is.True);
+            Assert.That(inverter.Invert(icon), Is.False);
         }
 
         [Test]
@@ -135,8 +135,8 @@ namespace Google.Solutions.Mvvm.Test.Drawing
                     ColorFactor = .8f
                 };
 
-                Assert.IsTrue(inverter.Invert(imageList));
-                Assert.IsFalse(inverter.Invert(imageList));
+                Assert.That(inverter.Invert(imageList), Is.True);
+                Assert.That(inverter.Invert(imageList), Is.False);
             }
         }
     }

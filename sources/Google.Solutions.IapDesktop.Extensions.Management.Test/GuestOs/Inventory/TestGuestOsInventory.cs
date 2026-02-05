@@ -90,9 +90,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                 .GetInstanceInventoryAsync(instanceRef, CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(info);
-            Assert.AreEqual(instanceRef, info?.Instance);
-            Assert.IsNotNull(info?.OperatingSystemVersion);
+            Assert.That(info, Is.Not.Null);
+            Assert.That(info?.Instance, Is.EqualTo(instanceRef));
+            Assert.That(info?.OperatingSystemVersion, Is.Not.Null);
         }
 
         [Test]
@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(info.ToList().Where(i => i.Instance == instanceRef).Any());
+            Assert.That(info.ToList().Where(i => i.Instance == instanceRef).Any(), Is.True);
         }
 
         [Test]
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(info.ToList().Where(i => i.Instance == instanceRef).Any());
+            Assert.That(info.ToList().Where(i => i.Instance == instanceRef).Any(), Is.False);
         }
 
         [Test]
@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(info.ToList().Where(i => i.Instance == instanceRef).Any());
+            Assert.That(info.ToList().Where(i => i.Instance == instanceRef).Any(), Is.True);
         }
 
         [Test]
@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(info.ToList().Where(i => i.Instance == instanceRef).Any());
+            Assert.That(info.ToList().Where(i => i.Instance == instanceRef).Any(), Is.False);
         }
 
         [Test]

@@ -37,7 +37,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var collection = new FilteredObservableCollection<string>(
                 new ObservableCollection<string>());
 
-            Assert.IsTrue(collection.IsReadOnly);
+            Assert.That(collection.IsReadOnly, Is.True);
         }
 
         [Test]
@@ -82,9 +82,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Predicate = s => s == s.ToUpper()
             };
 
-            Assert.IsFalse(filtered.Contains("one"));
-            Assert.IsFalse(filtered.Contains("Two"));
-            Assert.IsTrue(filtered.Contains("THREE"));
+            Assert.That(filtered.Contains("one"), Is.False);
+            Assert.That(filtered.Contains("Two"), Is.False);
+            Assert.That(filtered.Contains("THREE"), Is.True);
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Predicate = s => s == s.ToUpper()
             };
 
-            Assert.AreEqual(1, filtered.Count);
+            Assert.That(filtered.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var result = new string[2];
             filtered.CopyTo(result, 1);
             Assert.IsNull(result[0]);
-            Assert.AreEqual("THREE", result[1]);
+            Assert.That(result[1], Is.EqualTo("THREE"));
         }
 
         [Test]
@@ -141,9 +141,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Predicate = s => s == s.ToUpper()
             };
 
-            CollectionAssert.AreEquivalent(
-                new[] { "THREE" },
-                filtered.ToList());
+            Assert.That(
+                filtered.ToList(), Is.EquivalentTo(new[] { "THREE" }));
         }
 
         [Test]
@@ -165,12 +164,12 @@ namespace Google.Solutions.Mvvm.Test.Binding
             filtered.CollectionChanged += (_, args) =>
             {
                 eventRaised = true;
-                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Reset));
             };
 
             filtered.Predicate = s => s == s.ToLower();
 
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
 
         [Test]
@@ -187,16 +186,15 @@ namespace Google.Solutions.Mvvm.Test.Binding
             filtered.CollectionChanged += (_, args) =>
             {
                 eventRaised = true;
-                Assert.AreEqual(NotifyCollectionChangedAction.Add, args.Action);
-                CollectionAssert.AreEquivalent(
-                    new[] { "UPPERCASE" },
-                    args.NewItems);
+                Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Add));
+                Assert.That(
+                    args.NewItems, Is.EquivalentTo(new[] { "UPPERCASE" }));
             };
 
             collection.Add("UPPERCASE");
             collection.Add("lowercase");
 
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
 
         [Test]
@@ -217,7 +215,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             collection.Add("lowercase");
 
-            Assert.IsFalse(eventRaised);
+            Assert.That(eventRaised, Is.False);
         }
 
 
@@ -239,16 +237,15 @@ namespace Google.Solutions.Mvvm.Test.Binding
             filtered.CollectionChanged += (_, args) =>
             {
                 eventRaised = true;
-                Assert.AreEqual(NotifyCollectionChangedAction.Remove, args.Action);
-                CollectionAssert.AreEquivalent(
-                    new[] { "UPPERCASE" },
-                    args.OldItems);
+                Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Remove));
+                Assert.That(
+                    args.OldItems, Is.EquivalentTo(new[] { "UPPERCASE" }));
             };
 
             collection.Remove("UPPERCASE");
             collection.Remove("lowercase");
 
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
 
         [Test]
@@ -272,7 +269,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             collection.Remove("lowercase");
 
-            Assert.IsFalse(eventRaised);
+            Assert.That(eventRaised, Is.False);
         }
 
         [Test]
@@ -292,12 +289,12 @@ namespace Google.Solutions.Mvvm.Test.Binding
             filtered.CollectionChanged += (_, args) =>
             {
                 eventRaised = true;
-                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Reset));
             };
 
             collection.Clear();
 
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
     }
 }

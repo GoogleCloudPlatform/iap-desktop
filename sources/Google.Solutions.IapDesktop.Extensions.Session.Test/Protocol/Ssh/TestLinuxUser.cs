@@ -42,8 +42,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var session = CreateSession("j@ex.ample");
             var username = LinuxUser.SuggestUsername(session);
 
-            Assert.AreEqual("j", username);
-            Assert.IsTrue(LinuxUser.IsValidUsername(username));
+            Assert.That(username, Is.EqualTo("j"));
+            Assert.That(LinuxUser.IsValidUsername(username), Is.True);
         }
 
         [Test]
@@ -52,8 +52,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var session = CreateSession("NOTANEMAILADDRESS");
             var username = LinuxUser.SuggestUsername(session);
 
-            Assert.AreEqual("notanemailaddress", username);
-            Assert.IsTrue(LinuxUser.IsValidUsername(username));
+            Assert.That(username, Is.EqualTo("notanemailaddress"));
+            Assert.That(LinuxUser.IsValidUsername(username), Is.True);
         }
 
         [Test]
@@ -62,8 +62,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var session = CreateSession("ABCDEFGHIJKLMNOPQRSTUVWXYZabcxyz0@ex.ample");
             var username = LinuxUser.SuggestUsername(session);
 
-            Assert.AreEqual("abcdefghijklmnopqrstuvwxyzabcxyz", username);
-            Assert.IsTrue(LinuxUser.IsValidUsername(username));
+            Assert.That(username, Is.EqualTo("abcdefghijklmnopqrstuvwxyzabcxyz"));
+            Assert.That(LinuxUser.IsValidUsername(username), Is.True);
         }
 
         [Test]
@@ -72,8 +72,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var session = CreateSession("1+9@ex.ample");
             var username = LinuxUser.SuggestUsername(session);
 
-            Assert.AreEqual("g1_9", username);
-            Assert.IsTrue(LinuxUser.IsValidUsername(username));
+            Assert.That(username, Is.EqualTo("g1_9"));
+            Assert.That(LinuxUser.IsValidUsername(username), Is.True);
         }
 
         [Test]
@@ -82,8 +82,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var session = CreateSession("ABC@ex.ample");
             var username = LinuxUser.SuggestUsername(session);
 
-            Assert.AreEqual("abc", username);
-            Assert.IsTrue(LinuxUser.IsValidUsername(username));
+            Assert.That(username, Is.EqualTo("abc"));
+            Assert.That(LinuxUser.IsValidUsername(username), Is.True);
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [TestCase("thisusernameexceedsthemaximumsize", false)]
         public void IsValidUsername_WhenLinuxUserIsValidated(string userName, bool expectedValid)
         {
-            Assert.AreEqual(LinuxUser.IsValidUsername(userName), expectedValid);
+            Assert.That(expectedValid, Is.EqualTo(LinuxUser.IsValidUsername(userName)));
         }
     }
 }

@@ -85,9 +85,9 @@ namespace Google.Solutions.Mvvm.Test.Cache
             await viewModel.SwitchToModelAsync("two")
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(1, viewModel.LoadModelCalls);
-            Assert.AreEqual(1, viewModel.ApplyCalls);
-            Assert.AreEqual(1, viewModel.CancelCount);
+            Assert.That(viewModel.LoadModelCalls, Is.EqualTo(1));
+            Assert.That(viewModel.ApplyCalls, Is.EqualTo(1));
+            Assert.That(viewModel.CancelCount, Is.EqualTo(1));
 
             await t.ConfigureAwait(true);
         }
@@ -99,8 +99,8 @@ namespace Google.Solutions.Mvvm.Test.Cache
             await viewModel.SwitchToModelAsync("one")
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(1, viewModel.LoadModelCalls);
-            Assert.AreEqual(1, viewModel.ApplyCalls);
+            Assert.That(viewModel.LoadModelCalls, Is.EqualTo(1));
+            Assert.That(viewModel.ApplyCalls, Is.EqualTo(1));
         }
 
         [Test]
@@ -110,16 +110,16 @@ namespace Google.Solutions.Mvvm.Test.Cache
             await viewModel.SwitchToModelAsync("one")
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(1, viewModel.LoadModelCalls);
-            Assert.AreEqual(1, viewModel.ApplyCalls);
+            Assert.That(viewModel.LoadModelCalls, Is.EqualTo(1));
+            Assert.That(viewModel.ApplyCalls, Is.EqualTo(1));
 
             await viewModel.SwitchToModelAsync("one")
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(1, viewModel.LoadModelCalls);
+            Assert.That(viewModel.LoadModelCalls, Is.EqualTo(1));
 
             // ApplyModel is called twice.
-            Assert.AreEqual(3, viewModel.ApplyCalls);
+            Assert.That(viewModel.ApplyCalls, Is.EqualTo(3));
         }
 
         //---------------------------------------------------------------------
@@ -133,16 +133,16 @@ namespace Google.Solutions.Mvvm.Test.Cache
             await viewModel.SwitchToModelAsync("one")
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(1, viewModel.LoadModelCalls);
-            Assert.AreEqual(1, viewModel.ApplyCalls);
+            Assert.That(viewModel.LoadModelCalls, Is.EqualTo(1));
+            Assert.That(viewModel.ApplyCalls, Is.EqualTo(1));
 
             await viewModel.Reload()
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(2, viewModel.LoadModelCalls);
+            Assert.That(viewModel.LoadModelCalls, Is.EqualTo(2));
 
             // ApplyModel is called twice.
-            Assert.AreEqual(3, viewModel.ApplyCalls);
+            Assert.That(viewModel.ApplyCalls, Is.EqualTo(3));
         }
     }
 }

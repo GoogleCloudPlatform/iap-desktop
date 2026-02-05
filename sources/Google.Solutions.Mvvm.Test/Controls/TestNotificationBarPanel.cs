@@ -55,7 +55,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
         [Test]
         public void WhenTextNullOrWhiteSpace_ThenBarIsHidden(
-            [Values("", " ", null)] string emptyValue)
+            [Values("", " ", null)] string? emptyValue)
         {
             using (var form = new Form()
             {
@@ -68,11 +68,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 form.Show();
 
-                Assert.IsFalse(panel.NotificationBarVisible);
+                Assert.That(panel.NotificationBarVisible, Is.False);
                 panel.Text = "Note!";
-                Assert.IsTrue(panel.NotificationBarVisible);
+                Assert.That(panel.NotificationBarVisible, Is.True);
                 panel.Text = emptyValue;
-                Assert.IsFalse(panel.NotificationBarVisible);
+                Assert.That(panel.NotificationBarVisible, Is.False);
 
                 form.Close();
             }

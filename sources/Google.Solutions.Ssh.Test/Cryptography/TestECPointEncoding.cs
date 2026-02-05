@@ -59,19 +59,17 @@ namespace Google.Solutions.Ssh.Test.Cryptography
 
                 var encoded = ECPointEncoding.Encode(point, (ushort)key.KeySize);
 
-                Assert.AreEqual(4, encoded[0]);
-                Assert.AreEqual(65, encoded.Length);
+                Assert.That(encoded[0], Is.EqualTo(4));
+                Assert.That(encoded.Length, Is.EqualTo(65));
 
                 var restoredPoint = ECPointEncoding.Decode(
                     encoded,
                     (ushort)key.KeySize);
 
-                CollectionAssert.AreEqual(
-                    point.X,
-                    restoredPoint.X);
-                CollectionAssert.AreEqual(
-                    point.Y,
-                    restoredPoint.Y);
+                Assert.That(
+                    restoredPoint.X, Is.EqualTo(point.X).AsCollection);
+                Assert.That(
+                    restoredPoint.Y, Is.EqualTo(point.Y).AsCollection);
             }
         }
 

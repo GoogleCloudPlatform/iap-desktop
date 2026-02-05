@@ -39,18 +39,18 @@ namespace Google.Solutions.Apis.Test.Client
         [Test]
         public void PublicRoute()
         {
-            Assert.IsFalse(ServiceRoute.Public.UsePrivateServiceConnect);
+            Assert.That(ServiceRoute.Public.UsePrivateServiceConnect, Is.False);
             Assert.IsNull(ServiceRoute.Public.Endpoint);
-            Assert.AreEqual("public", ServiceRoute.Public.ToString());
+            Assert.That(ServiceRoute.Public.ToString(), Is.EqualTo("public"));
         }
 
         [Test]
         public void PscRoute()
         {
             var route = new ServiceRoute("www-endpoint.p.googleapis.com");
-            Assert.IsTrue(route.UsePrivateServiceConnect);
-            Assert.AreEqual("www-endpoint.p.googleapis.com", route.Endpoint);
-            Assert.AreEqual("www-endpoint.p.googleapis.com", route.ToString());
+            Assert.That(route.UsePrivateServiceConnect, Is.True);
+            Assert.That(route.Endpoint, Is.EqualTo("www-endpoint.p.googleapis.com"));
+            Assert.That(route.ToString(), Is.EqualTo("www-endpoint.p.googleapis.com"));
         }
 
         //---------------------------------------------------------------------

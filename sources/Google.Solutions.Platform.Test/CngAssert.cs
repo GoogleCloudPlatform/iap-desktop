@@ -36,15 +36,15 @@ namespace Google.Solutions.Platform.Test
                 var lhsParams = new RSACng(lhs).ExportParameters(false);
                 var rhsParams = new RSACng(rhs).ExportParameters(false);
 
-                CollectionAssert.AreEqual(lhsParams.Modulus, rhsParams.Modulus);
+                Assert.That(rhsParams.Modulus, Is.EqualTo(lhsParams.Modulus).AsCollection);
             }
             else
             {
                 var lhsParams = new ECDsaCng(lhs).ExportParameters(false);
                 var rhsParams = new ECDsaCng(rhs).ExportParameters(false);
 
-                CollectionAssert.AreEqual(lhsParams.Q.X, rhsParams.Q.X);
-                CollectionAssert.AreEqual(lhsParams.Q.Y, rhsParams.Q.Y);
+                Assert.That(rhsParams.Q.X, Is.EqualTo(lhsParams.Q.X).AsCollection);
+                Assert.That(rhsParams.Q.Y, Is.EqualTo(lhsParams.Q.Y).AsCollection);
             }
         }
 
@@ -55,15 +55,15 @@ namespace Google.Solutions.Platform.Test
                 var lhsParams = new RSACng(lhs).ExportParameters(false);
                 var rhsParams = new RSACng(rhs).ExportParameters(false);
 
-                CollectionAssert.AreNotEqual(lhsParams.Modulus, rhsParams.Modulus);
+                Assert.That(rhsParams.Modulus, Is.Not.EqualTo(lhsParams.Modulus).AsCollection);
             }
             else
             {
                 var lhsParams = new ECDsaCng(lhs).ExportParameters(false);
                 var rhsParams = new ECDsaCng(rhs).ExportParameters(false);
 
-                CollectionAssert.AreNotEqual(lhsParams.Q.X, rhsParams.Q.X);
-                CollectionAssert.AreNotEqual(lhsParams.Q.Y, rhsParams.Q.Y);
+                Assert.That(rhsParams.Q.X, Is.Not.EqualTo(lhsParams.Q.X).AsCollection);
+                Assert.That(rhsParams.Q.Y, Is.Not.EqualTo(lhsParams.Q.Y).AsCollection);
             }
         }
     }

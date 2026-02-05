@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 .Setup(t => t.Traits)
                 .Returns(Enumerable.Empty<ITrait>());
 
-            Assert.IsFalse(RdpProtocol.Protocol.IsAvailable(target.Object));
+            Assert.That(RdpProtocol.Protocol.IsAvailable(target.Object), Is.False);
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 .Setup(t => t.Traits)
                 .Returns(new[] { WindowsTrait.Instance });
 
-            Assert.IsTrue(RdpProtocol.Protocol.IsAvailable(target.Object));
+            Assert.That(RdpProtocol.Protocol.IsAvailable(target.Object), Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         [Test]
         public void ToString_ReturnsName()
         {
-            Assert.AreEqual("RDP", RdpProtocol.Protocol.ToString());
+            Assert.That(RdpProtocol.Protocol.ToString(), Is.EqualTo("RDP"));
         }
     }
 }

@@ -42,10 +42,10 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void ExpectNotNull_WhenNotNull_ThenExpectNotNullReturnsValue()
         {
-            Assert.AreEqual("value", "value".ExpectNotNull("test"));
+            Assert.That("value".ExpectNotNull("test"), Is.EqualTo("value"));
 
             var o = new object();
-            Assert.AreEqual(o, o.ExpectNotNull("test"));
+            Assert.That(o.ExpectNotNull("test"), Is.EqualTo(o));
         }
 
         //---------------------------------------------------------------------
@@ -64,7 +64,7 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void ExpectNotEmpty_WhenNotEmpty_ThenExpectNotNullReturnsValue()
         {
-            Assert.AreEqual("value", "value".ExpectNotEmpty("test"));
+            Assert.That("value".ExpectNotEmpty("test"), Is.EqualTo("value"));
         }
 
         //---------------------------------------------------------------------
@@ -84,7 +84,7 @@ namespace Google.Solutions.Common.Test.Util
         public void ExpectNotNullOrZeroSized_WhenNotEmpty_ThenExpectNotNullOrZeroSizedReturnsValue()
         {
             var array = new[] { 1, 2, 3 };
-            Assert.AreSame(array, array.ExpectNotNullOrZeroSized("test"));
+            Assert.That(array.ExpectNotNullOrZeroSized("test"), Is.SameAs(array));
         }
 
         //---------------------------------------------------------------------
@@ -121,9 +121,9 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void ExpectInRange_WhenInRange_ThenExpectInRangeReturnsValue()
         {
-            Assert.AreEqual(0f, (0f).ExpectInRange(-1f, 1f, "range"));
-            Assert.AreEqual(1f, (1f).ExpectInRange(-1f, 1f, "range"));
-            Assert.AreEqual(-1f, (-1f).ExpectInRange(-1f, 1f, "range"));
+            Assert.That((0f).ExpectInRange(-1f, 1f, "range"), Is.EqualTo(0f));
+            Assert.That((1f).ExpectInRange(-1f, 1f, "range"), Is.EqualTo(1f));
+            Assert.That((-1f).ExpectInRange(-1f, 1f, "range"), Is.EqualTo(-1f));
         }
     }
 }

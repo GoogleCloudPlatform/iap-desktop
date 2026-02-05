@@ -37,8 +37,8 @@ namespace Google.Solutions.Ssh.Test.Format
             {
                 var reader = new SshReader(stream);
 
-                Assert.AreEqual((byte)0xA, reader.ReadByte());
-                Assert.AreEqual((byte)0xB, reader.ReadByte());
+                Assert.That(reader.ReadByte(), Is.EqualTo((byte)0xA));
+                Assert.That(reader.ReadByte(), Is.EqualTo((byte)0xB));
             }
         }
 
@@ -50,8 +50,8 @@ namespace Google.Solutions.Ssh.Test.Format
             {
                 var reader = new SshReader(stream);
 
-                Assert.IsTrue(reader.ReadBoolean());
-                Assert.IsFalse(reader.ReadBoolean());
+                Assert.That(reader.ReadBoolean(), Is.True);
+                Assert.That(reader.ReadBoolean(), Is.False);
             }
         }
 
@@ -63,7 +63,7 @@ namespace Google.Solutions.Ssh.Test.Format
             {
                 var reader = new SshReader(stream);
 
-                Assert.AreEqual(0xAABBCCDD, reader.ReadUint32());
+                Assert.That(reader.ReadUint32(), Is.EqualTo(0xAABBCCDD));
             }
         }
 
@@ -75,7 +75,7 @@ namespace Google.Solutions.Ssh.Test.Format
             {
                 var reader = new SshReader(stream);
 
-                Assert.AreEqual(0xAABBCCDD00112233, reader.ReadUint64());
+                Assert.That(reader.ReadUint64(), Is.EqualTo(0xAABBCCDD00112233));
             }
         }
 
@@ -87,7 +87,7 @@ namespace Google.Solutions.Ssh.Test.Format
             {
                 var reader = new SshReader(stream);
 
-                Assert.AreEqual(string.Empty, reader.ReadString());
+                Assert.That(reader.ReadString(), Is.EqualTo(string.Empty));
             }
         }
 
@@ -99,7 +99,7 @@ namespace Google.Solutions.Ssh.Test.Format
             {
                 var reader = new SshReader(stream);
 
-                Assert.AreEqual("a", reader.ReadString());
+                Assert.That(reader.ReadString(), Is.EqualTo("a"));
             }
         }
 
@@ -111,9 +111,8 @@ namespace Google.Solutions.Ssh.Test.Format
             {
                 var reader = new SshReader(stream);
 
-                Assert.AreEqual(
-                    new byte[] { 0 },
-                    reader.ReadMultiPrecisionInteger().ToArray());
+                Assert.That(
+                    reader.ReadMultiPrecisionInteger().ToArray(), Is.EqualTo(new byte[] { 0 }));
             }
         }
 
@@ -125,9 +124,8 @@ namespace Google.Solutions.Ssh.Test.Format
             {
                 var reader = new SshReader(stream);
 
-                Assert.AreEqual(
-                    new byte[] { (byte)0x80 },
-                    reader.ReadMultiPrecisionInteger().ToArray());
+                Assert.That(
+                    reader.ReadMultiPrecisionInteger().ToArray(), Is.EqualTo(new byte[] { (byte)0x80 }));
             }
         }
     }

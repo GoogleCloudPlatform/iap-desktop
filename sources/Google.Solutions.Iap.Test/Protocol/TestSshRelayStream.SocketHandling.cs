@@ -195,7 +195,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                         .ConfigureAwait(false);
                 }
 
-                Assert.AreEqual(0, endpoint.ReconnectCalls);
+                Assert.That(endpoint.ReconnectCalls, Is.EqualTo(0));
             }
         }
 
@@ -223,8 +223,8 @@ namespace Google.Solutions.Iap.Test.Protocol
                         .CloseAsync(CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(0, bytesRead);
-                    Assert.AreEqual(0, endpoint.ReconnectCalls);
+                    Assert.That(bytesRead, Is.EqualTo(0));
+                    Assert.That(endpoint.ReconnectCalls, Is.EqualTo(0));
                 }
             }
         }
@@ -251,7 +251,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                                 buffer.Length,
                                 CancellationToken.None))
                         .ConfigureAwait(false);
-                    Assert.AreEqual(0, endpoint.ReconnectCalls);
+                    Assert.That(endpoint.ReconnectCalls, Is.EqualTo(0));
                 }
             }
         }
@@ -279,7 +279,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                                 buffer.Length,
                                 CancellationToken.None))
                         .ConfigureAwait(false);
-                    Assert.AreEqual(0, endpoint.ReconnectCalls);
+                    Assert.That(endpoint.ReconnectCalls, Is.EqualTo(0));
                 }
             }
         }
@@ -307,7 +307,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                                 buffer.Length,
                                 CancellationToken.None))
                         .ConfigureAwait(false);
-                    Assert.AreEqual(0, endpoint.ReconnectCalls);
+                    Assert.That(endpoint.ReconnectCalls, Is.EqualTo(0));
                 }
             }
         }
@@ -389,9 +389,9 @@ namespace Google.Solutions.Iap.Test.Protocol
                         .ReadAsync(buffer, 1, buffer.Length - 1, CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(SshRelayStream.MinReadSize, bytesRead);
-                    Assert.AreEqual(0xAA, buffer[1]);
-                    Assert.AreEqual(0xBB, buffer[buffer.Length - 1]);
+                    Assert.That(bytesRead, Is.EqualTo(SshRelayStream.MinReadSize));
+                    Assert.That(buffer[1], Is.EqualTo(0xAA));
+                    Assert.That(buffer[buffer.Length - 1], Is.EqualTo(0xBB));
                 }
             }
         }
@@ -431,9 +431,9 @@ namespace Google.Solutions.Iap.Test.Protocol
                         .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(4, bytesRead);
-                    Assert.AreEqual(2, endpoint.ConnectCalls);
-                    Assert.AreEqual(0, endpoint.ReconnectCalls);
+                    Assert.That(bytesRead, Is.EqualTo(4));
+                    Assert.That(endpoint.ConnectCalls, Is.EqualTo(2));
+                    Assert.That(endpoint.ReconnectCalls, Is.EqualTo(0));
                 }
             }
         }
@@ -476,9 +476,9 @@ namespace Google.Solutions.Iap.Test.Protocol
                         .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(4, bytesRead);
-                    Assert.AreEqual(1, endpoint.ConnectCalls);
-                    Assert.AreEqual(1, endpoint.ReconnectCalls);
+                    Assert.That(bytesRead, Is.EqualTo(4));
+                    Assert.That(endpoint.ConnectCalls, Is.EqualTo(1));
+                    Assert.That(endpoint.ReconnectCalls, Is.EqualTo(1));
                 }
             }
         }
@@ -505,7 +505,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                         .ConfigureAwait(false);
                 }
 
-                Assert.AreEqual(0, endpoint.ReconnectCalls);
+                Assert.That(endpoint.ReconnectCalls, Is.EqualTo(0));
             }
         }
 
@@ -548,27 +548,27 @@ namespace Google.Solutions.Iap.Test.Protocol
                         .ReceiveBinaryFrameAsync(serverBuffer)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(10, bytesReceived);
+                    Assert.That(bytesReceived, Is.EqualTo(10));
                     SshRelayFormat.Ack.Decode(serverBuffer, out var ack);
-                    Assert.AreEqual(1, ack);
+                    Assert.That(ack, Is.EqualTo(1));
 
                     // Expect DATA.
                     bytesReceived = await endpoint.Server
                         .ReceiveBinaryFrameAsync(serverBuffer)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(10, bytesReceived);
+                    Assert.That(bytesReceived, Is.EqualTo(10));
                     SshRelayFormat.Tag.Decode(serverBuffer, out var tag);
-                    Assert.AreEqual(SshRelayMessageTag.DATA, tag);
+                    Assert.That(tag, Is.EqualTo(SshRelayMessageTag.DATA));
 
                     // Expect DATA.
                     bytesReceived = await endpoint.Server
                         .ReceiveBinaryFrameAsync(serverBuffer)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(10, bytesReceived);
+                    Assert.That(bytesReceived, Is.EqualTo(10));
                     SshRelayFormat.Tag.Decode(serverBuffer, out tag);
-                    Assert.AreEqual(SshRelayMessageTag.DATA, tag);
+                    Assert.That(tag, Is.EqualTo(SshRelayMessageTag.DATA));
                 }
             }
         }
@@ -606,7 +606,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                     var bytesRead = await clientStream
                         .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                         .ConfigureAwait(false);
-                    Assert.AreEqual(1, bytesRead);
+                    Assert.That(bytesRead, Is.EqualTo(1));
 
                     // Send data.
                     var data = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD };
@@ -622,7 +622,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                     await clientStream
                         .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                         .ConfigureAwait(false);
-                    Assert.AreEqual(1, bytesRead);
+                    Assert.That(bytesRead, Is.EqualTo(1));
 
                     // Send more data.
                     data = new byte[] { 0xEE, 0xFF };
@@ -636,27 +636,27 @@ namespace Google.Solutions.Iap.Test.Protocol
                         .ReceiveBinaryFrameAsync(serverBuffer)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(10, bytesReceived);
+                    Assert.That(bytesReceived, Is.EqualTo(10));
                     SshRelayFormat.Tag.Decode(serverBuffer, out var tag);
-                    Assert.AreEqual(SshRelayMessageTag.DATA, tag);
+                    Assert.That(tag, Is.EqualTo(SshRelayMessageTag.DATA));
 
                     // Expect ACK.
                     bytesReceived = await afterReconnect
                         .ReceiveBinaryFrameAsync(serverBuffer)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(10, bytesReceived);
+                    Assert.That(bytesReceived, Is.EqualTo(10));
                     SshRelayFormat.Ack.Decode(serverBuffer, out var ack);
-                    Assert.AreEqual(2, ack);
+                    Assert.That(ack, Is.EqualTo(2));
 
                     // Expect DATA.
                     bytesReceived = await afterReconnect
                         .ReceiveBinaryFrameAsync(serverBuffer)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(8, bytesReceived);
+                    Assert.That(bytesReceived, Is.EqualTo(8));
                     SshRelayFormat.Tag.Decode(serverBuffer, out tag);
-                    Assert.AreEqual(SshRelayMessageTag.DATA, tag);
+                    Assert.That(tag, Is.EqualTo(SshRelayMessageTag.DATA));
                 }
             }
         }

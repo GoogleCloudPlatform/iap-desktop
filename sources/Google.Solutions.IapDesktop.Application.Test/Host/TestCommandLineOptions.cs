@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var options = CommandLineOptions.Parse(Array.Empty<string>());
 
-            Assert.IsFalse(options.IsLoggingEnabled);
+            Assert.That(options.IsLoggingEnabled, Is.False);
             Assert.IsNull(options.StartupUrl);
             Assert.IsNull(options.Profile);
         }
@@ -50,8 +50,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var options = CommandLineOptions.Parse(
                 new[] { "/url", "iap-rdp:///project-1/us-central1-a/vm-1" });
 
-            Assert.IsFalse(options.IsLoggingEnabled);
-            Assert.IsNotNull(options.StartupUrl);
+            Assert.That(options.IsLoggingEnabled, Is.False);
+            Assert.That(options.StartupUrl, Is.Not.Null);
         }
 
         [Test]
@@ -60,8 +60,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var options = CommandLineOptions.Parse(
                 new[] { "/url", "iap-rdp:///project-1/us-central1-a/vm-1", "/debug" });
 
-            Assert.IsTrue(options.IsLoggingEnabled);
-            Assert.IsNotNull(options.StartupUrl);
+            Assert.That(options.IsLoggingEnabled, Is.True);
+            Assert.That(options.StartupUrl, Is.Not.Null);
         }
 
         [Test]
@@ -70,8 +70,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var options = CommandLineOptions.Parse(
                 new[] { "/debug", "/url", "iap-rdp:///project-1/us-central1-a/vm-1" });
 
-            Assert.IsTrue(options.IsLoggingEnabled);
-            Assert.IsNotNull(options.StartupUrl);
+            Assert.That(options.IsLoggingEnabled, Is.True);
+            Assert.That(options.StartupUrl, Is.Not.Null);
         }
 
         [Test]
@@ -116,8 +116,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var options = CommandLineOptions.Parse(
                 new[] { "/profile", "profile-1" });
 
-            Assert.AreEqual("profile-1", options.Profile);
-            Assert.IsFalse(options.IsPostInstall);
+            Assert.That(options.Profile, Is.EqualTo("profile-1"));
+            Assert.That(options.IsPostInstall, Is.False);
         }
 
         [Test]
@@ -129,9 +129,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                     "/debug",
                     "/profile", "profile-1"});
 
-            Assert.IsTrue(options.IsLoggingEnabled);
-            Assert.IsNotNull(options.StartupUrl);
-            Assert.AreEqual("profile-1", options.Profile);
+            Assert.That(options.IsLoggingEnabled, Is.True);
+            Assert.That(options.StartupUrl, Is.Not.Null);
+            Assert.That(options.Profile, Is.EqualTo("profile-1"));
         }
 
         [Test]
@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var options = CommandLineOptions.Parse(
                 new[] { "/profile", "profile-1", "/postinstall", "/debug" });
 
-            Assert.IsTrue(options.IsPostInstall);
+            Assert.That(options.IsPostInstall, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         public void ToString_WhenAllOptionsClear_ThenToStringReturnsEmptyString()
         {
             var options = new CommandLineOptions();
-            Assert.AreEqual(string.Empty, options.ToString());
+            Assert.That(options.ToString(), Is.EqualTo(string.Empty));
         }
 
         [Test]
@@ -185,9 +185,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 StartupUrl = IapRdpUrl.FromString("iap-rdp:///project-1/us-central1-a/vm-1")
             };
 
-            Assert.AreEqual(
-                "/debug /url \"iap-rdp:///project-1/us-central1-a/vm-1?\" /profile \"some profile\"",
-                options.ToString());
+            Assert.That(
+                options.ToString(), Is.EqualTo("/debug /url \"iap-rdp:///project-1/us-central1-a/vm-1?\" /profile \"some profile\""));
         }
     }
 }

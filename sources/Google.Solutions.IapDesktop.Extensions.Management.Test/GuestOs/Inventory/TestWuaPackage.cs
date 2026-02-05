@@ -55,14 +55,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                 42,
                 new DateTime(2020, 1, 2, 3, 4, 5, DateTimeKind.Utc));
 
-            Assert.AreEqual("FeaturePacks, Guidance", package.PackageType);
-            Assert.AreEqual("title", package.PackageId);
-            Assert.AreEqual("description", package.Description);
-            Assert.AreEqual("42", package.Version);
-            Assert.AreEqual("http://microsoft.com/", package.Weblink?.ToString());
-            Assert.AreEqual(new DateTime(2020, 1, 2, 3, 4, 5, DateTimeKind.Utc), package.PublishedOn);
+            Assert.That(package.PackageType, Is.EqualTo("FeaturePacks, Guidance"));
+            Assert.That(package.PackageId, Is.EqualTo("title"));
+            Assert.That(package.Description, Is.EqualTo("description"));
+            Assert.That(package.Version, Is.EqualTo("42"));
+            Assert.That(package.Weblink?.ToString(), Is.EqualTo("http://microsoft.com/"));
+            Assert.That(package.PublishedOn, Is.EqualTo(new DateTime(2020, 1, 2, 3, 4, 5, DateTimeKind.Utc)));
             Assert.IsNull(package.InstalledOn);
-            Assert.AreEqual(PackageCriticality.NonCritical, package.Criticality);
+            Assert.That(package.Criticality, Is.EqualTo(PackageCriticality.NonCritical));
         }
 
         [Test]
@@ -79,13 +79,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                 0,
                 null);
 
-            Assert.AreEqual("", package.PackageType);
-            Assert.AreEqual("title", package.PackageId);
+            Assert.That(package.PackageType, Is.EqualTo(""));
+            Assert.That(package.PackageId, Is.EqualTo("title"));
             Assert.IsNull(package.Description);
-            Assert.AreEqual("0", package.Version);
+            Assert.That(package.Version, Is.EqualTo("0"));
             Assert.IsNull(package.Weblink);
             Assert.IsNull(package.InstalledOn);
-            Assert.AreEqual(PackageCriticality.NonCritical, package.Criticality);
+            Assert.That(package.Criticality, Is.EqualTo(PackageCriticality.NonCritical));
         }
     }
 }

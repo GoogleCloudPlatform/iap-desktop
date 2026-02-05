@@ -40,8 +40,8 @@ namespace Google.Solutions.Platform.Test.Net
                 "pwd",
                 string.Empty).Normalize();
 
-            Assert.AreEqual("user@example.org", normalized.UserName);
-            Assert.AreEqual(string.Empty, normalized.Domain);
+            Assert.That(normalized.UserName, Is.EqualTo("user@example.org"));
+            Assert.That(normalized.Domain, Is.EqualTo(string.Empty));
         }
 
         [Test]
@@ -52,8 +52,8 @@ namespace Google.Solutions.Platform.Test.Net
                 "pwd",
                 string.Empty).Normalize();
 
-            Assert.AreEqual("EXAMPLE\\user", normalized.UserName);
-            Assert.AreEqual(string.Empty, normalized.Domain);
+            Assert.That(normalized.UserName, Is.EqualTo("EXAMPLE\\user"));
+            Assert.That(normalized.Domain, Is.EqualTo(string.Empty));
         }
 
         [Test]
@@ -64,8 +64,8 @@ namespace Google.Solutions.Platform.Test.Net
                 "pwd",
                 "EXAMPLE").Normalize();
 
-            Assert.AreEqual("EXAMPLE\\user", normalized.UserName);
-            Assert.AreEqual(string.Empty, normalized.Domain);
+            Assert.That(normalized.UserName, Is.EqualTo("EXAMPLE\\user"));
+            Assert.That(normalized.Domain, Is.EqualTo(string.Empty));
         }
 
         [Test]
@@ -76,8 +76,8 @@ namespace Google.Solutions.Platform.Test.Net
                 "pwd",
                 null).Normalize();
 
-            Assert.AreEqual("localhost\\user", normalized.UserName);
-            Assert.AreEqual(string.Empty, normalized.Domain);
+            Assert.That(normalized.UserName, Is.EqualTo("localhost\\user"));
+            Assert.That(normalized.Domain, Is.EqualTo(string.Empty));
         }
 
         //---------------------------------------------------------------------
@@ -92,8 +92,8 @@ namespace Google.Solutions.Platform.Test.Net
                 UserName = "user@domain"
             };
 
-            Assert.IsTrue(cred1.IsUpnFormat());
-            Assert.IsFalse(cred1.IsNetBiosFormat());
+            Assert.That(cred1.IsUpnFormat(), Is.True);
+            Assert.That(cred1.IsNetBiosFormat(), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -111,8 +111,8 @@ namespace Google.Solutions.Platform.Test.Net
                 UserName = "domain\\user",
             };
 
-            Assert.IsTrue(cred1.IsNetBiosFormat());
-            Assert.IsFalse(cred1.IsUpnFormat());
+            Assert.That(cred1.IsNetBiosFormat(), Is.True);
+            Assert.That(cred1.IsUpnFormat(), Is.False);
 
             //
             // Separate username, domain.
@@ -123,8 +123,8 @@ namespace Google.Solutions.Platform.Test.Net
                 Domain = "domain"
             };
 
-            Assert.IsTrue(cred2.IsNetBiosFormat());
-            Assert.IsFalse(cred2.IsUpnFormat());
+            Assert.That(cred2.IsNetBiosFormat(), Is.True);
+            Assert.That(cred2.IsUpnFormat(), Is.False);
 
             //
             // Unqualified format.
@@ -134,8 +134,8 @@ namespace Google.Solutions.Platform.Test.Net
                 UserName = "user",
             };
 
-            Assert.IsTrue(cred3.IsNetBiosFormat());
-            Assert.IsFalse(cred3.IsUpnFormat());
+            Assert.That(cred3.IsNetBiosFormat(), Is.True);
+            Assert.That(cred3.IsUpnFormat(), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -148,23 +148,23 @@ namespace Google.Solutions.Platform.Test.Net
             //
             // Unqualified format.
             //
-            Assert.IsFalse(new NetworkCredential().IsDomainOrHostQualified());
-            Assert.IsFalse(new NetworkCredential("", "").IsDomainOrHostQualified());
-            Assert.IsFalse(new NetworkCredential(" ", "").IsDomainOrHostQualified());
-            Assert.IsFalse(new NetworkCredential("user", "").IsDomainOrHostQualified());
-            Assert.IsFalse(new NetworkCredential(".\\user", "").IsDomainOrHostQualified());
-            Assert.IsFalse(new NetworkCredential(" .\\user", "").IsDomainOrHostQualified());
-            Assert.IsFalse(new NetworkCredential("user", "", ".").IsDomainOrHostQualified());
-            Assert.IsFalse(new NetworkCredential("user", "", " ").IsDomainOrHostQualified());
-            Assert.IsFalse(new NetworkCredential("user", "", " .").IsDomainOrHostQualified());
+            Assert.That(new NetworkCredential().IsDomainOrHostQualified(), Is.False);
+            Assert.That(new NetworkCredential("", "").IsDomainOrHostQualified(), Is.False);
+            Assert.That(new NetworkCredential(" ", "").IsDomainOrHostQualified(), Is.False);
+            Assert.That(new NetworkCredential("user", "").IsDomainOrHostQualified(), Is.False);
+            Assert.That(new NetworkCredential(".\\user", "").IsDomainOrHostQualified(), Is.False);
+            Assert.That(new NetworkCredential(" .\\user", "").IsDomainOrHostQualified(), Is.False);
+            Assert.That(new NetworkCredential("user", "", ".").IsDomainOrHostQualified(), Is.False);
+            Assert.That(new NetworkCredential("user", "", " ").IsDomainOrHostQualified(), Is.False);
+            Assert.That(new NetworkCredential("user", "", " .").IsDomainOrHostQualified(), Is.False);
 
             //
             // UPN format.
             //
-            Assert.IsTrue(new NetworkCredential("user@domain", "").IsDomainOrHostQualified());
-            Assert.IsTrue(new NetworkCredential("user@domain", "", "domain").IsDomainOrHostQualified());
-            Assert.IsTrue(new NetworkCredential("user", "", "domain").IsDomainOrHostQualified());
-            Assert.IsTrue(new NetworkCredential("domain\\user", "", "domain").IsDomainOrHostQualified());
+            Assert.That(new NetworkCredential("user@domain", "").IsDomainOrHostQualified(), Is.True);
+            Assert.That(new NetworkCredential("user@domain", "", "domain").IsDomainOrHostQualified(), Is.True);
+            Assert.That(new NetworkCredential("user", "", "domain").IsDomainOrHostQualified(), Is.True);
+            Assert.That(new NetworkCredential("domain\\user", "", "domain").IsDomainOrHostQualified(), Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -178,52 +178,46 @@ namespace Google.Solutions.Platform.Test.Net
             // UPN format: username@domain.
             //
 
-            Assert.AreEqual(
-                "domain",
+            Assert.That(
                 new NetworkCredential()
                 {
                     UserName = "user@domain",
-                }.GetDomainComponent());
-            Assert.AreEqual(
-                "", 
+                }.GetDomainComponent(), Is.EqualTo("domain"));
+            Assert.That(
                 new NetworkCredential()
                 {
                     UserName = "user@",
-                }.GetDomainComponent());
+                }.GetDomainComponent(), Is.EqualTo(""));
 
             //
             // NetBIOS format: domain\username.
             //
-            Assert.AreEqual(
-                "domain", 
+            Assert.That(
                 new NetworkCredential()
                 {
                     UserName = "domain\\user",
-                }.GetDomainComponent());
-            Assert.AreEqual(
-                "", 
+                }.GetDomainComponent(), Is.EqualTo("domain"));
+            Assert.That(
                 new NetworkCredential()
                 {
                     UserName = "\\user",
-                }.GetDomainComponent());
+                }.GetDomainComponent(), Is.EqualTo(""));
 
             //
             // Decomposed format.
             //
-            Assert.AreEqual(
-                "domain", 
+            Assert.That(
                 new NetworkCredential()
                 {
                     UserName = "user",
                     Domain = "domain"
-                }.GetDomainComponent());
+                }.GetDomainComponent(), Is.EqualTo("domain"));
 
-            Assert.AreEqual(
-                "", 
+            Assert.That(
                 new NetworkCredential()
                 {
                     UserName = "user",
-                }.GetDomainComponent());
+                }.GetDomainComponent(), Is.EqualTo(""));
         }
 
 
@@ -238,52 +232,46 @@ namespace Google.Solutions.Platform.Test.Net
             // UPN format: username@domain.
             //
 
-            Assert.AreEqual(
-                "user", 
+            Assert.That(
                 new NetworkCredential()
                 {
                     UserName = "user@domain",
-                }.GetUserComponent());
-            Assert.AreEqual(
-                "user", 
+                }.GetUserComponent(), Is.EqualTo("user"));
+            Assert.That(
                 new NetworkCredential()
                 {
                     UserName = "user@",
-                }.GetUserComponent());
+                }.GetUserComponent(), Is.EqualTo("user"));
 
             //
             // NetBIOS format: domain\username.
             //
-            Assert.AreEqual(
-                "user", 
+            Assert.That(
                 new NetworkCredential()
                 {
                     UserName = "domain\\user",
-                }.GetUserComponent());
-            Assert.AreEqual(
-                "", 
+                }.GetUserComponent(), Is.EqualTo("user"));
+            Assert.That(
                 new NetworkCredential()
                 {
                     UserName = "user\\",
-                }.GetUserComponent());
+                }.GetUserComponent(), Is.EqualTo(""));
 
             //
             // Decomposed format.
             //
-            Assert.AreEqual(
-                "user", 
+            Assert.That(
                 new NetworkCredential()
                 {
                     UserName = "user",
                     Domain = "domain"
-                }.GetUserComponent());
+                }.GetUserComponent(), Is.EqualTo("user"));
 
-            Assert.AreEqual(
-                "user", 
+            Assert.That(
                 new NetworkCredential()
                 {
                     UserName = "user",
-                }.GetUserComponent());
+                }.GetUserComponent(), Is.EqualTo("user"));
         }
     }
 }

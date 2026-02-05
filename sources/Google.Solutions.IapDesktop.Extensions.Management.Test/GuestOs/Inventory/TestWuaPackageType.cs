@@ -50,8 +50,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             var type = WuaPackageType.FromCategoryId(
                 "cd5ffd1e-e932-4e3a-bf74-18bf0b1bbd83");
 
-            Assert.AreEqual("Updates", type?.Name);
-            Assert.AreEqual(PackageCriticality.NonCritical, type?.Criticality);
+            Assert.That(type?.Name, Is.EqualTo("Updates"));
+            Assert.That(type?.Criticality, Is.EqualTo(PackageCriticality.NonCritical));
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                     "145233b6-2d99-4f56-ba70-3748c1b6fdba"
                 });
 
-            Assert.AreEqual(PackageCriticality.NonCritical, criticality);
+            Assert.That(criticality, Is.EqualTo(PackageCriticality.NonCritical));
         }
 
         [Test]
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                     "E6CF1350-C01B-414D-A61F-263D14D133B4"
                 });
 
-            Assert.AreEqual(PackageCriticality.Critical, criticality);
+            Assert.That(criticality, Is.EqualTo(PackageCriticality.Critical));
         }
     }
 }

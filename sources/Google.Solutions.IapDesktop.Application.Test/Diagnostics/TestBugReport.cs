@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
         {
             var report = new BugReport(GetType(), new Exception());
 
-            StringAssert.Contains(Environment.OSVersion.ToString(), report.ToString());
+            Assert.That(report.ToString(), Does.Contain(Environment.OSVersion.ToString()));
         }
 
         [Test]
@@ -44,10 +44,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
             var ex = new ApplicationException("outer", new NullReferenceException("inner"));
             var report = new BugReport(GetType(), ex);
 
-            StringAssert.Contains("outer", report.ToString());
-            StringAssert.Contains("inner", report.ToString());
-            StringAssert.Contains("ApplicationException", report.ToString());
-            StringAssert.Contains("NullReferenceException", report.ToString());
+            Assert.That(report.ToString(), Does.Contain("outer"));
+            Assert.That(report.ToString(), Does.Contain("inner"));
+            Assert.That(report.ToString(), Does.Contain("ApplicationException"));
+            Assert.That(report.ToString(), Does.Contain("NullReferenceException"));
         }
 
         [Test]
@@ -62,8 +62,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
                 });
             var report = new BugReport(GetType(), ex);
 
-            StringAssert.Contains("inner#1", report.ToString());
-            StringAssert.Contains("inner#2", report.ToString());
+            Assert.That(report.ToString(), Does.Contain("inner#1"));
+            Assert.That(report.ToString(), Does.Contain("inner#2"));
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
                     SourceWindow = form
                 };
 
-                StringAssert.Contains("Window: TestForm (Form)", report.ToString());
+                Assert.That(report.ToString(), Does.Contain("Window: TestForm (Form)"));
             }
         }
     }

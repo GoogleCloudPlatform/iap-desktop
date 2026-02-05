@@ -70,8 +70,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             using (queue.Subscribe<EventOne>(e => { }, options))
             using (queue.Subscribe<EventOne>(e => { }, options))
             {
-                Assert.AreEqual(2, queue.GetSubscriptions<EventOne>().Count());
-                Assert.AreEqual(0, queue.GetSubscriptions<EventTwo>().Count());
+                Assert.That(queue.GetSubscriptions<EventOne>().Count(), Is.EqualTo(2));
+                Assert.That(queue.GetSubscriptions<EventTwo>().Count(), Is.EqualTo(0));
             }
         }
 
@@ -87,10 +87,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             var queue = new EventQueue(new Mock<ISynchronizeInvoke>().Object);
             using (queue.Subscribe<EventOne>(e => { }, options))
             {
-                Assert.AreEqual(1, queue.GetSubscriptions<EventOne>().Count());
+                Assert.That(queue.GetSubscriptions<EventOne>().Count(), Is.EqualTo(1));
             }
 
-            Assert.AreEqual(0, queue.GetSubscriptions<EventOne>().Count());
+            Assert.That(queue.GetSubscriptions<EventOne>().Count(), Is.EqualTo(0));
         }
 
         [Test]
@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             sub.Dispose();
 
             sub.InvokeAsync(new EventOne());
-            Assert.IsFalse(invoked);
+            Assert.That(invoked, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -166,8 +166,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
                 var t = queue.PublishAsync(new EventOne());
 
                 // Susbcription auto-removed.
-                Assert.AreEqual(0, queue.GetSubscriptions<EventOne>().Count());
-                Assert.IsFalse(invoked);
+                Assert.That(queue.GetSubscriptions<EventOne>().Count(), Is.EqualTo(0));
+                Assert.That(invoked, Is.False);
             }
         }
 

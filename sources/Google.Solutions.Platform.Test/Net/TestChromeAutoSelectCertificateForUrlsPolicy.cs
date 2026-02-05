@@ -71,16 +71,16 @@ namespace Google.Solutions.Platform.Test.Net
                 .AddGroupPolicy((RegistryKey?)null)
                 .Build();
 
-            Assert.IsNotNull(policy);
-            Assert.IsFalse(policy.Entries.Any());
+            Assert.That(policy, Is.Not.Null);
+            Assert.That(policy.Entries.Any(), Is.False);
         }
 
         [Test]
         public void Build_WhenPolicyEmpty_ThenNoCertificatesMatch()
         {
-            Assert.IsFalse(new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
+            Assert.That(new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
                 .Build()
-                .IsApplicable(new Uri("https://example.org"), ExampleOrgCertificate));
+                .IsApplicable(new Uri("https://example.org"), ExampleOrgCertificate), Is.False);
         }
 
         [Test]
@@ -96,7 +96,7 @@ namespace Google.Solutions.Platform.Test.Net
                 var policy = new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
                     .AddGroupPolicy(key)
                     .Build();
-                Assert.AreEqual(2, policy.Entries.Count);
+                Assert.That(policy.Entries.Count, Is.EqualTo(2));
             }
         }
 
@@ -111,7 +111,7 @@ namespace Google.Solutions.Platform.Test.Net
                 var policy = new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
                     .AddGroupPolicy(key)
                     .Build();
-                Assert.AreEqual(1, policy.Entries.Count);
+                Assert.That(policy.Entries.Count, Is.EqualTo(1));
             }
         }
 
@@ -129,8 +129,8 @@ namespace Google.Solutions.Platform.Test.Net
                     .AddGroupPolicy(key)
                     .Build();
 
-                Assert.IsTrue(policy.IsApplicable(new Uri("https://www.example.org"), ExampleOrgCertificate));
-                Assert.IsFalse(policy.IsApplicable(new Uri("https://www.example.com"), ExampleOrgCertificate));
+                Assert.That(policy.IsApplicable(new Uri("https://www.example.org"), ExampleOrgCertificate), Is.True);
+                Assert.That(policy.IsApplicable(new Uri("https://www.example.com"), ExampleOrgCertificate), Is.False);
             }
         }
     }

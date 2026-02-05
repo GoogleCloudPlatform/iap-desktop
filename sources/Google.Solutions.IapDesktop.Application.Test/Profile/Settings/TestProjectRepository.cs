@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             {
                 var projects = repository.ListProjectsAsync().Result;
 
-                Assert.IsFalse(projects.Any());
+                Assert.That(projects.Any(), Is.False);
             }
         }
 
@@ -68,8 +68,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var projects = repository.ListProjectsAsync().Result;
 
-                Assert.AreEqual(1, projects.Count());
-                Assert.AreEqual("test-123", projects.First().ProjectId);
+                Assert.That(projects.Count(), Is.EqualTo(1));
+                Assert.That(projects.First().ProjectId, Is.EqualTo("test-123"));
             }
         }
 
@@ -85,8 +85,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var projects = repository.ListProjectsAsync().Result;
 
-                Assert.AreEqual(1, projects.Count());
-                Assert.AreEqual("test-123", projects.First().ProjectId);
+                Assert.That(projects.Count(), Is.EqualTo(1));
+                Assert.That(projects.First().ProjectId, Is.EqualTo("test-123"));
             }
         }
 
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 repository.AddProject(SampleProject);
                 using (var key = repository.OpenRegistryKey("test-123"))
                 {
-                    Assert.IsNotNull(key);
+                    Assert.That(key, Is.Not.Null);
                 }
             }
         }
@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 repository.AddProject(SampleProject);
                 using (var key = repository.OpenRegistryKey("test-123", "subkey"))
                 {
-                    Assert.IsNotNull(key);
+                    Assert.That(key, Is.Not.Null);
                 }
             }
         }
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         {
             using (var repository = CreateProjectRepository())
             {
-                Assert.IsFalse(repository.Projects.Any());
+                Assert.That(repository.Projects.Any(), Is.False);
             }
         }
 
@@ -159,8 +159,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var projects = repository.Projects;
 
-                Assert.AreEqual(1, projects.Count());
-                Assert.AreEqual("test-123", projects.First().ProjectId);
+                Assert.That(projects.Count(), Is.EqualTo(1));
+                Assert.That(projects.First().ProjectId, Is.EqualTo("test-123"));
             }
         }
 
@@ -176,8 +176,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var projects = repository.Projects;
 
-                Assert.AreEqual(1, projects.Count());
-                Assert.AreEqual("test-123", projects.First().ProjectId);
+                Assert.That(projects.Count(), Is.EqualTo(1));
+                Assert.That(projects.First().ProjectId, Is.EqualTo("test-123"));
             }
         }
 

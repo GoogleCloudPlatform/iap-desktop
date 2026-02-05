@@ -42,15 +42,15 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.Controls.Add(client);
                 form.Show();
 
-                Assert.AreEqual(ClientState.NotConnected, client.State);
+                Assert.That(client.State, Is.EqualTo(ClientState.NotConnected));
 
                 var connectionFailedEvents = 0;
                 client.ConnectionFailed += (_, args) => connectionFailedEvents++;
 
                 client.Connect();
 
-                Assert.AreEqual(ClientState.NotConnected, client.State);
-                Assert.AreEqual(1, connectionFailedEvents);
+                Assert.That(client.State, Is.EqualTo(ClientState.NotConnected));
+                Assert.That(connectionFailedEvents, Is.EqualTo(1));
             }
         }
     }

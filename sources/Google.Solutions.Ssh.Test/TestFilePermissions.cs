@@ -39,50 +39,50 @@ namespace Google.Solutions.Ssh.Test
         [Test]
         public void IsRegular()
         {
-            Assert.IsFalse(basePermissions.IsRegular());
+            Assert.That(basePermissions.IsRegular(), Is.False);
         }
 
         [Test]
         public void IsLink()
         {
-            Assert.IsFalse(basePermissions.IsLink());
-            Assert.IsTrue((basePermissions | FilePermissions.SymbolicLink).IsLink());
+            Assert.That(basePermissions.IsLink(), Is.False);
+            Assert.That((basePermissions | FilePermissions.SymbolicLink).IsLink(), Is.True);
         }
 
         [Test]
         public void IsDirectory()
         {
-            Assert.IsFalse(basePermissions.IsLink());
-            Assert.IsTrue((basePermissions | FilePermissions.Directory).IsDirectory());
-            Assert.IsFalse((basePermissions | FilePermissions.BlockSpecial).IsDirectory());
+            Assert.That(basePermissions.IsLink(), Is.False);
+            Assert.That((basePermissions | FilePermissions.Directory).IsDirectory(), Is.True);
+            Assert.That((basePermissions | FilePermissions.BlockSpecial).IsDirectory(), Is.False);
         }
 
         [Test]
         public void IsCharacterDevice()
         {
-            Assert.IsFalse(basePermissions.IsLink());
-            Assert.IsTrue((basePermissions | FilePermissions.CharacterDevice).IsCharacterDevice());
+            Assert.That(basePermissions.IsLink(), Is.False);
+            Assert.That((basePermissions | FilePermissions.CharacterDevice).IsCharacterDevice(), Is.True);
         }
 
         [Test]
         public void IsBlockDevice()
         {
-            Assert.IsFalse(basePermissions.IsLink());
-            Assert.IsTrue((basePermissions | FilePermissions.BlockSpecial).IsBlockDevice());
+            Assert.That(basePermissions.IsLink(), Is.False);
+            Assert.That((basePermissions | FilePermissions.BlockSpecial).IsBlockDevice(), Is.True);
         }
 
         [Test]
         public void IsFifo()
         {
-            Assert.IsFalse(basePermissions.IsLink());
-            Assert.IsTrue((basePermissions | FilePermissions.Fifo).IsFifo());
+            Assert.That(basePermissions.IsLink(), Is.False);
+            Assert.That((basePermissions | FilePermissions.Fifo).IsFifo(), Is.True);
         }
 
         [Test]
         public void IsSocket()
         {
-            Assert.IsFalse(basePermissions.IsLink());
-            Assert.IsTrue((basePermissions | FilePermissions.Socket).IsSocket());
+            Assert.That(basePermissions.IsLink(), Is.False);
+            Assert.That((basePermissions | FilePermissions.Socket).IsSocket(), Is.True);
         }
 
         //--------------------------------------------------------------------
@@ -98,7 +98,7 @@ namespace Google.Solutions.Ssh.Test
         public void ToListFormat_MapsPermissions(string octal, string expected)
         {
             var permissions = (FilePermissions)Convert.ToInt32(octal, 8);
-            Assert.AreEqual(expected, permissions.ToListFormat());
+            Assert.That(permissions.ToListFormat(), Is.EqualTo(expected));
         }
 
         [Test]
@@ -111,7 +111,7 @@ namespace Google.Solutions.Ssh.Test
         [TestCase(FilePermissions.Regular, "----------")]
         public void ToListFormat_MapsFileType(FilePermissions p, string expected)
         {
-            Assert.AreEqual(expected, p.ToListFormat());
+            Assert.That(p.ToListFormat(), Is.EqualTo(expected));
         }
     }
 }

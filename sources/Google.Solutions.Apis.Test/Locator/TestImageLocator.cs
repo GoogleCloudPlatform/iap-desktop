@@ -38,7 +38,7 @@ namespace Google.Solutions.Apis.Test.Locator
         public void Project()
         {
             var ref1 = new ImageLocator("project-1", "image-1");
-            Assert.AreEqual(ref1.ProjectId, ref1.Project.Name);
+            Assert.That(ref1.Project.Name, Is.EqualTo(ref1.ProjectId));
         }
 
         //---------------------------------------------------------------------
@@ -48,88 +48,88 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathIsValid()
         {
-            Assert.IsTrue(ImageLocator.TryParse(
+            Assert.That(ImageLocator.TryParse(
                 "projects/project-1/global/images/image-1",
-                out var ref1));
+                out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
-            Assert.AreEqual("images", ref1!.ResourceType);
-            Assert.AreEqual("image-1", ref1.Name);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1, Is.Not.Null);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("images"));
+            Assert.That(ref1.Name, Is.EqualTo("image-1"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
         public void TryParse_WhenResourceNameCotainsSlash()
         {
-            Assert.IsTrue(ImageLocator.TryParse(
+            Assert.That(ImageLocator.TryParse(
                 "projects/debian-cloud/global/images/family/debian-9",
-                out var ref1));
+                out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
-            Assert.AreEqual("images", ref1!.ResourceType);
-            Assert.AreEqual("family/debian-9", ref1.Name);
-            Assert.AreEqual("debian-cloud", ref1.ProjectId);
+            Assert.That(ref1, Is.Not.Null);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("images"));
+            Assert.That(ref1.Name, Is.EqualTo("family/debian-9"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("debian-cloud"));
         }
 
         [Test]
         public void TryParse_WhenQualifiedByComputeGoogleapisHost()
         {
-            Assert.IsTrue(ImageLocator.TryParse(
+            Assert.That(ImageLocator.TryParse(
                 "https://compute.googleapis.com/compute/v1/projects/debian-cloud/global/images/family/debian-9",
-                out var ref1));
+                out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
-            Assert.AreEqual("images", ref1!.ResourceType);
-            Assert.AreEqual("family/debian-9", ref1.Name);
-            Assert.AreEqual("debian-cloud", ref1.ProjectId);
+            Assert.That(ref1, Is.Not.Null);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("images"));
+            Assert.That(ref1.Name, Is.EqualTo("family/debian-9"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("debian-cloud"));
         }
 
         [Test]
         public void TryParse_WhenQualifiedByGoogleapisHost()
         {
-            Assert.IsTrue(ImageLocator.TryParse(
+            Assert.That(ImageLocator.TryParse(
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/images/windows-server-core",
-                out var ref1));
+                out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
-            Assert.AreEqual("images", ref1!.ResourceType);
-            Assert.AreEqual("windows-server-core", ref1.Name);
-            Assert.AreEqual("windows-cloud", ref1.ProjectId);
+            Assert.That(ref1, Is.Not.Null);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("images"));
+            Assert.That(ref1.Name, Is.EqualTo("windows-server-core"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("windows-cloud"));
         }
 
         [Test]
         public void TryParse_WhenUsingBetaApi()
         {
-            Assert.IsTrue(ImageLocator.TryParse(
+            Assert.That(ImageLocator.TryParse(
                 "https://compute.googleapis.com/compute/beta/projects/eip-images/global/images/debian-9-drawfork-v20191004",
-                out var ref1));
+                out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
-            Assert.AreEqual("images", ref1!.ResourceType);
-            Assert.AreEqual("debian-9-drawfork-v20191004", ref1.Name);
-            Assert.AreEqual("eip-images", ref1.ProjectId);
+            Assert.That(ref1, Is.Not.Null);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("images"));
+            Assert.That(ref1.Name, Is.EqualTo("debian-9-drawfork-v20191004"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("eip-images"));
         }
 
         [Test]
         public void TryParse_WhenPathLacksProject()
         {
-            Assert.IsFalse(ImageLocator.TryParse(
+            Assert.That(ImageLocator.TryParse(
                 "/project-1/project-1/global/images/image-1",
-                out var _));
+                out var _), Is.False);
         }
 
         [Test]
         public void TryParse_WhenPathInvalid()
         {
-            Assert.IsFalse(ImageLocator.TryParse(
+            Assert.That(ImageLocator.TryParse(
                 "projects/project-1/notglobal/images/image-1",
-                out var _));
-            Assert.IsFalse(ImageLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(ImageLocator.TryParse(
                 "/project-1/global/images/image-1",
-                out var _));
-            Assert.IsFalse(ImageLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(ImageLocator.TryParse(
                 "/",
-                out var _));
+                out var _), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -142,9 +142,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = ImageLocator.Parse(
                 "projects/project-1/global/images/image-1");
 
-            Assert.AreEqual("images", ref1.ResourceType);
-            Assert.AreEqual("image-1", ref1.Name);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("images"));
+            Assert.That(ref1.Name, Is.EqualTo("image-1"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -153,9 +153,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = ImageLocator.Parse(
                 "projects/debian-cloud/global/images/family/debian-9");
 
-            Assert.AreEqual("images", ref1.ResourceType);
-            Assert.AreEqual("family/debian-9", ref1.Name);
-            Assert.AreEqual("debian-cloud", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("images"));
+            Assert.That(ref1.Name, Is.EqualTo("family/debian-9"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("debian-cloud"));
         }
 
         [Test]
@@ -164,9 +164,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = ImageLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/debian-cloud/global/images/family/debian-9");
 
-            Assert.AreEqual("images", ref1.ResourceType);
-            Assert.AreEqual("family/debian-9", ref1.Name);
-            Assert.AreEqual("debian-cloud", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("images"));
+            Assert.That(ref1.Name, Is.EqualTo("family/debian-9"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("debian-cloud"));
         }
 
         [Test]
@@ -175,9 +175,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = ImageLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/images/windows-server-core");
 
-            Assert.AreEqual("images", ref1.ResourceType);
-            Assert.AreEqual("windows-server-core", ref1.Name);
-            Assert.AreEqual("windows-cloud", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("images"));
+            Assert.That(ref1.Name, Is.EqualTo("windows-server-core"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("windows-cloud"));
         }
 
         [Test]
@@ -186,9 +186,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = ImageLocator.Parse(
                 "https://compute.googleapis.com/compute/beta/projects/eip-images/global/images/debian-9-drawfork-v20191004");
 
-            Assert.AreEqual("images", ref1.ResourceType);
-            Assert.AreEqual("debian-9-drawfork-v20191004", ref1.Name);
-            Assert.AreEqual("eip-images", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("images"));
+            Assert.That(ref1.Name, Is.EqualTo("debian-9-drawfork-v20191004"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("eip-images"));
         }
 
         [Test]
@@ -219,10 +219,10 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = new ImageLocator("proj-1", "image-1");
             var ref2 = new ImageLocator("proj-2", "image-1");
 
-            Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object?)ref2));
-            Assert.IsFalse(ref1 == ref2);
-            Assert.IsTrue(ref1 != ref2);
+            Assert.That(ref1.Equals(ref2), Is.False);
+            Assert.That(ref1.Equals((object?)ref2), Is.False);
+            Assert.That(ref1 == ref2, Is.False);
+            Assert.That(ref1 != ref2, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -234,9 +234,8 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var path = "projects/project-1/global/images/image-1";
 
-            Assert.AreEqual(
-                path,
-                ImageLocator.Parse(path).ToString());
+            Assert.That(
+                ImageLocator.Parse(path).ToString(), Is.EqualTo(path));
         }
 
         [Test]
@@ -244,10 +243,9 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var path = "projects/project-1/global/images/image-1";
 
-            Assert.AreEqual(
-                path,
+            Assert.That(
                 ImageLocator.Parse(
-                    "https://www.googleapis.com/compute/v1/" + path).ToString());
+                    "https://www.googleapis.com/compute/v1/" + path).ToString(), Is.EqualTo(path));
         }
     }
 }

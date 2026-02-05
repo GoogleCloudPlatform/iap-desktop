@@ -36,12 +36,12 @@ namespace Google.Solutions.Iap.Test.Net
         public void FindPort_WhenNoSeedProvided()
         {
             var port1 = new PortFinder().FindPort(out var preferred);
-            Assert.IsFalse(preferred);
+            Assert.That(preferred, Is.False);
 
             var port2 = new PortFinder().FindPort(out preferred);
-            Assert.IsFalse(preferred);
+            Assert.That(preferred, Is.False);
 
-            Assert.AreNotEqual(port1, port2);
+            Assert.That(port2, Is.Not.EqualTo(port1));
         }
 
         //---------------------------------------------------------------------
@@ -66,8 +66,8 @@ namespace Google.Solutions.Iap.Test.Net
             portFinder2.AddSeed(seed);
             var port2 = portFinder2.FindPort(out preferred);
 
-            Assert.IsTrue(preferred);
-            Assert.AreEqual(port1, port2);
+            Assert.That(preferred, Is.True);
+            Assert.That(port2, Is.EqualTo(port1));
         }
     }
 }

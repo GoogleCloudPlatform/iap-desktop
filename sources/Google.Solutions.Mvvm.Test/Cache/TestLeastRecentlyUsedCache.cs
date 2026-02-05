@@ -48,8 +48,8 @@ namespace Google.Solutions.Mvvm.Test.Cache
             cache.Add("one", "ONE");
             cache.Add("two", "TWO");
 
-            Assert.AreEqual("ONE", cache.Lookup("one"));
-            Assert.AreEqual("TWO", cache.Lookup("two"));
+            Assert.That(cache.Lookup("one"), Is.EqualTo("ONE"));
+            Assert.That(cache.Lookup("two"), Is.EqualTo("TWO"));
         }
 
         [Test]
@@ -61,8 +61,8 @@ namespace Google.Solutions.Mvvm.Test.Cache
             cache.Add("three", "THREE");
 
             Assert.IsNull(cache.Lookup("one"));
-            Assert.AreEqual("TWO", cache.Lookup("two"));
-            Assert.AreEqual("THREE", cache.Lookup("three"));
+            Assert.That(cache.Lookup("two"), Is.EqualTo("TWO"));
+            Assert.That(cache.Lookup("three"), Is.EqualTo("THREE"));
         }
 
         [Test]
@@ -75,8 +75,8 @@ namespace Google.Solutions.Mvvm.Test.Cache
             cache.Add("three", "THREE");
 
             Assert.IsNull(cache.Lookup("two"));
-            Assert.AreEqual("ONE", cache.Lookup("one"));
-            Assert.AreEqual("THREE", cache.Lookup("three"));
+            Assert.That(cache.Lookup("one"), Is.EqualTo("ONE"));
+            Assert.That(cache.Lookup("three"), Is.EqualTo("THREE"));
         }
 
         [Test]
@@ -87,8 +87,8 @@ namespace Google.Solutions.Mvvm.Test.Cache
             cache.Add("one", "ONE");
             cache.Add("two", "TWO");
 
-            Assert.AreEqual("ONE", cache.Lookup("one"));
-            Assert.AreEqual("TWO", cache.Lookup("two"));
+            Assert.That(cache.Lookup("one"), Is.EqualTo("ONE"));
+            Assert.That(cache.Lookup("two"), Is.EqualTo("TWO"));
         }
 
         [Test]

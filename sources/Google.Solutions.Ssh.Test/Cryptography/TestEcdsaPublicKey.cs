@@ -41,7 +41,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP256)))
             using (var publicKey = new ECDsaPublicKey(key, true))
             {
-                Assert.AreEqual("ecdsa-sha2-nistp256", publicKey.Type);
+                Assert.That(publicKey.Type, Is.EqualTo("ecdsa-sha2-nistp256"));
             }
         }
 
@@ -51,7 +51,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP384)))
             using (var publicKey = new ECDsaPublicKey(key, true))
             {
-                Assert.AreEqual("ecdsa-sha2-nistp384", publicKey.Type);
+                Assert.That(publicKey.Type, Is.EqualTo("ecdsa-sha2-nistp384"));
             }
         }
 
@@ -61,7 +61,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             using (var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP521)))
             using (var publicKey = new ECDsaPublicKey(key, true))
             {
-                Assert.AreEqual("ecdsa-sha2-nistp521", publicKey.Type);
+                Assert.That(publicKey.Type, Is.EqualTo("ecdsa-sha2-nistp521"));
             }
         }
 
@@ -78,9 +78,8 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         {
             using (var key = ECDsaPublicKey.FromWireFormat(Convert.FromBase64String(encodedKey)))
             {
-                Assert.AreEqual(
-                    encodedKey,
-                    Convert.ToBase64String(key.WireFormatValue));
+                Assert.That(
+                    Convert.ToBase64String(key.WireFormatValue), Is.EqualTo(encodedKey));
             }
         }
 
@@ -113,12 +112,12 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP256));
             using (var publicKey = new ECDsaPublicKey(key, true))
             {
-                Assert.IsFalse(key.IsDisposed());
+                Assert.That(key.IsDisposed(), Is.False);
             }
 
             using (var publicKey = new ECDsaPublicKey(key, true))
             {
-                Assert.IsTrue(key.IsDisposed());
+                Assert.That(key.IsDisposed(), Is.True);
             }
         }
 
@@ -129,12 +128,12 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             {
                 using (var publicKey = new ECDsaPublicKey(key, false))
                 {
-                    Assert.IsFalse(key.IsDisposed());
+                    Assert.That(key.IsDisposed(), Is.False);
                 }
 
                 using (var publicKey = new ECDsaPublicKey(key, false))
                 {
-                    Assert.IsFalse(key.IsDisposed());
+                    Assert.That(key.IsDisposed(), Is.False);
                 }
             }
         }

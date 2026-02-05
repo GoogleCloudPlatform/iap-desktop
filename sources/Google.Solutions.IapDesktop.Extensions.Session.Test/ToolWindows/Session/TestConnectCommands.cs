@@ -75,9 +75,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 new Mock<IProjectWorkspace>(),
                 new Mock<ISessionFactory>());
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                urlCommands.LaunchRdpUrl.QueryState(SampleUrl));
+            Assert.That(
+                urlCommands.LaunchRdpUrl.QueryState(SampleUrl), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -130,9 +129,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             runningInstance.Setup(s => s.IsRunning).Returns(true);
             runningInstance.SetupGet(s => s.OperatingSystem).Returns(os);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ToolbarActivateOrConnectInstance.QueryState(runningInstance.Object));
+            Assert.That(
+                commands.ToolbarActivateOrConnectInstance.QueryState(runningInstance.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -151,9 +149,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             stoppedInstance.Setup(s => s.IsRunning).Returns(false);
             stoppedInstance.SetupGet(s => s.OperatingSystem).Returns(os);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ToolbarActivateOrConnectInstance.QueryState(stoppedInstance.Object));
+            Assert.That(
+                commands.ToolbarActivateOrConnectInstance.QueryState(stoppedInstance.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         [Test]
@@ -165,15 +162,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 new Mock<IProjectWorkspace>(),
                 new Mock<ISessionFactory>());
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ToolbarActivateOrConnectInstance.QueryState(new Mock<IProjectModelCloudNode>().Object));
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ToolbarActivateOrConnectInstance.QueryState(new Mock<IProjectModelProjectNode>().Object));
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ToolbarActivateOrConnectInstance.QueryState(new Mock<IProjectModelZoneNode>().Object));
+            Assert.That(
+                commands.ToolbarActivateOrConnectInstance.QueryState(new Mock<IProjectModelCloudNode>().Object), Is.EqualTo(CommandState.Disabled));
+            Assert.That(
+                commands.ToolbarActivateOrConnectInstance.QueryState(new Mock<IProjectModelProjectNode>().Object), Is.EqualTo(CommandState.Disabled));
+            Assert.That(
+                commands.ToolbarActivateOrConnectInstance.QueryState(new Mock<IProjectModelZoneNode>().Object), Is.EqualTo(CommandState.Disabled));
         }
 
         [Test]
@@ -272,9 +266,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             runningInstance.Setup(s => s.IsRunning).Returns(true);
             runningInstance.SetupGet(s => s.OperatingSystem).Returns(os);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuActivateOrConnectInstance.QueryState(runningInstance.Object));
+            Assert.That(
+                commands.ContextMenuActivateOrConnectInstance.QueryState(runningInstance.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -293,9 +286,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             stoppedInstance.Setup(s => s.IsRunning).Returns(false);
             stoppedInstance.SetupGet(s => s.OperatingSystem).Returns(os);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ContextMenuActivateOrConnectInstance.QueryState(stoppedInstance.Object));
+            Assert.That(
+                commands.ContextMenuActivateOrConnectInstance.QueryState(stoppedInstance.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         [Test]
@@ -307,15 +299,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 new Mock<IProjectWorkspace>(),
                 new Mock<ISessionFactory>());
 
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuActivateOrConnectInstance.QueryState(new Mock<IProjectModelCloudNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuActivateOrConnectInstance.QueryState(new Mock<IProjectModelProjectNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuActivateOrConnectInstance.QueryState(new Mock<IProjectModelZoneNode>().Object));
+            Assert.That(
+                commands.ContextMenuActivateOrConnectInstance.QueryState(new Mock<IProjectModelCloudNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                commands.ContextMenuActivateOrConnectInstance.QueryState(new Mock<IProjectModelProjectNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                commands.ContextMenuActivateOrConnectInstance.QueryState(new Mock<IProjectModelZoneNode>().Object), Is.EqualTo(CommandState.Unavailable));
         }
 
         [Test]
@@ -411,9 +400,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             runningInstance.Setup(s => s.IsRunning).Returns(true);
             runningInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Windows);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuConnectRdpAsUser.QueryState(runningInstance.Object));
+            Assert.That(
+                commands.ContextMenuConnectRdpAsUser.QueryState(runningInstance.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -429,9 +417,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             stoppedInstance.Setup(s => s.IsRunning).Returns(false);
             stoppedInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Windows);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ContextMenuConnectRdpAsUser.QueryState(stoppedInstance.Object));
+            Assert.That(
+                commands.ContextMenuConnectRdpAsUser.QueryState(stoppedInstance.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         [Test]
@@ -447,18 +434,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             runningLinuxInstance.Setup(s => s.IsRunning).Returns(true);
             runningLinuxInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Linux);
 
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuConnectRdpAsUser.QueryState(runningLinuxInstance.Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuConnectRdpAsUser.QueryState(new Mock<IProjectModelCloudNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuConnectRdpAsUser.QueryState(new Mock<IProjectModelProjectNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuConnectRdpAsUser.QueryState(new Mock<IProjectModelZoneNode>().Object));
+            Assert.That(
+                commands.ContextMenuConnectRdpAsUser.QueryState(runningLinuxInstance.Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                commands.ContextMenuConnectRdpAsUser.QueryState(new Mock<IProjectModelCloudNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                commands.ContextMenuConnectRdpAsUser.QueryState(new Mock<IProjectModelProjectNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                commands.ContextMenuConnectRdpAsUser.QueryState(new Mock<IProjectModelZoneNode>().Object), Is.EqualTo(CommandState.Unavailable));
         }
 
         [Test]
@@ -529,9 +512,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             runningInstance.Setup(s => s.IsRunning).Returns(true);
             runningInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Linux);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuConnectSshInNewTerminal.QueryState(runningInstance.Object));
+            Assert.That(
+                commands.ContextMenuConnectSshInNewTerminal.QueryState(runningInstance.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -547,9 +529,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             stoppedInstance.Setup(s => s.IsRunning).Returns(false);
             stoppedInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Linux);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ContextMenuConnectSshInNewTerminal.QueryState(stoppedInstance.Object));
+            Assert.That(
+                commands.ContextMenuConnectSshInNewTerminal.QueryState(stoppedInstance.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         [Test]
@@ -565,18 +546,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             runningWindowsInstance.Setup(s => s.IsRunning).Returns(true);
             runningWindowsInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Windows);
 
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuConnectSshInNewTerminal.QueryState(runningWindowsInstance.Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuConnectSshInNewTerminal.QueryState(new Mock<IProjectModelCloudNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuConnectSshInNewTerminal.QueryState(new Mock<IProjectModelProjectNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuConnectSshInNewTerminal.QueryState(new Mock<IProjectModelZoneNode>().Object));
+            Assert.That(
+                commands.ContextMenuConnectSshInNewTerminal.QueryState(runningWindowsInstance.Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                commands.ContextMenuConnectSshInNewTerminal.QueryState(new Mock<IProjectModelCloudNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                commands.ContextMenuConnectSshInNewTerminal.QueryState(new Mock<IProjectModelProjectNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                commands.ContextMenuConnectSshInNewTerminal.QueryState(new Mock<IProjectModelZoneNode>().Object), Is.EqualTo(CommandState.Unavailable));
         }
 
         [Test]
@@ -629,9 +606,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var connectedSession = new Mock<ISession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                sessionCommands.Close.QueryState(connectedSession.Object));
+            Assert.That(
+                sessionCommands.Close.QueryState(connectedSession.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -643,9 +619,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var disconnectedSession = new Mock<ISession>();
             disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                sessionCommands.Close.QueryState(disconnectedSession.Object));
+            Assert.That(
+                sessionCommands.Close.QueryState(disconnectedSession.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         [Test]

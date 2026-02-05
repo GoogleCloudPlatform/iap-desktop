@@ -106,9 +106,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new InstanceLocator("project-1", "zone-1", "instance-1"),
                 new NameValueCollection());
 
-            Assert.IsFalse(locator1.Equals(locator2));
-            Assert.IsTrue(locator1 != locator2);
-            Assert.AreNotEqual(locator1.GetHashCode(), locator2.GetHashCode());
+            Assert.That(locator1.Equals(locator2), Is.False);
+            Assert.That(locator1 != locator2, Is.True);
+            Assert.That(locator2.GetHashCode(), Is.Not.EqualTo(locator1.GetHashCode()));
         }
 
         [Test]
@@ -125,8 +125,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new InstanceLocator("project-1", "zone-1", "instance-1"),
                 new NameValueCollection());
 
-            Assert.IsFalse(locator1.Equals(locator2));
-            Assert.IsTrue(locator1 != locator2);
+            Assert.That(locator1.Equals(locator2), Is.False);
+            Assert.That(locator1 != locator2, Is.True);
         }
 
         [Test]
@@ -143,9 +143,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new InstanceLocator("project-1", "zone-1", "instance-2"),
                 new NameValueCollection());
 
-            Assert.IsFalse(locator1.Equals(locator2));
-            Assert.IsTrue(locator1 != locator2);
-            Assert.AreNotEqual(locator1.GetHashCode(), locator2.GetHashCode());
+            Assert.That(locator1.Equals(locator2), Is.False);
+            Assert.That(locator1 != locator2, Is.True);
+            Assert.That(locator2.GetHashCode(), Is.Not.EqualTo(locator1.GetHashCode()));
         }
 
         [Test]
@@ -167,9 +167,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new InstanceLocator("project-1", "zone-1", "instance-1"),
                 parameters);
 
-            Assert.IsFalse(locator1.Equals(locator2));
-            Assert.IsTrue(locator1 != locator2);
-            Assert.AreNotEqual(locator1.GetHashCode(), locator2.GetHashCode());
+            Assert.That(locator1.Equals(locator2), Is.False);
+            Assert.That(locator1 != locator2, Is.True);
+            Assert.That(locator2.GetHashCode(), Is.Not.EqualTo(locator1.GetHashCode()));
         }
     }
 }

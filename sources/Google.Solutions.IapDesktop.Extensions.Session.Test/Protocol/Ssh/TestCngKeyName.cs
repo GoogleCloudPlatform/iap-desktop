@@ -46,11 +46,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 SshKeyType.Rsa3072,
                 CngProvider.MicrosoftSoftwareKeyStorageProvider);
 
-            Assert.AreEqual("IAPDESKTOP_user", name.Value);
-            Assert.AreEqual("IAPDESKTOP_user", name.ToString());
+            Assert.That(name.Value, Is.EqualTo("IAPDESKTOP_user"));
+            Assert.That(name.ToString(), Is.EqualTo("IAPDESKTOP_user"));
 
-            Assert.AreEqual(CngAlgorithm.Rsa, name.Type.Algorithm);
-            Assert.AreEqual(3072, name.Type.Size);
+            Assert.That(name.Type.Algorithm, Is.EqualTo(CngAlgorithm.Rsa));
+            Assert.That(name.Type.Size, Is.EqualTo(3072));
         }
 
         [Test]
@@ -64,11 +64,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 SshKeyType.EcdsaNistp256,
                 CngProvider.MicrosoftSoftwareKeyStorageProvider);
 
-            Assert.AreEqual("IAPDESKTOP_user_00000011_094FE673", name.Value);
-            Assert.AreEqual("IAPDESKTOP_user_00000011_094FE673", name.ToString());
+            Assert.That(name.Value, Is.EqualTo("IAPDESKTOP_user_00000011_094FE673"));
+            Assert.That(name.ToString(), Is.EqualTo("IAPDESKTOP_user_00000011_094FE673"));
 
-            Assert.AreEqual(CngAlgorithm.ECDsaP256, name.Type.Algorithm);
-            Assert.AreEqual(256, name.Type.Size);
+            Assert.That(name.Type.Algorithm, Is.EqualTo(CngAlgorithm.ECDsaP256));
+            Assert.That(name.Type.Size, Is.EqualTo(256));
         }
 
         [Test]
@@ -82,11 +82,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 SshKeyType.EcdsaNistp384,
                 CngProvider.MicrosoftSoftwareKeyStorageProvider);
 
-            Assert.AreEqual("IAPDESKTOP_user_00000012_094FE673", name.Value);
-            Assert.AreEqual("IAPDESKTOP_user_00000012_094FE673", name.ToString());
+            Assert.That(name.Value, Is.EqualTo("IAPDESKTOP_user_00000012_094FE673"));
+            Assert.That(name.ToString(), Is.EqualTo("IAPDESKTOP_user_00000012_094FE673"));
 
-            Assert.AreEqual(CngAlgorithm.ECDsaP384, name.Type.Algorithm);
-            Assert.AreEqual(384, name.Type.Size);
+            Assert.That(name.Type.Algorithm, Is.EqualTo(CngAlgorithm.ECDsaP384));
+            Assert.That(name.Type.Size, Is.EqualTo(384));
         }
 
         [Test]
@@ -100,11 +100,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 SshKeyType.EcdsaNistp521,
                 CngProvider.MicrosoftSoftwareKeyStorageProvider);
 
-            Assert.AreEqual("IAPDESKTOP_user_00000013_094FE673", name.Value);
-            Assert.AreEqual("IAPDESKTOP_user_00000013_094FE673", name.ToString());
+            Assert.That(name.Value, Is.EqualTo("IAPDESKTOP_user_00000013_094FE673"));
+            Assert.That(name.ToString(), Is.EqualTo("IAPDESKTOP_user_00000013_094FE673"));
 
-            Assert.AreEqual(CngAlgorithm.ECDsaP521, name.Type.Algorithm);
-            Assert.AreEqual(521, name.Type.Size);
+            Assert.That(name.Type.Algorithm, Is.EqualTo(CngAlgorithm.ECDsaP521));
+            Assert.That(name.Type.Size, Is.EqualTo(521));
         }
     }
 }

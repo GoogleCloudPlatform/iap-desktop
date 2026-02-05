@@ -34,7 +34,7 @@ namespace Google.Solutions.Common.Test.Format
         {
             var checksum = new BsdChecksum((ushort)lengthInBits);
             checksum.Add(Array.Empty<byte>());
-            Assert.AreEqual(0, checksum.Value);
+            Assert.That(checksum.Value, Is.EqualTo(0));
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace Google.Solutions.Common.Test.Format
         {
             var checksum = new BsdChecksum((ushort)lengthInBits);
             checksum.Add(new byte[] { 0, 0, 0, 0 });
-            Assert.AreEqual(0, checksum.Value);
+            Assert.That(checksum.Value, Is.EqualTo(0));
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace Google.Solutions.Common.Test.Format
         {
             var checksum = new BsdChecksum(16);
             checksum.Add(Encoding.ASCII.GetBytes("test\n"));
-            Assert.AreEqual(41076, checksum.Value);
+            Assert.That(checksum.Value, Is.EqualTo(41076));
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace Google.Solutions.Common.Test.Format
             var checksum = new BsdChecksum(16);
             checksum.Add(Encoding.ASCII.GetBytes("Test"));
             checksum.Add(Encoding.ASCII.GetBytes("data\n"));
-            Assert.AreEqual(27248, checksum.Value);
+            Assert.That(checksum.Value, Is.EqualTo(27248));
         }
     }
 }

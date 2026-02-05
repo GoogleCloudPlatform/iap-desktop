@@ -38,7 +38,7 @@ namespace Google.Solutions.Apis.Test.Locator
         public void Project()
         {
             var ref1 = new InstanceLocator("project-1", "zone-1", "instance-1");
-            Assert.AreEqual(ref1.ProjectId, ref1.Project.Name);
+            Assert.That(ref1.Project.Name, Is.EqualTo(ref1.ProjectId));
         }
 
         //---------------------------------------------------------------------
@@ -48,79 +48,79 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathIsValid()
         {
-            Assert.IsTrue(InstanceLocator.TryParse(
+            Assert.That(InstanceLocator.TryParse(
                 "projects/project-1/zones/us-central1-a/instances/instance-1",
-                out var ref1));
+                out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
-            Assert.AreEqual("instances", ref1!.ResourceType);
-            Assert.AreEqual("instance-1", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1, Is.Not.Null);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("instances"));
+            Assert.That(ref1.Name, Is.EqualTo("instance-1"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
         public void TryParse_WhenQualifiedByComputeGoogleapisHost()
         {
-            Assert.IsTrue(InstanceLocator.TryParse(
+            Assert.That(InstanceLocator.TryParse(
                 "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/instances/instance-1",
-                out var ref1));
+                out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
-            Assert.AreEqual("instances", ref1!.ResourceType);
-            Assert.AreEqual("instance-1", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1, Is.Not.Null);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("instances"));
+            Assert.That(ref1.Name, Is.EqualTo("instance-1"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
         public void TryParse_WhenQualifiedByGoogleapisHost()
         {
-            Assert.IsTrue(InstanceLocator.TryParse(
+            Assert.That(InstanceLocator.TryParse(
                 "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/instances/instance-1",
-                out var ref1));
+                out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
-            Assert.AreEqual("instances", ref1!.ResourceType);
-            Assert.AreEqual("instance-1", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1, Is.Not.Null);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("instances"));
+            Assert.That(ref1.Name, Is.EqualTo("instance-1"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
         public void TryParse_WhenUsingBetaApi()
         {
-            Assert.IsTrue(InstanceLocator.TryParse(
+            Assert.That(InstanceLocator.TryParse(
                  "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/instances/instance-1",
-                out var ref1));
+                out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
-            Assert.AreEqual("instances", ref1!.ResourceType);
-            Assert.AreEqual("instance-1", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1, Is.Not.Null);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("instances"));
+            Assert.That(ref1.Name, Is.EqualTo("instance-1"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
         public void TryParse_WhenPathLacksProject()
         {
-            Assert.IsFalse(InstanceLocator.TryParse(
+            Assert.That(InstanceLocator.TryParse(
                 "/project-1/zones/us-central1-a/instances/instance-1",
-                out var _));
+                out var _), Is.False);
         }
 
         [Test]
         public void TryParse_WhenPathInvalid()
         {
-            Assert.IsFalse(InstanceLocator.TryParse(
+            Assert.That(InstanceLocator.TryParse(
                 "/project-1/zones/us-central1-a/instances",
-                out var _));
-            Assert.IsFalse(InstanceLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(InstanceLocator.TryParse(
                 "/project-1/zones/us-central1-a/instances/instance-1",
-                out var _));
-            Assert.IsFalse(InstanceLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(InstanceLocator.TryParse(
                 "/",
-                out var _));
+                out var _), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -133,10 +133,10 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = InstanceLocator.Parse(
                 "projects/project-1/zones/us-central1-a/instances/instance-1");
 
-            Assert.AreEqual("instances", ref1.ResourceType);
-            Assert.AreEqual("instance-1", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("instances"));
+            Assert.That(ref1.Name, Is.EqualTo("instance-1"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -145,10 +145,10 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = InstanceLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/instances/instance-1");
 
-            Assert.AreEqual("instances", ref1.ResourceType);
-            Assert.AreEqual("instance-1", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("instances"));
+            Assert.That(ref1.Name, Is.EqualTo("instance-1"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -157,10 +157,10 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = InstanceLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/instances/instance-1");
 
-            Assert.AreEqual("instances", ref1.ResourceType);
-            Assert.AreEqual("instance-1", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("instances"));
+            Assert.That(ref1.Name, Is.EqualTo("instance-1"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -168,10 +168,10 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var ref1 = InstanceLocator.Parse(
                  "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/instances/instance-1");
-            Assert.AreEqual("instances", ref1.ResourceType);
-            Assert.AreEqual("instance-1", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("instances"));
+            Assert.That(ref1.Name, Is.EqualTo("instance-1"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -201,9 +201,8 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var path = "projects/project-1/zones/us-central-1/instances/instance-1";
 
-            Assert.AreEqual(
-                path,
-                InstanceLocator.Parse(path).ToString());
+            Assert.That(
+                InstanceLocator.Parse(path).ToString(), Is.EqualTo(path));
         }
 
         [Test]
@@ -211,10 +210,9 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var path = "projects/project-1/zones/us-central-1/instances/instance-1";
 
-            Assert.AreEqual(
-                path,
+            Assert.That(
                 InstanceLocator.Parse(
-                    "https://www.googleapis.com/compute/v1/" + path).ToString());
+                    "https://www.googleapis.com/compute/v1/" + path).ToString(), Is.EqualTo(path));
         }
 
         //---------------------------------------------------------------------
@@ -227,10 +225,10 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = new InstanceLocator("proj", "zone", "inst");
             var ref2 = new InstanceLocator("proj", "zone", "other");
 
-            Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object?)ref2));
-            Assert.IsFalse(ref1 == ref2);
-            Assert.IsTrue(ref1 != ref2);
+            Assert.That(ref1.Equals(ref2), Is.False);
+            Assert.That(ref1.Equals((object?)ref2), Is.False);
+            Assert.That(ref1 == ref2, Is.False);
+            Assert.That(ref1 != ref2, Is.True);
         }
 
         [Test]
@@ -239,10 +237,10 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = new InstanceLocator("proj", "zone", "inst");
             var ref2 = new InstanceLocator("proj", "zone", "instance-1");
 
-            Assert.IsFalse(ref2.Equals(ref1));
-            Assert.IsFalse(ref2.Equals((object?)ref1));
-            Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object?)ref2));
+            Assert.That(ref2.Equals(ref1), Is.False);
+            Assert.That(ref2.Equals((object?)ref1), Is.False);
+            Assert.That(ref1.Equals(ref2), Is.False);
+            Assert.That(ref1.Equals((object?)ref2), Is.False);
         }
     }
 }

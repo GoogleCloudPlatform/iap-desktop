@@ -82,7 +82,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             {
-                Assert.IsNotNull(channel);
+                Assert.That(channel, Is.Not.Null);
             }
         }
 
@@ -134,13 +134,12 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var files = channel.ListFiles("/etc");
 
-                Assert.NotNull(files);
-                Assert.Greater(files.Count, 1);
+                Assert.That(files, Is.Not.Null);
+                Assert.That(files.Count, Is.GreaterThan(1));
 
                 var passwd = files.First(f => f.Name == "passwd");
-                Assert.IsNotNull(passwd);
-                Assert.IsTrue(passwd.Permissions.HasFlag(FilePermissions.Regular));
-                Assert.IsFalse(passwd.IsDirectory);
+                Assert.That(passwd.Permissions.HasFlag(FilePermissions.Regular), Is.True);
+                Assert.That(passwd.IsDirectory, Is.False);
             }
         }
 
@@ -164,13 +163,12 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var files = channel.ListFiles(".");
 
-                Assert.NotNull(files);
-                Assert.Greater(files.Count, 1);
+                Assert.That(files, Is.Not.Null);
+                Assert.That(files.Count, Is.GreaterThan(1));
 
                 var parent = files.First(f => f.Name == "..");
-                Assert.IsNotNull(parent);
-                Assert.IsTrue(parent.Permissions.HasFlag(FilePermissions.Directory));
-                Assert.IsTrue(parent.IsDirectory);
+                Assert.That(parent.Permissions.HasFlag(FilePermissions.Directory), Is.True);
+                Assert.That(parent.IsDirectory, Is.True);
             }
         }
 
@@ -258,9 +256,9 @@ namespace Google.Solutions.Ssh.Test.Native
                         FilePermissions.OwnerRead |
                         FilePermissions.OtherWrite);
 
-                Assert.IsTrue(channel
+                Assert.That(channel
                     .ListFiles(".")
-                    .Any(f => f.Name == directoryName),
+                    .Any(f => f.Name == directoryName), Is.True,
                     "Directory created");
             }
         }
@@ -318,9 +316,9 @@ namespace Google.Solutions.Ssh.Test.Native
                         FilePermissions.OtherWrite);
                 channel.DeleteDirectory(directoryName);
 
-                Assert.IsFalse(channel
+                Assert.That(channel
                     .ListFiles(".")
-                    .Any(f => f.Name == directoryName),
+                    .Any(f => f.Name == directoryName), Is.False,
                     "Directory deleted");
             }
         }
@@ -413,9 +411,9 @@ namespace Google.Solutions.Ssh.Test.Native
                     FilePermissions.OwnerRead |
                     FilePermissions.OtherWrite))
             {
-                Assert.IsTrue(channel
+                Assert.That(channel
                     .ListFiles(".")
-                    .Any(f => f.Name == fileName),
+                    .Any(f => f.Name == fileName), Is.True,
                     "File created");
             }
         }
@@ -501,9 +499,9 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 channel.DeleteFile(fileName);
 
-                Assert.IsFalse(channel
+                Assert.That(channel
                     .ListFiles(".")
-                    .Any(f => f.Name == fileName),
+                    .Any(f => f.Name == fileName), Is.False,
                     "File deleted");
             }
         }

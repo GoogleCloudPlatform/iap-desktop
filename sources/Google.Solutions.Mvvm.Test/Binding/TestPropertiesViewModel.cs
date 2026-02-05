@@ -72,21 +72,21 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 viewModel.AddSheet(sheetView, sheetViewModel);
                 viewModel.AddSheet(new SampleSheetView(), new SampleSheetViewModel());
 
-                Assert.IsFalse(viewModel.IsDirty.Value);
+                Assert.That(viewModel.IsDirty.Value, Is.False);
 
                 PropertyAssert.RaisesPropertyChangedNotification(
                     sheetViewModel.IsDirty,
                     () => sheetViewModel.IsDirty.Value = true,
                     "Value");
 
-                Assert.IsTrue(viewModel.IsDirty.Value);
+                Assert.That(viewModel.IsDirty.Value, Is.True);
 
                 PropertyAssert.RaisesPropertyChangedNotification(
                     sheetViewModel.IsDirty,
                     () => sheetViewModel.IsDirty.Value = false,
                     "Value");
 
-                Assert.IsFalse(viewModel.IsDirty.Value);
+                Assert.That(viewModel.IsDirty.Value, Is.False);
             }
         }
 
@@ -104,7 +104,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
                 sheetViewModel.IsDirty.Value = true;
 
-                Assert.IsTrue(viewModel.ApplyCommand.CanExecute.Value);
+                Assert.That(viewModel.ApplyCommand.CanExecute.Value, Is.True);
             }
         }
 
@@ -115,7 +115,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             {
                 viewModel.AddSheet(new SampleSheetView(), new SampleSheetViewModel());
 
-                Assert.IsFalse(viewModel.ApplyCommand.CanExecute.Value);
+                Assert.That(viewModel.ApplyCommand.CanExecute.Value, Is.False);
             }
         }
 
@@ -136,8 +136,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
                 viewModel.ApplyCommand.ExecuteAsync(CancellationToken.None);
 
-                Assert.AreEqual(1, sheetViewModel1.ApplyCalls);
-                Assert.AreEqual(0, sheetViewModel2.ApplyCalls);
+                Assert.That(sheetViewModel1.ApplyCalls, Is.EqualTo(1));
+                Assert.That(sheetViewModel2.ApplyCalls, Is.EqualTo(0));
             }
         }
     }

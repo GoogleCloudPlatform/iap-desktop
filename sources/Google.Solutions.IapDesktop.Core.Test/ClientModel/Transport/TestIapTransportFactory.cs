@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 new Mock<IEventQueue>().Object,
                 CreateTunnelFactory().Object);
 
-            CollectionAssert.IsEmpty(factory.Pool);
+            Assert.That(factory.Pool, Is.Empty);
         }
 
         [Test]
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                  CancellationToken.None);
 
             var pool = factory.Pool;
-            Assert.AreEqual(1, pool.Count());
+            Assert.That(pool.Count(), Is.EqualTo(1));
 
             validTransport.Result.Dispose();
         }
@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 SampleTimeout,
                 CancellationToken.None);
 
-            CollectionAssert.IsEmpty(factory.Pool);
+            Assert.That(factory.Pool, Is.Empty);
         }
 
         //---------------------------------------------------------------------
@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                  SampleTimeout,
                  CancellationToken.None);
 
-            Assert.AreNotEqual(faultingTransport1, faultingTransport2);
+            Assert.That(faultingTransport2, Is.Not.EqualTo(faultingTransport1));
 
             tunnelFactory
                 .Verify(f => f.CreateTunnelAsync(
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 SampleTimeout,
                 CancellationToken.None);
 
-            Assert.AreNotSame(validButIncompleteTransport1, validButIncompleteTransport2);
+            Assert.That(validButIncompleteTransport2, Is.Not.SameAs(validButIncompleteTransport1));
 
             tunnelFactory
                 .Verify(f => f.CreateTunnelAsync(
@@ -310,10 +310,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             //
             // Two different transports that use the same tunnel.
             //
-            Assert.AreNotSame(transport1, transport2);
-            Assert.AreSame(
-                ((IapTransportFactory.Transport)transport1).Tunnel,
-                ((IapTransportFactory.Transport)transport2).Tunnel);
+            Assert.That(transport2, Is.Not.SameAs(transport1));
+            Assert.That(
+                ((IapTransportFactory.Transport)transport2).Tunnel, Is.SameAs(((IapTransportFactory.Transport)transport1).Tunnel));
 
             transport1.Dispose();
             transport2.Dispose();
@@ -414,8 +413,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
 
             await invoker.AwaitPendingInvocationsAsync();
 
-            Assert.AreEqual(1, poolSizeWhenCreated);
-            Assert.AreEqual(0, poolSizeWhenClosed);
+            Assert.That(poolSizeWhenCreated, Is.EqualTo(1));
+            Assert.That(poolSizeWhenClosed, Is.EqualTo(0));
         }
 
         //---------------------------------------------------------------------
@@ -449,7 +448,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                     CancellationToken.None))
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(HelpTopics.IapAccess, e.Help);
+            Assert.That(e.Help, Is.EqualTo(HelpTopics.IapAccess));
         }
 
         [Test]
@@ -479,7 +478,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                     CancellationToken.None))
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(HelpTopics.CreateIapFirewallRule, e.Help);
+            Assert.That(e.Help, Is.EqualTo(HelpTopics.CreateIapFirewallRule));
         }
 
         [Test]
@@ -509,7 +508,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                     CancellationToken.None))
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(HelpTopics.ProxyConfiguration, e.Help);
+            Assert.That(e.Help, Is.EqualTo(HelpTopics.ProxyConfiguration));
         }
 
         //---------------------------------------------------------------------
@@ -535,11 +534,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
 
             // Dispose once, closing the tunnel.
             transport.Dispose();
-            Assert.AreEqual(1, tunnelClosedEvents);
+            Assert.That(tunnelClosedEvents, Is.EqualTo(1));
 
             // Dispose again.
             transport.Dispose();
-            Assert.AreEqual(1, tunnelClosedEvents);
+            Assert.That(tunnelClosedEvents, Is.EqualTo(1));
         }
 
         [Test]
@@ -569,9 +568,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                     CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                Assert.AreSame(validProfile.Protocol, transport.Protocol);
-                Assert.AreSame(IPAddress.Loopback, transport.Endpoint.Address);
-                Assert.AreSame(SampleInstance, transport.Target);
+                Assert.That(transport.Protocol, Is.SameAs(validProfile.Protocol));
+                Assert.That(transport.Endpoint.Address, Is.SameAs(IPAddress.Loopback));
+                Assert.That(transport.Target, Is.SameAs(SampleInstance));
             }
         }
     }

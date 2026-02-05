@@ -40,8 +40,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
             using (callback = new DeferredCallback(
                 cb =>
                 {
-                    Assert.IsNotNull(callback);
-                    Assert.IsFalse(callback!.IsPending);
+                    Assert.That(callback, Is.Not.Null);
+                    Assert.That(callback!.IsPending, Is.False);
                     invocations++;
                 },
                 TimeSpan.FromMilliseconds(10)))
@@ -55,7 +55,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     .WaitForCompletionAsync()
                     .ConfigureAwait(false);
 
-                Assert.AreEqual(1, invocations);
+                Assert.That(invocations, Is.EqualTo(1));
             }
         }
 
@@ -81,7 +81,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     .WaitForCompletionAsync()
                     .ConfigureAwait(true);
 
-                Assert.AreEqual(2, invocations);
+                Assert.That(invocations, Is.EqualTo(2));
             }
         }
 

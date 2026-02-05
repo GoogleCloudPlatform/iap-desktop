@@ -49,7 +49,7 @@ namespace Google.Solutions.Settings.Test
             {
                 var accessor = CreateAccessor("test");
 
-                Assert.IsFalse(accessor.TryRead(key, out var _));
+                Assert.That(accessor.TryRead(key, out var _), Is.False);
             }
         }
 
@@ -61,8 +61,8 @@ namespace Google.Solutions.Settings.Test
                 var accessor = CreateAccessor("test");
                 accessor.Write(key, this.SampleData);
 
-                Assert.IsTrue(accessor.TryRead(key, out var read));
-                Assert.AreEqual(this.SampleData, read);
+                Assert.That(accessor.TryRead(key, out var read), Is.True);
+                Assert.That(read, Is.EqualTo(this.SampleData));
             }
         }
 
@@ -103,7 +103,7 @@ namespace Google.Solutions.Settings.Test
                 accessor.Write(key, this.SampleData);
                 accessor.Delete(key);
 
-                Assert.IsFalse(accessor.TryRead(key, out var _));
+                Assert.That(accessor.TryRead(key, out var _), Is.False);
             }
         }
     }

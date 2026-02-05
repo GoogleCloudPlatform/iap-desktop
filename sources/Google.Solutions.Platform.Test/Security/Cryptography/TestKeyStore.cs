@@ -90,8 +90,8 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
                 CngKeyUsages.Signing,
                 false))
             {
-                Assert.IsNotNull(key);
-                Assert.AreEqual(keyType.Size, key.KeySize);
+                Assert.That(key, Is.Not.Null);
+                Assert.That(key.KeySize, Is.EqualTo(keyType.Size));
             }
         }
 
@@ -133,8 +133,8 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
                 CngKeyUsages.AllUsages,
                 false))
             {
-                Assert.IsNotNull(createdKey);
-                Assert.IsNotNull(openedKey);
+                Assert.That(createdKey, Is.Not.Null);
+                Assert.That(openedKey, Is.Not.Null);
                 CngAssert.AssertEqual(keyType.Algorithm, createdKey, openedKey);
             }
         }
@@ -163,8 +163,8 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
                 CngKeyUsages.AllUsages,
                 true))
             {
-                Assert.IsNotNull(createdKey);
-                Assert.IsNotNull(openedKey);
+                Assert.That(createdKey, Is.Not.Null);
+                Assert.That(openedKey, Is.Not.Null);
                 CngAssert.AssertNotEqual(keyType.Algorithm, createdKey, openedKey);
             }
         }
@@ -247,7 +247,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
             this.Store.DeleteKey(KeyName);
             this.Store.DeleteKey(KeyName);
 
-            Assert.IsFalse(CngKey.Exists(KeyName));
+            Assert.That(CngKey.Exists(KeyName), Is.False);
         }
     }
 }

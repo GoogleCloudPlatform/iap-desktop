@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Nodes
                 new[] { InstanceTrait.Instance },
                 "RUNNING");
 
-            Assert.AreEqual(SampleLocator.Name, node.TargetName);
+            Assert.That(node.TargetName, Is.EqualTo(SampleLocator.Name));
         }
 
         //---------------------------------------------------------------------
@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Nodes
                 new ITrait[] { InstanceTrait.Instance, WindowsTrait.Instance },
                 "RUNNING");
 
-            Assert.AreEqual(OperatingSystems.Windows, node.OperatingSystem);
+            Assert.That(node.OperatingSystem, Is.EqualTo(OperatingSystems.Windows));
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Nodes
                 new[] { InstanceTrait.Instance },
                 "RUNNING");
 
-            Assert.AreEqual(OperatingSystems.Linux, node.OperatingSystem);
+            Assert.That(node.OperatingSystem, Is.EqualTo(OperatingSystems.Linux));
         }
 
         //---------------------------------------------------------------------
@@ -111,12 +111,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Nodes
                 new[] { InstanceTrait.Instance },
                 "RUNNING");
 
-            Assert.IsTrue(node.IsRunning);
-            Assert.IsFalse(node.CanStart);
-            Assert.IsTrue(node.CanReset);
-            Assert.IsTrue(node.CanSuspend);
-            Assert.IsFalse(node.CanResume);
-            Assert.IsTrue(node.CanStop);
+            Assert.That(node.IsRunning, Is.True);
+            Assert.That(node.CanStart, Is.False);
+            Assert.That(node.CanReset, Is.True);
+            Assert.That(node.CanSuspend, Is.True);
+            Assert.That(node.CanResume, Is.False);
+            Assert.That(node.CanStop, Is.True);
         }
 
         [Test]
@@ -129,12 +129,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Nodes
                 new[] { InstanceTrait.Instance },
                 "TERMINATED");
 
-            Assert.IsFalse(node.IsRunning);
-            Assert.IsTrue(node.CanStart);
-            Assert.IsFalse(node.CanReset);
-            Assert.IsFalse(node.CanSuspend);
-            Assert.IsFalse(node.CanResume);
-            Assert.IsFalse(node.CanStop);
+            Assert.That(node.IsRunning, Is.False);
+            Assert.That(node.CanStart, Is.True);
+            Assert.That(node.CanReset, Is.False);
+            Assert.That(node.CanSuspend, Is.False);
+            Assert.That(node.CanResume, Is.False);
+            Assert.That(node.CanStop, Is.False);
         }
 
         [Test]
@@ -147,12 +147,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Nodes
                 new[] { InstanceTrait.Instance },
                 "SUSPENDED");
 
-            Assert.IsFalse(node.IsRunning);
-            Assert.IsFalse(node.CanStart);
-            Assert.IsFalse(node.CanReset);
-            Assert.IsFalse(node.CanSuspend);
-            Assert.IsTrue(node.CanResume);
-            Assert.IsFalse(node.CanStop);
+            Assert.That(node.IsRunning, Is.False);
+            Assert.That(node.CanStart, Is.False);
+            Assert.That(node.CanReset, Is.False);
+            Assert.That(node.CanSuspend, Is.False);
+            Assert.That(node.CanResume, Is.True);
+            Assert.That(node.CanStop, Is.False);
         }
 
         [Test]
@@ -165,12 +165,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Nodes
                 new[] { InstanceTrait.Instance },
                 "REPAIRING");
 
-            Assert.IsFalse(node.IsRunning);
-            Assert.IsFalse(node.CanStart);
-            Assert.IsTrue(node.CanReset);
-            Assert.IsTrue(node.CanSuspend);
-            Assert.IsFalse(node.CanResume);
-            Assert.IsTrue(node.CanStop);
+            Assert.That(node.IsRunning, Is.False);
+            Assert.That(node.CanStart, Is.False);
+            Assert.That(node.CanReset, Is.True);
+            Assert.That(node.CanSuspend, Is.True);
+            Assert.That(node.CanResume, Is.False);
+            Assert.That(node.CanStop, Is.True);
         }
 
         //---------------------------------------------------------------------

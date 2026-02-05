@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             public void Bind(SampleViewModel viewModel, IBindingContext bindingContext)
             {
-                Assert.IsNotNull(viewModel);
+                Assert.That(viewModel, Is.Not.Null);
                 this.BindCalls++;
             }
         }
@@ -66,9 +66,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             var view1 = window1.Bind();
             var view2 = window2.Bind();
 
-            Assert.AreSame(window1, window2);
-            Assert.AreEqual(1, view1.BindCalls);
-            Assert.AreEqual(1, view2.BindCalls);
+            Assert.That(window2, Is.SameAs(window1));
+            Assert.That(view1.BindCalls, Is.EqualTo(1));
+            Assert.That(view2.BindCalls, Is.EqualTo(1));
         }
 
         [Test]
@@ -86,9 +86,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             var view1 = window1.Bind();
             var view2 = window2.Bind();
 
-            Assert.AreNotSame(window1, window2);
-            Assert.AreEqual(1, view1.BindCalls);
-            Assert.AreEqual(1, view2.BindCalls);
+            Assert.That(window2, Is.Not.SameAs(window1));
+            Assert.That(view1.BindCalls, Is.EqualTo(1));
+            Assert.That(view2.BindCalls, Is.EqualTo(1));
         }
     }
 }

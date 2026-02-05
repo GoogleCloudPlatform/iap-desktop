@@ -130,9 +130,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 .GetCredentialsAsync(SampleCallbackUrl, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual("user", credentials.User);
-            Assert.AreEqual("domain", credentials.Domain);
-            Assert.AreEqual("password", credentials.Password.ToClearText());
+            Assert.That(credentials.User, Is.EqualTo("user"));
+            Assert.That(credentials.Domain, Is.EqualTo("domain"));
+            Assert.That(credentials.Password.ToClearText(), Is.EqualTo("password"));
         }
     }
 }

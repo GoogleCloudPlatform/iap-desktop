@@ -84,9 +84,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 inputDialog.Object,
                 SampleLocator);
 
-            Assert.AreEqual(
-                "123",
-                handler.Prompt("caption", "instruction", "prompt", true));
+            Assert.That(
+                handler.Prompt("caption", "instruction", "prompt", true), Is.EqualTo("123"));
         }
 
         [Test]
@@ -109,9 +108,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 inputDialog.Object,
                 SampleLocator);
 
-            Assert.AreEqual(
-                "123",
-                handler.Prompt("caption", "instruction", "prompt", true));
+            Assert.That(
+                handler.Prompt("caption", "instruction", "prompt", true), Is.EqualTo("123"));
         }
 
         //----------------------------------------------------------------------
@@ -162,8 +160,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var credentials = handler.PromptForCredentials("username");
             Assert.IsInstanceOf<StaticPasswordCredential>(credentials);
-            Assert.AreEqual("username", ((StaticPasswordCredential)credentials).Username);
-            Assert.AreEqual("password", ((StaticPasswordCredential)credentials).Password.ToClearText());
+            Assert.That(((StaticPasswordCredential)credentials).Username, Is.EqualTo("username"));
+            Assert.That(((StaticPasswordCredential)credentials).Password.ToClearText(), Is.EqualTo("password"));
         }
     }
 }

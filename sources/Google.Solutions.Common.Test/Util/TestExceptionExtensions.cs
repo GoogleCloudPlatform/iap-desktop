@@ -53,7 +53,7 @@ namespace Google.Solutions.Common.Test.Util
 
             var unwrapped = ex.Unwrap();
 
-            Assert.AreSame(ex, unwrapped);
+            Assert.That(unwrapped, Is.SameAs(ex));
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace Google.Solutions.Common.Test.Util
 
             var unwrapped = aggregate.Unwrap();
 
-            Assert.AreSame(inner1, unwrapped);
+            Assert.That(unwrapped, Is.SameAs(inner1));
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace Google.Solutions.Common.Test.Util
 
             var unwrapped = aggregate.Unwrap();
 
-            Assert.AreSame(inner1, unwrapped);
+            Assert.That(unwrapped, Is.SameAs(inner1));
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace Google.Solutions.Common.Test.Util
             var aggregate = new AggregateException();
             var unwrapped = aggregate.Unwrap();
 
-            Assert.AreSame(aggregate, unwrapped);
+            Assert.That(unwrapped, Is.SameAs(aggregate));
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace Google.Solutions.Common.Test.Util
 
             var unwrapped = target.Unwrap();
 
-            Assert.AreSame(inner, unwrapped);
+            Assert.That(unwrapped, Is.SameAs(inner));
         }
 
         //---------------------------------------------------------------------
@@ -110,7 +110,7 @@ namespace Google.Solutions.Common.Test.Util
         public void FullMessage_WhenExceptionHasNoInnerException_ThenFullMessageIsSameAsMessage()
         {
             var ex = new ArgumentException("something went wrong!");
-            Assert.AreEqual(ex.Message, ex.FullMessage());
+            Assert.That(ex.FullMessage(), Is.EqualTo(ex.Message));
         }
 
         [Test]
@@ -119,7 +119,7 @@ namespace Google.Solutions.Common.Test.Util
             var ex = new ArgumentException("One",
                 new InvalidOperationException("two",
                     new Exception("three")));
-            Assert.AreEqual("One: two: three", ex.FullMessage());
+            Assert.That(ex.FullMessage(), Is.EqualTo("One: two: three"));
         }
 
         //---------------------------------------------------------------------
@@ -130,27 +130,24 @@ namespace Google.Solutions.Common.Test.Util
         public void ToString_WhenNoOptionsSet()
         {
             var ex = CreateException();
-            Assert.AreEqual(
-                ex.ToString(), 
-                ex.ToString(ExceptionFormatOptions.None));
+            Assert.That(
+                ex.ToString(ExceptionFormatOptions.None), Is.EqualTo(ex.ToString()));
         }
 
         [Test]
         public void ToString_WhenIncludeOffsets()
         {
             var ex = CreateException();
-            StringAssert.Contains(
-                "CreateException() +IL_00",
-                ex.ToString(ExceptionFormatOptions.IncludeOffsets));
+            Assert.That(
+                ex.ToString(ExceptionFormatOptions.IncludeOffsets), Does.Contain("CreateException() +IL_00"));
         }
 
         [Test]
         public void ToString_WhenCompact()
         {
             var ex = CreateException();
-            Assert.AreEqual(
-                $"ArgumentException: sample at {GetType().FullName}.CreateException",
-                ex.ToString(ExceptionFormatOptions.Compact));
+            Assert.That(
+                ex.ToString(ExceptionFormatOptions.Compact), Is.EqualTo($"ArgumentException: sample at {GetType().FullName}.CreateException"));
         }
 
         //---------------------------------------------------------------------
@@ -160,11 +157,11 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void IsComException()
         {
-            Assert.IsTrue(new COMException().IsComException());
-            Assert.IsTrue(new InvalidComObjectException().IsComException());
-            Assert.IsTrue(new AggregateException(new COMException()).IsComException());
-            Assert.IsTrue(new TargetInvocationException(new COMException()).IsComException());
-            Assert.IsFalse(new InvalidOperationException("...", new COMException()).IsComException());
+            Assert.That(new COMException().IsComException(), Is.True);
+            Assert.That(new InvalidComObjectException().IsComException(), Is.True);
+            Assert.That(new AggregateException(new COMException()).IsComException(), Is.True);
+            Assert.That(new TargetInvocationException(new COMException()).IsComException(), Is.True);
+            Assert.That(new InvalidOperationException("...", new COMException()).IsComException(), Is.False);
         }
     }
 }

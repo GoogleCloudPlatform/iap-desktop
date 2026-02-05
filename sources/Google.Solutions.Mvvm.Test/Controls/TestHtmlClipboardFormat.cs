@@ -32,14 +32,13 @@ namespace Google.Solutions.Mvvm.Test.Controls
         {
             var html = "<b>some html</b>";
             var formatted = HtmlClipboardFormat.Format(html);
-            Assert.AreEqual(
-                "Version:0.9\r\n" +
+            Assert.That(
+                formatted, Is.EqualTo("Version:0.9\r\n" +
                 "StartHTML:00000095\r\n" +
                 "EndHTML:00000187\r\n" +
                 "StartFragment:00000138\r\n" +
                 "EndFragment:00000154<!DOCTYPE><html><body><!--StartFragment -->" +
-                "<b>some html</b><!--EndFragment --></body></html>",
-                formatted);
+                "<b>some html</b><!--EndFragment --></body></html>"));
         }
     }
 }

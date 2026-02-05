@@ -47,7 +47,7 @@ namespace Google.Solutions.Common.Test.Runtime
         {
             using (var d = new SampleDisposable())
             {
-                Assert.IsFalse(d.IsDisposed);
+                Assert.That(d.IsDisposed, Is.False);
             }
         }
 
@@ -57,7 +57,7 @@ namespace Google.Solutions.Common.Test.Runtime
             var d = new SampleDisposable();
             d.Dispose();
             d.Dispose(); // Again.
-            Assert.IsTrue(d.IsDisposed);
+            Assert.That(d.IsDisposed, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -70,7 +70,7 @@ namespace Google.Solutions.Common.Test.Runtime
             var d = new SampleDisposable();
             d.Dispose();
             d.Dispose(); // Again.
-            Assert.AreEqual(1, d.DisposeCalls);
+            Assert.That(d.DisposeCalls, Is.EqualTo(1));
         }
     }
 }

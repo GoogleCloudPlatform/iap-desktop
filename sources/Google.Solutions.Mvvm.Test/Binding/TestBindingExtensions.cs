@@ -85,11 +85,11 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 v => { callbacks++; }))
             {
                 observed.One = "observed";
-                Assert.AreEqual(1, callbacks);
+                Assert.That(callbacks, Is.EqualTo(1));
             }
 
             observed.One = "not observed";
-            Assert.AreEqual(1, callbacks);
+            Assert.That(callbacks, Is.EqualTo(1));
         }
 
         [Test]
@@ -104,7 +104,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 v => { callbacks++; }))
             {
                 observed.Two = 2;
-                Assert.AreEqual(0, callbacks);
+                Assert.That(callbacks, Is.EqualTo(0));
             }
         }
 
@@ -125,7 +125,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 };
 
                 observed.One = "observed";
-                Assert.AreEqual(0, callbacks);
+                Assert.That(callbacks, Is.EqualTo(0));
             }
         }
 
@@ -145,11 +145,11 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 v => { callbacks++; }))
             {
                 observed.Text = "observed";
-                Assert.AreEqual(1, callbacks);
+                Assert.That(callbacks, Is.EqualTo(1));
             }
 
             observed.Text = "not observed";
-            Assert.AreEqual(1, callbacks);
+            Assert.That(callbacks, Is.EqualTo(1));
         }
 
         [Test]
@@ -164,7 +164,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 v => { callbacks++; }))
             {
                 observed.TextAlign = HorizontalAlignment.Center;
-                Assert.AreEqual(0, callbacks);
+                Assert.That(callbacks, Is.EqualTo(0));
             }
         }
 
@@ -185,7 +185,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 };
 
                 observed.TextAlign = HorizontalAlignment.Center;
-                Assert.AreEqual(0, callbacks);
+                Assert.That(callbacks, Is.EqualTo(0));
             }
         }
 
@@ -242,7 +242,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.One,
                 new Mock<IBindingContext>().Object);
 
-            Assert.AreEqual("text from model", control.Text);
+            Assert.That(control.Text, Is.EqualTo("text from model"));
         }
 
         [Test]
@@ -259,7 +259,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             Assert.IsNull(model.One);
             control.Text = "test";
-            Assert.AreEqual("test", model.One);
+            Assert.That(model.One, Is.EqualTo("test"));
         }
 
         [Test]
@@ -274,9 +274,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.One,
                 new Mock<IBindingContext>().Object);
 
-            Assert.AreEqual("", control.Text);
+            Assert.That(control.Text, Is.EqualTo(""));
             model.One = "test";
-            Assert.AreEqual("test", control.Text);
+            Assert.That(control.Text, Is.EqualTo("test"));
         }
 
 
@@ -322,7 +322,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.One,
                 new Mock<IBindingContext>().Object);
 
-            Assert.AreEqual("text from model", control.Text);
+            Assert.That(control.Text, Is.EqualTo("text from model"));
         }
 
         [Test]
@@ -354,9 +354,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.One,
                 new Mock<IBindingContext>().Object);
 
-            Assert.AreEqual("", control.Text);
+            Assert.That(control.Text, Is.EqualTo(""));
             model.One = "test";
-            Assert.AreEqual("test", control.Text);
+            Assert.That(control.Text, Is.EqualTo("test"));
         }
 
         //---------------------------------------------------------------------
@@ -397,7 +397,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.One,
                 new Mock<IBindingContext>().Object);
 
-            Assert.AreEqual("text from model", control.Text);
+            Assert.That(control.Text, Is.EqualTo("text from model"));
         }
 
         [Test]
@@ -412,9 +412,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.One,
                 new Mock<IBindingContext>().Object);
 
-            Assert.AreEqual("", model.One.Value);
+            Assert.That(model.One.Value, Is.EqualTo(""));
             control.Text = "test";
-            Assert.AreEqual("test", model.One.Value);
+            Assert.That(model.One.Value, Is.EqualTo("test"));
         }
 
         [Test]
@@ -429,9 +429,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.One,
                 new Mock<IBindingContext>().Object);
 
-            Assert.AreEqual("", control.Text);
+            Assert.That(control.Text, Is.EqualTo(""));
             model.One.Value = "test";
-            Assert.AreEqual("test", control.Text);
+            Assert.That(control.Text, Is.EqualTo("test"));
         }
 
         //---------------------------------------------------------------------
@@ -472,7 +472,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.One,
                 new Mock<IBindingContext>().Object);
 
-            Assert.AreEqual("text from model", control.Text);
+            Assert.That(control.Text, Is.EqualTo("text from model"));
         }
 
         [Test]
@@ -487,9 +487,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.One,
                 new Mock<IBindingContext>().Object);
 
-            Assert.AreEqual("", model.One.Value);
+            Assert.That(model.One.Value, Is.EqualTo(""));
             control.Text = "test";
-            Assert.AreEqual("", model.One.Value);
+            Assert.That(model.One.Value, Is.EqualTo(""));
         }
 
         [Test]
@@ -504,9 +504,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.One,
                 new Mock<IBindingContext>().Object);
 
-            Assert.AreEqual("", control.Text);
+            Assert.That(control.Text, Is.EqualTo(""));
             model.One.Value = "test";
-            Assert.AreEqual("test", control.Text);
+            Assert.That(control.Text, Is.EqualTo("test"));
         }
     }
 }

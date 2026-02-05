@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Properties
                 .GetAllControls()
                 .OfType<PropertyGrid>()
                 .First();
-            Assert.AreEqual(1, grid.SelectedGridItem.Parent.GridItems.Count);
+            Assert.That(grid.SelectedGridItem.Parent.GridItems.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Properties
                 .GetAllControls()
                 .OfType<PropertyGrid>()
                 .First();
-            Assert.AreEqual(1, grid.SelectedGridItem.Parent.GridItems.Count);
+            Assert.That(grid.SelectedGridItem.Parent.GridItems.Count, Is.EqualTo(1));
         }
     }
 }

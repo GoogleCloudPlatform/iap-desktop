@@ -35,14 +35,14 @@ namespace Google.Solutions.Common.Test.Text
         public void IndexOf_WhenTextContainsChar_ThenIndexOfReturnsFirstIndex()
         {
             var text = "a a a";
-            Assert.AreEqual(1, text.IndexOf(c => char.IsWhiteSpace(c)));
+            Assert.That(text.IndexOf(c => char.IsWhiteSpace(c)), Is.EqualTo(1));
         }
 
         [Test]
         public void IndexOf_WhenTextDoesNotContainChar_ThenIndexOfReturnsMinusOne()
         {
             var text = "a a a";
-            Assert.AreEqual(-1, text.IndexOf(c => char.IsDigit(c)));
+            Assert.That(text.IndexOf(c => char.IsDigit(c)), Is.EqualTo(-1));
         }
 
         //---------------------------------------------------------------------
@@ -53,14 +53,14 @@ namespace Google.Solutions.Common.Test.Text
         public void LastIndexOf_WhenTextContainsChar_ThenLastIndexOfReturnsLastIndex()
         {
             var text = "a a a";
-            Assert.AreEqual(3, text.LastIndexOf(c => char.IsWhiteSpace(c)));
+            Assert.That(text.LastIndexOf(c => char.IsWhiteSpace(c)), Is.EqualTo(3));
         }
 
         [Test]
         public void LastIndexOf_WhenTextDoesNotContainChar_ThenLastIndexOfReturnsMinusOne()
         {
             var text = "a a a";
-            Assert.AreEqual(-1, text.LastIndexOf(c => char.IsDigit(c)));
+            Assert.That(text.LastIndexOf(c => char.IsDigit(c)), Is.EqualTo(-1));
         }
 
         //---------------------------------------------------------------------
@@ -70,14 +70,14 @@ namespace Google.Solutions.Common.Test.Text
         [Test]
         public void Truncate_WhenStringShortEnough_ThenTruncateReturnsStringVerbatim()
         {
-            Assert.AreEqual("", "".Truncate(3));
-            Assert.AreEqual("foo", "foo".Truncate(3));
+            Assert.That("".Truncate(3), Is.EqualTo(""));
+            Assert.That("foo".Truncate(3), Is.EqualTo("foo"));
         }
 
         [Test]
         public void Truncate_WhenStringTooLong_ThenTruncateReturnsStringWithEllipsis()
         {
-            Assert.AreEqual("abc...", "abcd".Truncate(3));
+            Assert.That("abcd".Truncate(3), Is.EqualTo("abc..."));
         }
 
         //---------------------------------------------------------------------
@@ -102,7 +102,7 @@ namespace Google.Solutions.Common.Test.Text
         public void NullIfEmpty_WhenStringIsWhitespace_ThenNullIfEmptyReturnsString()
         {
             var s = " ";
-            Assert.AreEqual(" ", s.NullIfEmpty());
+            Assert.That(s.NullIfEmpty(), Is.EqualTo(" "));
         }
 
         //---------------------------------------------------------------------
@@ -134,7 +134,7 @@ namespace Google.Solutions.Common.Test.Text
         public void NullIfEmptyOrWhitespace_WhenStringIsNotWhitespace_ThenNullIfEmptyOrWhitespaceReturnsString()
         {
             var s = " a ";
-            Assert.AreEqual(" a ", s.NullIfEmptyOrWhitespace());
+            Assert.That(s.NullIfEmptyOrWhitespace(), Is.EqualTo(" a "));
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Test.ToolWindows.Insta
                 .Returns(new Version(1, 2, 3, 4));
             var viewModel = new AboutViewModel(install.Object);
 
-            StringAssert.Contains("Version 1.2.3.4", viewModel.Information);
+            Assert.That(viewModel.Information, Does.Contain("Version 1.2.3.4"));
         }
 
         [Test]
@@ -48,8 +48,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Test.ToolWindows.Insta
         {
             var viewModel = new AboutViewModel(new Mock<IInstall>().Object);
 
-            Assert.IsNotNull(viewModel.LicenseText);
-            StringAssert.Contains("Apache", viewModel.LicenseText);
+            Assert.That(viewModel.LicenseText, Is.Not.Null);
+            Assert.That(viewModel.LicenseText, Does.Contain("Apache"));
         }
     }
 }

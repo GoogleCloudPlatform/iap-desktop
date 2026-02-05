@@ -31,13 +31,13 @@ namespace Google.Solutions.Common.Test.Interop
         public void IsInvalid_WhenFreed()
         {
             var handle = GlobalAllocSafeHandle.GlobalAlloc(8);
-            Assert.IsFalse(handle.IsClosed);
-            Assert.IsFalse(handle.IsInvalid);
+            Assert.That(handle.IsClosed, Is.False);
+            Assert.That(handle.IsInvalid, Is.False);
 
             handle.Dispose();
 
-            Assert.IsTrue(handle.IsClosed);
-            Assert.IsFalse(handle.IsInvalid);
+            Assert.That(handle.IsClosed, Is.True);
+            Assert.That(handle.IsInvalid, Is.False);
         }
     }
 }

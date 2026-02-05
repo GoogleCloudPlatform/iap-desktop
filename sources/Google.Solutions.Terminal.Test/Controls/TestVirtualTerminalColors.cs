@@ -49,7 +49,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 0xD6D661,
                 0xF2F2F2 };
 
-            CollectionAssert.AreEqual(colorTable, VirtualTerminalColors.Default.ToNative());
+            Assert.That(VirtualTerminalColors.Default.ToNative(), Is.EqualTo(colorTable).AsCollection);
         }
     }
 }

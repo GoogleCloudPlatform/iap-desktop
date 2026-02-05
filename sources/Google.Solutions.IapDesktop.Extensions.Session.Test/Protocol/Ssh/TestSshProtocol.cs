@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .Setup(t => t.Traits)
                 .Returns(Enumerable.Empty<ITrait>());
 
-            Assert.IsFalse(SshProtocol.Protocol.IsAvailable(target.Object));
+            Assert.That(SshProtocol.Protocol.IsAvailable(target.Object), Is.False);
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .Setup(t => t.Traits)
                 .Returns(new[] { LinuxTrait.Instance });
 
-            Assert.IsTrue(SshProtocol.Protocol.IsAvailable(target.Object));
+            Assert.That(SshProtocol.Protocol.IsAvailable(target.Object), Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void ToString_ReturnsName()
         {
-            Assert.AreEqual("SSH", SshProtocol.Protocol.ToString());
+            Assert.That(SshProtocol.Protocol.ToString(), Is.EqualTo("SSH"));
         }
     }
 }

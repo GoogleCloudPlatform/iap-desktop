@@ -128,7 +128,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 new ModelNode(),
                 new Mock<IBindingContext>().Object);
 
-            Assert.AreEqual(1, this.tree.Nodes.Count);
+            Assert.That(this.tree.Nodes.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -153,10 +153,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
             this.tree.Bind(root, new Mock<IBindingContext>().Object);
             RunPendingAsyncTasks();
 
-            Assert.AreEqual(1, this.tree.Nodes.Count);
+            Assert.That(this.tree.Nodes.Count, Is.EqualTo(1));
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
-            Assert.AreEqual(2, rootTreeNode.Nodes.Count);
-            Assert.IsTrue(rootTreeNode.IsExpanded);
+            Assert.That(rootTreeNode.Nodes.Count, Is.EqualTo(2));
+            Assert.That(rootTreeNode.IsExpanded, Is.True);
         }
 
         [Test]
@@ -181,10 +181,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
             this.tree.Bind(root, new Mock<IBindingContext>().Object);
             RunPendingAsyncTasks();
 
-            Assert.AreEqual(1, this.tree.Nodes.Count);
+            Assert.That(this.tree.Nodes.Count, Is.EqualTo(1));
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
-            Assert.AreEqual(1, rootTreeNode.Nodes.Count);   // Loading node, hidden
-            Assert.IsFalse(rootTreeNode.IsExpanded);
+            Assert.That(rootTreeNode.Nodes.Count, Is.EqualTo(1));   // Loading node, hidden
+            Assert.That(rootTreeNode.IsExpanded, Is.False);
         }
 
         [Test]
@@ -209,24 +209,24 @@ namespace Google.Solutions.Mvvm.Test.Controls
             this.tree.Bind(root, new Mock<IBindingContext>().Object);
             RunPendingAsyncTasks();
 
-            Assert.AreEqual(1, eventCount);
+            Assert.That(eventCount, Is.EqualTo(1));
 
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
-            Assert.IsFalse(rootTreeNode.IsExpanded);
-            Assert.IsFalse(root.IsExpanded);
+            Assert.That(rootTreeNode.IsExpanded, Is.False);
+            Assert.That(root.IsExpanded, Is.False);
 
             // Try again.
             rootTreeNode.Expand();
             RunPendingAsyncTasks();
-            Assert.AreEqual(2, eventCount);
+            Assert.That(eventCount, Is.EqualTo(2));
 
             // Try again, but this time let loading succeed.
             this.tree.BindChildren(m => m.GetChildren());
             rootTreeNode.Expand();
             RunPendingAsyncTasks();
-            Assert.AreEqual(2, eventCount);
-            Assert.IsTrue(rootTreeNode.IsExpanded);
-            Assert.IsTrue(root.IsExpanded);
+            Assert.That(eventCount, Is.EqualTo(2));
+            Assert.That(rootTreeNode.IsExpanded, Is.True);
+            Assert.That(root.IsExpanded, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -244,14 +244,14 @@ namespace Google.Solutions.Mvvm.Test.Controls
             this.tree.BindText(m => m.Name);
             this.tree.Bind(root, new Mock<IBindingContext>().Object);
 
-            Assert.AreEqual(1, this.tree.Nodes.Count);
+            Assert.That(this.tree.Nodes.Count, Is.EqualTo(1));
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
-            Assert.AreEqual("root", rootTreeNode.Text);
-            Assert.AreEqual("root", rootTreeNode.Name);
+            Assert.That(rootTreeNode.Text, Is.EqualTo("root"));
+            Assert.That(rootTreeNode.Name, Is.EqualTo("root"));
 
             root.Name = "new";
-            Assert.AreEqual("new", rootTreeNode.Text);
-            Assert.AreEqual("root", rootTreeNode.Name);
+            Assert.That(rootTreeNode.Text, Is.EqualTo("new"));
+            Assert.That(rootTreeNode.Name, Is.EqualTo("root"));
         }
 
         [Test]
@@ -266,14 +266,14 @@ namespace Google.Solutions.Mvvm.Test.Controls
             this.tree.BindSelectedImageIndex(m => m.ImageIndex);
             this.tree.Bind(root, new Mock<IBindingContext>().Object);
 
-            Assert.AreEqual(1, this.tree.Nodes.Count);
+            Assert.That(this.tree.Nodes.Count, Is.EqualTo(1));
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
-            Assert.AreEqual(1, rootTreeNode.ImageIndex);
-            Assert.AreEqual(1, rootTreeNode.SelectedImageIndex);
+            Assert.That(rootTreeNode.ImageIndex, Is.EqualTo(1));
+            Assert.That(rootTreeNode.SelectedImageIndex, Is.EqualTo(1));
 
             root.ImageIndex = 2;
-            Assert.AreEqual(2, rootTreeNode.ImageIndex);
-            Assert.AreEqual(2, rootTreeNode.SelectedImageIndex);
+            Assert.That(rootTreeNode.ImageIndex, Is.EqualTo(2));
+            Assert.That(rootTreeNode.SelectedImageIndex, Is.EqualTo(2));
         }
 
         [Test]
@@ -299,14 +299,14 @@ namespace Google.Solutions.Mvvm.Test.Controls
             RunPendingAsyncTasks();
 
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
-            Assert.AreEqual(2, rootTreeNode.Nodes.Count);
+            Assert.That(rootTreeNode.Nodes.Count, Is.EqualTo(2));
 
             root.Children.Add(new ModelNode()
             {
                 Name = "child-3"
             });
 
-            Assert.AreEqual(3, rootTreeNode.Nodes.Count);
+            Assert.That(rootTreeNode.Nodes.Count, Is.EqualTo(3));
         }
 
         [Test]
@@ -332,11 +332,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
             RunPendingAsyncTasks();
 
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
-            Assert.AreEqual(2, rootTreeNode.Nodes.Count);
+            Assert.That(rootTreeNode.Nodes.Count, Is.EqualTo(2));
 
             root.Children.RemoveAt(0);
 
-            Assert.AreEqual(1, rootTreeNode.Nodes.Count);
+            Assert.That(rootTreeNode.Nodes.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -362,15 +362,15 @@ namespace Google.Solutions.Mvvm.Test.Controls
             RunPendingAsyncTasks();
 
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
-            Assert.AreEqual(2, rootTreeNode.Nodes.Count);
+            Assert.That(rootTreeNode.Nodes.Count, Is.EqualTo(2));
 
             root.Children[0] = new ModelNode()
             {
                 Name = "new"
             };
 
-            Assert.AreEqual(2, rootTreeNode.Nodes.Count);
-            Assert.AreEqual("new", rootTreeNode.Nodes.OfType<ModelTreeView.Node>().First().Model.Name);
+            Assert.That(rootTreeNode.Nodes.Count, Is.EqualTo(2));
+            Assert.That(rootTreeNode.Nodes.OfType<ModelTreeView.Node>().First().Model.Name, Is.EqualTo("new"));
         }
 
         [Test]
@@ -386,7 +386,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             {
                 Name = "child-1"
             };
-            Assert.IsFalse(child.HasPropertyChangeListeners);
+            Assert.That(child.HasPropertyChangeListeners, Is.False);
 
             root.Children.Add(child);
 
@@ -395,9 +395,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
             this.tree.Bind(root, new Mock<IBindingContext>().Object);
             RunPendingAsyncTasks();
 
-            Assert.IsTrue(child.HasPropertyChangeListeners);
+            Assert.That(child.HasPropertyChangeListeners, Is.True);
             root.Children.RemoveAt(0);
-            Assert.IsFalse(child.HasPropertyChangeListeners);
+            Assert.That(child.HasPropertyChangeListeners, Is.False);
         }
 
         [Test]
@@ -413,7 +413,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             this.tree.Bind(root, new Mock<IBindingContext>().Object);
             RunPendingAsyncTasks();
 
-            Assert.IsTrue(root.HasPropertyChangeListeners);
+            Assert.That(root.HasPropertyChangeListeners, Is.True);
 
             var newRoot = new ModelNode()
             {
@@ -424,8 +424,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 newRoot,
                 new Mock<IBindingContext>().Object);
 
-            Assert.IsFalse(root.HasPropertyChangeListeners);
-            Assert.IsTrue(newRoot.HasPropertyChangeListeners);
+            Assert.That(root.HasPropertyChangeListeners, Is.False);
+            Assert.That(newRoot.HasPropertyChangeListeners, Is.True);
         }
     }
 }

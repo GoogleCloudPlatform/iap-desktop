@@ -68,7 +68,7 @@ namespace Google.Solutions.Settings.Test.Collection
                     null,
                     null);
 
-                Assert.IsFalse(repository.IsPolicyPresent);
+                Assert.That(repository.IsPolicyPresent, Is.False);
             }
         }
 
@@ -83,7 +83,7 @@ namespace Google.Solutions.Settings.Test.Collection
                     machinePolicyPath.CreateKey(),
                     null);
 
-                Assert.IsTrue(repository.IsPolicyPresent);
+                Assert.That(repository.IsPolicyPresent, Is.True);
             }
         }
 
@@ -98,7 +98,7 @@ namespace Google.Solutions.Settings.Test.Collection
                     null,
                     userPolicyPath.CreateKey());
 
-                Assert.IsTrue(repository.IsPolicyPresent);
+                Assert.That(repository.IsPolicyPresent, Is.True);
             }
         }
 
@@ -114,7 +114,7 @@ namespace Google.Solutions.Settings.Test.Collection
                     machinePolicyPath.CreateKey(),
                     userPolicyPath.CreateKey());
 
-                Assert.IsTrue(repository.IsPolicyPresent);
+                Assert.That(repository.IsPolicyPresent, Is.True);
             }
         }
     }

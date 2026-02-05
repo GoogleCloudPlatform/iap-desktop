@@ -43,11 +43,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.IsNull(settings.RdpUsername.Value);
             Assert.IsNull(settings.RdpPassword.Value);
             Assert.IsNull(settings.RdpDomain.Value);
-            Assert.AreEqual(RdpConnectionBarState._Default, settings.RdpConnectionBar.Value);
-            Assert.AreEqual(RdpAuthenticationLevel._Default, settings.RdpAuthenticationLevel.Value);
-            Assert.AreEqual(RdpColorDepth._Default, settings.RdpColorDepth.Value);
-            Assert.AreEqual(RdpAudioPlayback._Default, settings.RdpAudioPlayback.Value);
-            Assert.AreEqual(RdpRedirectClipboard._Default, settings.RdpRedirectClipboard.Value);
+            Assert.That(settings.RdpConnectionBar.Value, Is.EqualTo(RdpConnectionBarState._Default));
+            Assert.That(settings.RdpAuthenticationLevel.Value, Is.EqualTo(RdpAuthenticationLevel._Default));
+            Assert.That(settings.RdpColorDepth.Value, Is.EqualTo(RdpColorDepth._Default));
+            Assert.That(settings.RdpAudioPlayback.Value, Is.EqualTo(RdpAudioPlayback._Default));
+            Assert.That(settings.RdpRedirectClipboard.Value, Is.EqualTo(RdpRedirectClipboard._Default));
         }
 
         [Test]
@@ -59,11 +59,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.IsNull(settings.RdpUsername.Value);
             Assert.IsNull(settings.RdpPassword.Value);
             Assert.IsNull(settings.RdpDomain.Value);
-            Assert.AreEqual(RdpConnectionBarState._Default, settings.RdpConnectionBar.Value);
-            Assert.AreEqual(RdpAuthenticationLevel._Default, settings.RdpAuthenticationLevel.Value);
-            Assert.AreEqual(RdpColorDepth._Default, settings.RdpColorDepth.Value);
-            Assert.AreEqual(RdpAudioPlayback._Default, settings.RdpAudioPlayback.Value);
-            Assert.AreEqual(RdpRedirectClipboard._Default, settings.RdpRedirectClipboard.Value);
+            Assert.That(settings.RdpConnectionBar.Value, Is.EqualTo(RdpConnectionBarState._Default));
+            Assert.That(settings.RdpAuthenticationLevel.Value, Is.EqualTo(RdpAuthenticationLevel._Default));
+            Assert.That(settings.RdpColorDepth.Value, Is.EqualTo(RdpColorDepth._Default));
+            Assert.That(settings.RdpAudioPlayback.Value, Is.EqualTo(RdpAudioPlayback._Default));
+            Assert.That(settings.RdpRedirectClipboard.Value, Is.EqualTo(RdpRedirectClipboard._Default));
         }
 
         [Test]
@@ -78,11 +78,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             Assert.IsNull(settings.RdpUsername.Value);
             Assert.IsNull(settings.RdpPassword.Value);
             Assert.IsNull(settings.RdpDomain.Value);
-            Assert.AreEqual(RdpConnectionBarState._Default, settings.RdpConnectionBar.Value);
-            Assert.AreEqual(RdpAuthenticationLevel._Default, settings.RdpAuthenticationLevel.Value);
-            Assert.AreEqual(RdpColorDepth._Default, settings.RdpColorDepth.Value);
-            Assert.AreEqual(RdpAudioPlayback._Default, settings.RdpAudioPlayback.Value);
-            Assert.AreEqual(RdpRedirectClipboard._Default, settings.RdpRedirectClipboard.Value);
+            Assert.That(settings.RdpConnectionBar.Value, Is.EqualTo(RdpConnectionBarState._Default));
+            Assert.That(settings.RdpAuthenticationLevel.Value, Is.EqualTo(RdpAuthenticationLevel._Default));
+            Assert.That(settings.RdpColorDepth.Value, Is.EqualTo(RdpColorDepth._Default));
+            Assert.That(settings.RdpAudioPlayback.Value, Is.EqualTo(RdpAudioPlayback._Default));
+            Assert.That(settings.RdpRedirectClipboard.Value, Is.EqualTo(RdpRedirectClipboard._Default));
         }
 
         [Test]
@@ -92,9 +92,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 "userNAME=John%20Doe&PassworD=ignore&Domain=%20%20mydomain&");
             var settings = new ConnectionSettings(url.Instance, new IapRdpUrlSettingsStore(url));
 
-            Assert.AreEqual("John Doe", settings.RdpUsername.Value);
+            Assert.That(settings.RdpUsername.Value, Is.EqualTo("John Doe"));
             Assert.IsNull(settings.RdpPassword.Value);
-            Assert.AreEqual("  mydomain", settings.RdpDomain.Value);
+            Assert.That(settings.RdpDomain.Value, Is.EqualTo("  mydomain"));
         }
 
         [Test]
@@ -105,17 +105,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 "AudioMode=2&RedirectClipboard=0&CredentialGenerationBehavior=0&Rdpport=13389");
             var settings = new ConnectionSettings(url.Instance, new IapRdpUrlSettingsStore(url));
 
-            Assert.AreEqual(RdpConnectionBarState.Pinned, settings.RdpConnectionBar.Value);
-            Assert.AreEqual(RdpAuthenticationLevel.AttemptServerAuthentication, settings.RdpAuthenticationLevel.Value);
-            Assert.AreEqual(RdpColorDepth.DeepColor, settings.RdpColorDepth.Value);
-            Assert.AreEqual(RdpAudioPlayback.DoNotPlay, settings.RdpAudioPlayback.Value);
-            Assert.AreEqual(RdpRedirectClipboard.Disabled, settings.RdpRedirectClipboard.Value);
-            Assert.AreEqual(13389, settings.RdpPort.Value);
+            Assert.That(settings.RdpConnectionBar.Value, Is.EqualTo(RdpConnectionBarState.Pinned));
+            Assert.That(settings.RdpAuthenticationLevel.Value, Is.EqualTo(RdpAuthenticationLevel.AttemptServerAuthentication));
+            Assert.That(settings.RdpColorDepth.Value, Is.EqualTo(RdpColorDepth.DeepColor));
+            Assert.That(settings.RdpAudioPlayback.Value, Is.EqualTo(RdpAudioPlayback.DoNotPlay));
+            Assert.That(settings.RdpRedirectClipboard.Value, Is.EqualTo(RdpRedirectClipboard.Disabled));
+            Assert.That(settings.RdpPort.Value, Is.EqualTo(13389));
         }
 
         [Test]
         public void UrlParameterIsNullOrEmpty(
-            [Values(null, "", " ")] string emptyValue)
+            [Values(null, "", " ")] string? emptyValue)
         {
             var queryParameters = new NameValueCollection
             {
@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var url = new IapRdpUrl(SampleLocator, queryParameters);
             var settings = new ConnectionSettings(url.Instance, new IapRdpUrlSettingsStore(url));
 
-            Assert.AreEqual(RdpAudioPlayback._Default, settings.RdpAudioPlayback.Value);
+            Assert.That(settings.RdpAudioPlayback.Value, Is.EqualTo(RdpAudioPlayback._Default));
         }
 
         [Test]
@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var url = new IapRdpUrl(SampleLocator, queryParameters);
             var settings = new ConnectionSettings(url.Instance, new IapRdpUrlSettingsStore(url));
 
-            Assert.AreEqual(RdpAudioPlayback._Default, settings.RdpAudioPlayback.Value);
+            Assert.That(settings.RdpAudioPlayback.Value, Is.EqualTo(RdpAudioPlayback._Default));
         }
 
         [Test]
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var url = new IapRdpUrl(SampleLocator, queryParameters);
             var settings = new ConnectionSettings(url.Instance, new IapRdpUrlSettingsStore(url));
 
-            Assert.AreEqual(RdpAudioPlayback.DoNotPlay, settings.RdpAudioPlayback.Value);
+            Assert.That(settings.RdpAudioPlayback.Value, Is.EqualTo(RdpAudioPlayback.DoNotPlay));
         }
     }
 }

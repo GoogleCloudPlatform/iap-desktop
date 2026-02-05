@@ -49,9 +49,9 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 attributes,
                 size))
             {
-                Assert.IsNotNull(type.TypeName);
-                Assert.AreNotEqual(string.Empty, type.TypeName);
-                Assert.IsNotNull(type.FileIcon);
+                Assert.That(type.TypeName, Is.Not.Null);
+                Assert.That(type.TypeName, Is.Not.EqualTo(string.Empty));
+                Assert.That(type.FileIcon, Is.Not.Null);
             }
         }
 
@@ -69,9 +69,9 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 attributes,
                 size))
             {
-                Assert.IsNotNull(type.TypeName);
-                Assert.AreNotEqual(string.Empty, type.TypeName);
-                Assert.IsNotNull(type.FileIcon);
+                Assert.That(type.TypeName, Is.Not.Null);
+                Assert.That(type.TypeName, Is.Not.EqualTo(string.Empty));
+                Assert.That(type.FileIcon, Is.Not.Null);
             }
         }
 
@@ -87,7 +87,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 FileAttributes.Directory,
                 FileType.IconFlags.None))
             {
-                Assert.IsFalse(type.IsFile);
+                Assert.That(type.IsFile, Is.False);
             }
         }
 
@@ -99,7 +99,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 FileAttributes.ReadOnly | FileAttributes.Normal,
                 FileType.IconFlags.None))
             {
-                Assert.IsTrue(type.IsFile);
+                Assert.That(type.IsFile, Is.True);
             }
         }
     }

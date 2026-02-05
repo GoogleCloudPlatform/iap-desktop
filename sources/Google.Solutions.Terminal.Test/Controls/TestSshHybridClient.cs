@@ -45,9 +45,9 @@ namespace Google.Solutions.Terminal.Test.Controls
             {
                 window.Show();
 
-                Assert.IsTrue(window.Client.EnableFileBrowser);
-                Assert.IsFalse(window.Client.IsFileBrowserVisible);
-                Assert.IsFalse(window.Client.CanShowFileBrowser);
+                Assert.That(window.Client.EnableFileBrowser, Is.True);
+                Assert.That(window.Client.IsFileBrowserVisible, Is.False);
+                Assert.That(window.Client.CanShowFileBrowser, Is.False);
 
                 //
                 // Connect.
@@ -57,8 +57,8 @@ namespace Google.Solutions.Terminal.Test.Controls
                     .AwaitStateAsync(ClientState.LoggedOn, CancellationToken.None)
                     .ConfigureAwait(true);
 
-                Assert.IsFalse(window.Client.IsFileBrowserVisible);
-                Assert.IsTrue(window.Client.CanShowFileBrowser);
+                Assert.That(window.Client.IsFileBrowserVisible, Is.False);
+                Assert.That(window.Client.CanShowFileBrowser, Is.True);
 
                 window.Client.IsFileBrowserVisible = true;
                 window.Client.IsFileBrowserVisible = true;
@@ -88,8 +88,8 @@ namespace Google.Solutions.Terminal.Test.Controls
 
                 window.Client.EnableFileBrowser = false;
 
-                Assert.IsFalse(window.Client.IsFileBrowserVisible);
-                Assert.IsFalse(window.Client.CanShowFileBrowser);
+                Assert.That(window.Client.IsFileBrowserVisible, Is.False);
+                Assert.That(window.Client.CanShowFileBrowser, Is.False);
 
                 //
                 // Connect.
@@ -99,8 +99,8 @@ namespace Google.Solutions.Terminal.Test.Controls
                     .AwaitStateAsync(ClientState.LoggedOn, CancellationToken.None)
                     .ConfigureAwait(true);
 
-                Assert.IsFalse(window.Client.IsFileBrowserVisible);
-                Assert.IsFalse(window.Client.CanShowFileBrowser);
+                Assert.That(window.Client.IsFileBrowserVisible, Is.False);
+                Assert.That(window.Client.CanShowFileBrowser, Is.False);
 
                 //
                 // Close window.

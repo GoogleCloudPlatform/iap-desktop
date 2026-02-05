@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Tunnel
                 queue);
 
             factory.VerifyGet(f => f.Pool, Times.Never);
-            Assert.AreEqual(0, viewModel.Tunnels.Count);
+            Assert.That(viewModel.Tunnels.Count, Is.EqualTo(0));
 
             queue.Publish(new TunnelEvents.TunnelCreated());
             factory.VerifyGet(f => f.Pool, Times.Exactly(1));
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Tunnel
                 new Mock<IEventQueue>().Object);
             viewModel.RefreshTunnels();
 
-            Assert.IsFalse(viewModel.IsRefreshButtonEnabled);
+            Assert.That(viewModel.IsRefreshButtonEnabled, Is.False);
         }
 
         [Test]
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Tunnel
                 new Mock<IEventQueue>().Object);
             viewModel.RefreshTunnels();
 
-            Assert.IsTrue(viewModel.IsRefreshButtonEnabled);
+            Assert.That(viewModel.IsRefreshButtonEnabled, Is.True);
         }
     }
 }

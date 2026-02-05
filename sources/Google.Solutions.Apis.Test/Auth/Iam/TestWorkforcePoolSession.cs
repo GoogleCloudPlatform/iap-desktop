@@ -60,10 +60,9 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 new WorkforcePoolProviderLocator("global", "pool-1", "provider-1"),
                 new WorkforcePoolIdentity("global", "pool-1", "subject-1"));
 
-            Assert.AreEqual(
-                "principal://iam.googleapis.com/locations/global/workforcePools/" +
-                "pool-1/subject/subject-1",
-                session.PrincipalIdentifier);
+            Assert.That(
+                session.PrincipalIdentifier, Is.EqualTo("principal://iam.googleapis.com/locations/global/workforcePools/" +
+                "pool-1/subject/subject-1"));
         }
 
         //---------------------------------------------------------------------
@@ -78,7 +77,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 new WorkforcePoolProviderLocator("global", "pool-1", "provider-1"),
                 new WorkforcePoolIdentity("global", "pool-1", "subject-1"));
 
-            Assert.AreEqual("subject-1", session.Username);
+            Assert.That(session.Username, Is.EqualTo("subject-1"));
         }
 
         //---------------------------------------------------------------------
@@ -105,8 +104,8 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 new WorkforcePoolProviderLocator("global", "pool-1", "provider-1"),
                 new WorkforcePoolIdentity("global", "pool-1", "subject-1"));
 
-            Assert.AreEqual("old-rt", ((UserCredential)session.ApiCredential).Token.RefreshToken);
-            Assert.AreEqual("old-at", ((UserCredential)session.ApiCredential).Token.AccessToken);
+            Assert.That(((UserCredential)session.ApiCredential).Token.RefreshToken, Is.EqualTo("old-rt"));
+            Assert.That(((UserCredential)session.ApiCredential).Token.AccessToken, Is.EqualTo("old-at"));
 
 
             var newSession = new WorkforcePoolSession(
@@ -116,8 +115,8 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
 
             session.Splice(newSession);
 
-            Assert.AreEqual("new-rt", ((UserCredential)session.ApiCredential).Token.RefreshToken);
-            Assert.AreEqual("new-at", ((UserCredential)session.ApiCredential).Token.AccessToken);
+            Assert.That(((UserCredential)session.ApiCredential).Token.RefreshToken, Is.EqualTo("new-rt"));
+            Assert.That(((UserCredential)session.ApiCredential).Token.AccessToken, Is.EqualTo("new-at"));
         }
 
         //---------------------------------------------------------------------
@@ -136,7 +135,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             session.Terminated += (_, __) => eventRaised = true;
             session.Terminate();
 
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -151,10 +150,9 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 new WorkforcePoolProviderLocator("global", "pool-1", "provider-1"),
                 new WorkforcePoolIdentity("global", "pool-1", "subject-1"));
 
-            Assert.AreEqual(
-                new Uri("https://auth.cloud.google/signin/locations/global/workforcePools/pool-1/providers/provider-1" +
-                    "?continueUrl=https:%2F%2Fconsole.cloud.google%2F"),
-                session.CreateDomainSpecificServiceUri(new Uri("https://console.cloud.google/")));
+            Assert.That(
+                session.CreateDomainSpecificServiceUri(new Uri("https://console.cloud.google/")), Is.EqualTo(new Uri("https://auth.cloud.google/signin/locations/global/workforcePools/pool-1/providers/provider-1" +
+                    "?continueUrl=https:%2F%2Fconsole.cloud.google%2F")));
 
         }
     }

@@ -50,7 +50,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                Assert.AreEqual("cmd.exe", process.ImageName);
+                Assert.That(process.ImageName, Is.EqualTo("cmd.exe"));
 
                 process.Terminate(1);
             }
@@ -67,7 +67,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                Assert.AreNotEqual(0, process.Id);
+                Assert.That(process.Id, Is.Not.EqualTo(0));
 
                 process.Terminate(1);
             }
@@ -85,13 +85,13 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                Assert.IsTrue(process.IsRunning);
+                Assert.That(process.IsRunning, Is.True);
 
                 process.Resume();
-                Assert.IsTrue(process.IsRunning);
+                Assert.That(process.IsRunning, Is.True);
 
                 process.Terminate(1);
-                Assert.IsFalse(process.IsRunning);
+                Assert.That(process.IsRunning, Is.False);
             }
         }
 
@@ -106,8 +106,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                StringAssert.Contains("cmd.exe", process.ToString());
-                StringAssert.Contains(process.Id.ToString(), process.ToString());
+                Assert.That(process.ToString(), Does.Contain("cmd.exe"));
+                Assert.That(process.ToString(), Does.Contain(process.Id.ToString()));
 
                 process.Terminate(1);
             }
@@ -124,7 +124,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                Assert.AreEqual(process.Session, WtsSession.GetCurrent());
+                Assert.That(WtsSession.GetCurrent(), Is.EqualTo(process.Session));
 
                 process.Terminate(1);
             }
@@ -141,11 +141,11 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                Assert.IsNotNull(process.WaitHandle);
-                Assert.IsFalse(process.WaitHandle.WaitOne(1));
+                Assert.That(process.WaitHandle, Is.Not.Null);
+                Assert.That(process.WaitHandle.WaitOne(1), Is.False);
 
                 process.Terminate(1);
-                Assert.IsTrue(process.WaitHandle.WaitOne(50));
+                Assert.That(process.WaitHandle.WaitOne(50), Is.True);
             }
         }
 
@@ -160,13 +160,13 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                Assert.IsNotNull(process.Handle);
-                Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.That(process.Handle, Is.Not.Null);
+                Assert.That(process.Handle.IsInvalid, Is.False);
 
                 process.Resume();
                 process.Resume(); // Again.
 
-                Assert.IsTrue(process.IsRunning);
+                Assert.That(process.IsRunning, Is.True);
 
                 process.Terminate(1);
             }
@@ -185,13 +185,13 @@ namespace Google.Solutions.Platform.Test.Dispatch
             {
                 process.Resume();
 
-                Assert.IsNotNull(process.Handle);
-                Assert.IsFalse(process.Handle.IsInvalid);
-                Assert.IsTrue(process.IsRunning);
+                Assert.That(process.Handle, Is.Not.Null);
+                Assert.That(process.Handle.IsInvalid, Is.False);
+                Assert.That(process.IsRunning, Is.True);
 
                 process.Terminate(1);
 
-                Assert.IsFalse(process.IsRunning);
+                Assert.That(process.IsRunning, Is.False);
 
                 Assert.Throws<DispatchException>(() => process.Terminate(1));
             }
@@ -213,9 +213,9 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
                 process.Resume();
 
-                Assert.IsNotNull(process.Handle);
-                Assert.IsFalse(process.Handle.IsInvalid);
-                Assert.IsTrue(process.IsRunning);
+                Assert.That(process.Handle, Is.Not.Null);
+                Assert.That(process.Handle.IsInvalid, Is.False);
+                Assert.That(process.IsRunning, Is.True);
 
                 process.Terminate(1);
 
@@ -236,13 +236,13 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var process = factory.CreateProcess(CmdExe, null))
             {
                 process.Resume();
-                Assert.AreEqual(0, process.WindowCount);
+                Assert.That(process.WindowCount, Is.EqualTo(0));
 
                 var terminatedGracefully = await process
                     .CloseAsync(cts.Token)
                     .ConfigureAwait(false);
 
-                Assert.IsTrue(terminatedGracefully);
+                Assert.That(terminatedGracefully, Is.True);
             }
         }
 
@@ -267,7 +267,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 var terminatedGracefully = await process
                     .CloseAsync(cts.Token)
                     .ConfigureAwait(false);
-                Assert.IsTrue(terminatedGracefully);
+                Assert.That(terminatedGracefully, Is.True);
             }
         }
 
@@ -285,7 +285,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 var terminatedGracefully = await process
                     .CloseAsync(cts.Token)
                     .ConfigureAwait(false);
-                Assert.IsTrue(terminatedGracefully);
+                Assert.That(terminatedGracefully, Is.True);
             }
         }
 
@@ -346,7 +346,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                     .WaitAsync(cts.Token)
                     .ConfigureAwait(false);
 
-                Assert.AreEqual(1, exitCode);
+                Assert.That(exitCode, Is.EqualTo(1));
             }
         }
 
@@ -367,9 +367,9 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
                 using (var openedProcess = Win32Process.FromProcessId(process.Id))
                 {
-                    Assert.IsNotNull(openedProcess);
-                    Assert.AreEqual(process.ImageName, openedProcess.ImageName);
-                    Assert.IsTrue(openedProcess.IsRunning);
+                    Assert.That(openedProcess, Is.Not.Null);
+                    Assert.That(openedProcess.ImageName, Is.EqualTo(process.ImageName));
+                    Assert.That(openedProcess.IsRunning, Is.True);
                 }
 
                 process.Terminate(1);

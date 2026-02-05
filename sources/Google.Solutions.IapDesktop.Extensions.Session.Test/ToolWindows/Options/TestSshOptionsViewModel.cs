@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.IsTrue(viewModel.IsPropagateLocaleEnabled.Value);
+            Assert.That(viewModel.IsPropagateLocaleEnabled.Value, Is.True);
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsPropagateLocaleEnabled.Value);
+            Assert.That(viewModel.IsPropagateLocaleEnabled.Value, Is.False);
         }
 
         [Test]
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.EnableLocalePropagation.Value);
+            Assert.That(settings.EnableLocalePropagation.Value, Is.False);
         }
 
         [Test]
@@ -110,11 +110,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             viewModel.IsPropagateLocaleEnabled.Value = !viewModel.IsPropagateLocaleEnabled.Value;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -131,9 +131,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.IsTrue(viewModel.UsePersistentKey.Value);
-            Assert.IsTrue(viewModel.IsUsePersistentKeyEditable.Value);
-            Assert.IsTrue(viewModel.IsPublicKeyValidityInDaysEditable.Value);
+            Assert.That(viewModel.UsePersistentKey.Value, Is.True);
+            Assert.That(viewModel.IsUsePersistentKeyEditable.Value, Is.True);
+            Assert.That(viewModel.IsPublicKeyValidityInDaysEditable.Value, Is.True);
         }
 
         [Test]
@@ -146,9 +146,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.UsePersistentKey.Value);
-            Assert.IsTrue(viewModel.IsUsePersistentKeyEditable.Value);
-            Assert.IsFalse(viewModel.IsPublicKeyValidityInDaysEditable.Value);
+            Assert.That(viewModel.UsePersistentKey.Value, Is.False);
+            Assert.That(viewModel.IsUsePersistentKeyEditable.Value, Is.True);
+            Assert.That(viewModel.IsPublicKeyValidityInDaysEditable.Value, Is.False);
         }
 
         [Test]
@@ -166,9 +166,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.UsePersistentKey.Value);
-            Assert.IsFalse(viewModel.IsUsePersistentKeyEditable.Value);
-            Assert.IsFalse(viewModel.IsPublicKeyValidityInDaysEditable.Value);
+            Assert.That(viewModel.UsePersistentKey.Value, Is.False);
+            Assert.That(viewModel.IsUsePersistentKeyEditable.Value, Is.False);
+            Assert.That(viewModel.IsPublicKeyValidityInDaysEditable.Value, Is.False);
         }
 
         [Test]
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.UsePersistentKey.Value);
+            Assert.That(settings.UsePersistentKey.Value, Is.False);
         }
 
         [Test]
@@ -194,11 +194,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             viewModel.UsePersistentKey.Value = !viewModel.UsePersistentKey.Value;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -215,8 +215,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.AreEqual(1, (int)viewModel.PublicKeyValidityInDays.Value);
-            Assert.IsTrue(viewModel.IsPublicKeyValidityInDaysEditable.Value);
+            Assert.That((int)viewModel.PublicKeyValidityInDays.Value, Is.EqualTo(1));
+            Assert.That(viewModel.IsPublicKeyValidityInDaysEditable.Value, Is.True);
         }
 
         [Test]
@@ -234,8 +234,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.AreEqual(2, viewModel.PublicKeyValidityInDays.Value);
-            Assert.IsFalse(viewModel.IsPublicKeyValidityInDaysEditable.Value);
+            Assert.That(viewModel.PublicKeyValidityInDays.Value, Is.EqualTo(2));
+            Assert.That(viewModel.IsPublicKeyValidityInDaysEditable.Value, Is.False);
         }
 
         [Test]
@@ -252,7 +252,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.AreEqual(365 * 2 * 24 * 60 * 60, settings.PublicKeyValidity.Value);
+            Assert.That(settings.PublicKeyValidity.Value, Is.EqualTo(365 * 2 * 24 * 60 * 60));
         }
 
         [Test]
@@ -261,11 +261,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             viewModel.PublicKeyValidityInDays.Value++;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -282,8 +282,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.AreEqual(SshKeyType.EcdsaNistp256, viewModel.PublicKeyType.Value);
-            Assert.IsTrue(viewModel.IsPublicKeyTypeEditable);
+            Assert.That(viewModel.PublicKeyType.Value, Is.EqualTo(SshKeyType.EcdsaNistp256));
+            Assert.That(viewModel.IsPublicKeyTypeEditable, Is.True);
         }
 
         [Test]
@@ -301,8 +301,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.AreEqual(SshKeyType.EcdsaNistp384, viewModel.PublicKeyType.Value);
-            Assert.IsFalse(viewModel.IsPublicKeyTypeEditable);
+            Assert.That(viewModel.PublicKeyType.Value, Is.EqualTo(SshKeyType.EcdsaNistp384));
+            Assert.That(viewModel.IsPublicKeyTypeEditable, Is.False);
         }
 
         [Test]
@@ -319,7 +319,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.AreEqual(SshKeyType.EcdsaNistp384, settings.PublicKeyType.Value);
+            Assert.That(settings.PublicKeyType.Value, Is.EqualTo(SshKeyType.EcdsaNistp384));
         }
 
         [Test]
@@ -328,11 +328,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             viewModel.PublicKeyType.Value++;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
     }
 }

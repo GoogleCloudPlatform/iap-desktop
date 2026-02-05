@@ -57,9 +57,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(
-                    "secure",
-                    settings.Credentials.GetClearTextValue());
+                Assert.That(
+                    settings.Credentials.GetClearTextValue(), Is.EqualTo("secure"));
             }
         }
 
@@ -69,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
         [Test]
         public void TryRead_WhenBlobNullOrEmpty_ThenTryReadReturnsFalse(
-            [Values(null, "", "{")] string value)
+            [Values(null, "", "{")] string? value)
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest())
             {
@@ -81,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 repository.SetSettings(originalSettings);
 
                 // Read.
-                Assert.IsFalse(repository.TryRead(out var _));
+                Assert.That(repository.TryRead(out var _), Is.False);
             }
         }
 
@@ -109,14 +108,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 repository.SetSettings(originalSettings);
 
                 // Read.
-                Assert.IsTrue(repository.TryRead(out var offlineCredential));
+                Assert.That(repository.TryRead(out var offlineCredential), Is.True);
 
-                Assert.IsNotNull(offlineCredential);
-                Assert.AreEqual("rt", offlineCredential!.RefreshToken);
-                Assert.AreEqual("idt", offlineCredential.IdToken);
-                Assert.AreEqual(
-                    "https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/userinfo.email openid",
-                    offlineCredential.Scope);
+                Assert.That(offlineCredential, Is.Not.Null);
+                Assert.That(offlineCredential!.RefreshToken, Is.EqualTo("rt"));
+                Assert.That(offlineCredential.IdToken, Is.EqualTo("idt"));
+                Assert.That(
+                    offlineCredential.Scope, Is.EqualTo("https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/userinfo.email openid"));
             }
         }
 
@@ -138,13 +136,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 repository.SetSettings(originalSettings);
 
                 // Read.
-                Assert.IsTrue(repository.TryRead(out var offlineCredential));
+                Assert.That(repository.TryRead(out var offlineCredential), Is.True);
 
-                Assert.IsNotNull(offlineCredential);
-                Assert.AreEqual(OidcIssuer.Gaia, offlineCredential!.Issuer);
-                Assert.AreEqual("rt", offlineCredential.RefreshToken);
+                Assert.That(offlineCredential, Is.Not.Null);
+                Assert.That(offlineCredential!.Issuer, Is.EqualTo(OidcIssuer.Gaia));
+                Assert.That(offlineCredential.RefreshToken, Is.EqualTo("rt"));
                 Assert.IsNull(offlineCredential.IdToken);
-                Assert.AreEqual("openid", offlineCredential.Scope);
+                Assert.That(offlineCredential.Scope, Is.EqualTo("openid"));
             }
         }
 
@@ -167,13 +165,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 repository.SetSettings(originalSettings);
 
                 // Read.
-                Assert.IsTrue(repository.TryRead(out var offlineCredential));
+                Assert.That(repository.TryRead(out var offlineCredential), Is.True);
 
-                Assert.IsNotNull(offlineCredential);
-                Assert.AreEqual(OidcIssuer.Sts, offlineCredential!.Issuer);
-                Assert.AreEqual("rt", offlineCredential.RefreshToken);
+                Assert.That(offlineCredential, Is.Not.Null);
+                Assert.That(offlineCredential!.Issuer, Is.EqualTo(OidcIssuer.Sts));
+                Assert.That(offlineCredential.RefreshToken, Is.EqualTo("rt"));
                 Assert.IsNull(offlineCredential.IdToken);
-                Assert.AreEqual("openid", offlineCredential.Scope);
+                Assert.That(offlineCredential.Scope, Is.EqualTo("openid"));
             }
         }
 
@@ -196,13 +194,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                     "idt"));
 
                 // Read again.
-                Assert.IsTrue(repository.TryRead(out var offlineCredential));
+                Assert.That(repository.TryRead(out var offlineCredential), Is.True);
 
-                Assert.IsNotNull(offlineCredential);
-                Assert.AreEqual(OidcIssuer.Gaia, offlineCredential!.Issuer);
-                Assert.AreEqual("rt", offlineCredential.RefreshToken);
-                Assert.AreEqual("idt", offlineCredential.IdToken);
-                Assert.AreEqual("openid", offlineCredential.Scope);
+                Assert.That(offlineCredential, Is.Not.Null);
+                Assert.That(offlineCredential!.Issuer, Is.EqualTo(OidcIssuer.Gaia));
+                Assert.That(offlineCredential.RefreshToken, Is.EqualTo("rt"));
+                Assert.That(offlineCredential.IdToken, Is.EqualTo("idt"));
+                Assert.That(offlineCredential.Scope, Is.EqualTo("openid"));
             }
         }
 
@@ -221,13 +219,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                     null));
 
                 // Read again.
-                Assert.IsTrue(repository.TryRead(out var offlineCredential));
+                Assert.That(repository.TryRead(out var offlineCredential), Is.True);
 
-                Assert.IsNotNull(offlineCredential);
-                Assert.AreEqual(OidcIssuer.Sts, offlineCredential!.Issuer);
-                Assert.AreEqual("rt", offlineCredential.RefreshToken);
+                Assert.That(offlineCredential, Is.Not.Null);
+                Assert.That(offlineCredential!.Issuer, Is.EqualTo(OidcIssuer.Sts));
+                Assert.That(offlineCredential.RefreshToken, Is.EqualTo("rt"));
                 Assert.IsNull(offlineCredential.IdToken);
-                Assert.AreEqual("openid", offlineCredential.Scope);
+                Assert.That(offlineCredential.Scope, Is.EqualTo("openid"));
             }
         }
 
@@ -248,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 repository.Clear();
 
                 // Read again.
-                Assert.IsFalse(repository.TryRead(out var _));
+                Assert.That(repository.TryRead(out var _), Is.False);
             }
         }
     }

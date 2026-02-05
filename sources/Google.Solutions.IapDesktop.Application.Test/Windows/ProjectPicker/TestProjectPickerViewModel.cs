@@ -92,14 +92,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
             var modelMock = CreateModelMock();
             var viewModel = new ProjectPickerViewModel(modelMock.Object);
 
-            CollectionAssert.IsEmpty(viewModel.FilteredProjects);
+            Assert.That(viewModel.FilteredProjects, Is.Empty);
 
             await viewModel
                 .FilterAsync(null)
                 .ConfigureAwait(true);
 
-            CollectionAssert.IsNotEmpty(viewModel.FilteredProjects);
-            Assert.AreEqual(3, viewModel.FilteredProjects.Count);
+            Assert.That(viewModel.FilteredProjects, Is.Not.Empty);
+            Assert.That(viewModel.FilteredProjects.Count, Is.EqualTo(3));
         }
 
         [Test]
@@ -112,8 +112,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
                 .FilterAsync(null)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(viewModel.IsStatusTextVisible.Value);
-            StringAssert.Contains("Over 3", viewModel.StatusText.Value);
+            Assert.That(viewModel.IsStatusTextVisible.Value, Is.True);
+            Assert.That(viewModel.StatusText.Value, Does.Contain("Over 3"));
         }
 
         [Test]
@@ -126,8 +126,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
                 .FilterAsync("project-1")
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(viewModel.IsStatusTextVisible.Value);
-            StringAssert.Contains("1 project", viewModel.StatusText.Value);
+            Assert.That(viewModel.IsStatusTextVisible.Value, Is.True);
+            Assert.That(viewModel.StatusText.Value, Does.Contain("1 project"));
         }
 
         [Test]
@@ -141,14 +141,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
                 .ConfigureAwait(true);
             viewModel.SelectedProjects.Value = new[] { ProjectOne };
 
-            Assert.IsTrue(viewModel.IsProjectSelected.Value);
-            Assert.IsNotNull(viewModel.SelectedProjects.Value);
+            Assert.That(viewModel.IsProjectSelected.Value, Is.True);
+            Assert.That(viewModel.SelectedProjects.Value, Is.Not.Null);
 
             await viewModel
                 .FilterAsync("project-1")
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsProjectSelected.Value);
+            Assert.That(viewModel.IsProjectSelected.Value, Is.False);
             Assert.IsNull(viewModel.SelectedProjects.Value);
         }
 
@@ -159,16 +159,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
             var viewModel = new ProjectPickerViewModel(modelMock.Object);
             viewModel.SelectedProjects.Value = new[] { ProjectOne };
 
-            Assert.IsTrue(viewModel.IsProjectSelected.Value);
-            Assert.IsNotNull(viewModel.SelectedProjects.Value);
+            Assert.That(viewModel.IsProjectSelected.Value, Is.True);
+            Assert.That(viewModel.SelectedProjects.Value, Is.Not.Null);
 
             await viewModel
                 .FilterAsync("fail")
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsLoading.Value);
-            Assert.IsNotNull(viewModel.LoadingError);
-            Assert.AreEqual("mock", viewModel.LoadingError.Value.Message);
+            Assert.That(viewModel.IsLoading.Value, Is.False);
+            Assert.That(viewModel.LoadingError, Is.Not.Null);
+            Assert.That(viewModel.LoadingError.Value.Message, Is.EqualTo("mock"));
         }
     }
 }

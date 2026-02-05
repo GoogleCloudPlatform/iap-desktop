@@ -51,10 +51,10 @@ namespace Google.Solutions.Apis.Test.Compute
             var zoneLocator = instance.GetZoneLocator();
             var instanceLocator = instance.GetInstanceLocator();
 
-            Assert.AreEqual(TestProject.Zone, zoneLocator.Name);
-            Assert.AreEqual(TestProject.Zone, instanceLocator.Zone);
+            Assert.That(zoneLocator.Name, Is.EqualTo(TestProject.Zone));
+            Assert.That(instanceLocator.Zone, Is.EqualTo(TestProject.Zone));
 
-            Assert.AreEqual(await testInstance, instanceLocator);
+            Assert.That(instanceLocator, Is.EqualTo(await testInstance));
         }
 
         [Test]
@@ -71,10 +71,9 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(instance.PrimaryInternalAddress());
-            CollectionAssert.Contains(
-                new byte[] { 172, 192, 10 },
-                instance.PrimaryInternalAddress().GetAddressBytes()[0],
+            Assert.That(instance.PrimaryInternalAddress(), Is.Not.Null);
+            Assert.That(
+                new byte[] { 172, 192, 10 }, Has.Member(instance.PrimaryInternalAddress().GetAddressBytes()[0]),
                 "Is RFC1918 address");
         }
 
@@ -109,10 +108,9 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(instance.PublicAddress());
-            CollectionAssert.DoesNotContain(
-                new byte[] { 172, 192, 10 },
-                instance.PublicAddress().GetAddressBytes()[0],
+            Assert.That(instance.PublicAddress(), Is.Not.Null);
+            Assert.That(
+                new byte[] { 172, 192, 10 }, Has.No.Member(instance.PublicAddress().GetAddressBytes()[0]),
                 "Is not a RFC1918 address");
         }
     }

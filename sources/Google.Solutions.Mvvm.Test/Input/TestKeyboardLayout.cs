@@ -36,20 +36,20 @@ namespace Google.Solutions.Mvvm.Test.Input
         [Test]
         public void TryMapVirtualKey_WhenCharUnmapped()
         {
-            Assert.IsFalse(KeyboardLayout.Current.TryMapVirtualKey('Ä', out var _));
+            Assert.That(KeyboardLayout.Current.TryMapVirtualKey('Ä', out var _), Is.False);
         }
 
         [Test]
         public void TryMapVirtualKey_WhenCharMapped()
         {
-            Assert.IsTrue(KeyboardLayout.Current.TryMapVirtualKey('A', out var vk));
-            Assert.AreEqual(Keys.A | Keys.Shift, vk);
+            Assert.That(KeyboardLayout.Current.TryMapVirtualKey('A', out var vk), Is.True);
+            Assert.That(vk, Is.EqualTo(Keys.A | Keys.Shift));
 
-            Assert.IsTrue(KeyboardLayout.Current.TryMapVirtualKey('a', out vk));
-            Assert.AreEqual(Keys.A, vk);
+            Assert.That(KeyboardLayout.Current.TryMapVirtualKey('a', out vk), Is.True);
+            Assert.That(vk, Is.EqualTo(Keys.A));
 
-            Assert.IsTrue(KeyboardLayout.Current.TryMapVirtualKey('1', out vk));
-            Assert.AreEqual(Keys.D1, vk);
+            Assert.That(KeyboardLayout.Current.TryMapVirtualKey('1', out vk), Is.True);
+            Assert.That(vk, Is.EqualTo(Keys.D1));
         }
 
         //---------------------------------------------------------------------
@@ -59,18 +59,15 @@ namespace Google.Solutions.Mvvm.Test.Input
         [Test]
         public void TranslateModifiers()
         {
-            CollectionAssert.AreEqual(
-                new[] { Keys.ShiftKey, Keys.A },
-                KeyboardLayout.TranslateModifiers(Keys.A | Keys.Shift));
+            Assert.That(
+                KeyboardLayout.TranslateModifiers(Keys.A | Keys.Shift), Is.EqualTo(new[] { Keys.ShiftKey, Keys.A }).AsCollection);
 
-            CollectionAssert.AreEqual(
-                new[] { Keys.B },
-                KeyboardLayout.TranslateModifiers(Keys.B));
+            Assert.That(
+                KeyboardLayout.TranslateModifiers(Keys.B), Is.EqualTo(new[] { Keys.B }).AsCollection);
 
-            CollectionAssert.AreEqual(
-                new[] { Keys.ControlKey, Keys.Menu, Keys.ShiftKey, Keys.Delete },
+            Assert.That(
                 KeyboardLayout.TranslateModifiers(
-                    Keys.Delete | Keys.Shift | Keys.Alt | Keys.Control));
+                    Keys.Delete | Keys.Shift | Keys.Alt | Keys.Control), Is.EqualTo(new[] { Keys.ControlKey, Keys.Menu, Keys.ShiftKey, Keys.Delete }).AsCollection);
         }
 
         //---------------------------------------------------------------------
@@ -82,7 +79,7 @@ namespace Google.Solutions.Mvvm.Test.Input
         {
             var scanCodes = KeyboardLayout.ToScanCodes(Keys.A | Keys.Shift)
                 .ToList();
-            Assert.AreEqual(2, scanCodes.Count);
+            Assert.That(scanCodes.Count, Is.EqualTo(2));
         }
     }
 }

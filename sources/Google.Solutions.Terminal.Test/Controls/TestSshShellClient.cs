@@ -150,7 +150,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                     .ConfigureAwait(true);
 
                 Assert.NotNull(eventArgs);
-                Assert.AreEqual(ClientBase.DisconnectReason.FormClosed, eventArgs!.Reason);
+                Assert.That(eventArgs!.Reason, Is.EqualTo(ClientBase.DisconnectReason.FormClosed));
             }
         }
 

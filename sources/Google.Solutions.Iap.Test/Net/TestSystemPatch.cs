@@ -40,7 +40,7 @@ namespace Google.Solutions.Iap.Test.Net
             var websocket = new ClientWebSocket();
 
             SystemPatch.UnrestrictUserAgentHeader.Install();
-            Assert.IsTrue(SystemPatch.UnrestrictUserAgentHeader.IsInstalled);
+            Assert.That(SystemPatch.UnrestrictUserAgentHeader.IsInstalled, Is.True);
 
             // Now the User-agent header can be set.
             websocket.Options.SetRequestHeader("User-Agent", "test");
@@ -67,20 +67,20 @@ namespace Google.Solutions.Iap.Test.Net
 
             var patch = new SystemPatch.SetUsernameAsHostHeaderPatch(TestHttpWebRequestCreate.Prefix);
             patch.Install();
-            Assert.IsTrue(patch.IsInstalled);
+            Assert.That(patch.IsInstalled, Is.True);
 
             var requestWithoutUserInfo = (HttpWebRequest)
                 WebRequest.Create(new Uri("test+http://example.com"));
-            Assert.AreEqual(new Uri("http://example.com"), requestWithoutUserInfo.RequestUri);
-            Assert.AreEqual("example.com", requestWithoutUserInfo.Host);
+            Assert.That(requestWithoutUserInfo.RequestUri, Is.EqualTo(new Uri("http://example.com")));
+            Assert.That(requestWithoutUserInfo.Host, Is.EqualTo("example.com"));
 
             var requestWithUserInfo = (HttpWebRequest)
                 WebRequest.Create(new Uri("test+http://example.com@1.2.3.4/"));
-            Assert.AreEqual(new Uri("http://1.2.3.4"), requestWithUserInfo.RequestUri);
-            Assert.AreEqual("example.com", requestWithUserInfo.Host);
+            Assert.That(requestWithUserInfo.RequestUri, Is.EqualTo(new Uri("http://1.2.3.4")));
+            Assert.That(requestWithUserInfo.Host, Is.EqualTo("example.com"));
 
             patch.Uninstall();
-            Assert.IsFalse(patch.IsInstalled);
+            Assert.That(patch.IsInstalled, Is.False);
         }
 
         private class TestHttpWebRequestCreate : IWebRequestCreate

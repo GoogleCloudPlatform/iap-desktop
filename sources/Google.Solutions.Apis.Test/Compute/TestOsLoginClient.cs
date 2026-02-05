@@ -147,7 +147,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 .Values
                 .Where(k => k.Key.Contains(key))
                 .FirstOrDefault();
-            Assert.IsNotNull(entry);
+            Assert.That(entry, Is.Not.Null);
         }
 
         //---------------------------------------------------------------------
@@ -207,7 +207,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(profile);
+            Assert.That(profile, Is.Not.Null);
         }
 
         //---------------------------------------------------------------------
@@ -259,7 +259,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 .Values
                 .Where(k => k.Key.Contains(key))
                 .FirstOrDefault();
-            Assert.IsNotNull(entry);
+            Assert.That(entry, Is.Not.Null);
 
             //
             // Delete key twice.
@@ -283,9 +283,9 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(profile.SshPublicKeys
+            Assert.That(profile.SshPublicKeys
                 .EnsureNotNull()
-                .Any(k => k.Key.Contains(key)));
+                .Any(k => k.Key.Contains(key)), Is.False);
         }
 
         [Test]
@@ -367,9 +367,8 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            StringAssert.StartsWith(
-                "ecdsa-sha2-nistp256-cert-v01@openssh.com",
-                certifiedKey);
+            Assert.That(
+                certifiedKey, Does.StartWith("ecdsa-sha2-nistp256-cert-v01@openssh.com"));
         }
 
         [Test]
@@ -436,9 +435,8 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            StringAssert.StartsWith(
-                "ecdsa-sha2-nistp256-cert-v01@openssh.com",
-                certifiedKey);
+            Assert.That(
+                certifiedKey, Does.StartWith("ecdsa-sha2-nistp256-cert-v01@openssh.com"));
         }
 
         //---------------------------------------------------------------------
@@ -539,7 +537,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(keys);
+            Assert.That(keys, Is.Not.Null);
         }
     }
 }

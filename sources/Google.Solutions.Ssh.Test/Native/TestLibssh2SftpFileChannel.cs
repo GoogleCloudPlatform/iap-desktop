@@ -64,15 +64,14 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var attributes = file.Attributes;
 
-                Assert.IsTrue(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.SIZE));
-                Assert.AreEqual(0, attributes.filesize);
+                Assert.That(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.SIZE), Is.True);
+                Assert.That(attributes.filesize, Is.EqualTo(0));
 
-                Assert.IsTrue(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.PERMISSIONS));
-                Assert.AreEqual(
-                    FilePermissions.OwnerRead |
+                Assert.That(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.PERMISSIONS), Is.True);
+                Assert.That(
+                    attributes.permissions, Is.EqualTo(FilePermissions.OwnerRead |
                         FilePermissions.OwnerWrite |
-                        FilePermissions.Regular,
-                    attributes.permissions);
+                        FilePermissions.Regular));
             }
         }
 
@@ -100,11 +99,11 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var attributes = file.Attributes;
 
-                Assert.IsTrue(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.SIZE));
-                Assert.AreNotEqual(0, attributes.filesize);
+                Assert.That(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.SIZE), Is.True);
+                Assert.That(attributes.filesize, Is.Not.EqualTo(0));
 
-                Assert.IsTrue(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.ACMODTIME));
-                Assert.AreNotEqual(0, attributes.atime);
+                Assert.That(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.ACMODTIME), Is.True);
+                Assert.That(attributes.atime, Is.Not.EqualTo(0));
             }
         }
 
@@ -135,7 +134,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 FilePermissions.OwnerRead | FilePermissions.OwnerWrite))
             {
                 var bytesRead = file.Read(new byte[16]);
-                Assert.AreEqual(0, bytesRead);
+                Assert.That(bytesRead, Is.EqualTo(0));
             }
         }
 
@@ -193,7 +192,7 @@ namespace Google.Solutions.Ssh.Test.Native
                         receiveData.Append(Encoding.ASCII.GetString(tinyBuffer, 0, (int)bytesRead));
                     }
 
-                    Assert.AreEqual(sendData.ToString(), receiveData.ToString());
+                    Assert.That(receiveData.ToString(), Is.EqualTo(sendData.ToString()));
                 }
             }
         }

@@ -80,7 +80,7 @@ namespace Google.Solutions.Common.Test.Threading
                 return Task.CompletedTask;
             });
 
-            Assert.IsTrue(invoked);
+            Assert.That(invoked, Is.True);
         }
 
         [Test]
@@ -100,11 +100,11 @@ namespace Google.Solutions.Common.Test.Threading
                 invoked = true;
             });
 
-            Assert.IsFalse(invoked);
+            Assert.That(invoked, Is.False);
             tcs.SetResult(null);
 
             await task.ConfigureAwait(false);
-            Assert.IsTrue(invoked);
+            Assert.That(invoked, Is.True);
         }
 
         [Test]
@@ -125,13 +125,13 @@ namespace Google.Solutions.Common.Test.Threading
                 throw new ArgumentException("test");
             });
 
-            Assert.IsFalse(invoked);
+            Assert.That(invoked, Is.False);
             tcs.SetResult(null);
 
             await ExceptionAssert
                 .ThrowsAsync<ArgumentException>(() => task)
                 .ConfigureAwait(false);
-            Assert.IsTrue(invoked);
+            Assert.That(invoked, Is.True);
         }
     }
 }

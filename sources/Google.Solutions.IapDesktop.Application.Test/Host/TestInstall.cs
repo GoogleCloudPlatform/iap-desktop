@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void UserAgent()
         {
-            StringAssert.Contains("IAP-Desktop/", Install.UserAgent.ToString());
+            Assert.That(Install.UserAgent.ToString(), Does.Contain("IAP-Desktop/"));
         }
 
         //---------------------------------------------------------------------
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void IsExecutingTests()
         {
-            Assert.IsTrue(Install.IsExecutingTests);
+            Assert.That(Install.IsExecutingTests, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
                 var install = new Install(keyPath.Path);
-                Assert.AreNotEqual(0, install.CurrentVersion.Major);
+                Assert.That(install.CurrentVersion.Major, Is.Not.EqualTo(0));
             }
         }
 
@@ -80,12 +80,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
                 var install = new Install(keyPath.Path);
-                Assert.IsNotNull(install.UniqueId);
-                Assert.AreEqual(16, install.UniqueId.Length);
+                Assert.That(install.UniqueId, Is.Not.Null);
+                Assert.That(install.UniqueId.Length, Is.EqualTo(16));
 
-                Assert.AreEqual(
-                    install.UniqueId,
-                    new Install(keyPath.Path).UniqueId);
+                Assert.That(
+                    new Install(keyPath.Path).UniqueId, Is.EqualTo(install.UniqueId));
             }
         }
 
@@ -99,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
                 var install = new Install(keyPath.Path);
-                Assert.AreEqual(keyPath.Path, install.BaseKeyPath);
+                Assert.That(install.BaseKeyPath, Is.EqualTo(keyPath.Path));
             }
         }
 
@@ -114,8 +113,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             {
                 var install = new Install(keyPath.Path);
 
-                Assert.IsNotNull(install.BaseDirectory);
-                Assert.IsTrue(Directory.Exists(install.BaseDirectory));
+                Assert.That(install.BaseDirectory, Is.Not.Null);
+                Assert.That(Directory.Exists(install.BaseDirectory), Is.True);
             }
         }
 
@@ -129,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
                 var install = new Install(keyPath.Path);
-                Assert.AreEqual(install.CurrentVersion, install.InitialVersion);
+                Assert.That(install.InitialVersion, Is.EqualTo(install.CurrentVersion));
             }
         }
 
@@ -141,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 var install = new Install(keyPath.Path);
                 keyPath.Delete();
 
-                Assert.AreEqual(install.CurrentVersion, install.InitialVersion);
+                Assert.That(install.InitialVersion, Is.EqualTo(install.CurrentVersion));
             }
         }
 
@@ -160,8 +159,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                         RegistryValueKind.MultiString);
                 }
 
-                Assert.AreNotEqual(install.CurrentVersion, install.InitialVersion);
-                Assert.AreEqual(new Version(0, 0, 1, 0), install.InitialVersion);
+                Assert.That(install.InitialVersion, Is.Not.EqualTo(install.CurrentVersion));
+                Assert.That(install.InitialVersion, Is.EqualTo(new Version(0, 0, 1, 0)));
             }
         }
 
@@ -206,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                         RegistryValueKind.MultiString);
                 }
 
-                Assert.AreEqual(new Version(0, 0, 3, 0), install.PreviousVersion);
+                Assert.That(install.PreviousVersion, Is.EqualTo(new Version(0, 0, 3, 0)));
             }
         }
 
@@ -217,15 +216,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void UserAgent_IncludesPlatform()
         {
-            StringAssert.Contains(
-                Environment.OSVersion.VersionString,
-                Install.UserAgent.Platform);
-            StringAssert.Contains(
-                $"{ProcessEnvironment.ProcessArchitecture.ToString().ToLower()}/",
-                Install.UserAgent.Platform);
-            StringAssert.Contains(
-                $"/{ProcessEnvironment.NativeArchitecture.ToString().ToLower()}",
-                Install.UserAgent.Platform);
+            Assert.That(
+                Install.UserAgent.Platform, Does.Contain(Environment.OSVersion.VersionString));
+            Assert.That(
+                Install.UserAgent.Platform, Does.Contain($"{ProcessEnvironment.ProcessArchitecture.ToString().ToLower()}/"));
+            Assert.That(
+                Install.UserAgent.Platform, Does.Contain($"/{ProcessEnvironment.NativeArchitecture.ToString().ToLower()}"));
         }
 
         //---------------------------------------------------------------------
@@ -264,8 +260,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 install.CreateProfile(TestProfileName);
                 using (var profile = install.CreateProfile(TestProfileName))
                 {
-                    Assert.IsNotNull(profile);
-                    Assert.AreEqual(TestProfileName, profile.Name);
+                    Assert.That(profile, Is.Not.Null);
+                    Assert.That(profile.Name, Is.EqualTo(TestProfileName));
                 }
             }
         }
@@ -309,10 +305,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
                 using (var profile = install.OpenProfile(TestProfileName))
                 {
-                    Assert.IsNotNull(profile);
-                    Assert.AreEqual(TestProfileName, profile.Name);
-                    Assert.IsFalse(profile.IsDefault);
-                    Assert.IsNotNull(profile.SettingsKey);
+                    Assert.That(profile, Is.Not.Null);
+                    Assert.That(profile.Name, Is.EqualTo(TestProfileName));
+                    Assert.That(profile.IsDefault, Is.False);
+                    Assert.That(profile.SettingsKey, Is.Not.Null);
                 }
             }
         }
@@ -325,8 +321,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 var install = new Install(keyPath.Path);
 
                 var profile = install.OpenProfile(null);
-                Assert.AreEqual("Default", profile.Name);
-                Assert.IsTrue(profile.IsDefault);
+                Assert.That(profile.Name, Is.EqualTo("Default"));
+                Assert.That(profile.IsDefault, Is.True);
             }
         }
 
@@ -378,8 +374,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
                 var list = install.Profiles;
 
-                Assert.IsNotNull(list);
-                CollectionAssert.Contains(list, TestProfileName);
+                Assert.That(list, Is.Not.Null);
+                Assert.That(list, Has.Member(TestProfileName));
             }
         }
 
@@ -395,8 +391,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
                 var list = install.Profiles;
 
-                Assert.IsNotNull(list);
-                CollectionAssert.Contains(list, "Default");
+                Assert.That(list, Is.Not.Null);
+                Assert.That(list, Has.Member("Default"));
             }
         }
 
@@ -416,8 +412,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
                 var list = install.Profiles;
 
-                Assert.IsNotNull(list);
-                Assert.IsFalse(list.Any(p => p.EndsWith("Notaprofile", StringComparison.OrdinalIgnoreCase)));
+                Assert.That(list, Is.Not.Null);
+                Assert.That(list.Any(p => p.EndsWith("Notaprofile", StringComparison.OrdinalIgnoreCase)), Is.False);
             }
         }
     }

@@ -40,14 +40,14 @@ namespace Google.Solutions.Mvvm.Test.Drawing
                 0x000000FF)]int colorref)
         {
             var color = ColorExtensions.FromCOLORREF((uint)colorref);
-            Assert.AreEqual(colorref, color.ToCOLORREF());
+            Assert.That(color.ToCOLORREF(), Is.EqualTo(colorref));
         }
 
         [Test]
         public void FromCOLORREF_WhenHighByteIsNonZero_ThenFromCOLORREFSucceeds()
         {
             var color = ColorExtensions.FromCOLORREF(0xAABBCCDD);
-            Assert.AreEqual(0xBBCCDD, color.ToCOLORREF());
+            Assert.That(color.ToCOLORREF(), Is.EqualTo(0xBBCCDD));
         }
     }
 }

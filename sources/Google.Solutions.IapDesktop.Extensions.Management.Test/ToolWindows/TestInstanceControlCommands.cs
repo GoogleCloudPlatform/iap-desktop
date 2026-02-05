@@ -73,9 +73,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
             var vm = new Mock<IProjectModelInstanceNode>();
             vm.SetupGet(n => n.CanStart).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuStart.QueryState(vm.Object));
+            Assert.That(
+                commands.ContextMenuStart.QueryState(vm.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -87,9 +86,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
             var vm = new Mock<IProjectModelInstanceNode>();
             vm.SetupGet(n => n.CanStart).Returns(false);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ContextMenuStart.QueryState(vm.Object));
+            Assert.That(
+                commands.ContextMenuStart.QueryState(vm.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         //---------------------------------------------------------------------
@@ -105,9 +103,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
             var vm = new Mock<IProjectModelInstanceNode>();
             vm.SetupGet(n => n.CanResume).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuResume.QueryState(vm.Object));
+            Assert.That(
+                commands.ContextMenuResume.QueryState(vm.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -119,9 +116,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
             var vm = new Mock<IProjectModelInstanceNode>();
             vm.SetupGet(n => n.CanResume).Returns(false);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ContextMenuResume.QueryState(vm.Object));
+            Assert.That(
+                commands.ContextMenuResume.QueryState(vm.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         //---------------------------------------------------------------------
@@ -137,9 +133,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
             var vm = new Mock<IProjectModelInstanceNode>();
             vm.SetupGet(n => n.CanStop).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuStop.QueryState(vm.Object));
+            Assert.That(
+                commands.ContextMenuStop.QueryState(vm.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -151,9 +146,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
             var vm = new Mock<IProjectModelInstanceNode>();
             vm.SetupGet(n => n.CanStop).Returns(false);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ContextMenuStop.QueryState(vm.Object));
+            Assert.That(
+                commands.ContextMenuStop.QueryState(vm.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         //---------------------------------------------------------------------
@@ -169,9 +163,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
             var vm = new Mock<IProjectModelInstanceNode>();
             vm.SetupGet(n => n.CanSuspend).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuSuspend.QueryState(vm.Object));
+            Assert.That(
+                commands.ContextMenuSuspend.QueryState(vm.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -183,9 +176,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
             var vm = new Mock<IProjectModelInstanceNode>();
             vm.SetupGet(n => n.CanSuspend).Returns(false);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ContextMenuSuspend.QueryState(vm.Object));
+            Assert.That(
+                commands.ContextMenuSuspend.QueryState(vm.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         //---------------------------------------------------------------------
@@ -201,9 +193,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
             var vm = new Mock<IProjectModelInstanceNode>();
             vm.SetupGet(n => n.CanReset).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuReset.QueryState(vm.Object));
+            Assert.That(
+                commands.ContextMenuReset.QueryState(vm.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -215,9 +206,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
             var vm = new Mock<IProjectModelInstanceNode>();
             vm.SetupGet(n => n.CanReset).Returns(false);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ContextMenuReset.QueryState(vm.Object));
+            Assert.That(
+                commands.ContextMenuReset.QueryState(vm.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         //---------------------------------------------------------------------
@@ -236,15 +226,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
             var serviceProvider = new Mock<IServiceProvider>();
             var command = CreateCommand(serviceProvider.Object, controlCommand);
 
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                command.QueryState(new Mock<IProjectModelCloudNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                command.QueryState(new Mock<IProjectModelProjectNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                command.QueryState(new Mock<IProjectModelZoneNode>().Object));
+            Assert.That(
+                command.QueryState(new Mock<IProjectModelCloudNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                command.QueryState(new Mock<IProjectModelProjectNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                command.QueryState(new Mock<IProjectModelZoneNode>().Object), Is.EqualTo(CommandState.Unavailable));
         }
 
         [Test]
@@ -342,9 +329,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
             vm.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
             vm.SetupGet(n => n.IsRunning).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuJoinToActiveDirectory.QueryState(vm.Object));
+            Assert.That(
+                commands.ContextMenuJoinToActiveDirectory.QueryState(vm.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -357,9 +343,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
             vm.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
             vm.SetupGet(n => n.IsRunning).Returns(false);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ContextMenuJoinToActiveDirectory.QueryState(vm.Object));
+            Assert.That(
+                commands.ContextMenuJoinToActiveDirectory.QueryState(vm.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         [Test]
@@ -372,18 +357,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
             linuxVm.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Linux);
             linuxVm.SetupGet(n => n.IsRunning).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuJoinToActiveDirectory.QueryState(linuxVm.Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuJoinToActiveDirectory.QueryState(new Mock<IProjectModelCloudNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuJoinToActiveDirectory.QueryState(new Mock<IProjectModelProjectNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuJoinToActiveDirectory.QueryState(new Mock<IProjectModelZoneNode>().Object));
+            Assert.That(
+                commands.ContextMenuJoinToActiveDirectory.QueryState(linuxVm.Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                commands.ContextMenuJoinToActiveDirectory.QueryState(new Mock<IProjectModelCloudNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                commands.ContextMenuJoinToActiveDirectory.QueryState(new Mock<IProjectModelProjectNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                commands.ContextMenuJoinToActiveDirectory.QueryState(new Mock<IProjectModelZoneNode>().Object), Is.EqualTo(CommandState.Unavailable));
         }
     }
 }

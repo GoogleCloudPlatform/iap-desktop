@@ -83,8 +83,8 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 form.Show();
 
-                Assert.AreEqual(command.Text, button.Text);
-                Assert.IsFalse(button.Enabled);
+                Assert.That(button.Text, Is.EqualTo(command.Text));
+                Assert.That(button.Enabled, Is.False);
 
                 form.Close();
             }
@@ -115,8 +115,8 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 form.Show();
 
-                Assert.AreEqual(command.Text, button.Text);
-                Assert.IsTrue(button.Enabled);
+                Assert.That(button.Text, Is.EqualTo(command.Text));
+                Assert.That(button.Enabled, Is.True);
 
                 form.Close();
             }
@@ -130,7 +130,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 "Command name",
                 () =>
                 {
-                    Assert.IsFalse(button.Enabled);
+                    Assert.That(button.Enabled, Is.False);
                     return Task.CompletedTask;
                 });
 
@@ -147,7 +147,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 form.Show();
 
                 button.PerformClick();
-                Assert.IsTrue(button.Enabled);
+                Assert.That(button.Enabled, Is.True);
 
                 form.Close();
             }
@@ -276,7 +276,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 form.Show();
 
-                Assert.AreEqual("Command text", button.Text);
+                Assert.That(button.Text, Is.EqualTo("Command text"));
 
                 form.Close();
             }
@@ -305,7 +305,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 form.Show();
 
-                Assert.AreEqual("Original text", button.Text);
+                Assert.That(button.Text, Is.EqualTo("Original text"));
 
                 form.Close();
             }
@@ -339,8 +339,8 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 form.Show();
 
-                Assert.AreEqual(command.Text, button.Text);
-                Assert.IsFalse(button.Enabled);
+                Assert.That(button.Text, Is.EqualTo(command.Text));
+                Assert.That(button.Enabled, Is.False);
 
                 form.Close();
             }
@@ -373,8 +373,8 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 form.Show();
 
-                Assert.AreEqual(command.Text, button.Text);
-                Assert.IsTrue(button.Enabled);
+                Assert.That(button.Text, Is.EqualTo(command.Text));
+                Assert.That(button.Enabled, Is.True);
 
                 form.Close();
             }
@@ -388,7 +388,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 "Command name",
                 () =>
                 {
-                    Assert.IsFalse(button.Enabled);
+                    Assert.That(button.Enabled, Is.False);
                     return Task.CompletedTask;
                 });
 
@@ -407,7 +407,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 form.Show();
 
                 button.PerformClick();
-                Assert.IsTrue(button.Enabled);
+                Assert.That(button.Enabled, Is.True);
 
                 form.Close();
             }
@@ -438,7 +438,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 form.Show();
 
-                Assert.AreEqual("Command text", button.Text);
+                Assert.That(button.Text, Is.EqualTo("Command text"));
 
                 form.Close();
             }
@@ -469,7 +469,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 form.Show();
 
-                Assert.AreEqual("Original text", button.Text);
+                Assert.That(button.Text, Is.EqualTo("Original text"));
 
                 form.Close();
             }

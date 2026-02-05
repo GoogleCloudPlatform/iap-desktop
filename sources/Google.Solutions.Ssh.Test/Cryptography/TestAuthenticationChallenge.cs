@@ -47,10 +47,10 @@ namespace Google.Solutions.Ssh.Test.Cryptography
 
             var challenge = new AuthenticationChallenge(challengeBlob);
 
-            Assert.AreEqual("rsa-sha2-512", challenge.Algorithm);
-            Assert.AreEqual("ssh-connection", challenge.Service);
-            Assert.AreEqual("testuser", challenge.Username);
-            Assert.AreSame(challengeBlob, challenge.Value);
+            Assert.That(challenge.Algorithm, Is.EqualTo("rsa-sha2-512"));
+            Assert.That(challenge.Service, Is.EqualTo("ssh-connection"));
+            Assert.That(challenge.Username, Is.EqualTo("testuser"));
+            Assert.That(challenge.Value, Is.SameAs(challengeBlob));
         }
     }
 }

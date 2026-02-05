@@ -63,8 +63,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                Assert.IsNotNull(process.Handle);
-                Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.That(process.Handle, Is.Not.Null);
+                Assert.That(process.Handle.IsInvalid, Is.False);
                 Assert.IsNull(process.Job);
                 Assert.IsNull(process.PseudoTerminal);
 
@@ -86,8 +86,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
             Assert.Throws<InvalidOperationException>(
                 () => factory.CreateProcess(CmdExe, null));
 
-            Assert.IsNotNull(createdProcess);
-            Assert.IsTrue(((Win32Process)createdProcess!).IsDisposed);
+            Assert.That(createdProcess, Is.Not.Null);
+            Assert.That(((Win32Process)createdProcess!).IsDisposed, Is.True);
         }
 
 
@@ -116,12 +116,12 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 null,
                 PseudoTerminalSize.Default))
             {
-                Assert.IsNotNull(process.Handle);
-                Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.That(process.Handle, Is.Not.Null);
+                Assert.That(process.Handle.IsInvalid, Is.False);
                 Assert.IsNull(process.Job);
 
-                Assert.IsNotNull(process.PseudoTerminal);
-                Assert.IsFalse(process.PseudoTerminal!.IsClosed);
+                Assert.That(process.PseudoTerminal, Is.Not.Null);
+                Assert.That(process.PseudoTerminal!.IsClosed, Is.False);
 
                 process.Terminate(1);
             }
@@ -144,8 +144,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
                     null,
                     PseudoTerminalSize.Default));
 
-            Assert.IsNotNull(createdProcess);
-            Assert.IsTrue(((Win32Process)createdProcess!).IsDisposed);
+            Assert.That(createdProcess, Is.Not.Null);
+            Assert.That(((Win32Process)createdProcess!).IsDisposed, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -163,8 +163,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 LogonFlags.NetCredentialsOnly,
                 new NetworkCredential("user", "invalid", "domain")))
             {
-                Assert.IsNotNull(process.Handle);
-                Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.That(process.Handle, Is.Not.Null);
+                Assert.That(process.Handle.IsInvalid, Is.False);
                 Assert.IsNull(process.Job);
 
                 process.Terminate(1);
@@ -182,8 +182,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 LogonFlags.NetCredentialsOnly,
                 new NetworkCredential("example\\user", "invalid", null)))
             {
-                Assert.IsNotNull(process.Handle);
-                Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.That(process.Handle, Is.Not.Null);
+                Assert.That(process.Handle.IsInvalid, Is.False);
 
                 process.Terminate(1);
             }
@@ -200,8 +200,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 LogonFlags.NetCredentialsOnly,
                 new NetworkCredential("user@example.com", "invalid", null)))
             {
-                Assert.IsNotNull(process.Handle);
-                Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.That(process.Handle, Is.Not.Null);
+                Assert.That(process.Handle.IsInvalid, Is.False);
 
                 process.Terminate(1);
             }
@@ -239,8 +239,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
                     LogonFlags.NetCredentialsOnly,
                     new NetworkCredential("user", "invalid", "domain")));
 
-            Assert.IsNotNull(createdProcess);
-            Assert.IsTrue(((Win32Process)createdProcess!).IsDisposed);
+            Assert.That(createdProcess, Is.Not.Null);
+            Assert.That(((Win32Process)createdProcess!).IsDisposed, Is.True);
         }
     }
 }

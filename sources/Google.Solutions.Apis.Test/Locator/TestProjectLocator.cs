@@ -38,7 +38,7 @@ namespace Google.Solutions.Apis.Test.Locator
         public void Project()
         {
             var ref1 = new ProjectLocator("project-1");
-            Assert.AreEqual(ref1, ref1.Project);
+            Assert.That(ref1.Project, Is.EqualTo(ref1));
         }
 
         //---------------------------------------------------------------------
@@ -48,59 +48,59 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathIsValid()
         {
-            Assert.IsTrue(ProjectLocator.TryParse(
+            Assert.That(ProjectLocator.TryParse(
                 "projects/project-1",
-                out var ref1));
+                out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
-            Assert.AreEqual("projects", ref1!.ResourceType);
-            Assert.AreEqual("project-1", ref1.Name);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1, Is.Not.Null);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("projects"));
+            Assert.That(ref1.Name, Is.EqualTo("project-1"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
         public void TryParse_WhenQualifiedByComputeGoogleapisHost()
         {
-            Assert.IsTrue(ProjectLocator.TryParse(
+            Assert.That(ProjectLocator.TryParse(
                 "https://compute.googleapis.com/compute/v1/projects/project-1",
-                out var ref1));
+                out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
-            Assert.AreEqual("projects", ref1!.ResourceType);
-            Assert.AreEqual("project-1", ref1.Name);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1, Is.Not.Null);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("projects"));
+            Assert.That(ref1.Name, Is.EqualTo("project-1"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
         public void TryParse_WhenQualifiedByGoogleapisHost()
         {
-            Assert.IsTrue(ProjectLocator.TryParse(
+            Assert.That(ProjectLocator.TryParse(
                 "https://www.googleapis.com/compute/v1/projects/project-1",
-                out var ref1));
+                out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
-            Assert.AreEqual("projects", ref1!.ResourceType);
-            Assert.AreEqual("project-1", ref1.Name);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1, Is.Not.Null);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("projects"));
+            Assert.That(ref1.Name, Is.EqualTo("project-1"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
         public void TryParse_WhenPathLacksProject()
         {
-            Assert.IsFalse(ProjectLocator.TryParse(
+            Assert.That(ProjectLocator.TryParse(
                 "/project-1",
-                out var _));
+                out var _), Is.False);
         }
 
         [Test]
         public void TryParse_WhenPathInvalid()
         {
-            Assert.IsFalse(ProjectLocator.TryParse(
+            Assert.That(ProjectLocator.TryParse(
                 "projects/project-1/zone",
-                out var _));
-            Assert.IsFalse(ProjectLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(ProjectLocator.TryParse(
                 "",
-                out var _));
+                out var _), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -113,9 +113,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = ProjectLocator.Parse(
                 "projects/project-1");
 
-            Assert.AreEqual("projects", ref1.ResourceType);
-            Assert.AreEqual("project-1", ref1.Name);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("projects"));
+            Assert.That(ref1.Name, Is.EqualTo("project-1"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -124,9 +124,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = ProjectLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/project-1");
 
-            Assert.AreEqual("projects", ref1.ResourceType);
-            Assert.AreEqual("project-1", ref1.Name);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("projects"));
+            Assert.That(ref1.Name, Is.EqualTo("project-1"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -135,9 +135,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = ProjectLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/project-1");
 
-            Assert.AreEqual("projects", ref1.ResourceType);
-            Assert.AreEqual("project-1", ref1.Name);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("projects"));
+            Assert.That(ref1.Name, Is.EqualTo("project-1"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -165,10 +165,10 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = new ProjectLocator("proj-1");
             var ref2 = new ProjectLocator("proj-2");
 
-            Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object)ref2));
-            Assert.IsFalse(ref1 == ref2);
-            Assert.IsTrue(ref1 != ref2);
+            Assert.That(ref1.Equals(ref2), Is.False);
+            Assert.That(ref1.Equals((object)ref2), Is.False);
+            Assert.That(ref1 == ref2, Is.False);
+            Assert.That(ref1 != ref2, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -180,9 +180,8 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var path = "projects/project-1";
 
-            Assert.AreEqual(
-                path,
-                ProjectLocator.Parse(path).ToString());
+            Assert.That(
+                ProjectLocator.Parse(path).ToString(), Is.EqualTo(path));
         }
 
         [Test]
@@ -190,10 +189,9 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var path = "projects/project-1";
 
-            Assert.AreEqual(
-                path,
+            Assert.That(
                 ProjectLocator.Parse(
-                    "https://www.googleapis.com/compute/v1/" + path).ToString());
+                    "https://www.googleapis.com/compute/v1/" + path).ToString(), Is.EqualTo(path));
         }
     }
 }

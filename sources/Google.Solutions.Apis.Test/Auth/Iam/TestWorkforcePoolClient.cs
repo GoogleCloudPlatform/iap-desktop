@@ -141,7 +141,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 .ThrowsAsync<TokenResponseException>(
                     () => client.AuthorizeAsync(codeReceiver.Object, CancellationToken.None))
                 .ConfigureAwait(false);
-            StringAssert.Contains("invalid_grant", e.Message);
+            Assert.That(e.Message, Does.Contain("invalid_grant"));
         }
 
         [Test]
@@ -179,7 +179,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                     () => client.AuthorizeAsync(codeReceiver.Object, CancellationToken.None))
                 .ConfigureAwait(false);
 
-            StringAssert.Contains("invalid_grant", e.Message);
+            Assert.That(e.Message, Does.Contain("invalid_grant"));
         }
 
         [Test]
@@ -226,10 +226,10 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 .AuthorizeAsync(codeReceiver.Object, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(session);
-            Assert.AreEqual("SUBJECT", session.Username);
-            Assert.AreEqual("access-token", ((UserCredential)session.ApiCredential).Token.AccessToken);
-            Assert.AreEqual("refresh-token", ((UserCredential)session.ApiCredential).Token.RefreshToken);
+            Assert.That(session, Is.Not.Null);
+            Assert.That(session.Username, Is.EqualTo("SUBJECT"));
+            Assert.That(((UserCredential)session.ApiCredential).Token.AccessToken, Is.EqualTo("access-token"));
+            Assert.That(((UserCredential)session.ApiCredential).Token.RefreshToken, Is.EqualTo("refresh-token"));
         }
 
         //---------------------------------------------------------------------
@@ -313,13 +313,13 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 .TryAuthorizeSilentlyAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(session);
-            Assert.AreEqual("SUBJECT", session!.Username);
-            Assert.AreEqual("access-token", ((UserCredential)session.ApiCredential).Token.AccessToken);
-            Assert.AreEqual("refresh-token", ((UserCredential)session.ApiCredential).Token.RefreshToken);
+            Assert.That(session, Is.Not.Null);
+            Assert.That(session!.Username, Is.EqualTo("SUBJECT"));
+            Assert.That(((UserCredential)session.ApiCredential).Token.AccessToken, Is.EqualTo("access-token"));
+            Assert.That(((UserCredential)session.ApiCredential).Token.RefreshToken, Is.EqualTo("refresh-token"));
 
             // Terminate session.
-            Assert.IsNotNull(store.StoredCredential);
+            Assert.That(store.StoredCredential, Is.Not.Null);
             session.Terminate();
             Assert.IsNull(store.StoredCredential);
         }

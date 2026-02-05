@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var signer1 = EphemeralKeySigners.Get(keyType);
             var signer2 = EphemeralKeySigners.Get(keyType);
-            Assert.AreSame(signer1, signer2);
+            Assert.That(signer2, Is.SameAs(signer1));
 
             EphemeralKeySigners.ClearCache();
         }
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var signer1 = EphemeralKeySigners.Get(SshKeyType.Rsa3072);
             var signer2 = EphemeralKeySigners.Get(SshKeyType.EcdsaNistp256);
-            Assert.AreNotSame(signer1, signer2);
+            Assert.That(signer2, Is.Not.SameAs(signer1));
 
             EphemeralKeySigners.ClearCache();
         }

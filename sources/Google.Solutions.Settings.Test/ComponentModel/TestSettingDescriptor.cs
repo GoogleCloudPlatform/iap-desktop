@@ -37,16 +37,16 @@ namespace Google.Solutions.Settings.Test.ComponentModel
 
             var descriptor = new SettingDescriptor(setting);
 
-            Assert.AreEqual("key", descriptor.Name);
-            Assert.AreEqual("display name", descriptor.DisplayName);
-            Assert.AreEqual("description", descriptor.Description);
-            Assert.AreEqual("category", descriptor.Category);
+            Assert.That(descriptor.Name, Is.EqualTo("key"));
+            Assert.That(descriptor.DisplayName, Is.EqualTo("display name"));
+            Assert.That(descriptor.Description, Is.EqualTo("description"));
+            Assert.That(descriptor.Category, Is.EqualTo("category"));
 
-            Assert.IsTrue(descriptor.IsBrowsable);
-            Assert.IsFalse(descriptor.IsReadOnly);
+            Assert.That(descriptor.IsBrowsable, Is.True);
+            Assert.That(descriptor.IsReadOnly, Is.False);
 
-            Assert.AreEqual(typeof(ISetting), descriptor.ComponentType);
-            Assert.AreEqual(typeof(string), descriptor.PropertyType);
+            Assert.That(descriptor.ComponentType, Is.EqualTo(typeof(ISetting)));
+            Assert.That(descriptor.PropertyType, Is.EqualTo(typeof(string)));
         }
 
         [Test]
@@ -58,12 +58,12 @@ namespace Google.Solutions.Settings.Test.ComponentModel
 
             var descriptor = new SettingDescriptor(setting);
 
-            Assert.AreEqual("key", descriptor.Name);
+            Assert.That(descriptor.Name, Is.EqualTo("key"));
             Assert.IsNull(descriptor.DisplayName);
             Assert.IsNull(descriptor.Description);
             Assert.IsNull(descriptor.Category);
 
-            Assert.IsFalse(descriptor.IsBrowsable);
+            Assert.That(descriptor.IsBrowsable, Is.False);
         }
 
         [Test]
@@ -80,21 +80,21 @@ namespace Google.Solutions.Settings.Test.ComponentModel
             // Set value.
             //
             descriptor.SetValue(setting, "value-1");
-            Assert.AreEqual("value-1", setting.Value);
-            Assert.IsTrue(descriptor.ShouldSerializeValue(setting));
+            Assert.That(setting.Value, Is.EqualTo("value-1"));
+            Assert.That(descriptor.ShouldSerializeValue(setting), Is.True);
 
             //
             // Get value.
             //
-            Assert.AreEqual("value-1", descriptor.GetValue(setting));
+            Assert.That(descriptor.GetValue(setting), Is.EqualTo("value-1"));
 
             //
             // Reset.
             //
-            Assert.IsTrue(descriptor.CanResetValue(setting));
+            Assert.That(descriptor.CanResetValue(setting), Is.True);
             descriptor.ResetValue(setting);
-            Assert.IsTrue(setting.IsDefault);
-            Assert.IsFalse(descriptor.ShouldSerializeValue(setting));
+            Assert.That(setting.IsDefault, Is.True);
+            Assert.That(descriptor.ShouldSerializeValue(setting), Is.False);
         }
 
         //--------------------------------------------------------------------

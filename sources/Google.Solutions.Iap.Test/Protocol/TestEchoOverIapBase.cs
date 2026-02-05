@@ -108,8 +108,8 @@ namespace Google.Solutions.Iap.Test.Protocol
                     }
                 }
 
-                Assert.AreEqual(messageSize, totalBytesRead);
-                Assert.AreEqual(message, response);
+                Assert.That(totalBytesRead, Is.EqualTo(messageSize));
+                Assert.That(response, Is.EqualTo(message));
             }
 
             await stream

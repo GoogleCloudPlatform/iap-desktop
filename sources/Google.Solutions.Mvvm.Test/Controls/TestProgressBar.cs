@@ -42,18 +42,18 @@ namespace Google.Solutions.Mvvm.Test.Controls
         {
             using (var progressBar = new LinearProgressBar())
             {
-                Assert.IsFalse(progressBar.Indeterminate);
-                Assert.IsNull(progressBar.Timer);
+                Assert.That(progressBar.Indeterminate, Is.False);
+                Assert.That(progressBar.Timer, Is.Null);
 
                 progressBar.Indeterminate = true;
                 progressBar.Indeterminate = true;
-                Assert.IsTrue(progressBar.Indeterminate);
-                Assert.IsNotNull(progressBar.Timer);
+                Assert.That(progressBar.Indeterminate, Is.True);
+                Assert.That(progressBar.Timer, Is.Not.Null);
 
                 progressBar.Indeterminate = false;
                 progressBar.Indeterminate = false;
-                Assert.IsFalse(progressBar.Indeterminate);
-                Assert.IsNull(progressBar.Timer);
+                Assert.That(progressBar.Indeterminate, Is.False);
+                Assert.That(progressBar.Timer, Is.Null);
             }
         }
 
@@ -62,13 +62,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
         {
             using (var progressBar = new LinearProgressBar())
             {
-                Assert.AreEqual(0, progressBar.Value);
+                Assert.That(progressBar.Value, Is.EqualTo(0));
 
                 progressBar.Value = progressBar.Maximum;
-                Assert.AreEqual(progressBar.Maximum, progressBar.Maximum);
-
-                progressBar.Maximum = progressBar.Maximum + 1;
-                Assert.AreEqual(progressBar.Maximum, progressBar.Maximum);
+                Assert.That(progressBar.Value, Is.EqualTo(progressBar.Maximum));
             }
         }
 
@@ -78,10 +75,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
             using (var progressBar = new LinearProgressBar())
             {
                 progressBar.Maximum = 0;
-                Assert.AreEqual(1, progressBar.Maximum);
+                Assert.That(progressBar.Maximum, Is.EqualTo(1));
 
                 progressBar.Maximum = -10;
-                Assert.AreEqual(1, progressBar.Maximum);
+                Assert.That(progressBar.Maximum, Is.EqualTo(1));
             }
         }
 
@@ -94,7 +91,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Assert.Throws<ArgumentException>(() => progressBar.Speed = -1);
 
                 progressBar.Speed = progressBar.Maximum + 1;
-                Assert.AreEqual(progressBar.Maximum, progressBar.Maximum);
+                Assert.That(progressBar.Speed, Is.EqualTo(progressBar.Maximum));
             }
         }
 
@@ -109,15 +106,15 @@ namespace Google.Solutions.Mvvm.Test.Controls
             {
                 form.Controls.Add(progressBar);
 
-                Assert.IsNotNull(progressBar.Timer);
-                Assert.IsFalse(progressBar.Timer!.Enabled);
+                Assert.That(progressBar.Timer, Is.Not.Null);
+                Assert.That(progressBar.Timer!.Enabled, Is.False);
 
                 form.Show();
                 progressBar.Visible = true;
-                Assert.IsTrue(progressBar.Timer.Enabled);
+                Assert.That(progressBar.Timer.Enabled, Is.True);
 
                 progressBar.Visible = false;
-                Assert.IsFalse(progressBar.Timer.Enabled);
+                Assert.That(progressBar.Timer.Enabled, Is.False);
 
                 form.Close();
             }

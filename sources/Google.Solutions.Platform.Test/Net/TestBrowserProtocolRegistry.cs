@@ -44,7 +44,7 @@ namespace Google.Solutions.Platform.Test.Net
         public void IsRegistered_WhenProtocolNotRegistered_ThenIsRegisteredReturnsFalse()
         {
             var registry = new BrowserProtocolRegistry();
-            Assert.IsFalse(registry.IsRegistered("unknown-scheme", "app.exe"));
+            Assert.That(registry.IsRegistered("unknown-scheme", "app.exe"), Is.False);
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace Google.Solutions.Platform.Test.Net
             registry.Register(TestScheme, "Test", "app.exe");
             registry.Unregister(TestScheme);
 
-            Assert.IsFalse(registry.IsRegistered(TestScheme, "app.exe"));
+            Assert.That(registry.IsRegistered(TestScheme, "app.exe"), Is.False);
         }
 
         [Test]
@@ -63,8 +63,8 @@ namespace Google.Solutions.Platform.Test.Net
             var registry = new BrowserProtocolRegistry();
             registry.Register(TestScheme, "Test", "app.exe");
 
-            Assert.IsTrue(registry.IsRegistered(TestScheme, "app.exe"));
-            Assert.IsFalse(registry.IsRegistered(TestScheme, "someotherapp.exe"));
+            Assert.That(registry.IsRegistered(TestScheme, "app.exe"), Is.True);
+            Assert.That(registry.IsRegistered(TestScheme, "someotherapp.exe"), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -78,7 +78,7 @@ namespace Google.Solutions.Platform.Test.Net
             registry.Register(TestScheme, "Test", "someotherapp.exe");
             registry.Register(TestScheme, "Test", "app.exe");
 
-            Assert.IsTrue(registry.IsRegistered(TestScheme, "app.exe"));
+            Assert.That(registry.IsRegistered(TestScheme, "app.exe"), Is.True);
         }
 
         //---------------------------------------------------------------------

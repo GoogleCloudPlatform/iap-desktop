@@ -104,25 +104,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
+            Assert.That(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r), Is.True);
 
             var e = (AuthorizeUserTunnelEvent)r.ToEvent();
 
-            Assert.AreEqual(312951312222222222, e.InstanceId);
-            Assert.AreEqual("us-central1-a", e.Zone);
-            Assert.AreEqual("project-1", e.ProjectId);
-            Assert.AreEqual("INFO", e.Severity);
+            Assert.That(e.InstanceId, Is.EqualTo(312951312222222222));
+            Assert.That(e.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(e.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Severity, Is.EqualTo("INFO"));
             Assert.IsNull(e.Status);
-            Assert.AreEqual("3.4.5.6", e.SourceHost);
-            Assert.AreEqual("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)", e.UserAgent);
-            Assert.AreEqual("10.0.0.1", e.DestinationHost);
-            Assert.AreEqual("3389", e.DestinationPort);
+            Assert.That(e.SourceHost, Is.EqualTo("3.4.5.6"));
+            Assert.That(e.UserAgent, Is.EqualTo("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)"));
+            Assert.That(e.DestinationHost, Is.EqualTo("10.0.0.1"));
+            Assert.That(e.DestinationPort, Is.EqualTo("3389"));
 
-            CollectionAssert.IsEmpty(e.AccessLevels);
+            Assert.That(e.AccessLevels, Is.Empty);
             Assert.IsNull(e.DeviceId);
-            Assert.AreEqual("Unknown", e.DeviceState);
+            Assert.That(e.DeviceState, Is.EqualTo("Unknown"));
 
-            Assert.AreEqual("Authorize tunnel from 3.4.5.6 to 10.0.0.1:3389 using IAP-Desktop/1.0.1.0", e.Message);
+            Assert.That(e.Message, Is.EqualTo("Authorize tunnel from 3.4.5.6 to 10.0.0.1:3389 using IAP-Desktop/1.0.1.0"));
         }
 
 
@@ -203,32 +203,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
+            Assert.That(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r), Is.True);
 
             var e = (AuthorizeUserTunnelEvent)r.ToEvent();
 
-            Assert.AreEqual(312951312222222222, e.InstanceId);
-            Assert.AreEqual("us-central1-a", e.Zone);
-            Assert.AreEqual("project-1", e.ProjectId);
-            Assert.AreEqual("INFO", e.Severity);
+            Assert.That(e.InstanceId, Is.EqualTo(312951312222222222));
+            Assert.That(e.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(e.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Severity, Is.EqualTo("INFO"));
             Assert.IsNull(e.Status);
-            Assert.AreEqual("3.4.5.6", e.SourceHost);
-            Assert.AreEqual("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)", e.UserAgent);
-            Assert.AreEqual("10.0.0.1", e.DestinationHost);
-            Assert.AreEqual("3389", e.DestinationPort);
+            Assert.That(e.SourceHost, Is.EqualTo("3.4.5.6"));
+            Assert.That(e.UserAgent, Is.EqualTo("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)"));
+            Assert.That(e.DestinationHost, Is.EqualTo("10.0.0.1"));
+            Assert.That(e.DestinationPort, Is.EqualTo("3389"));
 
-            Assert.AreEqual(2, e.AccessLevels.Count());
-            Assert.AreEqual(
-                new AccessLevelLocator("policy-1", "level-1"),
-                e.AccessLevels.First());
-            Assert.AreEqual(
-                new AccessLevelLocator("policy-2", "level-2"),
-                e.AccessLevels.Last());
+            Assert.That(e.AccessLevels.Count(), Is.EqualTo(2));
+            Assert.That(
+                e.AccessLevels.First(), Is.EqualTo(new AccessLevelLocator("policy-1", "level-1")));
+            Assert.That(
+                e.AccessLevels.Last(), Is.EqualTo(new AccessLevelLocator("policy-2", "level-2")));
 
-            Assert.AreEqual("DEVICE-1", e.DeviceId);
-            Assert.AreEqual("Normal", e.DeviceState);
+            Assert.That(e.DeviceId, Is.EqualTo("DEVICE-1"));
+            Assert.That(e.DeviceState, Is.EqualTo("Normal"));
 
-            Assert.AreEqual("Authorize tunnel from 3.4.5.6 to 10.0.0.1:3389 using IAP-Desktop/1.0.1.0", e.Message);
+            Assert.That(e.Message, Is.EqualTo("Authorize tunnel from 3.4.5.6 to 10.0.0.1:3389 using IAP-Desktop/1.0.1.0"));
         }
 
         [Test]
@@ -301,25 +299,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
+            Assert.That(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r), Is.True);
 
             var e = (AuthorizeUserTunnelEvent)r.ToEvent();
 
-            Assert.AreEqual(312951312222222222, e.InstanceId);
-            Assert.AreEqual("us-central1-a", e.Zone);
-            Assert.AreEqual("project-1", e.ProjectId);
-            Assert.AreEqual("ERROR", e.Severity);
-            Assert.AreEqual(7, e.Status?.Code);
-            Assert.AreEqual("3.4.5.6", e.SourceHost);
-            Assert.AreEqual("gzip(gfe)", e.UserAgent);
-            Assert.AreEqual("10.0.0.1", e.DestinationHost);
-            Assert.AreEqual("3389", e.DestinationPort);
+            Assert.That(e.InstanceId, Is.EqualTo(312951312222222222));
+            Assert.That(e.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(e.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Severity, Is.EqualTo("ERROR"));
+            Assert.That(e.Status?.Code, Is.EqualTo(7));
+            Assert.That(e.SourceHost, Is.EqualTo("3.4.5.6"));
+            Assert.That(e.UserAgent, Is.EqualTo("gzip(gfe)"));
+            Assert.That(e.DestinationHost, Is.EqualTo("10.0.0.1"));
+            Assert.That(e.DestinationPort, Is.EqualTo("3389"));
 
-            CollectionAssert.IsEmpty(e.AccessLevels);
+            Assert.That(e.AccessLevels, Is.Empty);
             Assert.IsNull(e.DeviceId);
-            Assert.AreEqual("Unknown", e.DeviceState);
+            Assert.That(e.DeviceState, Is.EqualTo("Unknown"));
 
-            Assert.AreEqual("Authorize tunnel from 3.4.5.6 to 10.0.0.1:3389 using gzip [Permission Denied.]", e.Message);
+            Assert.That(e.Message, Is.EqualTo("Authorize tunnel from 3.4.5.6 to 10.0.0.1:3389 using gzip [Permission Denied.]"));
         }
 
         [Test]
@@ -363,25 +361,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
+            Assert.That(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r), Is.True);
 
             var e = (AuthorizeUserTunnelEvent)r.ToEvent();
 
-            Assert.AreEqual(312951312222222222, e.InstanceId);
-            Assert.AreEqual("us-central1-a", e.Zone);
-            Assert.AreEqual("project-1", e.ProjectId);
-            Assert.AreEqual("ERROR", e.Severity);
-            Assert.AreEqual(7, e.Status?.Code);
+            Assert.That(e.InstanceId, Is.EqualTo(312951312222222222));
+            Assert.That(e.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(e.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Severity, Is.EqualTo("ERROR"));
+            Assert.That(e.Status?.Code, Is.EqualTo(7));
             Assert.IsNull(e.SourceHost);
             Assert.IsNull(e.UserAgent);
             Assert.IsNull(e.DestinationHost);
             Assert.IsNull(e.DestinationPort);
 
-            CollectionAssert.IsEmpty(e.AccessLevels);
+            Assert.That(e.AccessLevels, Is.Empty);
             Assert.IsNull(e.DeviceId);
             Assert.IsNull(e.DeviceState);
 
-            Assert.AreEqual("Authorize tunnel from (unknown) to (unknown host):(unknown port) using (unknown agent) [Permission Denied.]", e.Message);
+            Assert.That(e.Message, Is.EqualTo("Authorize tunnel from (unknown) to (unknown host):(unknown port) using (unknown agent) [Permission Denied.]"));
         }
 
         [Test]
@@ -448,7 +446,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsFalse(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
+            Assert.That(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r), Is.False);
         }
 
         [Test]
@@ -514,27 +512,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
+            Assert.That(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r), Is.True);
 
             var e = (AuthorizeUserTunnelEvent)r.ToEvent();
 
-            Assert.AreEqual(
-                "principal://iam.googleapis.com/locations/global/workforcePools/pool-1/subject/subject@example.com",
-                e.Principal);
-            Assert.AreEqual(2407816, e.InstanceId);
-            Assert.AreEqual("asia-southeast1-b", e.Zone);
-            Assert.AreEqual("project-1", e.ProjectId);
-            Assert.AreEqual("INFO", e.Severity);
+            Assert.That(
+                e.Principal, Is.EqualTo("principal://iam.googleapis.com/locations/global/workforcePools/pool-1/subject/subject@example.com"));
+            Assert.That(e.InstanceId, Is.EqualTo(2407816));
+            Assert.That(e.Zone, Is.EqualTo("asia-southeast1-b"));
+            Assert.That(e.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Severity, Is.EqualTo("INFO"));
             Assert.IsNull(e.SourceHost);
             Assert.IsNull(e.UserAgent);
             Assert.IsNull(e.DestinationHost);
             Assert.IsNull(e.DestinationPort);
 
-            CollectionAssert.IsEmpty(e.AccessLevels);
+            Assert.That(e.AccessLevels, Is.Empty);
             Assert.IsNull(e.DeviceId);
-            Assert.AreEqual("Unknown", e.DeviceState);
+            Assert.That(e.DeviceState, Is.EqualTo("Unknown"));
 
-            Assert.AreEqual("Authorize tunnel from (unknown) to (unknown host):(unknown port) using (unknown agent)", e.Message);
+            Assert.That(e.Message, Is.EqualTo("Authorize tunnel from (unknown) to (unknown host):(unknown port) using (unknown agent)"));
         }
     }
 }

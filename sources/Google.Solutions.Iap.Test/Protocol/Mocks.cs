@@ -104,7 +104,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             {
                 var data = new byte[count];
                 Array.Copy(buffer, offset, data, 0, count);
-                Assert.AreEqual(this.ExpectedWriteData[this.WriteCount], data);
+                Assert.That(data, Is.EqualTo(this.ExpectedWriteData[this.WriteCount]));
 
                 this.WriteCount++;
                 return Task.Delay(0, CancellationToken.None);

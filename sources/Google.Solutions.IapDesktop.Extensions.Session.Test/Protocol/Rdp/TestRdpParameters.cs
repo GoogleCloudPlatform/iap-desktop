@@ -34,25 +34,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         {
             var parameters = new RdpParameters();
 
-            Assert.AreEqual(SessionTransportType._Default, parameters.TransportType);
-            Assert.AreEqual(RdpParameters.DefaultPort, parameters.Port);
-            Assert.AreEqual(RdpParameters.DefaultConnectionTimeout, parameters.ConnectionTimeout);
-            Assert.AreEqual(RdpConnectionBarState._Default, parameters.ConnectionBar);
-            Assert.AreEqual(RdpAuthenticationLevel._Default, parameters.AuthenticationLevel);
-            Assert.AreEqual(RdpColorDepth._Default, parameters.ColorDepth);
-            Assert.AreEqual(RdpAudioPlayback._Default, parameters.AudioPlayback);
-            Assert.AreEqual(RdpNetworkLevelAuthentication._Default, parameters.NetworkLevelAuthentication);
-            Assert.AreEqual(RdpAutomaticLogon._Default, parameters.UserAuthenticationBehavior);
-            Assert.AreEqual(RdpRedirectClipboard._Default, parameters.RedirectClipboard);
-            Assert.AreEqual(RdpRedirectPrinter._Default, parameters.RedirectPrinter);
-            Assert.AreEqual(RdpRedirectSmartCard._Default, parameters.RedirectSmartCard);
-            Assert.AreEqual(RdpRedirectPort._Default, parameters.RedirectPort);
-            Assert.AreEqual(RdpRedirectDrive._Default, parameters.RedirectDrive);
-            Assert.AreEqual(RdpRedirectDevice._Default, parameters.RedirectDevice);
-            Assert.AreEqual(RdpRedirectWebAuthn._Default, parameters.RedirectWebAuthn);
-            Assert.AreEqual(RdpHookWindowsKeys._Default, parameters.HookWindowsKeys);
-            Assert.AreEqual(RdpRestrictedAdminMode._Default, parameters.RestrictedAdminMode);
-            Assert.AreEqual(RdpSessionType._Default, parameters.SessionType);
+            Assert.That(parameters.TransportType, Is.EqualTo(SessionTransportType._Default));
+            Assert.That(parameters.Port, Is.EqualTo(RdpParameters.DefaultPort));
+            Assert.That(parameters.ConnectionTimeout, Is.EqualTo(RdpParameters.DefaultConnectionTimeout));
+            Assert.That(parameters.ConnectionBar, Is.EqualTo(RdpConnectionBarState._Default));
+            Assert.That(parameters.AuthenticationLevel, Is.EqualTo(RdpAuthenticationLevel._Default));
+            Assert.That(parameters.ColorDepth, Is.EqualTo(RdpColorDepth._Default));
+            Assert.That(parameters.AudioPlayback, Is.EqualTo(RdpAudioPlayback._Default));
+            Assert.That(parameters.NetworkLevelAuthentication, Is.EqualTo(RdpNetworkLevelAuthentication._Default));
+            Assert.That(parameters.UserAuthenticationBehavior, Is.EqualTo(RdpAutomaticLogon._Default));
+            Assert.That(parameters.RedirectClipboard, Is.EqualTo(RdpRedirectClipboard._Default));
+            Assert.That(parameters.RedirectPrinter, Is.EqualTo(RdpRedirectPrinter._Default));
+            Assert.That(parameters.RedirectSmartCard, Is.EqualTo(RdpRedirectSmartCard._Default));
+            Assert.That(parameters.RedirectPort, Is.EqualTo(RdpRedirectPort._Default));
+            Assert.That(parameters.RedirectDrive, Is.EqualTo(RdpRedirectDrive._Default));
+            Assert.That(parameters.RedirectDevice, Is.EqualTo(RdpRedirectDevice._Default));
+            Assert.That(parameters.RedirectWebAuthn, Is.EqualTo(RdpRedirectWebAuthn._Default));
+            Assert.That(parameters.HookWindowsKeys, Is.EqualTo(RdpHookWindowsKeys._Default));
+            Assert.That(parameters.RestrictedAdminMode, Is.EqualTo(RdpRestrictedAdminMode._Default));
+            Assert.That(parameters.SessionType, Is.EqualTo(RdpSessionType._Default));
         }
     }
 }

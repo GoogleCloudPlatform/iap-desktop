@@ -86,9 +86,8 @@ namespace Google.Solutions.Ssh.Test
                         .ConfigureAwait(false);
                 }
 
-                StringAssert.Contains(
-                    "20 x 30",
-                    output.ToString());
+                Assert.That(
+                    output.ToString(), Does.Contain("20 x 30"));
             }
         }
 
@@ -133,8 +132,8 @@ namespace Google.Solutions.Ssh.Test
                         .CloseAsync()
                         .ConfigureAwait(false);
 
-                    Assert.IsFalse(disconnectedRaised);
-                    Assert.IsTrue(channel.IsClosed);
+                    Assert.That(disconnectedRaised, Is.False);
+                    Assert.That(channel.IsClosed, Is.True);
                 }
             }
         }

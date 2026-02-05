@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 new Mock<IInstall>().Object,
                 SystemClock.Default);
 
-            Assert.AreEqual(ReleaseTrack.Critical, policy.FollowedTrack);
+            Assert.That(policy.FollowedTrack, Is.EqualTo(ReleaseTrack.Critical));
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 new Mock<IInstall>().Object,
                 SystemClock.Default);
 
-            Assert.AreEqual(ReleaseTrack.Normal, policy.FollowedTrack);
+            Assert.That(policy.FollowedTrack, Is.EqualTo(ReleaseTrack.Normal));
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 new Mock<IInstall>().Object,
                 SystemClock.Default);
 
-            Assert.AreEqual(ReleaseTrack.Normal, policy.FollowedTrack);
+            Assert.That(policy.FollowedTrack, Is.EqualTo(ReleaseTrack.Normal));
         }
 
         [Test]
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 new Mock<IInstall>().Object,
                 SystemClock.Default);
 
-            Assert.AreEqual(ReleaseTrack.Canary, policy.FollowedTrack);
+            Assert.That(policy.FollowedTrack, Is.EqualTo(ReleaseTrack.Canary));
         }
 
         //---------------------------------------------------------------------
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 CreateInstall(),
                 SystemClock.Default);
 
-            Assert.AreEqual(1, policy.DaysBetweenUpdateChecks);
+            Assert.That(policy.DaysBetweenUpdateChecks, Is.EqualTo(1));
         }
 
         [Test]
@@ -157,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 CreateInstall(),
                 SystemClock.Default);
 
-            Assert.AreEqual(10, policy.DaysBetweenUpdateChecks);
+            Assert.That(policy.DaysBetweenUpdateChecks, Is.EqualTo(10));
         }
 
         //---------------------------------------------------------------------
@@ -166,14 +166,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
 
         [Test]
         public void GetReleaseTrackForRelease_WhenDescriptionContainsNoTag_ThenGetReleaseTrackReturnsNormal(
-            [Values(null, "", "some description")] string description)
+            [Values(null, "", "some description")] string? description)
         {
             var release = new Mock<IRelease>();
             release.SetupGet(r => r.Description).Returns(description);
 
             var track = UpdatePolicy.GetReleaseTrackForRelease(release.Object);
 
-            Assert.AreEqual(ReleaseTrack.Normal, track);
+            Assert.That(track, Is.EqualTo(ReleaseTrack.Normal));
         }
 
         [Test]
@@ -186,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
 
             var track = UpdatePolicy.GetReleaseTrackForRelease(release.Object);
 
-            Assert.AreEqual(ReleaseTrack.Critical, track);
+            Assert.That(track, Is.EqualTo(ReleaseTrack.Critical));
         }
 
         [Test]
@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
 
             var track = UpdatePolicy.GetReleaseTrackForRelease(release.Object);
 
-            Assert.AreEqual(ReleaseTrack.Canary, track);
+            Assert.That(track, Is.EqualTo(ReleaseTrack.Canary));
         }
 
         //---------------------------------------------------------------------
@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 CreateInstall(),
                 SystemClock.Default);
 
-            Assert.IsFalse(policy.IsUpdateAdvised(release.Object));
+            Assert.That(policy.IsUpdateAdvised(release.Object), Is.False);
         }
 
         [Test]
@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 CreateInstall(),
                 SystemClock.Default);
 
-            Assert.IsFalse(policy.IsUpdateAdvised(release.Object));
+            Assert.That(policy.IsUpdateAdvised(release.Object), Is.False);
         }
 
         [Test]
@@ -249,7 +249,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 install,
                 SystemClock.Default);
 
-            Assert.IsFalse(policy.IsUpdateAdvised(release.Object));
+            Assert.That(policy.IsUpdateAdvised(release.Object), Is.False);
         }
 
         [Test]
@@ -261,7 +261,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 CreateInstall(),
                 SystemClock.Default);
 
-            Assert.AreEqual(ReleaseTrack.Canary, policy.FollowedTrack);
+            Assert.That(policy.FollowedTrack, Is.EqualTo(ReleaseTrack.Canary));
 
             var normalRelease = new Mock<IRelease>();
             var criticalRelease = new Mock<IRelease>();
@@ -275,9 +275,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
             criticalRelease.SetupGet(r => r.Description).Returns("[track:critical]");
             canaryRelease.SetupGet(r => r.IsCanaryRelease).Returns(true);
 
-            Assert.IsTrue(policy.IsUpdateAdvised(criticalRelease.Object));
-            Assert.IsTrue(policy.IsUpdateAdvised(normalRelease.Object));
-            Assert.IsTrue(policy.IsUpdateAdvised(canaryRelease.Object));
+            Assert.That(policy.IsUpdateAdvised(criticalRelease.Object), Is.True);
+            Assert.That(policy.IsUpdateAdvised(normalRelease.Object), Is.True);
+            Assert.That(policy.IsUpdateAdvised(canaryRelease.Object), Is.True);
         }
 
         [Test]
@@ -289,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 CreateInstall(),
                 SystemClock.Default);
 
-            Assert.AreEqual(ReleaseTrack.Normal, policy.FollowedTrack);
+            Assert.That(policy.FollowedTrack, Is.EqualTo(ReleaseTrack.Normal));
 
             var normalRelease = new Mock<IRelease>();
             var criticalRelease = new Mock<IRelease>();
@@ -303,9 +303,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
             criticalRelease.SetupGet(r => r.Description).Returns("[track:critical]");
             canaryRelease.SetupGet(r => r.IsCanaryRelease).Returns(true);
 
-            Assert.IsTrue(policy.IsUpdateAdvised(criticalRelease.Object));
-            Assert.IsTrue(policy.IsUpdateAdvised(normalRelease.Object));
-            Assert.IsFalse(policy.IsUpdateAdvised(canaryRelease.Object));
+            Assert.That(policy.IsUpdateAdvised(criticalRelease.Object), Is.True);
+            Assert.That(policy.IsUpdateAdvised(normalRelease.Object), Is.True);
+            Assert.That(policy.IsUpdateAdvised(canaryRelease.Object), Is.False);
         }
 
         [Test]
@@ -317,7 +317,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 CreateInstall(),
                 SystemClock.Default);
 
-            Assert.AreEqual(ReleaseTrack.Critical, policy.FollowedTrack);
+            Assert.That(policy.FollowedTrack, Is.EqualTo(ReleaseTrack.Critical));
 
             var normalRelease = new Mock<IRelease>();
             var criticalRelease = new Mock<IRelease>();
@@ -331,9 +331,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
             criticalRelease.SetupGet(r => r.Description).Returns("[track:critical]");
             canaryRelease.SetupGet(r => r.IsCanaryRelease).Returns(true);
 
-            Assert.IsTrue(policy.IsUpdateAdvised(criticalRelease.Object));
-            Assert.IsFalse(policy.IsUpdateAdvised(normalRelease.Object));
-            Assert.IsFalse(policy.IsUpdateAdvised(canaryRelease.Object));
+            Assert.That(policy.IsUpdateAdvised(criticalRelease.Object), Is.True);
+            Assert.That(policy.IsUpdateAdvised(normalRelease.Object), Is.False);
+            Assert.That(policy.IsUpdateAdvised(canaryRelease.Object), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -352,12 +352,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 CreateInstall(),
                 clock);
 
-            Assert.AreEqual(ReleaseTrack.Normal, policy.FollowedTrack);
+            Assert.That(policy.FollowedTrack, Is.EqualTo(ReleaseTrack.Normal));
 
-            Assert.IsFalse(policy.IsUpdateCheckDue(now));
-            Assert.IsFalse(policy.IsUpdateCheckDue(now.AddYears(1)));
-            Assert.IsFalse(policy.IsUpdateCheckDue(now.AddDays(-policy.DaysBetweenUpdateChecks).AddMinutes(1)));
-            Assert.IsFalse(policy.IsUpdateCheckDue(now.AddDays(-policy.DaysBetweenUpdateChecks + 1)));
+            Assert.That(policy.IsUpdateCheckDue(now), Is.False);
+            Assert.That(policy.IsUpdateCheckDue(now.AddYears(1)), Is.False);
+            Assert.That(policy.IsUpdateCheckDue(now.AddDays(-policy.DaysBetweenUpdateChecks).AddMinutes(1)), Is.False);
+            Assert.That(policy.IsUpdateCheckDue(now.AddDays(-policy.DaysBetweenUpdateChecks + 1)), Is.False);
         }
 
         [Test]
@@ -372,10 +372,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 CreateInstall(),
                 clock);
 
-            Assert.AreEqual(ReleaseTrack.Normal, policy.FollowedTrack);
+            Assert.That(policy.FollowedTrack, Is.EqualTo(ReleaseTrack.Normal));
 
-            Assert.IsTrue(policy.IsUpdateCheckDue(now.AddDays(-policy.DaysBetweenUpdateChecks)));
-            Assert.IsTrue(policy.IsUpdateCheckDue(now.AddDays(-policy.DaysBetweenUpdateChecks - 1)));
+            Assert.That(policy.IsUpdateCheckDue(now.AddDays(-policy.DaysBetweenUpdateChecks)), Is.True);
+            Assert.That(policy.IsUpdateCheckDue(now.AddDays(-policy.DaysBetweenUpdateChecks - 1)), Is.True);
         }
     }
 }

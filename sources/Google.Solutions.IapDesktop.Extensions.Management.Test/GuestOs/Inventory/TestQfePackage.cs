@@ -37,13 +37,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                 "kb123",
                 new DateTime(2020, 1, 3, 4, 5, 6, DateTimeKind.Utc));
 
-            Assert.AreEqual("Hotfix", package.PackageType);
-            Assert.AreEqual("kb123", package.PackageId);
-            Assert.AreEqual("description", package.Description);
+            Assert.That(package.PackageType, Is.EqualTo("Hotfix"));
+            Assert.That(package.PackageId, Is.EqualTo("kb123"));
+            Assert.That(package.Description, Is.EqualTo("description"));
             Assert.IsNull(package.Version);
-            Assert.AreEqual("http://uri/", package.Weblink?.ToString());
-            Assert.AreEqual(new DateTime(2020, 1, 3, 4, 5, 6, DateTimeKind.Utc), package.InstalledOn);
-            Assert.AreEqual(PackageCriticality.NonCritical, package.Criticality);
+            Assert.That(package.Weblink?.ToString(), Is.EqualTo("http://uri/"));
+            Assert.That(package.InstalledOn, Is.EqualTo(new DateTime(2020, 1, 3, 4, 5, 6, DateTimeKind.Utc)));
+            Assert.That(package.Criticality, Is.EqualTo(PackageCriticality.NonCritical));
         }
 
         [Test]
@@ -55,13 +55,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                 "kb123",
                 null);
 
-            Assert.AreEqual("Hotfix", package.PackageType);
-            Assert.AreEqual("kb123", package.PackageId);
+            Assert.That(package.PackageType, Is.EqualTo("Hotfix"));
+            Assert.That(package.PackageId, Is.EqualTo("kb123"));
             Assert.IsNull(package.Description);
             Assert.IsNull(package.Version);
             Assert.IsNull(package.Weblink);
             Assert.IsNull(package.InstalledOn);
-            Assert.AreEqual(PackageCriticality.NonCritical, package.Criticality);
+            Assert.That(package.Criticality, Is.EqualTo(PackageCriticality.NonCritical));
         }
     }
 }

@@ -131,7 +131,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .WriteAsync(request, 0, request.Length, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(stream.Sid);
+            Assert.That(stream.Sid, Is.Not.Null);
         }
 
         [Test]

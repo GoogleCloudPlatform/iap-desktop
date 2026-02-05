@@ -35,10 +35,10 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var collection = new RangeObservableCollection<string>();
             collection.CollectionChanged += (sender, args) => { callbacks++; };
 
-            Assert.AreEqual(0, callbacks);
+            Assert.That(callbacks, Is.EqualTo(0));
             collection.Add("one");
             collection.Add("two");
-            Assert.AreEqual(2, callbacks);
+            Assert.That(callbacks, Is.EqualTo(2));
         }
 
         [Test]
@@ -50,12 +50,12 @@ namespace Google.Solutions.Mvvm.Test.Binding
             {
                 callbacks++;
 
-                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Reset));
             };
 
-            Assert.AreEqual(0, callbacks);
+            Assert.That(callbacks, Is.EqualTo(0));
             collection.AddRange(new string[] { "one", "two", "three" });
-            Assert.AreEqual(1, callbacks);
+            Assert.That(callbacks, Is.EqualTo(1));
         }
     }
 }

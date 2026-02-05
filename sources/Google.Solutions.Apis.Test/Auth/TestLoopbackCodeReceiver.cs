@@ -117,13 +117,13 @@ namespace Google.Solutions.Apis.Test.Auth
                         .ReadAsStringAsync()
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual("done", html);
+                    Assert.That(html, Is.EqualTo("done"));
                 }
 
                 var response = await receiveTask.ConfigureAwait(false);
 
-                Assert.AreEqual("c1", response.Code);
-                Assert.AreEqual("s1", response.State);
+                Assert.That(response.Code, Is.EqualTo("c1"));
+                Assert.That(response.State, Is.EqualTo("s1"));
             }
         }
 
@@ -146,12 +146,12 @@ namespace Google.Solutions.Apis.Test.Auth
                         .ReadAsStringAsync()
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual("done", html);
+                    Assert.That(html, Is.EqualTo("done"));
                 }
 
                 var response = await receiveTask.ConfigureAwait(false);
 
-                Assert.AreEqual("c1", response.Error);
+                Assert.That(response.Error, Is.EqualTo("c1"));
                 Assert.IsNull(response.State);
             }
         }
@@ -189,13 +189,13 @@ namespace Google.Solutions.Apis.Test.Auth
                         .ReadAsStringAsync()
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual("done", html);
+                    Assert.That(html, Is.EqualTo("done"));
                 }
 
                 var response = await receiveTask.ConfigureAwait(false);
 
-                Assert.AreEqual("c1", response.Code);
-                Assert.AreEqual("s1", response.State);
+                Assert.That(response.Code, Is.EqualTo("c1"));
+                Assert.That(response.State, Is.EqualTo("s1"));
             }
         }
     }

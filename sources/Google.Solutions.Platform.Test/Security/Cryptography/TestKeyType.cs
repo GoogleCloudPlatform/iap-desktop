@@ -35,9 +35,8 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         [Test]
         public void KeyTypeToString()
         {
-            Assert.AreEqual(
-                "RSA (1024 bit)",
-                new KeyType(CngAlgorithm.Rsa, 1024).ToString());
+            Assert.That(
+                new KeyType(CngAlgorithm.Rsa, 1024).ToString(), Is.EqualTo("RSA (1024 bit)"));
         }
     }
 }

@@ -35,11 +35,11 @@ namespace Google.Solutions.Common.Test.Threading
             using (var second = new CancellationTokenSource())
             using (var combined = first.Token.Combine(second.Token))
             {
-                Assert.IsFalse(combined.Token.IsCancellationRequested);
+                Assert.That(combined.Token.IsCancellationRequested, Is.False);
 
                 first.Cancel();
 
-                Assert.IsTrue(combined.Token.IsCancellationRequested);
+                Assert.That(combined.Token.IsCancellationRequested, Is.True);
             }
         }
 
@@ -50,11 +50,11 @@ namespace Google.Solutions.Common.Test.Threading
             using (var second = new CancellationTokenSource())
             using (var combined = first.Token.Combine(second.Token))
             {
-                Assert.IsFalse(combined.Token.IsCancellationRequested);
+                Assert.That(combined.Token.IsCancellationRequested, Is.False);
 
                 second.Cancel();
 
-                Assert.IsTrue(combined.Token.IsCancellationRequested);
+                Assert.That(combined.Token.IsCancellationRequested, Is.True);
             }
         }
     }

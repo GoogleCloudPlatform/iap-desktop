@@ -51,17 +51,16 @@ namespace Google.Solutions.Ssh.Test.Cryptography
                 "xn839ZTP+RzKaVZytKQLuCkh3u0Re8xZl0JM+pAQ==");
 
             var challenge = new AuthenticationChallenge(challengeBlob);
-            Assert.AreEqual("rsa-sha2-512", challenge.Algorithm);
+            Assert.That(challenge.Algorithm, Is.EqualTo("rsa-sha2-512"));
 
             using (var cngKey = new RSACng())
             using (var signer = new RsaSigner(cngKey, true))
             {
-                CollectionAssert.AreEqual(
-                    cngKey.SignData(
+                Assert.That(
+                    signer.Sign(challenge), Is.EqualTo(cngKey.SignData(
                         challengeBlob,
                         HashAlgorithmName.SHA512,
-                        RSASignaturePadding.Pkcs1),
-                    signer.Sign(challenge));
+                        RSASignaturePadding.Pkcs1)).AsCollection);
             }
         }
 
@@ -83,17 +82,16 @@ namespace Google.Solutions.Ssh.Test.Cryptography
                 "xn839ZTP+RzKaVZytKQLuCkh3u0Re8xZl0JM+pAQ==");
 
             var challenge = new AuthenticationChallenge(challengeBlob);
-            Assert.AreEqual("rsa-sha2-256", challenge.Algorithm);
+            Assert.That(challenge.Algorithm, Is.EqualTo("rsa-sha2-256"));
 
             using (var cngKey = new RSACng())
             using (var signer = new RsaSigner(cngKey, true))
             {
-                CollectionAssert.AreEqual(
-                    cngKey.SignData(
+                Assert.That(
+                    signer.Sign(challenge), Is.EqualTo(cngKey.SignData(
                         challengeBlob,
                         HashAlgorithmName.SHA256,
-                        RSASignaturePadding.Pkcs1),
-                    signer.Sign(challenge));
+                        RSASignaturePadding.Pkcs1)).AsCollection);
             }
         }
 
@@ -107,12 +105,12 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             var key = new RSACng();
             using (var signer = new RsaSigner(key, true))
             {
-                Assert.IsFalse(key.IsDisposed());
+                Assert.That(key.IsDisposed(), Is.False);
             }
 
             using (var signer = new RsaSigner(key, true))
             {
-                Assert.IsTrue(key.IsDisposed());
+                Assert.That(key.IsDisposed(), Is.True);
             }
         }
 
@@ -123,12 +121,12 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             {
                 using (var signer = new RsaSigner(key, false))
                 {
-                    Assert.IsFalse(key.IsDisposed());
+                    Assert.That(key.IsDisposed(), Is.False);
                 }
 
                 using (var signer = new RsaSigner(key, false))
                 {
-                    Assert.IsFalse(key.IsDisposed());
+                    Assert.That(key.IsDisposed(), Is.False);
                 }
             }
         }

@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         [Test]
         public void ToString_ReturnsName()
         {
-            Assert.AreEqual("Current process", new CurrentProcessPolicy().ToString());
+            Assert.That(new CurrentProcessPolicy().ToString(), Is.EqualTo("Current process"));
         }
 
         //---------------------------------------------------------------------
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
             var endpoint = new IPEndPoint(IPAddress.Parse("10.0.0.1"), 1111);
             var policy = new CurrentProcessPolicy();
 
-            Assert.IsFalse(policy.IsClientAllowed(endpoint));
+            Assert.That(policy.IsClientAllowed(endpoint), Is.False);
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
             var endpoint = new IPEndPoint(IPAddress.Loopback, 445);
             var policy = new CurrentProcessPolicy();
 
-            Assert.IsFalse(policy.IsClientAllowed(endpoint));
+            Assert.That(policy.IsClientAllowed(endpoint), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -78,19 +78,19 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         public void IsClientProcessAllowed_WhenProcessIdCurrent()
         {
             var pid = (uint)Process.GetCurrentProcess().Id;
-            Assert.IsTrue(new CurrentProcessPolicy().IsClientProcessAllowed(pid));
+            Assert.That(new CurrentProcessPolicy().IsClientProcessAllowed(pid), Is.True);
         }
 
         [Test]
         public void IsClientProcessAllowed_WhenProcessIdNotCurrent()
         {
-            Assert.IsFalse(new CurrentProcessPolicy().IsClientProcessAllowed(4));
+            Assert.That(new CurrentProcessPolicy().IsClientProcessAllowed(4), Is.False);
         }
 
         [Test]
         public void IsClientProcessAllowed_WhenProcessIdNotFound()
         {
-            Assert.IsFalse(new CurrentProcessPolicy().IsClientProcessAllowed(uint.MaxValue));
+            Assert.That(new CurrentProcessPolicy().IsClientProcessAllowed(uint.MaxValue), Is.False);
         }
     }
 }

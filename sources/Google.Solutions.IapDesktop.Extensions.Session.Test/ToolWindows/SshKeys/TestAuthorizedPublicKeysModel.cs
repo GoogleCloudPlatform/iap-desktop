@@ -115,22 +115,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         [Test]
         public void IsNodeSupported_WhenNodeIsCloudNode()
         {
-            Assert.IsFalse(AuthorizedPublicKeysModel.IsNodeSupported(
-                new Mock<IProjectModelCloudNode>().Object));
+            Assert.That(AuthorizedPublicKeysModel.IsNodeSupported(
+                new Mock<IProjectModelCloudNode>().Object), Is.False);
         }
 
         [Test]
         public void IsNodeSupported_WhenNodeIsZoneNode()
         {
-            Assert.IsFalse(AuthorizedPublicKeysModel.IsNodeSupported(
-                new Mock<IProjectModelZoneNode>().Object));
+            Assert.That(AuthorizedPublicKeysModel.IsNodeSupported(
+                new Mock<IProjectModelZoneNode>().Object), Is.False);
         }
 
         [Test]
         public void IsNodeSupported_WhenNodeIsProjectNode()
         {
-            Assert.IsTrue(AuthorizedPublicKeysModel.IsNodeSupported(
-                new Mock<IProjectModelProjectNode>().Object));
+            Assert.That(AuthorizedPublicKeysModel.IsNodeSupported(
+                new Mock<IProjectModelProjectNode>().Object), Is.True);
         }
 
         [Test]
@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
             node.SetupGet(n => n.OperatingSystem)
                 .Returns(OperatingSystems.Windows);
 
-            Assert.IsFalse(AuthorizedPublicKeysModel.IsNodeSupported(node.Object));
+            Assert.That(AuthorizedPublicKeysModel.IsNodeSupported(node.Object), Is.False);
         }
 
         [Test]
@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
             node.SetupGet(n => n.OperatingSystem)
                 .Returns(OperatingSystems.Linux);
 
-            Assert.IsTrue(AuthorizedPublicKeysModel.IsNodeSupported(node.Object));
+            Assert.That(AuthorizedPublicKeysModel.IsNodeSupported(node.Object), Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -198,12 +198,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(model);
-            Assert.AreEqual("Project 1", model!.DisplayName);
+            Assert.That(model, Is.Not.Null);
+            Assert.That(model!.DisplayName, Is.EqualTo("Project 1"));
 
-            Assert.AreEqual(1, model.Items.Count());
-            Assert.AreEqual(KeyAuthorizationMethods.Oslogin, model.Items.First().AuthorizationMethod);
-            Assert.AreSame(osLoginKey, model.Items.First().Key);
+            Assert.That(model.Items.Count(), Is.EqualTo(1));
+            Assert.That(model.Items.First().AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
+            Assert.That(model.Items.First().Key, Is.SameAs(osLoginKey));
         }
 
         [Test]
@@ -232,12 +232,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(model);
-            Assert.AreEqual("Project 1", model!.DisplayName);
+            Assert.That(model, Is.Not.Null);
+            Assert.That(model!.DisplayName, Is.EqualTo("Project 1"));
 
-            Assert.AreEqual(1, model.Items.Count());
-            Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, model.Items.ToList()[0].AuthorizationMethod);
-            Assert.AreEqual("alice@gmail.com", model.Items.ToList()[0].Key.Email);
+            Assert.That(model.Items.Count(), Is.EqualTo(1));
+            Assert.That(model.Items.ToList()[0].AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.ProjectMetadata));
+            Assert.That(model.Items.ToList()[0].Key.Email, Is.EqualTo("alice@gmail.com"));
         }
 
         [Test]
@@ -267,10 +267,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(model);
-            Assert.AreEqual("Project 1", model!.DisplayName);
+            Assert.That(model, Is.Not.Null);
+            Assert.That(model!.DisplayName, Is.EqualTo("Project 1"));
 
-            CollectionAssert.IsEmpty(model.Items);
+            Assert.That(model.Items, Is.Empty);
         }
 
         //---------------------------------------------------------------------
@@ -321,12 +321,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(model);
-            Assert.AreEqual("instance-1", model!.DisplayName);
+            Assert.That(model, Is.Not.Null);
+            Assert.That(model!.DisplayName, Is.EqualTo("instance-1"));
 
-            Assert.AreEqual(1, model.Items.Count());
-            Assert.AreEqual(KeyAuthorizationMethods.Oslogin, model.Items.First().AuthorizationMethod);
-            Assert.AreSame(osLoginKey, model.Items.First().Key);
+            Assert.That(model.Items.Count(), Is.EqualTo(1));
+            Assert.That(model.Items.First().AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
+            Assert.That(model.Items.First().Key, Is.SameAs(osLoginKey));
         }
 
         [Test]
@@ -358,14 +358,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(model);
-            Assert.AreEqual("instance-1", model!.DisplayName);
+            Assert.That(model, Is.Not.Null);
+            Assert.That(model!.DisplayName, Is.EqualTo("instance-1"));
 
-            Assert.AreEqual(2, model.Items.Count());
-            Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, model.Items.ToList()[0].AuthorizationMethod);
-            Assert.AreEqual("alice@gmail.com", model.Items.ToList()[0].Key.Email);
-            Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, model.Items.ToList()[1].AuthorizationMethod);
-            Assert.AreEqual("bob@gmail.com", model.Items.ToList()[1].Key.Email);
+            Assert.That(model.Items.Count(), Is.EqualTo(2));
+            Assert.That(model.Items.ToList()[0].AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.ProjectMetadata));
+            Assert.That(model.Items.ToList()[0].Key.Email, Is.EqualTo("alice@gmail.com"));
+            Assert.That(model.Items.ToList()[1].AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.InstanceMetadata));
+            Assert.That(model.Items.ToList()[1].Key.Email, Is.EqualTo("bob@gmail.com"));
         }
 
         [Test]
@@ -398,12 +398,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(model);
-            Assert.AreEqual("instance-1", model!.DisplayName);
+            Assert.That(model, Is.Not.Null);
+            Assert.That(model!.DisplayName, Is.EqualTo("instance-1"));
 
-            Assert.AreEqual(1, model.Items.Count());
-            Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, model.Items.ToList()[0].AuthorizationMethod);
-            Assert.AreEqual("bob@gmail.com", model.Items.ToList()[0].Key.Email);
+            Assert.That(model.Items.Count(), Is.EqualTo(1));
+            Assert.That(model.Items.ToList()[0].AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.InstanceMetadata));
+            Assert.That(model.Items.ToList()[0].Key.Email, Is.EqualTo("bob@gmail.com"));
         }
 
         //---------------------------------------------------------------------

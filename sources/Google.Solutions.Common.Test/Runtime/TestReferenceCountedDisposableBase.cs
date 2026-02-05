@@ -45,7 +45,7 @@ namespace Google.Solutions.Common.Test.Runtime
         {
             using (var d = new SampleDisposable())
             {
-                Assert.IsFalse(d.IsDisposed);
+                Assert.That(d.IsDisposed, Is.False);
             }
         }
 
@@ -54,7 +54,7 @@ namespace Google.Solutions.Common.Test.Runtime
         {
             var d = new SampleDisposable();
             d.Dispose();
-            Assert.IsTrue(d.IsDisposed);
+            Assert.That(d.IsDisposed, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -76,14 +76,14 @@ namespace Google.Solutions.Common.Test.Runtime
             for (var i = 0; i < 100; i++)
             {
                 var refCount = d.AddReference();
-                Assert.AreEqual(2, refCount);
+                Assert.That(refCount, Is.EqualTo(2));
 
                 d.Dispose();
-                Assert.IsFalse(d.IsDisposed);
+                Assert.That(d.IsDisposed, Is.False);
             }
 
             d.Dispose();
-            Assert.IsTrue(d.IsDisposed);
+            Assert.That(d.IsDisposed, Is.True);
         }
     }
 }

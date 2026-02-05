@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 .TryAuthorizeSilentlyAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreSame(session.Object, authorization.Session);
+            Assert.That(authorization.Session, Is.SameAs(session.Object));
         }
 
         //---------------------------------------------------------------------
@@ -107,8 +107,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 .AuthorizeAsync(BrowserPreference.Default, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreSame(session.Object, authorization.Session);
-            Assert.AreEqual(0, eventsRaised);
+            Assert.That(authorization.Session, Is.SameAs(session.Object));
+            Assert.That(eventsRaised, Is.EqualTo(0));
         }
 
         [Test]
@@ -142,8 +142,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
 
             firstSession.Verify(s => s.Splice(secondSession.Object), Times.Once);
 
-            Assert.AreSame(firstSession.Object, authorization.Session);
-            Assert.AreEqual(1, eventsRaised);
+            Assert.That(authorization.Session, Is.SameAs(firstSession.Object));
+            Assert.That(eventsRaised, Is.EqualTo(1));
         }
     }
 }

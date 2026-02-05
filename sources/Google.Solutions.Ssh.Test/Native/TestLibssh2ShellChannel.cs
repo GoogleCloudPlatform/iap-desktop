@@ -102,18 +102,17 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 // Run command.
                 var bytesWritten = channel.Write(Encoding.ASCII.GetBytes("whoami;exit\n"));
-                Assert.AreEqual(12, bytesWritten);
+                Assert.That(bytesWritten, Is.EqualTo(12));
 
                 // Read command output.
                 var output = ReadToEnd(channel, Encoding.ASCII);
                 channel.Close();
 
-                StringAssert.Contains(
-                    $"whoami;exit\r\n{credential.Username}\r\nlogout\r\n",
-                    output);
+                Assert.That(
+                    output, Does.Contain($"whoami;exit\r\n{credential.Username}\r\nlogout\r\n"));
 
-                Assert.AreEqual(0, channel.ExitCode);
-                Assert.AreEqual(null, channel.ExitSignal);
+                Assert.That(channel.ExitCode, Is.EqualTo(0));
+                Assert.That(channel.ExitSignal, Is.EqualTo(null));
             }
         }
 
@@ -147,7 +146,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 }))
             {
                 var bytesWritten = channel.Write(Encoding.ASCII.GetBytes("echo $LANG;exit\n"));
-                Assert.AreEqual(16, bytesWritten);
+                Assert.That(bytesWritten, Is.EqualTo(16));
 
                 var output = ReadToEnd(channel, Encoding.ASCII);
                 channel.Close();
@@ -157,11 +156,10 @@ namespace Google.Solutions.Ssh.Test.Native
                 // setlocale. In either case, we should find "en_AU" somewhere in
                 // the output, confirming that it has been passed to the VM.
                 //
-                StringAssert.Contains(
-                    "en_AU",
-                    output);
+                Assert.That(
+                    output, Does.Contain("en_AU"));
 
-                Assert.AreEqual(0, channel.ExitCode);
+                Assert.That(channel.ExitCode, Is.EqualTo(0));
             }
         }
 
@@ -227,7 +225,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 ReadUntil(channel, "\n", Encoding.ASCII);
 
                 var terminalSize = ReadUntil(channel, "\n", Encoding.ASCII);
-                Assert.AreEqual("80 24\r\n", terminalSize);
+                Assert.That(terminalSize, Is.EqualTo("80 24\r\n"));
 
                 // Resize terminal.
                 channel.ResizePseudoTerminal(100, 30);
@@ -237,7 +235,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 ReadUntil(channel, "\n", Encoding.ASCII);
 
                 terminalSize = ReadUntil(channel, "\n", Encoding.ASCII);
-                Assert.AreEqual("100 30\r\n", terminalSize);
+                Assert.That(terminalSize, Is.EqualTo("100 30\r\n"));
 
                 channel.Close();
             }

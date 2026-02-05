@@ -111,7 +111,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                             ShellDataFormats.CFSTR_FILECONTENTS).Id
                     },
                     out var _));
-            Assert.AreEqual(HRESULT.DV_E_TYMED, (HRESULT)e!.ErrorCode);
+            Assert.That((HRESULT)e!.ErrorCode, Is.EqualTo(HRESULT.DV_E_TYMED));
         }
 
         [Test]
@@ -140,12 +140,10 @@ namespace Google.Solutions.Mvvm.Test.Shell
                     },
                     out var medium);
 
-                Assert.AreEqual(
-                    TYMED.TYMED_ISTREAM,
-                    medium.tymed);
-                Assert.AreNotEqual(
-                    IntPtr.Zero,
-                    medium.unionmember);
+                Assert.That(
+                    medium.tymed, Is.EqualTo(TYMED.TYMED_ISTREAM));
+                Assert.That(
+                    medium.unionmember, Is.Not.EqualTo(IntPtr.Zero));
             }
 
         }
@@ -176,12 +174,10 @@ namespace Google.Solutions.Mvvm.Test.Shell
                     },
                     out var medium);
 
-                Assert.AreEqual(
-                    TYMED.TYMED_HGLOBAL,
-                    medium.tymed);
-                Assert.AreNotEqual(
-                    IntPtr.Zero,
-                    medium.unionmember);
+                Assert.That(
+                    medium.tymed, Is.EqualTo(TYMED.TYMED_HGLOBAL));
+                Assert.That(
+                    medium.unionmember, Is.Not.EqualTo(IntPtr.Zero));
             }
         }
 
@@ -230,9 +226,9 @@ namespace Google.Solutions.Mvvm.Test.Shell
             dataObject.StartOperation(null);
 
             dataObject.InOperation(out var inOp);
-            Assert.AreEqual(-1, inOp);
+            Assert.That(inOp, Is.EqualTo(-1));
 
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
 
         //----------------------------------------------------------------------
@@ -249,13 +245,13 @@ namespace Google.Solutions.Mvvm.Test.Shell
             dataObject.AsyncOperationCompleted += (_, args) =>
             {
                 eventRaised = true;
-                Assert.IsTrue(args.Succeeded);
+                Assert.That(args.Succeeded, Is.True);
             };
 
             dataObject.StartOperation(null);
             dataObject.EndOperation(0, null, 0);
 
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
 
         [Test]
@@ -268,14 +264,14 @@ namespace Google.Solutions.Mvvm.Test.Shell
             dataObject.AsyncOperationCompleted += (_, args) =>
             {
                 eventRaised = true;
-                Assert.IsFalse(args.Succeeded);
-                Assert.IsNotNull(args.Exception);
+                Assert.That(args.Succeeded, Is.False);
+                Assert.That(args.Exception, Is.Not.Null);
             };
 
             dataObject.StartOperation(null);
             dataObject.EndOperation((int)HRESULT.E_UNEXPECTED, null, 0);
 
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
 
         //----------------------------------------------------------------------
@@ -288,13 +284,13 @@ namespace Google.Solutions.Mvvm.Test.Shell
             var dataObject = new VirtualFileDataObject(
                 Array.Empty<VirtualFileDataObject.Descriptor>());
 
-            Assert.IsFalse(dataObject.IsOperationInProgress);
+            Assert.That(dataObject.IsOperationInProgress, Is.False);
 
             dataObject.StartOperation(null);
-            Assert.IsTrue(dataObject.IsOperationInProgress);
+            Assert.That(dataObject.IsOperationInProgress, Is.True);
 
             dataObject.EndOperation(0, null, 0);
-            Assert.IsFalse(dataObject.IsOperationInProgress);
+            Assert.That(dataObject.IsOperationInProgress, Is.False);
         }
     }
 }

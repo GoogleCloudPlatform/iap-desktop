@@ -41,7 +41,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         {
             var color = ColorExtensions.FromCOLORREF((uint)colorref);
 
-            Assert.AreEqual(color, color.ToHsl().ToColor());
+            Assert.That(color.ToHsl().ToColor(), Is.EqualTo(color));
         }
 
         //---------------------------------------------------------------------
@@ -51,9 +51,9 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         [Test]
         public void GetHashCode_EncodesHslValues()
         {
-            Assert.AreEqual(0, new HslColor(0.0f, 0.0f, 0.0f).GetHashCode());
-            Assert.AreEqual(0xFFFFFF, new HslColor(1.0f, 1.0f, 1.0f).GetHashCode());
-            Assert.AreEqual(1651532, new HslColor(0.1f, 0.2f, 0.3f).GetHashCode());
+            Assert.That(new HslColor(0.0f, 0.0f, 0.0f).GetHashCode(), Is.EqualTo(0));
+            Assert.That(new HslColor(1.0f, 1.0f, 1.0f).GetHashCode(), Is.EqualTo(0xFFFFFF));
+            Assert.That(new HslColor(0.1f, 0.2f, 0.3f).GetHashCode(), Is.EqualTo(1651532));
         }
 
         //---------------------------------------------------------------------
@@ -65,10 +65,10 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         {
             var c = new HslColor(1.0f, 1.0f, 1.0f);
 
-            Assert.IsTrue(c.Equals(c));
-            Assert.IsTrue(c.Equals(new HslColor(1.0f, 1.0f, 1.0f)));
-            Assert.IsFalse(c.Equals(new HslColor(1.0f, 1.0f, 0.0f)));
-            Assert.IsFalse(c.Equals(null!));
+            Assert.That(c.Equals(c), Is.True);
+            Assert.That(c.Equals(new HslColor(1.0f, 1.0f, 1.0f)), Is.True);
+            Assert.That(c.Equals(new HslColor(1.0f, 1.0f, 0.0f)), Is.False);
+            Assert.That(c.Equals(null!), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -79,7 +79,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         public void ToString_ReturnsHslValues()
         {
             var c = new HslColor(.1f, .2f, .3f);
-            Assert.AreEqual("H=25, S=51, L=76", c.ToString());
+            Assert.That(c.ToString(), Is.EqualTo("H=25, S=51, L=76"));
         }
     }
 }

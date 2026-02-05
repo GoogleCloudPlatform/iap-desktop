@@ -39,40 +39,40 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         [Test]
         public void IsValidProfileName_WhenNameIsNullOrEmpty_ThenIsValidProfileNameReturnsFalse()
         {
-            Assert.IsFalse(UserProfile.IsValidProfileName(null));
-            Assert.IsFalse(UserProfile.IsValidProfileName(string.Empty));
-            Assert.IsFalse(UserProfile.IsValidProfileName(" "));
+            Assert.That(UserProfile.IsValidProfileName(null), Is.False);
+            Assert.That(UserProfile.IsValidProfileName(string.Empty), Is.False);
+            Assert.That(UserProfile.IsValidProfileName(" "), Is.False);
         }
 
         [Test]
         public void IsValidProfileName_WhenNameHasLeadingOrTrailingSpaces_ThenIsValidProfileNameReturnsFalse()
         {
-            Assert.IsFalse(UserProfile.IsValidProfileName(" foo"));
-            Assert.IsFalse(UserProfile.IsValidProfileName("foo\t"));
+            Assert.That(UserProfile.IsValidProfileName(" foo"), Is.False);
+            Assert.That(UserProfile.IsValidProfileName("foo\t"), Is.False);
         }
 
         [Test]
         public void IsValidProfileName_WhenNameContainsUmlauts_ThenIsValidProfileNameReturnsFalse()
         {
-            Assert.IsFalse(UserProfile.IsValidProfileName("Föö"));
+            Assert.That(UserProfile.IsValidProfileName("Föö"), Is.False);
         }
 
         [Test]
         public void IsValidProfileName_WhenNameIsTooLong_ThenIsValidProfileNameReturnsFalse()
         {
-            Assert.IsFalse(UserProfile.IsValidProfileName("This profile name is way too long"));
+            Assert.That(UserProfile.IsValidProfileName("This profile name is way too long"), Is.False);
         }
 
         [Test]
         public void IsValidProfileName_WhenNameIsAlphanumeric_ThenIsValidProfileNameReturnsTrue()
         {
-            Assert.IsTrue(UserProfile.IsValidProfileName("This is a valid name"));
+            Assert.That(UserProfile.IsValidProfileName("This is a valid name"), Is.True);
         }
 
         [Test]
         public void IsValidProfileName_WhenNameIsDefault_ThenIsValidProfileNameReturnsFalse()
         {
-            Assert.IsFalse(UserProfile.IsValidProfileName(UserProfile.DefaultName.ToLower()));
+            Assert.That(UserProfile.IsValidProfileName(UserProfile.DefaultName.ToLower()), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -88,8 +88,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
 
                 using (var profile = install.OpenProfile(null))
                 {
-                    Assert.AreNotEqual(UserProfile.SchemaVersion.Initial, profile.Version);
-                    Assert.AreEqual(UserProfile.SchemaVersion.Current, profile.Version);
+                    Assert.That(profile.Version, Is.Not.EqualTo(UserProfile.SchemaVersion.Initial));
+                    Assert.That(profile.Version, Is.EqualTo(UserProfile.SchemaVersion.Current));
                 }
             }
         }
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
 
                 using (var profile = install.OpenProfile(null))
                 {
-                    Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                    Assert.That(profile.Version, Is.EqualTo(UserProfile.SchemaVersion.Initial));
                 }
             }
         }
@@ -119,8 +119,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
 
                 using (var profile = install.CreateProfile(TestProfileName))
                 {
-                    Assert.AreNotEqual(UserProfile.SchemaVersion.Initial, profile.Version);
-                    Assert.AreEqual(UserProfile.SchemaVersion.Current, profile.Version);
+                    Assert.That(profile.Version, Is.Not.EqualTo(UserProfile.SchemaVersion.Initial));
+                    Assert.That(profile.Version, Is.EqualTo(UserProfile.SchemaVersion.Current));
                 }
             }
         }
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 using (var profile = install.CreateProfile(TestProfileName))
                 {
                     profile.SettingsKey.DeleteValue("SchemaVersion");
-                    Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                    Assert.That(profile.Version, Is.EqualTo(UserProfile.SchemaVersion.Initial));
                 }
             }
         }
@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 {
                     profile.SettingsKey.DeleteValue("SchemaVersion");
                     profile.SettingsKey.SetValue("SchemaVersion", "junk");
-                    Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                    Assert.That(profile.Version, Is.EqualTo(UserProfile.SchemaVersion.Initial));
                 }
             }
         }

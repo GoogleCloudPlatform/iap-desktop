@@ -41,16 +41,16 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
 
         [Test]
         public void TryParse_WhenStringIsNullOrEmpty_ThenReturnsFalse(
-            [Values(null, "")] string id)
+            [Values(null, "")] string? id)
         {
-            Assert.IsFalse(WorkforcePoolProviderLocator.TryParse(id, out var _));
+            Assert.That(WorkforcePoolProviderLocator.TryParse(id, out var _), Is.False);
         }
 
         [Test]
         public void TryParse_WhenStringIsMalformed_ThenReturnsFalse(
             [Values("x", "principal://", " ")] string id)
         {
-            Assert.IsFalse(WorkforcePoolProviderLocator.TryParse(id, out var _));
+            Assert.That(WorkforcePoolProviderLocator.TryParse(id, out var _), Is.False);
         }
 
         [Test]
@@ -61,20 +61,20 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 "locations/LOCATION/workforcePools/POOL/providers/")]
             string id)
         {
-            Assert.IsFalse(WorkforcePoolProviderLocator.TryParse(id, out var _));
+            Assert.That(WorkforcePoolProviderLocator.TryParse(id, out var _), Is.False);
         }
 
         [Test]
         public void TryParse_WhenStringValid_ThenReturnsTrue()
         {
-            Assert.IsTrue(WorkforcePoolProviderLocator.TryParse(
+            Assert.That(WorkforcePoolProviderLocator.TryParse(
                 "locations/LOCATION/workforcePools/POOL/providers/PROVIDER",
-                out var locator));
+                out var locator), Is.True);
 
-            Assert.IsNotNull(locator);
-            Assert.AreEqual("LOCATION", locator!.Location);
-            Assert.AreEqual("POOL", locator.Pool);
-            Assert.AreEqual("PROVIDER", locator.Provider);
+            Assert.That(locator, Is.Not.Null);
+            Assert.That(locator!.Location, Is.EqualTo("LOCATION"));
+            Assert.That(locator.Pool, Is.EqualTo("POOL"));
+            Assert.That(locator.Provider, Is.EqualTo("PROVIDER"));
         }
 
         //---------------------------------------------------------------------
@@ -83,7 +83,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
 
         [Test]
         public void Parse_WhenStringIsNullOrEmpty_ThenThrowsException(
-            [Values(null, "")] string id)
+            [Values(null, "")] string? id)
         {
             Assert.Throws<ArgumentException>(
                 () => WorkforcePoolProviderLocator.Parse(id));
@@ -115,10 +115,10 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             var locator = WorkforcePoolProviderLocator.Parse(
                 "locations/LOCATION/workforcePools/POOL/providers/PROVIDER");
 
-            Assert.IsNotNull(locator);
-            Assert.AreEqual("LOCATION", locator!.Location);
-            Assert.AreEqual("POOL", locator.Pool);
-            Assert.AreEqual("PROVIDER", locator.Provider);
+            Assert.That(locator, Is.Not.Null);
+            Assert.That(locator!.Location, Is.EqualTo("LOCATION"));
+            Assert.That(locator.Pool, Is.EqualTo("POOL"));
+            Assert.That(locator.Provider, Is.EqualTo("PROVIDER"));
         }
     }
 }

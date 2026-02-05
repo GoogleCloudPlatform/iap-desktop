@@ -74,8 +74,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpClient());
 
-            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEnabled.Value);
-            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEditable.Value);
+            Assert.That(viewModel.IsDeviceCertificateAuthenticationEnabled.Value, Is.True);
+            Assert.That(viewModel.IsDeviceCertificateAuthenticationEditable.Value, Is.True);
         }
 
         [Test]
@@ -90,8 +90,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpClient());
 
-            Assert.IsFalse(viewModel.IsDeviceCertificateAuthenticationEnabled.Value);
-            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEditable.Value);
+            Assert.That(viewModel.IsDeviceCertificateAuthenticationEnabled.Value, Is.False);
+            Assert.That(viewModel.IsDeviceCertificateAuthenticationEditable.Value, Is.True);
         }
 
         [Test]
@@ -111,8 +111,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpClient());
 
-            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEnabled.Value);
-            Assert.IsFalse(viewModel.IsDeviceCertificateAuthenticationEditable.Value);
+            Assert.That(viewModel.IsDeviceCertificateAuthenticationEnabled.Value, Is.True);
+            Assert.That(viewModel.IsDeviceCertificateAuthenticationEditable.Value, Is.False);
         }
 
         [Test]
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.Value);
+            Assert.That(settings.IsDeviceCertificateAuthenticationEnabled.Value, Is.False);
         }
 
         [Test]
@@ -142,12 +142,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpClient());
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             viewModel.IsDeviceCertificateAuthenticationEnabled.Value =
                 !viewModel.IsDeviceCertificateAuthenticationEnabled.Value;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -166,9 +166,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpClient());
 
-            Assert.AreEqual("psc", viewModel.PrivateServiceConnectEndpoint.Value);
-            Assert.IsTrue(viewModel.IsPrivateServiceConnectEnabled.Value);
-            Assert.IsTrue(viewModel.IsPrivateServiceConnectEditable.Value);
+            Assert.That(viewModel.PrivateServiceConnectEndpoint.Value, Is.EqualTo("psc"));
+            Assert.That(viewModel.IsPrivateServiceConnectEnabled.Value, Is.True);
+            Assert.That(viewModel.IsPrivateServiceConnectEditable.Value, Is.True);
         }
 
         [Test]
@@ -184,8 +184,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new HelpClient());
 
             Assert.IsNull(viewModel.PrivateServiceConnectEndpoint.Value);
-            Assert.IsFalse(viewModel.IsPrivateServiceConnectEnabled.Value);
-            Assert.IsTrue(viewModel.IsPrivateServiceConnectEditable.Value);
+            Assert.That(viewModel.IsPrivateServiceConnectEnabled.Value, Is.False);
+            Assert.That(viewModel.IsPrivateServiceConnectEditable.Value, Is.True);
         }
 
         [Test]
@@ -205,9 +205,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpClient());
 
-            Assert.AreEqual("psc-policy", viewModel.PrivateServiceConnectEndpoint.Value);
-            Assert.IsTrue(viewModel.IsPrivateServiceConnectEnabled.Value);
-            Assert.IsFalse(viewModel.IsPrivateServiceConnectEditable.Value);
+            Assert.That(viewModel.PrivateServiceConnectEndpoint.Value, Is.EqualTo("psc-policy"));
+            Assert.That(viewModel.IsPrivateServiceConnectEnabled.Value, Is.True);
+            Assert.That(viewModel.IsPrivateServiceConnectEditable.Value, Is.False);
         }
 
         [Test]
@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.AreEqual(SamplePscEndpoint, settings.PrivateServiceConnectEndpoint.Value);
+            Assert.That(settings.PrivateServiceConnectEndpoint.Value, Is.EqualTo(SamplePscEndpoint));
         }
 
         [Test]
@@ -243,12 +243,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 ProbePrivateServiceConnectEndpoint = false
             };
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             viewModel.IsPrivateServiceConnectEnabled.Value = true;
             viewModel.PrivateServiceConnectEndpoint.Value = SamplePscEndpoint;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -263,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpClient());
 
-            Assert.AreEqual(16, viewModel.ConnectionPoolLimit.Value);
+            Assert.That(viewModel.ConnectionPoolLimit.Value, Is.EqualTo(16));
         }
 
         [Test]
@@ -278,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpClient());
 
-            Assert.AreEqual(5, viewModel.ConnectionPoolLimit.Value);
+            Assert.That(viewModel.ConnectionPoolLimit.Value, Is.EqualTo(5));
         }
 
         [Test]
@@ -289,15 +289,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpClient());
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
             viewModel.ConnectionPoolLimit.Value = 4;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
 
             await viewModel.ApplyChangesAsync();
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
-            Assert.AreEqual(4, settingsRepository.GetSettings().ConnectionLimit.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
+            Assert.That(settingsRepository.GetSettings().ConnectionLimit.Value, Is.EqualTo(4));
         }
 
         //---------------------------------------------------------------------

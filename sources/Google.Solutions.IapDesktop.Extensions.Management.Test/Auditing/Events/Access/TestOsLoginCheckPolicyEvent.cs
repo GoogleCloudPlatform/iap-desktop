@@ -87,18 +87,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }".Replace("v1", version);
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r));
+            Assert.That(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r), Is.True);
 
             var e = (OsLoginCheckPolicyEvent)r.ToEvent();
 
-            Assert.AreEqual("INFO", e.Severity);
-            Assert.AreEqual("project-1", e.Instance?.ProjectId);
-            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
-            Assert.AreEqual("instance-1", e.Instance?.Name);
-            Assert.AreEqual(1234567890, e.InstanceId);
-            Assert.AreEqual("bob@example.com", e.Principal);
-            Assert.IsTrue(e.IsSuccess);
-            Assert.AreEqual("OS Login access for bob@example.com and policy LOGIN granted", e.Message);
+            Assert.That(e.Severity, Is.EqualTo("INFO"));
+            Assert.That(e.Instance?.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(e.Instance?.Name, Is.EqualTo("instance-1"));
+            Assert.That(e.InstanceId, Is.EqualTo(1234567890));
+            Assert.That(e.Principal, Is.EqualTo("bob@example.com"));
+            Assert.That(e.IsSuccess, Is.True);
+            Assert.That(e.Message, Is.EqualTo("OS Login access for bob@example.com and policy LOGIN granted"));
         }
 
         [Test]
@@ -153,12 +153,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r));
+            Assert.That(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r), Is.True);
 
             var e = (OsLoginCheckPolicyEvent)r.ToEvent();
 
-            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
-            Assert.AreEqual(0, e.InstanceId);
+            Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(e.InstanceId, Is.EqualTo(0));
         }
 
         [Test]
@@ -213,18 +213,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r));
+            Assert.That(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r), Is.True);
 
             var e = (OsLoginCheckPolicyEvent)r.ToEvent();
 
-            Assert.AreEqual("INFO", e.Severity);
-            Assert.AreEqual("project-1", e.Instance?.ProjectId);
-            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
-            Assert.AreEqual("instance-1", e.Instance?.Name);
-            Assert.AreEqual(1234567890, e.InstanceId);
-            Assert.AreEqual("bob@example.com", e.Principal);
-            Assert.IsFalse(e.IsSuccess);
-            Assert.AreEqual("OS Login access for bob@example.com and policy LOGIN denied", e.Message);
+            Assert.That(e.Severity, Is.EqualTo("INFO"));
+            Assert.That(e.Instance?.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(e.Instance?.Name, Is.EqualTo("instance-1"));
+            Assert.That(e.InstanceId, Is.EqualTo(1234567890));
+            Assert.That(e.Principal, Is.EqualTo("bob@example.com"));
+            Assert.That(e.IsSuccess, Is.False);
+            Assert.That(e.Message, Is.EqualTo("OS Login access for bob@example.com and policy LOGIN denied"));
         }
 
         [Test]
@@ -285,18 +285,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r));
+            Assert.That(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r), Is.True);
 
             var e = (OsLoginCheckPolicyEvent)r.ToEvent();
 
-            Assert.AreEqual("INFO", e.Severity);
-            Assert.AreEqual("project-1", e.Instance?.ProjectId);
-            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
-            Assert.AreEqual("instance-1", e.Instance?.Name);
-            Assert.AreEqual(1234567890, e.InstanceId);
-            Assert.AreEqual("bob@example.com", e.Principal);
-            Assert.IsFalse(e.IsSuccess);
-            Assert.AreEqual("OS Login access for bob@example.com and policy LOGIN denied", e.Message);
+            Assert.That(e.Severity, Is.EqualTo("INFO"));
+            Assert.That(e.Instance?.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(e.Instance?.Name, Is.EqualTo("instance-1"));
+            Assert.That(e.InstanceId, Is.EqualTo(1234567890));
+            Assert.That(e.Principal, Is.EqualTo("bob@example.com"));
+            Assert.That(e.IsSuccess, Is.False);
+            Assert.That(e.Message, Is.EqualTo("OS Login access for bob@example.com and policy LOGIN denied"));
         }
     }
 }

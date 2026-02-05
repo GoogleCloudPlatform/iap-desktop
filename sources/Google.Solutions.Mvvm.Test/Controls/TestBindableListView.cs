@@ -138,7 +138,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.Show();
                 form.ListView.BindCollection(items);
 
-                Assert.AreEqual(1, form.ListView.Items.Count);
+                Assert.That(form.ListView.Items.Count, Is.EqualTo(1));
             }
         }
 
@@ -160,11 +160,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.ListView.BindColumn(0, m => m.Name);
                 form.ListView.BindCollection(items);
 
-                Assert.AreEqual("initial name", form.ListView.Items[0].SubItems[0].Text);
+                Assert.That(form.ListView.Items[0].SubItems[0].Text, Is.EqualTo("initial name"));
 
                 item.Name = "new name";
 
-                Assert.AreEqual("new name", form.ListView.Items[0].SubItems[0].Text);
+                Assert.That(form.ListView.Items[0].SubItems[0].Text, Is.EqualTo("new name"));
             }
         }
 
@@ -182,11 +182,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.ListView.BindColumn(0, m => m.Name);
                 form.ListView.BindCollection(items);
 
-                Assert.AreEqual(1, form.ListView.Items.Count);
+                Assert.That(form.ListView.Items.Count, Is.EqualTo(1));
 
                 items.Add(new ViewModelItem("two"));
 
-                Assert.AreEqual(2, form.ListView.Items.Count);
+                Assert.That(form.ListView.Items.Count, Is.EqualTo(2));
             }
         }
 
@@ -205,11 +205,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.ListView.BindColumn(0, m => m.Name);
                 form.ListView.BindCollection(items);
 
-                Assert.AreEqual(2, form.ListView.Items.Count);
+                Assert.That(form.ListView.Items.Count, Is.EqualTo(2));
 
                 items.RemoveAt(0);
 
-                Assert.AreEqual(1, form.ListView.Items.Count);
+                Assert.That(form.ListView.Items.Count, Is.EqualTo(1));
             }
         }
 
@@ -228,13 +228,13 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.ListView.BindColumn(0, m => m.Name);
                 form.ListView.BindCollection(items);
 
-                Assert.AreEqual(2, form.ListView.Items.Count);
-                Assert.AreEqual("one", form.ListView.Items[0].SubItems[0].Text);
+                Assert.That(form.ListView.Items.Count, Is.EqualTo(2));
+                Assert.That(form.ListView.Items[0].SubItems[0].Text, Is.EqualTo("one"));
 
                 items[0] = new ViewModelItem("three");
 
-                Assert.AreEqual(2, form.ListView.Items.Count);
-                Assert.AreEqual("three", form.ListView.Items[0].SubItems[0].Text);
+                Assert.That(form.ListView.Items.Count, Is.EqualTo(2));
+                Assert.That(form.ListView.Items[0].SubItems[0].Text, Is.EqualTo("three"));
             }
         }
 
@@ -253,11 +253,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.ListView.BindColumn(0, m => m.Name);
                 form.ListView.BindCollection(items);
 
-                Assert.IsTrue(item.HasPropertyChangeListeners);
+                Assert.That(item.HasPropertyChangeListeners, Is.True);
 
                 items.RemoveAt(0);
 
-                Assert.IsFalse(item.HasPropertyChangeListeners);
+                Assert.That(item.HasPropertyChangeListeners, Is.False);
             }
         }
 
@@ -276,11 +276,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.ListView.BindColumn(0, m => m.Name);
                 form.ListView.BindCollection(items);
 
-                Assert.IsTrue(item.HasPropertyChangeListeners);
+                Assert.That(item.HasPropertyChangeListeners, Is.True);
 
                 items.Clear();
 
-                Assert.IsFalse(item.HasPropertyChangeListeners);
+                Assert.That(item.HasPropertyChangeListeners, Is.False);
             }
         }
 
@@ -299,11 +299,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.ListView.BindColumn(0, m => m.Name);
                 form.ListView.BindCollection(items);
 
-                Assert.IsTrue(item.HasPropertyChangeListeners);
+                Assert.That(item.HasPropertyChangeListeners, Is.True);
 
                 form.ListView.BindCollection(new ObservableCollection<ViewModelItem>());
 
-                Assert.IsFalse(item.HasPropertyChangeListeners);
+                Assert.That(item.HasPropertyChangeListeners, Is.False);
             }
         }
 
@@ -326,12 +326,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.ListView.BindImageIndex(m => m.ImageIndex);
                 form.ListView.BindCollection(items);
 
-                Assert.AreEqual(1, form.ListView.Items[0].ImageIndex);
-                Assert.AreEqual(2, form.ListView.Items[1].ImageIndex);
+                Assert.That(form.ListView.Items[0].ImageIndex, Is.EqualTo(1));
+                Assert.That(form.ListView.Items[1].ImageIndex, Is.EqualTo(2));
 
                 item1.ImageIndex = 0;
-                Assert.AreEqual(0, form.ListView.Items[0].ImageIndex);
-                Assert.AreEqual(2, form.ListView.Items[1].ImageIndex);
+                Assert.That(form.ListView.Items[0].ImageIndex, Is.EqualTo(0));
+                Assert.That(form.ListView.Items[1].ImageIndex, Is.EqualTo(2));
             }
         }
 
@@ -363,8 +363,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 form.ListView.Items[0].Selected = true;
 
-                Assert.IsNotNull(viewModel.SelectedItem);
-                Assert.AreEqual("one", viewModel.SelectedItem!.Name);
+                Assert.That(viewModel.SelectedItem, Is.Not.Null);
+                Assert.That(viewModel.SelectedItem!.Name, Is.EqualTo("one"));
             }
         }
 
@@ -390,12 +390,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     m => m.SelectedItem,
                     new Mock<IBindingContext>().Object);
 
-                Assert.IsFalse(form.ListView.Items[0].Selected);
+                Assert.That(form.ListView.Items[0].Selected, Is.False);
 
                 viewModel.SelectedItem = viewModel.Items[0];
 
-                Assert.IsTrue(form.ListView.Items[0].Selected);
-                Assert.IsFalse(form.ListView.Items[1].Selected);
+                Assert.That(form.ListView.Items[0].Selected, Is.True);
+                Assert.That(form.ListView.Items[1].Selected, Is.False);
             }
         }
 
@@ -428,8 +428,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.ListView.Items[0].Selected = true;
                 form.ListView.Items[1].Selected = true;
 
-                Assert.IsNotNull(viewModel.SelectedItems);
-                Assert.AreEqual(2, viewModel.SelectedItems.Count());
+                Assert.That(viewModel.SelectedItems, Is.Not.Null);
+                Assert.That(viewModel.SelectedItems.Count(), Is.EqualTo(2));
             }
         }
 
@@ -455,12 +455,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     m => m.SelectedItems,
                     new Mock<IBindingContext>().Object);
 
-                Assert.IsFalse(form.ListView.Items[0].Selected);
+                Assert.That(form.ListView.Items[0].Selected, Is.False);
 
                 viewModel.SelectedItems = viewModel.Items;
 
-                Assert.IsTrue(form.ListView.Items[0].Selected);
-                Assert.IsTrue(form.ListView.Items[1].Selected);
+                Assert.That(form.ListView.Items[0].Selected, Is.True);
+                Assert.That(form.ListView.Items[1].Selected, Is.True);
             }
         }
     }

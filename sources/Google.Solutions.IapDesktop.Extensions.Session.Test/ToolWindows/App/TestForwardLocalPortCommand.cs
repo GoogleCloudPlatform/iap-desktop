@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                  new Mock<IInputDialog>().Object,
                 new Mock<INotifyDialog>().Object);
 
-            Assert.AreEqual(command.GetType().Name, command.Id);
+            Assert.That(command.Id, Is.EqualTo(command.GetType().Name));
         }
 
         //---------------------------------------------------------------------
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .ConfigureAwait(false);
 
             Assert.IsNull(context.NetworkCredential);
-            Assert.IsFalse(context.CanLaunchClient);
+            Assert.That(context.CanLaunchClient, Is.False);
             Assert.IsInstanceOf<CurrentWtsSessionPolicy>(context.CreateTransportPolicy());
         }
 

@@ -115,9 +115,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .ConfigureAwait(true);
 
             Assert.IsNull(viewModel.InformationText.Value);
-            Assert.AreEqual("Authorized SSH keys", viewModel.WindowTitle.Value);
-            Assert.IsFalse(viewModel.AllKeys.Any());
-            Assert.IsFalse(viewModel.FilteredKeys.Any());
+            Assert.That(viewModel.WindowTitle.Value, Is.EqualTo("Authorized SSH keys"));
+            Assert.That(viewModel.AllKeys.Any(), Is.False);
+            Assert.That(viewModel.FilteredKeys.Any(), Is.False);
         }
 
         [Test]
@@ -131,9 +131,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .ConfigureAwait(true);
 
             Assert.IsNull(viewModel.InformationText.Value);
-            Assert.AreEqual("Authorized SSH keys", viewModel.WindowTitle.Value);
-            Assert.IsFalse(viewModel.AllKeys.Any());
-            Assert.IsFalse(viewModel.FilteredKeys.Any());
+            Assert.That(viewModel.WindowTitle.Value, Is.EqualTo("Authorized SSH keys"));
+            Assert.That(viewModel.AllKeys.Any(), Is.False);
+            Assert.That(viewModel.FilteredKeys.Any(), Is.False);
         }
 
         [Test]
@@ -154,12 +154,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(viewModel.IsListEnabled.Value);
+            Assert.That(viewModel.IsListEnabled.Value, Is.True);
             Assert.IsNotEmpty(viewModel.InformationText.Value);
-            StringAssert.Contains("project-1", viewModel.WindowTitle.Value);
+            Assert.That(viewModel.WindowTitle.Value, Does.Contain("project-1"));
 
-            Assert.AreEqual(2, viewModel.AllKeys.Count);
-            Assert.AreEqual(2, viewModel.FilteredKeys.Count);
+            Assert.That(viewModel.AllKeys.Count, Is.EqualTo(2));
+            Assert.That(viewModel.FilteredKeys.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -182,12 +182,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(viewModel.IsListEnabled.Value);
+            Assert.That(viewModel.IsListEnabled.Value, Is.True);
             Assert.IsNotEmpty(viewModel.InformationText.Value);
-            StringAssert.Contains("instance-1", viewModel.WindowTitle.Value);
+            Assert.That(viewModel.WindowTitle.Value, Does.Contain("instance-1"));
 
-            Assert.AreEqual(2, viewModel.AllKeys.Count);
-            Assert.AreEqual(2, viewModel.FilteredKeys.Count);
+            Assert.That(viewModel.AllKeys.Count, Is.EqualTo(2));
+            Assert.That(viewModel.FilteredKeys.Count, Is.EqualTo(2));
         }
 
         //---------------------------------------------------------------------
@@ -208,11 +208,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .ConfigureAwait(true);
 
             viewModel.Filter = "ice";
-            Assert.AreEqual(2, viewModel.AllKeys.Count);
-            Assert.AreEqual(1, viewModel.FilteredKeys.Count);
+            Assert.That(viewModel.AllKeys.Count, Is.EqualTo(2));
+            Assert.That(viewModel.FilteredKeys.Count, Is.EqualTo(1));
 
             viewModel.Filter = null;
-            Assert.AreEqual(2, viewModel.FilteredKeys.Count);
+            Assert.That(viewModel.FilteredKeys.Count, Is.EqualTo(2));
         }
 
         //---------------------------------------------------------------------
@@ -233,14 +233,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .ConfigureAwait(true);
 
             viewModel.SelectedItem = viewModel.AllKeys.FirstOrDefault();
-            Assert.IsTrue(viewModel.IsDeleteButtonEnabled);
+            Assert.That(viewModel.IsDeleteButtonEnabled, Is.True);
 
             // Switch again.
             await viewModel
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsDeleteButtonEnabled);
+            Assert.That(viewModel.IsDeleteButtonEnabled, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -260,10 +260,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsDeleteButtonEnabled);
+            Assert.That(viewModel.IsDeleteButtonEnabled, Is.False);
 
             viewModel.SelectedItem = viewModel.AllKeys.FirstOrDefault();
-            Assert.IsTrue(viewModel.IsDeleteButtonEnabled);
+            Assert.That(viewModel.IsDeleteButtonEnabled, Is.True);
         }
 
         //---------------------------------------------------------------------

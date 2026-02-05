@@ -32,8 +32,8 @@ namespace Google.Solutions.Mvvm.Test.Theme
         {
             using (DpiAwareness.EnterThreadMode(DpiAwarenessMode.DpiUnaware))
             {
-                Assert.AreEqual(96, DeviceCapabilities.Current.Dpi);
-                Assert.IsFalse(DeviceCapabilities.Current.IsHighDpi);
+                Assert.That(DeviceCapabilities.Current.Dpi, Is.EqualTo(96));
+                Assert.That(DeviceCapabilities.Current.IsHighDpi, Is.False);
             }
         }
     }

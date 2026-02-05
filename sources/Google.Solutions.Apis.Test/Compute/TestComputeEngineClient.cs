@@ -67,8 +67,8 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(project);
-            Assert.AreEqual(TestProject.ProjectId, project.Name);
+            Assert.That(project, Is.Not.Null);
+            Assert.That(project.Name, Is.EqualTo(TestProject.ProjectId));
         }
 
         //---------------------------------------------------------------------
@@ -90,8 +90,8 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(project);
-            Assert.AreEqual(TestProject.ProjectId, project.Name);
+            Assert.That(project, Is.Not.Null);
+            Assert.That(project.Name, Is.EqualTo(TestProject.ProjectId));
         }
 
         [Test]
@@ -151,7 +151,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ConfigureAwait(false);
 
             Assert.Greater(instances.Count(), 1);
-            Assert.IsNotNull(instances.FirstOrDefault(i => i.Name == instanceRef.Name));
+            Assert.That(instances.FirstOrDefault(i => i.Name == instanceRef.Name), Is.Not.Null);
         }
 
         [Test]
@@ -174,7 +174,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ConfigureAwait(false);
 
             Assert.Greater(instances.Count(), 1);
-            Assert.IsNotNull(instances.FirstOrDefault(i => i.Name == instanceRef.Name));
+            Assert.That(instances.FirstOrDefault(i => i.Name == instanceRef.Name), Is.Not.Null);
         }
 
         [Test]
@@ -366,7 +366,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     Permissions.ComputeInstancesGet)
                 .ConfigureAwait(false);
 
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -385,7 +385,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     Permissions.ComputeInstancesSetMetadata)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(result);
+            Assert.That(result, Is.False);
         }
 
         [Test]
@@ -404,7 +404,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     Permissions.ComputeInstancesSetMetadata)
                 .ConfigureAwait(false);
 
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
     }
 }

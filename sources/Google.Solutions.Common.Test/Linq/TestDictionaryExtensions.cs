@@ -39,7 +39,7 @@ namespace Google.Solutions.Common.Test.Linq
             {
                 { "key", "value" },
             };
-            Assert.AreEqual("value", dict.TryGet("key"));
+            Assert.That(dict.TryGet("key"), Is.EqualTo("value"));
         }
 
         [Test]

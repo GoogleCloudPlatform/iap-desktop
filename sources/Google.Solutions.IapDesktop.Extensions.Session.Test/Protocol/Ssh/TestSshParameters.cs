@@ -35,11 +35,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             Assert.IsNull(parameters.Language);
 
-            Assert.AreEqual(SessionTransportType._Default, parameters.TransportType);
-            Assert.AreEqual(SshParameters.DefaultPort, parameters.Port);
-            Assert.AreEqual(SshParameters.DefaultConnectionTimeout, parameters.ConnectionTimeout);
+            Assert.That(parameters.TransportType, Is.EqualTo(SessionTransportType._Default));
+            Assert.That(parameters.Port, Is.EqualTo(SshParameters.DefaultPort));
+            Assert.That(parameters.ConnectionTimeout, Is.EqualTo(SshParameters.DefaultConnectionTimeout));
             Assert.IsNull(parameters.PreferredUsername);
-            Assert.AreEqual(SshParameters.DefaultPublicKeyValidity, parameters.PublicKeyValidity);
+            Assert.That(parameters.PublicKeyValidity, Is.EqualTo(SshParameters.DefaultPublicKeyValidity));
         }
     }
 }

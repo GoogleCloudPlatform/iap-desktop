@@ -124,7 +124,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 dialog.ShowDialog(null);
             }
 
-            Assert.IsNotNull(form.ViewModel);
+            Assert.That(form.ViewModel, Is.Not.Null);
         }
 
         [Test]
@@ -165,14 +165,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             using (var dialog = activator.CreateDialog())
             {
-                Assert.IsFalse(form.IsDisposed);
-                Assert.IsFalse(viewModel.IsDisposed);
+                Assert.That(form.IsDisposed, Is.False);
+                Assert.That(viewModel.IsDisposed, Is.False);
 
                 dialog.ShowDialog(null);
             }
 
-            Assert.IsTrue(form.IsDisposed);
-            Assert.IsTrue(viewModel.IsDisposed);
+            Assert.That(form.IsDisposed, Is.True);
+            Assert.That(viewModel.IsDisposed, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -205,9 +205,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             var window = activator.CreateWindow();
 
-            Assert.AreSame(form, window.Form);
-            Assert.AreSame(window.Form, viewModel.View);
-            Assert.AreSame(viewModel, window.Form.ViewModel);
+            Assert.That(window.Form, Is.SameAs(form));
+            Assert.That(viewModel.View, Is.SameAs(window.Form));
+            Assert.That(window.Form.ViewModel, Is.SameAs(viewModel));
         }
 
         [Test]
@@ -221,14 +221,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 new Mock<IControlTheme>().Object);
 
             var window = activator.CreateWindow();
-            Assert.IsFalse(form.IsDisposed);
-            Assert.IsFalse(viewModel.IsDisposed);
+            Assert.That(form.IsDisposed, Is.False);
+            Assert.That(viewModel.IsDisposed, Is.False);
 
             window.Form.Show();
             window.Form.Close();
 
-            Assert.IsTrue(form.IsDisposed);
-            Assert.IsTrue(viewModel.IsDisposed);
+            Assert.That(form.IsDisposed, Is.True);
+            Assert.That(viewModel.IsDisposed, Is.True);
         }
 
         [Test]
@@ -245,7 +245,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             window.Form.Dispose();
             window.Form.Dispose();
 
-            Assert.AreEqual(1, viewModel.DisposeCount);
+            Assert.That(viewModel.DisposeCount, Is.EqualTo(1));
             Assert.IsNull(viewModel.View);
         }
     }

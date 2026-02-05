@@ -57,9 +57,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             connectedRdpSession.SetupGet(s => s.IsConnected).Returns(true);
             connectedRdpSession.SetupGet(s => s.CanEnterFullScreen).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                GetFullScreenCommand(sessionCommands, mode).QueryState(connectedRdpSession.Object));
+            Assert.That(
+                GetFullScreenCommand(sessionCommands, mode).QueryState(connectedRdpSession.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -80,15 +79,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             var sshSession = new Mock<ISshSession>();
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                GetFullScreenCommand(sessionCommands, mode).QueryState(connectedFullScreenRdpSession.Object));
-            Assert.AreEqual(
-                CommandState.Disabled,
-                GetFullScreenCommand(sessionCommands, mode).QueryState(closedRdpSession.Object));
-            Assert.AreEqual(
-                CommandState.Disabled,
-                GetFullScreenCommand(sessionCommands, mode).QueryState(sshSession.Object));
+            Assert.That(
+                GetFullScreenCommand(sessionCommands, mode).QueryState(connectedFullScreenRdpSession.Object), Is.EqualTo(CommandState.Disabled));
+            Assert.That(
+                GetFullScreenCommand(sessionCommands, mode).QueryState(closedRdpSession.Object), Is.EqualTo(CommandState.Disabled));
+            Assert.That(
+                GetFullScreenCommand(sessionCommands, mode).QueryState(sshSession.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         //---------------------------------------------------------------------
@@ -104,9 +100,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var connectedSession = new Mock<ISession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                sessionCommands.Close.QueryState(connectedSession.Object));
+            Assert.That(
+                sessionCommands.Close.QueryState(connectedSession.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -118,9 +113,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var closedSession = new Mock<ISession>();
             closedSession.SetupGet(s => s.IsConnected).Returns(false);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                sessionCommands.Close.QueryState(closedSession.Object));
+            Assert.That(
+                sessionCommands.Close.QueryState(closedSession.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         [Test]
@@ -150,9 +144,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var connectedSession = new Mock<ISession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                sessionCommands.CloseAll.QueryState(connectedSession.Object));
+            Assert.That(
+                sessionCommands.CloseAll.QueryState(connectedSession.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -189,9 +182,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var connectedSession = new Mock<ISession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                sessionCommands.CloseAllButThis.QueryState(connectedSession.Object));
+            Assert.That(
+                sessionCommands.CloseAllButThis.QueryState(connectedSession.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -230,9 +222,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var connectedSession = new Mock<IRdpSession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                sessionCommands.ShowSecurityScreen.QueryState(connectedSession.Object));
+            Assert.That(
+                sessionCommands.ShowSecurityScreen.QueryState(connectedSession.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -247,12 +238,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var sshSession = new Mock<ISshSession>();
             sshSession.SetupGet(s => s.IsConnected).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                sessionCommands.ShowSecurityScreen.QueryState(closedSession.Object));
-            Assert.AreEqual(
-                CommandState.Disabled,
-                sessionCommands.ShowSecurityScreen.QueryState(sshSession.Object));
+            Assert.That(
+                sessionCommands.ShowSecurityScreen.QueryState(closedSession.Object), Is.EqualTo(CommandState.Disabled));
+            Assert.That(
+                sessionCommands.ShowSecurityScreen.QueryState(sshSession.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         //---------------------------------------------------------------------
@@ -268,9 +257,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var connectedSession = new Mock<IRdpSession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                sessionCommands.ShowTaskManager.QueryState(connectedSession.Object));
+            Assert.That(
+                sessionCommands.ShowTaskManager.QueryState(connectedSession.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -285,12 +273,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var sshSession = new Mock<ISshSession>();
             sshSession.SetupGet(s => s.IsConnected).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                sessionCommands.ShowTaskManager.QueryState(closedSession.Object));
-            Assert.AreEqual(
-                CommandState.Disabled,
-                sessionCommands.ShowTaskManager.QueryState(sshSession.Object));
+            Assert.That(
+                sessionCommands.ShowTaskManager.QueryState(closedSession.Object), Is.EqualTo(CommandState.Disabled));
+            Assert.That(
+                sessionCommands.ShowTaskManager.QueryState(sshSession.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         //---------------------------------------------------------------------
@@ -306,9 +292,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var connectedSession = new Mock<IRdpSession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                sessionCommands.Logoff.QueryState(connectedSession.Object));
+            Assert.That(
+                sessionCommands.Logoff.QueryState(connectedSession.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -323,12 +308,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var sshSession = new Mock<ISshSession>();
             sshSession.SetupGet(s => s.IsConnected).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                sessionCommands.Logoff.QueryState(closedSession.Object));
-            Assert.AreEqual(
-                CommandState.Disabled,
-                sessionCommands.Logoff.QueryState(sshSession.Object));
+            Assert.That(
+                sessionCommands.Logoff.QueryState(closedSession.Object), Is.EqualTo(CommandState.Disabled));
+            Assert.That(
+                sessionCommands.Logoff.QueryState(sshSession.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         //---------------------------------------------------------------------
@@ -344,9 +327,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var connectedSession = new Mock<IRdpSession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                sessionCommands.TypeClipboardText.QueryState(connectedSession.Object));
+            Assert.That(
+                sessionCommands.TypeClipboardText.QueryState(connectedSession.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -361,12 +343,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var sshSession = new Mock<ISshSession>();
             sshSession.SetupGet(s => s.IsConnected).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                sessionCommands.TypeClipboardText.QueryState(closedSession.Object));
-            Assert.AreEqual(
-                CommandState.Disabled,
-                sessionCommands.TypeClipboardText.QueryState(sshSession.Object));
+            Assert.That(
+                sessionCommands.TypeClipboardText.QueryState(closedSession.Object), Is.EqualTo(CommandState.Disabled));
+            Assert.That(
+                sessionCommands.TypeClipboardText.QueryState(sshSession.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         //---------------------------------------------------------------------
@@ -383,9 +363,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
             connectedSession.SetupGet(s => s.CanTransferFiles).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                sessionCommands.TransferFiles.QueryState(connectedSession.Object));
+            Assert.That(
+                sessionCommands.TransferFiles.QueryState(connectedSession.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -400,12 +379,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var rdpSession = new Mock<IRdpSession>();
             rdpSession.SetupGet(s => s.IsConnected).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                sessionCommands.TransferFiles.QueryState(closedSession.Object));
-            Assert.AreEqual(
-                CommandState.Disabled,
-                sessionCommands.TransferFiles.QueryState(rdpSession.Object));
+            Assert.That(
+                sessionCommands.TransferFiles.QueryState(closedSession.Object), Is.EqualTo(CommandState.Disabled));
+            Assert.That(
+                sessionCommands.TransferFiles.QueryState(rdpSession.Object), Is.EqualTo(CommandState.Disabled));
         }
 
         [Test]
@@ -421,12 +398,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             var rdpSession = new Mock<IRdpSession>();
             rdpSession.SetupGet(s => s.IsConnected).Returns(true);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                sessionCommands.TransferFiles.QueryState(connectedSession.Object));
-            Assert.AreEqual(
-                CommandState.Disabled,
-                sessionCommands.TransferFiles.QueryState(rdpSession.Object));
+            Assert.That(
+                sessionCommands.TransferFiles.QueryState(connectedSession.Object), Is.EqualTo(CommandState.Disabled));
+            Assert.That(
+                sessionCommands.TransferFiles.QueryState(rdpSession.Object), Is.EqualTo(CommandState.Disabled));
         }
     }
 }

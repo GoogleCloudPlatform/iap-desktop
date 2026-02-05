@@ -40,19 +40,19 @@ namespace Google.Solutions.Mvvm.Test.ComponentModel
             var converter = new ExpandableCollectionConverter();
             var properties = converter.GetProperties(dictionary);
 
-            Assert.AreEqual(2, properties.Count);
+            Assert.That(properties.Count, Is.EqualTo(2));
 
-            Assert.AreEqual("key-a", properties[0].Name);
-            Assert.AreEqual(typeof(string), properties[0].PropertyType);
-            Assert.IsTrue(properties[0].IsBrowsable);
-            Assert.IsTrue(properties[0].IsReadOnly);
-            Assert.AreEqual("value-a", properties[0].GetValue(dictionary));
+            Assert.That(properties[0].Name, Is.EqualTo("key-a"));
+            Assert.That(properties[0].PropertyType, Is.EqualTo(typeof(string)));
+            Assert.That(properties[0].IsBrowsable, Is.True);
+            Assert.That(properties[0].IsReadOnly, Is.True);
+            Assert.That(properties[0].GetValue(dictionary), Is.EqualTo("value-a"));
 
-            Assert.AreEqual("key-b", properties[1].Name);
-            Assert.AreEqual(typeof(int), properties[1].PropertyType);
-            Assert.IsTrue(properties[1].IsBrowsable);
-            Assert.IsTrue(properties[1].IsReadOnly);
-            Assert.AreEqual(1, properties[1].GetValue(dictionary));
+            Assert.That(properties[1].Name, Is.EqualTo("key-b"));
+            Assert.That(properties[1].PropertyType, Is.EqualTo(typeof(int)));
+            Assert.That(properties[1].IsBrowsable, Is.True);
+            Assert.That(properties[1].IsReadOnly, Is.True);
+            Assert.That(properties[1].GetValue(dictionary), Is.EqualTo(1));
         }
 
         [Test]
@@ -63,19 +63,19 @@ namespace Google.Solutions.Mvvm.Test.ComponentModel
             var converter = new ExpandableCollectionConverter();
             var properties = converter.GetProperties(array);
 
-            Assert.AreEqual(2, properties.Count);
+            Assert.That(properties.Count, Is.EqualTo(2));
 
-            Assert.AreEqual(" ", properties[0].Name);
-            Assert.AreEqual(typeof(string), properties[0].PropertyType);
-            Assert.IsTrue(properties[0].IsBrowsable);
-            Assert.IsTrue(properties[0].IsReadOnly);
-            Assert.AreEqual("value-a", properties[0].GetValue(array));
+            Assert.That(properties[0].Name, Is.EqualTo(" "));
+            Assert.That(properties[0].PropertyType, Is.EqualTo(typeof(string)));
+            Assert.That(properties[0].IsBrowsable, Is.True);
+            Assert.That(properties[0].IsReadOnly, Is.True);
+            Assert.That(properties[0].GetValue(array), Is.EqualTo("value-a"));
 
-            Assert.AreEqual(" ", properties[1].Name);
-            Assert.AreEqual(typeof(string), properties[1].PropertyType);
-            Assert.IsTrue(properties[1].IsBrowsable);
-            Assert.IsTrue(properties[1].IsReadOnly);
-            Assert.AreEqual("value-b", properties[1].GetValue(array));
+            Assert.That(properties[1].Name, Is.EqualTo(" "));
+            Assert.That(properties[1].PropertyType, Is.EqualTo(typeof(string)));
+            Assert.That(properties[1].IsBrowsable, Is.True);
+            Assert.That(properties[1].IsReadOnly, Is.True);
+            Assert.That(properties[1].GetValue(array), Is.EqualTo("value-b"));
         }
     }
 }

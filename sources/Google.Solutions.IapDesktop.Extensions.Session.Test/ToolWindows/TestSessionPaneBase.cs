@@ -67,15 +67,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows
             })
             {
 
-                Assert.IsNotNull(window.ContextCommands);
-                Assert.IsNotNull(window.TabPageContextMenuStrip);
+                Assert.That(window.ContextCommands, Is.Not.Null);
+                Assert.That(window.TabPageContextMenuStrip, Is.Not.Null);
 
-                CollectionAssert.Contains(
+                Assert.That(
                     window.TabPageContextMenuStrip.Items
                         .Cast<ToolStripMenuItem>()
                         .Select(i => i.Text)
-                        .ToList(),
-                    "test-command");
+                        .ToList(), Has.Member("test-command"));
             }
         }
 
@@ -119,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows
                         s => CommandState.Enabled,
                         s => { }));
                 window.ContextCommands = commands;
-                Assert.IsFalse(window.ShowCloseMenuItemInContextMenu);
+                Assert.That(window.ShowCloseMenuItemInContextMenu, Is.False);
 
                 window.Close();
             }

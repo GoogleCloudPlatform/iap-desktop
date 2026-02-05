@@ -67,8 +67,8 @@ namespace Google.Solutions.Apis.Test.Crm
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(project);
-            Assert.AreEqual(TestProject.ProjectId, project.Name);
+            Assert.That(project, Is.Not.Null);
+            Assert.That(project.Name, Is.EqualTo(TestProject.ProjectId));
         }
 
         //---------------------------------------------------------------------
@@ -90,7 +90,7 @@ namespace Google.Solutions.Apis.Test.Crm
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -108,7 +108,7 @@ namespace Google.Solutions.Apis.Test.Crm
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(result);
+            Assert.That(result, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -129,8 +129,8 @@ namespace Google.Solutions.Apis.Test.Crm
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(project);
-            Assert.AreEqual(TestProject.ProjectId, project.ProjectId);
+            Assert.That(project, Is.Not.Null);
+            Assert.That(project.ProjectId, Is.EqualTo(TestProject.ProjectId));
         }
 
         [Test]
@@ -183,10 +183,10 @@ namespace Google.Solutions.Apis.Test.Crm
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(result);
-            Assert.IsFalse(result.IsTruncated);
-            Assert.AreEqual(1, result.Projects.Count());
-            Assert.AreEqual(TestProject.ProjectId, result.Projects.First().ProjectId);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.IsTruncated, Is.False);
+            Assert.That(result.Projects.Count(), Is.EqualTo(1));
+            Assert.That(result.Projects.First().ProjectId, Is.EqualTo(TestProject.ProjectId));
         }
 
         [Test]
@@ -207,11 +207,10 @@ namespace Google.Solutions.Apis.Test.Crm
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.Projects.Any());
-            CollectionAssert.Contains(
-                result.Projects.Select(p => p.ProjectId),
-                TestProject.ProjectId);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Projects.Any(), Is.True);
+            Assert.That(
+                result.Projects.Select(p => p.ProjectId), Has.Member(TestProject.ProjectId));
         }
 
         //---------------------------------------------------------------------
@@ -248,8 +247,8 @@ namespace Google.Solutions.Apis.Test.Crm
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(org);
-            Assert.AreNotEqual(0, org!.Id);
+            Assert.That(org, Is.Not.Null);
+            Assert.That(org!.Id, Is.Not.EqualTo(0));
         }
 
         //---------------------------------------------------------------------
@@ -287,7 +286,7 @@ namespace Google.Solutions.Apis.Test.Crm
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(org);
+            Assert.That(org, Is.Not.Null);
 
             await ExceptionAssert
                 .ThrowsAsync<ResourceAccessDeniedException>(
@@ -302,25 +301,22 @@ namespace Google.Solutions.Apis.Test.Crm
         [Test]
         public void ProjectFilter_WhenTermContainsSpecialCharacters_ThenByProjectIdReturnsFilter()
         {
-            Assert.AreEqual(
-                "id:\"foo-bar\"",
-                ProjectFilter.ByProjectId("foo:'\"-bar").ToString());
+            Assert.That(
+                ProjectFilter.ByProjectId("foo:'\"-bar").ToString(), Is.EqualTo("id:\"foo-bar\""));
         }
 
         [Test]
         public void ProjectFilter_WhenTermContainsSpecialCharacters_ThenByTermReturnsFilter()
         {
-            Assert.AreEqual(
-                "name:\"*foo-bar*\" OR id:\"*foo-bar*\"",
-                ProjectFilter.ByTerm("foo:'\"-bar").ToString());
+            Assert.That(
+                ProjectFilter.ByTerm("foo:'\"-bar").ToString(), Is.EqualTo("name:\"*foo-bar*\" OR id:\"*foo-bar*\""));
         }
 
         [Test]
         public void ProjectFilter_WhenTermEmpty_ThenByTermReturnsFilter()
         {
-            Assert.AreEqual(
-                "name:\"**\" OR id:\"**\"",
-                ProjectFilter.ByTerm(string.Empty).ToString());
+            Assert.That(
+                ProjectFilter.ByTerm(string.Empty).ToString(), Is.EqualTo("name:\"**\" OR id:\"**\""));
         }
     }
 }

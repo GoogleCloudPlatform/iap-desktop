@@ -35,20 +35,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void IsValidFont_WhenFontNotFound()
         {
-            Assert.IsFalse(TerminalSettings.IsValidFont(string.Empty));
-            Assert.IsFalse(TerminalSettings.IsValidFont("doesnotexist"));
+            Assert.That(TerminalSettings.IsValidFont(string.Empty), Is.False);
+            Assert.That(TerminalSettings.IsValidFont("doesnotexist"), Is.False);
         }
 
         [Test]
         public void IsValidFont_WhenFontMonospaced()
         {
-            Assert.IsTrue(TerminalSettings.IsValidFont(FontFamily.GenericMonospace.Name));
+            Assert.That(TerminalSettings.IsValidFont(FontFamily.GenericMonospace.Name), Is.True);
         }
 
         [Test]
         public void IsValidFont_WhenFontNotMonospaced()
         {
-            Assert.IsFalse(TerminalSettings.IsValidFont(FontFamily.GenericSansSerif.Name));
+            Assert.That(TerminalSettings.IsValidFont(FontFamily.GenericSansSerif.Name), Is.False);
         }
     }
 }

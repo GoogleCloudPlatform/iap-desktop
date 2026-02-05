@@ -201,8 +201,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
 
-            Assert.IsTrue(viewModel.IsWindowsIncluded);
-            Assert.IsTrue(viewModel.IsLinuxIncluded);
+            Assert.That(viewModel.IsWindowsIncluded, Is.True);
+            Assert.That(viewModel.IsLinuxIncluded, Is.True);
         }
 
         [Test]
@@ -224,17 +224,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             var instances = await GetInstancesAsync(viewModel)
                 .ConfigureAwait(false);
-            Assert.AreEqual(2, instances.Count);
+            Assert.That(instances.Count, Is.EqualTo(2));
 
             viewModel.OperatingSystemsFilter = OperatingSystems.Linux;
             instances = await GetInstancesAsync(viewModel)
                 .ConfigureAwait(false);
-            Assert.AreEqual(1, instances.Count);
+            Assert.That(instances.Count, Is.EqualTo(1));
 
             viewModel.OperatingSystemsFilter = OperatingSystems.All;
             instances = await GetInstancesAsync(viewModel)
                 .ConfigureAwait(false);
-            Assert.AreEqual(2, instances.Count);
+            Assert.That(instances.Count, Is.EqualTo(2));
 
             // Reapplying filter must not cause reload.
             computeClient.Verify(
@@ -260,13 +260,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 m => m.IsWindowsIncluded,
                 v =>
                 {
-                    Assert.IsTrue(v);
+                    Assert.That(v, Is.True);
                     eventCount++;
                 },
                 new Mock<IBindingContext>().Object);
 
             initialViewModel.IsWindowsIncluded = true;
-            Assert.AreEqual(1, eventCount);
+            Assert.That(eventCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -285,13 +285,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 m => m.IsLinuxIncluded,
                 v =>
                 {
-                    Assert.IsTrue(v);
+                    Assert.That(v, Is.True);
                     eventCount++;
                 },
                 new Mock<IBindingContext>().Object);
 
             initialViewModel.IsLinuxIncluded = true;
-            Assert.AreEqual(1, eventCount);
+            Assert.That(eventCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -310,13 +310,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 m => m.OperatingSystemsFilter,
                 v =>
                 {
-                    Assert.AreEqual(OperatingSystems.Linux, v);
+                    Assert.That(v, Is.EqualTo(OperatingSystems.Linux));
                     eventCount++;
                 },
                 new Mock<IBindingContext>().Object);
 
             initialViewModel.OperatingSystemsFilter = OperatingSystems.Linux;
-            Assert.AreEqual(1, eventCount);
+            Assert.That(eventCount, Is.EqualTo(1));
         }
 
         //---------------------------------------------------------------------
@@ -343,15 +343,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ConfigureAwait(true);
 
             var instances = await GetInstancesAsync(viewModel).ConfigureAwait(true);
-            Assert.AreEqual(2, instances.Count);
+            Assert.That(instances.Count, Is.EqualTo(2));
 
             viewModel.InstanceFilter = filterMatchingLinuxInstance;
             instances = await GetInstancesAsync(viewModel).ConfigureAwait(true);
-            Assert.AreEqual(1, instances.Count);
+            Assert.That(instances.Count, Is.EqualTo(1));
 
             viewModel.InstanceFilter = null;
             instances = await GetInstancesAsync(viewModel).ConfigureAwait(true);
-            Assert.AreEqual(2, instances.Count);
+            Assert.That(instances.Count, Is.EqualTo(2));
 
             // Reapplying filter must not cause reload.
             computeClient.Verify(
@@ -377,13 +377,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 m => m.InstanceFilter,
                 v =>
                 {
-                    Assert.AreEqual("test", v);
+                    Assert.That(v, Is.EqualTo("test"));
                     eventCount++;
                 },
                 new Mock<IBindingContext>().Object);
 
             initialViewModel.InstanceFilter = "test";
-            Assert.AreEqual(1, eventCount);
+            Assert.That(eventCount, Is.EqualTo(1));
         }
 
         //---------------------------------------------------------------------
@@ -402,7 +402,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
 
-            CollectionAssert.IsEmpty(viewModel.Projects);
+            Assert.That(viewModel.Projects, Is.Empty);
         }
 
         [Test]
@@ -421,7 +421,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(false);
 
-            CollectionAssert.IsNotEmpty(viewModel.Projects);
+            Assert.That(viewModel.Projects, Is.Not.Empty);
         }
 
         //---------------------------------------------------------------------
@@ -444,7 +444,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ExpandRootAsync()
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(initialProjectsList.Any());
+            Assert.That(initialProjectsList.Any(), Is.False);
 
             await viewModel
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
@@ -454,7 +454,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(1, updatedProjectsList.Count);
+            Assert.That(updatedProjectsList.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -476,7 +476,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ExpandRootAsync()
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(1, initialProjectsList.Count());
+            Assert.That(initialProjectsList.Count(), Is.EqualTo(1));
 
             await viewModel
                 .RemoveProjectsAsync(new ProjectLocator(SampleProjectId))
@@ -486,7 +486,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .GetFilteredChildrenAsync(false)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(updatedProjectsList.Any());
+            Assert.That(updatedProjectsList.Any(), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -531,9 +531,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ExpandRootAsync()
                 .ConfigureAwait(true)).ToList();
 
-            Assert.AreEqual("[project-1] (project-1)", projects[0].Text);
-            Assert.AreEqual("inaccessible project (inaccessible-1)", projects[1].Text);
-            Assert.AreEqual("project-2", projects[2].Text);
+            Assert.That(projects[0].Text, Is.EqualTo("[project-1] (project-1)"));
+            Assert.That(projects[1].Text, Is.EqualTo("inaccessible project (inaccessible-1)"));
+            Assert.That(projects[2].Text, Is.EqualTo("project-2"));
         }
 
         //---------------------------------------------------------------------
@@ -563,7 +563,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ConfigureAwait(true);
             projects.CollectionChanged += (sender, args) =>
             {
-                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Reset));
                 nofifications++;
             };
 
@@ -571,11 +571,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .RefreshAsync(true)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
-            Assert.AreEqual(1, (await viewModel
+            Assert.That(nofifications, Is.EqualTo(2), "expecting 2 resets (Clear, AddRange)");
+            Assert.That((await viewModel
                 .RootNode
                 .GetFilteredChildrenAsync(false)
-                .ConfigureAwait(true)).Count);
+                .ConfigureAwait(true)).Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -608,7 +608,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             };
             zones.CollectionChanged += (sender, args) =>
             {
-                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Reset));
                 nofifications++;
             };
 
@@ -616,14 +616,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .RefreshAsync(false)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
-            Assert.AreEqual(1, (await viewModel
+            Assert.That(nofifications, Is.EqualTo(2), "expecting 2 resets (Clear, AddRange)");
+            Assert.That((await viewModel
                 .RootNode
                 .GetFilteredChildrenAsync(false)
-                .ConfigureAwait(true)).Count);
-            Assert.AreEqual(1, (await projects[0]
+                .ConfigureAwait(true)).Count, Is.EqualTo(1));
+            Assert.That((await projects[0]
                 .GetFilteredChildrenAsync(false)
-                .ConfigureAwait(true)).Count);
+                .ConfigureAwait(true)).Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -649,7 +649,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ConfigureAwait(true);
             projects.CollectionChanged += (sender, args) =>
             {
-                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Reset));
                 nofifications++;
             };
 
@@ -658,11 +658,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .RefreshSelectedNodeAsync()
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
-            Assert.AreEqual(1, (await viewModel
+            Assert.That(nofifications, Is.EqualTo(2), "expecting 2 resets (Clear, AddRange)");
+            Assert.That((await viewModel
                 .RootNode
                 .GetFilteredChildrenAsync(false)
-                .ConfigureAwait(true)).Count);
+                .ConfigureAwait(true)).Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -688,7 +688,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ConfigureAwait(true);
             projects.CollectionChanged += (sender, args) =>
             {
-                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Reset));
                 nofifications++;
             };
 
@@ -697,11 +697,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .RefreshSelectedNodeAsync()
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
-            Assert.AreEqual(1, (await viewModel
+            Assert.That(nofifications, Is.EqualTo(2), "expecting 2 resets (Clear, AddRange)");
+            Assert.That((await viewModel
                 .RootNode
                 .GetFilteredChildrenAsync(false)
-                .ConfigureAwait(true)).Count);
+                .ConfigureAwait(true)).Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -734,7 +734,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             };
             zones.CollectionChanged += (sender, args) =>
             {
-                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Reset));
                 nofifications++;
             };
 
@@ -743,14 +743,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .RefreshSelectedNodeAsync()
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
-            Assert.AreEqual(1, (await viewModel
+            Assert.That(nofifications, Is.EqualTo(2), "expecting 2 resets (Clear, AddRange)");
+            Assert.That((await viewModel
                 .RootNode
                 .GetFilteredChildrenAsync(false)
-                .ConfigureAwait(true)).Count);
-            Assert.AreEqual(1, (await projects[0]
+                .ConfigureAwait(true)).Count, Is.EqualTo(1));
+            Assert.That((await projects[0]
                 .GetFilteredChildrenAsync(false)
-                .ConfigureAwait(true)).Count);
+                .ConfigureAwait(true)).Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -783,7 +783,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             };
             zones.CollectionChanged += (sender, args) =>
             {
-                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Reset));
                 nofifications++;
             };
 
@@ -792,14 +792,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .RefreshSelectedNodeAsync()
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
-            Assert.AreEqual(1, (await viewModel
+            Assert.That(nofifications, Is.EqualTo(2), "expecting 2 resets (Clear, AddRange)");
+            Assert.That((await viewModel
                 .RootNode
                 .GetFilteredChildrenAsync(false)
-                .ConfigureAwait(true)).Count);
-            Assert.AreEqual(1, (await projects[0]
+                .ConfigureAwait(true)).Count, Is.EqualTo(1));
+            Assert.That((await projects[0]
                 .GetFilteredChildrenAsync(false)
-                .ConfigureAwait(true)).Count);
+                .ConfigureAwait(true)).Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -835,7 +835,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             };
             zones.CollectionChanged += (sender, args) =>
             {
-                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Reset));
                 nofifications++;
             };
 
@@ -844,14 +844,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .RefreshSelectedNodeAsync()
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
-            Assert.AreEqual(1, (await viewModel
+            Assert.That(nofifications, Is.EqualTo(2), "expecting 2 resets (Clear, AddRange)");
+            Assert.That((await viewModel
                 .RootNode
                 .GetFilteredChildrenAsync(false)
-                .ConfigureAwait(true)).Count);
-            Assert.AreEqual(1, (await projects[0]
+                .ConfigureAwait(true)).Count, Is.EqualTo(1));
+            Assert.That((await projects[0]
                 .GetFilteredChildrenAsync(false)
-                .ConfigureAwait(true)).Count);
+                .ConfigureAwait(true)).Count, Is.EqualTo(1));
         }
 
         //---------------------------------------------------------------------
@@ -882,8 +882,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
                 .ToList();
 
-            Assert.IsTrue(instances[0].IsConnected);
-            Assert.IsTrue(instances[1].IsConnected);
+            Assert.That(instances[0].IsConnected, Is.True);
+            Assert.That(instances[1].IsConnected, Is.True);
         }
 
         [Test]
@@ -922,29 +922,29 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
                 .ToList();
 
-            Assert.IsNotNull(sessionStartedEventHandler);
-            Assert.IsNotNull(sessionEndedEventHandler);
+            Assert.That(sessionStartedEventHandler, Is.Not.Null);
+            Assert.That(sessionEndedEventHandler, Is.Not.Null);
 
-            Assert.IsFalse(instances[0].IsConnected);
-            Assert.IsFalse(instances[1].IsConnected);
+            Assert.That(instances[0].IsConnected, Is.False);
+            Assert.That(instances[1].IsConnected, Is.False);
 
             sessionStartedEventHandler!(
                 new SessionStartedEvent((InstanceLocator)instances[0].Locator!));
 
-            Assert.IsTrue(instances[0].IsConnected);
-            Assert.IsFalse(instances[1].IsConnected);
+            Assert.That(instances[0].IsConnected, Is.True);
+            Assert.That(instances[1].IsConnected, Is.False);
 
             sessionEndedEventHandler!(
                 new SessionEndedEvent((InstanceLocator)instances[0].Locator!));
 
-            Assert.IsFalse(instances[0].IsConnected);
-            Assert.IsFalse(instances[1].IsConnected);
+            Assert.That(instances[0].IsConnected, Is.False);
+            Assert.That(instances[1].IsConnected, Is.False);
 
             sessionStartedEventHandler!(
                 new SessionStartedEvent(new InstanceLocator(SampleProjectId, "zone-1", "unknown-1")));
 
-            Assert.IsFalse(instances[0].IsConnected);
-            Assert.IsFalse(instances[1].IsConnected);
+            Assert.That(instances[0].IsConnected, Is.False);
+            Assert.That(instances[1].IsConnected, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -975,12 +975,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
                 .ToList();
 
-            Assert.AreEqual(
-                ProjectExplorerViewModel.InstanceViewModelNode.LinuxConnectedIconIndex,
-                instances[0].ImageIndex);
-            Assert.AreEqual(
-                ProjectExplorerViewModel.InstanceViewModelNode.WindowsConnectedIconIndex,
-                instances[1].ImageIndex);
+            Assert.That(
+                instances[0].ImageIndex, Is.EqualTo(ProjectExplorerViewModel.InstanceViewModelNode.LinuxConnectedIconIndex));
+            Assert.That(
+                instances[1].ImageIndex, Is.EqualTo(ProjectExplorerViewModel.InstanceViewModelNode.WindowsConnectedIconIndex));
         }
 
         [Test]
@@ -1006,12 +1004,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
                 .ToList();
 
-            Assert.AreEqual(
-                ProjectExplorerViewModel.InstanceViewModelNode.LinuxDisconnectedIconIndex,
-                instances[0].ImageIndex);
-            Assert.AreEqual(
-                ProjectExplorerViewModel.InstanceViewModelNode.WindowsDisconnectedIconIndex,
-                instances[1].ImageIndex);
+            Assert.That(
+                instances[0].ImageIndex, Is.EqualTo(ProjectExplorerViewModel.InstanceViewModelNode.LinuxDisconnectedIconIndex));
+            Assert.That(
+                instances[1].ImageIndex, Is.EqualTo(ProjectExplorerViewModel.InstanceViewModelNode.WindowsDisconnectedIconIndex));
         }
 
         //---------------------------------------------------------------------
@@ -1044,7 +1040,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(eventHandler);
+            Assert.That(eventHandler, Is.Not.Null);
 
             await eventHandler!(new InstanceStateChangedEvent(
                 new InstanceLocator(
@@ -1086,11 +1082,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             viewModel.SelectedNode = projects[0];
 
-            Assert.AreEqual(1, projects.Count);
+            Assert.That(projects.Count, Is.EqualTo(1));
             await viewModel
                 .UnloadSelectedProjectAsync()
                 .ConfigureAwait(true);
-            Assert.AreEqual(0, projects.Count);
+            Assert.That(projects.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -1113,11 +1109,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             viewModel.SelectedNode = instances[0];
 
-            Assert.AreEqual(2, instances.Count);
+            Assert.That(instances.Count, Is.EqualTo(2));
             await viewModel
                 .UnloadSelectedProjectAsync()
                 .ConfigureAwait(true);
-            Assert.AreEqual(2, instances.Count);
+            Assert.That(instances.Count, Is.EqualTo(2));
         }
 
         //---------------------------------------------------------------------
@@ -1319,10 +1315,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 new Mock<ICloudConsoleClient>().Object);
             viewModel.SelectedNode = viewModel.RootNode;
 
-            Assert.IsFalse(viewModel.IsUnloadProjectCommandVisible);
-            Assert.IsFalse(viewModel.IsRefreshProjectsCommandVisible);
-            Assert.IsTrue(viewModel.IsRefreshAllProjectsCommandVisible);
-            Assert.IsFalse(viewModel.IsCloudConsoleCommandVisible);
+            Assert.That(viewModel.IsUnloadProjectCommandVisible, Is.False);
+            Assert.That(viewModel.IsRefreshProjectsCommandVisible, Is.False);
+            Assert.That(viewModel.IsRefreshAllProjectsCommandVisible, Is.True);
+            Assert.That(viewModel.IsCloudConsoleCommandVisible, Is.False);
         }
 
         [Test]
@@ -1347,10 +1343,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             viewModel.SelectedNode = projects[0];
 
-            Assert.IsTrue(viewModel.IsUnloadProjectCommandVisible);
-            Assert.IsTrue(viewModel.IsRefreshProjectsCommandVisible);
-            Assert.IsFalse(viewModel.IsRefreshAllProjectsCommandVisible);
-            Assert.IsTrue(viewModel.IsCloudConsoleCommandVisible);
+            Assert.That(viewModel.IsUnloadProjectCommandVisible, Is.True);
+            Assert.That(viewModel.IsRefreshProjectsCommandVisible, Is.True);
+            Assert.That(viewModel.IsRefreshAllProjectsCommandVisible, Is.False);
+            Assert.That(viewModel.IsCloudConsoleCommandVisible, Is.True);
         }
 
         [Test]
@@ -1378,10 +1374,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             viewModel.SelectedNode = zones[0];
 
-            Assert.IsFalse(viewModel.IsUnloadProjectCommandVisible);
-            Assert.IsTrue(viewModel.IsRefreshProjectsCommandVisible);
-            Assert.IsFalse(viewModel.IsRefreshAllProjectsCommandVisible);
-            Assert.IsTrue(viewModel.IsCloudConsoleCommandVisible);
+            Assert.That(viewModel.IsUnloadProjectCommandVisible, Is.False);
+            Assert.That(viewModel.IsRefreshProjectsCommandVisible, Is.True);
+            Assert.That(viewModel.IsRefreshAllProjectsCommandVisible, Is.False);
+            Assert.That(viewModel.IsCloudConsoleCommandVisible, Is.True);
         }
 
         [Test]
@@ -1404,10 +1400,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             viewModel.SelectedNode = instances[0];
 
-            Assert.IsFalse(viewModel.IsUnloadProjectCommandVisible);
-            Assert.IsTrue(viewModel.IsRefreshProjectsCommandVisible);
-            Assert.IsFalse(viewModel.IsRefreshAllProjectsCommandVisible);
-            Assert.IsTrue(viewModel.IsCloudConsoleCommandVisible);
+            Assert.That(viewModel.IsUnloadProjectCommandVisible, Is.False);
+            Assert.That(viewModel.IsRefreshProjectsCommandVisible, Is.True);
+            Assert.That(viewModel.IsRefreshAllProjectsCommandVisible, Is.False);
+            Assert.That(viewModel.IsCloudConsoleCommandVisible, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -1436,8 +1432,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .Cast<ProjectExplorerViewModel.ProjectViewModelNode>()
                 .ToList();
 
-            Assert.AreEqual(1, projectViewModelNodes.Count);
-            Assert.IsTrue(projectViewModelNodes.First().IsExpanded);
+            Assert.That(projectViewModelNodes.Count, Is.EqualTo(1));
+            Assert.That(projectViewModelNodes.First().IsExpanded, Is.True);
         }
 
         [Test]
@@ -1465,8 +1461,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .Cast<ProjectExplorerViewModel.ProjectViewModelNode>()
                 .ToList();
 
-            Assert.AreEqual(1, projectViewModelNodes.Count);
-            Assert.IsFalse(projectViewModelNodes.First().IsExpanded);
+            Assert.That(projectViewModelNodes.Count, Is.EqualTo(1));
+            Assert.That(projectViewModelNodes.First().IsExpanded, Is.False);
         }
 
         [Test]
@@ -1492,9 +1488,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .RemoveProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(false);
 
-            CollectionAssert.DoesNotContain(
-                projectExplorerSettings.CollapsedProjects,
-                new ProjectLocator(SampleProjectId));
+            Assert.That(
+                projectExplorerSettings.CollapsedProjects, Has.No.Member(new ProjectLocator(SampleProjectId)));
         }
 
         [Test]
@@ -1521,24 +1516,22 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .Cast<ProjectExplorerViewModel.ProjectViewModelNode>()
                 .ToList();
 
-            Assert.AreEqual(1, projectViewModelNodes.Count);
+            Assert.That(projectViewModelNodes.Count, Is.EqualTo(1));
             var project = projectViewModelNodes.First();
 
             project.IsExpanded = false;
             project.IsExpanded = false;
             project.IsExpanded = false;
 
-            CollectionAssert.Contains(
-                projectExplorerSettings.CollapsedProjects,
-                project.ProjectNode.Project);
+            Assert.That(
+                projectExplorerSettings.CollapsedProjects, Has.Member(project.ProjectNode.Project));
 
             project.IsExpanded = true;
             project.IsExpanded = true;
             project.IsExpanded = true;
 
-            CollectionAssert.DoesNotContain(
-                projectExplorerSettings.CollapsedProjects,
-                project.ProjectNode.Project);
+            Assert.That(
+                projectExplorerSettings.CollapsedProjects, Has.No.Member(project.ProjectNode.Project));
         }
     }
 }

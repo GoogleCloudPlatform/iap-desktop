@@ -51,8 +51,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             using (var explorerSettings = new ProjectExplorerSettings(settingsRepository, true))
             {
-                Assert.IsNotNull(explorerSettings.CollapsedProjects);
-                CollectionAssert.IsEmpty(explorerSettings.CollapsedProjects);
+                Assert.That(explorerSettings.CollapsedProjects, Is.Not.Null);
+                Assert.That(explorerSettings.CollapsedProjects, Is.Empty);
             }
         }
 
@@ -67,14 +67,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             using (var explorerSettings = new ProjectExplorerSettings(settingsRepository, true))
             {
-                Assert.IsNotNull(explorerSettings.CollapsedProjects);
-                CollectionAssert.AreEquivalent(
-                    new[]
+                Assert.That(explorerSettings.CollapsedProjects, Is.Not.Null);
+                Assert.That(
+                    explorerSettings.CollapsedProjects, Is.EquivalentTo(new[]
                     {
                         new ProjectLocator("project-1"),
                         new ProjectLocator("project-2")
-                    },
-                    explorerSettings.CollapsedProjects);
+                    }));
             }
         }
 
@@ -90,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             }
 
             var settings = settingsRepository.GetSettings();
-            Assert.AreEqual("project-1,project-2", settings.CollapsedProjects.Value);
+            Assert.That(settings.CollapsedProjects.Value, Is.EqualTo("project-1,project-2"));
         }
     }
 }

@@ -41,7 +41,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             using (var key = new RSACng())
             using (var publicKey = new RsaPublicKey(key, true))
             {
-                Assert.AreEqual("ssh-rsa", publicKey.Type);
+                Assert.That(publicKey.Type, Is.EqualTo("ssh-rsa"));
             }
         }
 
@@ -58,9 +58,8 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         {
             using (var key = RsaPublicKey.FromWireFormat(Convert.FromBase64String(encodedKey)))
             {
-                Assert.AreEqual(
-                    encodedKey,
-                    Convert.ToBase64String(key.WireFormatValue));
+                Assert.That(
+                    Convert.ToBase64String(key.WireFormatValue), Is.EqualTo(encodedKey));
             }
         }
 
@@ -93,12 +92,12 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             var key = new RSACng();
             using (var publicKey = new RsaPublicKey(key, true))
             {
-                Assert.IsFalse(key.IsDisposed());
+                Assert.That(key.IsDisposed(), Is.False);
             }
 
             using (var publicKey = new RsaPublicKey(key, true))
             {
-                Assert.IsTrue(key.IsDisposed());
+                Assert.That(key.IsDisposed(), Is.True);
             }
         }
 
@@ -109,12 +108,12 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             {
                 using (var publicKey = new RsaPublicKey(key, false))
                 {
-                    Assert.IsFalse(key.IsDisposed());
+                    Assert.That(key.IsDisposed(), Is.False);
                 }
 
                 using (var publicKey = new RsaPublicKey(key, false))
                 {
-                    Assert.IsFalse(key.IsDisposed());
+                    Assert.That(key.IsDisposed(), Is.False);
                 }
             }
         }

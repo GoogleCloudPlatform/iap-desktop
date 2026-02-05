@@ -35,16 +35,16 @@ namespace Google.Solutions.Common.Test.Linq
         [Test]
         public void FromNullable_WhenNull()
         {
-            CollectionAssert.IsEmpty(Enumerables.FromNullable<string>(null));
+            Assert.That(Enumerables.FromNullable<string>(null), Is.Empty);
         }
 
         [Test]
         public void FromNullable_WhenNotNull()
         {
             var e = Enumerables.FromNullable<string>("test");
-            CollectionAssert.IsNotEmpty(e);
+            Assert.That(e, Is.Not.Empty);
 
-            Assert.AreEqual("test", e.First());
+            Assert.That(e.First(), Is.EqualTo("test"));
         }
     }
 }

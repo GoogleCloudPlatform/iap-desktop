@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             protected override void Save(ISettingsCollection settings)
             {
                 this.SaveCalls++;
-                Assert.IsNotNull(settings);
+                Assert.That(settings, Is.Not.Null);
 
                 if (this.ThrowOnSave)
                 {
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 "Sample",
                 CreateRepositoryMock().Object);
 
-            Assert.AreEqual("Sample", optionsViewModel.Title);
+            Assert.That(optionsViewModel.Title, Is.EqualTo("Sample"));
         }
 
         //---------------------------------------------------------------------
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             repository.Verify(r => r.GetSettings(), Times.Exactly(1));
             repository.Verify(r => r.SetSettings(It.IsAny<ISettingsCollection>()), Times.Once);
-            Assert.AreEqual(1, optionsViewModel.SaveCalls);
+            Assert.That(optionsViewModel.SaveCalls, Is.EqualTo(1));
         }
 
         [Test]
@@ -180,9 +180,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 repository.Object);
             optionsViewModel.MarkDirty();
 
-            Assert.IsTrue(optionsViewModel.IsDirty.Value);
+            Assert.That(optionsViewModel.IsDirty.Value, Is.True);
             await optionsViewModel.ApplyChangesAsync();
-            Assert.IsFalse(optionsViewModel.IsDirty.Value);
+            Assert.That(optionsViewModel.IsDirty.Value, Is.False);
         }
 
         [Test]
@@ -196,9 +196,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var property = ObservableProperty.Build(string.Empty);
             optionsViewModel.CallMarkDirtyWhenPropertyChanges(property);
 
-            Assert.IsFalse(optionsViewModel.IsDirty.Value);
+            Assert.That(optionsViewModel.IsDirty.Value, Is.False);
             property.Value = "new value";
-            Assert.IsTrue(optionsViewModel.IsDirty.Value);
+            Assert.That(optionsViewModel.IsDirty.Value, Is.True);
         }
     }
 }

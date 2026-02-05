@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         public void LoadedChildren_WhenNotLoaded()
         {
             var node = new SampleNode("root");
-            CollectionAssert.IsEmpty(node.LoadedChildren);
+            Assert.That(node.LoadedChildren, Is.Empty);
         }
 
         //----------------------------------------------------------------------
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
         public void LoadedDescendents_WhenNotLoaded()
         {
             var node = new SampleNode("root");
-            CollectionAssert.IsEmpty(node.LoadedDescendents);
+            Assert.That(node.LoadedDescendents, Is.Empty);
         }
     }
 }

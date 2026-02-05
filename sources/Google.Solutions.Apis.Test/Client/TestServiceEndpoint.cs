@@ -54,10 +54,10 @@ namespace Google.Solutions.Apis.Test.Client
 
             var details = endpoint.GetDirections(state);
 
-            Assert.AreEqual(new Uri("https://sample.googleapis.com/compute"), details.BaseUri);
-            Assert.AreEqual(ServiceEndpointType.Tls, details.Type);
-            Assert.AreEqual("sample.googleapis.com", details.Host);
-            Assert.IsFalse(details.UseClientCertificate);
+            Assert.That(details.BaseUri, Is.EqualTo(new Uri("https://sample.googleapis.com/compute")));
+            Assert.That(details.Type, Is.EqualTo(ServiceEndpointType.Tls));
+            Assert.That(details.Host, Is.EqualTo("sample.googleapis.com"));
+            Assert.That(details.UseClientCertificate, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -73,10 +73,10 @@ namespace Google.Solutions.Apis.Test.Client
 
             var details = endpoint.GetDirections(DeviceEnrollmentState.Enrolled);
 
-            Assert.AreEqual(new Uri("https://sample.mtls.googleapis.com/compute"), details.BaseUri);
-            Assert.AreEqual(ServiceEndpointType.MutualTls, details.Type);
-            Assert.AreEqual("sample.mtls.googleapis.com", details.Host);
-            Assert.IsTrue(details.UseClientCertificate);
+            Assert.That(details.BaseUri, Is.EqualTo(new Uri("https://sample.mtls.googleapis.com/compute")));
+            Assert.That(details.Type, Is.EqualTo(ServiceEndpointType.MutualTls));
+            Assert.That(details.Host, Is.EqualTo("sample.mtls.googleapis.com"));
+            Assert.That(details.UseClientCertificate, Is.True);
         }
 
         [Test]
@@ -89,10 +89,10 @@ namespace Google.Solutions.Apis.Test.Client
 
             var details = endpoint.GetDirections(DeviceEnrollmentState.Enrolled);
 
-            Assert.AreEqual(new Uri("https://sample.Googleapis.COM/compute"), details.BaseUri);
-            Assert.AreEqual(ServiceEndpointType.Tls, details.Type);
-            Assert.AreEqual("sample.googleapis.com", details.Host);
-            Assert.IsFalse(details.UseClientCertificate);
+            Assert.That(details.BaseUri, Is.EqualTo(new Uri("https://sample.Googleapis.COM/compute")));
+            Assert.That(details.Type, Is.EqualTo(ServiceEndpointType.Tls));
+            Assert.That(details.Host, Is.EqualTo("sample.googleapis.com"));
+            Assert.That(details.UseClientCertificate, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -110,10 +110,10 @@ namespace Google.Solutions.Apis.Test.Client
 
             var details = endpoint.GetDirections(state);
 
-            Assert.AreEqual(new Uri("https://sample.p.Googleapis.COM/compute"), details.BaseUri);
-            Assert.AreEqual(ServiceEndpointType.PrivateServiceConnect, details.Type);
-            Assert.AreEqual("sample.googleapis.com", details.Host);
-            Assert.IsFalse(details.UseClientCertificate);
+            Assert.That(details.BaseUri, Is.EqualTo(new Uri("https://sample.p.Googleapis.COM/compute")));
+            Assert.That(details.Type, Is.EqualTo(ServiceEndpointType.PrivateServiceConnect));
+            Assert.That(details.Host, Is.EqualTo("sample.googleapis.com"));
+            Assert.That(details.UseClientCertificate, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -127,7 +127,7 @@ namespace Google.Solutions.Apis.Test.Client
                 ServiceRoute.Public,
                 new Uri("https://sample.googleapis.com/compute"));
 
-            StringAssert.Contains("https://sample.googleapis.com/compute", endpoint.ToString());
+            Assert.That(endpoint.ToString(), Does.Contain("https://sample.googleapis.com/compute"));
         }
     }
 }
