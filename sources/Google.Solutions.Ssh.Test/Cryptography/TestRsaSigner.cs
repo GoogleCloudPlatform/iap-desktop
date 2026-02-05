@@ -56,12 +56,11 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             using (var cngKey = new RSACng())
             using (var signer = new RsaSigner(cngKey, true))
             {
-                CollectionAssert.AreEqual(
-                    cngKey.SignData(
+                Assert.That(
+                    signer.Sign(challenge), Is.EqualTo(cngKey.SignData(
                         challengeBlob,
                         HashAlgorithmName.SHA512,
-                        RSASignaturePadding.Pkcs1),
-                    signer.Sign(challenge));
+                        RSASignaturePadding.Pkcs1)).AsCollection);
             }
         }
 
@@ -88,12 +87,11 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             using (var cngKey = new RSACng())
             using (var signer = new RsaSigner(cngKey, true))
             {
-                CollectionAssert.AreEqual(
-                    cngKey.SignData(
+                Assert.That(
+                    signer.Sign(challenge), Is.EqualTo(cngKey.SignData(
                         challengeBlob,
                         HashAlgorithmName.SHA256,
-                        RSASignaturePadding.Pkcs1),
-                    signer.Sign(challenge));
+                        RSASignaturePadding.Pkcs1)).AsCollection);
             }
         }
 

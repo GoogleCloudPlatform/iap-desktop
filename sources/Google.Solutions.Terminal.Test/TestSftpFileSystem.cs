@@ -131,9 +131,8 @@ namespace Google.Solutions.Terminal.Test
                     "file-2"
                 };
 
-                CollectionAssert.AreEqual(
-                    expected,
-                    files.Select(f => f.Name));
+                Assert.That(
+                    files.Select(f => f.Name), Is.EqualTo(expected).AsCollection);
             }
         }
 
@@ -155,7 +154,7 @@ namespace Google.Solutions.Terminal.Test
                     .ListFilesAsync(fs.Drive)
                     .ConfigureAwait(false);
 
-                CollectionAssert.IsEmpty(files.Select(f => f.Name));
+                Assert.That(files.Select(f => f.Name), Is.Empty);
             }
         }
 
@@ -169,9 +168,8 @@ namespace Google.Solutions.Terminal.Test
                     .ListFilesAsync(fs.Root)
                     .ConfigureAwait(false);
 
-                CollectionAssert.AreEqual(
-                    new[] { fs.Home, fs.Drive },
-                    files);
+                Assert.That(
+                    files, Is.EqualTo(new[] { fs.Home, fs.Drive }).AsCollection);
             }
         }
 

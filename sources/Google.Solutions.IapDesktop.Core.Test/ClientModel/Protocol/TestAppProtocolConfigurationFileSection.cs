@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 Condition = condition
             };
 
-            CollectionAssert.IsEmpty(section.ParseCondition());
+            Assert.That(section.ParseCondition(), Is.Empty);
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             };
 
             var traits = section.ParseCondition();
-            CollectionAssert.IsNotEmpty(traits);
+            Assert.That(traits, Is.Not.Empty);
 
             Assert.IsTrue(traits.All(t => t is InstanceTrait));
         }
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             };
 
             var traits = section.ParseCondition();
-            CollectionAssert.IsNotEmpty(traits);
+            Assert.That(traits, Is.Not.Empty);
 
             Assert.That(traits.Count(), Is.EqualTo(3));
             Assert.IsTrue(traits.Any(t => t is InstanceTrait));

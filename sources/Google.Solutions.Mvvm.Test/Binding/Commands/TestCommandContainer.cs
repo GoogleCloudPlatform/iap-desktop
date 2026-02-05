@@ -71,9 +71,8 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 source.Context = "ctx-2";
 
-                CollectionAssert.AreEquivalent(
-                    new[] { "ctx-1", "ctx-2" },
-                    observedContexts);
+                Assert.That(
+                    observedContexts, Is.EquivalentTo(new[] { "ctx-1", "ctx-2" }));
             }
         }
 
@@ -110,9 +109,8 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 source.Context = "ctx-2";
 
-                CollectionAssert.AreEquivalent(
-                    new[] { "ctx-1", "ctx-2" },
-                    observedContexts);
+                Assert.That(
+                    observedContexts, Is.EquivalentTo(new[] { "ctx-1", "ctx-2" }));
             }
         }
 

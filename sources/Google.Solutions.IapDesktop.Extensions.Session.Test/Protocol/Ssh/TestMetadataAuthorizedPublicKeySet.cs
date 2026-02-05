@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var metadata = new Metadata();
 
-            CollectionAssert.IsEmpty(MetadataAuthorizedPublicKeySet.FromMetadata(metadata).Keys);
+            Assert.That(MetadataAuthorizedPublicKeySet.FromMetadata(metadata).Keys, Is.Empty);
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 }
             };
 
-            CollectionAssert.IsEmpty(MetadataAuthorizedPublicKeySet.FromMetadata(metadata).Keys);
+            Assert.That(MetadataAuthorizedPublicKeySet.FromMetadata(metadata).Keys, Is.Empty);
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 Value = " "
             };
 
-            CollectionAssert.IsEmpty(MetadataAuthorizedPublicKeySet.FromMetadata(metadata).Keys);
+            Assert.That(MetadataAuthorizedPublicKeySet.FromMetadata(metadata).Keys, Is.Empty);
         }
 
         [Test]
@@ -225,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             var newKeySet = keySet.Remove(keyToRemove);
 
-            CollectionAssert.AreEquivalent(keySet.Keys, newKeySet.Keys);
+            Assert.That(newKeySet.Keys, Is.EquivalentTo(keySet.Keys));
         }
 
         [Test]

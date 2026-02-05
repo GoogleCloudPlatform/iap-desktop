@@ -277,9 +277,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 restAdapter.Object,
                 SampleRepository);
 
-            CollectionAssert.IsEmpty(await adapter
+            Assert.That(await adapter
                 .ListReleasesAsync(ReleaseFeedOptions.None, CancellationToken.None)
-                .ConfigureAwait(false));
+                .ConfigureAwait(false), Is.Empty);
         }
 
         [Test]
@@ -326,15 +326,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ConfigureAwait(false);
 
             Assert.That(releases.Count(), Is.EqualTo(4));
-            CollectionAssert.AreEqual(
-                new[]
+            Assert.That(
+                releases.Select(r => r.TagVersion!.ToString()), Is.EqualTo(new[]
                 {
                     "3.1.1",
                     "2.0.1",
                     "2.0.0",
                     "1.0.0",
-                },
-                releases.Select(r => r.TagVersion!.ToString()));
+                }).AsCollection);
         }
 
         [Test]
@@ -364,15 +363,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ConfigureAwait(false);
 
             Assert.That(releases.Count(), Is.EqualTo(4));
-            CollectionAssert.AreEqual(
-                new[]
+            Assert.That(
+                releases.Select(r => r.TagVersion!.ToString()), Is.EqualTo(new[]
                 {
                     "3.0.1",
                     "2.0.1",
                     "1.0.1",
                     "1.0.0",
-                },
-                releases.Select(r => r.TagVersion!.ToString()));
+                }).AsCollection);
         }
 
         [Test]
@@ -402,13 +400,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ConfigureAwait(false);
 
             Assert.That(releases.Count(), Is.EqualTo(2));
-            CollectionAssert.AreEqual(
-                new[]
+            Assert.That(
+                releases.Select(r => r.TagVersion!.ToString()), Is.EqualTo(new[]
                 {
                     "1.0.1",
                     "1.0.0",
-                },
-                releases.Select(r => r.TagVersion!.ToString()));
+                }).AsCollection);
         }
 
         //---------------------------------------------------------------------

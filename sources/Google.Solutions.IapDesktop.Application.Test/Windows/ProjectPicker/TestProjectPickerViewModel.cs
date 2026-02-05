@@ -92,13 +92,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
             var modelMock = CreateModelMock();
             var viewModel = new ProjectPickerViewModel(modelMock.Object);
 
-            CollectionAssert.IsEmpty(viewModel.FilteredProjects);
+            Assert.That(viewModel.FilteredProjects, Is.Empty);
 
             await viewModel
                 .FilterAsync(null)
                 .ConfigureAwait(true);
 
-            CollectionAssert.IsNotEmpty(viewModel.FilteredProjects);
+            Assert.That(viewModel.FilteredProjects, Is.Not.Empty);
             Assert.That(viewModel.FilteredProjects.Count, Is.EqualTo(3));
         }
 

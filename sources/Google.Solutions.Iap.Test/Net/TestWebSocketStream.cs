@@ -187,7 +187,7 @@ namespace Google.Solutions.Iap.Test.Net
                         .ConfigureAwait(false);
 
                     Assert.That(bytesRead, Is.EqualTo(8));
-                    CollectionAssert.AreEquivalent(frame, buffer);
+                    Assert.That(buffer, Is.EquivalentTo(frame));
                 }
             }
         }
@@ -217,7 +217,7 @@ namespace Google.Solutions.Iap.Test.Net
                         .ConfigureAwait(false);
 
                     Assert.That(bytesRead, Is.EqualTo(8));
-                    CollectionAssert.AreEquivalent(frame, buffer);
+                    Assert.That(buffer, Is.EquivalentTo(frame));
                 }
             }
         }
@@ -315,7 +315,7 @@ namespace Google.Solutions.Iap.Test.Net
                         .ReceiveBinaryFrameAsync(frame)
                         .ConfigureAwait(false);
 
-                    CollectionAssert.AreEquivalent(buffer, frame);
+                    Assert.That(frame, Is.EquivalentTo(buffer));
                 }
             }
         }

@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test
                 .LoadAndRegisterDefaultAppProtocolsAsync(registry)
                 .ConfigureAwait(false);
 
-            CollectionAssert.IsNotEmpty(registry.Protocols);
+            Assert.That(registry.Protocols, Is.Not.Empty);
         }
 
         //---------------------------------------------------------------------
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test
                 .LoadAndRegisterCustomAppProtocolsAsync("b:\\notfound", registry)
                 .ConfigureAwait(false);
 
-            CollectionAssert.IsEmpty(registry.Protocols);
+            Assert.That(registry.Protocols, Is.Empty);
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test
                 .LoadAndRegisterCustomAppProtocolsAsync(dir.FullName, registry)
                 .ConfigureAwait(false);
 
-            CollectionAssert.IsNotEmpty(registry.Protocols);
+            Assert.That(registry.Protocols, Is.Not.Empty);
         }
     }
 }

@@ -44,12 +44,11 @@ namespace Google.Solutions.Iap.Test.Protocol
                     SshRelayMessageTag.ACK);
 
                 Assert.That(bytesWritten, Is.EqualTo(2));
-                CollectionAssert.AreEquivalent(
-                    new byte[]
+                Assert.That(
+                    message, Is.EquivalentTo(new byte[]
                     {
                     0, 7
-                    },
-                    message);
+                    }));
             }
 
             [Test]
@@ -101,14 +100,13 @@ namespace Google.Solutions.Iap.Test.Protocol
                     "Sid");
 
                 Assert.That(bytesWritten, Is.EqualTo(9));
-                CollectionAssert.AreEquivalent(
-                    new byte[]
+                Assert.That(
+                    message, Is.EquivalentTo(new byte[]
                     {
                     0, 1,
                     0, 0, 0, 3,
                     (byte)'S', (byte)'i', (byte)'d'
-                    },
-                    message);
+                    }));
 
                 SshRelayFormat.ConnectSuccessSid.Decode(
                     message,
@@ -175,13 +173,12 @@ namespace Google.Solutions.Iap.Test.Protocol
                     42);
 
                 Assert.That(bytesWritten, Is.EqualTo(10));
-                CollectionAssert.AreEquivalent(
-                    new byte[]
+                Assert.That(
+                    message, Is.EquivalentTo(new byte[]
                     {
                     0, 2,
                     0, 0, 0, 0, 0, 0, 0, 42,
-                    },
-                    message);
+                    }));
 
                 SshRelayFormat.ReconnectAck.Decode(message, out var ack);
                 Assert.That(ack, Is.EqualTo(42));
@@ -242,13 +239,12 @@ namespace Google.Solutions.Iap.Test.Protocol
                 var bytesWritten = SshRelayFormat.Ack.Encode(message, 77);
 
                 Assert.That(bytesWritten, Is.EqualTo(10));
-                CollectionAssert.AreEquivalent(
-                    new byte[]
+                Assert.That(
+                    message, Is.EquivalentTo(new byte[]
                     {
                     0, 7,
                     0, 0, 0, 0, 0, 0, 0, 77
-                    },
-                    message);
+                    }));
             }
 
             [Test]
@@ -370,14 +366,13 @@ namespace Google.Solutions.Iap.Test.Protocol
                     1);
 
                 Assert.That(bytesWritten, Is.EqualTo(7));
-                CollectionAssert.AreEquivalent(
-                    new byte[]
+                Assert.That(
+                    message, Is.EquivalentTo(new byte[]
                     {
                     0, 4,
                     0, 0, 0, 1,
                     (byte)'D'
-                    },
-                    message);
+                    }));
             }
 
             [Test]

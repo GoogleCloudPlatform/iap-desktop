@@ -57,9 +57,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
             };
 
             var traits = TraitDetector.DetectTraits(instance);
-            CollectionAssert.Contains(traits, InstanceTrait.Instance);
-            CollectionAssert.Contains(traits, WindowsTrait.Instance);
-            CollectionAssert.DoesNotContain(traits, LinuxTrait.Instance);
+            Assert.That(traits, Has.Member(InstanceTrait.Instance));
+            Assert.That(traits, Has.Member(WindowsTrait.Instance));
+            Assert.That(traits, Has.No.Member(LinuxTrait.Instance));
         }
 
         [Test]
@@ -80,9 +80,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
             };
 
             var traits = TraitDetector.DetectTraits(instance);
-            CollectionAssert.Contains(traits, InstanceTrait.Instance);
-            CollectionAssert.Contains(traits, WindowsTrait.Instance);
-            CollectionAssert.DoesNotContain(traits, LinuxTrait.Instance);
+            Assert.That(traits, Has.Member(InstanceTrait.Instance));
+            Assert.That(traits, Has.Member(WindowsTrait.Instance));
+            Assert.That(traits, Has.No.Member(LinuxTrait.Instance));
         }
 
         [Test]
@@ -91,9 +91,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
             var instance = new Instance();
 
             var traits = TraitDetector.DetectTraits(instance);
-            CollectionAssert.Contains(traits, InstanceTrait.Instance);
-            CollectionAssert.DoesNotContain(traits, WindowsTrait.Instance);
-            CollectionAssert.Contains(traits, LinuxTrait.Instance);
+            Assert.That(traits, Has.Member(InstanceTrait.Instance));
+            Assert.That(traits, Has.No.Member(WindowsTrait.Instance));
+            Assert.That(traits, Has.Member(LinuxTrait.Instance));
         }
 
         //---------------------------------------------------------------------
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
 
             var instance = new Instance();
             var traits = TraitDetector.DetectTraits(instance);
-            CollectionAssert.Contains(traits, customTrait.Object);
+            Assert.That(traits, Has.Member(customTrait.Object));
         }
     }
 }

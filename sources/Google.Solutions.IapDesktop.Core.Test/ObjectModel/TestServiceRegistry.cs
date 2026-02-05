@@ -311,7 +311,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             var services = registry.GetServicesByCategory<ICloneable>();
 
             Assert.IsNotNull(services);
-            CollectionAssert.IsEmpty(services);
+            Assert.That(services, Is.Empty);
         }
 
         [Test]

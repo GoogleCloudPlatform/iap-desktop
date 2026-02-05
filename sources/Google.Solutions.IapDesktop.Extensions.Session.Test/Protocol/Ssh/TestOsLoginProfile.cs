@@ -352,7 +352,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ListAuthorizedKeysAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            CollectionAssert.IsEmpty(keys);
+            Assert.That(keys, Is.Empty);
         }
 
         [Test]

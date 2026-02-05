@@ -141,9 +141,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Predicate = s => s == s.ToUpper()
             };
 
-            CollectionAssert.AreEquivalent(
-                new[] { "THREE" },
-                filtered.ToList());
+            Assert.That(
+                filtered.ToList(), Is.EquivalentTo(new[] { "THREE" }));
         }
 
         [Test]
@@ -188,9 +187,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             {
                 eventRaised = true;
                 Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Add));
-                CollectionAssert.AreEquivalent(
-                    new[] { "UPPERCASE" },
-                    args.NewItems);
+                Assert.That(
+                    args.NewItems, Is.EquivalentTo(new[] { "UPPERCASE" }));
             };
 
             collection.Add("UPPERCASE");
@@ -240,9 +238,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             {
                 eventRaised = true;
                 Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Remove));
-                CollectionAssert.AreEquivalent(
-                    new[] { "UPPERCASE" },
-                    args.OldItems);
+                Assert.That(
+                    args.OldItems, Is.EquivalentTo(new[] { "UPPERCASE" }));
             };
 
             collection.Remove("UPPERCASE");

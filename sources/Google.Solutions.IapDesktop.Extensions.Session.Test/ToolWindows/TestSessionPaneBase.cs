@@ -70,12 +70,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows
                 Assert.IsNotNull(window.ContextCommands);
                 Assert.IsNotNull(window.TabPageContextMenuStrip);
 
-                CollectionAssert.Contains(
+                Assert.That(
                     window.TabPageContextMenuStrip.Items
                         .Cast<ToolStripMenuItem>()
                         .Select(i => i.Text)
-                        .ToList(),
-                    "test-command");
+                        .ToList(), Has.Member("test-command"));
             }
         }
 

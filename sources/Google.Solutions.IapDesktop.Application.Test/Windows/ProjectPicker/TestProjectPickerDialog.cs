@@ -104,9 +104,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
                 .ListProjectsAsync(null, 100, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            CollectionAssert.AreEquivalent(
-                projects,
-                result.Projects);
+            Assert.That(
+                result.Projects, Is.EquivalentTo(projects));
         }
 
         [Test]

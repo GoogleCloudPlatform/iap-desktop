@@ -66,12 +66,10 @@ namespace Google.Solutions.Ssh.Test.Cryptography
                     encoded,
                     (ushort)key.KeySize);
 
-                CollectionAssert.AreEqual(
-                    point.X,
-                    restoredPoint.X);
-                CollectionAssert.AreEqual(
-                    point.Y,
-                    restoredPoint.Y);
+                Assert.That(
+                    restoredPoint.X, Is.EqualTo(point.X).AsCollection);
+                Assert.That(
+                    restoredPoint.Y, Is.EqualTo(point.Y).AsCollection);
             }
         }
 

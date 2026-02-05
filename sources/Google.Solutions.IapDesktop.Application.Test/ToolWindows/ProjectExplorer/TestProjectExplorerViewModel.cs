@@ -402,7 +402,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
 
-            CollectionAssert.IsEmpty(viewModel.Projects);
+            Assert.That(viewModel.Projects, Is.Empty);
         }
 
         [Test]
@@ -421,7 +421,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(false);
 
-            CollectionAssert.IsNotEmpty(viewModel.Projects);
+            Assert.That(viewModel.Projects, Is.Not.Empty);
         }
 
         //---------------------------------------------------------------------
@@ -1488,9 +1488,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .RemoveProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(false);
 
-            CollectionAssert.DoesNotContain(
-                projectExplorerSettings.CollapsedProjects,
-                new ProjectLocator(SampleProjectId));
+            Assert.That(
+                projectExplorerSettings.CollapsedProjects, Has.No.Member(new ProjectLocator(SampleProjectId)));
         }
 
         [Test]
@@ -1524,17 +1523,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             project.IsExpanded = false;
             project.IsExpanded = false;
 
-            CollectionAssert.Contains(
-                projectExplorerSettings.CollapsedProjects,
-                project.ProjectNode.Project);
+            Assert.That(
+                projectExplorerSettings.CollapsedProjects, Has.Member(project.ProjectNode.Project));
 
             project.IsExpanded = true;
             project.IsExpanded = true;
             project.IsExpanded = true;
 
-            CollectionAssert.DoesNotContain(
-                projectExplorerSettings.CollapsedProjects,
-                project.ProjectNode.Project);
+            Assert.That(
+                projectExplorerSettings.CollapsedProjects, Has.No.Member(project.ProjectNode.Project));
         }
     }
 }

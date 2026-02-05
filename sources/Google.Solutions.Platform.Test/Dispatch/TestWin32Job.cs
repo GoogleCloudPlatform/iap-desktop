@@ -122,7 +122,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             using (var job = new Win32Job(true))
             {
-                CollectionAssert.IsEmpty(job.ProcessIds);
+                Assert.That(job.ProcessIds, Is.Empty);
             }
         }
 
@@ -140,8 +140,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
                 var ids = job.ProcessIds;
                 Assert.That(ids.Count(), Is.EqualTo(2));
-                CollectionAssert.Contains(ids, process1.Id);
-                CollectionAssert.Contains(ids, process2.Id);
+                Assert.That(ids, Has.Member(process1.Id));
+                Assert.That(ids, Has.Member(process2.Id));
             }
         }
 

@@ -65,9 +65,8 @@ namespace Google.Solutions.Mvvm.Test.Theme
             theme.AddRule(i => appliedItems.Add(i));
             theme.ApplyTo(menu);
 
-            CollectionAssert.AreEquivalent(
-                new[] { item1, item2 },
-                appliedItems);
+            Assert.That(
+                appliedItems, Is.EquivalentTo(new[] { item1, item2 }));
         }
 
         [Test]
@@ -86,9 +85,8 @@ namespace Google.Solutions.Mvvm.Test.Theme
             menu.Items.Add(item1);
             menu.Items.Add(item2);
 
-            CollectionAssert.AreEquivalent(
-                new[] { item1, item2 },
-                appliedItems);
+            Assert.That(
+                appliedItems, Is.EquivalentTo(new[] { item1, item2 }));
         }
 
         //---------------------------------------------------------------------
@@ -112,9 +110,8 @@ namespace Google.Solutions.Mvvm.Test.Theme
             theme.AddRule(i => appliedItems.Add(i));
             theme.ApplyTo(menu);
 
-            CollectionAssert.AreEquivalent(
-                new[] { level2, level3 },
-                appliedItems);
+            Assert.That(
+                appliedItems, Is.EquivalentTo(new[] { level2, level3 }));
         }
 
         [Test]
@@ -131,9 +128,8 @@ namespace Google.Solutions.Mvvm.Test.Theme
             var level2 = new ToolStripMenuItem();
             menu.Items.Add(level2);
 
-            CollectionAssert.AreEquivalent(
-                new[] { level2 },
-                appliedItems);
+            Assert.That(
+                appliedItems, Is.EquivalentTo(new[] { level2 }));
         }
 
         [Test]
@@ -158,9 +154,8 @@ namespace Google.Solutions.Mvvm.Test.Theme
             // Show again
             level2.ShowDropDown();
 
-            CollectionAssert.AreEquivalent(
-                new[] { level2, level3 },
-                appliedItems);
+            Assert.That(
+                appliedItems, Is.EquivalentTo(new[] { level2, level3 }));
         }
     }
 }

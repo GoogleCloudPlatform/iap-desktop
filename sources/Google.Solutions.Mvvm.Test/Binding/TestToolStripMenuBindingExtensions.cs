@@ -252,16 +252,15 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
                 Assert.That(form.ContextMenuStrip.Items.Count, Is.EqualTo(4));
 
-                CollectionAssert.AreEquivalent(
-                    new[] {
-                        "item #0",
-                        "new item",
-                        "item #1",
-                        "item #2"},
+                Assert.That(
                     form.ContextMenuStrip.Items
                         .OfType<ToolStripMenuItem>()
                         .Select(i => i.Text)
-                        .ToList());
+                        .ToList(), Is.EquivalentTo(new[] {
+                        "item #0",
+                        "new item",
+                        "item #1",
+                        "item #2"}));
             }
         }
 
@@ -301,14 +300,13 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
                 Assert.That(form.ContextMenuStrip.Items.Count, Is.EqualTo(2));
 
-                CollectionAssert.AreEquivalent(
-                    new[] {
-                        "item #0",
-                        "item #2"},
+                Assert.That(
                     form.ContextMenuStrip.Items
                         .OfType<ToolStripMenuItem>()
                         .Select(i => i.Text)
-                        .ToList());
+                        .ToList(), Is.EquivalentTo(new[] {
+                        "item #0",
+                        "item #2"}));
             }
         }
 

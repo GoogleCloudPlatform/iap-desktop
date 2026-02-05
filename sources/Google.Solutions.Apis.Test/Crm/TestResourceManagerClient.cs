@@ -209,9 +209,8 @@ namespace Google.Solutions.Apis.Test.Crm
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Projects.Any());
-            CollectionAssert.Contains(
-                result.Projects.Select(p => p.ProjectId),
-                TestProject.ProjectId);
+            Assert.That(
+                result.Projects.Select(p => p.ProjectId), Has.Member(TestProject.ProjectId));
         }
 
         //---------------------------------------------------------------------

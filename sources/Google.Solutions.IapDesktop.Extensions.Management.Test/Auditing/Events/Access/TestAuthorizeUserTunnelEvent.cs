@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.That(e.DestinationHost, Is.EqualTo("10.0.0.1"));
             Assert.That(e.DestinationPort, Is.EqualTo("3389"));
 
-            CollectionAssert.IsEmpty(e.AccessLevels);
+            Assert.That(e.AccessLevels, Is.Empty);
             Assert.IsNull(e.DeviceId);
             Assert.That(e.DeviceState, Is.EqualTo("Unknown"));
 
@@ -313,7 +313,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.That(e.DestinationHost, Is.EqualTo("10.0.0.1"));
             Assert.That(e.DestinationPort, Is.EqualTo("3389"));
 
-            CollectionAssert.IsEmpty(e.AccessLevels);
+            Assert.That(e.AccessLevels, Is.Empty);
             Assert.IsNull(e.DeviceId);
             Assert.That(e.DeviceState, Is.EqualTo("Unknown"));
 
@@ -375,7 +375,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.IsNull(e.DestinationHost);
             Assert.IsNull(e.DestinationPort);
 
-            CollectionAssert.IsEmpty(e.AccessLevels);
+            Assert.That(e.AccessLevels, Is.Empty);
             Assert.IsNull(e.DeviceId);
             Assert.IsNull(e.DeviceState);
 
@@ -527,7 +527,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.IsNull(e.DestinationHost);
             Assert.IsNull(e.DestinationPort);
 
-            CollectionAssert.IsEmpty(e.AccessLevels);
+            Assert.That(e.AccessLevels, Is.Empty);
             Assert.IsNull(e.DeviceId);
             Assert.That(e.DeviceState, Is.EqualTo("Unknown"));
 

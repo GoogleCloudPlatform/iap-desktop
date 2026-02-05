@@ -270,7 +270,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
             Assert.IsNotNull(model);
             Assert.That(model!.DisplayName, Is.EqualTo("Project 1"));
 
-            CollectionAssert.IsEmpty(model.Items);
+            Assert.That(model.Items, Is.Empty);
         }
 
         //---------------------------------------------------------------------

@@ -77,7 +77,7 @@ namespace Google.Solutions.Apis.Test.Client
 
             Assert.That(e.Message, Is.EqualTo("MockError"));
             Assert.That(e.Error.Message, Is.EqualTo("MockError"));
-            CollectionAssert.IsEmpty(e.Error.Errors);
+            Assert.That(e.Error.Errors, Is.Empty);
         }
 
         [Test]

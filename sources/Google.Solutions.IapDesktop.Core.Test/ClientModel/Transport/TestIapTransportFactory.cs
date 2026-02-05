@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 new Mock<IEventQueue>().Object,
                 CreateTunnelFactory().Object);
 
-            CollectionAssert.IsEmpty(factory.Pool);
+            Assert.That(factory.Pool, Is.Empty);
         }
 
         [Test]
@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 SampleTimeout,
                 CancellationToken.None);
 
-            CollectionAssert.IsEmpty(factory.Pool);
+            Assert.That(factory.Pool, Is.Empty);
         }
 
         //---------------------------------------------------------------------

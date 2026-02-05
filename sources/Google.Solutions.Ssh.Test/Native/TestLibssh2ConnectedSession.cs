@@ -157,9 +157,8 @@ namespace Google.Solutions.Ssh.Test.Native
                     Assert.IsNotNull(connection.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA256), "SHA256");
                     Assert.IsNotNull(connection.GetRemoteHostKey());
 
-                    CollectionAssert.AreEqual(
-                        new HostKeyType(hostKeyType).Name,
-                        connection.GetActiveAlgorithms(LIBSSH2_METHOD.HOSTKEY)[0]);
+                    Assert.That(
+                        connection.GetActiveAlgorithms(LIBSSH2_METHOD.HOSTKEY)[0], Is.EqualTo(new HostKeyType(hostKeyType).Name).AsCollection);
                 }
             }
         }

@@ -491,27 +491,26 @@ namespace Google.Solutions.Mvvm.Test.Format
         public void Tokenize_WhenTextEmpty_ThenTokenizeReturnsNoTokens()
         {
             var tokens = MarkdownDocument.Token.Tokenize(string.Empty);
-            CollectionAssert.IsEmpty(tokens);
+            Assert.That(tokens, Is.Empty);
         }
 
         [Test]
         public void Tokenize_WhenTextHasNoDelimeter_ThenTokenizeReturnsSingleToken()
         {
             var tokens = MarkdownDocument.Token.Tokenize("t");
-            CollectionAssert.AreEqual(
-                new[]
+            Assert.That(
+                tokens, Is.EqualTo(new[]
                 {
                     new MarkdownDocument.Token(MarkdownDocument.TokenType.Text, "t")
-                },
-                tokens);
+                }).AsCollection);
         }
 
         [Test]
         public void Tokenize_WhenTextHasDelimeters_ThenTokenizeReturnsTokens()
         {
             var tokens = MarkdownDocument.Token.Tokenize("t[a]()* *_ text");
-            CollectionAssert.AreEqual(
-                new[]
+            Assert.That(
+                tokens, Is.EqualTo(new[]
                 {
                     new MarkdownDocument.Token(MarkdownDocument.TokenType.Text, "t"),
                     new MarkdownDocument.Token(MarkdownDocument.TokenType.Delimiter, "["),
@@ -524,8 +523,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                     new MarkdownDocument.Token(MarkdownDocument.TokenType.Delimiter, "*"),
                     new MarkdownDocument.Token(MarkdownDocument.TokenType.Delimiter, "_"),
                     new MarkdownDocument.Token(MarkdownDocument.TokenType.Text, " text"),
-                },
-                tokens);
+                }).AsCollection);
         }
 
         [Test]

@@ -59,12 +59,11 @@ namespace Google.Solutions.Settings.Test
             v.Value = "a string";
             store.Write(v);
 
-            CollectionAssert.AreEquivalent(
-                new Dictionary<string, string>()
+            Assert.That(
+                dict, Is.EquivalentTo(new Dictionary<string, string>()
                 {
                     { "string", "a string" },
-                },
-                dict);
+                }));
         }
     }
 }

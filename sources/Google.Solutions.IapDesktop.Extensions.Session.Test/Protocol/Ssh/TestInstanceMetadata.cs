@@ -952,7 +952,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.All);
             Assert.IsNotNull(keys);
-            CollectionAssert.IsEmpty(keys);
+            Assert.That(keys, Is.Empty);
         }
 
         [Test]
@@ -987,7 +987,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.All);
             Assert.IsNotNull(keys);
-            CollectionAssert.IsEmpty(keys);
+            Assert.That(keys, Is.Empty);
         }
 
         [Test]
@@ -1004,7 +1004,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.Oslogin);
             Assert.IsNotNull(keys);
-            CollectionAssert.IsEmpty(keys);
+            Assert.That(keys, Is.Empty);
         }
 
         [Test]
@@ -1130,9 +1130,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.All);
             Assert.IsNotNull(keys);
             Assert.That(keys.Count(), Is.EqualTo(2));
-            CollectionAssert.AreEquivalent(
-                new[] { "alice", "bob" },
-                keys.Select(k => k.PosixUsername));
+            Assert.That(
+                keys.Select(k => k.PosixUsername), Is.EquivalentTo(new[] { "alice", "bob" }));
         }
 
         //---------------------------------------------------------------------

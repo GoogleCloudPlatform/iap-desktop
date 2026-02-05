@@ -64,9 +64,8 @@ namespace Google.Solutions.Mvvm.Test.Theme
                 form.Show();
                 form.Close();
 
-                CollectionAssert.AreEquivalent(
-                    new Control[] { form, panel, button },
-                    appliedControls);
+                Assert.That(
+                    appliedControls, Is.EquivalentTo(new Control[] { form, panel, button }));
             }
         }
 
@@ -87,9 +86,8 @@ namespace Google.Solutions.Mvvm.Test.Theme
                 form.Show();
                 form.Close();
 
-                CollectionAssert.AreEquivalent(
-                    new Control[] { form, form.ContextMenuStrip },
-                    appliedControls);
+                Assert.That(
+                    appliedControls, Is.EquivalentTo(new Control[] { form, form.ContextMenuStrip }));
             }
         }
 
@@ -113,9 +111,8 @@ namespace Google.Solutions.Mvvm.Test.Theme
 
                 form.Close();
 
-                CollectionAssert.AreEquivalent(
-                    new Control[] { form, label },
-                    appliedControls,
+                Assert.That(
+                    appliedControls, Is.EquivalentTo(new Control[] { form, label }),
                     "Label themed after show, textbox is ignored");
             }
         }

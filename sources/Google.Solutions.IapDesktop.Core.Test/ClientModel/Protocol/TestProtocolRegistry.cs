@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             var registry = new ProtocolRegistry();
             Assert.IsNotNull(registry.Protocols);
-            CollectionAssert.IsEmpty(registry.Protocols);
+            Assert.That(registry.Protocols, Is.Empty);
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var protocols = registry.GetAvailableProtocols(new Mock<IProtocolTarget>().Object);
 
             Assert.IsNotNull(protocols);
-            CollectionAssert.IsEmpty(protocols);
+            Assert.That(protocols, Is.Empty);
         }
 
         [Test]
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var protocols = registry.GetAvailableProtocols(target);
 
             Assert.IsNotNull(protocols);
-            CollectionAssert.IsEmpty(protocols);
+            Assert.That(protocols, Is.Empty);
         }
     }
 }

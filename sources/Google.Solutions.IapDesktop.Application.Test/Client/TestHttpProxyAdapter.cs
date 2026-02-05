@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     .ConfigureAwait(true);
 
                 Assert.That(proxy.ConnectionTargets.Distinct().Count(), Is.EqualTo(1));
-                CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
+                Assert.That(proxy.ConnectionTargets, Has.Member(SampleHttpsUrl.Host));
             }
         }
 
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     .ConfigureAwait(true);
 
                 Assert.That(proxy.ConnectionTargets.Distinct().Count(), Is.EqualTo(1));
-                CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
+                Assert.That(proxy.ConnectionTargets, Has.Member(SampleHttpsUrl.Host));
             }
         }
 
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     .ConfigureAwait(true);
 
                 Assert.That(proxy.ConnectionTargets.Distinct().Count(), Is.EqualTo(1));
-                CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
+                Assert.That(proxy.ConnectionTargets, Has.Member(SampleHttpsUrl.Host));
             }
         }
 
@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                     .ConfigureAwait(true);
 
                 Assert.That(proxy.ConnectionTargets.Distinct().Count(), Is.EqualTo(1));
-                CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
+                Assert.That(proxy.ConnectionTargets, Has.Member(SampleHttpsUrl.Host));
             }
         }
 
@@ -188,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 await SendWebRequest(SampleHttpsUrl)
                     .ConfigureAwait(true);
 
-                CollectionAssert.DoesNotContain(proxy.ConnectionTargets, SampleHttpsUrl.Host);
+                Assert.That(proxy.ConnectionTargets, Has.No.Member(SampleHttpsUrl.Host));
             }
         }
     }

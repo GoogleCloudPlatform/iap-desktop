@@ -301,16 +301,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
             var settings = service.GetConnectionSettings(vmNode);
 
-            CollectionAssert.IsSupersetOf(
-                settings.Settings,
-                settings.TypedCollection.RdpSettings);
-            CollectionAssert.IsSupersetOf(
-                settings.Settings,
-                settings.TypedCollection.AppSettings);
+            Assert.That(
+                settings.Settings, Is.SupersetOf(settings.TypedCollection.RdpSettings));
+            Assert.That(
+                settings.Settings, Is.SupersetOf(settings.TypedCollection.AppSettings));
 
-            CollectionAssert.IsNotSupersetOf(
-                settings.Settings,
-                settings.TypedCollection.SshSettings);
+            Assert.That(
+                settings.Settings, Is.Not.SupersetOf(settings.TypedCollection.SshSettings));
         }
 
         [Test]
@@ -321,16 +318,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
             var settings = service.GetConnectionSettings(vmNode);
 
-            CollectionAssert.IsSupersetOf(
-                settings.Settings,
-                settings.TypedCollection.SshSettings);
-            CollectionAssert.IsSupersetOf(
-                settings.Settings,
-                settings.TypedCollection.AppSettings);
+            Assert.That(
+                settings.Settings, Is.SupersetOf(settings.TypedCollection.SshSettings));
+            Assert.That(
+                settings.Settings, Is.SupersetOf(settings.TypedCollection.AppSettings));
 
-            CollectionAssert.IsNotSupersetOf(
-                settings.Settings,
-                settings.TypedCollection.RdpSettings);
+            Assert.That(
+                settings.Settings, Is.Not.SupersetOf(settings.TypedCollection.RdpSettings));
         }
 
         //---------------------------------------------------------------------

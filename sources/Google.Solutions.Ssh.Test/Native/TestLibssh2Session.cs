@@ -145,14 +145,14 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 Assert.That(session.LastError, Is.EqualTo(LIBSSH2_ERROR.NONE));
 
-                CollectionAssert.Contains(algorithms, "ecdh-sha2-nistp256");
-                CollectionAssert.Contains(algorithms, "ecdh-sha2-nistp384");
-                CollectionAssert.Contains(algorithms, "ecdh-sha2-nistp521");
+                Assert.That(algorithms, Has.Member("ecdh-sha2-nistp256"));
+                Assert.That(algorithms, Has.Member("ecdh-sha2-nistp384"));
+                Assert.That(algorithms, Has.Member("ecdh-sha2-nistp521"));
 
-                CollectionAssert.Contains(algorithms, "diffie-hellman-group-exchange-sha256");
-                CollectionAssert.Contains(algorithms, "diffie-hellman-group-exchange-sha1");
-                CollectionAssert.Contains(algorithms, "diffie-hellman-group14-sha1");
-                CollectionAssert.Contains(algorithms, "diffie-hellman-group1-sha1");
+                Assert.That(algorithms, Has.Member("diffie-hellman-group-exchange-sha256"));
+                Assert.That(algorithms, Has.Member("diffie-hellman-group-exchange-sha1"));
+                Assert.That(algorithms, Has.Member("diffie-hellman-group14-sha1"));
+                Assert.That(algorithms, Has.Member("diffie-hellman-group1-sha1"));
             }
         }
 
@@ -165,13 +165,13 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 Assert.That(session.LastError, Is.EqualTo(LIBSSH2_ERROR.NONE));
 
-                CollectionAssert.Contains(algorithms, "ecdsa-sha2-nistp256");
-                CollectionAssert.Contains(algorithms, "ecdsa-sha2-nistp384");
-                CollectionAssert.Contains(algorithms, "ecdsa-sha2-nistp521");
+                Assert.That(algorithms, Has.Member("ecdsa-sha2-nistp256"));
+                Assert.That(algorithms, Has.Member("ecdsa-sha2-nistp384"));
+                Assert.That(algorithms, Has.Member("ecdsa-sha2-nistp521"));
 
-                CollectionAssert.Contains(algorithms, "ssh-rsa");
-                CollectionAssert.Contains(algorithms, "rsa-sha2-256");
-                CollectionAssert.Contains(algorithms, "rsa-sha2-512");
+                Assert.That(algorithms, Has.Member("ssh-rsa"));
+                Assert.That(algorithms, Has.Member("rsa-sha2-256"));
+                Assert.That(algorithms, Has.Member("rsa-sha2-512"));
             }
         }
 
@@ -184,8 +184,8 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 Assert.That(session.LastError, Is.EqualTo(LIBSSH2_ERROR.NONE));
 
-                CollectionAssert.Contains(algorithms, "aes128-ctr");
-                CollectionAssert.Contains(algorithms, "aes256-ctr");
+                Assert.That(algorithms, Has.Member("aes128-ctr"));
+                Assert.That(algorithms, Has.Member("aes256-ctr"));
             }
         }
 
@@ -198,8 +198,8 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 Assert.That(session.LastError, Is.EqualTo(LIBSSH2_ERROR.NONE));
 
-                CollectionAssert.Contains(algorithms, "aes128-ctr");
-                CollectionAssert.Contains(algorithms, "aes256-ctr");
+                Assert.That(algorithms, Has.Member("aes128-ctr"));
+                Assert.That(algorithms, Has.Member("aes256-ctr"));
             }
         }
 
@@ -212,8 +212,8 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 Assert.That(session.LastError, Is.EqualTo(LIBSSH2_ERROR.NONE));
 
-                CollectionAssert.Contains(algorithms, "hmac-sha2-256");
-                CollectionAssert.Contains(algorithms, "hmac-sha2-512");
+                Assert.That(algorithms, Has.Member("hmac-sha2-256"));
+                Assert.That(algorithms, Has.Member("hmac-sha2-512"));
             }
         }
 
@@ -226,8 +226,8 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 Assert.That(session.LastError, Is.EqualTo(LIBSSH2_ERROR.NONE));
 
-                CollectionAssert.Contains(algorithms, "hmac-sha2-256");
-                CollectionAssert.Contains(algorithms, "hmac-sha2-512");
+                Assert.That(algorithms, Has.Member("hmac-sha2-256"));
+                Assert.That(algorithms, Has.Member("hmac-sha2-512"));
             }
         }
 

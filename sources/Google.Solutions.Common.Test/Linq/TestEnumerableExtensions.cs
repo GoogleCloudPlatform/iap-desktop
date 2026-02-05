@@ -93,8 +93,8 @@ namespace Google.Solutions.Common.Test.Linq
             var chunks = list.Chunk(2);
 
             Assert.That(chunks.Count(), Is.EqualTo(2));
-            CollectionAssert.AreEqual(new[] { "a", "b" }, chunks.First());
-            CollectionAssert.AreEqual(new[] { "c", "d" }, chunks.Skip(1).First());
+            Assert.That(chunks.First(), Is.EqualTo(new[] { "a", "b" }).AsCollection);
+            Assert.That(chunks.Skip(1).First(), Is.EqualTo(new[] { "c", "d" }).AsCollection);
         }
 
         [Test]
@@ -104,8 +104,8 @@ namespace Google.Solutions.Common.Test.Linq
             var chunks = list.Chunk(2);
 
             Assert.That(chunks.Count(), Is.EqualTo(2));
-            CollectionAssert.AreEqual(new[] { "a", "b" }, chunks.First());
-            CollectionAssert.AreEqual(new[] { "c" }, chunks.Skip(1).First());
+            Assert.That(chunks.First(), Is.EqualTo(new[] { "a", "b" }).AsCollection);
+            Assert.That(chunks.Skip(1).First(), Is.EqualTo(new[] { "c" }).AsCollection);
         }
 
         //---------------------------------------------------------------------

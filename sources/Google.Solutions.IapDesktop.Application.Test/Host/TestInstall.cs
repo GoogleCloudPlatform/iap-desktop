@@ -375,7 +375,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 var list = install.Profiles;
 
                 Assert.IsNotNull(list);
-                CollectionAssert.Contains(list, TestProfileName);
+                Assert.That(list, Has.Member(TestProfileName));
             }
         }
 
@@ -392,7 +392,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 var list = install.Profiles;
 
                 Assert.IsNotNull(list);
-                CollectionAssert.Contains(list, "Default");
+                Assert.That(list, Has.Member("Default"));
             }
         }
 

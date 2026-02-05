@@ -109,7 +109,7 @@ namespace Google.Solutions.Ssh.Test
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(files);
-                CollectionAssert.IsNotEmpty(files);
+                Assert.That(files, Is.Not.Empty);
             }
         }
 

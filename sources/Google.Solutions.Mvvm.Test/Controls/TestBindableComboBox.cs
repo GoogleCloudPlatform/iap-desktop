@@ -52,9 +52,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
             var prop = ObservableProperty.Build<Dish>(Dish.Pizza);
             var adapter = new BindableComboBox.SelectionAdapter<Dish>(prop);
 
-            CollectionAssert.AreEquivalent(
-                new[] { Dish.Pizza, Dish.Dumplings },
-                adapter.Options);
+            Assert.That(
+                adapter.Options, Is.EquivalentTo(new[] { Dish.Pizza, Dish.Dumplings }));
         }
 
         [Test]

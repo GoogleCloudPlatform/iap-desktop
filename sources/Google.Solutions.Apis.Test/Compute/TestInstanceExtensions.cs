@@ -72,9 +72,8 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(instance.PrimaryInternalAddress());
-            CollectionAssert.Contains(
-                new byte[] { 172, 192, 10 },
-                instance.PrimaryInternalAddress().GetAddressBytes()[0],
+            Assert.That(
+                new byte[] { 172, 192, 10 }, Has.Member(instance.PrimaryInternalAddress().GetAddressBytes()[0]),
                 "Is RFC1918 address");
         }
 
@@ -110,9 +109,8 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(instance.PublicAddress());
-            CollectionAssert.DoesNotContain(
-                new byte[] { 172, 192, 10 },
-                instance.PublicAddress().GetAddressBytes()[0],
+            Assert.That(
+                new byte[] { 172, 192, 10 }, Has.No.Member(instance.PublicAddress().GetAddressBytes()[0]),
                 "Is not a RFC1918 address");
         }
     }

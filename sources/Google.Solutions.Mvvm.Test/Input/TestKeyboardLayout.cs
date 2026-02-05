@@ -59,18 +59,15 @@ namespace Google.Solutions.Mvvm.Test.Input
         [Test]
         public void TranslateModifiers()
         {
-            CollectionAssert.AreEqual(
-                new[] { Keys.ShiftKey, Keys.A },
-                KeyboardLayout.TranslateModifiers(Keys.A | Keys.Shift));
+            Assert.That(
+                KeyboardLayout.TranslateModifiers(Keys.A | Keys.Shift), Is.EqualTo(new[] { Keys.ShiftKey, Keys.A }).AsCollection);
 
-            CollectionAssert.AreEqual(
-                new[] { Keys.B },
-                KeyboardLayout.TranslateModifiers(Keys.B));
+            Assert.That(
+                KeyboardLayout.TranslateModifiers(Keys.B), Is.EqualTo(new[] { Keys.B }).AsCollection);
 
-            CollectionAssert.AreEqual(
-                new[] { Keys.ControlKey, Keys.Menu, Keys.ShiftKey, Keys.Delete },
+            Assert.That(
                 KeyboardLayout.TranslateModifiers(
-                    Keys.Delete | Keys.Shift | Keys.Alt | Keys.Control));
+                    Keys.Delete | Keys.Shift | Keys.Alt | Keys.Control), Is.EqualTo(new[] { Keys.ControlKey, Keys.Menu, Keys.ShiftKey, Keys.Delete }).AsCollection);
         }
 
         //---------------------------------------------------------------------
