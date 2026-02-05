@@ -48,7 +48,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
                 AuthenticationPackage.Negoriate,
                 AuthenticationPackage.Ntlm)] AuthenticationPackage package)
         {
-            Assert.GreaterOrEqual(CredentialDialog.LookupAuthenticationPackageId(package), 0);
+            Assert.That(
+                CredentialDialog.LookupAuthenticationPackageId(package), 
+                Is.GreaterThanOrEqualTo(0));
         }
 
         //---------------------------------------------------------------------
@@ -96,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
                 out _,
                 out var credentials) == DialogResult.OK)
             {
-                Assert.NotNull(credentials);
+                Assert.That(credentials, Is.Not.Null);
             }
         }
 
@@ -118,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
                 out _,
                 out var credentials) == DialogResult.OK)
             {
-                Assert.NotNull(credentials);
+                Assert.That(credentials, Is.Not.Null);
             }
         }
 
@@ -141,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
                 out _,
                 out var credentials) == DialogResult.OK)
             {
-                Assert.NotNull(credentials);
+                Assert.That(credentials, Is.Not.Null);
             }
         }
 
@@ -162,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
                 "A very, very, very, very, very long message ",
                 out var username) == DialogResult.OK)
             {
-                Assert.NotNull(username);
+                Assert.That(username, Is.Not.Null);
             }
         }
 
@@ -177,8 +179,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
             var empty = new NetworkCredential(user, "password");
             using (var packed = new CredentialDialog.PackedCredential(empty))
             {
-                Assert.That(packed.Handle, Is.Not.Null);
-                Assert.That(packed.Size > 0, Is.True);
+                Assert.That(packed.Handle, Is.Not.EqualTo(IntPtr.Zero));
+                Assert.That(packed.Size, Is.GreaterThan(0));
 
                 var unpacked = packed.Unpack();
 
@@ -195,8 +197,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
             var empty = new NetworkCredential(user, "password", "otherdomain");
             using (var packed = new CredentialDialog.PackedCredential(empty))
             {
-                Assert.That(packed.Handle, Is.Not.Null);
-                Assert.That(packed.Size > 0, Is.True);
+                Assert.That(packed.Handle, Is.Not.EqualTo(IntPtr.Zero));
+                Assert.That(packed.Size, Is.GreaterThan(0));
 
                 var unpacked = packed.Unpack();
 
@@ -212,8 +214,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
             var empty = new NetworkCredential("user", "password", "domain");
             using (var packed = new CredentialDialog.PackedCredential(empty))
             {
-                Assert.That(packed.Handle, Is.Not.Null);
-                Assert.That(packed.Size > 0, Is.True);
+                Assert.That(packed.Handle, Is.Not.EqualTo(IntPtr.Zero));
+                Assert.That(packed.Size, Is.GreaterThan(0));
 
                 var unpacked = packed.Unpack();
 
@@ -229,8 +231,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
             var empty = new NetworkCredential();
             using (var packed = new CredentialDialog.PackedCredential(empty))
             {
-                Assert.That(packed.Handle, Is.Not.Null);
-                Assert.That(packed.Size > 0, Is.True);
+                Assert.That(packed.Handle, Is.Not.EqualTo(IntPtr.Zero));
+                Assert.That(packed.Size, Is.GreaterThan(0));
 
                 var unpacked = packed.Unpack();
 

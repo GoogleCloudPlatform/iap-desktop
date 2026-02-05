@@ -43,7 +43,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             using (var progressBar = new LinearProgressBar())
             {
                 Assert.That(progressBar.Indeterminate, Is.False);
-                Assert.IsNull(progressBar.Timer);
+                Assert.That(progressBar.Timer, Is.Null);
 
                 progressBar.Indeterminate = true;
                 progressBar.Indeterminate = true;
@@ -53,7 +53,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 progressBar.Indeterminate = false;
                 progressBar.Indeterminate = false;
                 Assert.That(progressBar.Indeterminate, Is.False);
-                Assert.IsNull(progressBar.Timer);
+                Assert.That(progressBar.Timer, Is.Null);
             }
         }
 

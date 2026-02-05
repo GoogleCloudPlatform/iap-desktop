@@ -59,7 +59,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 out bool verificationFlagChecked)
             {
                 Assert.That(config.dwCommonButtons, Is.EqualTo(0x0009));
-                Assert.IsNull(config.pszVerificationText);
+                Assert.That(config.pszVerificationText, Is.Null);
 
                 buttonPressed = TaskDialogStandardButton.OK.CommandId;
                 radioButtonPressed = -1;
@@ -89,7 +89,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 out bool verificationFlagChecked)
             {
                 Assert.That(config.dwCommonButtons, Is.EqualTo(0x000E));
-                Assert.IsNull(config.pszVerificationText);
+                Assert.That(config.pszVerificationText, Is.Null);
 
                 buttonPressed = TaskDialogStandardButton.Cancel.CommandId;
                 radioButtonPressed = -1;
@@ -129,8 +129,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 out int radioButtonPressed,
                 out bool verificationFlagChecked)
             {
-                Assert.IsNull(config.pszVerificationText);
-                Assert.That(config.cButtons, Is.Not.Null);
+                Assert.That(config.pszVerificationText, Is.Null);
+                Assert.That(config.cButtons, Is.Not.Zero);
                 Assert.That(config.cButtons, Is.EqualTo(2));
 
                 buttonPressed = TaskDialog.CommandLinkIdOffset + 1; // No

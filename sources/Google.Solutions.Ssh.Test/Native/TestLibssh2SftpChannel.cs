@@ -134,11 +134,10 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var files = channel.ListFiles("/etc");
 
-                Assert.NotNull(files);
-                Assert.Greater(files.Count, 1);
+                Assert.That(files, Is.Not.Null);
+                Assert.That(files.Count, Is.GreaterThan(1));
 
                 var passwd = files.First(f => f.Name == "passwd");
-                Assert.That(passwd, Is.Not.Null);
                 Assert.That(passwd.Permissions.HasFlag(FilePermissions.Regular), Is.True);
                 Assert.That(passwd.IsDirectory, Is.False);
             }
@@ -164,11 +163,10 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var files = channel.ListFiles(".");
 
-                Assert.NotNull(files);
-                Assert.Greater(files.Count, 1);
+                Assert.That(files, Is.Not.Null);
+                Assert.That(files.Count, Is.GreaterThan(1));
 
                 var parent = files.First(f => f.Name == "..");
-                Assert.That(parent, Is.Not.Null);
                 Assert.That(parent.Permissions.HasFlag(FilePermissions.Directory), Is.True);
                 Assert.That(parent.IsDirectory, Is.True);
             }
