@@ -256,7 +256,7 @@ namespace Google.Solutions.Ssh.Test
                         Assert.IsFalse(inputStream.CanWrite);
                         Assert.IsFalse(inputStream.CanSeek);
 
-                        Assert.AreNotEqual(0, inputStream.Length);
+                        Assert.That(inputStream.Length, Is.Not.EqualTo(0));
 
                         ExceptionAssert.ThrowsAggregateException<NotSupportedException>(
                             () => inputStream.WriteAsync(new byte[1], 0, 1).Wait());
@@ -347,7 +347,7 @@ namespace Google.Solutions.Ssh.Test
                         Assert.IsFalse(inputStream.CanWrite);
                         Assert.IsFalse(inputStream.CanSeek);
 
-                        Assert.AreNotEqual(0, inputStream.Length);
+                        Assert.That(inputStream.Length, Is.Not.EqualTo(0));
 
                         Assert.Throws<NotSupportedException>(
                             () => inputStream.Write(new byte[1], 0, 1));

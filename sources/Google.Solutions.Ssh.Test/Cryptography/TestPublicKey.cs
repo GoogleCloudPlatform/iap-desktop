@@ -122,7 +122,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             using (var lhs = new SamplePublicKey("type", Convert.FromBase64String("ABCD")))
             using (var rhs = new SamplePublicKey("type", Convert.FromBase64String("ABCE")))
             {
-                Assert.AreNotEqual(lhs.GetHashCode(), rhs.GetHashCode());
+                Assert.That(rhs.GetHashCode(), Is.Not.EqualTo(lhs.GetHashCode()));
             }
         }
 

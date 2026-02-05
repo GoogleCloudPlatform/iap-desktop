@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
             {
                 AudioPlayback = RdpAudioPlayback.PlayOnServer
             };
-            Assert.AreNotEqual(RdpAudioPlayback._Default, parameters.AudioPlayback);
+            Assert.That(parameters.AudioPlayback, Is.Not.EqualTo(RdpAudioPlayback._Default));
 
             parameters.ApplyUrlParameterIfSet<RdpAudioPlayback>(
                 new IapRdpUrl(SampleLocator, new NameValueCollection()),
@@ -203,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
             {
                 AudioPlayback = RdpAudioPlayback.PlayOnServer
             };
-            Assert.AreNotEqual(RdpAudioPlayback._Default, parameters.AudioPlayback);
+            Assert.That(parameters.AudioPlayback, Is.Not.EqualTo(RdpAudioPlayback._Default));
 
             var queryParameters = new NameValueCollection
             {
@@ -226,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
             {
                 AudioPlayback = RdpAudioPlayback.PlayOnServer
             };
-            Assert.AreNotEqual(RdpAudioPlayback._Default, parameters.AudioPlayback);
+            Assert.That(parameters.AudioPlayback, Is.Not.EqualTo(RdpAudioPlayback._Default));
 
             var queryParameters = new NameValueCollection
             {
@@ -248,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
             {
                 AudioPlayback = RdpAudioPlayback.PlayOnServer
             };
-            Assert.AreNotEqual(RdpAudioPlayback._Default, parameters.AudioPlayback);
+            Assert.That(parameters.AudioPlayback, Is.Not.EqualTo(RdpAudioPlayback._Default));
 
             var queryParameters = new NameValueCollection
             {

@@ -50,7 +50,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 size))
             {
                 Assert.IsNotNull(type.TypeName);
-                Assert.AreNotEqual(string.Empty, type.TypeName);
+                Assert.That(type.TypeName, Is.Not.EqualTo(string.Empty));
                 Assert.IsNotNull(type.FileIcon);
             }
         }
@@ -70,7 +70,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 size))
             {
                 Assert.IsNotNull(type.TypeName);
-                Assert.AreNotEqual(string.Empty, type.TypeName);
+                Assert.That(type.TypeName, Is.Not.EqualTo(string.Empty));
                 Assert.IsNotNull(type.FileIcon);
             }
         }

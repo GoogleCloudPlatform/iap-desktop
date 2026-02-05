@@ -41,8 +41,8 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         {
             using (var icon = BadgeIcon.ForTextInitial("Test"))
             {
-                Assert.AreNotEqual(Color.White, icon.BackColor);
-                Assert.AreNotEqual(Color.Black, icon.BackColor);
+                Assert.That(icon.BackColor, Is.Not.EqualTo(Color.White));
+                Assert.That(icon.BackColor, Is.Not.EqualTo(Color.Black));
             }
         }
     }

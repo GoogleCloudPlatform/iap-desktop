@@ -142,9 +142,8 @@ namespace Google.Solutions.Mvvm.Test.Shell
 
                 Assert.That(
                     medium.tymed, Is.EqualTo(TYMED.TYMED_ISTREAM));
-                Assert.AreNotEqual(
-                    IntPtr.Zero,
-                    medium.unionmember);
+                Assert.That(
+                    medium.unionmember, Is.Not.EqualTo(IntPtr.Zero));
             }
 
         }
@@ -177,9 +176,8 @@ namespace Google.Solutions.Mvvm.Test.Shell
 
                 Assert.That(
                     medium.tymed, Is.EqualTo(TYMED.TYMED_HGLOBAL));
-                Assert.AreNotEqual(
-                    IntPtr.Zero,
-                    medium.unionmember);
+                Assert.That(
+                    medium.unionmember, Is.Not.EqualTo(IntPtr.Zero));
             }
         }
 

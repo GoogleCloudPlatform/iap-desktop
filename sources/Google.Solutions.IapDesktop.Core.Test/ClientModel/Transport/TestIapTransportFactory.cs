@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                  SampleTimeout,
                  CancellationToken.None);
 
-            Assert.AreNotEqual(faultingTransport1, faultingTransport2);
+            Assert.That(faultingTransport2, Is.Not.EqualTo(faultingTransport1));
 
             tunnelFactory
                 .Verify(f => f.CreateTunnelAsync(

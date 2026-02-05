@@ -100,10 +100,10 @@ namespace Google.Solutions.Ssh.Test.Native
                 var attributes = file.Attributes;
 
                 Assert.IsTrue(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.SIZE));
-                Assert.AreNotEqual(0, attributes.filesize);
+                Assert.That(attributes.filesize, Is.Not.EqualTo(0));
 
                 Assert.IsTrue(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.ACMODTIME));
-                Assert.AreNotEqual(0, attributes.atime);
+                Assert.That(attributes.atime, Is.Not.EqualTo(0));
             }
         }
 

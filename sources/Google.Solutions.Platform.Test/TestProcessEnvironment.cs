@@ -33,9 +33,8 @@ namespace Google.Solutions.Platform.Test
         [Test]
         public void NativeArchitecture()
         {
-            Assert.AreNotEqual(
-                Architecture.Unknown,
-                ProcessEnvironment.NativeArchitecture);
+            Assert.That(
+                ProcessEnvironment.NativeArchitecture, Is.Not.EqualTo(Architecture.Unknown));
         }
 
         //---------------------------------------------------------------------

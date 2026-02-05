@@ -46,9 +46,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
 
-            Assert.AreNotEqual(
-                ApplicationTheme._Default,
-                ApplicationTheme.Dark);
+            Assert.That(
+                ApplicationTheme.Dark, Is.Not.EqualTo(ApplicationTheme._Default));
 
             var viewModel = new AppearanceOptionsViewModel(settingsRepository);
             Assert.IsFalse(viewModel.IsDirty.Value);
@@ -68,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var settingsRepository = CreateSettingsRepository();
 
             var viewModel = new AppearanceOptionsViewModel(settingsRepository);
-            Assert.AreNotEqual(ScalingMode.None, viewModel.ScalingMode.Value);
+            Assert.That(viewModel.ScalingMode.Value, Is.Not.EqualTo(ScalingMode.None));
 
             viewModel.ScalingMode.Value = ScalingMode.SystemDpiAware;
 
@@ -84,9 +83,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
 
-            Assert.AreNotEqual(
-                ApplicationTheme._Default,
-                ApplicationTheme.Dark);
+            Assert.That(
+                ApplicationTheme.Dark, Is.Not.EqualTo(ApplicationTheme._Default));
 
             //
             // Persist non-default values.
@@ -106,9 +104,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         {
             var settingsRepository = CreateSettingsRepository();
 
-            Assert.AreNotEqual(
-                ApplicationTheme._Default,
-                ApplicationTheme.Dark);
+            Assert.That(
+                ApplicationTheme.Dark, Is.Not.EqualTo(ApplicationTheme._Default));
 
             var viewModel = new AppearanceOptionsViewModel(settingsRepository);
             viewModel.SelectedTheme.Value = ApplicationTheme.Dark;

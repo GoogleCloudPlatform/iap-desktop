@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
 
                 using (var profile = install.OpenProfile(null))
                 {
-                    Assert.AreNotEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                    Assert.That(profile.Version, Is.Not.EqualTo(UserProfile.SchemaVersion.Initial));
                     Assert.That(profile.Version, Is.EqualTo(UserProfile.SchemaVersion.Current));
                 }
             }
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
 
                 using (var profile = install.CreateProfile(TestProfileName))
                 {
-                    Assert.AreNotEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                    Assert.That(profile.Version, Is.Not.EqualTo(UserProfile.SchemaVersion.Initial));
                     Assert.That(profile.Version, Is.EqualTo(UserProfile.SchemaVersion.Current));
                 }
             }

@@ -64,7 +64,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
                 form.Show();
 
                 Assert.That(column1.Width, Is.EqualTo(100));
-                Assert.AreNotEqual(100, column2.Width);
+                Assert.That(column2.Width, Is.Not.EqualTo(100));
 
                 form.Close();
             }
@@ -106,7 +106,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
                 column1.Width = 50;
 
                 Assert.That(column1.Width, Is.EqualTo(50));
-                Assert.AreNotEqual(200, column2.Width);
+                Assert.That(column2.Width, Is.Not.EqualTo(200));
 
                 form.Close();
             }
@@ -146,7 +146,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
                 form.Show();
 
                 Assert.That(column1.Width, Is.EqualTo(100));
-                Assert.AreNotEqual(100, column2.Width);
+                Assert.That(column2.Width, Is.Not.EqualTo(100));
 
                 form.Close();
             }

@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
             Assert.IsFalse(protocol1.Equals(protocol2));
             Assert.IsTrue(protocol1 != protocol2);
-            Assert.AreNotEqual(protocol1.GetHashCode(), protocol2.GetHashCode());
+            Assert.That(protocol2.GetHashCode(), Is.Not.EqualTo(protocol1.GetHashCode()));
         }
 
         [Test]
@@ -181,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
             Assert.IsFalse(protocol1.Equals(protocol2));
             Assert.IsTrue(protocol1 != protocol2);
-            Assert.AreNotEqual(protocol1.GetHashCode(), protocol2.GetHashCode());
+            Assert.That(protocol2.GetHashCode(), Is.Not.EqualTo(protocol1.GetHashCode()));
         }
 
         [Test]

@@ -67,7 +67,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                Assert.AreNotEqual(0, process.Id);
+                Assert.That(process.Id, Is.Not.EqualTo(0));
 
                 process.Terminate(1);
             }

@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
                 var install = new Install(keyPath.Path);
-                Assert.AreNotEqual(0, install.CurrentVersion.Major);
+                Assert.That(install.CurrentVersion.Major, Is.Not.EqualTo(0));
             }
         }
 
@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                         RegistryValueKind.MultiString);
                 }
 
-                Assert.AreNotEqual(install.CurrentVersion, install.InitialVersion);
+                Assert.That(install.InitialVersion, Is.Not.EqualTo(install.CurrentVersion));
                 Assert.That(install.InitialVersion, Is.EqualTo(new Version(0, 0, 1, 0)));
             }
         }

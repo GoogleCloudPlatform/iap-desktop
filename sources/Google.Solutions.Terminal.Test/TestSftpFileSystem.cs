@@ -224,7 +224,7 @@ namespace Google.Solutions.Terminal.Test
                         FilePermissions.OtherRead | FilePermissions.OwnerExecute));
 
                 Assert.IsTrue(exeType.IsFile);
-                Assert.AreNotEqual(regularType.TypeName, exeType.TypeName);
+                Assert.That(exeType.TypeName, Is.Not.EqualTo(regularType.TypeName));
             }
         }
 
@@ -243,7 +243,7 @@ namespace Google.Solutions.Terminal.Test
                         FilePermissions.SymbolicLink));
 
                 Assert.IsTrue(linkType.IsFile);
-                Assert.AreNotEqual(regularType.TypeName, linkType.TypeName);
+                Assert.That(linkType.TypeName, Is.Not.EqualTo(regularType.TypeName));
             }
         }
 
@@ -262,7 +262,7 @@ namespace Google.Solutions.Terminal.Test
                         FilePermissions.OtherRead | FilePermissions.OwnerExecute));
 
                 Assert.IsTrue(iniType.IsFile);
-                Assert.AreNotEqual(regularType.TypeName, iniType.TypeName);
+                Assert.That(iniType.TypeName, Is.Not.EqualTo(regularType.TypeName));
             }
         }
 
@@ -296,7 +296,7 @@ namespace Google.Solutions.Terminal.Test
                         FilePermissions.OtherRead | FilePermissions.OwnerExecute));
 
                 Assert.IsTrue(iniType.IsFile);
-                Assert.AreNotEqual(regularType.TypeName, iniType.TypeName);
+                Assert.That(iniType.TypeName, Is.Not.EqualTo(regularType.TypeName));
             }
         }
 

@@ -187,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new Mock<IBrowserProtocolRegistry>().Object,
                 new HelpClient());
 
-            Assert.AreNotEqual("never", viewModel.LastUpdateCheck);
+            Assert.That(viewModel.LastUpdateCheck, Is.Not.EqualTo("never"));
         }
 
         //---------------------------------------------------------------------

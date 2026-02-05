@@ -81,7 +81,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
                 form.Shown += (_, __) => form.Close();
                 form.Show();
 
-                Assert.AreNotEqual(0, messagesReceived);
+                Assert.That(messagesReceived, Is.Not.EqualTo(0));
             }
         }
 

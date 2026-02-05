@@ -84,8 +84,8 @@ namespace Google.Solutions.Terminal.Test.Controls
 
                 var initialDimensions = form.VirtualTerminal.Dimensions;
 
-                Assert.AreNotEqual(0, initialDimensions.Width);
-                Assert.AreNotEqual(0, initialDimensions.Height);
+                Assert.That(initialDimensions.Width, Is.Not.EqualTo(0));
+                Assert.That(initialDimensions.Height, Is.Not.EqualTo(0));
 
                 form.Size = new Size(form.Size.Width + 100, form.Size.Height + 100);
                 Application.DoEvents();
