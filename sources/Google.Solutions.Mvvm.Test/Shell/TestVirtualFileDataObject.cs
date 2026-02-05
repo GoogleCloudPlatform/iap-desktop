@@ -265,7 +265,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
             {
                 eventRaised = true;
                 Assert.That(args.Succeeded, Is.False);
-                Assert.IsNotNull(args.Exception);
+                Assert.That(args.Exception, Is.Not.Null);
             };
 
             dataObject.StartOperation(null);

@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             using (var explorerSettings = new ProjectExplorerSettings(settingsRepository, true))
             {
-                Assert.IsNotNull(explorerSettings.CollapsedProjects);
+                Assert.That(explorerSettings.CollapsedProjects, Is.Not.Null);
                 Assert.That(explorerSettings.CollapsedProjects, Is.Empty);
             }
         }
@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             using (var explorerSettings = new ProjectExplorerSettings(settingsRepository, true))
             {
-                Assert.IsNotNull(explorerSettings.CollapsedProjects);
+                Assert.That(explorerSettings.CollapsedProjects, Is.Not.Null);
                 Assert.That(
                     explorerSettings.CollapsedProjects, Is.EquivalentTo(new[]
                     {

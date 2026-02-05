@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 repository.AddProject(SampleProject);
                 using (var key = repository.OpenRegistryKey("test-123"))
                 {
-                    Assert.IsNotNull(key);
+                    Assert.That(key, Is.Not.Null);
                 }
             }
         }
@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 repository.AddProject(SampleProject);
                 using (var key = repository.OpenRegistryKey("test-123", "subkey"))
                 {
-                    Assert.IsNotNull(key);
+                    Assert.That(key, Is.Not.Null);
                 }
             }
         }

@@ -44,7 +44,7 @@ namespace Google.Solutions.Apis.Test.Locator
                 "organizations/12345678900001",
                 out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
+            Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("organizations"));
             Assert.That(ref1.Id, Is.EqualTo(12345678900001));
         }

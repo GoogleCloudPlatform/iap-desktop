@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                         new StaticPasswordCredential("user", string.Empty)))
                     .ConfigureAwait(true);
 
-                Assert.IsNotNull(this.ExceptionShown);
+                Assert.That(this.ExceptionShown, Is.Not.Null);
                 Assert.IsInstanceOf(typeof(UnsupportedAuthenticationMethodException), this.ExceptionShown);
             }
         }
@@ -203,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                         credential))
                     .ConfigureAwait(true);
 
-                Assert.IsNotNull(session);
+                Assert.That(session, Is.Not.Null);
                 Assert.IsNull(this.ExceptionShown);
 
                 // Float.

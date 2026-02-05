@@ -141,7 +141,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                Assert.IsNotNull(process.WaitHandle);
+                Assert.That(process.WaitHandle, Is.Not.Null);
                 Assert.That(process.WaitHandle.WaitOne(1), Is.False);
 
                 process.Terminate(1);
@@ -160,7 +160,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                Assert.IsNotNull(process.Handle);
+                Assert.That(process.Handle, Is.Not.Null);
                 Assert.That(process.Handle.IsInvalid, Is.False);
 
                 process.Resume();
@@ -185,7 +185,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             {
                 process.Resume();
 
-                Assert.IsNotNull(process.Handle);
+                Assert.That(process.Handle, Is.Not.Null);
                 Assert.That(process.Handle.IsInvalid, Is.False);
                 Assert.That(process.IsRunning, Is.True);
 
@@ -213,7 +213,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
                 process.Resume();
 
-                Assert.IsNotNull(process.Handle);
+                Assert.That(process.Handle, Is.Not.Null);
                 Assert.That(process.Handle.IsInvalid, Is.False);
                 Assert.That(process.IsRunning, Is.True);
 
@@ -367,7 +367,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
                 using (var openedProcess = Win32Process.FromProcessId(process.Id))
                 {
-                    Assert.IsNotNull(openedProcess);
+                    Assert.That(openedProcess, Is.Not.Null);
                     Assert.That(openedProcess.ImageName, Is.EqualTo(process.ImageName));
                     Assert.That(openedProcess.IsRunning, Is.True);
                 }

@@ -67,8 +67,8 @@ namespace Google.Solutions.Platform.Test.Net
                     'filter':{}
                 }");
 
-            Assert.IsNotNull(selector);
-            Assert.IsNotNull(selector!.Pattern);
+            Assert.That(selector, Is.Not.Null);
+            Assert.That(selector!.Pattern, Is.Not.Null);
             Assert.IsNull(selector.Filter.Issuer);
             Assert.IsNull(selector.Filter.Subject);
 
@@ -86,8 +86,8 @@ namespace Google.Solutions.Platform.Test.Net
                 @"{
                 }");
 
-            Assert.IsNotNull(selector!);
-            Assert.IsNotNull(selector!.Pattern);
+            Assert.That(selector!, Is.Not.Null);
+            Assert.That(selector!.Pattern, Is.Not.Null);
             Assert.IsNull(selector.Filter.Issuer);
             Assert.IsNull(selector.Filter.Subject);
 
@@ -107,8 +107,8 @@ namespace Google.Solutions.Platform.Test.Net
                     'filter':{}
                 }");
 
-            Assert.IsNotNull(selector);
-            Assert.IsNotNull(selector!.Pattern);
+            Assert.That(selector, Is.Not.Null);
+            Assert.That(selector!.Pattern, Is.Not.Null);
             Assert.IsNull(selector.Filter.Issuer);
             Assert.IsNull(selector.Filter.Subject);
 
@@ -136,9 +136,9 @@ namespace Google.Solutions.Platform.Test.Net
                     }
                 }");
 
-            Assert.IsNotNull(selector);
-            Assert.IsNotNull(selector!.Pattern);
-            Assert.IsNotNull(selector.Filter.Issuer);
+            Assert.That(selector, Is.Not.Null);
+            Assert.That(selector!.Pattern, Is.Not.Null);
+            Assert.That(selector.Filter.Issuer, Is.Not.Null);
             Assert.IsNull(selector.Filter.Subject);
 
             Assert.That(selector.IsMatch(
@@ -172,9 +172,9 @@ namespace Google.Solutions.Platform.Test.Net
                     }
                 }");
 
-            Assert.IsNotNull(selector);
-            Assert.IsNotNull(selector!.Pattern);
-            Assert.IsNotNull(selector.Filter.Issuer);
+            Assert.That(selector, Is.Not.Null);
+            Assert.That(selector!.Pattern, Is.Not.Null);
+            Assert.That(selector.Filter.Issuer, Is.Not.Null);
             Assert.IsNull(selector.Filter.Subject);
 
             Assert.That(selector.IsMatch(
@@ -206,10 +206,10 @@ namespace Google.Solutions.Platform.Test.Net
                     }
                 }");
 
-            Assert.IsNotNull(selector);
-            Assert.IsNotNull(selector!.Pattern);
-            Assert.IsNotNull(selector.Filter.Issuer);
-            Assert.IsNotNull(selector.Filter.Subject);
+            Assert.That(selector, Is.Not.Null);
+            Assert.That(selector!.Pattern, Is.Not.Null);
+            Assert.That(selector.Filter.Issuer, Is.Not.Null);
+            Assert.That(selector.Filter.Subject, Is.Not.Null);
 
             Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
@@ -235,10 +235,10 @@ namespace Google.Solutions.Platform.Test.Net
                     }
                 }");
 
-            Assert.IsNotNull(selector);
-            Assert.IsNotNull(selector!.Pattern);
+            Assert.That(selector, Is.Not.Null);
+            Assert.That(selector!.Pattern, Is.Not.Null);
             Assert.IsNull(selector.Filter.Issuer);
-            Assert.IsNotNull(selector.Filter.Subject);
+            Assert.That(selector.Filter.Subject, Is.Not.Null);
 
             Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
@@ -271,10 +271,10 @@ namespace Google.Solutions.Platform.Test.Net
                     }
                 }");
 
-            Assert.IsNotNull(selector);
-            Assert.IsNotNull(selector!.Pattern);
+            Assert.That(selector, Is.Not.Null);
+            Assert.That(selector!.Pattern, Is.Not.Null);
             Assert.IsNull(selector.Filter.Issuer);
-            Assert.IsNotNull(selector.Filter.Subject);
+            Assert.That(selector.Filter.Subject, Is.Not.Null);
 
             Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
@@ -304,11 +304,11 @@ namespace Google.Solutions.Platform.Test.Net
                     }
                 }");
 
-            Assert.IsNotNull(selector);
-            Assert.IsNotNull(selector!.Pattern);
+            Assert.That(selector, Is.Not.Null);
+            Assert.That(selector!.Pattern, Is.Not.Null);
             Assert.IsNull(selector.Filter.Issuer);
             Assert.IsNull(selector.Filter.Subject);
-            Assert.IsNotNull(selector.Filter.Thumbprint);
+            Assert.That(selector.Filter.Thumbprint, Is.Not.Null);
 
             Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
@@ -337,11 +337,11 @@ namespace Google.Solutions.Platform.Test.Net
                     }
                 }");
 
-            Assert.IsNotNull(selector);
-            Assert.IsNotNull(selector!.Pattern);
+            Assert.That(selector, Is.Not.Null);
+            Assert.That(selector!.Pattern, Is.Not.Null);
             Assert.IsNull(selector.Filter.Issuer);
-            Assert.IsNotNull(selector.Filter.Subject);
-            Assert.IsNotNull(selector.Filter.Thumbprint);
+            Assert.That(selector.Filter.Subject, Is.Not.Null);
+            Assert.That(selector.Filter.Thumbprint, Is.Not.Null);
 
             Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),

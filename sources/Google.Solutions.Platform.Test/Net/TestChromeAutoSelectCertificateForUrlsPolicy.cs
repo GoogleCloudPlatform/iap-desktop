@@ -71,7 +71,7 @@ namespace Google.Solutions.Platform.Test.Net
                 .AddGroupPolicy((RegistryKey?)null)
                 .Build();
 
-            Assert.IsNotNull(policy);
+            Assert.That(policy, Is.Not.Null);
             Assert.That(policy.Entries.Any(), Is.False);
         }
 

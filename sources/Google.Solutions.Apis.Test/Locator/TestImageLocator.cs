@@ -52,7 +52,7 @@ namespace Google.Solutions.Apis.Test.Locator
                 "projects/project-1/global/images/image-1",
                 out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
+            Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("images"));
             Assert.That(ref1.Name, Is.EqualTo("image-1"));
             Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
@@ -65,7 +65,7 @@ namespace Google.Solutions.Apis.Test.Locator
                 "projects/debian-cloud/global/images/family/debian-9",
                 out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
+            Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("images"));
             Assert.That(ref1.Name, Is.EqualTo("family/debian-9"));
             Assert.That(ref1.ProjectId, Is.EqualTo("debian-cloud"));
@@ -78,7 +78,7 @@ namespace Google.Solutions.Apis.Test.Locator
                 "https://compute.googleapis.com/compute/v1/projects/debian-cloud/global/images/family/debian-9",
                 out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
+            Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("images"));
             Assert.That(ref1.Name, Is.EqualTo("family/debian-9"));
             Assert.That(ref1.ProjectId, Is.EqualTo("debian-cloud"));
@@ -91,7 +91,7 @@ namespace Google.Solutions.Apis.Test.Locator
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/images/windows-server-core",
                 out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
+            Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("images"));
             Assert.That(ref1.Name, Is.EqualTo("windows-server-core"));
             Assert.That(ref1.ProjectId, Is.EqualTo("windows-cloud"));
@@ -104,7 +104,7 @@ namespace Google.Solutions.Apis.Test.Locator
                 "https://compute.googleapis.com/compute/beta/projects/eip-images/global/images/debian-9-drawfork-v20191004",
                 out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
+            Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("images"));
             Assert.That(ref1.Name, Is.EqualTo("debian-9-drawfork-v20191004"));
             Assert.That(ref1.ProjectId, Is.EqualTo("eip-images"));

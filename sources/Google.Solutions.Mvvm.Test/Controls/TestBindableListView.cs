@@ -363,7 +363,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 form.ListView.Items[0].Selected = true;
 
-                Assert.IsNotNull(viewModel.SelectedItem);
+                Assert.That(viewModel.SelectedItem, Is.Not.Null);
                 Assert.That(viewModel.SelectedItem!.Name, Is.EqualTo("one"));
             }
         }
@@ -428,7 +428,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.ListView.Items[0].Selected = true;
                 form.ListView.Items[1].Selected = true;
 
-                Assert.IsNotNull(viewModel.SelectedItems);
+                Assert.That(viewModel.SelectedItems, Is.Not.Null);
                 Assert.That(viewModel.SelectedItems.Count(), Is.EqualTo(2));
             }
         }

@@ -198,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             Assert.That(model!.DisplayName, Is.EqualTo("Project 1"));
 
             Assert.That(model.Items.Count(), Is.EqualTo(1));
@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             Assert.That(model!.DisplayName, Is.EqualTo("Project 1"));
 
             Assert.That(model.Items.Count(), Is.EqualTo(1));
@@ -267,7 +267,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             Assert.That(model!.DisplayName, Is.EqualTo("Project 1"));
 
             Assert.That(model.Items, Is.Empty);
@@ -321,7 +321,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             Assert.That(model!.DisplayName, Is.EqualTo("instance-1"));
 
             Assert.That(model.Items.Count(), Is.EqualTo(1));
@@ -358,7 +358,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             Assert.That(model!.DisplayName, Is.EqualTo("instance-1"));
 
             Assert.That(model.Items.Count(), Is.EqualTo(2));
@@ -398,7 +398,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             Assert.That(model!.DisplayName, Is.EqualTo("instance-1"));
 
             Assert.That(model.Items.Count(), Is.EqualTo(1));

@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             var registry = new ServiceRegistry();
             registry.AddTransient<ServiceWithDefaultConstructor>();
 
-            Assert.IsNotNull(registry.GetService<ServiceWithDefaultConstructor>());
+            Assert.That(registry.GetService<ServiceWithDefaultConstructor>(), Is.Not.Null);
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             registry.AddTransient<ServiceWithServiceProviderConstructor>();
 
             var service = registry.GetService<ServiceWithServiceProviderConstructor>();
-            Assert.IsNotNull(service);
+            Assert.That(service, Is.Not.Null);
             Assert.That(service.Provider, Is.SameAs(registry));
 
         }
@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             registry.AddTransient<ServiceWithServiceCategoryProviderConstructor>();
 
             var service = registry.GetService<ServiceWithServiceCategoryProviderConstructor>();
-            Assert.IsNotNull(service);
+            Assert.That(service, Is.Not.Null);
             Assert.That(service.Provider, Is.SameAs(registry));
         }
 
@@ -156,8 +156,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
                 Service<ServiceWithDefaultConstructor> obj,
                 ServiceWithServiceProviderConstructor obj2)
             {
-                Assert.IsNotNull(obj);
-                Assert.IsNotNull(obj2);
+                Assert.That(obj, Is.Not.Null);
+                Assert.That(obj2, Is.Not.Null);
             }
 
             [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Required")]
@@ -211,7 +211,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             registry.AddTransient<ServiceWithServiceProviderConstructor>();
             registry.AddTransient<ServiceWithSatisfiedConstructor>();
 
-            Assert.IsNotNull(registry.GetService<ServiceWithSatisfiedConstructor>());
+            Assert.That(registry.GetService<ServiceWithSatisfiedConstructor>(), Is.Not.Null);
         }
 
         //---------------------------------------------------------------------
@@ -225,9 +225,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             registry.AddTransient<ServiceWithDefaultConstructor>();
 
             var service = registry.GetService<IActivator<ServiceWithDefaultConstructor>>();
-            Assert.IsNotNull(service);
+            Assert.That(service, Is.Not.Null);
             Assert.IsInstanceOf<Service<ServiceWithDefaultConstructor>>(service);
-            Assert.IsNotNull(service.Activate());
+            Assert.That(service.Activate(), Is.Not.Null);
 
             var obj1 = service.Activate();
             var obj2 = service.Activate();
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             parent.AddTransient<ServiceWithDefaultConstructor>();
 
             var child = new ServiceRegistry(parent);
-            Assert.IsNotNull(child.GetService<ServiceWithDefaultConstructor>());
+            Assert.That(child.GetService<ServiceWithDefaultConstructor>(), Is.Not.Null);
         }
 
         [Test]
@@ -314,7 +314,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             var registry = new ServiceRegistry();
             var services = registry.GetServicesByCategory<ICloneable>();
 
-            Assert.IsNotNull(services);
+            Assert.That(services, Is.Not.Null);
             Assert.That(services, Is.Empty);
         }
 
@@ -357,7 +357,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             registry.AddServiceToCategory<ICategory, SecondServiceImplementingCategory>();
 
             var services = registry.GetServicesByCategory<ICategory>();
-            Assert.IsNotNull(services);
+            Assert.That(services, Is.Not.Null);
             Assert.That(services.Count(), Is.EqualTo(2));
         }
 
@@ -373,11 +373,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             childRegistry.AddServiceToCategory<ICategory, SecondServiceImplementingCategory>();
 
             var parentServices = parentRegistry.GetServicesByCategory<ICategory>();
-            Assert.IsNotNull(parentServices);
+            Assert.That(parentServices, Is.Not.Null);
             Assert.That(parentServices.Count(), Is.EqualTo(1));
 
             var childServices = childRegistry.GetServicesByCategory<ICategory>();
-            Assert.IsNotNull(childServices);
+            Assert.That(childServices, Is.Not.Null);
             Assert.That(childServices.Count(), Is.EqualTo(2));
         }
     }

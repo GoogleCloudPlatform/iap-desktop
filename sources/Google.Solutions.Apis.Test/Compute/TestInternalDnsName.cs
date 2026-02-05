@@ -36,7 +36,7 @@ namespace Google.Solutions.Apis.Test.Compute
         {
             var name = "instance-1.zone-1.c.project-1.internal";
             Assert.That(InternalDnsName.TryParse(name, out var parsed), Is.True);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.IsInstanceOf<InternalDnsName.ZonalName>(parsed);
             Assert.That(parsed!.Name, Is.EqualTo(name));
             Assert.That(parsed.ToString(), Is.EqualTo(name));
@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis.Test.Compute
         {
             var name = "instance-1.c.project-1.internal";
             Assert.That(InternalDnsName.TryParse(name, out var parsed), Is.True);
-            Assert.IsNotNull(parsed);
+            Assert.That(parsed, Is.Not.Null);
             Assert.IsInstanceOf<InternalDnsName.GlobalName>(parsed);
             Assert.That(parsed!.Name, Is.EqualTo(name));
             Assert.That(parsed.ToString(), Is.EqualTo(name));

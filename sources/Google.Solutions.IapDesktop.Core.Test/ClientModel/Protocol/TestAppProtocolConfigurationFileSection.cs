@@ -234,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             };
 
             var client = (AppProtocolClient?)section.ParseClientSection();
-            Assert.IsNotNull(client);
+            Assert.That(client, Is.Not.Null);
 
             var programsFolder = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
 
@@ -255,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             };
 
             var client = (AppProtocolClient?)section.ParseClientSection();
-            Assert.IsNotNull(client);
+            Assert.That(client, Is.Not.Null);
             Assert.That(File.Exists(client!.Executable), Is.True);
         }
 
@@ -272,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             };
 
             var client = (AppProtocolClient?)section.ParseClientSection();
-            Assert.IsNotNull(client);
+            Assert.That(client, Is.Not.Null);
             Assert.That(client!.Executable, Is.EqualTo(fileName));
         }
     }

@@ -46,7 +46,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 StockIcons.IconId.Server,
                 StockIcons.IconSize.Large))
             {
-                Assert.IsNotNull(icon);
+                Assert.That(icon, Is.Not.Null);
                 Assert.That(icon.Width, Is.EqualTo(32));
             }
         }
@@ -58,7 +58,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 StockIcons.IconId.Server,
                 StockIcons.IconSize.Small))
             {
-                Assert.IsNotNull(icon);
+                Assert.That(icon, Is.Not.Null);
                 Assert.That(icon.Width, Is.EqualTo(16));
             }
         }

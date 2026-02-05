@@ -89,7 +89,7 @@ namespace Google.Solutions.Apis.Test.Logging
                     string.Empty,
                     stream =>
                     {
-                        Assert.IsNotNull(stream);
+                        Assert.That(stream, Is.Not.Null);
                         callbackInvoked = true;
                         return null;
                     },

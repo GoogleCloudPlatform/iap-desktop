@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(authorizedKey);
+            Assert.That(authorizedKey, Is.Not.Null);
             Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
             Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
         }
@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(authorizedKey);
+            Assert.That(authorizedKey, Is.Not.Null);
             Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
             Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
         }
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(authorizedKey);
+            Assert.That(authorizedKey, Is.Not.Null);
             Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
             Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
         }
@@ -304,7 +304,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
-                Assert.IsNotNull(authorizedKey);
+                Assert.That(authorizedKey, Is.Not.Null);
                 Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.InstanceMetadata));
                 Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 

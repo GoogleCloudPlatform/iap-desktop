@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(viewModel.InspectedObject.Value);
+            Assert.That(viewModel.InspectedObject.Value, Is.Not.Null);
             Assert.That(
                 viewModel.WindowTitle.Value, Does.Contain(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
             Assert.That(

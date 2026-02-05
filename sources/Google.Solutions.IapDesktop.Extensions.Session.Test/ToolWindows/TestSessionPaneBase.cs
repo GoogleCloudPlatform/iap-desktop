@@ -67,8 +67,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows
             })
             {
 
-                Assert.IsNotNull(window.ContextCommands);
-                Assert.IsNotNull(window.TabPageContextMenuStrip);
+                Assert.That(window.ContextCommands, Is.Not.Null);
+                Assert.That(window.TabPageContextMenuStrip, Is.Not.Null);
 
                 Assert.That(
                     window.TabPageContextMenuStrip.Items

@@ -90,9 +90,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                 .GetInstanceInventoryAsync(instanceRef, CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(info);
+            Assert.That(info, Is.Not.Null);
             Assert.That(info?.Instance, Is.EqualTo(instanceRef));
-            Assert.IsNotNull(info?.OperatingSystemVersion);
+            Assert.That(info?.OperatingSystemVersion, Is.Not.Null);
         }
 
         [Test]

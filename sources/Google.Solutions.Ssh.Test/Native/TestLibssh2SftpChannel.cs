@@ -82,7 +82,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 new KeyboardInteractiveHandler()))
             using (var channel = authSession.OpenSftpChannel())
             {
-                Assert.IsNotNull(channel);
+                Assert.That(channel, Is.Not.Null);
             }
         }
 
@@ -138,7 +138,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 Assert.Greater(files.Count, 1);
 
                 var passwd = files.First(f => f.Name == "passwd");
-                Assert.IsNotNull(passwd);
+                Assert.That(passwd, Is.Not.Null);
                 Assert.That(passwd.Permissions.HasFlag(FilePermissions.Regular), Is.True);
                 Assert.That(passwd.IsDirectory, Is.False);
             }
@@ -168,7 +168,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 Assert.Greater(files.Count, 1);
 
                 var parent = files.First(f => f.Name == "..");
-                Assert.IsNotNull(parent);
+                Assert.That(parent, Is.Not.Null);
                 Assert.That(parent.Permissions.HasFlag(FilePermissions.Directory), Is.True);
                 Assert.That(parent.IsDirectory, Is.True);
             }

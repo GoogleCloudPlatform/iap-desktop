@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
                 .ConfigureAwait(true);
 
             Assert.That(model?.IsInventoryDataAvailable, Is.False);
-            Assert.IsNotNull(model?.Packages);
+            Assert.That(model?.Packages, Is.Not.Null);
             Assert.That(model?.Packages.Any(), Is.False);
         }
     }

@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
             [Values("isLinux()", " isLinux(  \n) \n\r\t ")] string expression)
         {
             Assert.That(LinuxTrait.TryParse(expression, out var trait), Is.True);
-            Assert.IsNotNull(trait);
+            Assert.That(trait, Is.Not.Null);
         }
 
     }

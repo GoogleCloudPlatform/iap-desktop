@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             public void Bind(SampleViewModel viewModel, IBindingContext bindingContext)
             {
-                Assert.IsNotNull(viewModel);
+                Assert.That(viewModel, Is.Not.Null);
                 this.BindCalls++;
             }
         }

@@ -524,7 +524,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                     await Task.Delay(5);
                 }
 
-                Assert.IsNotNull(exception);
+                Assert.That(exception, Is.Not.Null);
                 Assert.IsInstanceOf<ArgumentException>(exception);
             }
         }

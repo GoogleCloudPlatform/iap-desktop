@@ -429,7 +429,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     .ConfigureAwait(true);
 
                 Application.DoEvents();
-                Assert.IsNotNull(currentDirectory);
+                Assert.That(currentDirectory, Is.Not.Null);
                 Assert.That(browser.CurrentPath, Is.EqualTo("Item/Item"));
             }
         }

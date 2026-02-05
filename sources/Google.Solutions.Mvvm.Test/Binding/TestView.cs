@@ -124,7 +124,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 dialog.ShowDialog(null);
             }
 
-            Assert.IsNotNull(form.ViewModel);
+            Assert.That(form.ViewModel, Is.Not.Null);
         }
 
         [Test]

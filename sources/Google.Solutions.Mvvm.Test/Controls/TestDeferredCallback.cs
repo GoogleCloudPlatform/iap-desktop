@@ -40,7 +40,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             using (callback = new DeferredCallback(
                 cb =>
                 {
-                    Assert.IsNotNull(callback);
+                    Assert.That(callback, Is.Not.Null);
                     Assert.That(callback!.IsPending, Is.False);
                     invocations++;
                 },

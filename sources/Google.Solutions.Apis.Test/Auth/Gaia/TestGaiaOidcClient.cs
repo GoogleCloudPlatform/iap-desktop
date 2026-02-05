@@ -360,7 +360,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 () => client.AuthorizeAsync(codeReceiver, CancellationToken.None))
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(codeReceiver.RequestUrl);
+            Assert.That(codeReceiver.RequestUrl, Is.Not.Null);
             Assert.That(
                 codeReceiver.RequestUrl!.Scope, Is.EqualTo(Scopes.Cloud),
                 "Minimal flow");
@@ -399,7 +399,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 () => client.AuthorizeAsync(codeReceiver, CancellationToken.None))
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(codeReceiver.RequestUrl);
+            Assert.That(codeReceiver.RequestUrl, Is.Not.Null);
             Assert.That(
                 codeReceiver.RequestUrl!.Scope, Is.EqualTo($"{Scopes.Cloud} {Scopes.Email}"),
                 "Normal flow");
@@ -428,7 +428,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 () => client.AuthorizeAsync(codeReceiver, CancellationToken.None))
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(codeReceiver.RequestUrl);
+            Assert.That(codeReceiver.RequestUrl, Is.Not.Null);
             Assert.That(
                 codeReceiver.RequestUrl!.Scope, Is.EqualTo($"{Scopes.Cloud} {Scopes.Email}"),
                 "Normal flow");
@@ -453,7 +453,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 () => client.AuthorizeAsync(codeReceiver, CancellationToken.None))
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(codeReceiver.RequestUrl);
+            Assert.That(codeReceiver.RequestUrl, Is.Not.Null);
             Assert.That(
                 codeReceiver.RequestUrl!.Scope, Is.EqualTo($"{Scopes.Cloud} {Scopes.Email}"),
                 "Normal flow");
@@ -599,7 +599,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 .AuthorizeAsync(codeReceiver.Object, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(session);
+            Assert.That(session, Is.Not.Null);
             Assert.That(session.Username, Is.EqualTo(SampleIdToken.Payload.Email));
             Assert.That(((UserCredential)session.ApiCredential).Token.AccessToken, Is.EqualTo("access-token"));
             Assert.That(((UserCredential)session.ApiCredential).Token.RefreshToken, Is.EqualTo("refresh-token"));
@@ -679,13 +679,13 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 .TryAuthorizeSilentlyAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(session);
+            Assert.That(session, Is.Not.Null);
             Assert.That(session!.Username, Is.EqualTo(SampleIdToken.Payload.Email));
             Assert.That(((UserCredential)session.ApiCredential).Token.AccessToken, Is.EqualTo("access-token"));
             Assert.That(((UserCredential)session.ApiCredential).Token.RefreshToken, Is.EqualTo("refresh-token"));
 
             // Terminate session.
-            Assert.IsNotNull(store.StoredCredential);
+            Assert.That(store.StoredCredential, Is.Not.Null);
             session.Terminate();
             Assert.IsNull(store.StoredCredential);
         }

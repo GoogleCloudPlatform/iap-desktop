@@ -45,7 +45,7 @@ namespace Google.Solutions.Apis.Test.Locator
                 "accessPolicies/policy-1/accessLevels/level-1",
                 out var locator), Is.True);
 
-            Assert.IsNotNull(locator);
+            Assert.That(locator, Is.Not.Null);
             Assert.That(locator!.AccessPolicy, Is.EqualTo("policy-1"));
             Assert.That(locator.AccessLevel, Is.EqualTo("level-1"));
         }

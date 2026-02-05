@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .FindLatestReleaseAsync(ReleaseFeedOptions.IncludeCanaryReleases, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(latest);
+            Assert.That(latest, Is.Not.Null);
             Assert.That(latest!.TagVersion!.ToString(), Is.EqualTo("4.0.1"));
         }
 
@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(latest);
+            Assert.That(latest, Is.Not.Null);
             Assert.IsNull(latest!.Survey);
         }
 
@@ -194,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(latest);
+            Assert.That(latest, Is.Not.Null);
             Assert.IsNull(latest!.Survey);
         }
 
@@ -232,8 +232,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(latest);
-            Assert.IsNotNull(latest!.Survey);
+            Assert.That(latest, Is.Not.Null);
+            Assert.That(latest!.Survey, Is.Not.Null);
             Assert.That(latest!.Survey!.Title, Is.EqualTo("title"));
             Assert.That(latest.Survey.Description, Is.EqualTo("description"));
             Assert.That(latest.Survey.Url, Is.EqualTo("http://survey.example.com/"));
@@ -429,7 +429,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(release);
+            Assert.That(release, Is.Not.Null);
             Assert.That(release!.TagVersion, Is.EqualTo(new Version(1, 2, 3, 4)));
         }
 
@@ -450,7 +450,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(release);
+            Assert.That(release, Is.Not.Null);
             Assert.IsNull(release!.TagVersion);
         }
 
@@ -483,7 +483,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(release);
+            Assert.That(release, Is.Not.Null);
             Assert.That(release!.TryGetDownloadUrl(
                 Architecture.X86,
                 out var downloadUrl), Is.False);
@@ -519,7 +519,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(release);
+            Assert.That(release, Is.Not.Null);
 
             Assert.That(release!.TryGetDownloadUrl(
                 Architecture.X86,
@@ -563,7 +563,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(release);
+            Assert.That(release, Is.Not.Null);
             Assert.That(release!.TryGetDownloadUrl(
                 Architecture.X86,
                 out var downloadUrl), Is.True);
@@ -584,19 +584,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(release);
-            Assert.IsNotNull(release!.TagVersion);
+            Assert.That(release, Is.Not.Null);
+            Assert.That(release!.TagVersion, Is.Not.Null);
             Assert.That(release.TagVersion!.Major >= 1, Is.True);
 
             Assert.That(release.TryGetDownloadUrl(
                 Architecture.X86,
                 out var downloadUrl), Is.True);
 
-            Assert.IsNotNull(downloadUrl);
+            Assert.That(downloadUrl, Is.Not.Null);
             Assert.That(Uri.IsWellFormedUriString(downloadUrl, UriKind.Absolute), Is.True);
             Assert.That(downloadUrl, Does.EndWith(".msi"));
 
-            Assert.IsNotNull(release.DetailsUrl);
+            Assert.That(release.DetailsUrl, Is.Not.Null);
             Assert.That(Uri.IsWellFormedUriString(release.DetailsUrl, UriKind.Absolute), Is.True);
         }
     }

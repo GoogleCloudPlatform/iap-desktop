@@ -332,7 +332,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     UserFlags.AddToAdministrators,
                     CancellationToken.None)
                 .ConfigureAwait(false);
-            Assert.IsNotNull(result.Password);
+            Assert.That(result.Password, Is.Not.Null);
         }
 
         [Test]
@@ -382,7 +382,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     UserFlags.AddToAdministrators,
                     CancellationToken.None)
                 .ConfigureAwait(false);
-            Assert.IsNotNull(result.Password);
+            Assert.That(result.Password, Is.Not.Null);
         }
     }
 }

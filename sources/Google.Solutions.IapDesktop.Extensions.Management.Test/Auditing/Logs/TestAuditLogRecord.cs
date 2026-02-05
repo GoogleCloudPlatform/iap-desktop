@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
             Assert.IsInstanceOf<AuditLogRecord>(record.ProtoPayload);
             var auditLog = (AuditLogRecord)record.ProtoPayload!;
 
-            Assert.IsNotNull(auditLog.Metadata);
+            Assert.That(auditLog.Metadata, Is.Not.Null);
             Assert.That(auditLog.Metadata?["serverId"]?.Value<string>(), Is.EqualTo("b67639853d26e39b79a4fb306fd7d297"));
             Assert.That(auditLog.Metadata?["timestamp"]?.Value<DateTime>(), Is.EqualTo(new DateTime(2020, 3, 23, 10, 35, 9)));
         }
@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
             Assert.IsInstanceOf<AuditLogRecord>(record.ProtoPayload);
             var auditLog = (AuditLogRecord)record.ProtoPayload!;
 
-            Assert.IsNotNull(auditLog.Request);
+            Assert.That(auditLog.Request, Is.Not.Null);
             Assert.That(auditLog.Request?["name"]?.Value<string>(), Is.EqualTo("my-managed-group2-f3ng"));
             Assert.That(auditLog.Request?["canIpForward"]?.Value<bool>(), Is.EqualTo(false));
         }
@@ -266,7 +266,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
             Assert.IsInstanceOf<AuditLogRecord>(record.ProtoPayload);
             var auditLog = (AuditLogRecord)record.ProtoPayload!;
 
-            Assert.IsNotNull(auditLog.Response);
+            Assert.That(auditLog.Response, Is.Not.Null);
             Assert.That(auditLog.Response?["id"]?.Value<string>(), Is.EqualTo("2713656233496483618"));
             Assert.That(auditLog.Response?["name"]?.Value<string>(), Is.EqualTo("operation-1589"));
         }

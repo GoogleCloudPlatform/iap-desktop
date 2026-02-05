@@ -209,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 settingsRepository);
 
             Assert.That(enrollment.State, Is.EqualTo(DeviceEnrollmentState.Enrolled));
-            Assert.IsNotNull(enrollment.Certificate);
+            Assert.That(enrollment.Certificate, Is.Not.Null);
             Assert.That(enrollment.Certificate!.Subject, Is.EqualTo("CN=Google Endpoint Verification"));
         }
 
@@ -344,7 +344,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 settingsRepository);
 
             Assert.That(enrollment.State, Is.EqualTo(DeviceEnrollmentState.Enrolled));
-            Assert.IsNotNull(enrollment.Certificate);
+            Assert.That(enrollment.Certificate, Is.Not.Null);
             Assert.That(enrollment.Certificate!.Subject, Is.EqualTo("CN=Example"));
         }
     }

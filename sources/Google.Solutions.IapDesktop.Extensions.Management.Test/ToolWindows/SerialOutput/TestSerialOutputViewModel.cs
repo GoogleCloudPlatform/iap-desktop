@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             viewModel.IsTailEnabled = true;
 
             var tailCts = viewModel.TailCancellationTokenSource;
-            Assert.IsNotNull(tailCts, "tailing");
+            Assert.That(tailCts, Is.Not.Null, "tailing");
 
             viewModel.IsTailEnabled = false;
 
@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             viewModel.IsTailBlocked = false;
 
             var tailCts = viewModel.TailCancellationTokenSource;
-            Assert.IsNotNull(tailCts, "tailing");
+            Assert.That(tailCts, Is.Not.Null, "tailing");
 
             viewModel.IsTailBlocked = true;
 

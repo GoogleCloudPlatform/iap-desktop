@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(true);
 
-                Assert.IsNotNull(viewModel.Authorization);
+                Assert.That(viewModel.Authorization, Is.Not.Null);
 
                 Assert.That(viewModel.IsSignOnControlVisible.Value, Is.False);
                 Assert.That(viewModel.IsWaitControlVisible.Value, Is.True);
@@ -308,7 +308,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(true);
 
-                Assert.IsNotNull(viewModel.Authorization);
+                Assert.That(viewModel.Authorization, Is.Not.Null);
 
                 Assert.That(viewModel.IsSignOnControlVisible.Value, Is.True);
                 Assert.That(viewModel.IsWaitControlVisible.Value, Is.False);

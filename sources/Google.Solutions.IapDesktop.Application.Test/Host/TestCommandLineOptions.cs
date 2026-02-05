@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 new[] { "/url", "iap-rdp:///project-1/us-central1-a/vm-1" });
 
             Assert.That(options.IsLoggingEnabled, Is.False);
-            Assert.IsNotNull(options.StartupUrl);
+            Assert.That(options.StartupUrl, Is.Not.Null);
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 new[] { "/url", "iap-rdp:///project-1/us-central1-a/vm-1", "/debug" });
 
             Assert.That(options.IsLoggingEnabled, Is.True);
-            Assert.IsNotNull(options.StartupUrl);
+            Assert.That(options.StartupUrl, Is.Not.Null);
         }
 
         [Test]
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 new[] { "/debug", "/url", "iap-rdp:///project-1/us-central1-a/vm-1" });
 
             Assert.That(options.IsLoggingEnabled, Is.True);
-            Assert.IsNotNull(options.StartupUrl);
+            Assert.That(options.StartupUrl, Is.Not.Null);
         }
 
         [Test]
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                     "/profile", "profile-1"});
 
             Assert.That(options.IsLoggingEnabled, Is.True);
-            Assert.IsNotNull(options.StartupUrl);
+            Assert.That(options.StartupUrl, Is.Not.Null);
             Assert.That(options.Profile, Is.EqualTo("profile-1"));
         }
 

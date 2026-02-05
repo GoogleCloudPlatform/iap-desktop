@@ -206,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(context.NetworkCredential);
+            Assert.That(context.NetworkCredential, Is.Not.Null);
             Assert.That(context.NetworkCredential!.Password, Is.EqualTo("password"));
             Assert.That(context.NetworkCredential.Domain, Is.EqualTo("domain"));
         }

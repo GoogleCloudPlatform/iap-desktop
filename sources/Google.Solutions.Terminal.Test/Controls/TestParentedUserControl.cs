@@ -60,7 +60,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.Show();
                 Application.DoEvents();
 
-                Assert.IsNotNull(control.CurrentParentForm);
+                Assert.That(control.CurrentParentForm, Is.Not.Null);
                 Assert.That(control.ParentFormChanges, Is.EqualTo(1));
             }
         }

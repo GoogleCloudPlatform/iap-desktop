@@ -67,7 +67,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(project);
+            Assert.That(project, Is.Not.Null);
             Assert.That(project.Name, Is.EqualTo(TestProject.ProjectId));
         }
 
@@ -90,7 +90,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(project);
+            Assert.That(project, Is.Not.Null);
             Assert.That(project.Name, Is.EqualTo(TestProject.ProjectId));
         }
 
@@ -151,7 +151,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ConfigureAwait(false);
 
             Assert.Greater(instances.Count(), 1);
-            Assert.IsNotNull(instances.FirstOrDefault(i => i.Name == instanceRef.Name));
+            Assert.That(instances.FirstOrDefault(i => i.Name == instanceRef.Name), Is.Not.Null);
         }
 
         [Test]
@@ -174,7 +174,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ConfigureAwait(false);
 
             Assert.Greater(instances.Count(), 1);
-            Assert.IsNotNull(instances.FirstOrDefault(i => i.Name == instanceRef.Name));
+            Assert.That(instances.FirstOrDefault(i => i.Name == instanceRef.Name), Is.Not.Null);
         }
 
         [Test]

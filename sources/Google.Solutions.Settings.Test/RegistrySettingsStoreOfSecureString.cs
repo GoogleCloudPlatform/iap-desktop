@@ -153,7 +153,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = SecureStringExtensions.FromClearText("red");
                 key.Write(setting);
 
-                Assert.IsNotNull(key.BackingKey.GetValue("test"));
+                Assert.That(key.BackingKey.GetValue("test"), Is.Not.Null);
 
                 // Now read again.
 
@@ -193,7 +193,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = SecureStringExtensions.FromClearText("green");
                 key.Write(setting);
 
-                Assert.IsNotNull(key.BackingKey.GetValue("test"));
+                Assert.That(key.BackingKey.GetValue("test"), Is.Not.Null);
             }
         }
 
@@ -212,7 +212,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = SecureStringExtensions.FromClearText("red");
                 key.Write(setting);
 
-                Assert.IsNotNull(key.BackingKey.GetValue("test"));
+                Assert.That(key.BackingKey.GetValue("test"), Is.Not.Null);
 
                 // Now write again.
 

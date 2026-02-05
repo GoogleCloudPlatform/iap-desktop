@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
             using (var process = context.LaunchClient(transport.Object))
             {
-                Assert.IsNotNull(process);
+                Assert.That(process, Is.Not.Null);
 
                 processFactory.Verify(
                     f => f.CreateProcess("client.exe", "args"),
@@ -235,7 +235,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             })
             using (var process = context.LaunchClient(transport.Object))
             {
-                Assert.IsNotNull(process);
+                Assert.That(process, Is.Not.Null);
 
                 processFactory.Verify(
                     f => f.CreateProcessAsUser(

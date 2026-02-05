@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                     RdpCreateSessionFlags.ForcePasswordPrompt,
                     CancellationToken.None)
                 .ConfigureAwait(false);
-            Assert.IsNotNull(context);
+            Assert.That(context, Is.Not.Null);
 
             Assert.That(context.Parameters.Sources, Is.EqualTo(RdpParameters.ParameterSources.Inventory));
 
@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                     RdpCreateSessionFlags.None,
                     CancellationToken.None)
                 .ConfigureAwait(false);
-            Assert.IsNotNull(context);
+            Assert.That(context, Is.Not.Null);
 
 
             Assert.That(context.Parameters.Sources, Is.EqualTo(RdpParameters.ParameterSources.Inventory));
@@ -208,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                     url,
                     CancellationToken.None)
                 .ConfigureAwait(false);
-            Assert.IsNotNull(context);
+            Assert.That(context, Is.Not.Null);
 
             Assert.That(context.Parameters.Sources, Is.EqualTo(RdpParameters.ParameterSources.Url));
             Assert.IsNull(context.Credential.User);
@@ -250,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
             var context = (RdpContext)await factory
                 .CreateRdpSessionContextAsync(url, CancellationToken.None)
                 .ConfigureAwait(false);
-            Assert.IsNotNull(context);
+            Assert.That(context, Is.Not.Null);
 
             Assert.That(
                 context.Parameters.Sources, Is.EqualTo(RdpParameters.ParameterSources.Inventory | RdpParameters.ParameterSources.Url));
@@ -338,7 +338,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 .CreateRdpSessionContextAsync(url, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(context);
+            Assert.That(context, Is.Not.Null);
             Assert.That(context.Parameters.Sources, Is.EqualTo(RdpParameters.ParameterSources.Url));
             Assert.That(context.Credential.User, Is.EqualTo("user"));
             Assert.That(context.Credential.Domain, Is.EqualTo("domain"));

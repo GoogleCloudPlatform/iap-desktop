@@ -108,7 +108,7 @@ namespace Google.Solutions.Ssh.Test
                     .ListFilesAsync("/etc")
                     .ConfigureAwait(false);
 
-                Assert.IsNotNull(files);
+                Assert.That(files, Is.Not.Null);
                 Assert.That(files, Is.Not.Empty);
             }
         }

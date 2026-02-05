@@ -147,7 +147,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 .Values
                 .Where(k => k.Key.Contains(key))
                 .FirstOrDefault();
-            Assert.IsNotNull(entry);
+            Assert.That(entry, Is.Not.Null);
         }
 
         //---------------------------------------------------------------------
@@ -207,7 +207,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(profile);
+            Assert.That(profile, Is.Not.Null);
         }
 
         //---------------------------------------------------------------------
@@ -259,7 +259,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 .Values
                 .Where(k => k.Key.Contains(key))
                 .FirstOrDefault();
-            Assert.IsNotNull(entry);
+            Assert.That(entry, Is.Not.Null);
 
             //
             // Delete key twice.
@@ -537,7 +537,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(keys);
+            Assert.That(keys, Is.Not.Null);
         }
     }
 }

@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(viewModel.InspectedObject.Value);
+            Assert.That(viewModel.InspectedObject.Value, Is.Not.Null);
             Assert.That(
                 viewModel.WindowTitle.Value, Does.Contain(ConnectionSettingsViewModel.DefaultWindowTitle));
             Assert.That(
@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(viewModel.InspectedObject.Value);
+            Assert.That(viewModel.InspectedObject.Value, Is.Not.Null);
             Assert.That(
                 viewModel.WindowTitle.Value, Does.Contain(ConnectionSettingsViewModel.DefaultWindowTitle));
             Assert.That(
@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(viewModel.InspectedObject.Value);
+            Assert.That(viewModel.InspectedObject.Value, Is.Not.Null);
             Assert.That(
                 viewModel.WindowTitle.Value, Does.Contain(ConnectionSettingsViewModel.DefaultWindowTitle));
             Assert.That(

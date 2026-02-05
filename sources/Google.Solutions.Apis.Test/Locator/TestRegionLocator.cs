@@ -52,7 +52,7 @@ namespace Google.Solutions.Apis.Test.Locator
                 "projects/project-1/regions/us-central1",
                 out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
+            Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("regions"));
             Assert.That(ref1.Name, Is.EqualTo("us-central1"));
             Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
@@ -65,7 +65,7 @@ namespace Google.Solutions.Apis.Test.Locator
                 "https://compute.googleapis.com/compute/v1/projects/project-1/regions/us-central1",
                 out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
+            Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("regions"));
             Assert.That(ref1.Name, Is.EqualTo("us-central1"));
             Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
@@ -78,7 +78,7 @@ namespace Google.Solutions.Apis.Test.Locator
                 "https://www.googleapis.com/compute/v1/projects/project-1/regions/us-central1",
                 out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
+            Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("regions"));
             Assert.That(ref1.Name, Is.EqualTo("us-central1"));
             Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));

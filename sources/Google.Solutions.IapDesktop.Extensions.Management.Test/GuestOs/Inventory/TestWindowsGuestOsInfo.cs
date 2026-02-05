@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                 SampleLocator,
                 new List<GuestAttributesEntry>());
 
-            Assert.IsNotNull(attributes);
+            Assert.That(attributes, Is.Not.Null);
             Assert.IsNull(attributes.Architecture);
             Assert.IsNull(attributes.KernelRelease);
             Assert.IsNull(attributes.KernelVersion);
@@ -157,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         {
             var attributes = GuestOsInfo.FromGuestAttributes(SampleLocator, SampleAttributes);
 
-            Assert.IsNotNull(attributes);
+            Assert.That(attributes, Is.Not.Null);
             Assert.That(attributes.Architecture, Is.EqualTo("x86_64"));
             Assert.That(attributes.KernelRelease, Is.EqualTo("10.0.17763.1282"));
             Assert.That(attributes.KernelVersion, Is.EqualTo("10.0.17763.1282 (WinBuild.160101.0800)"));
@@ -174,8 +174,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         {
             var attributes = GuestOsInfo.FromGuestAttributes(SampleLocator, SampleAttributes);
 
-            Assert.IsNotNull(attributes);
-            Assert.IsNotNull(attributes.InstalledPackages);
+            Assert.That(attributes, Is.Not.Null);
+            Assert.That(attributes.InstalledPackages, Is.Not.Null);
 
             // Googet
             Assert.That(attributes.InstalledPackages?.GoogetPackages.Count, Is.EqualTo(16));
@@ -220,8 +220,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         {
             var attributes = GuestOsInfo.FromGuestAttributes(SampleLocator, SampleAttributes);
 
-            Assert.IsNotNull(attributes);
-            Assert.IsNotNull(attributes.AvailablePackages);
+            Assert.That(attributes, Is.Not.Null);
+            Assert.That(attributes.AvailablePackages, Is.Not.Null);
 
             // Googet
             Assert.That(attributes.AvailablePackages?.GoogetPackages.Count, Is.EqualTo(1));

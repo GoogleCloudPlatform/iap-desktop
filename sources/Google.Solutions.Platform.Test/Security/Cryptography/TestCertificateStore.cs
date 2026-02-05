@@ -115,7 +115,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
             var certificates = store.ListUserCertificates(
                 cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
 
-            Assert.IsNotNull(certificates);
+            Assert.That(certificates, Is.Not.Null);
             Assert.That(certificates.Count(), Is.EqualTo(1));
             Assert.That(
                 certificates.First().Thumbprint, Is.EqualTo(ExampleCertificate.Thumbprint));
@@ -131,7 +131,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
             var store = new CertificateStore();
             var certificates = store.ListUserCertificates(cert => false);
 
-            Assert.IsNotNull(certificates);
+            Assert.That(certificates, Is.Not.Null);
             Assert.That(certificates, Is.Empty);
         }
 
@@ -148,7 +148,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
             var certificates = store.ListMachineCertificates(
                 cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
 
-            Assert.IsNotNull(certificates);
+            Assert.That(certificates, Is.Not.Null);
             Assert.That(certificates, Is.Empty);
         }
 
@@ -160,7 +160,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
             var store = new CertificateStore();
             var certificates = store.ListMachineCertificates(cert => false);
 
-            Assert.IsNotNull(certificates);
+            Assert.That(certificates, Is.Not.Null);
             Assert.That(certificates, Is.Empty);
         }
     }

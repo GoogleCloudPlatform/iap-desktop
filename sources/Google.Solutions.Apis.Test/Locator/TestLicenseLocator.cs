@@ -52,7 +52,7 @@ namespace Google.Solutions.Apis.Test.Locator
                 "projects/project-1/global/licenses/windows-10-enterprise-byol",
                 out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
+            Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("licenses"));
             Assert.That(ref1.Name, Is.EqualTo("windows-10-enterprise-byol"));
             Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
@@ -65,7 +65,7 @@ namespace Google.Solutions.Apis.Test.Locator
                 "https://compute.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol",
                 out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
+            Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("licenses"));
             Assert.That(ref1.Name, Is.EqualTo("windows-10-enterprise-byol"));
             Assert.That(ref1.ProjectId, Is.EqualTo("windows-cloud"));
@@ -78,7 +78,7 @@ namespace Google.Solutions.Apis.Test.Locator
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol",
                 out var ref1), Is.True);
 
-            Assert.IsNotNull(ref1);
+            Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("licenses"));
             Assert.That(ref1.Name, Is.EqualTo("windows-10-enterprise-byol"));
             Assert.That(ref1.ProjectId, Is.EqualTo("windows-cloud"));

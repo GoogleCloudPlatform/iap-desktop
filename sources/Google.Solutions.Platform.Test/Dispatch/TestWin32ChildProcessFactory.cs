@@ -43,7 +43,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var factory = new Win32ChildProcessFactory(true))
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                Assert.IsNotNull(process.Job);
+                Assert.That(process.Job, Is.Not.Null);
                 Assert.That(process.Job!.Contains(process), Is.True);
                 Assert.That(process.Job!.Contains(process.Id), Is.True);
             }

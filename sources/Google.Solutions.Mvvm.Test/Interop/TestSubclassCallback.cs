@@ -104,7 +104,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
                 form.Shown += (_, __) => form.Close();
                 form.Show();
 
-                Assert.IsNotNull(exception);
+                Assert.That(exception, Is.Not.Null);
             }
         }
 

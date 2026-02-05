@@ -71,7 +71,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 "locations/LOCATION/workforcePools/POOL/providers/PROVIDER",
                 out var locator), Is.True);
 
-            Assert.IsNotNull(locator);
+            Assert.That(locator, Is.Not.Null);
             Assert.That(locator!.Location, Is.EqualTo("LOCATION"));
             Assert.That(locator.Pool, Is.EqualTo("POOL"));
             Assert.That(locator.Provider, Is.EqualTo("PROVIDER"));
@@ -115,7 +115,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             var locator = WorkforcePoolProviderLocator.Parse(
                 "locations/LOCATION/workforcePools/POOL/providers/PROVIDER");
 
-            Assert.IsNotNull(locator);
+            Assert.That(locator, Is.Not.Null);
             Assert.That(locator!.Location, Is.EqualTo("LOCATION"));
             Assert.That(locator.Pool, Is.EqualTo("POOL"));
             Assert.That(locator.Provider, Is.EqualTo("PROVIDER"));

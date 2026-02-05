@@ -53,7 +53,7 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var banner = connection.RemoteBanner;
                 Assert.That(session.LastError, Is.EqualTo(LIBSSH2_ERROR.NONE));
-                Assert.IsNotNull(banner);
+                Assert.That(banner, Is.Not.Null);
             }
         }
 
@@ -85,16 +85,16 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.KEX));
-                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.HOSTKEY));
-                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.CRYPT_CS));
-                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.CRYPT_SC));
-                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.MAC_CS));
-                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.MAC_SC));
-                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.COMP_CS));
-                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.COMP_SC));
-                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.LANG_CS));
-                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.LANG_SC));
+                Assert.That(connection.GetActiveAlgorithms(LIBSSH2_METHOD.KEX), Is.Not.Null);
+                Assert.That(connection.GetActiveAlgorithms(LIBSSH2_METHOD.HOSTKEY), Is.Not.Null);
+                Assert.That(connection.GetActiveAlgorithms(LIBSSH2_METHOD.CRYPT_CS), Is.Not.Null);
+                Assert.That(connection.GetActiveAlgorithms(LIBSSH2_METHOD.CRYPT_SC), Is.Not.Null);
+                Assert.That(connection.GetActiveAlgorithms(LIBSSH2_METHOD.MAC_CS), Is.Not.Null);
+                Assert.That(connection.GetActiveAlgorithms(LIBSSH2_METHOD.MAC_SC), Is.Not.Null);
+                Assert.That(connection.GetActiveAlgorithms(LIBSSH2_METHOD.COMP_CS), Is.Not.Null);
+                Assert.That(connection.GetActiveAlgorithms(LIBSSH2_METHOD.COMP_SC), Is.Not.Null);
+                Assert.That(connection.GetActiveAlgorithms(LIBSSH2_METHOD.LANG_CS), Is.Not.Null);
+                Assert.That(connection.GetActiveAlgorithms(LIBSSH2_METHOD.LANG_SC), Is.Not.Null);
             }
         }
 
@@ -154,8 +154,8 @@ namespace Google.Solutions.Ssh.Test.Native
                     Assert.That(session.LastError, Is.EqualTo(LIBSSH2_ERROR.NONE));
                     Assert.That(connection.GetRemoteHostKeyType(), Is.EqualTo(hostKeyType));
 
-                    Assert.IsNotNull(connection.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA256), "SHA256");
-                    Assert.IsNotNull(connection.GetRemoteHostKey());
+                    Assert.That(connection.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA256), Is.Not.Null, "SHA256");
+                    Assert.That(connection.GetRemoteHostKey(), Is.Not.Null);
 
                     Assert.That(
                         connection.GetActiveAlgorithms(LIBSSH2_METHOD.HOSTKEY)[0], Is.EqualTo(new HostKeyType(hostKeyType).Name).AsCollection);
@@ -245,7 +245,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             {
                 var methods = connection.GetAuthenticationMethods(string.Empty);
-                Assert.IsNotNull(methods);
+                Assert.That(methods, Is.Not.Null);
                 Assert.That(methods.Length, Is.EqualTo(1));
                 Assert.That(methods.First(), Is.EqualTo("publickey"));
             }
@@ -377,7 +377,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 credential,
                 new KeyboardInteractiveHandler()))
             {
-                Assert.IsNotNull(authSession);
+                Assert.That(authSession, Is.Not.Null);
             }
         }
 
@@ -413,7 +413,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 handler))
             {
                 Assert.That(handler.PromptCount, Is.EqualTo(1));
-                Assert.IsNotNull(authSession);
+                Assert.That(authSession, Is.Not.Null);
             }
         }
 
@@ -514,7 +514,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     }
                 }))
             {
-                Assert.IsNotNull(authSession);
+                Assert.That(authSession, Is.Not.Null);
             }
         }
 
@@ -569,7 +569,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 credential,
                 new KeyboardInteractiveHandler()))
             {
-                Assert.IsNotNull(authSession);
+                Assert.That(authSession, Is.Not.Null);
             }
         }
 

@@ -79,7 +79,7 @@ namespace Google.Solutions.Terminal.Test
                 handler.Object,
                 context);
 
-            Assert.IsNotNull(synchronizedHandler.PromptForCredentials("username"));
+            Assert.That(synchronizedHandler.PromptForCredentials("username"), Is.Not.Null);
             Assert.That(context.SendCalls, Is.EqualTo(1));
         }
     }

@@ -71,7 +71,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(instance.PrimaryInternalAddress());
+            Assert.That(instance.PrimaryInternalAddress(), Is.Not.Null);
             Assert.That(
                 new byte[] { 172, 192, 10 }, Has.Member(instance.PrimaryInternalAddress().GetAddressBytes()[0]),
                 "Is RFC1918 address");
@@ -108,7 +108,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(instance.PublicAddress());
+            Assert.That(instance.PublicAddress(), Is.Not.Null);
             Assert.That(
                 new byte[] { 172, 192, 10 }, Has.No.Member(instance.PublicAddress().GetAddressBytes()[0]),
                 "Is not a RFC1918 address");

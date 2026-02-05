@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
             Assert.That(record.Severity, Is.EqualTo("INFO"));
             Assert.That(record.Timestamp, Is.EqualTo(new DateTime(2020, 3, 23, 10, 35, 10)));
 
-            Assert.IsNotNull(record.Resource);
+            Assert.That(record.Resource, Is.Not.Null);
             Assert.That(record.Resource?.Type, Is.EqualTo("gce_instance"));
             Assert.That(record.Resource?.Labels?["project_id"], Is.EqualTo("project-1"));
             Assert.That(record.Resource?.Labels?["instance_id"], Is.EqualTo("22470777052"));
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
             Assert.That(record.Severity, Is.EqualTo("NOTICE"));
             Assert.That(record.Timestamp, Is.EqualTo(new DateTime(2020, 5, 11, 1, 26, 36, 738)));
 
-            Assert.IsNotNull(record.Resource);
+            Assert.That(record.Resource, Is.Not.Null);
             Assert.That(record.Resource?.Type, Is.EqualTo("gce_instance"));
             Assert.That(record.Resource?.Labels?["project_id"], Is.EqualTo("project-1"));
             Assert.That(record.Resource?.Labels?["instance_id"], Is.EqualTo("16752163"));

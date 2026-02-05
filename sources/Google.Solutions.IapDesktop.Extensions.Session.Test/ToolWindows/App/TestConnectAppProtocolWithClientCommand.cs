@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<ICredentialDialog>().Object,
                 new Mock<INotifyDialog>().Object);
 
-            Assert.IsNotNull(command.Image);
+            Assert.That(command.Image, Is.Not.Null);
         }
 
         //---------------------------------------------------------------------
@@ -392,7 +392,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(context.NetworkCredential);
+            Assert.That(context.NetworkCredential, Is.Not.Null);
             Assert.That(context.NetworkCredential!.UserName, Is.EqualTo("user"));
             Assert.That(context.NetworkCredential.Domain, Is.EqualTo("domain"));
             Assert.That(context.NetworkCredential.Password, Is.EqualTo("password"));
@@ -431,7 +431,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(context.NetworkCredential);
+            Assert.That(context.NetworkCredential, Is.Not.Null);
             Assert.That(context.NetworkCredential!.UserName, Is.EqualTo("user"));
             Assert.That(context.NetworkCredential.Domain, Is.EqualTo("domain"));
             Assert.That(context.NetworkCredential.Password, Is.EqualTo("password"));
@@ -473,7 +473,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(context.NetworkCredential);
+            Assert.That(context.NetworkCredential, Is.Not.Null);
             Assert.That(context!.NetworkCredential!.UserName, Is.EqualTo("user"));
             Assert.That(context.NetworkCredential.Domain, Is.EqualTo("domain"));
             Assert.That(context.NetworkCredential.Password, Is.EqualTo("password"));

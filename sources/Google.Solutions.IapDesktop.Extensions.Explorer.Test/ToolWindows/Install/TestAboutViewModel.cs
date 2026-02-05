@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Test.ToolWindows.Insta
         {
             var viewModel = new AboutViewModel(new Mock<IInstall>().Object);
 
-            Assert.IsNotNull(viewModel.LicenseText);
+            Assert.That(viewModel.LicenseText, Is.Not.Null);
             Assert.That(viewModel.LicenseText, Does.Contain("Apache"));
         }
     }

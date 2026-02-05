@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
             viewModel.SelectedProjects.Value = new[] { ProjectOne };
 
             Assert.That(viewModel.IsProjectSelected.Value, Is.True);
-            Assert.IsNotNull(viewModel.SelectedProjects.Value);
+            Assert.That(viewModel.SelectedProjects.Value, Is.Not.Null);
 
             await viewModel
                 .FilterAsync("project-1")
@@ -160,14 +160,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
             viewModel.SelectedProjects.Value = new[] { ProjectOne };
 
             Assert.That(viewModel.IsProjectSelected.Value, Is.True);
-            Assert.IsNotNull(viewModel.SelectedProjects.Value);
+            Assert.That(viewModel.SelectedProjects.Value, Is.Not.Null);
 
             await viewModel
                 .FilterAsync("fail")
                 .ConfigureAwait(true);
 
             Assert.That(viewModel.IsLoading.Value, Is.False);
-            Assert.IsNotNull(viewModel.LoadingError);
+            Assert.That(viewModel.LoadingError, Is.Not.Null);
             Assert.That(viewModel.LoadingError.Value.Message, Is.EqualTo("mock"));
         }
     }

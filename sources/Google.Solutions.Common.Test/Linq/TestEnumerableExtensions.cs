@@ -37,7 +37,7 @@ namespace Google.Solutions.Common.Test.Linq
         public void EnsureNotNull_WhenEnumIsNull_EnsureNotNullReturnsEmpty()
         {
             IEnumerable<string>? e = null;
-            Assert.IsNotNull(e.EnsureNotNull());
+            Assert.That(e.EnsureNotNull(), Is.Not.Null);
             Assert.That(e.EnsureNotNull().Count(), Is.EqualTo(0));
         }
 

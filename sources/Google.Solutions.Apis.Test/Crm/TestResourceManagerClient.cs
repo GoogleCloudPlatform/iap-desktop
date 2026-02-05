@@ -67,7 +67,7 @@ namespace Google.Solutions.Apis.Test.Crm
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(project);
+            Assert.That(project, Is.Not.Null);
             Assert.That(project.Name, Is.EqualTo(TestProject.ProjectId));
         }
 
@@ -129,7 +129,7 @@ namespace Google.Solutions.Apis.Test.Crm
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(project);
+            Assert.That(project, Is.Not.Null);
             Assert.That(project.ProjectId, Is.EqualTo(TestProject.ProjectId));
         }
 
@@ -183,7 +183,7 @@ namespace Google.Solutions.Apis.Test.Crm
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             Assert.That(result.IsTruncated, Is.False);
             Assert.That(result.Projects.Count(), Is.EqualTo(1));
             Assert.That(result.Projects.First().ProjectId, Is.EqualTo(TestProject.ProjectId));
@@ -207,7 +207,7 @@ namespace Google.Solutions.Apis.Test.Crm
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             Assert.That(result.Projects.Any(), Is.True);
             Assert.That(
                 result.Projects.Select(p => p.ProjectId), Has.Member(TestProject.ProjectId));
@@ -247,7 +247,7 @@ namespace Google.Solutions.Apis.Test.Crm
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(org);
+            Assert.That(org, Is.Not.Null);
             Assert.That(org!.Id, Is.Not.EqualTo(0));
         }
 
@@ -286,7 +286,7 @@ namespace Google.Solutions.Apis.Test.Crm
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(org);
+            Assert.That(org, Is.Not.Null);
 
             await ExceptionAssert
                 .ThrowsAsync<ResourceAccessDeniedException>(

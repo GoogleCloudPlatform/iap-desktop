@@ -69,9 +69,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             Assert.That(model.InstanceName, Is.EqualTo(locator.Name));
             Assert.IsNull(model.Hostname);
             Assert.That(model.Status, Is.EqualTo("RUNNING"));
-            Assert.IsNotNull(model.InternalIp);
-            Assert.IsNotNull(model.ExternalIp);
-            Assert.IsNotNull(model.Licenses);
+            Assert.That(model.InternalIp, Is.Not.Null);
+            Assert.That(model.ExternalIp, Is.Not.Null);
+            Assert.That(model.Licenses, Is.Not.Null);
             Assert.That(model.OsInventory, Is.EqualTo(model.IsOsInventoryInformationPopulated
                 ? FeatureFlag.Enabled : FeatureFlag.Disabled));
             Assert.That(model.Diagnostics, Is.EqualTo(FeatureFlag.Disabled));

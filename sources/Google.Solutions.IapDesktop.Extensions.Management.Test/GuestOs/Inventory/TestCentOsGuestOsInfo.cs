@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                 SampleLocator,
                 new List<GuestAttributesEntry>());
 
-            Assert.IsNotNull(attributes);
+            Assert.That(attributes, Is.Not.Null);
             Assert.IsNull(attributes.Architecture);
             Assert.IsNull(attributes.KernelRelease);
             Assert.IsNull(attributes.KernelVersion);
@@ -186,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         {
             var attributes = GuestOsInfo.FromGuestAttributes(SampleLocator, SampleAttributes);
 
-            Assert.IsNotNull(attributes);
+            Assert.That(attributes, Is.Not.Null);
             Assert.That(attributes.Architecture, Is.EqualTo("x86_64"));
             Assert.That(attributes.KernelRelease, Is.EqualTo("2.6.32-754.30.2.el6.x86_64"));
             Assert.That(attributes.KernelVersion, Is.EqualTo("#1 SMP Wed Jun 10 11:14:37 UTC 2020"));
@@ -205,8 +205,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         {
             var attributes = GuestOsInfo.FromGuestAttributes(SampleLocator, SampleAttributes);
 
-            Assert.IsNotNull(attributes);
-            Assert.IsNotNull(attributes.InstalledPackages);
+            Assert.That(attributes, Is.Not.Null);
+            Assert.That(attributes.InstalledPackages, Is.Not.Null);
 
             // RPM
             Assert.That(attributes.InstalledPackages?.RpmPackages.Count, Is.EqualTo(392));
@@ -226,8 +226,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         {
             var attributes = GuestOsInfo.FromGuestAttributes(SampleLocator, SampleAttributes);
 
-            Assert.IsNotNull(attributes);
-            Assert.IsNotNull(attributes.AvailablePackages);
+            Assert.That(attributes, Is.Not.Null);
+            Assert.That(attributes.AvailablePackages, Is.Not.Null);
 
             // Yum
             Assert.That(attributes.AvailablePackages?.YumPackages.Count, Is.EqualTo(3));

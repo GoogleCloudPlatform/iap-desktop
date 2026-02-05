@@ -49,9 +49,9 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 attributes,
                 size))
             {
-                Assert.IsNotNull(type.TypeName);
+                Assert.That(type.TypeName, Is.Not.Null);
                 Assert.That(type.TypeName, Is.Not.EqualTo(string.Empty));
-                Assert.IsNotNull(type.FileIcon);
+                Assert.That(type.FileIcon, Is.Not.Null);
             }
         }
 
@@ -69,9 +69,9 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 attributes,
                 size))
             {
-                Assert.IsNotNull(type.TypeName);
+                Assert.That(type.TypeName, Is.Not.Null);
                 Assert.That(type.TypeName, Is.Not.EqualTo(string.Empty));
-                Assert.IsNotNull(type.FileIcon);
+                Assert.That(type.FileIcon, Is.Not.Null);
             }
         }
 

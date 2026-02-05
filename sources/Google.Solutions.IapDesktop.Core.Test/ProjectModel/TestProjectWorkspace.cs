@@ -673,7 +673,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     CancellationToken.None)
                 .ConfigureAwait(true);
             Assert.IsInstanceOf(typeof(IProjectModelProjectNode), project);
-            Assert.IsNotNull(project);
+            Assert.That(project, Is.Not.Null);
         }
 
         [Test]
@@ -699,7 +699,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     CancellationToken.None)
                 .ConfigureAwait(true);
             Assert.IsInstanceOf(typeof(IProjectModelZoneNode), zone);
-            Assert.IsNotNull(zone);
+            Assert.That(zone, Is.Not.Null);
         }
 
         [Test]
@@ -725,7 +725,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     CancellationToken.None)
                 .ConfigureAwait(true);
             Assert.IsInstanceOf(typeof(IProjectModelInstanceNode), instance);
-            Assert.IsNotNull(instance);
+            Assert.That(instance, Is.Not.Null);
         }
 
         [Test]
@@ -781,7 +781,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 .GetActiveNodeAsync(CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(activeNode);
+            Assert.That(activeNode, Is.Not.Null);
             Assert.That(
                 activeNode, Is.SameAs(await workspace
                     .GetRootNodeAsync(false, CancellationToken.None)
@@ -818,7 +818,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var activeNode = await workspace
                 .GetActiveNodeAsync(CancellationToken.None)
                 .ConfigureAwait(true);
-            Assert.IsNotNull(activeNode);
+            Assert.That(activeNode, Is.Not.Null);
             Assert.IsInstanceOf(typeof(IProjectModelProjectNode), activeNode);
         }
 

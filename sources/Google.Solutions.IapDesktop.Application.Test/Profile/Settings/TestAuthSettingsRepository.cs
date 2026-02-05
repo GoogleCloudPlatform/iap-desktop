@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 // Read.
                 Assert.That(repository.TryRead(out var offlineCredential), Is.True);
 
-                Assert.IsNotNull(offlineCredential);
+                Assert.That(offlineCredential, Is.Not.Null);
                 Assert.That(offlineCredential!.RefreshToken, Is.EqualTo("rt"));
                 Assert.That(offlineCredential.IdToken, Is.EqualTo("idt"));
                 Assert.That(
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 // Read.
                 Assert.That(repository.TryRead(out var offlineCredential), Is.True);
 
-                Assert.IsNotNull(offlineCredential);
+                Assert.That(offlineCredential, Is.Not.Null);
                 Assert.That(offlineCredential!.Issuer, Is.EqualTo(OidcIssuer.Gaia));
                 Assert.That(offlineCredential.RefreshToken, Is.EqualTo("rt"));
                 Assert.IsNull(offlineCredential.IdToken);
@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 // Read.
                 Assert.That(repository.TryRead(out var offlineCredential), Is.True);
 
-                Assert.IsNotNull(offlineCredential);
+                Assert.That(offlineCredential, Is.Not.Null);
                 Assert.That(offlineCredential!.Issuer, Is.EqualTo(OidcIssuer.Sts));
                 Assert.That(offlineCredential.RefreshToken, Is.EqualTo("rt"));
                 Assert.IsNull(offlineCredential.IdToken);
@@ -196,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 // Read again.
                 Assert.That(repository.TryRead(out var offlineCredential), Is.True);
 
-                Assert.IsNotNull(offlineCredential);
+                Assert.That(offlineCredential, Is.Not.Null);
                 Assert.That(offlineCredential!.Issuer, Is.EqualTo(OidcIssuer.Gaia));
                 Assert.That(offlineCredential.RefreshToken, Is.EqualTo("rt"));
                 Assert.That(offlineCredential.IdToken, Is.EqualTo("idt"));
@@ -221,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 // Read again.
                 Assert.That(repository.TryRead(out var offlineCredential), Is.True);
 
-                Assert.IsNotNull(offlineCredential);
+                Assert.That(offlineCredential, Is.Not.Null);
                 Assert.That(offlineCredential!.Issuer, Is.EqualTo(OidcIssuer.Sts));
                 Assert.That(offlineCredential.RefreshToken, Is.EqualTo("rt"));
                 Assert.IsNull(offlineCredential.IdToken);

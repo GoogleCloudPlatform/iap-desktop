@@ -51,7 +51,7 @@ namespace Google.Solutions.Terminal.Test
             {
                 var root = fs.Root;
 
-                Assert.IsNotNull(root);
+                Assert.That(root, Is.Not.Null);
                 Assert.That(root.Type.IsFile, Is.False);
                 Assert.That(root.IsExpanded, Is.True);
                 Assert.That(root.Name, Is.EqualTo("Server"));
@@ -70,7 +70,7 @@ namespace Google.Solutions.Terminal.Test
             {
                 var drive = fs.Drive;
 
-                Assert.IsNotNull(drive);
+                Assert.That(drive, Is.Not.Null);
                 Assert.That(drive.Type.IsFile, Is.False);
                 Assert.That(drive.IsExpanded, Is.False);
                 Assert.That(drive.Name, Is.EqualTo("File system root"));
@@ -90,7 +90,7 @@ namespace Google.Solutions.Terminal.Test
             {
                 var home = fs.Home;
 
-                Assert.IsNotNull(home);
+                Assert.That(home, Is.Not.Null);
                 Assert.That(home.Type.IsFile, Is.False);
                 Assert.That(home.IsExpanded, Is.False);
                 Assert.That(home.Name, Is.EqualTo("Home"));

@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                             cts.Token)
                         .ConfigureAwait(false);
 
-                    Assert.IsNotNull(hello);
+                    Assert.That(hello, Is.Not.Null);
                     Assert.That(hello.OperationId, Is.EqualTo(Guid.Empty.ToString()));
                     Assert.That(hello.MessageType, Is.EqualTo(DomainJoinService.HelloMessage.MessageTypeString));
                     Assert.IsNotEmpty(hello.Exponent);
@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                             cts.Token)
                         .ConfigureAwait(false);
 
-                    Assert.IsNotNull(response);
+                    Assert.That(response, Is.Not.Null);
                     Assert.That(response.OperationId, Is.EqualTo(Guid.Empty.ToString()));
                     Assert.That(response.MessageType, Is.EqualTo(DomainJoinService.JoinResponse.MessageTypeString));
                     Assert.That(response.Succeeded, Is.False);

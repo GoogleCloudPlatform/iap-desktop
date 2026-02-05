@@ -32,7 +32,7 @@ namespace Google.Solutions.Common.Test.Diagnostics
         {
             var version = ClrVersion.Version;
 
-            Assert.IsNotNull(version);
+            Assert.That(version, Is.Not.Null);
             Assert.That(version.ToString(), Does.StartWith("4."));
         }
     }

@@ -922,8 +922,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
                 .ToList();
 
-            Assert.IsNotNull(sessionStartedEventHandler);
-            Assert.IsNotNull(sessionEndedEventHandler);
+            Assert.That(sessionStartedEventHandler, Is.Not.Null);
+            Assert.That(sessionEndedEventHandler, Is.Not.Null);
 
             Assert.That(instances[0].IsConnected, Is.False);
             Assert.That(instances[1].IsConnected, Is.False);
@@ -1040,7 +1040,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(eventHandler);
+            Assert.That(eventHandler, Is.Not.Null);
 
             await eventHandler!(new InstanceStateChangedEvent(
                 new InstanceLocator(

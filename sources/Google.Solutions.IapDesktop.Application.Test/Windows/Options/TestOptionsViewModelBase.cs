@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             protected override void Save(ISettingsCollection settings)
             {
                 this.SaveCalls++;
-                Assert.IsNotNull(settings);
+                Assert.That(settings, Is.Not.Null);
 
                 if (this.ThrowOnSave)
                 {

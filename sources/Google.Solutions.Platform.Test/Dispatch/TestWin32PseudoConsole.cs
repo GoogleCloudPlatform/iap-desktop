@@ -44,7 +44,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 null,
                 PseudoTerminalSize.Default))
             {
-                Assert.IsNotNull(process.PseudoTerminal);
+                Assert.That(process.PseudoTerminal, Is.Not.Null);
                 var pty = process.PseudoTerminal!;
 
                 var output = new StringBuilder();
@@ -84,7 +84,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 null,
                 PseudoTerminalSize.Default))
             {
-                Assert.IsNotNull(process.PseudoTerminal);
+                Assert.That(process.PseudoTerminal, Is.Not.Null);
                 var pty = process.PseudoTerminal!;
 
                 var eventRaised = false;
@@ -134,7 +134,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 null,
                 PseudoTerminalSize.Default))
             {
-                Assert.IsNotNull(process.PseudoTerminal);
+                Assert.That(process.PseudoTerminal, Is.Not.Null);
                 using (var pty = process.PseudoTerminal!)
                 {
                 }

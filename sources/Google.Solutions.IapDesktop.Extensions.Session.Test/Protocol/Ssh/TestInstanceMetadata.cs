@@ -495,7 +495,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
-                Assert.IsNotNull(authorizedKey);
+                Assert.That(authorizedKey, Is.Not.Null);
                 Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.ProjectMetadata));
                 Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
@@ -548,7 +548,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
-                Assert.IsNotNull(authorizedKey);
+                Assert.That(authorizedKey, Is.Not.Null);
                 Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.ProjectMetadata));
                 Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
@@ -603,7 +603,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
-                Assert.IsNotNull(authorizedKey);
+                Assert.That(authorizedKey, Is.Not.Null);
                 Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.ProjectMetadata));
                 Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
@@ -658,7 +658,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
-                Assert.IsNotNull(authorizedKey);
+                Assert.That(authorizedKey, Is.Not.Null);
                 Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.ProjectMetadata));
                 Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
@@ -705,7 +705,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
-                Assert.IsNotNull(authorizedKey);
+                Assert.That(authorizedKey, Is.Not.Null);
                 Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.InstanceMetadata));
                 Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
@@ -743,7 +743,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
-                Assert.IsNotNull(authorizedKey);
+                Assert.That(authorizedKey, Is.Not.Null);
                 Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.InstanceMetadata));
                 Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
@@ -781,7 +781,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
-                Assert.IsNotNull(authorizedKey);
+                Assert.That(authorizedKey, Is.Not.Null);
                 Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.InstanceMetadata));
                 Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
@@ -844,7 +844,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
-                Assert.IsNotNull(authorizedKey);
+                Assert.That(authorizedKey, Is.Not.Null);
                 Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.InstanceMetadata));
                 Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
@@ -882,7 +882,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
-                Assert.IsNotNull(authorizedKey);
+                Assert.That(authorizedKey, Is.Not.Null);
                 Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.ProjectMetadata));
                 Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
@@ -951,7 +951,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false);
 
             var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.All);
-            Assert.IsNotNull(keys);
+            Assert.That(keys, Is.Not.Null);
             Assert.That(keys, Is.Empty);
         }
 
@@ -986,7 +986,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false);
 
             var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.All);
-            Assert.IsNotNull(keys);
+            Assert.That(keys, Is.Not.Null);
             Assert.That(keys, Is.Empty);
         }
 
@@ -1003,7 +1003,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false);
 
             var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.Oslogin);
-            Assert.IsNotNull(keys);
+            Assert.That(keys, Is.Not.Null);
             Assert.That(keys, Is.Empty);
         }
 
@@ -1044,7 +1044,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false);
 
             var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.InstanceMetadata);
-            Assert.IsNotNull(keys);
+            Assert.That(keys, Is.Not.Null);
             Assert.That(keys.Count(), Is.EqualTo(1));
             Assert.That(keys.First().PosixUsername, Is.EqualTo("bob"));
         }
@@ -1086,7 +1086,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false);
 
             var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.ProjectMetadata);
-            Assert.IsNotNull(keys);
+            Assert.That(keys, Is.Not.Null);
             Assert.That(keys.Count(), Is.EqualTo(1));
             Assert.That(keys.First().PosixUsername, Is.EqualTo("alice"));
         }
@@ -1128,7 +1128,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false);
 
             var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.All);
-            Assert.IsNotNull(keys);
+            Assert.That(keys, Is.Not.Null);
             Assert.That(keys.Count(), Is.EqualTo(2));
             Assert.That(
                 keys.Select(k => k.PosixUsername), Is.EquivalentTo(new[] { "alice", "bob" }));
@@ -1259,7 +1259,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(processor.AttachedServiceAccount);
+            Assert.That(processor.AttachedServiceAccount, Is.Not.Null);
             Assert.That(
                 processor.AttachedServiceAccount!.Value,
                 Is.EqualTo("test@example.iam.gserviceaccount.com"));

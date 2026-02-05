@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             var registry = new ServiceRegistry();
             registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
 
-            Assert.IsNotNull(registry.GetService<ISingletonServiceInterface>());
+            Assert.That(registry.GetService<ISingletonServiceInterface>(), Is.Not.Null);
             Assert.That(
                 registry.GetService<ISingletonServiceInterface>(), Is.SameAs(registry.GetService<ISingletonServiceInterface>()));
             Assert.Throws<UnknownServiceException>(
@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             var registry = new ServiceRegistry();
             registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
 
-            Assert.IsNotNull(registry.GetService<SingletonService>());
+            Assert.That(registry.GetService<SingletonService>(), Is.Not.Null);
             Assert.That(
                 registry.GetService<ISingletonServiceInterface>(), Is.SameAs(registry.GetService<ISingletonServiceInterface>()));
         }
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             var registry = new ServiceRegistry();
             registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
 
-            Assert.IsNotNull(registry.GetService<ITransientServiceInterface>());
+            Assert.That(registry.GetService<ITransientServiceInterface>(), Is.Not.Null);
             Assert.That(
                 registry.GetService<ITransientServiceInterface>(), Is.Not.SameAs(registry.GetService<ITransientServiceInterface>()));
             Assert.Throws<UnknownServiceException>(
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             var registry = new ServiceRegistry();
             registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
 
-            Assert.IsNotNull(registry.GetService<TransientService>());
+            Assert.That(registry.GetService<TransientService>(), Is.Not.Null);
             Assert.That(
                 registry.GetService<TransientService>(), Is.Not.SameAs(registry.GetService<TransientService>()));
         }
@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
 
             var services = registry.GetServicesByCategory<ICategory>();
-            Assert.IsNotNull(services);
+            Assert.That(services, Is.Not.Null);
             Assert.That(services.Count(), Is.EqualTo(2));
             Assert.That(services.OfType<TransientServiceImplementingCategory>().Count(), Is.EqualTo(1));
             Assert.That(services.OfType<TransientServiceWithInterfaceImplementingCategory>().Count(), Is.EqualTo(1));

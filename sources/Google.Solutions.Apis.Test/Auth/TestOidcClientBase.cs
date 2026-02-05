@@ -163,7 +163,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 .TryAuthorizeSilentlyAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(session);
+            Assert.That(session, Is.Not.Null);
             store.Verify(s => s.Write(It.IsAny<OidcOfflineCredential>()), Times.Once);
         }
 
@@ -190,7 +190,7 @@ namespace Google.Solutions.Apis.Test.Auth
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(session);
+            Assert.That(session, Is.Not.Null);
             store.Verify(s => s.Write(It.IsAny<OidcOfflineCredential>()), Times.Once);
         }
 
@@ -213,7 +213,7 @@ namespace Google.Solutions.Apis.Test.Auth
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNotNull(session);
+            Assert.That(session, Is.Not.Null);
             store.Verify(s => s.Write(It.IsAny<OidcOfflineCredential>()), Times.Once);
         }
     }

@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
                 var install = new Install(keyPath.Path);
-                Assert.IsNotNull(install.UniqueId);
+                Assert.That(install.UniqueId, Is.Not.Null);
                 Assert.That(install.UniqueId.Length, Is.EqualTo(16));
 
                 Assert.That(
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             {
                 var install = new Install(keyPath.Path);
 
-                Assert.IsNotNull(install.BaseDirectory);
+                Assert.That(install.BaseDirectory, Is.Not.Null);
                 Assert.That(Directory.Exists(install.BaseDirectory), Is.True);
             }
         }
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 install.CreateProfile(TestProfileName);
                 using (var profile = install.CreateProfile(TestProfileName))
                 {
-                    Assert.IsNotNull(profile);
+                    Assert.That(profile, Is.Not.Null);
                     Assert.That(profile.Name, Is.EqualTo(TestProfileName));
                 }
             }
@@ -305,10 +305,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
                 using (var profile = install.OpenProfile(TestProfileName))
                 {
-                    Assert.IsNotNull(profile);
+                    Assert.That(profile, Is.Not.Null);
                     Assert.That(profile.Name, Is.EqualTo(TestProfileName));
                     Assert.That(profile.IsDefault, Is.False);
-                    Assert.IsNotNull(profile.SettingsKey);
+                    Assert.That(profile.SettingsKey, Is.Not.Null);
                 }
             }
         }
@@ -374,7 +374,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
                 var list = install.Profiles;
 
-                Assert.IsNotNull(list);
+                Assert.That(list, Is.Not.Null);
                 Assert.That(list, Has.Member(TestProfileName));
             }
         }
@@ -391,7 +391,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
                 var list = install.Profiles;
 
-                Assert.IsNotNull(list);
+                Assert.That(list, Is.Not.Null);
                 Assert.That(list, Has.Member("Default"));
             }
         }
@@ -412,7 +412,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
                 var list = install.Profiles;
 
-                Assert.IsNotNull(list);
+                Assert.That(list, Is.Not.Null);
                 Assert.That(list.Any(p => p.EndsWith("Notaprofile", StringComparison.OrdinalIgnoreCase)), Is.False);
             }
         }

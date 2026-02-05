@@ -130,7 +130,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 out bool verificationFlagChecked)
             {
                 Assert.IsNull(config.pszVerificationText);
-                Assert.IsNotNull(config.cButtons);
+                Assert.That(config.cButtons, Is.Not.Null);
                 Assert.That(config.cButtons, Is.EqualTo(2));
 
                 buttonPressed = TaskDialog.CommandLinkIdOffset + 1; // No
@@ -167,7 +167,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 out int radioButtonPressed,
                 out bool verificationFlagChecked)
             {
-                Assert.IsNotNull(config.pszVerificationText);
+                Assert.That(config.pszVerificationText, Is.Not.Null);
 
                 buttonPressed = TaskDialogStandardButton.OK.CommandId;
                 radioButtonPressed = -1;

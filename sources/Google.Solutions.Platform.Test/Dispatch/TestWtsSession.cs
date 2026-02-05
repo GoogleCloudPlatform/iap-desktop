@@ -42,7 +42,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         public void GetCurrent()
         {
             var session = WtsSession.GetCurrent();
-            Assert.IsNotNull(session);
+            Assert.That(session, Is.Not.Null);
         }
 
         //---------------------------------------------------------------------
@@ -53,7 +53,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         public void FromProcessId_WhenPidIsFromCurrentProcess_ThenFromProcessIdReturnsSession()
         {
             var session = WtsSession.FromProcessId((uint)Process.GetCurrentProcess().Id);
-            Assert.IsNotNull(session);
+            Assert.That(session, Is.Not.Null);
             Assert.That(session, Is.EqualTo(WtsSession.GetCurrent()));
         }
 

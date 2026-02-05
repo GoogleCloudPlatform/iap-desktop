@@ -371,7 +371,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
             var repository = new ConnectionSettingsRepository(CreateProjectRepository());
             var settings = repository.GetInstanceSettings(url, out var foundInInventory);
-            Assert.IsNotNull(settings);
+            Assert.That(settings, Is.Not.Null);
             Assert.That(foundInInventory, Is.False);
 
             Assert.That(
@@ -406,7 +406,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 "iap-rdp:///project-1/zone-1/instance-1?username=john%20doe&RdpPort=13389");
 
             var settings = repository.GetInstanceSettings(url, out var foundInInventory);
-            Assert.IsNotNull(settings);
+            Assert.That(settings, Is.Not.Null);
             Assert.That(foundInInventory, Is.True);
             Assert.That(settings.Resource, Is.EqualTo(instance));
 
