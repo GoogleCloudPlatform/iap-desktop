@@ -248,9 +248,3 @@ dotnet_diagnostic.CA1860.severity = none
 
 # NUnit1032: An IDisposable field/property should be Disposed
 dotnet_diagnostic.NUnit1032.severity = none
-
-
-
-dotnet_diagnostic.NUnit2002.severity = warning
-dotnet_diagnostic.NUnit2003.severity = warning
-dotnet_diagnostic.NUnit2019.severity = warning
