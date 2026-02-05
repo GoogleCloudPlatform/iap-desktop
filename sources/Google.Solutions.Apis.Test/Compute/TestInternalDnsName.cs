@@ -55,7 +55,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public void TryParse_WhenNameIsInvalid_ThenReturnsFalse(
-            [Values(null, "", " ", ".internal", "example.com")] string name)
+            [Values(null, "", " ", ".internal", "example.com")] string? name)
         {
             Assert.IsFalse(InternalDnsName.TryParse(name, out var _));
         }

@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
         [Test]
         public void UrlParameterIsNullOrEmpty(
-            [Values(null, "", " ")] string emptyValue)
+            [Values(null, "", " ")] string? emptyValue)
         {
             var queryParameters = new NameValueCollection
             {

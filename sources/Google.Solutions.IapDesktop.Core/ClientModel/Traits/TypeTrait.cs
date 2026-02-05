@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         // Parse.
         //---------------------------------------------------------------------
 
-        public static bool TryParse(string expression, out InstanceTrait? trait)
+        public static bool TryParse(string? expression, out InstanceTrait? trait)
         {
             if (expression != null &&
                 Expression == new string(expression
@@ -163,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         // Parse.
         //---------------------------------------------------------------------
 
-        public static bool TryParse(string expression, out WindowsTrait? trait)
+        public static bool TryParse(string? expression, out WindowsTrait? trait)
         {
             if (expression != null &&
                 Expression == new string(expression
@@ -242,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Traits
         // Parse.
         //---------------------------------------------------------------------
 
-        public static bool TryParse(string expression, out LinuxTrait? trait)
+        public static bool TryParse(string? expression, out LinuxTrait? trait)
         {
             if (expression != null &&
                 Expression == new string(expression

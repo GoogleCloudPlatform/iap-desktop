@@ -245,3 +245,6 @@ dotnet_diagnostic.CA1861.severity = none
 
 # CA1860: Avoid using 'Enumerable.Any()' extension method
 dotnet_diagnostic.CA1860.severity = none
+
+# NUnit1032: An IDisposable field/property should be Disposed
+dotnet_diagnostic.NUnit1032.severity = none

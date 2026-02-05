@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
         [Test]
         public void ParseName_WhenValueIsNullOrEmpty(
-            [Values(" ", "", null)] string value)
+            [Values(" ", "", null)] string? value)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
             {
@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
         [Test]
         public void ParseCondition_WhenConditionIsNullOrEmpty(
-            [Values(" ", "", null)] string condition)
+            [Values(" ", "", null)] string? condition)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
             {
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
         [Test]
         public void ParseRemotePort_WhenValueIsNullOrEmpty(
-            [Values(null, "", " \n")] string value)
+            [Values(null, "", " \n")] string? value)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
             {
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
         [Test]
         public void ParseLocalEndpoint_WhenValueIsNullOrEmpty(
-            [Values(null, "", " \n")] string value)
+            [Values(null, "", " \n")] string? value)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
             {
@@ -208,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
         [Test]
         public void ParseClientSection_WhenClientExecutableIsNullOrEmpty(
-            [Values(null, "", " \n")] string value)
+            [Values(null, "", " \n")] string? value)
         {
             var section = new AppProtocolConfigurationFile.MainSection()
             {

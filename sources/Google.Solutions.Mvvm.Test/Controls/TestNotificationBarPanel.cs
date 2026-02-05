@@ -55,7 +55,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
         [Test]
         public void WhenTextNullOrWhiteSpace_ThenBarIsHidden(
-            [Values("", " ", null)] string emptyValue)
+            [Values("", " ", null)] string? emptyValue)
         {
             using (var form = new Form()
             {

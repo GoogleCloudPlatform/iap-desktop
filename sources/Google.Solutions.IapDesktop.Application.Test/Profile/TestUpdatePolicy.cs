@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
 
         [Test]
         public void GetReleaseTrackForRelease_WhenDescriptionContainsNoTag_ThenGetReleaseTrackReturnsNormal(
-            [Values(null, "", "some description")] string description)
+            [Values(null, "", "some description")] string? description)
         {
             var release = new Mock<IRelease>();
             release.SetupGet(r => r.Description).Returns(description);

@@ -34,7 +34,7 @@ namespace Google.Solutions.Platform.Test
 
         [Test]
         public void ExpandEnvironmentStrings_WhenSourceIsNullOrEmpty(
-            [Values("", " ", null)] string source)
+            [Values("", " ", null)] string? source)
         {
             Assert.That(
                 UserEnvironment.ExpandEnvironmentStrings(source), Is.EqualTo(source));

@@ -66,8 +66,8 @@ namespace Google.Solutions.Apis.Test.Client
             var ua = new UserAgent("WidgetTool", new Version(1, 0), "Windows 95");
 
             Assert.That(
-                ua.ToString(), Is.EqualTo($"WidgetTool/1.0 (Windows 95) CLR/{ClrVersion.Version}"));
-            Assert.That(ua.ToString(), Is.EqualTo(ua.ToString()));
+                ua.ToString(), 
+                Is.EqualTo($"WidgetTool/1.0 (Windows 95) CLR/{ClrVersion.Version}"));
         }
 
         [Test]
@@ -79,8 +79,8 @@ namespace Google.Solutions.Apis.Test.Client
             };
 
             Assert.That(
-                ua.ToString(), Is.EqualTo($"WidgetTool/1.0 (Windows 95; on-steroids) CLR/{ClrVersion.Version}"));
-            Assert.That(ua.ToString(), Is.EqualTo(ua.ToString()));
+                ua.ToString(), 
+                Is.EqualTo($"WidgetTool/1.0 (Windows 95; on-steroids) CLR/{ClrVersion.Version}"));
         }
 
         //---------------------------------------------------------------------

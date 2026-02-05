@@ -297,7 +297,7 @@ namespace Google.Solutions.Apis.Test.Compute
 
         [Test]
         public void GetFlag_WhenValueIsJunk_ThenReturnsNull(
-            [Values(null, "", "junk")] string untruthyValue)
+            [Values(null, "", "junk")] string? untruthyValue)
         {
 
             var metadata = new Metadata()

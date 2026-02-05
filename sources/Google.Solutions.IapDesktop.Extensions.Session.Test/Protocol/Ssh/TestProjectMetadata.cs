@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
         [Test]
         public async Task IsOsLoginEnabled_WhenValueIsNotTruthy(
-            [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
+            [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string? truthyValue)
         {
             var processor = await ProjectMetadata.GetAsync(
                     CreateComputeEngineClientMock(
@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
         [Test]
         public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsNotTruthy(
-            [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
+            [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string? truthyValue)
         {
             var processor = await ProjectMetadata.GetAsync(
                     CreateComputeEngineClientMock(

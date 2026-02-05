@@ -54,9 +54,8 @@ namespace Google.Solutions.Platform.Test
 #error Unknown architecture
 #endif
 
-            Assert.AreEqual(
-                expected,
-                ProcessEnvironment.ProcessArchitecture);
+            Assert.That(
+                ProcessEnvironment.ProcessArchitecture, Is.EqualTo(expected));
         }
     }
 }

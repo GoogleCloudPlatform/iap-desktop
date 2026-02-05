@@ -196,8 +196,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
         [Test]
         public void GetConnectionSettings_WhenUsernameSetInProject_ProjectValueIsInheritedDownToVm(
-            [Values("user", null)]
-                string username)
+            [Values("user", null)] string? username)
         {
             var service = CreateConnectionSettingsService();
 

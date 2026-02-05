@@ -65,10 +65,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Assert.That(progressBar.Value, Is.EqualTo(0));
 
                 progressBar.Value = progressBar.Maximum;
-                Assert.That(progressBar.Maximum, Is.EqualTo(progressBar.Maximum));
+                Assert.That(progressBar.Value, Is.EqualTo(progressBar.Maximum));
 
                 progressBar.Maximum = progressBar.Maximum + 1;
-                Assert.That(progressBar.Maximum, Is.EqualTo(progressBar.Maximum));
+                Assert.That(progressBar.Value, Is.EqualTo(progressBar.Maximum));
             }
         }
 
@@ -94,7 +94,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Assert.Throws<ArgumentException>(() => progressBar.Speed = -1);
 
                 progressBar.Speed = progressBar.Maximum + 1;
-                Assert.That(progressBar.Maximum, Is.EqualTo(progressBar.Maximum));
+                Assert.That(progressBar.Speed, Is.EqualTo(progressBar.Maximum));
             }
         }
 

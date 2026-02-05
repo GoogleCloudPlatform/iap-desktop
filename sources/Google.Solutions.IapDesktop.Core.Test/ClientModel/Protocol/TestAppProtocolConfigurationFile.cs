@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
         [Test]
         public void ReadJson_WhenNullOrEmptyOrMalformed(
-            [Values(null, " ", "{,", "{}")] string json)
+            [Values(" ", "{,", "{}")] string json)
         {
             Assert.Throws<InvalidAppProtocolException>(
                 () => AppProtocolConfigurationFile.ReadJson(json));

@@ -62,7 +62,7 @@ namespace Google.Solutions.Apis.Compute
             return this.Name;
         }
 
-        public static bool TryParse(string name, out InternalDnsName? result)
+        public static bool TryParse(string? name, out InternalDnsName? result)
         {
             if (name == null)
             {

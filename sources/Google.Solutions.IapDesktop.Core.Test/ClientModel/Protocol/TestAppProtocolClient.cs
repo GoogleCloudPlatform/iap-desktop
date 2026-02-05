@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
         [Test]
         public void IsUsernameRequired_WhenArgumentsDoNotUseUsername(
-            [Values(null, " ", "{U}")] string arguments)
+            [Values(null, " ", "{U}")] string? arguments)
         {
             Assert.IsFalse(new AppProtocolClient("NUL.exe", arguments).IsUsernameRequired);
         }

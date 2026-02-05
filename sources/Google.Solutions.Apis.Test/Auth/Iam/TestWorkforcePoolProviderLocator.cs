@@ -41,7 +41,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
 
         [Test]
         public void TryParse_WhenStringIsNullOrEmpty_ThenReturnsFalse(
-            [Values(null, "")] string id)
+            [Values(null, "")] string? id)
         {
             Assert.IsFalse(WorkforcePoolProviderLocator.TryParse(id, out var _));
         }
@@ -83,7 +83,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
 
         [Test]
         public void Parse_WhenStringIsNullOrEmpty_ThenThrowsException(
-            [Values(null, "")] string id)
+            [Values(null, "")] string? id)
         {
             Assert.Throws<ArgumentException>(
                 () => WorkforcePoolProviderLocator.Parse(id));

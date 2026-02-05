@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
 
         [Test]
         public void TryGetParameter_WhenUshortQueryParameterIsNullOrEmpty(
-            [Values(null, "", " ")] string emptyValue)
+            [Values(null, "", " ")] string? emptyValue)
         {
             var queryParameters = new NameValueCollection
             {
@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
 
         [Test]
         public void TryGetParameter_WhenStringQueryParameterIsNullOrEmpty(
-            [Values(null, "", " ")] string emptyValue)
+            [Values(null, "", " ")] string? emptyValue)
         {
             var queryParameters = new NameValueCollection
             {
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
 
         [Test]
         public void TryGetParameter_WhenEnumQueryParameterIsNullOrEmpty(
-            [Values(null, "", " ")] string emptyValue)
+            [Values(null, "", " ")] string? emptyValue)
         {
             var queryParameters = new NameValueCollection
             {
@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
 
         [Test]
         public void ApplyUrlParameterIfSet_WhenQueryParameterIsNullOrEmpty(
-            [Values(null, "", " ")] string emptyValue)
+            [Values(null, "", " ")] string? emptyValue)
         {
             var parameters = new RdpParameters
             {

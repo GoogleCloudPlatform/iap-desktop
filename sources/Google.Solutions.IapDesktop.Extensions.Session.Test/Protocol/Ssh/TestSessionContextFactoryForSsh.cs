@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
         [Test]
         public async Task CreateSshSessionContext_WhenPublicKeyAuthDisabled(
-            [Values("user", "", null)] string username)
+            [Values("user", "", null)] string? username)
         {
             var settings = new ConnectionSettings(SampleLocator);
             settings.SshPublicKeyAuthentication.Value = SshPublicKeyAuthentication.Disabled;

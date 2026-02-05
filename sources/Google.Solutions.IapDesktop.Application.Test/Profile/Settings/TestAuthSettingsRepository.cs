@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
         [Test]
         public void TryRead_WhenBlobNullOrEmpty_ThenTryReadReturnsFalse(
-            [Values(null, "", "{")] string value)
+            [Values(null, "", "{")] string? value)
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest())
             {

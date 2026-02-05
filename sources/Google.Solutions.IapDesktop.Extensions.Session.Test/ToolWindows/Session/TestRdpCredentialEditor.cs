@@ -111,8 +111,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [TestCase("", "pwd", false)]
         [TestCase("user", "pwd", true)]
         public void AreCredentialsComplete(
-            string username,
-            string password,
+            string? username,
+            string? password,
             bool complete)
         {
             var editor = new RdpCredentialEditor(
@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [TestCase(null, false)]
         [TestCase("bob", true)]
         public void PromptForCredentials_WhenUsernameNotEmpty(
-            string username,
+            string? username,
             bool prefilled)
         {
             var credentialDialog = new Mock<ICredentialDialog>();
@@ -283,7 +283,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
         [Test]
         public void CreateCredentials_WhensUsernameIsNullOrEmpty(
-            [Values("", null)] string username)
+            [Values("", null)] string? username)
         {
             var newCredentialViewModel = new NewCredentialsViewModel();
             var newCredentialDialogFactory =

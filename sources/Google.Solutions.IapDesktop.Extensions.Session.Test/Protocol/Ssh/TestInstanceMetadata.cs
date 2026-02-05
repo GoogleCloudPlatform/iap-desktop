@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
         [Test]
         public async Task IsOsLoginEnabled_WhenValueIsNotTruthy(
-            [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
+            [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string? truthyValue)
         {
             var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
@@ -266,7 +266,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
         [Test]
         public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsNotTruthy(
-            [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
+            [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string? truthyValue)
         {
             var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
@@ -372,7 +372,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
         [Test]
         public async Task AreProjectSshKeysBlocked_WhenValueIsNotTruthy(
-            [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
+            [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string? truthyValue)
         {
             var processor = await InstanceMetadata.GetAsync(
                 CreateComputeEngineClientMock(
@@ -1261,7 +1261,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             Assert.IsNotNull(processor.AttachedServiceAccount);
             Assert.That(
-                "test@example.iam.gserviceaccount.com", Is.EqualTo(processor.AttachedServiceAccount!.Value));
+                processor.AttachedServiceAccount!.Value,
+                Is.EqualTo("test@example.iam.gserviceaccount.com"));
         }
     }
 }

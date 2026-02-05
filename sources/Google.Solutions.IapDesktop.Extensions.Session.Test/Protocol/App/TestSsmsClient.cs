@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
 
         [Test]
         public void FormatArguments_WhenNlaDisabledAndUsernameEmpty(
-            [Values("", " ", null)] string emptyish)
+            [Values("", " ", null)] string? emptyish)
         {
             var transport = new Mock<ITransport>();
             transport.SetupGet(t => t.Target).Returns(SampleInstance);
