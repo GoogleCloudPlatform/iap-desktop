@@ -45,7 +45,7 @@ namespace Google.Solutions.Common.Test.Runtime
         {
             using (var d = new SampleDisposable())
             {
-                Assert.IsFalse(d.IsDisposed);
+                Assert.That(d.IsDisposed, Is.False);
             }
         }
 
@@ -79,7 +79,7 @@ namespace Google.Solutions.Common.Test.Runtime
                 Assert.That(refCount, Is.EqualTo(2));
 
                 d.Dispose();
-                Assert.IsFalse(d.IsDisposed);
+                Assert.That(d.IsDisposed, Is.False);
             }
 
             d.Dispose();

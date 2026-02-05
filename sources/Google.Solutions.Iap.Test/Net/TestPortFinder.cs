@@ -36,10 +36,10 @@ namespace Google.Solutions.Iap.Test.Net
         public void FindPort_WhenNoSeedProvided()
         {
             var port1 = new PortFinder().FindPort(out var preferred);
-            Assert.IsFalse(preferred);
+            Assert.That(preferred, Is.False);
 
             var port2 = new PortFinder().FindPort(out preferred);
-            Assert.IsFalse(preferred);
+            Assert.That(preferred, Is.False);
 
             Assert.That(port2, Is.Not.EqualTo(port1));
         }

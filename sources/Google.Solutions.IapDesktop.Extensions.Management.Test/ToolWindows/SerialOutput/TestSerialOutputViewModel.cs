@@ -164,8 +164,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsEnableTailingButtonEnabled);
-            Assert.IsFalse(viewModel.IsOutputBoxEnabled);
+            Assert.That(viewModel.IsEnableTailingButtonEnabled, Is.False);
+            Assert.That(viewModel.IsOutputBoxEnabled, Is.False);
             Assert.That(viewModel.WindowTitle, Does.Contain(SerialOutputViewModel.DefaultWindowTitle));
         }
         [Test]
@@ -179,8 +179,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
                 .SwitchToModelAsync(node)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsEnableTailingButtonEnabled);
-            Assert.IsFalse(viewModel.IsOutputBoxEnabled);
+            Assert.That(viewModel.IsEnableTailingButtonEnabled, Is.False);
+            Assert.That(viewModel.IsOutputBoxEnabled, Is.False);
             Assert.That(viewModel.WindowTitle, Does.Contain(SerialOutputViewModel.DefaultWindowTitle));
         }
 

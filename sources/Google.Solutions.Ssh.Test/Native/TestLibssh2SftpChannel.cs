@@ -140,7 +140,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 var passwd = files.First(f => f.Name == "passwd");
                 Assert.IsNotNull(passwd);
                 Assert.IsTrue(passwd.Permissions.HasFlag(FilePermissions.Regular));
-                Assert.IsFalse(passwd.IsDirectory);
+                Assert.That(passwd.IsDirectory, Is.False);
             }
         }
 
@@ -318,9 +318,9 @@ namespace Google.Solutions.Ssh.Test.Native
                         FilePermissions.OtherWrite);
                 channel.DeleteDirectory(directoryName);
 
-                Assert.IsFalse(channel
+                Assert.That(channel
                     .ListFiles(".")
-                    .Any(f => f.Name == directoryName),
+                    .Any(f => f.Name == directoryName), Is.False,
                     "Directory deleted");
             }
         }
@@ -501,9 +501,9 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 channel.DeleteFile(fileName);
 
-                Assert.IsFalse(channel
+                Assert.That(channel
                     .ListFiles(".")
-                    .Any(f => f.Name == fileName),
+                    .Any(f => f.Name == fileName), Is.False,
                     "File deleted");
             }
         }

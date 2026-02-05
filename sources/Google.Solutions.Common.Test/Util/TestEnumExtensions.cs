@@ -45,8 +45,8 @@ namespace Google.Solutions.Common.Test.Util
         public void IsSingleFlag_WhenZero_ThenIsSingleFlagReturnsFalse()
         {
             var e = SampleFlags.Zero;
-            Assert.IsFalse(e.IsSingleFlag());
-            Assert.IsFalse(e.IsFlagCombination());
+            Assert.That(e.IsSingleFlag(), Is.False);
+            Assert.That(e.IsFlagCombination(), Is.False);
         }
 
         [Test]
@@ -54,14 +54,14 @@ namespace Google.Solutions.Common.Test.Util
         {
             var e = SampleFlags.Four;
             Assert.IsTrue(e.IsSingleFlag());
-            Assert.IsFalse(e.IsFlagCombination());
+            Assert.That(e.IsFlagCombination(), Is.False);
         }
 
         [Test]
         public void IsSingleFlag_WhenTwoFlagsSet_ThenIsSingleFlagReturnsFalse()
         {
             var e = SampleFlags.One | SampleFlags.Four;
-            Assert.IsFalse(e.IsSingleFlag());
+            Assert.That(e.IsSingleFlag(), Is.False);
             Assert.IsTrue(e.IsFlagCombination());
         }
 
@@ -90,7 +90,7 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void IsValidFlagCombination_WhenNonexistingFlagSet_ThenIsValidFlagCombinationReturnsFalse()
         {
-            Assert.IsFalse((SampleFlags.One | (SampleFlags)16).IsValidFlagCombination());
+            Assert.That((SampleFlags.One | (SampleFlags)16).IsValidFlagCombination(), Is.False);
         }
 
         //---------------------------------------------------------------------

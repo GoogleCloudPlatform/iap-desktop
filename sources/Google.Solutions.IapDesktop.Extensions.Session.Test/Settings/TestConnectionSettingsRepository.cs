@@ -372,7 +372,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var repository = new ConnectionSettingsRepository(CreateProjectRepository());
             var settings = repository.GetInstanceSettings(url, out var foundInInventory);
             Assert.IsNotNull(settings);
-            Assert.IsFalse(foundInInventory);
+            Assert.That(foundInInventory, Is.False);
 
             Assert.That(
                 settings.Resource, Is.EqualTo(new InstanceLocator("project-1", "zone-1", "instance-1")));

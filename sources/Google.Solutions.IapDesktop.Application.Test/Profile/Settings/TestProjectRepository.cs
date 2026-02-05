@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
             {
                 var projects = repository.ListProjectsAsync().Result;
 
-                Assert.IsFalse(projects.Any());
+                Assert.That(projects.Any(), Is.False);
             }
         }
 
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         {
             using (var repository = CreateProjectRepository())
             {
-                Assert.IsFalse(repository.Projects.Any());
+                Assert.That(repository.Projects.Any(), Is.False);
             }
         }
 

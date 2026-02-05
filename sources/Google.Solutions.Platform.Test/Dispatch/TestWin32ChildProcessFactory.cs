@@ -80,7 +80,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             using (var factory = new Win32ChildProcessFactory(true))
             {
-                Assert.IsFalse(factory.Contains(4));
+                Assert.That(factory.Contains(4), Is.False);
             }
         }
 
@@ -151,7 +151,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             Assert.IsTrue(process.IsRunning);
             factory.Dispose();
 
-            Assert.IsFalse(process.IsRunning);
+            Assert.That(process.IsRunning, Is.False);
             process.Dispose();
         }
     }

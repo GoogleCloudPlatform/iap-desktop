@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         {
             var url = new IapRdpUrl(SampleLocator, new NameValueCollection());
 
-            Assert.IsFalse(url.TryGetParameter("RdpPort", out ushort _));
+            Assert.That(url.TryGetParameter("RdpPort", out ushort _), Is.False);
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
             };
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
-            Assert.IsFalse(url.TryGetParameter("RdpPort", out ushort _));
+            Assert.That(url.TryGetParameter("RdpPort", out ushort _), Is.False);
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
             };
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
-            Assert.IsFalse(url.TryGetParameter("RdpPort", out ushort _));
+            Assert.That(url.TryGetParameter("RdpPort", out ushort _), Is.False);
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         {
             var url = new IapRdpUrl(SampleLocator, new NameValueCollection());
 
-            Assert.IsFalse(url.TryGetParameter("username", out string _));
+            Assert.That(url.TryGetParameter("username", out string _), Is.False);
         }
 
         [Test]
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
             };
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
-            Assert.IsFalse(url.TryGetParameter("username", out string _));
+            Assert.That(url.TryGetParameter("username", out string _), Is.False);
         }
 
         [Test]
@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
         {
             var url = new IapRdpUrl(SampleLocator, new NameValueCollection());
 
-            Assert.IsFalse(url.TryGetParameter<RdpAudioPlayback>("AudioMode", out var _));
+            Assert.That(url.TryGetParameter<RdpAudioPlayback>("AudioMode", out var _), Is.False);
         }
 
         [Test]
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
             };
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
-            Assert.IsFalse(url.TryGetParameter<RdpAudioPlayback>("AudioMode", out var _));
+            Assert.That(url.TryGetParameter<RdpAudioPlayback>("AudioMode", out var _), Is.False);
         }
 
         [Test]
@@ -158,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
             };
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
-            Assert.IsFalse(url.TryGetParameter<RdpAudioPlayback>("AudioMode", out var _));
+            Assert.That(url.TryGetParameter<RdpAudioPlayback>("AudioMode", out var _), Is.False);
         }
 
         [Test]

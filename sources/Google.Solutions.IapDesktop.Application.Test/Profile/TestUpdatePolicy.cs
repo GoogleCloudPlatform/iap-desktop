@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 CreateInstall(),
                 SystemClock.Default);
 
-            Assert.IsFalse(policy.IsUpdateAdvised(release.Object));
+            Assert.That(policy.IsUpdateAdvised(release.Object), Is.False);
         }
 
         [Test]
@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 CreateInstall(),
                 SystemClock.Default);
 
-            Assert.IsFalse(policy.IsUpdateAdvised(release.Object));
+            Assert.That(policy.IsUpdateAdvised(release.Object), Is.False);
         }
 
         [Test]
@@ -249,7 +249,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 install,
                 SystemClock.Default);
 
-            Assert.IsFalse(policy.IsUpdateAdvised(release.Object));
+            Assert.That(policy.IsUpdateAdvised(release.Object), Is.False);
         }
 
         [Test]
@@ -305,7 +305,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
 
             Assert.IsTrue(policy.IsUpdateAdvised(criticalRelease.Object));
             Assert.IsTrue(policy.IsUpdateAdvised(normalRelease.Object));
-            Assert.IsFalse(policy.IsUpdateAdvised(canaryRelease.Object));
+            Assert.That(policy.IsUpdateAdvised(canaryRelease.Object), Is.False);
         }
 
         [Test]
@@ -332,8 +332,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
             canaryRelease.SetupGet(r => r.IsCanaryRelease).Returns(true);
 
             Assert.IsTrue(policy.IsUpdateAdvised(criticalRelease.Object));
-            Assert.IsFalse(policy.IsUpdateAdvised(normalRelease.Object));
-            Assert.IsFalse(policy.IsUpdateAdvised(canaryRelease.Object));
+            Assert.That(policy.IsUpdateAdvised(normalRelease.Object), Is.False);
+            Assert.That(policy.IsUpdateAdvised(canaryRelease.Object), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -354,10 +354,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
 
             Assert.That(policy.FollowedTrack, Is.EqualTo(ReleaseTrack.Normal));
 
-            Assert.IsFalse(policy.IsUpdateCheckDue(now));
-            Assert.IsFalse(policy.IsUpdateCheckDue(now.AddYears(1)));
-            Assert.IsFalse(policy.IsUpdateCheckDue(now.AddDays(-policy.DaysBetweenUpdateChecks).AddMinutes(1)));
-            Assert.IsFalse(policy.IsUpdateCheckDue(now.AddDays(-policy.DaysBetweenUpdateChecks + 1)));
+            Assert.That(policy.IsUpdateCheckDue(now), Is.False);
+            Assert.That(policy.IsUpdateCheckDue(now.AddYears(1)), Is.False);
+            Assert.That(policy.IsUpdateCheckDue(now.AddDays(-policy.DaysBetweenUpdateChecks).AddMinutes(1)), Is.False);
+            Assert.That(policy.IsUpdateCheckDue(now.AddDays(-policy.DaysBetweenUpdateChecks + 1)), Is.False);
         }
 
         [Test]

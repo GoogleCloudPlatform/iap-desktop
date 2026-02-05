@@ -85,8 +85,8 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             using (var lhs = new SamplePublicKey("type1", Convert.FromBase64String("ABCD")))
             using (var rhs = new SamplePublicKey("type2", Convert.FromBase64String("ABCD")))
             {
-                Assert.IsFalse(lhs.Equals(rhs));
-                Assert.IsFalse(lhs.Equals((object)rhs));
+                Assert.That(lhs.Equals(rhs), Is.False);
+                Assert.That(lhs.Equals((object)rhs), Is.False);
             }
         }
 
@@ -96,8 +96,8 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             using (var lhs = new SamplePublicKey("type", Convert.FromBase64String("ABCD")))
             using (var rhs = new SamplePublicKey("type", Convert.FromBase64String("ABCE")))
             {
-                Assert.IsFalse(lhs.Equals(rhs));
-                Assert.IsFalse(lhs.Equals((object)rhs));
+                Assert.That(lhs.Equals(rhs), Is.False);
+                Assert.That(lhs.Equals((object)rhs), Is.False);
             }
         }
 

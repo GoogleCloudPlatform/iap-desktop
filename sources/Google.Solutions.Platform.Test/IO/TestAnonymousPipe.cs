@@ -37,13 +37,13 @@ namespace Google.Solutions.Platform.Test.IO
         {
             using (var pipe = new AnonymousPipe())
             {
-                Assert.IsFalse(pipe.WriteSideHandle.IsClosed);
-                Assert.IsFalse(pipe.ReadSideHandle.IsClosed);
+                Assert.That(pipe.WriteSideHandle.IsClosed, Is.False);
+                Assert.That(pipe.ReadSideHandle.IsClosed, Is.False);
 
                 pipe.CloseWriteSide();
 
                 Assert.IsTrue(pipe.WriteSideHandle.IsClosed);
-                Assert.IsFalse(pipe.ReadSideHandle.IsClosed);
+                Assert.That(pipe.ReadSideHandle.IsClosed, Is.False);
             }
         }
 
@@ -52,12 +52,12 @@ namespace Google.Solutions.Platform.Test.IO
         {
             using (var pipe = new AnonymousPipe())
             {
-                Assert.IsFalse(pipe.WriteSideHandle.IsClosed);
-                Assert.IsFalse(pipe.ReadSideHandle.IsClosed);
+                Assert.That(pipe.WriteSideHandle.IsClosed, Is.False);
+                Assert.That(pipe.ReadSideHandle.IsClosed, Is.False);
 
                 pipe.CloseReadSide();
 
-                Assert.IsFalse(pipe.WriteSideHandle.IsClosed);
+                Assert.That(pipe.WriteSideHandle.IsClosed, Is.False);
                 Assert.IsTrue(pipe.ReadSideHandle.IsClosed);
             }
         }
@@ -71,13 +71,13 @@ namespace Google.Solutions.Platform.Test.IO
         {
             using (var pipe = new AnonymousPipe())
             {
-                Assert.IsFalse(pipe.WriteSideHandle.IsClosed);
-                Assert.IsFalse(pipe.ReadSideHandle.IsClosed);
+                Assert.That(pipe.WriteSideHandle.IsClosed, Is.False);
+                Assert.That(pipe.ReadSideHandle.IsClosed, Is.False);
 
                 pipe.WriteSide.Close();
 
                 Assert.IsTrue(pipe.WriteSideHandle.IsClosed);
-                Assert.IsFalse(pipe.ReadSideHandle.IsClosed);
+                Assert.That(pipe.ReadSideHandle.IsClosed, Is.False);
             }
         }
 
@@ -86,12 +86,12 @@ namespace Google.Solutions.Platform.Test.IO
         {
             using (var pipe = new AnonymousPipe())
             {
-                Assert.IsFalse(pipe.WriteSideHandle.IsClosed);
-                Assert.IsFalse(pipe.ReadSideHandle.IsClosed);
+                Assert.That(pipe.WriteSideHandle.IsClosed, Is.False);
+                Assert.That(pipe.ReadSideHandle.IsClosed, Is.False);
 
                 pipe.ReadSide.Close();
 
-                Assert.IsFalse(pipe.WriteSideHandle.IsClosed);
+                Assert.That(pipe.WriteSideHandle.IsClosed, Is.False);
                 Assert.IsTrue(pipe.ReadSideHandle.IsClosed);
             }
         }
@@ -102,9 +102,9 @@ namespace Google.Solutions.Platform.Test.IO
             using (var pipe = new AnonymousPipe())
             {
                 Assert.IsTrue(pipe.ReadSide.CanRead);
-                Assert.IsFalse(pipe.WriteSide.CanRead);
+                Assert.That(pipe.WriteSide.CanRead, Is.False);
 
-                Assert.IsFalse(pipe.ReadSide.CanWrite);
+                Assert.That(pipe.ReadSide.CanWrite, Is.False);
                 Assert.IsTrue(pipe.WriteSide.CanWrite);
 
                 var data = Encoding.ASCII.GetBytes("test");
@@ -127,8 +127,8 @@ namespace Google.Solutions.Platform.Test.IO
         public void Dispose()
         {
             var pipe = new AnonymousPipe();
-            Assert.IsFalse(pipe.WriteSideHandle.IsClosed);
-            Assert.IsFalse(pipe.ReadSideHandle.IsClosed);
+            Assert.That(pipe.WriteSideHandle.IsClosed, Is.False);
+            Assert.That(pipe.ReadSideHandle.IsClosed, Is.False);
 
             pipe.Dispose();
 

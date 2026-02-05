@@ -184,7 +184,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             Assert.That(this.tree.Nodes.Count, Is.EqualTo(1));
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
             Assert.That(rootTreeNode.Nodes.Count, Is.EqualTo(1));   // Loading node, hidden
-            Assert.IsFalse(rootTreeNode.IsExpanded);
+            Assert.That(rootTreeNode.IsExpanded, Is.False);
         }
 
         [Test]
@@ -212,8 +212,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
             Assert.That(eventCount, Is.EqualTo(1));
 
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
-            Assert.IsFalse(rootTreeNode.IsExpanded);
-            Assert.IsFalse(root.IsExpanded);
+            Assert.That(rootTreeNode.IsExpanded, Is.False);
+            Assert.That(root.IsExpanded, Is.False);
 
             // Try again.
             rootTreeNode.Expand();
@@ -386,7 +386,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             {
                 Name = "child-1"
             };
-            Assert.IsFalse(child.HasPropertyChangeListeners);
+            Assert.That(child.HasPropertyChangeListeners, Is.False);
 
             root.Children.Add(child);
 
@@ -397,7 +397,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             Assert.IsTrue(child.HasPropertyChangeListeners);
             root.Children.RemoveAt(0);
-            Assert.IsFalse(child.HasPropertyChangeListeners);
+            Assert.That(child.HasPropertyChangeListeners, Is.False);
         }
 
         [Test]
@@ -424,7 +424,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 newRoot,
                 new Mock<IBindingContext>().Object);
 
-            Assert.IsFalse(root.HasPropertyChangeListeners);
+            Assert.That(root.HasPropertyChangeListeners, Is.False);
             Assert.IsTrue(newRoot.HasPropertyChangeListeners);
         }
     }

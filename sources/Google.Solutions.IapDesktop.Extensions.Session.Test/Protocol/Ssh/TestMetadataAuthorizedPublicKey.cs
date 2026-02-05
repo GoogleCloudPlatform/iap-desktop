@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             )]
             string line)
         {
-            Assert.IsFalse(MetadataAuthorizedPublicKey.TryParse(line, out var _));
+            Assert.That(MetadataAuthorizedPublicKey.TryParse(line, out var _), Is.False);
             Assert.Throws<ArgumentException>(() => MetadataAuthorizedPublicKey.Parse(line));
         }
 
@@ -188,8 +188,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 "AAAA",
                 "bob@gmail.com");
 
-            Assert.IsFalse(key.Equals((object?)null));
-            Assert.IsFalse(key!.Equals((MetadataAuthorizedPublicKey?)null));
+            Assert.That(key.Equals((object?)null), Is.False);
+            Assert.That(key!.Equals((MetadataAuthorizedPublicKey?)null), Is.False);
         }
 
         [Test]

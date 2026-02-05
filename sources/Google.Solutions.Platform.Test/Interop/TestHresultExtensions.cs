@@ -33,14 +33,14 @@ namespace Google.Solutions.Platform.Test.Interop
             Assert.IsTrue(HRESULT.S_OK.Succeeded());
             Assert.IsTrue(HRESULT.S_FALSE.Succeeded());
 
-            Assert.IsFalse(HRESULT.E_UNEXPECTED.Succeeded());
+            Assert.That(HRESULT.E_UNEXPECTED.Succeeded(), Is.False);
         }
 
         [Test]
         public void Failed()
         {
-            Assert.IsFalse(HRESULT.S_OK.Failed());
-            Assert.IsFalse(HRESULT.S_FALSE.Failed());
+            Assert.That(HRESULT.S_OK.Failed(), Is.False);
+            Assert.That(HRESULT.S_FALSE.Failed(), Is.False);
 
             Assert.IsTrue(HRESULT.E_UNEXPECTED.Failed());
         }

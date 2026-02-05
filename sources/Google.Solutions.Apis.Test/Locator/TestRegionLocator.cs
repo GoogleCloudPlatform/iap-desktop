@@ -87,20 +87,20 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathLacksProject()
         {
-            Assert.IsFalse(RegionLocator.TryParse(
+            Assert.That(RegionLocator.TryParse(
                 "/project-1/project-1/regions/us-central1",
-                out var _));
+                out var _), Is.False);
         }
 
         [Test]
         public void TryParse_WhenPathInvalid()
         {
-            Assert.IsFalse(RegionLocator.TryParse(
+            Assert.That(RegionLocator.TryParse(
                 "projects/project-1/region/us-central1",
-                out var _));
-            Assert.IsFalse(RegionLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(RegionLocator.TryParse(
                 "projects/project-1/regions",
-                out var _));
+                out var _), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -166,9 +166,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = new RegionLocator("proj-1", "us-central1");
             var ref2 = new RegionLocator("proj-2", "us-central1");
 
-            Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object)ref2));
-            Assert.IsFalse(ref1 == ref2);
+            Assert.That(ref1.Equals(ref2), Is.False);
+            Assert.That(ref1.Equals((object)ref2), Is.False);
+            Assert.That(ref1 == ref2, Is.False);
             Assert.IsTrue(ref1 != ref2);
         }
 

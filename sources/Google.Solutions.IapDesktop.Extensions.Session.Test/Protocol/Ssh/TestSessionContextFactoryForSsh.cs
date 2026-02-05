@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                Assert.IsFalse(context.UsePlatformManagedCredential);
+                Assert.That(context.UsePlatformManagedCredential, Is.False);
                 Assert.IsNull(context.Parameters.PreferredUsername);
 
                 var credential = await context
@@ -243,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false))
             {
                 Assert.That(context.Parameters.PublicKeyValidity, Is.EqualTo(TimeSpan.FromDays(1)));
-                Assert.IsFalse(context.Parameters.EnableFileAccess);
+                Assert.That(context.Parameters.EnableFileAccess, Is.False);
             }
         }
 

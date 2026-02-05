@@ -51,7 +51,7 @@ namespace Google.Solutions.Ssh.Test.Format
                 var reader = new SshReader(stream);
 
                 Assert.IsTrue(reader.ReadBoolean());
-                Assert.IsFalse(reader.ReadBoolean());
+                Assert.That(reader.ReadBoolean(), Is.False);
             }
         }
 

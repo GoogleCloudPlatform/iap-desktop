@@ -82,8 +82,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Predicate = s => s == s.ToUpper()
             };
 
-            Assert.IsFalse(filtered.Contains("one"));
-            Assert.IsFalse(filtered.Contains("Two"));
+            Assert.That(filtered.Contains("one"), Is.False);
+            Assert.That(filtered.Contains("Two"), Is.False);
             Assert.IsTrue(filtered.Contains("THREE"));
         }
 
@@ -215,7 +215,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             collection.Add("lowercase");
 
-            Assert.IsFalse(eventRaised);
+            Assert.That(eventRaised, Is.False);
         }
 
 
@@ -269,7 +269,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             collection.Remove("lowercase");
 
-            Assert.IsFalse(eventRaised);
+            Assert.That(eventRaised, Is.False);
         }
 
         [Test]

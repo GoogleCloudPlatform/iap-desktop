@@ -104,23 +104,23 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathLacksProject()
         {
-            Assert.IsFalse(MachineTypeLocator.TryParse(
+            Assert.That(MachineTypeLocator.TryParse(
                 "project-1/zones/us-central1-a/machineTypes/n2d-standard-64",
-                out var _));
+                out var _), Is.False);
         }
 
         [Test]
         public void TryParse_WhenPathInvalid()
         {
-            Assert.IsFalse(MachineTypeLocator.TryParse(
+            Assert.That(MachineTypeLocator.TryParse(
                 "project-1/zones/us-central1-a/machineTypes/",
-                out var _));
-            Assert.IsFalse(MachineTypeLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(MachineTypeLocator.TryParse(
                 "project-1/zones/us-central1-a/machineTypes/ ",
-                out var _));
-            Assert.IsFalse(MachineTypeLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(MachineTypeLocator.TryParse(
                 "/",
-                out var _));
+                out var _), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -202,9 +202,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = new MachineTypeLocator("proj", "zone1", "n2d-standard-64");
             var ref2 = new MachineTypeLocator("proj", "zone2", "n2d-standard-64");
 
-            Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object?)ref2));
-            Assert.IsFalse(ref1 == ref2);
+            Assert.That(ref1.Equals(ref2), Is.False);
+            Assert.That(ref1.Equals((object?)ref2), Is.False);
+            Assert.That(ref1 == ref2, Is.False);
             Assert.IsTrue(ref1 != ref2);
         }
 

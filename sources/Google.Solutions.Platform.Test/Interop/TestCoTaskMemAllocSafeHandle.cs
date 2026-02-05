@@ -31,26 +31,26 @@ namespace Google.Solutions.Platform.Test.Interop
         public void IsInvalid_WhenMemoryFreed_ThenHandleIsInvalid()
         {
             var handle = CoTaskMemAllocSafeHandle.Alloc(8);
-            Assert.IsFalse(handle.IsClosed);
-            Assert.IsFalse(handle.IsInvalid);
+            Assert.That(handle.IsClosed, Is.False);
+            Assert.That(handle.IsInvalid, Is.False);
 
             handle.Dispose();
 
             Assert.IsTrue(handle.IsClosed);
-            Assert.IsFalse(handle.IsInvalid);
+            Assert.That(handle.IsInvalid, Is.False);
         }
 
         [Test]
         public void IsInvalid_WhenStringFreed_ThenHandleIsInvalid()
         {
             var handle = CoTaskMemAllocSafeHandle.Alloc("test");
-            Assert.IsFalse(handle.IsClosed);
-            Assert.IsFalse(handle.IsInvalid);
+            Assert.That(handle.IsClosed, Is.False);
+            Assert.That(handle.IsInvalid, Is.False);
 
             handle.Dispose();
 
             Assert.IsTrue(handle.IsClosed);
-            Assert.IsFalse(handle.IsInvalid);
+            Assert.That(handle.IsInvalid, Is.False);
         }
     }
 }

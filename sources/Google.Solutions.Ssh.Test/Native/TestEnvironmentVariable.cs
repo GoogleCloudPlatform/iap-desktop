@@ -40,7 +40,7 @@ namespace Google.Solutions.Ssh.Test.Native
             Assert.IsTrue(ref1.Equals(ref2));
             Assert.IsTrue(ref1.Equals((object)ref2));
             Assert.IsTrue(ref1 == ref2);
-            Assert.IsFalse(ref1 != ref2);
+            Assert.That(ref1 != ref2, Is.False);
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace Google.Solutions.Ssh.Test.Native
             Assert.IsTrue(ref1.Equals(ref2));
             Assert.IsTrue(ref1.Equals((object)ref2));
             Assert.IsTrue(ref1 == ref2);
-            Assert.IsFalse(ref1 != ref2);
+            Assert.That(ref1 != ref2, Is.False);
         }
 
         [Test]
@@ -61,9 +61,9 @@ namespace Google.Solutions.Ssh.Test.Native
             var ref1 = new EnvironmentVariable("NAME", "", true);
             var ref2 = new EnvironmentVariable("NAME", "", false);
 
-            Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object)ref2));
-            Assert.IsFalse(ref1 == ref2);
+            Assert.That(ref1.Equals(ref2), Is.False);
+            Assert.That(ref1.Equals((object)ref2), Is.False);
+            Assert.That(ref1 == ref2, Is.False);
             Assert.IsTrue(ref1 != ref2);
         }
 
@@ -72,8 +72,8 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var ref1 = new EnvironmentVariable("NAME", "value", false);
 
-            Assert.IsFalse(ref1.Equals(null!));
-            Assert.IsFalse(ref1.Equals((object)null!));
+            Assert.That(ref1.Equals(null!), Is.False);
+            Assert.That(ref1.Equals((object)null!), Is.False);
         }
     }
 }

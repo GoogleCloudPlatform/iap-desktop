@@ -622,7 +622,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var running = zone1.Instances.Last();
 
             Assert.That(terminated.DisplayName, Is.EqualTo(SampleTerminatedLinuxInstanceInZone1.Name));
-            Assert.IsFalse(terminated.IsRunning);
+            Assert.That(terminated.IsRunning, Is.False);
 
             Assert.That(running.DisplayName, Is.EqualTo(SampleLinuxInstanceInZone1.Name));
             Assert.IsTrue(running.IsRunning);

@@ -446,7 +446,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsFalse(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
+            Assert.That(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r), Is.False);
         }
 
         [Test]

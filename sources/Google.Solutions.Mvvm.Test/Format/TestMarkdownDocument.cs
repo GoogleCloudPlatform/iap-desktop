@@ -52,10 +52,10 @@ namespace Google.Solutions.Mvvm.Test.Format
             Assert.IsTrue(MarkdownDocument.HeadingNode.IsHeadingNode("###### H5"));
             Assert.IsTrue(MarkdownDocument.HeadingNode.IsHeadingNode("####### H6"));
 
-            Assert.IsFalse(MarkdownDocument.HeadingNode.IsHeadingNode(" # "));
-            Assert.IsFalse(MarkdownDocument.HeadingNode.IsHeadingNode("#"));
-            Assert.IsFalse(MarkdownDocument.HeadingNode.IsHeadingNode("#H1"));
-            Assert.IsFalse(MarkdownDocument.HeadingNode.IsHeadingNode(" # H1"));
+            Assert.That(MarkdownDocument.HeadingNode.IsHeadingNode(" # "), Is.False);
+            Assert.That(MarkdownDocument.HeadingNode.IsHeadingNode("#"), Is.False);
+            Assert.That(MarkdownDocument.HeadingNode.IsHeadingNode("#H1"), Is.False);
+            Assert.That(MarkdownDocument.HeadingNode.IsHeadingNode(" # H1"), Is.False);
         }
 
         [Test]
@@ -142,9 +142,9 @@ namespace Google.Solutions.Mvvm.Test.Format
             Assert.IsTrue(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode("+ i"));
             Assert.IsTrue(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode("* i"));
 
-            Assert.IsFalse(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode(" * i"));
-            Assert.IsFalse(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode(" *i"));
-            Assert.IsFalse(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode("** i"));
+            Assert.That(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode(" * i"), Is.False);
+            Assert.That(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode(" *i"), Is.False);
+            Assert.That(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode("** i"), Is.False);
         }
 
         [Test]
@@ -226,8 +226,8 @@ namespace Google.Solutions.Mvvm.Test.Format
             Assert.IsTrue(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("123345.        \ti"));
             Assert.IsTrue(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("0. i"));
 
-            Assert.IsFalse(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("-1. i"));
-            Assert.IsFalse(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("1 i"));
+            Assert.That(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("-1. i"), Is.False);
+            Assert.That(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("1 i"), Is.False);
         }
 
         [Test]
@@ -542,10 +542,10 @@ namespace Google.Solutions.Mvvm.Test.Format
             var token1 = new MarkdownDocument.Token(MarkdownDocument.TokenType.Text, "text");
             var token2 = new MarkdownDocument.Token(MarkdownDocument.TokenType.Delimiter, ")");
 
-            Assert.IsFalse(token1.Equals(token2));
-            Assert.IsFalse(token1.Equals(null!));
-            Assert.IsFalse(token1! == token2);
-            Assert.IsFalse(token1! == null!);
+            Assert.That(token1.Equals(token2), Is.False);
+            Assert.That(token1.Equals(null!), Is.False);
+            Assert.That(token1! == token2, Is.False);
+            Assert.That(token1! == null!, Is.False);
             Assert.IsTrue(token1! != token2);
         }
     }

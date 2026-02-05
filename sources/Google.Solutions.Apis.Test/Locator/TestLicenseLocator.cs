@@ -87,23 +87,23 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathLacksProject()
         {
-            Assert.IsFalse(LicenseLocator.TryParse(
+            Assert.That(LicenseLocator.TryParse(
                 "/project-1/project-1/global/licenses/windows-10-enterprise-byol",
-                out var _));
+                out var _), Is.False);
         }
 
         [Test]
         public void TryParse_WhenPathInvalid()
         {
-            Assert.IsFalse(LicenseLocator.TryParse(
+            Assert.That(LicenseLocator.TryParse(
                 "projects/project-1/notglobal/licenses/windows-10-enterprise-byol",
-                out var _));
-            Assert.IsFalse(LicenseLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(LicenseLocator.TryParse(
                 "/project-1/global/licenses/windows-10-enterprise-byol",
-                out var _));
-            Assert.IsFalse(LicenseLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(LicenseLocator.TryParse(
                 "/",
-                out var _));
+                out var _), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -171,9 +171,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = new LicenseLocator("proj-1", "windows-10-enterprise-byol");
             var ref2 = new LicenseLocator("proj-2", "windows-10-enterprise-byol");
 
-            Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object?)ref2));
-            Assert.IsFalse(ref1 == ref2);
+            Assert.That(ref1.Equals(ref2), Is.False);
+            Assert.That(ref1.Equals((object?)ref2), Is.False);
+            Assert.That(ref1 == ref2, Is.False);
             Assert.IsTrue(ref1 != ref2);
         }
 
@@ -217,7 +217,7 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var locator = LicenseLocator.Parse(
                 "projects/my-project/global/licenses/windows-10-enterprise-byol");
-            Assert.IsFalse(locator.IsWindowsLicense());
+            Assert.That(locator.IsWindowsLicense(), Is.False);
         }
 
         [Test]
@@ -233,7 +233,7 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var locator = LicenseLocator.Parse(
                 "projects/windows-cloud/global/licenses/windows-2016");
-            Assert.IsFalse(locator.IsWindowsByolLicense());
+            Assert.That(locator.IsWindowsByolLicense(), Is.False);
         }
     }
 }

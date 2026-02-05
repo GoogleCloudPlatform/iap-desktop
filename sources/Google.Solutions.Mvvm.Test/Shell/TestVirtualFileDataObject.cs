@@ -264,7 +264,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
             dataObject.AsyncOperationCompleted += (_, args) =>
             {
                 eventRaised = true;
-                Assert.IsFalse(args.Succeeded);
+                Assert.That(args.Succeeded, Is.False);
                 Assert.IsNotNull(args.Exception);
             };
 
@@ -284,13 +284,13 @@ namespace Google.Solutions.Mvvm.Test.Shell
             var dataObject = new VirtualFileDataObject(
                 Array.Empty<VirtualFileDataObject.Descriptor>());
 
-            Assert.IsFalse(dataObject.IsOperationInProgress);
+            Assert.That(dataObject.IsOperationInProgress, Is.False);
 
             dataObject.StartOperation(null);
             Assert.IsTrue(dataObject.IsOperationInProgress);
 
             dataObject.EndOperation(0, null, 0);
-            Assert.IsFalse(dataObject.IsOperationInProgress);
+            Assert.That(dataObject.IsOperationInProgress, Is.False);
         }
     }
 }

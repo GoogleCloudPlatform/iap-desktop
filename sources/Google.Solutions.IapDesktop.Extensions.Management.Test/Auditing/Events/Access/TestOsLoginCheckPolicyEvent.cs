@@ -223,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.That(e.Instance?.Name, Is.EqualTo("instance-1"));
             Assert.That(e.InstanceId, Is.EqualTo(1234567890));
             Assert.That(e.Principal, Is.EqualTo("bob@example.com"));
-            Assert.IsFalse(e.IsSuccess);
+            Assert.That(e.IsSuccess, Is.False);
             Assert.That(e.Message, Is.EqualTo("OS Login access for bob@example.com and policy LOGIN denied"));
         }
 
@@ -295,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.That(e.Instance?.Name, Is.EqualTo("instance-1"));
             Assert.That(e.InstanceId, Is.EqualTo(1234567890));
             Assert.That(e.Principal, Is.EqualTo("bob@example.com"));
-            Assert.IsFalse(e.IsSuccess);
+            Assert.That(e.IsSuccess, Is.False);
             Assert.That(e.Message, Is.EqualTo("OS Login access for bob@example.com and policy LOGIN denied"));
         }
     }

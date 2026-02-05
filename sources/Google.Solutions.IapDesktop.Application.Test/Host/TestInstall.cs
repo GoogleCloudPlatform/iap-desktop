@@ -307,7 +307,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 {
                     Assert.IsNotNull(profile);
                     Assert.That(profile.Name, Is.EqualTo(TestProfileName));
-                    Assert.IsFalse(profile.IsDefault);
+                    Assert.That(profile.IsDefault, Is.False);
                     Assert.IsNotNull(profile.SettingsKey);
                 }
             }
@@ -413,7 +413,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 var list = install.Profiles;
 
                 Assert.IsNotNull(list);
-                Assert.IsFalse(list.Any(p => p.EndsWith("Notaprofile", StringComparison.OrdinalIgnoreCase)));
+                Assert.That(list.Any(p => p.EndsWith("Notaprofile", StringComparison.OrdinalIgnoreCase)), Is.False);
             }
         }
     }

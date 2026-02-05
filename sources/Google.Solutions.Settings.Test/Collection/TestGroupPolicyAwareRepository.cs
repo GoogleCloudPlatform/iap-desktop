@@ -68,7 +68,7 @@ namespace Google.Solutions.Settings.Test.Collection
                     null,
                     null);
 
-                Assert.IsFalse(repository.IsPolicyPresent);
+                Assert.That(repository.IsPolicyPresent, Is.False);
             }
         }
 

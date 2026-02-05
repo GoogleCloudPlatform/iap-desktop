@@ -196,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(processor.IsOsLoginEnabled);
+            Assert.That(processor.IsOsLoginEnabled, Is.False);
         }
 
         [Test]
@@ -231,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(processor.IsOsLoginEnabled);
+            Assert.That(processor.IsOsLoginEnabled, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -287,7 +287,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(processor.IsOsLoginWithSecurityKeyEnabled);
+            Assert.That(processor.IsOsLoginWithSecurityKeyEnabled, Is.False);
         }
 
         [Test]
@@ -302,7 +302,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(processor.IsOsLoginWithSecurityKeyEnabled);
+            Assert.That(processor.IsOsLoginWithSecurityKeyEnabled, Is.False);
         }
 
         [Test]
@@ -337,7 +337,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(processor.IsOsLoginWithSecurityKeyEnabled);
+            Assert.That(processor.IsOsLoginWithSecurityKeyEnabled, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -393,7 +393,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(processor.AreProjectSshKeysBlocked);
+            Assert.That(processor.AreProjectSshKeysBlocked, Is.False);
         }
 
         [Test]
@@ -428,7 +428,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(processor.IsOsLoginEnabled);
+            Assert.That(processor.IsOsLoginEnabled, Is.False);
         }
 
         //---------------------------------------------------------------------

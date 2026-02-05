@@ -39,49 +39,49 @@ namespace Google.Solutions.Ssh.Test
         [Test]
         public void IsRegular()
         {
-            Assert.IsFalse(basePermissions.IsRegular());
+            Assert.That(basePermissions.IsRegular(), Is.False);
         }
 
         [Test]
         public void IsLink()
         {
-            Assert.IsFalse(basePermissions.IsLink());
+            Assert.That(basePermissions.IsLink(), Is.False);
             Assert.IsTrue((basePermissions | FilePermissions.SymbolicLink).IsLink());
         }
 
         [Test]
         public void IsDirectory()
         {
-            Assert.IsFalse(basePermissions.IsLink());
+            Assert.That(basePermissions.IsLink(), Is.False);
             Assert.IsTrue((basePermissions | FilePermissions.Directory).IsDirectory());
-            Assert.IsFalse((basePermissions | FilePermissions.BlockSpecial).IsDirectory());
+            Assert.That((basePermissions | FilePermissions.BlockSpecial).IsDirectory(), Is.False);
         }
 
         [Test]
         public void IsCharacterDevice()
         {
-            Assert.IsFalse(basePermissions.IsLink());
+            Assert.That(basePermissions.IsLink(), Is.False);
             Assert.IsTrue((basePermissions | FilePermissions.CharacterDevice).IsCharacterDevice());
         }
 
         [Test]
         public void IsBlockDevice()
         {
-            Assert.IsFalse(basePermissions.IsLink());
+            Assert.That(basePermissions.IsLink(), Is.False);
             Assert.IsTrue((basePermissions | FilePermissions.BlockSpecial).IsBlockDevice());
         }
 
         [Test]
         public void IsFifo()
         {
-            Assert.IsFalse(basePermissions.IsLink());
+            Assert.That(basePermissions.IsLink(), Is.False);
             Assert.IsTrue((basePermissions | FilePermissions.Fifo).IsFifo());
         }
 
         [Test]
         public void IsSocket()
         {
-            Assert.IsFalse(basePermissions.IsLink());
+            Assert.That(basePermissions.IsLink(), Is.False);
             Assert.IsTrue((basePermissions | FilePermissions.Socket).IsSocket());
         }
 

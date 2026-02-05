@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var options = CommandLineOptions.Parse(Array.Empty<string>());
 
-            Assert.IsFalse(options.IsLoggingEnabled);
+            Assert.That(options.IsLoggingEnabled, Is.False);
             Assert.IsNull(options.StartupUrl);
             Assert.IsNull(options.Profile);
         }
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var options = CommandLineOptions.Parse(
                 new[] { "/url", "iap-rdp:///project-1/us-central1-a/vm-1" });
 
-            Assert.IsFalse(options.IsLoggingEnabled);
+            Assert.That(options.IsLoggingEnabled, Is.False);
             Assert.IsNotNull(options.StartupUrl);
         }
 
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 new[] { "/profile", "profile-1" });
 
             Assert.That(options.Profile, Is.EqualTo("profile-1"));
-            Assert.IsFalse(options.IsPostInstall);
+            Assert.That(options.IsPostInstall, Is.False);
         }
 
         [Test]

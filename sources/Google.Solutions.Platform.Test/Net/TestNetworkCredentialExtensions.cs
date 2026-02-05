@@ -93,7 +93,7 @@ namespace Google.Solutions.Platform.Test.Net
             };
 
             Assert.IsTrue(cred1.IsUpnFormat());
-            Assert.IsFalse(cred1.IsNetBiosFormat());
+            Assert.That(cred1.IsNetBiosFormat(), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -112,7 +112,7 @@ namespace Google.Solutions.Platform.Test.Net
             };
 
             Assert.IsTrue(cred1.IsNetBiosFormat());
-            Assert.IsFalse(cred1.IsUpnFormat());
+            Assert.That(cred1.IsUpnFormat(), Is.False);
 
             //
             // Separate username, domain.
@@ -124,7 +124,7 @@ namespace Google.Solutions.Platform.Test.Net
             };
 
             Assert.IsTrue(cred2.IsNetBiosFormat());
-            Assert.IsFalse(cred2.IsUpnFormat());
+            Assert.That(cred2.IsUpnFormat(), Is.False);
 
             //
             // Unqualified format.
@@ -135,7 +135,7 @@ namespace Google.Solutions.Platform.Test.Net
             };
 
             Assert.IsTrue(cred3.IsNetBiosFormat());
-            Assert.IsFalse(cred3.IsUpnFormat());
+            Assert.That(cred3.IsUpnFormat(), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -148,15 +148,15 @@ namespace Google.Solutions.Platform.Test.Net
             //
             // Unqualified format.
             //
-            Assert.IsFalse(new NetworkCredential().IsDomainOrHostQualified());
-            Assert.IsFalse(new NetworkCredential("", "").IsDomainOrHostQualified());
-            Assert.IsFalse(new NetworkCredential(" ", "").IsDomainOrHostQualified());
-            Assert.IsFalse(new NetworkCredential("user", "").IsDomainOrHostQualified());
-            Assert.IsFalse(new NetworkCredential(".\\user", "").IsDomainOrHostQualified());
-            Assert.IsFalse(new NetworkCredential(" .\\user", "").IsDomainOrHostQualified());
-            Assert.IsFalse(new NetworkCredential("user", "", ".").IsDomainOrHostQualified());
-            Assert.IsFalse(new NetworkCredential("user", "", " ").IsDomainOrHostQualified());
-            Assert.IsFalse(new NetworkCredential("user", "", " .").IsDomainOrHostQualified());
+            Assert.That(new NetworkCredential().IsDomainOrHostQualified(), Is.False);
+            Assert.That(new NetworkCredential("", "").IsDomainOrHostQualified(), Is.False);
+            Assert.That(new NetworkCredential(" ", "").IsDomainOrHostQualified(), Is.False);
+            Assert.That(new NetworkCredential("user", "").IsDomainOrHostQualified(), Is.False);
+            Assert.That(new NetworkCredential(".\\user", "").IsDomainOrHostQualified(), Is.False);
+            Assert.That(new NetworkCredential(" .\\user", "").IsDomainOrHostQualified(), Is.False);
+            Assert.That(new NetworkCredential("user", "", ".").IsDomainOrHostQualified(), Is.False);
+            Assert.That(new NetworkCredential("user", "", " ").IsDomainOrHostQualified(), Is.False);
+            Assert.That(new NetworkCredential("user", "", " .").IsDomainOrHostQualified(), Is.False);
 
             //
             // UPN format.

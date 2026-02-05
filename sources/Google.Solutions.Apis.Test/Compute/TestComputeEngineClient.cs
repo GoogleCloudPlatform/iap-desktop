@@ -385,7 +385,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     Permissions.ComputeInstancesSetMetadata)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(result);
+            Assert.That(result, Is.False);
         }
 
         [Test]

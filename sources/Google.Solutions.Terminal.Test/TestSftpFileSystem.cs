@@ -52,7 +52,7 @@ namespace Google.Solutions.Terminal.Test
                 var root = fs.Root;
 
                 Assert.IsNotNull(root);
-                Assert.IsFalse(root.Type.IsFile);
+                Assert.That(root.Type.IsFile, Is.False);
                 Assert.IsTrue(root.IsExpanded);
                 Assert.That(root.Name, Is.EqualTo("Server"));
                 Assert.That(root.Access, Is.EqualTo(string.Empty));
@@ -71,8 +71,8 @@ namespace Google.Solutions.Terminal.Test
                 var drive = fs.Drive;
 
                 Assert.IsNotNull(drive);
-                Assert.IsFalse(drive.Type.IsFile);
-                Assert.IsFalse(drive.IsExpanded);
+                Assert.That(drive.Type.IsFile, Is.False);
+                Assert.That(drive.IsExpanded, Is.False);
                 Assert.That(drive.Name, Is.EqualTo("File system root"));
                 Assert.That(drive.Path, Is.EqualTo("/."));
                 Assert.That(drive.Access, Is.EqualTo(string.Empty));
@@ -91,8 +91,8 @@ namespace Google.Solutions.Terminal.Test
                 var home = fs.Home;
 
                 Assert.IsNotNull(home);
-                Assert.IsFalse(home.Type.IsFile);
-                Assert.IsFalse(home.IsExpanded);
+                Assert.That(home.Type.IsFile, Is.False);
+                Assert.That(home.IsExpanded, Is.False);
                 Assert.That(home.Name, Is.EqualTo("Home"));
                 Assert.That(home.Path, Is.EqualTo("."));
                 Assert.That(home.Access, Is.EqualTo(string.Empty));
@@ -197,7 +197,7 @@ namespace Google.Solutions.Terminal.Test
 
                 var dir = files.First();
                 Assert.That(dir.Name, Is.EqualTo("dir"));
-                Assert.IsFalse(dir.Type.IsFile);
+                Assert.That(dir.Type.IsFile, Is.False);
                 Assert.IsTrue(dir.Attributes.HasFlag(FileAttributes.Directory));
                 Assert.That(dir.Access, Is.EqualTo("dr-x---r--"));
             }

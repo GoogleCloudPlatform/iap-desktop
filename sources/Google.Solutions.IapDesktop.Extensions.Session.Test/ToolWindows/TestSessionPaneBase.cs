@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows
                         s => CommandState.Enabled,
                         s => { }));
                 window.ContextCommands = commands;
-                Assert.IsFalse(window.ShowCloseMenuItemInContextMenu);
+                Assert.That(window.ShowCloseMenuItemInContextMenu, Is.False);
 
                 window.Close();
             }

@@ -225,8 +225,8 @@ namespace Google.Solutions.Ssh.Test
                         .ConfigureAwait(false))
                     {
                         Assert.IsTrue(outputStream.CanWrite);
-                        Assert.IsFalse(outputStream.CanRead);
-                        Assert.IsFalse(outputStream.CanSeek);
+                        Assert.That(outputStream.CanRead, Is.False);
+                        Assert.That(outputStream.CanSeek, Is.False);
 
                         Assert.That(outputStream.Length, Is.EqualTo(0));
 
@@ -253,8 +253,8 @@ namespace Google.Solutions.Ssh.Test
                         .ConfigureAwait(false))
                     {
                         Assert.IsTrue(inputStream.CanRead);
-                        Assert.IsFalse(inputStream.CanWrite);
-                        Assert.IsFalse(inputStream.CanSeek);
+                        Assert.That(inputStream.CanWrite, Is.False);
+                        Assert.That(inputStream.CanSeek, Is.False);
 
                         Assert.That(inputStream.Length, Is.Not.EqualTo(0));
 
@@ -318,8 +318,8 @@ namespace Google.Solutions.Ssh.Test
                         .ConfigureAwait(false))
                     {
                         Assert.IsTrue(outputStream.CanWrite);
-                        Assert.IsFalse(outputStream.CanRead);
-                        Assert.IsFalse(outputStream.CanSeek);
+                        Assert.That(outputStream.CanRead, Is.False);
+                        Assert.That(outputStream.CanSeek, Is.False);
 
                         Assert.That(outputStream.Length, Is.EqualTo(0));
 
@@ -344,8 +344,8 @@ namespace Google.Solutions.Ssh.Test
                         .ConfigureAwait(false))
                     {
                         Assert.IsTrue(inputStream.CanRead);
-                        Assert.IsFalse(inputStream.CanWrite);
-                        Assert.IsFalse(inputStream.CanSeek);
+                        Assert.That(inputStream.CanWrite, Is.False);
+                        Assert.That(inputStream.CanSeek, Is.False);
 
                         Assert.That(inputStream.Length, Is.Not.EqualTo(0));
 

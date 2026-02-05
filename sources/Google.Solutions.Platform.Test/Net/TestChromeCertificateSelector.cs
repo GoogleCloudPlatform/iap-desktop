@@ -46,12 +46,12 @@ namespace Google.Solutions.Platform.Test.Net
         [Test]
         public void TryParse_WhenJsonMalformed_ThenTryParseReturnsFalse()
         {
-            Assert.IsFalse(ChromeCertificateSelector.TryParse(
+            Assert.That(ChromeCertificateSelector.TryParse(
                 "{asd'",
-                out var _));
-            Assert.IsFalse(ChromeCertificateSelector.TryParse(
+                out var _), Is.False);
+            Assert.That(ChromeCertificateSelector.TryParse(
                "",
-               out var _));
+               out var _), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -72,11 +72,11 @@ namespace Google.Solutions.Platform.Test.Net
             Assert.IsNull(selector.Filter.Issuer);
             Assert.IsNull(selector.Filter.Subject);
 
-            Assert.IsFalse(selector.IsMatch(
+            Assert.That(selector.IsMatch(
                 new Uri("https://www.google.de"),
                 SimpleIssuerDn,
                 SimpleSubjectDn,
-                null));
+                null), Is.False);
         }
 
         [Test]
@@ -183,11 +183,11 @@ namespace Google.Solutions.Platform.Test.Net
                 SimpleSubjectDn,
                 null));
 
-            Assert.IsFalse(selector.IsMatch(
+            Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
                 SimpleSubjectDn,
-                null));
+                null), Is.False);
         }
 
         [Test]
@@ -211,11 +211,11 @@ namespace Google.Solutions.Platform.Test.Net
             Assert.IsNotNull(selector.Filter.Issuer);
             Assert.IsNotNull(selector.Filter.Subject);
 
-            Assert.IsFalse(selector.IsMatch(
+            Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 ComplexIssuerDn,
                 ComplexSubjectDn,
-                null));
+                null), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -282,11 +282,11 @@ namespace Google.Solutions.Platform.Test.Net
                 ComplexSubjectDn,
                 null));
 
-            Assert.IsFalse(selector.IsMatch(
+            Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
                 SimpleSubjectDn,
-                null));
+                null), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -316,11 +316,11 @@ namespace Google.Solutions.Platform.Test.Net
                 SimpleSubjectDn,
                 "ABCD"));
 
-            Assert.IsFalse(selector.IsMatch(
+            Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
                 SimpleSubjectDn,
-                "0123"));
+                "0123"), Is.False);
         }
 
         [Test]
@@ -343,11 +343,11 @@ namespace Google.Solutions.Platform.Test.Net
             Assert.IsNotNull(selector.Filter.Subject);
             Assert.IsNotNull(selector.Filter.Thumbprint);
 
-            Assert.IsFalse(selector.IsMatch(
+            Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
                 ComplexSubjectDn,
-                "abcd"));
+                "abcd"), Is.False);
         }
     }
 }

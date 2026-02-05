@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
 
             viewModel.IsWorkforcePoolOptionChecked.Value = true;
 
-            Assert.IsFalse(viewModel.IsOkButtonEnabled.Value);
+            Assert.That(viewModel.IsOkButtonEnabled.Value, Is.False);
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
             var viewModel = new AuthorizeOptionsViewModel(repository.Object);
 
             Assert.IsTrue(viewModel.IsGaiaOptionChecked.Value);
-            Assert.IsFalse(viewModel.IsWorkforcePoolOptionChecked.Value);
+            Assert.That(viewModel.IsWorkforcePoolOptionChecked.Value, Is.False);
         }
 
         [Test]
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                 WorkforcePoolProvider = SampleProviderLocator
             };
 
-            Assert.IsFalse(viewModel.IsGaiaOptionChecked.Value);
+            Assert.That(viewModel.IsGaiaOptionChecked.Value, Is.False);
             Assert.IsTrue(viewModel.IsWorkforcePoolOptionChecked.Value);
         }
 
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
             var repository = CreateSettingsRepository(null);
             var viewModel = new AuthorizeOptionsViewModel(repository.Object);
 
-            Assert.IsFalse(viewModel.IsWorkforcePoolOptionChecked.Value);
+            Assert.That(viewModel.IsWorkforcePoolOptionChecked.Value, Is.False);
             Assert.IsNull(viewModel.WorkforcePoolLocationId.Value);
             Assert.IsNull(viewModel.WorkforcePoolId.Value);
             Assert.IsNull(viewModel.WorkforcePoolProviderId.Value);

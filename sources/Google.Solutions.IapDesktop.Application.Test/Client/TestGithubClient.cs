@@ -484,9 +484,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
-            Assert.IsFalse(release!.TryGetDownloadUrl(
+            Assert.That(release!.TryGetDownloadUrl(
                 Architecture.X86,
-                out var downloadUrl));
+                out var downloadUrl), Is.False);
             Assert.IsNull(downloadUrl);
         }
 

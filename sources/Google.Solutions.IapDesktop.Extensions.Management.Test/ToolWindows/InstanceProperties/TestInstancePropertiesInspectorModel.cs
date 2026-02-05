@@ -76,9 +76,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                 ? FeatureFlag.Enabled : FeatureFlag.Disabled));
             Assert.That(model.Diagnostics, Is.EqualTo(FeatureFlag.Disabled));
             Assert.That(model.GuestAttributes, Is.EqualTo(FeatureFlag.Enabled));
-            Assert.IsFalse(model.IsSoleTenant);
+            Assert.That(model.IsSoleTenant, Is.False);
             Assert.That(model.MachineType, Is.EqualTo(WindowsInstanceAttribute.DefaultMachineType));
-            Assert.IsFalse(model.Tags.Any());
+            Assert.That(model.Tags.Any(), Is.False);
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             Assert.That(model.InstanceName, Is.EqualTo(locator.Name));
             Assert.That(model.Status, Is.EqualTo("RUNNING"));
 
-            Assert.IsFalse(model.IsOsInventoryInformationPopulated);
+            Assert.That(model.IsOsInventoryInformationPopulated, Is.False);
             Assert.IsNull(model.Architecture);
             Assert.IsNull(model.KernelVersion);
             Assert.IsNull(model.OperatingSystemFullName);

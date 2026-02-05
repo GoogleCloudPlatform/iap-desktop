@@ -100,7 +100,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
                 .Read<SecureString>("key", "display name", "description", "category", null);
             setting.SetClearTextValue("secret");
 
-            Assert.IsFalse(setting.IsDefault);
+            Assert.That(setting.IsDefault, Is.False);
 
             var descriptor = new MaskedSettingDescriptor(setting);
             descriptor.SetValue(setting, null);

@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 var settings = repository.GetSettings();
 
                 Assert.IsNull(settings.PrivateServiceConnectEndpoint.Value);
-                Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.Value);
+                Assert.That(settings.IsDeviceCertificateAuthenticationEnabled.Value, Is.False);
                 Assert.That(
                     settings.DeviceCertificateSelector.Value, Does.Contain("Google Endpoint Verification"));
                 Assert.That(settings.ConnectionLimit.Value, Is.EqualTo(16));
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
                 Assert.That(settings.PrivateServiceConnectEndpoint.Value, Is.EqualTo("psc"));
-                Assert.IsFalse(settings.PrivateServiceConnectEndpoint.IsDefault);
+                Assert.That(settings.PrivateServiceConnectEndpoint.IsDefault, Is.False);
             }
         }
 
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
                 Assert.That(settings.PrivateServiceConnectEndpoint.Value, Is.EqualTo("psc-user"));
-                Assert.IsFalse(settings.PrivateServiceConnectEndpoint.IsDefault);
+                Assert.That(settings.PrivateServiceConnectEndpoint.IsDefault, Is.False);
             }
         }
 
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
                 Assert.That(settings.PrivateServiceConnectEndpoint.Value, Is.EqualTo("psc-machine"));
-                Assert.IsFalse(settings.PrivateServiceConnectEndpoint.IsDefault);
+                Assert.That(settings.PrivateServiceConnectEndpoint.IsDefault, Is.False);
             }
         }
 
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
                 Assert.That(settings.PrivateServiceConnectEndpoint.Value, Is.EqualTo("psc-machine"));
-                Assert.IsFalse(settings.PrivateServiceConnectEndpoint.IsDefault);
+                Assert.That(settings.PrivateServiceConnectEndpoint.IsDefault, Is.False);
             }
         }
 
@@ -177,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
                 Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.Value);
-                Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.IsDefault);
+                Assert.That(settings.IsDeviceCertificateAuthenticationEnabled.IsDefault, Is.False);
             }
         }
 
@@ -198,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
                 Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.Value);
-                Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.IsDefault);
+                Assert.That(settings.IsDeviceCertificateAuthenticationEnabled.IsDefault, Is.False);
             }
         }
 
@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
                 Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.Value);
-                Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.IsDefault);
+                Assert.That(settings.IsDeviceCertificateAuthenticationEnabled.IsDefault, Is.False);
             }
         }
 
@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
                 Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.Value);
-                Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.IsDefault);
+                Assert.That(settings.IsDeviceCertificateAuthenticationEnabled.IsDefault, Is.False);
             }
         }
 
@@ -263,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
                 Assert.That(settings.ConnectionLimit.Value, Is.EqualTo(8));
-                Assert.IsFalse(settings.ConnectionLimit.IsDefault);
+                Assert.That(settings.ConnectionLimit.IsDefault, Is.False);
             }
         }
 
@@ -286,7 +286,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
                 Assert.That(settings.WorkforcePoolProvider.Value, Is.EqualTo(provider.ToString()));
-                Assert.IsFalse(settings.WorkforcePoolProvider.IsDefault);
+                Assert.That(settings.WorkforcePoolProvider.IsDefault, Is.False);
             }
         }
 
@@ -309,7 +309,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
                 Assert.That(settings.WorkforcePoolProvider.Value, Is.EqualTo(userProvider.ToString()));
-                Assert.IsFalse(settings.WorkforcePoolProvider.IsDefault);
+                Assert.That(settings.WorkforcePoolProvider.IsDefault, Is.False);
             }
         }
 
@@ -332,7 +332,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
                 Assert.That(settings.WorkforcePoolProvider.Value, Is.EqualTo(machineProvider.ToString()));
-                Assert.IsFalse(settings.WorkforcePoolProvider.IsDefault);
+                Assert.That(settings.WorkforcePoolProvider.IsDefault, Is.False);
             }
         }
 
@@ -357,7 +357,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
                 Assert.That(settings.WorkforcePoolProvider.Value, Is.EqualTo(machineProvider.ToString()));
-                Assert.IsFalse(settings.WorkforcePoolProvider.IsDefault);
+                Assert.That(settings.WorkforcePoolProvider.IsDefault, Is.False);
             }
         }
 
@@ -375,7 +375,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                     null,
                     null);
 
-                Assert.IsFalse(repository.IsPolicyPresent);
+                Assert.That(repository.IsPolicyPresent, Is.False);
             }
         }
 

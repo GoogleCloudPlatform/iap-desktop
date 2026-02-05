@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             using (var form = new TestMainForm())
             {
                 var broker = new SessionBroker(form);
-                Assert.IsFalse(broker.IsConnected(SampleLocator));
+                Assert.That(broker.IsConnected(SampleLocator), Is.False);
             }
         }
 
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                 new DockContent().Show(form.MainPanel, DockState.Document);
                 session.Show(form.MainPanel, DockState.Document);
 
-                Assert.IsFalse(broker.IsConnected(SampleLocator));
+                Assert.That(broker.IsConnected(SampleLocator), Is.False);
             }
         }
 
@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                 };
                 session.Show(form.MainPanel, DockState.Document);
 
-                Assert.IsFalse(broker.IsConnected(SampleLocator));
+                Assert.That(broker.IsConnected(SampleLocator), Is.False);
             }
         }
 
@@ -151,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             using (var form = new TestMainForm())
             {
                 var broker = new SessionBroker(form);
-                Assert.IsFalse(broker.TryActivateSession(SampleLocator, out var _));
+                Assert.That(broker.TryActivateSession(SampleLocator, out var _), Is.False);
             }
         }
 
@@ -188,9 +188,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                 };
                 session.Show(form.MainPanel, DockState.Document);
 
-                Assert.IsFalse(broker.TryActivateSession(
+                Assert.That(broker.TryActivateSession(
                     SampleLocator,
-                    out var activated));
+                    out var activated), Is.False);
                 Assert.IsNull(activated);
             }
         }

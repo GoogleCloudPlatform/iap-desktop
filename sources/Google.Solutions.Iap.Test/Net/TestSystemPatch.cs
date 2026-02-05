@@ -80,7 +80,7 @@ namespace Google.Solutions.Iap.Test.Net
             Assert.That(requestWithUserInfo.Host, Is.EqualTo("example.com"));
 
             patch.Uninstall();
-            Assert.IsFalse(patch.IsInstalled);
+            Assert.That(patch.IsInstalled, Is.False);
         }
 
         private class TestHttpWebRequestCreate : IWebRequestCreate

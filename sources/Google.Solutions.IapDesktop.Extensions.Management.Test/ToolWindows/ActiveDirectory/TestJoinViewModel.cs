@@ -39,10 +39,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Act
             Assert.IsTrue(JoinViewModel.IsValidNetbiosComputerName("A000"));
             Assert.IsTrue(JoinViewModel.IsValidNetbiosComputerName("a-1"));
 
-            Assert.IsFalse(JoinViewModel.IsValidNetbiosComputerName(""));
-            Assert.IsFalse(JoinViewModel.IsValidNetbiosComputerName("a!"));
-            Assert.IsFalse(JoinViewModel.IsValidNetbiosComputerName("a_1"));
-            Assert.IsFalse(JoinViewModel.IsValidNetbiosComputerName("verylongcomputername"));
+            Assert.That(JoinViewModel.IsValidNetbiosComputerName(""), Is.False);
+            Assert.That(JoinViewModel.IsValidNetbiosComputerName("a!"), Is.False);
+            Assert.That(JoinViewModel.IsValidNetbiosComputerName("a_1"), Is.False);
+            Assert.That(JoinViewModel.IsValidNetbiosComputerName("verylongcomputername"), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Act
         {
             var vm = new JoinViewModel();
 
-            Assert.IsFalse(vm.IsDomainNameInvalid.Value);
+            Assert.That(vm.IsDomainNameInvalid.Value, Is.False);
 
             vm.DomainName.Value = "foo";
 
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Act
         {
             var vm = new JoinViewModel();
 
-            Assert.IsFalse(vm.IsComputerNameInvalid.Value);
+            Assert.That(vm.IsComputerNameInvalid.Value, Is.False);
 
             vm.ComputerName.Value = "longcomputername";
 
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Act
         {
             var vm = new JoinViewModel();
 
-            Assert.IsFalse(vm.IsComputerNameInvalid.Value);
+            Assert.That(vm.IsComputerNameInvalid.Value, Is.False);
 
             vm.ComputerName.Value = "comp!name";
 

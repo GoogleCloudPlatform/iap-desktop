@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 new Mock<IEventQueue>().Object,
                 new Mock<IExceptionDialog>().Object);
 
-            Assert.IsFalse(view.IsConnected);
+            Assert.That(view.IsConnected, Is.False);
 
             view.Connect();
             Assert.IsTrue(view.IsConnected);
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             Assert.IsTrue(view.IsConnected);
 
             view.Client.FailConnection(new Exception());
-            Assert.IsFalse(view.IsConnected);
+            Assert.That(view.IsConnected, Is.False);
         }
 
         //----------------------------------------------------------------------
@@ -165,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             view.Connect();
             view.Client.CloseConnection(reason);
 
-            Assert.IsFalse(view.IsClosing);
+            Assert.That(view.IsClosing, Is.False);
 
             eventQueue.Verify(
                 q => q.PublishAsync(It.IsAny<SessionEndedEvent>()),

@@ -283,9 +283,9 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(profile.SshPublicKeys
+            Assert.That(profile.SshPublicKeys
                 .EnsureNotNull()
-                .Any(k => k.Key.Contains(key)));
+                .Any(k => k.Key.Contains(key)), Is.False);
         }
 
         [Test]

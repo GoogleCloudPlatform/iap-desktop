@@ -129,7 +129,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 session.Banner = "test123";
                 using (var connection = session.Connect(endpoint))
                 {
-                    Assert.IsFalse(connection.IsAuthenticated);
+                    Assert.That(connection.IsAuthenticated, Is.False);
                 }
             }
 
@@ -265,7 +265,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                Assert.IsFalse(connection.IsAuthenticated);
+                Assert.That(connection.IsAuthenticated, Is.False);
             }
         }
 
@@ -508,7 +508,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     {
                         Assert.That(name, Is.EqualTo("Interactive authentication"));
                         Assert.That(prompt, Is.EqualTo("Password: "));
-                        Assert.IsFalse(echo);
+                        Assert.That(echo, Is.False);
 
                         return credential.Password.ToClearText();
                     }
@@ -638,7 +638,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     {
                         Assert.That(name, Is.EqualTo("2-step verification"));
                         Assert.That(prompt, Is.EqualTo("Password: "));
-                        Assert.IsFalse(echo);
+                        Assert.That(echo, Is.False);
 
                         return "wrong";
                     }
@@ -674,7 +674,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     PromptCallback = (name, instruction, prompt, echo) =>
                     {
                         Assert.That(prompt, Is.EqualTo("Password: "));
-                        Assert.IsFalse(echo);
+                        Assert.That(echo, Is.False);
 
                         return null;
                     }

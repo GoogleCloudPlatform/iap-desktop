@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
                 .FilterAsync("project-1")
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsProjectSelected.Value);
+            Assert.That(viewModel.IsProjectSelected.Value, Is.False);
             Assert.IsNull(viewModel.SelectedProjects.Value);
         }
 
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
                 .FilterAsync("fail")
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsLoading.Value);
+            Assert.That(viewModel.IsLoading.Value, Is.False);
             Assert.IsNotNull(viewModel.LoadingError);
             Assert.That(viewModel.LoadingError.Value.Message, Is.EqualTo("mock"));
         }

@@ -115,15 +115,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         [Test]
         public void IsNodeSupported_WhenNodeIsCloudNode()
         {
-            Assert.IsFalse(AuthorizedPublicKeysModel.IsNodeSupported(
-                new Mock<IProjectModelCloudNode>().Object));
+            Assert.That(AuthorizedPublicKeysModel.IsNodeSupported(
+                new Mock<IProjectModelCloudNode>().Object), Is.False);
         }
 
         [Test]
         public void IsNodeSupported_WhenNodeIsZoneNode()
         {
-            Assert.IsFalse(AuthorizedPublicKeysModel.IsNodeSupported(
-                new Mock<IProjectModelZoneNode>().Object));
+            Assert.That(AuthorizedPublicKeysModel.IsNodeSupported(
+                new Mock<IProjectModelZoneNode>().Object), Is.False);
         }
 
         [Test]
@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
             node.SetupGet(n => n.OperatingSystem)
                 .Returns(OperatingSystems.Windows);
 
-            Assert.IsFalse(AuthorizedPublicKeysModel.IsNodeSupported(node.Object));
+            Assert.That(AuthorizedPublicKeysModel.IsNodeSupported(node.Object), Is.False);
         }
 
         [Test]

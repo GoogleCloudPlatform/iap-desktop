@@ -43,13 +43,13 @@ namespace Google.Solutions.Settings.Test
                     "description",
                     "category",
                     false);
-                Assert.IsFalse(setting.IsSpecified);
+                Assert.That(setting.IsSpecified, Is.False);
                 Assert.IsTrue(setting.IsDefault);
 
                 setting.Value = true;
 
                 Assert.IsTrue(setting.IsSpecified);
-                Assert.IsFalse(setting.IsDefault);
+                Assert.That(setting.IsDefault, Is.False);
 
                 setting.Value = setting.DefaultValue;
 
@@ -80,8 +80,8 @@ namespace Google.Solutions.Settings.Test
                 Assert.That(setting.Category, Is.EqualTo("category"));
                 Assert.IsTrue(setting.Value);
                 Assert.IsTrue(setting.IsDefault);
-                Assert.IsFalse(setting.IsDirty);
-                Assert.IsFalse(setting.IsReadOnly);
+                Assert.That(setting.IsDirty, Is.False);
+                Assert.That(setting.IsReadOnly, Is.False);
             }
         }
 
@@ -103,8 +103,8 @@ namespace Google.Solutions.Settings.Test
                 Assert.That(setting.Category, Is.EqualTo("category"));
                 Assert.IsTrue(setting.Value);
                 Assert.IsTrue(setting.IsDefault);
-                Assert.IsFalse(setting.IsDirty);
-                Assert.IsFalse(setting.IsReadOnly);
+                Assert.That(setting.IsDirty, Is.False);
+                Assert.That(setting.IsReadOnly, Is.False);
             }
         }
 
@@ -127,9 +127,9 @@ namespace Google.Solutions.Settings.Test
                 Assert.That(setting.Description, Is.EqualTo("description"));
                 Assert.That(setting.Category, Is.EqualTo("category"));
                 Assert.IsTrue(setting.Value);
-                Assert.IsFalse(setting.IsDefault);
-                Assert.IsFalse(setting.IsDirty);
-                Assert.IsFalse(setting.IsReadOnly);
+                Assert.That(setting.IsDefault, Is.False);
+                Assert.That(setting.IsDirty, Is.False);
+                Assert.That(setting.IsReadOnly, Is.False);
             }
         }
 
@@ -221,7 +221,7 @@ namespace Google.Solutions.Settings.Test
 
                 Assert.That(setting.Value, Is.EqualTo(false));
                 Assert.IsTrue(setting.IsDefault);
-                Assert.IsFalse(setting.IsDirty);
+                Assert.That(setting.IsDirty, Is.False);
             }
         }
 
@@ -239,7 +239,7 @@ namespace Google.Solutions.Settings.Test
 
                 setting.Value = true;
 
-                Assert.IsFalse(setting.IsDefault);
+                Assert.That(setting.IsDefault, Is.False);
                 Assert.IsTrue(setting.IsDirty);
             }
         }
@@ -308,7 +308,7 @@ namespace Google.Solutions.Settings.Test
                     false);
 
                 Assert.That(setting.Value, Is.EqualTo(true));
-                Assert.IsFalse(setting.IsReadOnly);
+                Assert.That(setting.IsReadOnly, Is.False);
             }
         }
 
@@ -336,9 +336,9 @@ namespace Google.Solutions.Settings.Test
                 Assert.That(setting.DisplayName, Is.EqualTo("title"));
                 Assert.That(setting.Description, Is.EqualTo("description"));
                 Assert.That(setting.Category, Is.EqualTo("category"));
-                Assert.IsFalse(setting.Value);
+                Assert.That(setting.Value, Is.False);
                 Assert.IsTrue(setting.IsDefault);
-                Assert.IsFalse(setting.IsDirty);
+                Assert.That(setting.IsDirty, Is.False);
                 Assert.IsTrue(setting.IsReadOnly);
             }
         }

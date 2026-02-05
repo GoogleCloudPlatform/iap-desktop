@@ -119,7 +119,7 @@ namespace Google.Solutions.Settings.Test
             public void IsValid()
             {
                 Assert.IsTrue(CreateAccessor("test").IsValid(Drink.Coffee));
-                Assert.IsFalse(CreateAccessor("test").IsValid((Drink)(-1)));
+                Assert.That(CreateAccessor("test").IsValid((Drink)(-1)), Is.False);
             }
         }
     }

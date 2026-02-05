@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
                 .ListProjectsAsync(null, 100, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(result.Projects.Any());
+            Assert.That(result.Projects.Any(), Is.False);
         }
 
         [Test]

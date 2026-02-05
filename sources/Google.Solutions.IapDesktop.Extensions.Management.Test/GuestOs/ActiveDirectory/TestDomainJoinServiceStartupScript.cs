@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                     Assert.IsNotNull(response);
                     Assert.That(response.OperationId, Is.EqualTo(Guid.Empty.ToString()));
                     Assert.That(response.MessageType, Is.EqualTo(DomainJoinService.JoinResponse.MessageTypeString));
-                    Assert.IsFalse(response.Succeeded);
+                    Assert.That(response.Succeeded, Is.False);
                     Assert.IsNotEmpty(response.ErrorDetails);
                 }
             }

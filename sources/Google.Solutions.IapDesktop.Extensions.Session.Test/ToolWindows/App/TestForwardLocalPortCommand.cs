@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .ConfigureAwait(false);
 
             Assert.IsNull(context.NetworkCredential);
-            Assert.IsFalse(context.CanLaunchClient);
+            Assert.That(context.CanLaunchClient, Is.False);
             Assert.IsInstanceOf<CurrentWtsSessionPolicy>(context.CreateTransportPolicy());
         }
 

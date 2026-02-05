@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(string.IsNullOrWhiteSpace(model.Output));
+            Assert.That(string.IsNullOrWhiteSpace(model.Output), Is.False);
             Assert.That(model.DisplayName, Is.EqualTo("display-name"));
             Assert.That(model.Output, Does.Contain("Finished running startup scripts"));
         }

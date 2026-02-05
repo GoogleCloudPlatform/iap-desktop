@@ -44,7 +44,7 @@ namespace Google.Solutions.Settings.Test
             var dictionary = new Dictionary<string, string>();
             var accessor = CreateAccessor("test");
 
-            Assert.IsFalse(accessor.TryRead(dictionary, out var _));
+            Assert.That(accessor.TryRead(dictionary, out var _), Is.False);
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace Google.Solutions.Settings.Test
             accessor.Write(dictionary, this.SampleData);
             accessor.Delete(dictionary);
 
-            Assert.IsFalse(accessor.TryRead(dictionary, out var _));
+            Assert.That(accessor.TryRead(dictionary, out var _), Is.False);
         }
     }
 }

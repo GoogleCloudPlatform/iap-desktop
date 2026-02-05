@@ -159,11 +159,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsPackageListEnabled.Value);
+            Assert.That(viewModel.IsPackageListEnabled.Value, Is.False);
             Assert.IsNull(viewModel.InformationText.Value);
             Assert.That(viewModel.WindowTitle.Value, Is.EqualTo("Installed packages"));
-            Assert.IsFalse(viewModel.AllPackages.Any());
-            Assert.IsFalse(viewModel.FilteredPackages.Any());
+            Assert.That(viewModel.AllPackages.Any(), Is.False);
+            Assert.That(viewModel.FilteredPackages.Any(), Is.False);
         }
 
         [Test]

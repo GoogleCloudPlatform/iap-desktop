@@ -105,7 +105,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             var key = new RSACng();
             using (var signer = new RsaSigner(key, true))
             {
-                Assert.IsFalse(key.IsDisposed());
+                Assert.That(key.IsDisposed(), Is.False);
             }
 
             using (var signer = new RsaSigner(key, true))
@@ -121,12 +121,12 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             {
                 using (var signer = new RsaSigner(key, false))
                 {
-                    Assert.IsFalse(key.IsDisposed());
+                    Assert.That(key.IsDisposed(), Is.False);
                 }
 
                 using (var signer = new RsaSigner(key, false))
                 {
-                    Assert.IsFalse(key.IsDisposed());
+                    Assert.That(key.IsDisposed(), Is.False);
                 }
             }
         }

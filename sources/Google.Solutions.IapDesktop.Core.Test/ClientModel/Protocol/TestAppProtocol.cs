@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 null,
                 client.Object);
 
-            Assert.IsFalse(protocol.IsAvailable(target.Object));
+            Assert.That(protocol.IsAvailable(target.Object), Is.False);
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 null,
                 client.Object);
 
-            Assert.IsFalse(protocol.IsAvailable(target.Object));
+            Assert.That(protocol.IsAvailable(target.Object), Is.False);
         }
 
         [Test]
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 null,
                 null);
 
-            Assert.IsFalse(protocol1.Equals(protocol2));
+            Assert.That(protocol1.Equals(protocol2), Is.False);
             Assert.IsTrue(protocol1 != protocol2);
             Assert.That(protocol2.GetHashCode(), Is.Not.EqualTo(protocol1.GetHashCode()));
         }
@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 null,
                 null);
 
-            Assert.IsFalse(protocol1.Equals(protocol2));
+            Assert.That(protocol1.Equals(protocol2), Is.False);
             Assert.IsTrue(protocol1 != protocol2);
         }
 
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 null,
                 null);
 
-            Assert.IsFalse(protocol1.Equals(protocol2));
+            Assert.That(protocol1.Equals(protocol2), Is.False);
             Assert.IsTrue(protocol1 != protocol2);
             Assert.That(protocol2.GetHashCode(), Is.Not.EqualTo(protocol1.GetHashCode()));
         }
@@ -201,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new AppProtocolClient("cmd.exe", null));
 
             Assert.IsTrue(protocol1.Equals(protocol2));
-            Assert.IsFalse(protocol1 != protocol2);
+            Assert.That(protocol1 != protocol2, Is.False);
             Assert.That(protocol2.GetHashCode(), Is.EqualTo(protocol1.GetHashCode()));
         }
     }

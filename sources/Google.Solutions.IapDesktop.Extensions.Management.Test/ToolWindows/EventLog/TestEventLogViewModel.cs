@@ -172,10 +172,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsEventListEnabled);
+            Assert.That(viewModel.IsEventListEnabled, Is.False);
             Assert.That(viewModel.WindowTitle, Is.EqualTo(EventLogViewModel.DefaultWindowTitle));
 
-            Assert.IsFalse(viewModel.Events.Any());
+            Assert.That(viewModel.Events.Any(), Is.False);
         }
 
         [Test]
@@ -286,7 +286,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
                 .SwitchToModelAsync(node2.Object)
                 .ConfigureAwait(true);
             Assert.IsNull(viewModel.SelectedEvent);
-            Assert.IsFalse(viewModel.IsOpenSelectedEventInCloudConsoleButtonEnabled);
+            Assert.That(viewModel.IsOpenSelectedEventInCloudConsoleButtonEnabled, Is.False);
         }
 
         //---------------------------------------------------------------------

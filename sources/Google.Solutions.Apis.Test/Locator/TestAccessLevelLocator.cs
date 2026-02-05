@@ -53,15 +53,15 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathInvalid()
         {
-            Assert.IsFalse(AccessLevelLocator.TryParse(
+            Assert.That(AccessLevelLocator.TryParse(
                 "accessPolicies/policy-1/notaccessLevels/level-1",
-                out var _));
-            Assert.IsFalse(AccessLevelLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(AccessLevelLocator.TryParse(
                 "/policy-1/accessLevels/level-1",
-                out var _));
-            Assert.IsFalse(AccessLevelLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(AccessLevelLocator.TryParse(
                 "/",
-                out var _));
+                out var _), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -99,9 +99,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = new AccessLevelLocator("proj-1", "level-1");
             var ref2 = new AccessLevelLocator("proj-2", "level-1");
 
-            Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object)ref2));
-            Assert.IsFalse(ref1 == ref2);
+            Assert.That(ref1.Equals(ref2), Is.False);
+            Assert.That(ref1.Equals((object)ref2), Is.False);
+            Assert.That(ref1 == ref2, Is.False);
             Assert.IsTrue(ref1 != ref2);
         }
 

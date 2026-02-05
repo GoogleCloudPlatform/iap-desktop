@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         public void IsAvailable_WhenSsmsNotAvailable()
         {
             var client = new SsmsClient(null);
-            Assert.IsFalse(client.IsAvailable);
+            Assert.That(client.IsAvailable, Is.False);
         }
 
         //---------------------------------------------------------------------

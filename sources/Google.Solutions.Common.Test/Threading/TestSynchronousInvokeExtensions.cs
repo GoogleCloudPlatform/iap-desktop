@@ -100,7 +100,7 @@ namespace Google.Solutions.Common.Test.Threading
                 invoked = true;
             });
 
-            Assert.IsFalse(invoked);
+            Assert.That(invoked, Is.False);
             tcs.SetResult(null);
 
             await task.ConfigureAwait(false);
@@ -125,7 +125,7 @@ namespace Google.Solutions.Common.Test.Threading
                 throw new ArgumentException("test");
             });
 
-            Assert.IsFalse(invoked);
+            Assert.That(invoked, Is.False);
             tcs.SetResult(null);
 
             await ExceptionAssert

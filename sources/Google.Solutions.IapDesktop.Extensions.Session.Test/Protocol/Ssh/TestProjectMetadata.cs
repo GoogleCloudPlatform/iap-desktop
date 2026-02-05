@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(processor.IsOsLoginEnabled);
+            Assert.That(processor.IsOsLoginEnabled, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(processor.IsOsLoginWithSecurityKeyEnabled);
+            Assert.That(processor.IsOsLoginWithSecurityKeyEnabled, Is.False);
         }
         [Test]
         public async Task IsOsLoginWithSecurityKeyEnabled_WhenValueIsMissing()
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(processor.IsOsLoginWithSecurityKeyEnabled);
+            Assert.That(processor.IsOsLoginWithSecurityKeyEnabled, Is.False);
         }
 
         //---------------------------------------------------------------------

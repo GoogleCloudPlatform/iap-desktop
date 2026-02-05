@@ -404,7 +404,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             };
 
-            Assert.IsFalse(instance.GetFlag(project, "flag"));
+            Assert.That(instance.GetFlag(project, "flag"), Is.False);
         }
 
         [Test]

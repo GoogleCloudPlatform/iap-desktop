@@ -51,7 +51,7 @@ namespace Google.Solutions.Common.Test.Linq
             var list = new[] { "a", "b" };
             var lookup = new[] { "c", "d" };
 
-            Assert.IsFalse(list.ContainsAll(lookup));
+            Assert.That(list.ContainsAll(lookup), Is.False);
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace Google.Solutions.Common.Test.Linq
             var list = new[] { "a", "b" };
             var lookup = new[] { "b", "c" };
 
-            Assert.IsFalse(list.ContainsAll(lookup));
+            Assert.That(list.ContainsAll(lookup), Is.False);
         }
 
         [Test]

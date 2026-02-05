@@ -72,15 +72,15 @@ namespace Google.Solutions.Platform.Test.Net
                 .Build();
 
             Assert.IsNotNull(policy);
-            Assert.IsFalse(policy.Entries.Any());
+            Assert.That(policy.Entries.Any(), Is.False);
         }
 
         [Test]
         public void Build_WhenPolicyEmpty_ThenNoCertificatesMatch()
         {
-            Assert.IsFalse(new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
+            Assert.That(new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
                 .Build()
-                .IsApplicable(new Uri("https://example.org"), ExampleOrgCertificate));
+                .IsApplicable(new Uri("https://example.org"), ExampleOrgCertificate), Is.False);
         }
 
         [Test]
@@ -130,7 +130,7 @@ namespace Google.Solutions.Platform.Test.Net
                     .Build();
 
                 Assert.IsTrue(policy.IsApplicable(new Uri("https://www.example.org"), ExampleOrgCertificate));
-                Assert.IsFalse(policy.IsApplicable(new Uri("https://www.example.com"), ExampleOrgCertificate));
+                Assert.That(policy.IsApplicable(new Uri("https://www.example.com"), ExampleOrgCertificate), Is.False);
             }
         }
     }

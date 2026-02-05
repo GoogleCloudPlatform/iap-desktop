@@ -92,7 +92,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             var key = new RSACng();
             using (var publicKey = new RsaPublicKey(key, true))
             {
-                Assert.IsFalse(key.IsDisposed());
+                Assert.That(key.IsDisposed(), Is.False);
             }
 
             using (var publicKey = new RsaPublicKey(key, true))
@@ -108,12 +108,12 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             {
                 using (var publicKey = new RsaPublicKey(key, false))
                 {
-                    Assert.IsFalse(key.IsDisposed());
+                    Assert.That(key.IsDisposed(), Is.False);
                 }
 
                 using (var publicKey = new RsaPublicKey(key, false))
                 {
-                    Assert.IsFalse(key.IsDisposed());
+                    Assert.That(key.IsDisposed(), Is.False);
                 }
             }
         }

@@ -38,7 +38,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         {
             var bound = new Bound<string>();
 
-            Assert.IsFalse(bound.HasValue);
+            Assert.That(bound.HasValue, Is.False);
             bound.Value = "test";
             Assert.IsTrue(bound.HasValue);
         }

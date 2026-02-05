@@ -135,7 +135,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 // Enter full-screen.
                 //
-                Assert.IsFalse(window.Client.IsFullScreen);
+                Assert.That(window.Client.IsFullScreen, Is.False);
                 Assert.IsTrue(window.Client.CanEnterFullScreen);
                 Assert.IsTrue(window.Client.TryEnterFullScreen(null));
                 Assert.IsTrue(window.Client.IsFullScreen);
@@ -183,14 +183,14 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 // Enter full-screen.
                 //
-                Assert.IsFalse(window.Client.IsFullScreen);
+                Assert.That(window.Client.IsFullScreen, Is.False);
                 Assert.IsTrue(window.Client.CanEnterFullScreen);
                 Assert.IsTrue(window.Client.TryEnterFullScreen(null));
 
                 await Task.Delay(TimeSpan.FromSeconds(1));
 
                 Assert.IsTrue(window.Client.IsFullScreen);
-                Assert.IsFalse(window.Client.CanEnterFullScreen);
+                Assert.That(window.Client.CanEnterFullScreen, Is.False);
 
                 await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
@@ -199,7 +199,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 // Leave full-screen.
                 //
                 Assert.IsTrue(window.Client.TryLeaveFullScreen());
-                Assert.IsFalse(window.Client.IsFullScreen);
+                Assert.That(window.Client.IsFullScreen, Is.False);
 
                 await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
@@ -207,7 +207,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 // Enter full-screen again.
                 //
-                Assert.IsFalse(window.Client.IsFullScreen);
+                Assert.That(window.Client.IsFullScreen, Is.False);
                 Assert.IsTrue(window.Client.CanEnterFullScreen);
                 Assert.IsTrue(window.Client.TryEnterFullScreen(null));
                 Assert.IsTrue(window.Client.IsFullScreen);
@@ -219,7 +219,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 // Leave full-screen again.
                 //
                 Assert.IsTrue(window.Client.TryLeaveFullScreen());
-                Assert.IsFalse(window.Client.IsFullScreen);
+                Assert.That(window.Client.IsFullScreen, Is.False);
 
                 //
                 // Disconnect.
@@ -339,12 +339,12 @@ namespace Google.Solutions.Terminal.Test.Controls
             {
                 window.Show();
 
-                Assert.IsFalse(window.Client.CanSendText);
-                Assert.IsFalse(window.Client.CanShowTaskManager);
-                Assert.IsFalse(window.Client.CanShowSecurityScreen);
-                Assert.IsFalse(window.Client.CanEnterFullScreen);
-                Assert.IsFalse(window.Client.CanReconnect);
-                Assert.IsFalse(window.Client.CanLogoff);
+                Assert.That(window.Client.CanSendText, Is.False);
+                Assert.That(window.Client.CanShowTaskManager, Is.False);
+                Assert.That(window.Client.CanShowSecurityScreen, Is.False);
+                Assert.That(window.Client.CanEnterFullScreen, Is.False);
+                Assert.That(window.Client.CanReconnect, Is.False);
+                Assert.That(window.Client.CanLogoff, Is.False);
 
                 //
                 // Connect.
@@ -365,12 +365,12 @@ namespace Google.Solutions.Terminal.Test.Controls
                 await AwaitStateAsync(window, ClientState.NotConnected)
                     .ConfigureAwait(true);
 
-                Assert.IsFalse(window.Client.CanSendText);
-                Assert.IsFalse(window.Client.CanShowTaskManager);
-                Assert.IsFalse(window.Client.CanShowSecurityScreen);
-                Assert.IsFalse(window.Client.CanEnterFullScreen);
-                Assert.IsFalse(window.Client.CanReconnect);
-                Assert.IsFalse(window.Client.CanLogoff);
+                Assert.That(window.Client.CanSendText, Is.False);
+                Assert.That(window.Client.CanShowTaskManager, Is.False);
+                Assert.That(window.Client.CanShowSecurityScreen, Is.False);
+                Assert.That(window.Client.CanEnterFullScreen, Is.False);
+                Assert.That(window.Client.CanReconnect, Is.False);
+                Assert.That(window.Client.CanLogoff, Is.False);
 
                 window.Close();
             }

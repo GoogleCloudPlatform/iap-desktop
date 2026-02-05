@@ -84,7 +84,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 form.Show();
 
                 Assert.That(button.Text, Is.EqualTo(command.Text));
-                Assert.IsFalse(button.Enabled);
+                Assert.That(button.Enabled, Is.False);
 
                 form.Close();
             }
@@ -130,7 +130,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 "Command name",
                 () =>
                 {
-                    Assert.IsFalse(button.Enabled);
+                    Assert.That(button.Enabled, Is.False);
                     return Task.CompletedTask;
                 });
 
@@ -340,7 +340,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 form.Show();
 
                 Assert.That(button.Text, Is.EqualTo(command.Text));
-                Assert.IsFalse(button.Enabled);
+                Assert.That(button.Enabled, Is.False);
 
                 form.Close();
             }
@@ -388,7 +388,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 "Command name",
                 () =>
                 {
-                    Assert.IsFalse(button.Enabled);
+                    Assert.That(button.Enabled, Is.False);
                     return Task.CompletedTask;
                 });
 

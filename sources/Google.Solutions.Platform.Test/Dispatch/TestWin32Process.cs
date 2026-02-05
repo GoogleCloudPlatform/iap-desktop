@@ -91,7 +91,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 Assert.IsTrue(process.IsRunning);
 
                 process.Terminate(1);
-                Assert.IsFalse(process.IsRunning);
+                Assert.That(process.IsRunning, Is.False);
             }
         }
 
@@ -142,7 +142,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var process = factory.CreateProcess(CmdExe, null))
             {
                 Assert.IsNotNull(process.WaitHandle);
-                Assert.IsFalse(process.WaitHandle.WaitOne(1));
+                Assert.That(process.WaitHandle.WaitOne(1), Is.False);
 
                 process.Terminate(1);
                 Assert.IsTrue(process.WaitHandle.WaitOne(50));
@@ -161,7 +161,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var process = factory.CreateProcess(CmdExe, null))
             {
                 Assert.IsNotNull(process.Handle);
-                Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.That(process.Handle.IsInvalid, Is.False);
 
                 process.Resume();
                 process.Resume(); // Again.
@@ -186,12 +186,12 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 process.Resume();
 
                 Assert.IsNotNull(process.Handle);
-                Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.That(process.Handle.IsInvalid, Is.False);
                 Assert.IsTrue(process.IsRunning);
 
                 process.Terminate(1);
 
-                Assert.IsFalse(process.IsRunning);
+                Assert.That(process.IsRunning, Is.False);
 
                 Assert.Throws<DispatchException>(() => process.Terminate(1));
             }
@@ -214,7 +214,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 process.Resume();
 
                 Assert.IsNotNull(process.Handle);
-                Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.That(process.Handle.IsInvalid, Is.False);
                 Assert.IsTrue(process.IsRunning);
 
                 process.Terminate(1);

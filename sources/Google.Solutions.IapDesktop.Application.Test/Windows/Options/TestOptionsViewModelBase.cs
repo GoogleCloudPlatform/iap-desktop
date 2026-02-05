@@ -182,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             Assert.IsTrue(optionsViewModel.IsDirty.Value);
             await optionsViewModel.ApplyChangesAsync();
-            Assert.IsFalse(optionsViewModel.IsDirty.Value);
+            Assert.That(optionsViewModel.IsDirty.Value, Is.False);
         }
 
         [Test]
@@ -196,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var property = ObservableProperty.Build(string.Empty);
             optionsViewModel.CallMarkDirtyWhenPropertyChanges(property);
 
-            Assert.IsFalse(optionsViewModel.IsDirty.Value);
+            Assert.That(optionsViewModel.IsDirty.Value, Is.False);
             property.Value = "new value";
             Assert.IsTrue(optionsViewModel.IsDirty.Value);
         }

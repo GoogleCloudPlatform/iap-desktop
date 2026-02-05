@@ -132,7 +132,7 @@ namespace Google.Solutions.Ssh.Test
                         .CloseAsync()
                         .ConfigureAwait(false);
 
-                    Assert.IsFalse(disconnectedRaised);
+                    Assert.That(disconnectedRaised, Is.False);
                     Assert.IsTrue(channel.IsClosed);
                 }
             }

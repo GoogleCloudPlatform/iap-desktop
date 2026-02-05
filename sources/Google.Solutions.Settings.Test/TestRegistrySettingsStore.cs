@@ -57,7 +57,7 @@ namespace Google.Solutions.Settings.Test
                 // Read non-existing value.
                 //
                 var setting = key.Read("test", "test", null, null, 0);
-                Assert.IsFalse(setting.IsSpecified);
+                Assert.That(setting.IsSpecified, Is.False);
 
                 //
                 // Write and read again.
@@ -95,7 +95,7 @@ namespace Google.Solutions.Settings.Test
                 key.Write(setting);
 
                 setting = key.Read("test", "test", null, null, 0);
-                Assert.IsFalse(setting.IsDefault);
+                Assert.That(setting.IsDefault, Is.False);
                 Assert.That(setting.Value, Is.EqualTo(1));
             }
         }
@@ -155,7 +155,7 @@ namespace Google.Solutions.Settings.Test
                 // Write default value.
                 //
                 setting = key.Read("test", "test", null, null, 0);
-                Assert.IsFalse(setting.IsDefault);
+                Assert.That(setting.IsDefault, Is.False);
                 setting.Reset();
                 key.Write(setting);
 
@@ -163,7 +163,7 @@ namespace Google.Solutions.Settings.Test
                 // Status back to "not specified".
                 //
                 setting = key.Read("test", "test", null, null, 0);
-                Assert.IsFalse(setting.IsSpecified);
+                Assert.That(setting.IsSpecified, Is.False);
                 Assert.IsTrue(setting.IsDefault);
             }
         }

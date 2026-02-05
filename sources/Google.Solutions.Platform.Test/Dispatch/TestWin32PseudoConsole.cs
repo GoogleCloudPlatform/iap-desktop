@@ -107,7 +107,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             using (var pty = new Win32PseudoConsole(new PseudoTerminalSize(80, 24)))
             {
-                Assert.IsFalse(pty.IsClosed);
+                Assert.That(pty.IsClosed, Is.False);
 
                 await pty
                     .CloseAsync()
@@ -116,8 +116,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 Assert.IsTrue(pty.IsClosed);
                 Assert.IsTrue(pty.Handle.IsClosed);
 
-                Assert.IsFalse(pty.InputPipe.WriteSideHandle.IsClosed);
-                Assert.IsFalse(pty.OutputPipe.ReadSideHandle.IsClosed);
+                Assert.That(pty.InputPipe.WriteSideHandle.IsClosed, Is.False);
+                Assert.That(pty.OutputPipe.ReadSideHandle.IsClosed, Is.False);
             }
         }
 

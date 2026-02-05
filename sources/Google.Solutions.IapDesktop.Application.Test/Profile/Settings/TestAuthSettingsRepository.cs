@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 repository.SetSettings(originalSettings);
 
                 // Read.
-                Assert.IsFalse(repository.TryRead(out var _));
+                Assert.That(repository.TryRead(out var _), Is.False);
             }
         }
 
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 repository.Clear();
 
                 // Read again.
-                Assert.IsFalse(repository.TryRead(out var _));
+                Assert.That(repository.TryRead(out var _), Is.False);
             }
         }
     }

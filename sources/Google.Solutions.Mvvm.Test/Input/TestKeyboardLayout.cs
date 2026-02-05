@@ -36,7 +36,7 @@ namespace Google.Solutions.Mvvm.Test.Input
         [Test]
         public void TryMapVirtualKey_WhenCharUnmapped()
         {
-            Assert.IsFalse(KeyboardLayout.Current.TryMapVirtualKey('Ä', out var _));
+            Assert.That(KeyboardLayout.Current.TryMapVirtualKey('Ä', out var _), Is.False);
         }
 
         [Test]

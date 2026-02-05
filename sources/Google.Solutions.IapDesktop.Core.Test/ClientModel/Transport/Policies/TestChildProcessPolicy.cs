@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
             var endpoint = new IPEndPoint(IPAddress.Parse("10.0.0.1"), 1111);
             var policy = new ChildProcessPolicy(new Mock<IWin32ProcessSet>().Object);
 
-            Assert.IsFalse(policy.IsClientAllowed(endpoint));
+            Assert.That(policy.IsClientAllowed(endpoint), Is.False);
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
             var endpoint = new IPEndPoint(IPAddress.Loopback, 445);
             var policy = new ChildProcessPolicy(new Mock<IWin32ProcessSet>().Object);
 
-            Assert.IsFalse(policy.IsClientAllowed(endpoint));
+            Assert.That(policy.IsClientAllowed(endpoint), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
             var job = new Mock<IWin32ProcessSet>();
             job.Setup(j => j.Contains(It.IsAny<uint>())).Returns(false);
 
-            Assert.IsFalse(new ChildProcessPolicy(job.Object).IsClientProcessAllowed(1));
+            Assert.That(new ChildProcessPolicy(job.Object).IsClientProcessAllowed(1), Is.False);
         }
     }
 }

@@ -52,10 +52,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 repository.SetSettings(settings);
 
                 settings = repository.GetSettings();
-                Assert.IsFalse(settings.EnableLocalePropagation.Value);
+                Assert.That(settings.EnableLocalePropagation.Value, Is.False);
                 Assert.That(settings.PublicKeyValidity.Value, Is.EqualTo(3600));
                 Assert.That(settings.PublicKeyType.Value, Is.EqualTo(SshKeyType.EcdsaNistp256));
-                Assert.IsFalse(settings.EnableFileAccess.Value);
+                Assert.That(settings.EnableFileAccess.Value, Is.False);
             }
         }
 

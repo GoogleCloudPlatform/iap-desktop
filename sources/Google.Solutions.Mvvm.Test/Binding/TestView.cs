@@ -165,8 +165,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             using (var dialog = activator.CreateDialog())
             {
-                Assert.IsFalse(form.IsDisposed);
-                Assert.IsFalse(viewModel.IsDisposed);
+                Assert.That(form.IsDisposed, Is.False);
+                Assert.That(viewModel.IsDisposed, Is.False);
 
                 dialog.ShowDialog(null);
             }
@@ -221,8 +221,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 new Mock<IControlTheme>().Object);
 
             var window = activator.CreateWindow();
-            Assert.IsFalse(form.IsDisposed);
-            Assert.IsFalse(viewModel.IsDisposed);
+            Assert.That(form.IsDisposed, Is.False);
+            Assert.That(viewModel.IsDisposed, Is.False);
 
             window.Form.Show();
             window.Form.Close();

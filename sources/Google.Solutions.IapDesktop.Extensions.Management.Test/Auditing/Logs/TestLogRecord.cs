@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
 
             Assert.That(record.ProjectId, Is.EqualTo("project-1"));
             Assert.IsTrue(record.IsSystemEvent);
-            Assert.IsFalse(record.IsActivityEvent);
+            Assert.That(record.IsActivityEvent, Is.False);
         }
 
         [Test]
@@ -163,10 +163,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
 
             Assert.That(record.Operation?.Id, Is.EqualTo("operation-1589160396842-5a5553cf1e7c8-796d6bb5-473f0464"));
             Assert.IsTrue(record.Operation?.IsFirst);
-            Assert.IsFalse(record.Operation?.IsLast);
+            Assert.That(record.Operation?.IsLast, Is.False);
 
             Assert.That(record.ProjectId, Is.EqualTo("project-1"));
-            Assert.IsFalse(record.IsSystemEvent);
+            Assert.That(record.IsSystemEvent, Is.False);
             Assert.IsTrue(record.IsActivityEvent);
         }
 
@@ -221,11 +221,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
 
             Assert.That(record.InsertId, Is.EqualTo("-vwncp9d6006"));
 
-            Assert.IsFalse(record.Operation?.IsFirst);
+            Assert.That(record.Operation?.IsFirst, Is.False);
             Assert.IsTrue(record.Operation?.IsLast);
 
             Assert.That(record.ProjectId, Is.EqualTo("project-1"));
-            Assert.IsFalse(record.IsSystemEvent);
+            Assert.That(record.IsSystemEvent, Is.False);
             Assert.IsTrue(record.IsActivityEvent);
         }
     }

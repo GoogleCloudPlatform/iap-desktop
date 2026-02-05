@@ -112,7 +112,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             var key = new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP256));
             using (var publicKey = new ECDsaPublicKey(key, true))
             {
-                Assert.IsFalse(key.IsDisposed());
+                Assert.That(key.IsDisposed(), Is.False);
             }
 
             using (var publicKey = new ECDsaPublicKey(key, true))
@@ -128,12 +128,12 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             {
                 using (var publicKey = new ECDsaPublicKey(key, false))
                 {
-                    Assert.IsFalse(key.IsDisposed());
+                    Assert.That(key.IsDisposed(), Is.False);
                 }
 
                 using (var publicKey = new ECDsaPublicKey(key, false))
                 {
-                    Assert.IsFalse(key.IsDisposed());
+                    Assert.That(key.IsDisposed(), Is.False);
                 }
             }
         }

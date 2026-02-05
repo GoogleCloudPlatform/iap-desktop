@@ -72,7 +72,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 viewModel.AddSheet(sheetView, sheetViewModel);
                 viewModel.AddSheet(new SampleSheetView(), new SampleSheetViewModel());
 
-                Assert.IsFalse(viewModel.IsDirty.Value);
+                Assert.That(viewModel.IsDirty.Value, Is.False);
 
                 PropertyAssert.RaisesPropertyChangedNotification(
                     sheetViewModel.IsDirty,
@@ -86,7 +86,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                     () => sheetViewModel.IsDirty.Value = false,
                     "Value");
 
-                Assert.IsFalse(viewModel.IsDirty.Value);
+                Assert.That(viewModel.IsDirty.Value, Is.False);
             }
         }
 
@@ -115,7 +115,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             {
                 viewModel.AddSheet(new SampleSheetView(), new SampleSheetViewModel());
 
-                Assert.IsFalse(viewModel.ApplyCommand.CanExecute.Value);
+                Assert.That(viewModel.ApplyCommand.CanExecute.Value, Is.False);
             }
         }
 

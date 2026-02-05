@@ -104,23 +104,23 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathLacksProject()
         {
-            Assert.IsFalse(InstanceLocator.TryParse(
+            Assert.That(InstanceLocator.TryParse(
                 "/project-1/zones/us-central1-a/instances/instance-1",
-                out var _));
+                out var _), Is.False);
         }
 
         [Test]
         public void TryParse_WhenPathInvalid()
         {
-            Assert.IsFalse(InstanceLocator.TryParse(
+            Assert.That(InstanceLocator.TryParse(
                 "/project-1/zones/us-central1-a/instances",
-                out var _));
-            Assert.IsFalse(InstanceLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(InstanceLocator.TryParse(
                 "/project-1/zones/us-central1-a/instances/instance-1",
-                out var _));
-            Assert.IsFalse(InstanceLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(InstanceLocator.TryParse(
                 "/",
-                out var _));
+                out var _), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -225,9 +225,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = new InstanceLocator("proj", "zone", "inst");
             var ref2 = new InstanceLocator("proj", "zone", "other");
 
-            Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object?)ref2));
-            Assert.IsFalse(ref1 == ref2);
+            Assert.That(ref1.Equals(ref2), Is.False);
+            Assert.That(ref1.Equals((object?)ref2), Is.False);
+            Assert.That(ref1 == ref2, Is.False);
             Assert.IsTrue(ref1 != ref2);
         }
 
@@ -237,10 +237,10 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = new InstanceLocator("proj", "zone", "inst");
             var ref2 = new InstanceLocator("proj", "zone", "instance-1");
 
-            Assert.IsFalse(ref2.Equals(ref1));
-            Assert.IsFalse(ref2.Equals((object?)ref1));
-            Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object?)ref2));
+            Assert.That(ref2.Equals(ref1), Is.False);
+            Assert.That(ref2.Equals((object?)ref1), Is.False);
+            Assert.That(ref1.Equals(ref2), Is.False);
+            Assert.That(ref1.Equals((object?)ref2), Is.False);
         }
     }
 }

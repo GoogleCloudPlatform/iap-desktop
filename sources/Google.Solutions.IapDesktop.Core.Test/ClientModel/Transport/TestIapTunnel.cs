@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 CreateTunnelProfile(),
                 IapTunnelFlags.None))
             {
-                Assert.IsFalse(token.IsCancellationRequested);
+                Assert.That(token.IsCancellationRequested, Is.False);
             }
 
             Assert.IsTrue(token.IsCancellationRequested);
@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 CreateTunnelProfile(),
                 IapTunnelFlags.None))
             {
-                Assert.IsFalse(token.IsCancellationRequested);
+                Assert.That(token.IsCancellationRequested, Is.False);
                 Assert.That(tunnel.CloseAsync(), Is.SameAs(listenTask));
                 Assert.IsTrue(token.IsCancellationRequested);
             }

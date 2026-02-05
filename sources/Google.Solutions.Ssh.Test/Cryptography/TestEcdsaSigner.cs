@@ -72,7 +72,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             var key = new ECDsaCng(521);
             using (var signer = new ECDsaSigner(key, true))
             {
-                Assert.IsFalse(key.IsDisposed());
+                Assert.That(key.IsDisposed(), Is.False);
             }
 
             using (var signer = new ECDsaSigner(key, true))
@@ -88,12 +88,12 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             {
                 using (var signer = new ECDsaSigner(key, false))
                 {
-                    Assert.IsFalse(key.IsDisposed());
+                    Assert.That(key.IsDisposed(), Is.False);
                 }
 
                 using (var signer = new ECDsaSigner(key, false))
                 {
-                    Assert.IsFalse(key.IsDisposed());
+                    Assert.That(key.IsDisposed(), Is.False);
                 }
             }
         }

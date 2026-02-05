@@ -43,14 +43,14 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         public void TryParse_WhenStringIsNullOrEmpty_ThenReturnsFalse(
             [Values(null, "")] string? id)
         {
-            Assert.IsFalse(WorkforcePoolProviderLocator.TryParse(id, out var _));
+            Assert.That(WorkforcePoolProviderLocator.TryParse(id, out var _), Is.False);
         }
 
         [Test]
         public void TryParse_WhenStringIsMalformed_ThenReturnsFalse(
             [Values("x", "principal://", " ")] string id)
         {
-            Assert.IsFalse(WorkforcePoolProviderLocator.TryParse(id, out var _));
+            Assert.That(WorkforcePoolProviderLocator.TryParse(id, out var _), Is.False);
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 "locations/LOCATION/workforcePools/POOL/providers/")]
             string id)
         {
-            Assert.IsFalse(WorkforcePoolProviderLocator.TryParse(id, out var _));
+            Assert.That(WorkforcePoolProviderLocator.TryParse(id, out var _), Is.False);
         }
 
         [Test]

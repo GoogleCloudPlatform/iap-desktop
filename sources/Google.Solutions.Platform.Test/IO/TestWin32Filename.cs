@@ -54,21 +54,21 @@ namespace Google.Solutions.Platform.Test.Interop
         public void IsValidFilename_WhenFilenameIsDosDevice_ThenIsValidFilenameReturnsFalse(
             [Values("con", "Prn", "AUX", "NUL", "COM1", "COM9", "LPT1", "lpt9.txt")] string name)
         {
-            Assert.IsFalse(Win32Filename.IsValidFilename(name));
+            Assert.That(Win32Filename.IsValidFilename(name), Is.False);
         }
 
         [Test]
         public void IsValidFilename_WhenFilenameContainsInvalidCharacters_ThenIsValidFilenameReturnsFalse(
             [Values("f<.txt", ":.txt", "\"file\".txt", "\\f", "?.txt", "*.*")] string name)
         {
-            Assert.IsFalse(Win32Filename.IsValidFilename(name));
+            Assert.That(Win32Filename.IsValidFilename(name), Is.False);
         }
 
         [Test]
         public void IsValidFilename_WhenFilenameHasTrailingDot_ThenIsValidFilenameReturnsFalse(
             [Values("file.txt.")] string name)
         {
-            Assert.IsFalse(Win32Filename.IsValidFilename(name));
+            Assert.That(Win32Filename.IsValidFilename(name), Is.False);
         }
 
         [Test]

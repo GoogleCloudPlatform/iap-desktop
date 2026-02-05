@@ -62,7 +62,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 var eventRaised = false;
                 property.PropertyChanged += (_, __) =>
                 {
-                    Assert.IsFalse(form.InvokeRequired);
+                    Assert.That(form.InvokeRequired, Is.False);
                     eventRaised = true;
                 };
 
@@ -90,7 +90,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 var eventRaised = false;
                 dependent1.PropertyChanged += (_, __) =>
                 {
-                    Assert.IsFalse(form.InvokeRequired);
+                    Assert.That(form.InvokeRequired, Is.False);
                     eventRaised = true;
                 };
 

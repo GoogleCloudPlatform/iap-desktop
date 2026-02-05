@@ -108,7 +108,7 @@ namespace Google.Solutions.Apis.Test.Crm
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(result);
+            Assert.That(result, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -184,7 +184,7 @@ namespace Google.Solutions.Apis.Test.Crm
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.IsTruncated);
+            Assert.That(result.IsTruncated, Is.False);
             Assert.That(result.Projects.Count(), Is.EqualTo(1));
             Assert.That(result.Projects.First().ProjectId, Is.EqualTo(TestProject.ProjectId));
         }

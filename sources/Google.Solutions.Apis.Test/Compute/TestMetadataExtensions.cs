@@ -292,7 +292,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             };
 
-            Assert.IsFalse(metadata.GetFlag("flag"));
+            Assert.That(metadata.GetFlag("flag"), Is.False);
         }
 
         [Test]

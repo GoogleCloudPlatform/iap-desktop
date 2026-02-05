@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 .Setup(t => t.Traits)
                 .Returns(Enumerable.Empty<ITrait>());
 
-            Assert.IsFalse(RdpProtocol.Protocol.IsAvailable(target.Object));
+            Assert.That(RdpProtocol.Protocol.IsAvailable(target.Object), Is.False);
         }
 
         [Test]

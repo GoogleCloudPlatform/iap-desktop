@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 ApplicationTheme.Dark, Is.Not.EqualTo(ApplicationTheme._Default));
 
             var viewModel = new AppearanceOptionsViewModel(settingsRepository);
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
 
             viewModel.SelectedTheme.Value = ApplicationTheme.Dark;
 

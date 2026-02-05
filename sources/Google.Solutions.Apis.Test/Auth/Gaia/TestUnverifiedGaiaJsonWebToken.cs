@@ -67,7 +67,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         [Test]
         public void TryDecode_WhenJsonIsMalformed()
         {
-            Assert.IsFalse(UnverifiedGaiaJsonWebToken.TryDecode("YQ.YQ.YQ", out var _));
+            Assert.That(UnverifiedGaiaJsonWebToken.TryDecode("YQ.YQ.YQ", out var _), Is.False);
         }
 
         [Test]

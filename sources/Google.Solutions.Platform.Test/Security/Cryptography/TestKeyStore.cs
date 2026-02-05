@@ -247,7 +247,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
             this.Store.DeleteKey(KeyName);
             this.Store.DeleteKey(KeyName);
 
-            Assert.IsFalse(CngKey.Exists(KeyName));
+            Assert.That(CngKey.Exists(KeyName), Is.False);
         }
     }
 }

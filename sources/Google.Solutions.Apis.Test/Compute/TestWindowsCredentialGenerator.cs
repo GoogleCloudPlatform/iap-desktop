@@ -286,7 +286,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 .IsGrantedPermissionToCreateWindowsCredentialsAsync(locator)
                 .ConfigureAwait(false);
 
-            Assert.IsFalse(result);
+            Assert.That(result, Is.False);
         }
 
         [Test]

@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 repository.SettingsChanged += (sender, args) =>
                 {
                     Assert.That(sender, Is.SameAs(repository));
-                    Assert.IsFalse(args.Data.IsScrollingUsingCtrlHomeEndEnabled.Value);
+                    Assert.That(args.Data.IsScrollingUsingCtrlHomeEndEnabled.Value, Is.False);
                     eventFired = true;
                 };
 

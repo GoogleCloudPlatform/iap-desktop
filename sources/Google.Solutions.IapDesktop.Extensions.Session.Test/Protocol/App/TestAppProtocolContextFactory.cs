@@ -256,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
                 new Mock<IWin32ProcessFactory>().Object,
                 new Mock<IConnectionSettingsService>().Object);
 
-            Assert.IsFalse(factory.TryParse(new System.Uri("app-1:///test"), out var _));
+            Assert.That(factory.TryParse(new System.Uri("app-1:///test"), out var _), Is.False);
         }
     }
 }

@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         public void IsUserPrincipalNameWhenNameIsInvalid(
             [Values("user@", "@user", "a.b@c")] string upn)
         {
-            Assert.IsFalse(WindowsUser.IsUserPrincipalName(upn));
+            Assert.That(WindowsUser.IsUserPrincipalName(upn), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         public void IsLocalUsername_WhenNameIsInvalid(
             [Values("DOMAIN\\user", "u12345678901234567890", "user@domain.tld")] string name)
         {
-            Assert.IsFalse(WindowsUser.IsLocalUsername(name));
+            Assert.That(WindowsUser.IsLocalUsername(name), Is.False);
         }
 
         //---------------------------------------------------------------------

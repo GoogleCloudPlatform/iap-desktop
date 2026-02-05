@@ -87,7 +87,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 FileAttributes.Directory,
                 FileType.IconFlags.None))
             {
-                Assert.IsFalse(type.IsFile);
+                Assert.That(type.IsFile, Is.False);
             }
         }
 

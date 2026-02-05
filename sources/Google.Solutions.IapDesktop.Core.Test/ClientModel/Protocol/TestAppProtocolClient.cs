@@ -41,8 +41,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         [Test]
         public void IsAvailable_WhenExecutableNotFound()
         {
-            Assert.IsFalse(new AppProtocolClient("x:\\doesnotexist.exe", null).IsAvailable);
-            Assert.IsFalse(new AppProtocolClient("NUL.exe", null).IsAvailable);
+            Assert.That(new AppProtocolClient("x:\\doesnotexist.exe", null).IsAvailable, Is.False);
+            Assert.That(new AppProtocolClient("NUL.exe", null).IsAvailable, Is.False);
         }
 
         [Test]
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         public void IsUsernameRequired_WhenArgumentsDoNotUseUsername(
             [Values(null, " ", "{U}")] string? arguments)
         {
-            Assert.IsFalse(new AppProtocolClient("NUL.exe", arguments).IsUsernameRequired);
+            Assert.That(new AppProtocolClient("NUL.exe", arguments).IsUsernameRequired, Is.False);
         }
 
         [Test]
@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var app1 = new AppProtocolClient("cmd1.exe", "args");
             var app2 = new AppProtocolClient("cmd2.exe", "args");
 
-            Assert.IsFalse(app1.Equals(app2));
+            Assert.That(app1.Equals(app2), Is.False);
             Assert.IsTrue(app1 != app2);
             Assert.That(app2.GetHashCode(), Is.Not.EqualTo(app1.GetHashCode()));
         }
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var app1 = new AppProtocolClient("cmd.exe", "args");
             var app2 = new AppProtocolClient("cmd.exe", null);
 
-            Assert.IsFalse(app1.Equals(app2));
+            Assert.That(app1.Equals(app2), Is.False);
             Assert.IsTrue(app1 != app2);
             Assert.That(app2.GetHashCode(), Is.Not.EqualTo(app1.GetHashCode()));
         }

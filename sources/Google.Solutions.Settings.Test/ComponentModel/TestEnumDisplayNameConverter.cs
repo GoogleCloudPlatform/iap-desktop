@@ -99,7 +99,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
         public void CanConvertTo_WhenInt()
         {
             var converter = new EnumDisplayNameConverter(typeof(EnumWithDescriptions));
-            Assert.IsFalse(converter.CanConvertTo(typeof(int)));
+            Assert.That(converter.CanConvertTo(typeof(int)), Is.False);
         }
 
         //----------------------------------------------------------------------

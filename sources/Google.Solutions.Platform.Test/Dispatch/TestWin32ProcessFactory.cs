@@ -64,7 +64,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var process = factory.CreateProcess(CmdExe, null))
             {
                 Assert.IsNotNull(process.Handle);
-                Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.That(process.Handle.IsInvalid, Is.False);
                 Assert.IsNull(process.Job);
                 Assert.IsNull(process.PseudoTerminal);
 
@@ -117,11 +117,11 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 PseudoTerminalSize.Default))
             {
                 Assert.IsNotNull(process.Handle);
-                Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.That(process.Handle.IsInvalid, Is.False);
                 Assert.IsNull(process.Job);
 
                 Assert.IsNotNull(process.PseudoTerminal);
-                Assert.IsFalse(process.PseudoTerminal!.IsClosed);
+                Assert.That(process.PseudoTerminal!.IsClosed, Is.False);
 
                 process.Terminate(1);
             }
@@ -164,7 +164,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 new NetworkCredential("user", "invalid", "domain")))
             {
                 Assert.IsNotNull(process.Handle);
-                Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.That(process.Handle.IsInvalid, Is.False);
                 Assert.IsNull(process.Job);
 
                 process.Terminate(1);
@@ -183,7 +183,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 new NetworkCredential("example\\user", "invalid", null)))
             {
                 Assert.IsNotNull(process.Handle);
-                Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.That(process.Handle.IsInvalid, Is.False);
 
                 process.Terminate(1);
             }
@@ -201,7 +201,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 new NetworkCredential("user@example.com", "invalid", null)))
             {
                 Assert.IsNotNull(process.Handle);
-                Assert.IsFalse(process.Handle.IsInvalid);
+                Assert.That(process.Handle.IsInvalid, Is.False);
 
                 process.Terminate(1);
             }

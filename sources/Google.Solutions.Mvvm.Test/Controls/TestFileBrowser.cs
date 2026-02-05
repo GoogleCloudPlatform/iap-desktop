@@ -731,7 +731,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             var dataObject = new DataObject();
             dataObject.SetData("Unknown", "data");
 
-            Assert.IsFalse(FileBrowser.CanPaste(dataObject));
+            Assert.That(FileBrowser.CanPaste(dataObject), Is.False);
         }
 
         [Test]
@@ -743,7 +743,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 DataFormats.FileDrop,
                 new string[] { path });
 
-            Assert.IsFalse(FileBrowser.CanPaste(dataObject));
+            Assert.That(FileBrowser.CanPaste(dataObject), Is.False);
         }
 
         [Test]

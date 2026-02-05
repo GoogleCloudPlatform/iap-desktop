@@ -122,7 +122,7 @@ namespace Google.Solutions.Apis.Test.Client
                 TestProject.UserAgent);
 
             Assert.That(client.Initializer.BaseUri, Is.EqualTo(SampleEndpoint));
-            Assert.IsFalse(IsDeviceCertificateAuthenticationEnabled(client.Service));
+            Assert.That(IsDeviceCertificateAuthenticationEnabled(client.Service), Is.False);
         }
 
         [Test]
@@ -160,7 +160,7 @@ namespace Google.Solutions.Apis.Test.Client
                 TestProject.UserAgent);
 
             Assert.That(client.Initializer.BaseUri, Is.EqualTo("https://crm.googleapis.com/"));
-            Assert.IsFalse(IsDeviceCertificateAuthenticationEnabled(client.Service));
+            Assert.That(IsDeviceCertificateAuthenticationEnabled(client.Service), Is.False);
         }
     }
 }

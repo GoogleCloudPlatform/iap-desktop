@@ -55,7 +55,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 using (var op = new OperationProgressDialog()
                     .StartCopyOperation(form, 1, 2))
                 {
-                    Assert.IsFalse(op.IsBlockedByError);
+                    Assert.That(op.IsBlockedByError, Is.False);
 
                     op.IsBlockedByError = true;
                     op.IsBlockedByError = true;

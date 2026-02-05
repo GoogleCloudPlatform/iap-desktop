@@ -43,7 +43,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
             Assert.That(descriptor.Category, Is.EqualTo("category"));
 
             Assert.IsTrue(descriptor.IsBrowsable);
-            Assert.IsFalse(descriptor.IsReadOnly);
+            Assert.That(descriptor.IsReadOnly, Is.False);
 
             Assert.That(descriptor.ComponentType, Is.EqualTo(typeof(ISetting)));
             Assert.That(descriptor.PropertyType, Is.EqualTo(typeof(string)));
@@ -63,7 +63,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
             Assert.IsNull(descriptor.Description);
             Assert.IsNull(descriptor.Category);
 
-            Assert.IsFalse(descriptor.IsBrowsable);
+            Assert.That(descriptor.IsBrowsable, Is.False);
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
             Assert.IsTrue(descriptor.CanResetValue(setting));
             descriptor.ResetValue(setting);
             Assert.IsTrue(setting.IsDefault);
-            Assert.IsFalse(descriptor.ShouldSerializeValue(setting));
+            Assert.That(descriptor.ShouldSerializeValue(setting), Is.False);
         }
 
         //--------------------------------------------------------------------

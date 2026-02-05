@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             sub.Dispose();
 
             sub.InvokeAsync(new EventOne());
-            Assert.IsFalse(invoked);
+            Assert.That(invoked, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 
                 // Susbcription auto-removed.
                 Assert.That(queue.GetSubscriptions<EventOne>().Count(), Is.EqualTo(0));
-                Assert.IsFalse(invoked);
+                Assert.That(invoked, Is.False);
             }
         }
 

@@ -52,14 +52,14 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathLacksOrganization_TryParseThrowsArgumentException()
         {
-            Assert.IsFalse(OrganizationLocator.TryParse("/1", out var _));
+            Assert.That(OrganizationLocator.TryParse("/1", out var _), Is.False);
         }
 
         [Test]
         public void TryParse_WhenPathInvalid_TryParseThrowsArgumentException(
             [Values("x/1", "organizations/", "organizations/0xxx")] string path)
         {
-            Assert.IsFalse(OrganizationLocator.TryParse(path, out var _));
+            Assert.That(OrganizationLocator.TryParse(path, out var _), Is.False);
         }
 
         //---------------------------------------------------------------------

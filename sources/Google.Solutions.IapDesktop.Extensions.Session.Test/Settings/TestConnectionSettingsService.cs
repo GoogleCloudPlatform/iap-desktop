@@ -87,10 +87,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         {
             var service = CreateConnectionSettingsService();
 
-            Assert.IsFalse(service.IsConnectionSettingsAvailable(
-                new Mock<IProjectModelNode>().Object));
-            Assert.IsFalse(service.IsConnectionSettingsAvailable(
-                new Mock<IProjectModelCloudNode>().Object));
+            Assert.That(service.IsConnectionSettingsAvailable(
+                new Mock<IProjectModelNode>().Object), Is.False);
+            Assert.That(service.IsConnectionSettingsAvailable(
+                new Mock<IProjectModelCloudNode>().Object), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -226,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             // Inherited value is shown...
             zoneSettings = service.GetConnectionSettings(CreateZoneNode());
             Assert.That(zoneSettings.TypedCollection.RdpUsername.Value, Is.EqualTo("overriden-value"));
-            Assert.IsFalse(zoneSettings.TypedCollection.RdpUsername.IsDefault);
+            Assert.That(zoneSettings.TypedCollection.RdpUsername.IsDefault, Is.False);
 
             var instanceSettings = service.GetConnectionSettings(CreateVmInstanceNode());
             Assert.That(instanceSettings.TypedCollection.RdpUsername.Value, Is.EqualTo("overriden-value"));
@@ -265,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             // Own value is shown...
             var effectiveSettings = service.GetConnectionSettings(CreateVmInstanceNode());
             Assert.That(effectiveSettings.TypedCollection.RdpPort.Value, Is.EqualTo(3389));
-            Assert.IsFalse(effectiveSettings.TypedCollection.RdpPort.IsDefault);
+            Assert.That(effectiveSettings.TypedCollection.RdpPort.IsDefault, Is.False);
         }
 
         [Test]
@@ -285,7 +285,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             // Own value is shown...
             var effectiveSettings = service.GetConnectionSettings(CreateVmInstanceNode());
             Assert.That(effectiveSettings.TypedCollection.RdpPort.Value, Is.EqualTo(3389));
-            Assert.IsFalse(effectiveSettings.TypedCollection.RdpPort.IsDefault);
+            Assert.That(effectiveSettings.TypedCollection.RdpPort.IsDefault, Is.False);
         }
 
         //---------------------------------------------------------------------

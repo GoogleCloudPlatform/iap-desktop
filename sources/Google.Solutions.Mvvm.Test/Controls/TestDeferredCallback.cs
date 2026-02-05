@@ -41,7 +41,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 cb =>
                 {
                     Assert.IsNotNull(callback);
-                    Assert.IsFalse(callback!.IsPending);
+                    Assert.That(callback!.IsPending, Is.False);
                     invocations++;
                 },
                 TimeSpan.FromMilliseconds(10)))

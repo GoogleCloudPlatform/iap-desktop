@@ -119,7 +119,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
             };
 
             Assert.IsTrue(inverter.Invert(icon));
-            Assert.IsFalse(inverter.Invert(icon));
+            Assert.That(inverter.Invert(icon), Is.False);
         }
 
         [Test]
@@ -136,7 +136,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
                 };
 
                 Assert.IsTrue(inverter.Invert(imageList));
-                Assert.IsFalse(inverter.Invert(imageList));
+                Assert.That(inverter.Invert(imageList), Is.False);
             }
         }
     }

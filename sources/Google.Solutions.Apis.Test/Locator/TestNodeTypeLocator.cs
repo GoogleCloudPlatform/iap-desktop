@@ -104,23 +104,23 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathLacksProject()
         {
-            Assert.IsFalse(NodeTypeLocator.TryParse(
+            Assert.That(NodeTypeLocator.TryParse(
                 "project-1/zones/us-central1-a/nodeTypes/c2-node-60-240",
-                out var _));
+                out var _), Is.False);
         }
 
         [Test]
         public void TryParse_WhenPathInvalid()
         {
-            Assert.IsFalse(NodeTypeLocator.TryParse(
+            Assert.That(NodeTypeLocator.TryParse(
                 "projects/project-1/zones/us-central1-a/nodeTypes/",
-                out var _));
-            Assert.IsFalse(NodeTypeLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(NodeTypeLocator.TryParse(
                 "/zones/us-central1-a/nodeTypes/c2-node-60-240 ",
-                out var _));
-            Assert.IsFalse(NodeTypeLocator.TryParse(
+                out var _), Is.False);
+            Assert.That(NodeTypeLocator.TryParse(
                 "/",
-                out var _));
+                out var _), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -202,9 +202,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = new NodeTypeLocator("proj", "zone1", "c2-node-60-240");
             var ref2 = new NodeTypeLocator("proj", "zone2", "c2-node-60-240");
 
-            Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object?)ref2));
-            Assert.IsFalse(ref1 == ref2);
+            Assert.That(ref1.Equals(ref2), Is.False);
+            Assert.That(ref1.Equals((object?)ref2), Is.False);
+            Assert.That(ref1 == ref2, Is.False);
             Assert.IsTrue(ref1 != ref2);
         }
 

@@ -68,11 +68,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 form.Show();
 
-                Assert.IsFalse(panel.NotificationBarVisible);
+                Assert.That(panel.NotificationBarVisible, Is.False);
                 panel.Text = "Note!";
                 Assert.IsTrue(panel.NotificationBarVisible);
                 panel.Text = emptyValue;
-                Assert.IsFalse(panel.NotificationBarVisible);
+                Assert.That(panel.NotificationBarVisible, Is.False);
 
                 form.Close();
             }

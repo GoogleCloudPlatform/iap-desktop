@@ -285,7 +285,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .RemoveExpiredKeys();
 
             Assert.That(keySet.Keys.Count(), Is.EqualTo(2));
-            Assert.IsFalse(keySet.Keys.Any(k => k.PosixUsername == "joe"));
+            Assert.That(keySet.Keys.Any(k => k.PosixUsername == "joe"), Is.False);
         }
 
         //---------------------------------------------------------------------

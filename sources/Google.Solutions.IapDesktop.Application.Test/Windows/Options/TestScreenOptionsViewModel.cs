@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository);
 
             Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
-            Assert.IsFalse(viewModel.Devices.Any(d => d.IsSelected));
+            Assert.That(viewModel.Devices.Any(d => d.IsSelected), Is.False);
         }
 
         [Test]
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository);
 
             Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
-            Assert.IsFalse(viewModel.Devices.Any(d => d.IsSelected));
+            Assert.That(viewModel.Devices.Any(d => d.IsSelected), Is.False);
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository);
 
             Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
-            Assert.IsFalse(viewModel.Devices.Any(d => d.IsSelected));
+            Assert.That(viewModel.Devices.Any(d => d.IsSelected), Is.False);
         }
 
 
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new ScreenOptionsViewModel(
                 settingsRepository);
 
-            Assert.IsFalse(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.False);
             Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
 
             viewModel.Devices.First().IsSelected = true;

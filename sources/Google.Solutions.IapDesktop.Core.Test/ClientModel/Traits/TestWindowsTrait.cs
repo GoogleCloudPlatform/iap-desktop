@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         public void TryParse_WhenExpressionIsNullOrEmpty(
             [Values(" \t", "", null)] string? expression)
         {
-            Assert.IsFalse(WindowsTrait.TryParse(expression, out var _));
+            Assert.That(WindowsTrait.TryParse(expression, out var _), Is.False);
         }
 
         [Test]

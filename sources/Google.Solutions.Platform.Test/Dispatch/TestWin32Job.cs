@@ -54,7 +54,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
                 job.Dispose();
 
-                Assert.IsFalse(process.IsRunning);
+                Assert.That(process.IsRunning, Is.False);
             }
         }
 
@@ -92,8 +92,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 CmdExe,
                 null))
             {
-                Assert.IsFalse(job.Contains(process));
-                Assert.IsFalse(job.Contains(process.Id));
+                Assert.That(job.Contains(process), Is.False);
+                Assert.That(job.Contains(process.Id), Is.False);
 
                 job.Add(process);
                 job.Add(process); // Again.
@@ -188,7 +188,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 job.Add(process);
 
                 var waitTask = job.WaitForProcessesAsync(TimeSpan.MaxValue, CancellationToken.None);
-                Assert.IsFalse(waitTask.IsCompleted);
+                Assert.That(waitTask.IsCompleted, Is.False);
 
                 process.Resume();
                 process.Terminate(0);

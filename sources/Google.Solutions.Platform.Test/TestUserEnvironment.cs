@@ -67,7 +67,7 @@ namespace Google.Solutions.Platform.Test
         [Test]
         public void TryResolveAppPath_WhenAppUnknown_ThenTryResolveAppPathReturnsFalse()
         {
-            Assert.IsFalse(UserEnvironment.TryResolveAppPath("doesnotexist.exe", out var _));
+            Assert.That(UserEnvironment.TryResolveAppPath("doesnotexist.exe", out var _), Is.False);
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace Google.Solutions.Platform.Test
         public void TryResolveAppPath_WhenAppNameIsPath_ThenTryResolveAppPathReturnsFalse(
             [Values("../app.exe", "c:\\app.exe")] string exeName)
         {
-            Assert.IsFalse(UserEnvironment.TryResolveAppPath(exeName, out var _));
+            Assert.That(UserEnvironment.TryResolveAppPath(exeName, out var _), Is.False);
         }
     }
 }

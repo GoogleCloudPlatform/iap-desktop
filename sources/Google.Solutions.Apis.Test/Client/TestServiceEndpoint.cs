@@ -57,7 +57,7 @@ namespace Google.Solutions.Apis.Test.Client
             Assert.That(details.BaseUri, Is.EqualTo(new Uri("https://sample.googleapis.com/compute")));
             Assert.That(details.Type, Is.EqualTo(ServiceEndpointType.Tls));
             Assert.That(details.Host, Is.EqualTo("sample.googleapis.com"));
-            Assert.IsFalse(details.UseClientCertificate);
+            Assert.That(details.UseClientCertificate, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -92,7 +92,7 @@ namespace Google.Solutions.Apis.Test.Client
             Assert.That(details.BaseUri, Is.EqualTo(new Uri("https://sample.Googleapis.COM/compute")));
             Assert.That(details.Type, Is.EqualTo(ServiceEndpointType.Tls));
             Assert.That(details.Host, Is.EqualTo("sample.googleapis.com"));
-            Assert.IsFalse(details.UseClientCertificate);
+            Assert.That(details.UseClientCertificate, Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -113,7 +113,7 @@ namespace Google.Solutions.Apis.Test.Client
             Assert.That(details.BaseUri, Is.EqualTo(new Uri("https://sample.p.Googleapis.COM/compute")));
             Assert.That(details.Type, Is.EqualTo(ServiceEndpointType.PrivateServiceConnect));
             Assert.That(details.Host, Is.EqualTo("sample.googleapis.com"));
-            Assert.IsFalse(details.UseClientCertificate);
+            Assert.That(details.UseClientCertificate, Is.False);
         }
 
         //---------------------------------------------------------------------

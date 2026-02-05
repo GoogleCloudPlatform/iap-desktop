@@ -250,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                 attributes.AvailablePackages?.WuaPackages?[0]?.LastDeploymentChangeTime?.ToUniversalTime(), Is.EqualTo(new DateTime(2020, 7, 3, 0, 0, 0, 0, DateTimeKind.Utc)));
 
             // Qfe
-            Assert.IsFalse(attributes.AvailablePackages?.QfePackages.Any());
+            Assert.That(attributes.AvailablePackages?.QfePackages.Any(), Is.False);
 
             Assert.That(attributes.InstalledPackages?.AllPackages.Count(), Is.EqualTo(34));
         }
