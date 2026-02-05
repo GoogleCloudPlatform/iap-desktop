@@ -70,7 +70,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 var type1 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.None);
                 var type2 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.Open);
 
-                Assert.AreNotSame(type1, type2);
+                Assert.That(type2, Is.Not.SameAs(type1));
                 Assert.That(cache.CacheSize, Is.EqualTo(2));
             }
         }
@@ -83,7 +83,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 var type1 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.None);
                 var type2 = cache.Lookup("test-1.txt", FileAttributes.ReadOnly, FileType.IconFlags.None);
 
-                Assert.AreNotSame(type1, type2);
+                Assert.That(type2, Is.Not.SameAs(type1));
                 Assert.That(cache.CacheSize, Is.EqualTo(2));
             }
         }

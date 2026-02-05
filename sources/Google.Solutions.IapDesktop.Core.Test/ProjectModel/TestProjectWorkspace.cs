@@ -399,7 +399,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 .GetRootNodeAsync(true, CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.AreNotSame(model, modelSecondLoad);
+            Assert.That(modelSecondLoad, Is.Not.SameAs(model));
 
             resourceManagerAdapter.Verify(a => a.GetProjectAsync(
                     SampleProjectId,
@@ -557,7 +557,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.AreNotSame(zones, zonesSecondLoad);
+            Assert.That(zonesSecondLoad, Is.Not.SameAs(zones));
 
             computeAdapter.Verify(a => a.ListInstancesAsync(
                     SampleProjectId,

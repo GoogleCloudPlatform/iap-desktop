@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             var service = registry.GetService<Service<ServiceWithDefaultConstructor>>();
             Assert.IsNotNull(service);
             Assert.IsNotNull(service.Activate());
-            Assert.AreNotSame(service.Activate(), service.Activate());
+            Assert.That(service.Activate(), Is.Not.SameAs(service.Activate()));
         }
 
         [Test]

@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 SampleTimeout,
                 CancellationToken.None);
 
-            Assert.AreNotSame(validButIncompleteTransport1, validButIncompleteTransport2);
+            Assert.That(validButIncompleteTransport2, Is.Not.SameAs(validButIncompleteTransport1));
 
             tunnelFactory
                 .Verify(f => f.CreateTunnelAsync(
@@ -310,7 +310,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             //
             // Two different transports that use the same tunnel.
             //
-            Assert.AreNotSame(transport1, transport2);
+            Assert.That(transport2, Is.Not.SameAs(transport1));
             Assert.That(
                 ((IapTransportFactory.Transport)transport2).Tunnel, Is.SameAs(((IapTransportFactory.Transport)transport1).Tunnel));
 

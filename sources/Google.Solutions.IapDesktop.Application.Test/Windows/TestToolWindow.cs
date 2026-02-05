@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             var view1 = window1.Bind();
             var view2 = window2.Bind();
 
-            Assert.AreNotSame(window1, window2);
+            Assert.That(window2, Is.Not.SameAs(window1));
             Assert.That(view1.BindCalls, Is.EqualTo(1));
             Assert.That(view2.BindCalls, Is.EqualTo(1));
         }

@@ -228,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             Assert.IsNotNull(service);
             Assert.IsInstanceOf<Service<ServiceWithDefaultConstructor>>(service);
             Assert.IsNotNull(service.Activate());
-            Assert.AreNotSame(service.Activate(), service.Activate());
+            Assert.That(service.Activate(), Is.Not.SameAs(service.Activate()));
         }
 
         //---------------------------------------------------------------------

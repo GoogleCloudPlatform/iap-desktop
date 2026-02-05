@@ -44,9 +44,8 @@ namespace Google.Solutions.Common.Test.Runtime
         {
             var instance = new SomeClass();
             var activator = InstanceActivator.Create(() => new SomeClass());
-            Assert.AreNotSame(
-                activator.Activate(),
-                activator.Activate());
+            Assert.That(
+                activator.Activate(), Is.Not.SameAs(activator.Activate()));
         }
     }
 }

@@ -56,7 +56,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var process1 = factory.CreateProcess(CmdExe, null))
             using (var process2 = factory.CreateProcess(CmdExe, null))
             {
-                Assert.AreNotSame(process1.Job, process2.Job);
+                Assert.That(process2.Job, Is.Not.SameAs(process1.Job));
             }
         }
 

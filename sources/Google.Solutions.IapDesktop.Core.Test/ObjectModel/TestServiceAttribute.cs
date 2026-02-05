@@ -138,9 +138,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
 
             Assert.IsNotNull(registry.GetService<ITransientServiceInterface>());
-            Assert.AreNotSame(
-                registry.GetService<ITransientServiceInterface>(),
-                registry.GetService<ITransientServiceInterface>());
+            Assert.That(
+                registry.GetService<ITransientServiceInterface>(), Is.Not.SameAs(registry.GetService<ITransientServiceInterface>()));
             Assert.Throws<UnknownServiceException>(
                 () => registry.GetService<TransientServiceWithInterface>());
         }
@@ -157,9 +156,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
 
             Assert.IsNotNull(registry.GetService<TransientService>());
-            Assert.AreNotSame(
-                registry.GetService<TransientService>(),
-                registry.GetService<TransientService>());
+            Assert.That(
+                registry.GetService<TransientService>(), Is.Not.SameAs(registry.GetService<TransientService>()));
         }
 
         //---------------------------------------------------------------------
