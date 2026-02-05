@@ -175,7 +175,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 var eventRaised = false;
                 browser.NavigationFailed += (sender, args) =>
                 {
-                    Assert.AreSame(browser, sender);
+                    Assert.That(sender, Is.SameAs(browser));
                     Assert.IsInstanceOf<ApplicationException>(args.Exception.Unwrap());
                     eventRaised = true;
                 };
@@ -311,7 +311,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
                 Application.DoEvents();
 
-                Assert.AreSame(fileSystem.Root, browser.CurrentDirectory);
+                Assert.That(browser.CurrentDirectory, Is.SameAs(fileSystem.Root));
                 Assert.That(browser.CurrentPath, Is.EqualTo(string.Empty));
             }
         }

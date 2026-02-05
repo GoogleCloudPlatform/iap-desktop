@@ -98,9 +98,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
 
             Assert.IsNotNull(registry.GetService<ISingletonServiceInterface>());
-            Assert.AreSame(
-                registry.GetService<ISingletonServiceInterface>(),
-                registry.GetService<ISingletonServiceInterface>());
+            Assert.That(
+                registry.GetService<ISingletonServiceInterface>(), Is.SameAs(registry.GetService<ISingletonServiceInterface>()));
             Assert.Throws<UnknownServiceException>(
                 () => registry.GetService<SingletonServiceWithInterface>());
         }
@@ -117,9 +116,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
 
             Assert.IsNotNull(registry.GetService<SingletonService>());
-            Assert.AreSame(
-                registry.GetService<ISingletonServiceInterface>(),
-                registry.GetService<ISingletonServiceInterface>());
+            Assert.That(
+                registry.GetService<ISingletonServiceInterface>(), Is.SameAs(registry.GetService<ISingletonServiceInterface>()));
         }
 
         //---------------------------------------------------------------------

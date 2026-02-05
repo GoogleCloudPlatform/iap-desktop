@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             var service = registry.GetService<Service<ServiceWithDefaultConstructor>>();
             Assert.IsNotNull(service);
             Assert.IsNotNull(service.Activate());
-            Assert.AreSame(service.Activate(), service.Activate());
+            Assert.That(service.Activate(), Is.SameAs(service.Activate()));
         }
     }
 }

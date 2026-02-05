@@ -30,7 +30,7 @@ namespace Google.Solutions.Platform.Test.Net
         [Test]
         public void Get_WhenPreferenceIsDefault_ThenGetReturnsDefaultBrowser()
         {
-            Assert.AreSame(Browser.Default, Browser.Get(BrowserPreference.Default));
+            Assert.That(Browser.Get(BrowserPreference.Default), Is.SameAs(Browser.Default));
         }
 
         [Test]

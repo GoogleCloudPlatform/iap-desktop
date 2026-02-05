@@ -145,9 +145,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata);
 
-            Assert.AreSame(
-                keySet,
-                keySet.Add(MetadataAuthorizedPublicKey.Parse("alice:ssh-rsa key notalice")));
+            Assert.That(
+                keySet.Add(MetadataAuthorizedPublicKey.Parse("alice:ssh-rsa key notalice")), Is.SameAs(keySet));
         }
 
         [Test]

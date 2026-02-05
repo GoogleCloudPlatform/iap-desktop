@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                 Assert.IsTrue(broker.TryActivateSession(
                     SampleLocator,
                     out var activated));
-                Assert.AreSame(session, activated);
+                Assert.That(activated, Is.SameAs(session));
             }
         }
 

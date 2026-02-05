@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             var singleton = new ServiceWithDefaultConstructor();
             registry.AddSingleton<ServiceWithDefaultConstructor>(singleton);
 
-            Assert.AreSame(singleton, registry.GetService<ServiceWithDefaultConstructor>());
+            Assert.That(registry.GetService<ServiceWithDefaultConstructor>(), Is.SameAs(singleton));
         }
 
         //---------------------------------------------------------------------
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 
             var service = registry.GetService<ServiceWithServiceProviderConstructor>();
             Assert.IsNotNull(service);
-            Assert.AreSame(registry, service.Provider);
+            Assert.That(service.Provider, Is.SameAs(registry));
 
         }
 
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 
             var service = registry.GetService<ServiceWithServiceCategoryProviderConstructor>();
             Assert.IsNotNull(service);
-            Assert.AreSame(registry, service.Provider);
+            Assert.That(service.Provider, Is.SameAs(registry));
         }
 
         [Test]
@@ -249,7 +249,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
         public void WhenRegistryHasNoParent_ThenRootRegistryReturnsThis()
         {
             var registry = new ServiceRegistry();
-            Assert.AreSame(registry, registry.RootRegistry);
+            Assert.That(registry.RootRegistry, Is.SameAs(registry));
         }
 
         [Test]
@@ -258,7 +258,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             var parent = new ServiceRegistry();
             var child = new ServiceRegistry(parent);
             var grandChild = new ServiceRegistry(child);
-            Assert.AreSame(parent, grandChild.RootRegistry);
+            Assert.That(grandChild.RootRegistry, Is.SameAs(parent));
         }
 
         [Test]

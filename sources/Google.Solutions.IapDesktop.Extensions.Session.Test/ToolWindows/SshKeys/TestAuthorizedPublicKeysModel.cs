@@ -203,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             Assert.That(model.Items.Count(), Is.EqualTo(1));
             Assert.That(model.Items.First().AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
-            Assert.AreSame(osLoginKey, model.Items.First().Key);
+            Assert.That(model.Items.First().Key, Is.SameAs(osLoginKey));
         }
 
         [Test]
@@ -326,7 +326,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             Assert.That(model.Items.Count(), Is.EqualTo(1));
             Assert.That(model.Items.First().AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
-            Assert.AreSame(osLoginKey, model.Items.First().Key);
+            Assert.That(model.Items.First().Key, Is.SameAs(osLoginKey));
         }
 
         [Test]

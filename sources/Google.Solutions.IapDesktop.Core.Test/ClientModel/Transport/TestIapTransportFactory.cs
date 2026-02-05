@@ -311,9 +311,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             // Two different transports that use the same tunnel.
             //
             Assert.AreNotSame(transport1, transport2);
-            Assert.AreSame(
-                ((IapTransportFactory.Transport)transport1).Tunnel,
-                ((IapTransportFactory.Transport)transport2).Tunnel);
+            Assert.That(
+                ((IapTransportFactory.Transport)transport2).Tunnel, Is.SameAs(((IapTransportFactory.Transport)transport1).Tunnel));
 
             transport1.Dispose();
             transport2.Dispose();
@@ -569,9 +568,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                     CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                Assert.AreSame(validProfile.Protocol, transport.Protocol);
-                Assert.AreSame(IPAddress.Loopback, transport.Endpoint.Address);
-                Assert.AreSame(SampleInstance, transport.Target);
+                Assert.That(transport.Protocol, Is.SameAs(validProfile.Protocol));
+                Assert.That(transport.Endpoint.Address, Is.SameAs(IPAddress.Loopback));
+                Assert.That(transport.Target, Is.SameAs(SampleInstance));
             }
         }
     }

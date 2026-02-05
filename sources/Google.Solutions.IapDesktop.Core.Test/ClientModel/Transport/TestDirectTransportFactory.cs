@@ -67,10 +67,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                     CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                Assert.AreSame(protocol.Object, transport.Protocol);
-                Assert.AreSame(address, transport.Endpoint.Address);
+                Assert.That(transport.Protocol, Is.SameAs(protocol.Object));
+                Assert.That(transport.Endpoint.Address, Is.SameAs(address));
                 Assert.That(transport.Endpoint.Port, Is.EqualTo(22));
-                Assert.AreSame(SampleInstance, transport.Target);
+                Assert.That(transport.Target, Is.SameAs(SampleInstance));
             }
         }
     }

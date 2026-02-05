@@ -205,9 +205,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             var window = activator.CreateWindow();
 
-            Assert.AreSame(form, window.Form);
-            Assert.AreSame(window.Form, viewModel.View);
-            Assert.AreSame(viewModel, window.Form.ViewModel);
+            Assert.That(window.Form, Is.SameAs(form));
+            Assert.That(viewModel.View, Is.SameAs(window.Form));
+            Assert.That(window.Form.ViewModel, Is.SameAs(viewModel));
         }
 
         [Test]

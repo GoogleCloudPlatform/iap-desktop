@@ -35,9 +35,8 @@ namespace Google.Solutions.Common.Test.Runtime
             var instance = new SomeClass();
             var activator = InstanceActivator.Create(instance);
 
-            Assert.AreSame(
-                instance,
-                activator.Activate());
+            Assert.That(
+                activator.Activate(), Is.SameAs(instance));
         }
 
         [Test]

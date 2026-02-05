@@ -84,7 +84,7 @@ namespace Google.Solutions.Common.Test.Util
         public void ExpectNotNullOrZeroSized_WhenNotEmpty_ThenExpectNotNullOrZeroSizedReturnsValue()
         {
             var array = new[] { 1, 2, 3 };
-            Assert.AreSame(array, array.ExpectNotNullOrZeroSized("test"));
+            Assert.That(array.ExpectNotNullOrZeroSized("test"), Is.SameAs(array));
         }
 
         //---------------------------------------------------------------------

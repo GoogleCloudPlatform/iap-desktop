@@ -367,7 +367,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(true);
 
-                Assert.AreSame(authorization, viewModel.Authorization);
+                Assert.That(viewModel.Authorization, Is.SameAs(authorization));
 
                 Assert.IsTrue(viewModel.IsSignOnControlVisible.Value);
                 Assert.IsFalse(viewModel.IsWaitControlVisible.Value);

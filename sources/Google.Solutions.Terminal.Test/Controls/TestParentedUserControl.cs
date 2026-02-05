@@ -76,7 +76,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.Show();
                 Application.DoEvents();
 
-                Assert.AreSame(form, control.CurrentParentForm);
+                Assert.That(control.CurrentParentForm, Is.SameAs(form));
                 Assert.That(control.ParentFormChanges, Is.EqualTo(1));
 
                 using (var newForm = new Form())
@@ -84,7 +84,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                     form.Controls.Clear();
                     newForm.Controls.Add(control);
 
-                    Assert.AreSame(newForm, control.CurrentParentForm);
+                    Assert.That(control.CurrentParentForm, Is.SameAs(newForm));
                     Assert.That(control.ParentFormChanges, Is.EqualTo(2));
                 }
             }

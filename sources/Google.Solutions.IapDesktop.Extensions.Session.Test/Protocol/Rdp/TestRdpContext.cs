@@ -55,9 +55,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 credential,
                 RdpParameters.ParameterSources.Inventory);
 
-            Assert.AreSame(
-                credential,
-                context.AuthorizeCredentialAsync(CancellationToken.None).Result);
+            Assert.That(
+                context.AuthorizeCredentialAsync(CancellationToken.None).Result, Is.SameAs(credential));
         }
 
         //---------------------------------------------------------------------
@@ -94,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 .ConnectTransportAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreSame(transport.Object, rdpTransport);
+            Assert.That(rdpTransport, Is.SameAs(transport.Object));
         }
 
         [Test]
@@ -123,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 .ConnectTransportAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreSame(transport.Object, rdpTransport);
+            Assert.That(rdpTransport, Is.SameAs(transport.Object));
         }
     }
 }

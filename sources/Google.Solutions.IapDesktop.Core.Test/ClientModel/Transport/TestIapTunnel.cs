@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 profile,
                 IapTunnelFlags.None))
             {
-                Assert.AreSame(profile, tunnel.Details);
+                Assert.That(tunnel.Details, Is.SameAs(profile));
             }
         }
 
@@ -231,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 IapTunnelFlags.None))
             {
                 Assert.IsFalse(token.IsCancellationRequested);
-                Assert.AreSame(listenTask, tunnel.CloseAsync());
+                Assert.That(tunnel.CloseAsync(), Is.SameAs(listenTask));
                 Assert.IsTrue(token.IsCancellationRequested);
             }
         }

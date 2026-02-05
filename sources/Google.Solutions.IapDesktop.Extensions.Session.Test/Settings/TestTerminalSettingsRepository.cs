@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 var eventFired = false;
                 repository.SettingsChanged += (sender, args) =>
                 {
-                    Assert.AreSame(repository, sender);
+                    Assert.That(sender, Is.SameAs(repository));
                     Assert.IsFalse(args.Data.IsScrollingUsingCtrlHomeEndEnabled.Value);
                     eventFired = true;
                 };

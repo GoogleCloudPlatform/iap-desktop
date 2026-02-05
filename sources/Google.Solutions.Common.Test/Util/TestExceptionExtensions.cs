@@ -53,7 +53,7 @@ namespace Google.Solutions.Common.Test.Util
 
             var unwrapped = ex.Unwrap();
 
-            Assert.AreSame(ex, unwrapped);
+            Assert.That(unwrapped, Is.SameAs(ex));
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace Google.Solutions.Common.Test.Util
 
             var unwrapped = aggregate.Unwrap();
 
-            Assert.AreSame(inner1, unwrapped);
+            Assert.That(unwrapped, Is.SameAs(inner1));
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace Google.Solutions.Common.Test.Util
 
             var unwrapped = aggregate.Unwrap();
 
-            Assert.AreSame(inner1, unwrapped);
+            Assert.That(unwrapped, Is.SameAs(inner1));
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace Google.Solutions.Common.Test.Util
             var aggregate = new AggregateException();
             var unwrapped = aggregate.Unwrap();
 
-            Assert.AreSame(aggregate, unwrapped);
+            Assert.That(unwrapped, Is.SameAs(aggregate));
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace Google.Solutions.Common.Test.Util
 
             var unwrapped = target.Unwrap();
 
-            Assert.AreSame(inner, unwrapped);
+            Assert.That(unwrapped, Is.SameAs(inner));
         }
 
         //---------------------------------------------------------------------
