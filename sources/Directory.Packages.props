@@ -43,7 +43,11 @@
         <PackageVersion Include="NUnit.ConsoleRunner" Version="3.20.1" />
         <PackageVersion Include="NUnit.Extension.VSProjectLoader" Version="3.9.0" />
         <PackageVersion Include="NUnit3TestAdapter" Version="5.1.0" />
-	
+        <PackageVersion Include="NUnit.Analyzers" Version="4.1.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageVersion>
+      
         <!-- 
             The following packages contain tools that need to match the CLR version,
 		    so the version numbers are fixed.
