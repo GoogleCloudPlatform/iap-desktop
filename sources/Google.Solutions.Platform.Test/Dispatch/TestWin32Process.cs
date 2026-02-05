@@ -106,8 +106,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                StringAssert.Contains("cmd.exe", process.ToString());
-                StringAssert.Contains(process.Id.ToString(), process.ToString());
+                Assert.That(process.ToString(), Does.Contain("cmd.exe"));
+                Assert.That(process.ToString(), Does.Contain(process.Id.ToString()));
 
                 process.Terminate(1);
             }

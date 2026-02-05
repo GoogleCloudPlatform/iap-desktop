@@ -238,9 +238,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
             var programsFolder = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
 
-            StringAssert.Contains(programsFolder, client!.Executable);
-            StringAssert.Contains(programsFolder, client.ArgumentsTemplate);
-            StringAssert.Contains("{host}", client.ArgumentsTemplate);
+            Assert.That(client!.Executable, Does.Contain(programsFolder));
+            Assert.That(client.ArgumentsTemplate, Does.Contain(programsFolder));
+            Assert.That(client.ArgumentsTemplate, Does.Contain("{host}"));
         }
 
         [Test]

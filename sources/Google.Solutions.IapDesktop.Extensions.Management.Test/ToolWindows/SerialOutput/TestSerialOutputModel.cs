@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
             Assert.IsFalse(string.IsNullOrWhiteSpace(model.Output));
             Assert.That(model.DisplayName, Is.EqualTo("display-name"));
-            StringAssert.Contains("Finished running startup scripts", model.Output);
+            Assert.That(model.Output, Does.Contain("Finished running startup scripts"));
         }
 
         //---------------------------------------------------------------------
@@ -147,8 +147,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
                 // The exception should cause the task should finish.
                 await tailTask.ConfigureAwait(true);
 
-                StringAssert.Contains("session timed out", newOutput.ToString());
-                StringAssert.DoesNotContain("session timed out", model.Output);
+                Assert.That(newOutput.ToString(), Does.Contain("session timed out"));
+                Assert.That(model.Output, Does.Not.Contain("session timed out"));
             }
         }
     }

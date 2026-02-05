@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             Assert.IsTrue(viewModel.IsListEnabled.Value);
             Assert.IsNotEmpty(viewModel.InformationText.Value);
-            StringAssert.Contains("project-1", viewModel.WindowTitle.Value);
+            Assert.That(viewModel.WindowTitle.Value, Does.Contain("project-1"));
 
             Assert.That(viewModel.AllKeys.Count, Is.EqualTo(2));
             Assert.That(viewModel.FilteredKeys.Count, Is.EqualTo(2));
@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
 
             Assert.IsTrue(viewModel.IsListEnabled.Value);
             Assert.IsNotEmpty(viewModel.InformationText.Value);
-            StringAssert.Contains("instance-1", viewModel.WindowTitle.Value);
+            Assert.That(viewModel.WindowTitle.Value, Does.Contain("instance-1"));
 
             Assert.That(viewModel.AllKeys.Count, Is.EqualTo(2));
             Assert.That(viewModel.FilteredKeys.Count, Is.EqualTo(2));

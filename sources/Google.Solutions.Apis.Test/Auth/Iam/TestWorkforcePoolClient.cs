@@ -141,7 +141,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 .ThrowsAsync<TokenResponseException>(
                     () => client.AuthorizeAsync(codeReceiver.Object, CancellationToken.None))
                 .ConfigureAwait(false);
-            StringAssert.Contains("invalid_grant", e.Message);
+            Assert.That(e.Message, Does.Contain("invalid_grant"));
         }
 
         [Test]
@@ -179,7 +179,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                     () => client.AuthorizeAsync(codeReceiver.Object, CancellationToken.None))
                 .ConfigureAwait(false);
 
-            StringAssert.Contains("invalid_grant", e.Message);
+            Assert.That(e.Message, Does.Contain("invalid_grant"));
         }
 
         [Test]

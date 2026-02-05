@@ -87,7 +87,7 @@ namespace Google.Solutions.Apis.Test.Analytics
                     CancellationToken.None))
                 .ConfigureAwait(false);
 
-            StringAssert.Contains("client_id", e.Message);
+            Assert.That(e.Message, Does.Contain("client_id"));
         }
     }
 }

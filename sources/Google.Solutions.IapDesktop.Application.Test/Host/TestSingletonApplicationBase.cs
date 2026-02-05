@@ -204,24 +204,24 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         public void ObjectName_IsLocal()
         {
             var app = new Singleton("test");
-            StringAssert.StartsWith("Local\\test_", app.MutexName);
-            StringAssert.StartsWith("test_", app.PipeName);
+            Assert.That(app.MutexName, Does.StartWith("Local\\test_"));
+            Assert.That(app.PipeName, Does.StartWith("test_"));
         }
 
         [Test]
         public void ObjectName_IncludeSessionId()
         {
             var app = new Singleton("test");
-            StringAssert.Contains($"_{app.SessionId:X}_", app.MutexName);
-            StringAssert.Contains($"_{app.SessionId:X}_", app.PipeName);
+            Assert.That(app.MutexName, Does.Contain($"_{app.SessionId:X}_"));
+            Assert.That(app.PipeName, Does.Contain($"_{app.SessionId:X}_"));
         }
 
         [Test]
         public void ObjectName_IncludeUsername()
         {
             var app = new Singleton("test");
-            StringAssert.Contains(Environment.UserName.ToLower(), app.MutexName);
-            StringAssert.Contains(Environment.UserName.ToLower(), app.PipeName);
+            Assert.That(app.MutexName, Does.Contain(Environment.UserName.ToLower()));
+            Assert.That(app.PipeName, Does.Contain(Environment.UserName.ToLower()));
         }
     }
 }

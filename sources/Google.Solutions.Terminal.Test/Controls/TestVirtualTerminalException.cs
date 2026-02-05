@@ -32,8 +32,8 @@ namespace Google.Solutions.Terminal.Test.Controls
         public void FromHresult()
         {
             var e = VirtualTerminalException.FromHresult(HRESULT.E_UNEXPECTED, "message");
-            StringAssert.Contains("message", e.Message);
-            StringAssert.Contains("0x8000FFFF", e.Message);
+            Assert.That(e.Message, Does.Contain("message"));
+            Assert.That(e.Message, Does.Contain("0x8000FFFF"));
         }
     }
 }

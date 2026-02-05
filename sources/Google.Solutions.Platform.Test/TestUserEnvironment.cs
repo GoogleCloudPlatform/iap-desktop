@@ -46,11 +46,10 @@ namespace Google.Solutions.Platform.Test
             var source = "%ProgramFiles(x86)%\\foo";
             var expanded = UserEnvironment.ExpandEnvironmentStrings(source);
 
-            StringAssert.Contains(
-                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
-                expanded);
+            Assert.That(
+                expanded, Does.Contain(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)));
 
-            StringAssert.Contains("\\foo", expanded);
+            Assert.That(expanded, Does.Contain("\\foo"));
         }
 
         [Test]

@@ -40,9 +40,8 @@ namespace Google.Solutions.Apis.Test.Client
                 new Uri("https://sample.googleapis.com/"),
                 "sample.googleapis.com");
 
-            StringAssert.Contains(
-                "https://sample.googleapis.com/",
-                directions.ToString());
+            Assert.That(
+                directions.ToString(), Does.Contain("https://sample.googleapis.com/"));
         }
     }
 }

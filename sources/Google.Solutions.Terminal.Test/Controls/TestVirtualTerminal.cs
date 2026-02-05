@@ -169,7 +169,7 @@ namespace Google.Solutions.Terminal.Test.Controls
 
                 form.Close();
 
-                StringAssert.Contains("\u001b[2J", receivedData);
+                Assert.That(receivedData, Does.Contain("\u001b[2J"));
             }
         }
 

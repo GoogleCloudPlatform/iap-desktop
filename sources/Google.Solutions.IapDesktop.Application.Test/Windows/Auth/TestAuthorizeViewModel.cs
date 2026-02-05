@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         {
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter())
             {
-                StringAssert.StartsWith("Sign in - ", viewModel.WindowTitle.Value);
+                Assert.That(viewModel.WindowTitle.Value, Does.StartWith("Sign in - "));
             }
         }
 
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
             install.SetupGet(i => i.CurrentVersion).Returns(new Version(1, 2, 3, 4));
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter())
             {
-                StringAssert.StartsWith("Version 1.2.3.4", viewModel.Version.Value);
+                Assert.That(viewModel.Version.Value, Does.StartWith("Version 1.2.3.4"));
             }
         }
 

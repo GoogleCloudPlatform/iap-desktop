@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            StringAssert.Contains("mock", viewModel.Summary.Value);
+            Assert.That(viewModel.Summary.Value, Does.Contain("mock"));
         }
 
         [Test]
@@ -107,9 +107,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            StringAssert.DoesNotContain("latest release", viewModel.Summary.Value);
-            StringAssert.Contains("current release", viewModel.Summary.Value);
-            StringAssert.Contains("old release", viewModel.Summary.Value);
+            Assert.That(viewModel.Summary.Value, Does.Not.Contain("latest release"));
+            Assert.That(viewModel.Summary.Value, Does.Contain("current release"));
+            Assert.That(viewModel.Summary.Value, Does.Contain("old release"));
         }
 
         [Test]
@@ -150,10 +150,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            StringAssert.Contains("current release", viewModel.Summary.Value);
-            StringAssert.Contains("skipped release", viewModel.Summary.Value);
-            StringAssert.DoesNotContain("previous release", viewModel.Summary.Value);
-            StringAssert.DoesNotContain("old release", viewModel.Summary.Value);
+            Assert.That(viewModel.Summary.Value, Does.Contain("current release"));
+            Assert.That(viewModel.Summary.Value, Does.Contain("skipped release"));
+            Assert.That(viewModel.Summary.Value, Does.Not.Contain("previous release"));
+            Assert.That(viewModel.Summary.Value, Does.Not.Contain("old release"));
         }
     }
 }

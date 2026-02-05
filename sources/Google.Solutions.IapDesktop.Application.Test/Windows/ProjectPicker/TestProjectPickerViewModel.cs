@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
                 .ConfigureAwait(true);
 
             Assert.IsTrue(viewModel.IsStatusTextVisible.Value);
-            StringAssert.Contains("Over 3", viewModel.StatusText.Value);
+            Assert.That(viewModel.StatusText.Value, Does.Contain("Over 3"));
         }
 
         [Test]
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
                 .ConfigureAwait(true);
 
             Assert.IsTrue(viewModel.IsStatusTextVisible.Value);
-            StringAssert.Contains("1 project", viewModel.StatusText.Value);
+            Assert.That(viewModel.StatusText.Value, Does.Contain("1 project"));
         }
 
         [Test]

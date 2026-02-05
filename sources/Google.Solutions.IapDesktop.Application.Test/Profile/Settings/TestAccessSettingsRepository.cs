@@ -43,9 +43,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 Assert.IsNull(settings.PrivateServiceConnectEndpoint.Value);
                 Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.Value);
-                StringAssert.Contains(
-                    "Google Endpoint Verification",
-                    settings.DeviceCertificateSelector.Value);
+                Assert.That(
+                    settings.DeviceCertificateSelector.Value, Does.Contain("Google Endpoint Verification"));
                 Assert.That(settings.ConnectionLimit.Value, Is.EqualTo(16));
             }
         }

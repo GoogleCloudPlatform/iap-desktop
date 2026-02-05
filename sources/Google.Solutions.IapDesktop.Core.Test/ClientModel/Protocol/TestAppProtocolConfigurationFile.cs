@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                     () => AppProtocolConfigurationFile.ReadFileAsync(filePath))
                 .ConfigureAwait(false);
 
-            StringAssert.Contains($"file {filePath}", e.Message);
+            Assert.That(e.Message, Does.Contain($"file {filePath}"));
         }
     }
 }

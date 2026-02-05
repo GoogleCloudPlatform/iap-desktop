@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void UserAgent()
         {
-            StringAssert.Contains("IAP-Desktop/", Install.UserAgent.ToString());
+            Assert.That(Install.UserAgent.ToString(), Does.Contain("IAP-Desktop/"));
         }
 
         //---------------------------------------------------------------------
@@ -216,15 +216,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void UserAgent_IncludesPlatform()
         {
-            StringAssert.Contains(
-                Environment.OSVersion.VersionString,
-                Install.UserAgent.Platform);
-            StringAssert.Contains(
-                $"{ProcessEnvironment.ProcessArchitecture.ToString().ToLower()}/",
-                Install.UserAgent.Platform);
-            StringAssert.Contains(
-                $"/{ProcessEnvironment.NativeArchitecture.ToString().ToLower()}",
-                Install.UserAgent.Platform);
+            Assert.That(
+                Install.UserAgent.Platform, Does.Contain(Environment.OSVersion.VersionString));
+            Assert.That(
+                Install.UserAgent.Platform, Does.Contain($"{ProcessEnvironment.ProcessArchitecture.ToString().ToLower()}/"));
+            Assert.That(
+                Install.UserAgent.Platform, Does.Contain($"/{ProcessEnvironment.NativeArchitecture.ToString().ToLower()}"));
         }
 
         //---------------------------------------------------------------------

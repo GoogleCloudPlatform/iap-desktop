@@ -597,7 +597,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
             Assert.IsNotNull(downloadUrl);
             Assert.IsTrue(Uri.IsWellFormedUriString(downloadUrl, UriKind.Absolute));
-            StringAssert.EndsWith(".msi", downloadUrl);
+            Assert.That(downloadUrl, Does.EndWith(".msi"));
 
             Assert.IsNotNull(release.DetailsUrl);
             Assert.IsTrue(Uri.IsWellFormedUriString(release.DetailsUrl, UriKind.Absolute));

@@ -163,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                StringAssert.StartsWith("sa_", credential.Username);
+                Assert.That(credential.Username, Does.StartWith("sa_"));
                 Assert.That(credential.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
 
                 await
@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                StringAssert.StartsWith("sa_", credential.Username);
+                Assert.That(credential.Username, Does.StartWith("sa_"));
                 Assert.That(credential.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
 
                 var instanceLocator = await instance;

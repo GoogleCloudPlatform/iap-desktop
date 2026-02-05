@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
 
             Assert.IsTrue(viewModel.IsPackageListEnabled.Value);
             Assert.IsNull(viewModel.InformationText.Value);
-            StringAssert.Contains("project-1", viewModel.WindowTitle.Value);
+            Assert.That(viewModel.WindowTitle.Value, Does.Contain("project-1"));
 
             Assert.That(viewModel.AllPackages.Count, Is.EqualTo(4));
             Assert.That(viewModel.FilteredPackages.Count, Is.EqualTo(4));
@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
 
             Assert.IsTrue(viewModel.IsPackageListEnabled.Value);
             Assert.IsNull(viewModel.InformationText.Value);
-            StringAssert.Contains("zone-1", viewModel.WindowTitle.Value);
+            Assert.That(viewModel.WindowTitle.Value, Does.Contain("zone-1"));
 
             Assert.That(viewModel.AllPackages.Count, Is.EqualTo(2));
             Assert.That(viewModel.FilteredPackages.Count, Is.EqualTo(2));
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
 
             Assert.IsTrue(viewModel.IsPackageListEnabled.Value);
             Assert.IsNull(viewModel.InformationText.Value);
-            StringAssert.Contains("instance-1", viewModel.WindowTitle.Value);
+            Assert.That(viewModel.WindowTitle.Value, Does.Contain("instance-1"));
 
             Assert.That(viewModel.AllPackages.Count, Is.EqualTo(2));
             Assert.That(viewModel.FilteredPackages.Count, Is.EqualTo(2));
@@ -276,7 +276,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
             Assert.IsTrue(viewModel.IsPackageListEnabled.Value);
             Assert.That(
                 viewModel.InformationText.Value, Is.EqualTo(PackageInventoryViewModel.OsInventoryNotAvailableWarning));
-            StringAssert.Contains("instance-3", viewModel.WindowTitle.Value);
+            Assert.That(viewModel.WindowTitle.Value, Does.Contain("instance-3"));
 
             Assert.That(viewModel.AllPackages.Count, Is.EqualTo(0));
             Assert.That(viewModel.FilteredPackages.Count, Is.EqualTo(0));

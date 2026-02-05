@@ -127,7 +127,7 @@ namespace Google.Solutions.Apis.Test.Client
                 ServiceRoute.Public,
                 new Uri("https://sample.googleapis.com/compute"));
 
-            StringAssert.Contains("https://sample.googleapis.com/compute", endpoint.ToString());
+            Assert.That(endpoint.ToString(), Does.Contain("https://sample.googleapis.com/compute"));
         }
     }
 }

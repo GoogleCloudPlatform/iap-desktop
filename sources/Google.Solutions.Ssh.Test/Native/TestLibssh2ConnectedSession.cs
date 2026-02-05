@@ -67,7 +67,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                StringAssert.StartsWith("SSH", connection.RemoteBanner);
+                Assert.That(connection.RemoteBanner, Does.StartWith("SSH"));
             }
         }
 

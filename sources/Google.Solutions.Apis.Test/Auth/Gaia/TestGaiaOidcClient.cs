@@ -364,9 +364,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             Assert.That(
                 codeReceiver.RequestUrl!.Scope, Is.EqualTo(Scopes.Cloud),
                 "Minimal flow");
-            StringAssert.Contains(
-                "login_hint=x%40example.com",
-                codeReceiver.RequestUrl.Build().ToString());
+            Assert.That(
+                codeReceiver.RequestUrl.Build().ToString(), Does.Contain("login_hint=x%40example.com"));
         }
 
         [Test]
@@ -483,7 +482,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 .ThrowsAsync<TokenResponseException>(
                     () => client.AuthorizeAsync(codeReceiver.Object, CancellationToken.None))
                 .ConfigureAwait(false);
-            StringAssert.Contains("invalid_grant", e.Message);
+            Assert.That(e.Message, Does.Contain("invalid_grant"));
         }
 
         [Test]
@@ -519,7 +518,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 .ThrowsAsync<TokenResponseException>(
                     () => client.AuthorizeAsync(codeReceiver.Object, CancellationToken.None))
                 .ConfigureAwait(false);
-            StringAssert.Contains("invalid_grant", e.Message);
+            Assert.That(e.Message, Does.Contain("invalid_grant"));
         }
 
         [Test]

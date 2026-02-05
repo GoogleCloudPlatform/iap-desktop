@@ -145,12 +145,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                 .ConfigureAwait(true);
 
             Assert.IsNotNull(viewModel.InspectedObject.Value);
-            StringAssert.Contains(
-                InstancePropertiesInspectorViewModel.DefaultWindowTitle,
-                viewModel.WindowTitle.Value);
-            StringAssert.Contains(
-                "instance-1",
-                viewModel.WindowTitle.Value);
+            Assert.That(
+                viewModel.WindowTitle.Value, Does.Contain(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
+            Assert.That(
+                viewModel.WindowTitle.Value, Does.Contain("instance-1"));
         }
 
         [Test]

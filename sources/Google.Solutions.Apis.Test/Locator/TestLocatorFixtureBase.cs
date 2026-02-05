@@ -47,7 +47,7 @@ namespace Google.Solutions.Apis.Test.Locator
         public void ToString_ContainsResourceType()
         {
             var locator = CreateInstance();
-            StringAssert.Contains(locator.ResourceType, locator.ToString());
+            Assert.That(locator.ToString(), Does.Contain(locator.ResourceType));
         }
     }
 }

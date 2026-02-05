@@ -138,9 +138,8 @@ namespace Google.Solutions.Common.Test.Util
         public void ToString_WhenIncludeOffsets()
         {
             var ex = CreateException();
-            StringAssert.Contains(
-                "CreateException() +IL_00",
-                ex.ToString(ExceptionFormatOptions.IncludeOffsets));
+            Assert.That(
+                ex.ToString(ExceptionFormatOptions.IncludeOffsets), Does.Contain("CreateException() +IL_00"));
         }
 
         [Test]

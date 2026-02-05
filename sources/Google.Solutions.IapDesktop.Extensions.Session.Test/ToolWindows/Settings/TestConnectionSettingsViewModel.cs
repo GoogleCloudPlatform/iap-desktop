@@ -163,12 +163,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
                 .ConfigureAwait(true);
 
             Assert.IsNotNull(viewModel.InspectedObject.Value);
-            StringAssert.Contains(
-                ConnectionSettingsViewModel.DefaultWindowTitle,
-                viewModel.WindowTitle.Value);
-            StringAssert.Contains(
-                "display",
-                viewModel.WindowTitle.Value);
+            Assert.That(
+                viewModel.WindowTitle.Value, Does.Contain(ConnectionSettingsViewModel.DefaultWindowTitle));
+            Assert.That(
+                viewModel.WindowTitle.Value, Does.Contain("display"));
         }
 
         [Test]
@@ -198,12 +196,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
                 .ConfigureAwait(true);
 
             Assert.IsNotNull(viewModel.InspectedObject.Value);
-            StringAssert.Contains(
-                ConnectionSettingsViewModel.DefaultWindowTitle,
-                viewModel.WindowTitle.Value);
-            StringAssert.Contains(
-                "display",
-                viewModel.WindowTitle.Value);
+            Assert.That(
+                viewModel.WindowTitle.Value, Does.Contain(ConnectionSettingsViewModel.DefaultWindowTitle));
+            Assert.That(
+                viewModel.WindowTitle.Value, Does.Contain("display"));
         }
 
         [Test]
@@ -235,12 +231,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
                 .ConfigureAwait(true);
 
             Assert.IsNotNull(viewModel.InspectedObject.Value);
-            StringAssert.Contains(
-                ConnectionSettingsViewModel.DefaultWindowTitle,
-                viewModel.WindowTitle.Value);
-            StringAssert.Contains(
-                "display",
-                viewModel.WindowTitle.Value);
+            Assert.That(
+                viewModel.WindowTitle.Value, Does.Contain(ConnectionSettingsViewModel.DefaultWindowTitle));
+            Assert.That(
+                viewModel.WindowTitle.Value, Does.Contain("display"));
         }
     }
 }

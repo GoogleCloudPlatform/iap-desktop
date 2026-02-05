@@ -108,9 +108,8 @@ namespace Google.Solutions.Ssh.Test.Native
                 var output = ReadToEnd(channel, Encoding.ASCII);
                 channel.Close();
 
-                StringAssert.Contains(
-                    $"whoami;exit\r\n{credential.Username}\r\nlogout\r\n",
-                    output);
+                Assert.That(
+                    output, Does.Contain($"whoami;exit\r\n{credential.Username}\r\nlogout\r\n"));
 
                 Assert.That(channel.ExitCode, Is.EqualTo(0));
                 Assert.That(channel.ExitSignal, Is.EqualTo(null));
@@ -157,9 +156,8 @@ namespace Google.Solutions.Ssh.Test.Native
                 // setlocale. In either case, we should find "en_AU" somewhere in
                 // the output, confirming that it has been passed to the VM.
                 //
-                StringAssert.Contains(
-                    "en_AU",
-                    output);
+                Assert.That(
+                    output, Does.Contain("en_AU"));
 
                 Assert.That(channel.ExitCode, Is.EqualTo(0));
             }

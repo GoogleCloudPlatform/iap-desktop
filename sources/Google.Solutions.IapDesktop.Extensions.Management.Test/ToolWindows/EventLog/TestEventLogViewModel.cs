@@ -198,8 +198,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
                 .ConfigureAwait(true);
 
             Assert.IsTrue(viewModel.IsEventListEnabled);
-            StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, viewModel.WindowTitle);
-            StringAssert.Contains("project-1", viewModel.WindowTitle);
+            Assert.That(viewModel.WindowTitle, Does.Contain(EventLogViewModel.DefaultWindowTitle));
+            Assert.That(viewModel.WindowTitle, Does.Contain("project-1"));
 
             Assert.That(viewModel.Events.Count, Is.EqualTo(2));
         }
@@ -224,8 +224,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
                 .ConfigureAwait(true);
 
             Assert.IsTrue(viewModel.IsEventListEnabled);
-            StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, viewModel.WindowTitle);
-            StringAssert.Contains("zone-1", viewModel.WindowTitle);
+            Assert.That(viewModel.WindowTitle, Does.Contain(EventLogViewModel.DefaultWindowTitle));
+            Assert.That(viewModel.WindowTitle, Does.Contain("zone-1"));
 
             Assert.That(viewModel.Events.Count, Is.EqualTo(2));
         }
@@ -251,8 +251,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
                 .ConfigureAwait(true);
 
             Assert.IsTrue(viewModel.IsEventListEnabled);
-            StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, viewModel.WindowTitle);
-            StringAssert.Contains("instance-1", viewModel.WindowTitle);
+            Assert.That(viewModel.WindowTitle, Does.Contain(EventLogViewModel.DefaultWindowTitle));
+            Assert.That(viewModel.WindowTitle, Does.Contain("instance-1"));
 
             Assert.That(viewModel.Events.Count, Is.EqualTo(2));
         }
