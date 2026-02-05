@@ -245,7 +245,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             window.Form.Dispose();
             window.Form.Dispose();
 
-            Assert.AreEqual(1, viewModel.DisposeCount);
+            Assert.That(viewModel.DisposeCount, Is.EqualTo(1));
             Assert.IsNull(viewModel.View);
         }
     }

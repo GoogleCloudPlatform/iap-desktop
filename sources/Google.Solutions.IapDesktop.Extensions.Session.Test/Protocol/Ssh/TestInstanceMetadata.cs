@@ -496,8 +496,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
-                Assert.AreEqual("bob", authorizedKey.Username);
+                Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.ProjectMetadata));
+                Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
                 computeClient.Verify(a => a.UpdateMetadataAsync(
                     It.IsAny<InstanceLocator>(),
@@ -549,8 +549,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
-                Assert.AreEqual("bob", authorizedKey.Username);
+                Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.ProjectMetadata));
+                Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
                 computeClient.Verify(a => a.UpdateMetadataAsync(
                     It.IsAny<InstanceLocator>(),
@@ -604,8 +604,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
-                Assert.AreEqual("bob", authorizedKey.Username);
+                Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.ProjectMetadata));
+                Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
                 computeClient.Verify(a => a.UpdateMetadataAsync(
                     It.IsAny<InstanceLocator>(),
@@ -659,8 +659,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
-                Assert.AreEqual("bob", authorizedKey.Username);
+                Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.ProjectMetadata));
+                Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
                 computeClient.Verify(a => a.UpdateMetadataAsync(
                     It.IsAny<InstanceLocator>(),
@@ -706,8 +706,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
-                Assert.AreEqual("bob", authorizedKey.Username);
+                Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.InstanceMetadata));
+                Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
                 computeClient.Verify(a => a.UpdateMetadataAsync(
                     It.Is((InstanceLocator loc) => loc == SampleLocator),
@@ -744,8 +744,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
-                Assert.AreEqual("bob", authorizedKey.Username);
+                Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.InstanceMetadata));
+                Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
                 computeClient.Verify(a => a.UpdateMetadataAsync(
                     It.Is((InstanceLocator loc) => loc == SampleLocator),
@@ -782,8 +782,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
-                Assert.AreEqual("bob", authorizedKey.Username);
+                Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.InstanceMetadata));
+                Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
                 computeClient.Verify(a => a.UpdateMetadataAsync(
                     It.Is((InstanceLocator loc) => loc == SampleLocator),
@@ -845,8 +845,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
-                Assert.AreEqual("bob", authorizedKey.Username);
+                Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.InstanceMetadata));
+                Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
                 computeClient.Verify(a => a.UpdateMetadataAsync(
                     It.Is((InstanceLocator loc) => loc == SampleLocator),
@@ -883,8 +883,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
-                Assert.AreEqual("bob", authorizedKey.Username);
+                Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.ProjectMetadata));
+                Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
                 computeClient.Verify(a => a.UpdateCommonInstanceMetadataAsync(
                     It.IsAny<ProjectLocator>(),
@@ -1045,8 +1045,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.InstanceMetadata);
             Assert.IsNotNull(keys);
-            Assert.AreEqual(1, keys.Count());
-            Assert.AreEqual("bob", keys.First().PosixUsername);
+            Assert.That(keys.Count(), Is.EqualTo(1));
+            Assert.That(keys.First().PosixUsername, Is.EqualTo("bob"));
         }
 
         [Test]
@@ -1087,8 +1087,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.ProjectMetadata);
             Assert.IsNotNull(keys);
-            Assert.AreEqual(1, keys.Count());
-            Assert.AreEqual("alice", keys.First().PosixUsername);
+            Assert.That(keys.Count(), Is.EqualTo(1));
+            Assert.That(keys.First().PosixUsername, Is.EqualTo("alice"));
         }
 
         [Test]
@@ -1129,7 +1129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.All);
             Assert.IsNotNull(keys);
-            Assert.AreEqual(2, keys.Count());
+            Assert.That(keys.Count(), Is.EqualTo(2));
             CollectionAssert.AreEquivalent(
                 new[] { "alice", "bob" },
                 keys.Select(k => k.PosixUsername));
@@ -1261,9 +1261,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(processor.AttachedServiceAccount);
-            Assert.AreEqual(
-                processor.AttachedServiceAccount!.Value,
-                "test@example.iam.gserviceaccount.com");
+            Assert.That(
+                "test@example.iam.gserviceaccount.com", Is.EqualTo(processor.AttachedServiceAccount!.Value));
         }
     }
 }

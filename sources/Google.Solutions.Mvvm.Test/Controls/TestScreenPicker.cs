@@ -109,11 +109,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.Show();
                 System.Windows.Forms.Application.DoEvents();
 
-                Assert.AreEqual(2, picker.Screens.Count());
-                Assert.AreEqual(2, picker.Screens.First().Bounds.X);
-                Assert.AreEqual(2, picker.Screens.First().Bounds.Y);
+                Assert.That(picker.Screens.Count(), Is.EqualTo(2));
+                Assert.That(picker.Screens.First().Bounds.X, Is.EqualTo(2));
+                Assert.That(picker.Screens.First().Bounds.Y, Is.EqualTo(2));
 
-                Assert.AreEqual(form.ClientSize.Height - 2, picker.Screens.Last().Bounds.Y + picker.Screens.Last().Bounds.Height, 2);
+                Assert.That(picker.Screens.Last().Bounds.Y + picker.Screens.Last().Bounds.Height, Is.EqualTo(form.ClientSize.Height - 2).Within(2));
             }
         }
     }

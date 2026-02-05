@@ -148,9 +148,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             {
                 Assert.IsTrue(context.UsePlatformManagedCredential);
 
-                Assert.AreEqual(2222, context.Parameters.Port);
-                Assert.AreEqual("user", context.Parameters.PreferredUsername);
-                Assert.AreEqual(TimeSpan.FromSeconds(123), context.Parameters.ConnectionTimeout);
+                Assert.That(context.Parameters.Port, Is.EqualTo(2222));
+                Assert.That(context.Parameters.PreferredUsername, Is.EqualTo("user"));
+                Assert.That(context.Parameters.ConnectionTimeout, Is.EqualTo(TimeSpan.FromSeconds(123)));
             }
         }
 
@@ -197,12 +197,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .ConfigureAwait(false);
 
                 Assert.IsInstanceOf<StaticPasswordCredential>(credential);
-                Assert.AreEqual(
-                    string.IsNullOrEmpty(username) ? "bob" : username,
-                    credential.Username);
-                Assert.AreEqual(
-                    string.Empty,
-                    ((StaticPasswordCredential)credential).Password.ToClearText());
+                Assert.That(
+                    credential.Username, Is.EqualTo(string.IsNullOrEmpty(username) ? "bob" : username));
+                Assert.That(
+                    ((StaticPasswordCredential)credential).Password.ToClearText(), Is.EqualTo(string.Empty));
             }
         }
 
@@ -244,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                Assert.AreEqual(TimeSpan.FromDays(1), context.Parameters.PublicKeyValidity);
+                Assert.That(context.Parameters.PublicKeyValidity, Is.EqualTo(TimeSpan.FromDays(1)));
                 Assert.IsFalse(context.Parameters.EnableFileAccess);
             }
         }
@@ -282,7 +280,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                Assert.AreEqual(TimeSpan.FromMinutes(10), context.Parameters.PublicKeyValidity);
+                Assert.That(context.Parameters.PublicKeyValidity, Is.EqualTo(TimeSpan.FromMinutes(10)));
             }
 
             keyStore.Verify(
@@ -327,9 +325,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                Assert.AreEqual(
-                    SessionContextFactory.EphemeralKeyValidity,
-                    context.Parameters.PublicKeyValidity);
+                Assert.That(
+                    context.Parameters.PublicKeyValidity, Is.EqualTo(SessionContextFactory.EphemeralKeyValidity));
             }
 
             keyStore.Verify(

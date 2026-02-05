@@ -53,8 +53,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 settings = repository.GetSettings();
                 Assert.IsFalse(settings.EnableLocalePropagation.Value);
-                Assert.AreEqual(3600, settings.PublicKeyValidity.Value);
-                Assert.AreEqual(SshKeyType.EcdsaNistp256, settings.PublicKeyType.Value);
+                Assert.That(settings.PublicKeyValidity.Value, Is.EqualTo(3600));
+                Assert.That(settings.PublicKeyType.Value, Is.EqualTo(SshKeyType.EcdsaNistp256));
                 Assert.IsFalse(settings.EnableFileAccess.Value);
             }
         }
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(SshKeyType.Rsa3072, settings.PublicKeyType.Value);
+                Assert.That(settings.PublicKeyType.Value, Is.EqualTo(SshKeyType.Rsa3072));
             }
         }
 
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(SshKeyType.EcdsaNistp384, settings.PublicKeyType.Value);
+                Assert.That(settings.PublicKeyType.Value, Is.EqualTo(SshKeyType.EcdsaNistp384));
             }
         }
 
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(SshKeyType.EcdsaNistp384, settings.PublicKeyType.Value);
+                Assert.That(settings.PublicKeyType.Value, Is.EqualTo(SshKeyType.EcdsaNistp384));
             }
         }
 
@@ -176,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(SshKeyType.EcdsaNistp521, settings.PublicKeyType.Value);
+                Assert.That(settings.PublicKeyType.Value, Is.EqualTo(SshKeyType.EcdsaNistp521));
             }
         }
 
@@ -199,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(SshKeyType.EcdsaNistp521, settings.PublicKeyType.Value);
+                Assert.That(settings.PublicKeyType.Value, Is.EqualTo(SshKeyType.EcdsaNistp521));
             }
         }
 
@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     UserProfile.SchemaVersion.Current);
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(60 * 60 * 24 * 30, settings.PublicKeyValidity.Value);
+                Assert.That(settings.PublicKeyValidity.Value, Is.EqualTo(60 * 60 * 24 * 30));
             }
         }
 
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(2 * 60, settings.PublicKeyValidity.Value);
+                Assert.That(settings.PublicKeyValidity.Value, Is.EqualTo(2 * 60));
             }
         }
 
@@ -282,7 +282,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(3 * 60, settings.PublicKeyValidity.Value);
+                Assert.That(settings.PublicKeyValidity.Value, Is.EqualTo(3 * 60));
             }
         }
 
@@ -305,7 +305,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(3 * 60, settings.PublicKeyValidity.Value);
+                Assert.That(settings.PublicKeyValidity.Value, Is.EqualTo(3 * 60));
             }
         }
 

@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             editor.Settings.RdpUsername.Value = username;
             editor.Settings.RdpPassword.SetClearTextValue(password);
 
-            Assert.AreEqual(complete, editor.AreCredentialsComplete);
+            Assert.That(editor.AreCredentialsComplete, Is.EqualTo(complete));
         }
 
         //---------------------------------------------------------------------
@@ -209,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
             editor.PromptForCredentials();
 
-            Assert.AreEqual(allowSave, editor.AllowSave);
+            Assert.That(editor.AllowSave, Is.EqualTo(allowSave));
         }
 
         //---------------------------------------------------------------------
@@ -277,7 +277,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                     "alice",
                     false).Wait());
 
-            Assert.AreEqual("alice", newCredentialViewModel.Username);
+            Assert.That(newCredentialViewModel.Username, Is.EqualTo("alice"));
         }
 
 
@@ -309,7 +309,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                     username,
                     false).Wait());
 
-            Assert.AreEqual("bobsemail", newCredentialViewModel.Username);
+            Assert.That(newCredentialViewModel.Username, Is.EqualTo("bobsemail"));
         }
 
         [Test]
@@ -346,8 +346,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                     false)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(generatedCredentials.UserName, credentials.UserName);
-            Assert.AreEqual(generatedCredentials.Password, credentials.Password);
+            Assert.That(credentials.UserName, Is.EqualTo(generatedCredentials.UserName));
+            Assert.That(credentials.Password, Is.EqualTo(generatedCredentials.Password));
         }
 
         //---------------------------------------------------------------------
@@ -378,8 +378,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                     true)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(generatedCredentials.UserName, credentials.UserName);
-            Assert.AreEqual(generatedCredentials.Password, credentials.Password);
+            Assert.That(credentials.UserName, Is.EqualTo(generatedCredentials.UserName));
+            Assert.That(credentials.Password, Is.EqualTo(generatedCredentials.Password));
         }
 
         //---------------------------------------------------------------------
@@ -408,9 +408,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 .GenerateCredentialsAsync(true)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(generatedCredentials.UserName, settings.RdpUsername.Value);
-            Assert.AreEqual(generatedCredentials.Password, settings.RdpPassword.Value.ToClearText());
-            Assert.AreEqual(".", settings.RdpDomain.Value);
+            Assert.That(settings.RdpUsername.Value, Is.EqualTo(generatedCredentials.UserName));
+            Assert.That(settings.RdpPassword.Value.ToClearText(), Is.EqualTo(generatedCredentials.Password));
+            Assert.That(settings.RdpDomain.Value, Is.EqualTo("."));
         }
 
         //---------------------------------------------------------------------
@@ -489,8 +489,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 .AmendCredentialsAsync(RdpCredentialGenerationBehavior.Force)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(generatedCredentials.UserName, editor.Settings.RdpUsername.Value);
-            Assert.AreEqual(generatedCredentials.Password, editor.Settings.RdpPassword.GetClearTextValue());
+            Assert.That(editor.Settings.RdpUsername.Value, Is.EqualTo(generatedCredentials.UserName));
+            Assert.That(editor.Settings.RdpPassword.GetClearTextValue(), Is.EqualTo(generatedCredentials.Password));
         }
 
         [Test]
@@ -515,8 +515,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 .AmendCredentialsAsync(RdpCredentialGenerationBehavior.Force)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(promptedCredentials.UserName, editor.Settings.RdpUsername.Value);
-            Assert.AreEqual(promptedCredentials.Password, editor.Settings.RdpPassword.GetClearTextValue());
+            Assert.That(editor.Settings.RdpUsername.Value, Is.EqualTo(promptedCredentials.UserName));
+            Assert.That(editor.Settings.RdpPassword.GetClearTextValue(), Is.EqualTo(promptedCredentials.Password));
         }
 
         //---------------------------------------------------------------------

@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(latest);
-            Assert.AreEqual("4.0.1", latest!.TagVersion!.ToString());
+            Assert.That(latest!.TagVersion!.ToString(), Is.EqualTo("4.0.1"));
         }
 
         [Test]
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual("3.0.1", latest?.TagVersion?.ToString());
+            Assert.That(latest?.TagVersion?.ToString(), Is.EqualTo("3.0.1"));
         }
 
         //---------------------------------------------------------------------
@@ -234,9 +234,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
             Assert.IsNotNull(latest);
             Assert.IsNotNull(latest!.Survey);
-            Assert.AreEqual("title", latest!.Survey!.Title);
-            Assert.AreEqual("description", latest.Survey.Description);
-            Assert.AreEqual("http://survey.example.com/", latest.Survey.Url);
+            Assert.That(latest!.Survey!.Title, Is.EqualTo("title"));
+            Assert.That(latest.Survey.Description, Is.EqualTo("description"));
+            Assert.That(latest.Survey.Url, Is.EqualTo("http://survey.example.com/"));
         }
 
         //---------------------------------------------------------------------
@@ -325,7 +325,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ListReleasesAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(4, releases.Count());
+            Assert.That(releases.Count(), Is.EqualTo(4));
             CollectionAssert.AreEqual(
                 new[]
                 {
@@ -363,7 +363,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ListReleasesAsync(ReleaseFeedOptions.IncludeCanaryReleases, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(4, releases.Count());
+            Assert.That(releases.Count(), Is.EqualTo(4));
             CollectionAssert.AreEqual(
                 new[]
                 {
@@ -401,7 +401,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ListReleasesAsync(ReleaseFeedOptions.None, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(2, releases.Count());
+            Assert.That(releases.Count(), Is.EqualTo(2));
             CollectionAssert.AreEqual(
                 new[]
                 {
@@ -433,7 +433,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
-            Assert.AreEqual(new Version(1, 2, 3, 4), release!.TagVersion);
+            Assert.That(release!.TagVersion, Is.EqualTo(new Version(1, 2, 3, 4)));
         }
 
         [Test]
@@ -527,17 +527,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
             Assert.IsTrue(release!.TryGetDownloadUrl(
                 Architecture.X86,
                 out var downloadUrlX86));
-            Assert.AreEqual("http://example.com/download.x86.MSI", downloadUrlX86);
+            Assert.That(downloadUrlX86, Is.EqualTo("http://example.com/download.x86.MSI"));
 
             Assert.IsTrue(release.TryGetDownloadUrl(
                 Architecture.X64,
                 out var downloadUrlX64));
-            Assert.AreEqual("http://example.com/download.x64.msi", downloadUrlX64);
+            Assert.That(downloadUrlX64, Is.EqualTo("http://example.com/download.x64.msi"));
 
             Assert.IsTrue(release.TryGetDownloadUrl(
                 Architecture.Arm64,
                 out var downloadUrlArm64));
-            Assert.AreEqual("http://example.com/download.arm64.msi", downloadUrlArm64);
+            Assert.That(downloadUrlArm64, Is.EqualTo("http://example.com/download.arm64.msi"));
         }
 
         [Test]
@@ -570,7 +570,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
             Assert.IsTrue(release!.TryGetDownloadUrl(
                 Architecture.X86,
                 out var downloadUrl));
-            Assert.AreEqual("http://example.com/download.msi", downloadUrl);
+            Assert.That(downloadUrl, Is.EqualTo("http://example.com/download.msi"));
         }
 
         //---------------------------------------------------------------------

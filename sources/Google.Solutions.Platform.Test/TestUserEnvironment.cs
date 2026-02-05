@@ -36,9 +36,8 @@ namespace Google.Solutions.Platform.Test
         public void ExpandEnvironmentStrings_WhenSourceIsNullOrEmpty(
             [Values("", " ", null)] string source)
         {
-            Assert.AreEqual(
-                source,
-                UserEnvironment.ExpandEnvironmentStrings(source));
+            Assert.That(
+                UserEnvironment.ExpandEnvironmentStrings(source), Is.EqualTo(source));
         }
 
         [Test]
@@ -58,9 +57,8 @@ namespace Google.Solutions.Platform.Test
         public void ExpandEnvironmentStrings_WhenSourceIncludesUnknownVariable()
         {
             var source = "%THISVARIABLEDOESNOTEXIST%\\foo";
-            Assert.AreEqual(
-                source,
-                UserEnvironment.ExpandEnvironmentStrings(source));
+            Assert.That(
+                UserEnvironment.ExpandEnvironmentStrings(source), Is.EqualTo(source));
         }
 
         //---------------------------------------------------------------------

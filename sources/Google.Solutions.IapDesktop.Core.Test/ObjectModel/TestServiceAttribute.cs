@@ -71,16 +71,14 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             var registry = new ServiceRegistry();
             registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
 
-            Assert.AreEqual(
-                0,
-                registry.GetService<CounterService>().SingletonWithoutDelayCreationAttributeCount);
+            Assert.That(
+                registry.GetService<CounterService>().SingletonWithoutDelayCreationAttributeCount, Is.EqualTo(0));
 
             registry.GetService<SingletonWithoutDelayCreationAttribute>();
             registry.GetService<SingletonWithoutDelayCreationAttribute>();
 
-            Assert.AreEqual(
-                1,
-                registry.GetService<CounterService>().SingletonWithoutDelayCreationAttributeCount);
+            Assert.That(
+                registry.GetService<CounterService>().SingletonWithoutDelayCreationAttributeCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -89,9 +87,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             var registry = new ServiceRegistry();
             registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
 
-            Assert.AreEqual(
-                1,
-                registry.GetService<CounterService>().SingletonWithDelayCreationAttributeCount);
+            Assert.That(
+                registry.GetService<CounterService>().SingletonWithDelayCreationAttributeCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -197,9 +194,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 
             var services = registry.GetServicesByCategory<ICategory>();
             Assert.IsNotNull(services);
-            Assert.AreEqual(2, services.Count());
-            Assert.AreEqual(1, services.OfType<TransientServiceImplementingCategory>().Count());
-            Assert.AreEqual(1, services.OfType<TransientServiceWithInterfaceImplementingCategory>().Count());
+            Assert.That(services.Count(), Is.EqualTo(2));
+            Assert.That(services.OfType<TransientServiceImplementingCategory>().Count(), Is.EqualTo(1));
+            Assert.That(services.OfType<TransientServiceWithInterfaceImplementingCategory>().Count(), Is.EqualTo(1));
         }
     }
 }

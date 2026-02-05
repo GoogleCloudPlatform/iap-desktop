@@ -39,21 +39,21 @@ namespace Google.Solutions.Apis.Test.Client
         public void Product()
         {
             var ua = new UserAgent("WidgetTool", new Version(1, 0), "Windows 95");
-            Assert.AreEqual("WidgetTool", ua.Product);
+            Assert.That(ua.Product, Is.EqualTo("WidgetTool"));
         }
 
         [Test]
         public void Version()
         {
             var ua = new UserAgent("WidgetTool", new Version(1, 0), "Windows 95");
-            Assert.AreEqual(new Version(1, 0), ua.Version);
+            Assert.That(ua.Version, Is.EqualTo(new Version(1, 0)));
         }
 
         [Test]
         public void OsVersion()
         {
             var ua = new UserAgent("WidgetTool", new Version(1, 0), "Windows 95");
-            Assert.AreEqual("Windows 95", ua.Platform);
+            Assert.That(ua.Platform, Is.EqualTo("Windows 95"));
         }
 
         //---------------------------------------------------------------------
@@ -65,10 +65,9 @@ namespace Google.Solutions.Apis.Test.Client
         {
             var ua = new UserAgent("WidgetTool", new Version(1, 0), "Windows 95");
 
-            Assert.AreEqual(
-                $"WidgetTool/1.0 (Windows 95) CLR/{ClrVersion.Version}",
-                ua.ToString());
-            Assert.AreEqual(ua.ToString(), ua.ToString());
+            Assert.That(
+                ua.ToString(), Is.EqualTo($"WidgetTool/1.0 (Windows 95) CLR/{ClrVersion.Version}"));
+            Assert.That(ua.ToString(), Is.EqualTo(ua.ToString()));
         }
 
         [Test]
@@ -79,10 +78,9 @@ namespace Google.Solutions.Apis.Test.Client
                 Extensions = "on-steroids"
             };
 
-            Assert.AreEqual(
-                $"WidgetTool/1.0 (Windows 95; on-steroids) CLR/{ClrVersion.Version}",
-                ua.ToString());
-            Assert.AreEqual(ua.ToString(), ua.ToString());
+            Assert.That(
+                ua.ToString(), Is.EqualTo($"WidgetTool/1.0 (Windows 95; on-steroids) CLR/{ClrVersion.Version}"));
+            Assert.That(ua.ToString(), Is.EqualTo(ua.ToString()));
         }
 
         //---------------------------------------------------------------------
@@ -102,7 +100,7 @@ namespace Google.Solutions.Apis.Test.Client
                 ApplicationName = ua.ToApplicationName()
             });
 
-            Assert.AreEqual("WidgetTool/1.0", service.ApplicationName);
+            Assert.That(service.ApplicationName, Is.EqualTo("WidgetTool/1.0"));
         }
     }
 }

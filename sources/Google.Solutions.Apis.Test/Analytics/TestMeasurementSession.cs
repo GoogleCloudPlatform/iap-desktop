@@ -44,7 +44,7 @@ namespace Google.Solutions.Apis.Test.Analytics
                 .GenerateParameters()
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-            Assert.AreEqual("true", parameters["debug_mode"]);
+            Assert.That(parameters["debug_mode"], Is.EqualTo("true"));
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace Google.Solutions.Apis.Test.Analytics
                 .GenerateParameters()
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-            Assert.AreEqual(session.Id.ToString(), parameters["session_id"]);
+            Assert.That(parameters["session_id"], Is.EqualTo(session.Id.ToString()));
         }
 
         [Test]

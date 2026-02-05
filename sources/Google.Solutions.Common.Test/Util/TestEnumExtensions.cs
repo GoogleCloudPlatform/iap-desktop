@@ -111,7 +111,7 @@ namespace Google.Solutions.Common.Test.Util
             var a = SampleEnumWithAttributes.WithAttribute
                 .GetAttribute<System.ComponentModel.DescriptionAttribute>();
             Assert.IsNotNull(a);
-            Assert.AreEqual("With attribute", a!.Description);
+            Assert.That(a!.Description, Is.EqualTo("With attribute"));
         }
 
         [Test]

@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 .ConfigureAwait(true);
 
             Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
-            Assert.AreEqual(516, ((RdpDisconnectedException)this.ExceptionShown!).DisconnectReason);
+            Assert.That(((RdpDisconnectedException)this.ExceptionShown!).DisconnectReason, Is.EqualTo(516));
         }
 
         //---------------------------------------------------------------------
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
 
                 Assert.IsNotNull(this.ExceptionShown);
                 Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
-                Assert.AreEqual(2055, ((RdpDisconnectedException)this.ExceptionShown!).DisconnectReason);
+                Assert.That(((RdpDisconnectedException)this.ExceptionShown!).DisconnectReason, Is.EqualTo(2055));
             }
         }
 

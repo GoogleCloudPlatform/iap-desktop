@@ -68,7 +68,7 @@ namespace Google.Solutions.Apis.Test.Crm
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(project);
-            Assert.AreEqual(TestProject.ProjectId, project.Name);
+            Assert.That(project.Name, Is.EqualTo(TestProject.ProjectId));
         }
 
         //---------------------------------------------------------------------
@@ -130,7 +130,7 @@ namespace Google.Solutions.Apis.Test.Crm
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(project);
-            Assert.AreEqual(TestProject.ProjectId, project.ProjectId);
+            Assert.That(project.ProjectId, Is.EqualTo(TestProject.ProjectId));
         }
 
         [Test]
@@ -185,8 +185,8 @@ namespace Google.Solutions.Apis.Test.Crm
 
             Assert.IsNotNull(result);
             Assert.IsFalse(result.IsTruncated);
-            Assert.AreEqual(1, result.Projects.Count());
-            Assert.AreEqual(TestProject.ProjectId, result.Projects.First().ProjectId);
+            Assert.That(result.Projects.Count(), Is.EqualTo(1));
+            Assert.That(result.Projects.First().ProjectId, Is.EqualTo(TestProject.ProjectId));
         }
 
         [Test]
@@ -302,25 +302,22 @@ namespace Google.Solutions.Apis.Test.Crm
         [Test]
         public void ProjectFilter_WhenTermContainsSpecialCharacters_ThenByProjectIdReturnsFilter()
         {
-            Assert.AreEqual(
-                "id:\"foo-bar\"",
-                ProjectFilter.ByProjectId("foo:'\"-bar").ToString());
+            Assert.That(
+                ProjectFilter.ByProjectId("foo:'\"-bar").ToString(), Is.EqualTo("id:\"foo-bar\""));
         }
 
         [Test]
         public void ProjectFilter_WhenTermContainsSpecialCharacters_ThenByTermReturnsFilter()
         {
-            Assert.AreEqual(
-                "name:\"*foo-bar*\" OR id:\"*foo-bar*\"",
-                ProjectFilter.ByTerm("foo:'\"-bar").ToString());
+            Assert.That(
+                ProjectFilter.ByTerm("foo:'\"-bar").ToString(), Is.EqualTo("name:\"*foo-bar*\" OR id:\"*foo-bar*\""));
         }
 
         [Test]
         public void ProjectFilter_WhenTermEmpty_ThenByTermReturnsFilter()
         {
-            Assert.AreEqual(
-                "name:\"**\" OR id:\"**\"",
-                ProjectFilter.ByTerm(string.Empty).ToString());
+            Assert.That(
+                ProjectFilter.ByTerm(string.Empty).ToString(), Is.EqualTo("name:\"**\" OR id:\"**\""));
         }
     }
 }

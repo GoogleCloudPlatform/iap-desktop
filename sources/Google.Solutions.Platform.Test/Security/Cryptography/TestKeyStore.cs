@@ -91,7 +91,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
                 false))
             {
                 Assert.IsNotNull(key);
-                Assert.AreEqual(keyType.Size, key.KeySize);
+                Assert.That(key.KeySize, Is.EqualTo(keyType.Size));
             }
         }
 

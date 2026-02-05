@@ -133,7 +133,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                     new ContextCommand<string>(
                         "toplevel",
                         ctx => CommandState.Enabled,
-                        ctx => Assert.AreEqual("ctx-2", ctx)));
+                        ctx => Assert.That(ctx, Is.EqualTo("ctx-2"))));
 
                 source.Context = "ctx-2";
             }
@@ -156,7 +156,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                     new ContextCommand<string>(
                         "toplevel",
                         ctx => CommandState.Enabled,
-                        ctx => Assert.AreEqual("ctx-1", ctx)));
+                        ctx => Assert.That(ctx, Is.EqualTo("ctx-1"))));
 
                 source.Context = "ctx-2";
             }
@@ -244,7 +244,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 container.ExecuteCommandByKey(Keys.F4);
 
-                Assert.AreEqual("ctx-1", contextOfCallback);
+                Assert.That(contextOfCallback, Is.EqualTo("ctx-1"));
             }
         }
 

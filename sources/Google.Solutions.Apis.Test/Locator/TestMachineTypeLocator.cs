@@ -38,7 +38,7 @@ namespace Google.Solutions.Apis.Test.Locator
         public void Project()
         {
             var ref1 = new MachineTypeLocator("project-1", "zone-1", "type-1");
-            Assert.AreEqual(ref1.ProjectId, ref1.Project.Name);
+            Assert.That(ref1.Project.Name, Is.EqualTo(ref1.ProjectId));
         }
 
         //---------------------------------------------------------------------
@@ -53,10 +53,10 @@ namespace Google.Solutions.Apis.Test.Locator
                 out var ref1));
 
             Assert.IsNotNull(ref1);
-            Assert.AreEqual("machineTypes", ref1!.ResourceType);
-            Assert.AreEqual("n2d-standard-64", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("machineTypes"));
+            Assert.That(ref1.Name, Is.EqualTo("n2d-standard-64"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -67,10 +67,10 @@ namespace Google.Solutions.Apis.Test.Locator
                 out var ref1));
 
             Assert.IsNotNull(ref1);
-            Assert.AreEqual("machineTypes", ref1!.ResourceType);
-            Assert.AreEqual("n2d-standard-64", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("machineTypes"));
+            Assert.That(ref1.Name, Is.EqualTo("n2d-standard-64"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -81,10 +81,10 @@ namespace Google.Solutions.Apis.Test.Locator
                 out var ref1));
 
             Assert.IsNotNull(ref1);
-            Assert.AreEqual("machineTypes", ref1!.ResourceType);
-            Assert.AreEqual("n2d-standard-64", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("machineTypes"));
+            Assert.That(ref1.Name, Is.EqualTo("n2d-standard-64"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -95,10 +95,10 @@ namespace Google.Solutions.Apis.Test.Locator
                 out var ref1));
 
             Assert.IsNotNull(ref1);
-            Assert.AreEqual("machineTypes", ref1!.ResourceType);
-            Assert.AreEqual("n2d-standard-64", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("machineTypes"));
+            Assert.That(ref1.Name, Is.EqualTo("n2d-standard-64"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -133,10 +133,10 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = MachineTypeLocator.Parse(
                 "projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64");
 
-            Assert.AreEqual("machineTypes", ref1.ResourceType);
-            Assert.AreEqual("n2d-standard-64", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("machineTypes"));
+            Assert.That(ref1.Name, Is.EqualTo("n2d-standard-64"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -145,10 +145,10 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = MachineTypeLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64");
 
-            Assert.AreEqual("machineTypes", ref1.ResourceType);
-            Assert.AreEqual("n2d-standard-64", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("machineTypes"));
+            Assert.That(ref1.Name, Is.EqualTo("n2d-standard-64"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -157,10 +157,10 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = MachineTypeLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64");
 
-            Assert.AreEqual("machineTypes", ref1.ResourceType);
-            Assert.AreEqual("n2d-standard-64", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("machineTypes"));
+            Assert.That(ref1.Name, Is.EqualTo("n2d-standard-64"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -168,10 +168,10 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var ref1 = MachineTypeLocator.Parse(
                  "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64");
-            Assert.AreEqual("machineTypes", ref1.ResourceType);
-            Assert.AreEqual("n2d-standard-64", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("machineTypes"));
+            Assert.That(ref1.Name, Is.EqualTo("n2d-standard-64"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -217,9 +217,8 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var path = "projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64";
 
-            Assert.AreEqual(
-                path,
-                MachineTypeLocator.Parse(path).ToString());
+            Assert.That(
+                MachineTypeLocator.Parse(path).ToString(), Is.EqualTo(path));
         }
 
         [Test]
@@ -227,10 +226,9 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var path = "projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64";
 
-            Assert.AreEqual(
-                path,
+            Assert.That(
                 MachineTypeLocator.Parse(
-                    "https://www.googleapis.com/compute/v1/" + path).ToString());
+                    "https://www.googleapis.com/compute/v1/" + path).ToString(), Is.EqualTo(path));
         }
     }
 }

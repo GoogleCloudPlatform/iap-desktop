@@ -114,7 +114,7 @@ namespace Google.Solutions.Platform.Test.IO
                 var buffer = new byte[data.Length];
                 var bytesRead = pipe.ReadSide.Read(buffer, 0, buffer.Length);
 
-                Assert.AreEqual(data.Length, bytesRead);
+                Assert.That(bytesRead, Is.EqualTo(data.Length));
                 CollectionAssert.AreEqual(data, buffer);
             }
         }

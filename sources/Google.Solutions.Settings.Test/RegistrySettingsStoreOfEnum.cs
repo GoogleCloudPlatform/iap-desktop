@@ -84,11 +84,11 @@ namespace Google.Solutions.Settings.Test
                     "category",
                     ConsoleColor.Blue);
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(ConsoleColor.Blue, setting.Value);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
+                Assert.That(setting.Value, Is.EqualTo(ConsoleColor.Blue));
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -107,11 +107,11 @@ namespace Google.Solutions.Settings.Test
                     "category",
                     ConsoleColor.Blue);
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(ConsoleColor.Blue, setting.Value);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
+                Assert.That(setting.Value, Is.EqualTo(ConsoleColor.Blue));
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -132,11 +132,11 @@ namespace Google.Solutions.Settings.Test
                     "category",
                     ConsoleColor.Blue);
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(ConsoleColor.Red, setting.Value);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
+                Assert.That(setting.Value, Is.EqualTo(ConsoleColor.Red));
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -157,11 +157,11 @@ namespace Google.Solutions.Settings.Test
                     "category",
                     ConsoleColor.Blue);
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(ConsoleColor.Blue, setting.Value);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
+                Assert.That(setting.Value, Is.EqualTo(ConsoleColor.Blue));
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -187,7 +187,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = ConsoleColor.Green;
                 key.Write(setting);
 
-                Assert.AreEqual((int)ConsoleColor.Green, key.BackingKey.GetValue("test"));
+                Assert.That(key.BackingKey.GetValue("test"), Is.EqualTo((int)ConsoleColor.Green));
             }
         }
 
@@ -230,7 +230,7 @@ namespace Google.Solutions.Settings.Test
 
                 setting.Value = setting.DefaultValue;
 
-                Assert.AreEqual(ConsoleColor.Blue, setting.Value);
+                Assert.That(setting.Value, Is.EqualTo(ConsoleColor.Blue));
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }
@@ -290,7 +290,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = ConsoleColor.Blue;
                 ((IAnySetting)setting).AnyValue = null;
 
-                Assert.AreEqual(ConsoleColor.Blue, setting.Value);
+                Assert.That(setting.Value, Is.EqualTo(ConsoleColor.Blue));
                 Assert.IsTrue(setting.IsDefault);
             }
         }

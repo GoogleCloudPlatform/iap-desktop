@@ -89,12 +89,10 @@ namespace Google.Solutions.Iap.Test.Net
                     }
                     catch (WebSocketStreamClosedByServerException e)
                     {
-                        Assert.AreEqual(
-                            WebSocketCloseStatus.InternalServerError,
-                            e.CloseStatus);
-                        Assert.AreEqual(
-                            WebSocketCloseStatus.InternalServerError.ToString(),
-                            e.CloseStatusDescription);
+                        Assert.That(
+                            e.CloseStatus, Is.EqualTo(WebSocketCloseStatus.InternalServerError));
+                        Assert.That(
+                            e.CloseStatusDescription, Is.EqualTo(WebSocketCloseStatus.InternalServerError.ToString()));
                     }
 
                     await ExceptionAssert
@@ -142,7 +140,7 @@ namespace Google.Solutions.Iap.Test.Net
                         .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(0, bytesRead);
+                    Assert.That(bytesRead, Is.EqualTo(0));
                 }
             }
         }
@@ -162,7 +160,7 @@ namespace Google.Solutions.Iap.Test.Net
                         .ReadAsync(Array.Empty<byte>(), 0, 0, CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(0, bytesRead);
+                    Assert.That(bytesRead, Is.EqualTo(0));
                 }
             }
         }
@@ -188,7 +186,7 @@ namespace Google.Solutions.Iap.Test.Net
                         .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(8, bytesRead);
+                    Assert.That(bytesRead, Is.EqualTo(8));
                     CollectionAssert.AreEquivalent(frame, buffer);
                 }
             }
@@ -218,7 +216,7 @@ namespace Google.Solutions.Iap.Test.Net
                         .ReadAsync(buffer, 4, 4, CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(8, bytesRead);
+                    Assert.That(bytesRead, Is.EqualTo(8));
                     CollectionAssert.AreEquivalent(frame, buffer);
                 }
             }
@@ -248,7 +246,7 @@ namespace Google.Solutions.Iap.Test.Net
                         .ReadAsync(buffer, 4, 5, CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(8, bytesRead);
+                    Assert.That(bytesRead, Is.EqualTo(8));
                 }
             }
         }
@@ -281,13 +279,13 @@ namespace Google.Solutions.Iap.Test.Net
                         .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(4, bytesRead1);
+                    Assert.That(bytesRead1, Is.EqualTo(4));
 
                     var bytesRead2 = await clientStream
                         .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(4, bytesRead2);
+                    Assert.That(bytesRead2, Is.EqualTo(4));
                 }
             }
         }

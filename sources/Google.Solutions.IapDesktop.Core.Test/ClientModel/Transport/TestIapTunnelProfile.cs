@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             Assert.IsTrue(ref1.Equals((object)ref2));
             Assert.IsTrue(ref1 == ref2);
             Assert.IsFalse(ref1 != ref2);
-            Assert.AreEqual(ref1.GetHashCode(), ref2.GetHashCode());
+            Assert.That(ref2.GetHashCode(), Is.EqualTo(ref1.GetHashCode()));
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             Assert.IsTrue(ref1.Equals((object)ref2));
             Assert.IsTrue(ref1 == ref2);
             Assert.IsFalse(ref1 != ref2);
-            Assert.AreEqual(ref1.GetHashCode(), ref2.GetHashCode());
+            Assert.That(ref2.GetHashCode(), Is.EqualTo(ref1.GetHashCode()));
         }
 
         [Test]

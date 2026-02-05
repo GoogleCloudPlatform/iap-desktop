@@ -37,9 +37,8 @@ namespace Google.Solutions.Ssh.Test.Format
                 writer.WriteByte((byte)0x42);
                 writer.Flush();
 
-                Assert.AreEqual(
-                    new byte[] { 0x42 },
-                    buffer.ToArray());
+                Assert.That(
+                    buffer.ToArray(), Is.EqualTo(new byte[] { 0x42 }));
             }
         }
 
@@ -53,9 +52,8 @@ namespace Google.Solutions.Ssh.Test.Format
                 writer.WriteBoolean(false);
                 writer.Flush();
 
-                Assert.AreEqual(
-                    new byte[] { 1, 0 },
-                    buffer.ToArray());
+                Assert.That(
+                    buffer.ToArray(), Is.EqualTo(new byte[] { 1, 0 }));
             }
         }
 
@@ -68,9 +66,8 @@ namespace Google.Solutions.Ssh.Test.Format
                 writer.WriteUint32(0xAABBCCDD);
                 writer.Flush();
 
-                Assert.AreEqual(
-                    new byte[] { 0xAA, 0xBB, 0xCC, 0xDD },
-                    buffer.ToArray());
+                Assert.That(
+                    buffer.ToArray(), Is.EqualTo(new byte[] { 0xAA, 0xBB, 0xCC, 0xDD }));
             }
         }
 
@@ -83,9 +80,8 @@ namespace Google.Solutions.Ssh.Test.Format
                 writer.WriteUint64(0xAABBCCDD00112233);
                 writer.Flush();
 
-                Assert.AreEqual(
-                    new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x00, 0x11, 0x22, 0x33 },
-                    buffer.ToArray());
+                Assert.That(
+                    buffer.ToArray(), Is.EqualTo(new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x00, 0x11, 0x22, 0x33 }));
             }
         }
 
@@ -98,9 +94,8 @@ namespace Google.Solutions.Ssh.Test.Format
                 writer.WriteString(string.Empty);
                 writer.Flush();
 
-                Assert.AreEqual(
-                    new byte[] { 0, 0, 0, 0 },
-                    buffer.ToArray());
+                Assert.That(
+                    buffer.ToArray(), Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
             }
         }
 
@@ -113,9 +108,8 @@ namespace Google.Solutions.Ssh.Test.Format
                 writer.WriteString("a");
                 writer.Flush();
 
-                Assert.AreEqual(
-                    new byte[] { 0, 0, 0, 1, (byte)'a' },
-                    buffer.ToArray());
+                Assert.That(
+                    buffer.ToArray(), Is.EqualTo(new byte[] { 0, 0, 0, 1, (byte)'a' }));
             }
         }
 
@@ -128,9 +122,8 @@ namespace Google.Solutions.Ssh.Test.Format
                 writer.WriteMultiPrecisionInteger(new byte[] { 0 });
                 writer.Flush();
 
-                Assert.AreEqual(
-                    new byte[] { 0, 0, 0, 0 },
-                    buffer.ToArray());
+                Assert.That(
+                    buffer.ToArray(), Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
             }
         }
 
@@ -143,9 +136,8 @@ namespace Google.Solutions.Ssh.Test.Format
                 writer.WriteMultiPrecisionInteger(new byte[] { 0, 0, 0xA, 0xB, 0xC });
                 writer.Flush();
 
-                Assert.AreEqual(
-                    new byte[] { 0, 0, 0, 3, 0xA, 0xB, 0xC },
-                    buffer.ToArray());
+                Assert.That(
+                    buffer.ToArray(), Is.EqualTo(new byte[] { 0, 0, 0, 3, 0xA, 0xB, 0xC }));
             }
         }
 
@@ -158,9 +150,8 @@ namespace Google.Solutions.Ssh.Test.Format
                 writer.WriteMultiPrecisionInteger(new[] { (byte)0x80 });
                 writer.Flush();
 
-                Assert.AreEqual(
-                    new byte[] { 0, 0, 0, 2, 0, 0x80 },
-                    buffer.ToArray());
+                Assert.That(
+                    buffer.ToArray(), Is.EqualTo(new byte[] { 0, 0, 0, 2, 0, 0x80 }));
             }
         }
     }

@@ -38,7 +38,7 @@ namespace Google.Solutions.Apis.Test.Locator
         public void Project()
         {
             var ref1 = new DiskTypeLocator("project-1", "zone-1", "type-1");
-            Assert.AreEqual(ref1.ProjectId, ref1.Project.Name);
+            Assert.That(ref1.Project.Name, Is.EqualTo(ref1.ProjectId));
         }
 
         //---------------------------------------------------------------------
@@ -53,10 +53,10 @@ namespace Google.Solutions.Apis.Test.Locator
                 out var ref1));
 
             Assert.IsNotNull(ref1);
-            Assert.AreEqual("diskTypes", ref1!.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("diskTypes"));
+            Assert.That(ref1.Name, Is.EqualTo("pd-standard"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -67,10 +67,10 @@ namespace Google.Solutions.Apis.Test.Locator
                 out var ref1));
 
             Assert.IsNotNull(ref1);
-            Assert.AreEqual("diskTypes", ref1!.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("diskTypes"));
+            Assert.That(ref1.Name, Is.EqualTo("pd-standard"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -81,10 +81,10 @@ namespace Google.Solutions.Apis.Test.Locator
                 out var ref1));
 
             Assert.IsNotNull(ref1);
-            Assert.AreEqual("diskTypes", ref1!.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("diskTypes"));
+            Assert.That(ref1.Name, Is.EqualTo("pd-standard"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -95,10 +95,10 @@ namespace Google.Solutions.Apis.Test.Locator
                 out var ref1));
 
             Assert.IsNotNull(ref1);
-            Assert.AreEqual("diskTypes", ref1!.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("diskTypes"));
+            Assert.That(ref1.Name, Is.EqualTo("pd-standard"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -133,10 +133,10 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = DiskTypeLocator.Parse(
                 "projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
 
-            Assert.AreEqual("diskTypes", ref1.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("diskTypes"));
+            Assert.That(ref1.Name, Is.EqualTo("pd-standard"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -145,10 +145,10 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = DiskTypeLocator.Parse(
                 "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
 
-            Assert.AreEqual("diskTypes", ref1.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("diskTypes"));
+            Assert.That(ref1.Name, Is.EqualTo("pd-standard"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -157,10 +157,10 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = DiskTypeLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
 
-            Assert.AreEqual("diskTypes", ref1.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("diskTypes"));
+            Assert.That(ref1.Name, Is.EqualTo("pd-standard"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -168,10 +168,10 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var ref1 = DiskTypeLocator.Parse(
                  "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
-            Assert.AreEqual("diskTypes", ref1.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
+            Assert.That(ref1.ResourceType, Is.EqualTo("diskTypes"));
+            Assert.That(ref1.Name, Is.EqualTo("pd-standard"));
+            Assert.That(ref1.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(ref1.ProjectId, Is.EqualTo("project-1"));
         }
 
         [Test]
@@ -217,9 +217,8 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var path = "projects/project-1/zones/us-central1-a/diskTypes/pd-standard";
 
-            Assert.AreEqual(
-                path,
-                DiskTypeLocator.Parse(path).ToString());
+            Assert.That(
+                DiskTypeLocator.Parse(path).ToString(), Is.EqualTo(path));
         }
 
         [Test]
@@ -227,10 +226,9 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var path = "projects/project-1/zones/us-central1-a/diskTypes/pd-standard";
 
-            Assert.AreEqual(
-                path,
+            Assert.That(
                 DiskTypeLocator.Parse(
-                    "https://www.googleapis.com/compute/v1/" + path).ToString());
+                    "https://www.googleapis.com/compute/v1/" + path).ToString(), Is.EqualTo(path));
         }
     }
 }

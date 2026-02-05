@@ -41,15 +41,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new PackageInventoryCommands(toolWindowHost.Object);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuOpenInstalledPackages.QueryState(new Mock<IProjectModelProjectNode>().Object));
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuOpenInstalledPackages.QueryState(new Mock<IProjectModelZoneNode>().Object));
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuOpenInstalledPackages.QueryState(new Mock<IProjectModelInstanceNode>().Object));
+            Assert.That(
+                commands.ContextMenuOpenInstalledPackages.QueryState(new Mock<IProjectModelProjectNode>().Object), Is.EqualTo(CommandState.Enabled));
+            Assert.That(
+                commands.ContextMenuOpenInstalledPackages.QueryState(new Mock<IProjectModelZoneNode>().Object), Is.EqualTo(CommandState.Enabled));
+            Assert.That(
+                commands.ContextMenuOpenInstalledPackages.QueryState(new Mock<IProjectModelInstanceNode>().Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -58,9 +55,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new PackageInventoryCommands(toolWindowHost.Object);
 
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuOpenInstalledPackages.QueryState(new Mock<IProjectModelCloudNode>().Object));
+            Assert.That(
+                commands.ContextMenuOpenInstalledPackages.QueryState(new Mock<IProjectModelCloudNode>().Object), Is.EqualTo(CommandState.Unavailable));
         }
 
         //---------------------------------------------------------------------
@@ -73,15 +69,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new PackageInventoryCommands(toolWindowHost.Object);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuOpenAvailablePackages.QueryState(new Mock<IProjectModelProjectNode>().Object));
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuOpenAvailablePackages.QueryState(new Mock<IProjectModelZoneNode>().Object));
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuOpenAvailablePackages.QueryState(new Mock<IProjectModelInstanceNode>().Object));
+            Assert.That(
+                commands.ContextMenuOpenAvailablePackages.QueryState(new Mock<IProjectModelProjectNode>().Object), Is.EqualTo(CommandState.Enabled));
+            Assert.That(
+                commands.ContextMenuOpenAvailablePackages.QueryState(new Mock<IProjectModelZoneNode>().Object), Is.EqualTo(CommandState.Enabled));
+            Assert.That(
+                commands.ContextMenuOpenAvailablePackages.QueryState(new Mock<IProjectModelInstanceNode>().Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -90,9 +83,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new PackageInventoryCommands(toolWindowHost.Object);
 
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuOpenAvailablePackages.QueryState(new Mock<IProjectModelCloudNode>().Object));
+            Assert.That(
+                commands.ContextMenuOpenAvailablePackages.QueryState(new Mock<IProjectModelCloudNode>().Object), Is.EqualTo(CommandState.Unavailable));
         }
 
         //---------------------------------------------------------------------
@@ -107,9 +99,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
 
             var commands = new PackageInventoryCommands(toolWindowHost.Object);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.WindowMenuOpenInstalledPackages.QueryState(context.Object));
+            Assert.That(
+                commands.WindowMenuOpenInstalledPackages.QueryState(context.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         //---------------------------------------------------------------------
@@ -124,9 +115,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
 
             var commands = new PackageInventoryCommands(toolWindowHost.Object);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.WindowMenuOpenAvailablePackages.QueryState(context.Object));
+            Assert.That(
+                commands.WindowMenuOpenAvailablePackages.QueryState(context.Object), Is.EqualTo(CommandState.Enabled));
         }
     }
 }

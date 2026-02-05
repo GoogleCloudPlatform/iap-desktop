@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         [Test]
         public void ToString_ReturnsName()
         {
-            Assert.AreEqual("Current process", new CurrentProcessPolicy().ToString());
+            Assert.That(new CurrentProcessPolicy().ToString(), Is.EqualTo("Current process"));
         }
 
         //---------------------------------------------------------------------

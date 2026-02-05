@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
             using (var lsa = CredentialDialog.Lsa.ConnectUntrusted())
             {
                 var package = lsa.LookupAuthenticationPackage("Kerberos");
-                Assert.AreEqual(2, package);
+                Assert.That(package, Is.EqualTo(2));
             }
         }
 
@@ -182,9 +182,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
 
                 var unpacked = packed.Unpack();
 
-                Assert.AreEqual(user, unpacked.UserName);
-                Assert.AreEqual("", unpacked.Domain);
-                Assert.AreEqual("password", unpacked.Password);
+                Assert.That(unpacked.UserName, Is.EqualTo(user));
+                Assert.That(unpacked.Domain, Is.EqualTo(""));
+                Assert.That(unpacked.Password, Is.EqualTo("password"));
             }
         }
 
@@ -200,9 +200,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
 
                 var unpacked = packed.Unpack();
 
-                Assert.AreEqual(user, unpacked.UserName);
-                Assert.AreEqual("", unpacked.Domain);
-                Assert.AreEqual("password", unpacked.Password);
+                Assert.That(unpacked.UserName, Is.EqualTo(user));
+                Assert.That(unpacked.Domain, Is.EqualTo(""));
+                Assert.That(unpacked.Password, Is.EqualTo("password"));
             }
         }
 
@@ -217,9 +217,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
 
                 var unpacked = packed.Unpack();
 
-                Assert.AreEqual("domain\\user", unpacked.UserName);
-                Assert.AreEqual("", unpacked.Domain);
-                Assert.AreEqual("password", unpacked.Password);
+                Assert.That(unpacked.UserName, Is.EqualTo("domain\\user"));
+                Assert.That(unpacked.Domain, Is.EqualTo(""));
+                Assert.That(unpacked.Password, Is.EqualTo("password"));
             }
         }
 
@@ -234,9 +234,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
 
                 var unpacked = packed.Unpack();
 
-                Assert.AreEqual("", unpacked.UserName);
-                Assert.AreEqual("", unpacked.Domain);
-                Assert.AreEqual("", unpacked.Password);
+                Assert.That(unpacked.UserName, Is.EqualTo(""));
+                Assert.That(unpacked.Domain, Is.EqualTo(""));
+                Assert.That(unpacked.Password, Is.EqualTo(""));
             }
         }
     }

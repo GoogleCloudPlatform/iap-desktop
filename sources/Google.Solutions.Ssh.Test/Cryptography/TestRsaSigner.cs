@@ -51,7 +51,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
                 "xn839ZTP+RzKaVZytKQLuCkh3u0Re8xZl0JM+pAQ==");
 
             var challenge = new AuthenticationChallenge(challengeBlob);
-            Assert.AreEqual("rsa-sha2-512", challenge.Algorithm);
+            Assert.That(challenge.Algorithm, Is.EqualTo("rsa-sha2-512"));
 
             using (var cngKey = new RSACng())
             using (var signer = new RsaSigner(cngKey, true))
@@ -83,7 +83,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
                 "xn839ZTP+RzKaVZytKQLuCkh3u0Re8xZl0JM+pAQ==");
 
             var challenge = new AuthenticationChallenge(challengeBlob);
-            Assert.AreEqual("rsa-sha2-256", challenge.Algorithm);
+            Assert.That(challenge.Algorithm, Is.EqualTo("rsa-sha2-256"));
 
             using (var cngKey = new RSACng())
             using (var signer = new RsaSigner(cngKey, true))

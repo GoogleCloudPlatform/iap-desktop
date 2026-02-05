@@ -248,7 +248,7 @@ namespace Google.Solutions.Terminal.Test.Controls
 
                 device.Raise(d => d.OutputAvailable += null, new PseudoTerminalDataEventArgs("data"));
 
-                Assert.AreEqual("data", data);
+                Assert.That(data, Is.EqualTo("data"));
             }
         }
     }

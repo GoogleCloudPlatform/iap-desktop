@@ -46,9 +46,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         [Test]
         public void ToString_ReturnsName()
         {
-            Assert.AreEqual(
-                "Child processes",
-                new ChildProcessPolicy(new Mock<IWin32ProcessSet>().Object).ToString());
+            Assert.That(
+                new ChildProcessPolicy(new Mock<IWin32ProcessSet>().Object).ToString(), Is.EqualTo("Child processes"));
         }
 
         //---------------------------------------------------------------------

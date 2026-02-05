@@ -40,18 +40,18 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 form.Show();
 
-                Assert.AreEqual(strip.ForeColor, strip.InactiveForeColor);
-                Assert.AreEqual(strip.BackColor, strip.InactiveBackColor);
+                Assert.That(strip.InactiveForeColor, Is.EqualTo(strip.ForeColor));
+                Assert.That(strip.InactiveBackColor, Is.EqualTo(strip.BackColor));
 
                 strip.Active = true;
 
-                Assert.AreEqual(strip.ForeColor, strip.ActiveForeColor);
-                Assert.AreEqual(strip.BackColor, strip.ActiveBackColor);
+                Assert.That(strip.ActiveForeColor, Is.EqualTo(strip.ForeColor));
+                Assert.That(strip.ActiveBackColor, Is.EqualTo(strip.BackColor));
 
                 strip.Active = false;
 
-                Assert.AreEqual(strip.ForeColor, strip.InactiveForeColor);
-                Assert.AreEqual(strip.BackColor, strip.InactiveBackColor);
+                Assert.That(strip.InactiveForeColor, Is.EqualTo(strip.ForeColor));
+                Assert.That(strip.InactiveBackColor, Is.EqualTo(strip.BackColor));
 
                 form.Close();
             }

@@ -44,7 +44,7 @@ namespace Google.Solutions.Common.Test.Linq
             var e = Enumerables.FromNullable<string>("test");
             CollectionAssert.IsNotEmpty(e);
 
-            Assert.AreEqual("test", e.First());
+            Assert.That(e.First(), Is.EqualTo("test"));
         }
     }
 }

@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 .ConfigureAwait(false);
             Assert.IsNotNull(context);
 
-            Assert.AreEqual(RdpParameters.ParameterSources.Inventory, context.Parameters.Sources);
+            Assert.That(context.Parameters.Sources, Is.EqualTo(RdpParameters.ParameterSources.Inventory));
 
             editor.Verify(e => e.PromptForCredentials(), Times.Once);
         }
@@ -167,9 +167,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
             Assert.IsNotNull(context);
 
 
-            Assert.AreEqual(RdpParameters.ParameterSources.Inventory, context.Parameters.Sources);
-            Assert.AreEqual("existinguser", context.Credential.User);
-            Assert.AreEqual("password", context.Credential.Password.ToClearText());
+            Assert.That(context.Parameters.Sources, Is.EqualTo(RdpParameters.ParameterSources.Inventory));
+            Assert.That(context.Credential.User, Is.EqualTo("existinguser"));
+            Assert.That(context.Credential.Password.ToClearText(), Is.EqualTo("password"));
 
             Assert.IsTrue(settingsSaved);
         }
@@ -210,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 .ConfigureAwait(false);
             Assert.IsNotNull(context);
 
-            Assert.AreEqual(RdpParameters.ParameterSources.Url, context.Parameters.Sources);
+            Assert.That(context.Parameters.Sources, Is.EqualTo(RdpParameters.ParameterSources.Url));
             Assert.IsNull(context.Credential.User);
 
             settingsService.Verify(s => s.GetConnectionSettings(
@@ -252,10 +252,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 .ConfigureAwait(false);
             Assert.IsNotNull(context);
 
-            Assert.AreEqual(
-                RdpParameters.ParameterSources.Inventory | RdpParameters.ParameterSources.Url,
-                context.Parameters.Sources);
-            Assert.AreEqual("john doe", context.Credential.User);
+            Assert.That(
+                context.Parameters.Sources, Is.EqualTo(RdpParameters.ParameterSources.Inventory | RdpParameters.ParameterSources.Url));
+            Assert.That(context.Credential.User, Is.EqualTo("john doe"));
 
             settingsService.Verify(s => s.GetConnectionSettings(
                 url,
@@ -340,10 +339,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(context);
-            Assert.AreEqual(RdpParameters.ParameterSources.Url, context.Parameters.Sources);
-            Assert.AreEqual("user", context.Credential.User);
-            Assert.AreEqual("domain", context.Credential.Domain);
-            Assert.AreEqual("password", context.Credential.Password.ToClearText());
+            Assert.That(context.Parameters.Sources, Is.EqualTo(RdpParameters.ParameterSources.Url));
+            Assert.That(context.Credential.User, Is.EqualTo("user"));
+            Assert.That(context.Credential.Domain, Is.EqualTo("domain"));
+            Assert.That(context.Credential.Password.ToClearText(), Is.EqualTo("password"));
 
             callbackService.Verify(s => s.GetCredentialsAsync(
                 new Uri("http://mock"),

@@ -231,9 +231,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(1, model.Projects.Count());
-            Assert.AreEqual(SampleProjectId, model.Projects.First().Project);
-            Assert.AreEqual("[project-1]", model.Projects.First().DisplayName);
+            Assert.That(model.Projects.Count(), Is.EqualTo(1));
+            Assert.That(model.Projects.First().Project, Is.EqualTo(SampleProjectId));
+            Assert.That(model.Projects.First().DisplayName, Is.EqualTo("[project-1]"));
 
             resourceManagerClient.Verify(a => a.GetProjectAsync(
                     SampleProjectId,
@@ -295,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 new[] { "accessible-project", "inaccessible-project" },
                 model.Projects.Select(p => p.Project.Name).ToList());
 
-            Assert.AreEqual(2, workspace.CachedProjectsCount);
+            Assert.That(workspace.CachedProjectsCount, Is.EqualTo(2));
         }
 
         [Test]
@@ -348,7 +348,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 new[] { "accessible-project", "nonexisting-project" },
                 model.Projects.Select(p => p.Project.Name).ToList());
 
-            Assert.AreEqual(2, workspace.CachedProjectsCount);
+            Assert.That(workspace.CachedProjectsCount, Is.EqualTo(2));
         }
 
         [Test]
@@ -431,10 +431,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     .Projects
                     .ToList();
 
-            Assert.AreEqual(2, projects.Count);
+            Assert.That(projects.Count, Is.EqualTo(2));
 
-            Assert.AreEqual(SampleProjectId, projects[0].Project);
-            Assert.AreEqual(nonexistingProjectId, projects[1].Project);
+            Assert.That(projects[0].Project, Is.EqualTo(SampleProjectId));
+            Assert.That(projects[1].Project, Is.EqualTo(nonexistingProjectId));
         }
 
         [Test]
@@ -487,11 +487,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var zone1 = zones.First();
             var zone2 = zones.Last();
 
-            Assert.AreEqual(new ZoneLocator(SampleProjectId, "zone-1"), zone1.Zone);
-            Assert.AreEqual(new ZoneLocator(SampleProjectId, "zone-2"), zone2.Zone);
+            Assert.That(zone1.Zone, Is.EqualTo(new ZoneLocator(SampleProjectId, "zone-1")));
+            Assert.That(zone2.Zone, Is.EqualTo(new ZoneLocator(SampleProjectId, "zone-2")));
 
-            Assert.AreEqual(1, zone1.Instances.Count());
-            Assert.AreEqual(1, zone2.Instances.Count());
+            Assert.That(zone1.Instances.Count(), Is.EqualTo(1));
+            Assert.That(zone2.Instances.Count(), Is.EqualTo(1));
 
             computeAdapter.Verify(a => a.ListInstancesAsync(
                     SampleProjectId,
@@ -587,13 +587,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(1, zones.Count);
+            Assert.That(zones.Count, Is.EqualTo(1));
             var zone1 = zones.First();
 
-            Assert.AreEqual(1, zone1.Instances.Count());
-            Assert.AreEqual(
-                SampleLinuxInstanceInZone1.Name,
-                zone1.Instances.First().DisplayName);
+            Assert.That(zone1.Instances.Count(), Is.EqualTo(1));
+            Assert.That(
+                zone1.Instances.First().DisplayName, Is.EqualTo(SampleLinuxInstanceInZone1.Name));
         }
 
         [Test]
@@ -616,18 +615,18 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(1, zones.Count);
+            Assert.That(zones.Count, Is.EqualTo(1));
             var zone1 = zones.First();
 
-            Assert.AreEqual(2, zone1.Instances.Count());
+            Assert.That(zone1.Instances.Count(), Is.EqualTo(2));
 
             var terminated = zone1.Instances.First();
             var running = zone1.Instances.Last();
 
-            Assert.AreEqual(SampleTerminatedLinuxInstanceInZone1.Name, terminated.DisplayName);
+            Assert.That(terminated.DisplayName, Is.EqualTo(SampleTerminatedLinuxInstanceInZone1.Name));
             Assert.IsFalse(terminated.IsRunning);
 
-            Assert.AreEqual(SampleLinuxInstanceInZone1.Name, running.DisplayName);
+            Assert.That(running.DisplayName, Is.EqualTo(SampleLinuxInstanceInZone1.Name));
             Assert.IsTrue(running.IsRunning);
         }
 

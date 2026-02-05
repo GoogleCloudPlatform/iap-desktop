@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         [Test]
         public void ToString_ReturnsName()
         {
-            Assert.AreEqual("Current WTS session", new CurrentWtsSessionPolicy().ToString());
+            Assert.That(new CurrentWtsSessionPolicy().ToString(), Is.EqualTo("Current WTS session"));
         }
 
         //---------------------------------------------------------------------

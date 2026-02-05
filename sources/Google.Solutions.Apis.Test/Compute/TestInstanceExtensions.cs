@@ -51,10 +51,10 @@ namespace Google.Solutions.Apis.Test.Compute
             var zoneLocator = instance.GetZoneLocator();
             var instanceLocator = instance.GetInstanceLocator();
 
-            Assert.AreEqual(TestProject.Zone, zoneLocator.Name);
-            Assert.AreEqual(TestProject.Zone, instanceLocator.Zone);
+            Assert.That(zoneLocator.Name, Is.EqualTo(TestProject.Zone));
+            Assert.That(instanceLocator.Zone, Is.EqualTo(TestProject.Zone));
 
-            Assert.AreEqual(await testInstance, instanceLocator);
+            Assert.That(instanceLocator, Is.EqualTo(await testInstance));
         }
 
         [Test]

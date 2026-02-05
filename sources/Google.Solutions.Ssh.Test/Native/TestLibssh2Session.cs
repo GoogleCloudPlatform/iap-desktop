@@ -76,7 +76,7 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 session.Timeout = TimeSpan.FromSeconds(123);
 
-                Assert.AreEqual(TimeSpan.FromSeconds(123), session.Timeout);
+                Assert.That(session.Timeout, Is.EqualTo(TimeSpan.FromSeconds(123)));
             }
         }
 
@@ -113,10 +113,9 @@ namespace Google.Solutions.Ssh.Test.Native
                 }
                 catch (Libssh2Exception e)
                 {
-                    Assert.AreEqual(
-                        "Unknown method type",
-                        e.Message);
-                    Assert.AreEqual(LIBSSH2_ERROR.METHOD_NOT_SUPPORTED, e.ErrorCode);
+                    Assert.That(
+                        e.Message, Is.EqualTo("Unknown method type"));
+                    Assert.That(e.ErrorCode, Is.EqualTo(LIBSSH2_ERROR.METHOD_NOT_SUPPORTED));
                 }
             }
         }
@@ -127,10 +126,9 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             {
                 var exception = session.CreateException(LIBSSH2_ERROR.PASSWORD_EXPIRED);
-                Assert.AreEqual(
-                    "SSH operation failed: PASSWORD_EXPIRED",
-                    exception.Message);
-                Assert.AreEqual(LIBSSH2_ERROR.PASSWORD_EXPIRED, exception.ErrorCode);
+                Assert.That(
+                    exception.Message, Is.EqualTo("SSH operation failed: PASSWORD_EXPIRED"));
+                Assert.That(exception.ErrorCode, Is.EqualTo(LIBSSH2_ERROR.PASSWORD_EXPIRED));
             }
         }
 
@@ -145,7 +143,7 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var algorithms = session.GetSupportedAlgorithms(LIBSSH2_METHOD.KEX);
 
-                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
+                Assert.That(session.LastError, Is.EqualTo(LIBSSH2_ERROR.NONE));
 
                 CollectionAssert.Contains(algorithms, "ecdh-sha2-nistp256");
                 CollectionAssert.Contains(algorithms, "ecdh-sha2-nistp384");
@@ -165,7 +163,7 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var algorithms = session.GetSupportedAlgorithms(LIBSSH2_METHOD.HOSTKEY);
 
-                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
+                Assert.That(session.LastError, Is.EqualTo(LIBSSH2_ERROR.NONE));
 
                 CollectionAssert.Contains(algorithms, "ecdsa-sha2-nistp256");
                 CollectionAssert.Contains(algorithms, "ecdsa-sha2-nistp384");
@@ -184,7 +182,7 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var algorithms = session.GetSupportedAlgorithms(LIBSSH2_METHOD.CRYPT_CS);
 
-                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
+                Assert.That(session.LastError, Is.EqualTo(LIBSSH2_ERROR.NONE));
 
                 CollectionAssert.Contains(algorithms, "aes128-ctr");
                 CollectionAssert.Contains(algorithms, "aes256-ctr");
@@ -198,7 +196,7 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var algorithms = session.GetSupportedAlgorithms(LIBSSH2_METHOD.CRYPT_SC);
 
-                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
+                Assert.That(session.LastError, Is.EqualTo(LIBSSH2_ERROR.NONE));
 
                 CollectionAssert.Contains(algorithms, "aes128-ctr");
                 CollectionAssert.Contains(algorithms, "aes256-ctr");
@@ -212,7 +210,7 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var algorithms = session.GetSupportedAlgorithms(LIBSSH2_METHOD.MAC_SC);
 
-                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
+                Assert.That(session.LastError, Is.EqualTo(LIBSSH2_ERROR.NONE));
 
                 CollectionAssert.Contains(algorithms, "hmac-sha2-256");
                 CollectionAssert.Contains(algorithms, "hmac-sha2-512");
@@ -226,7 +224,7 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var algorithms = session.GetSupportedAlgorithms(LIBSSH2_METHOD.MAC_CS);
 
-                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
+                Assert.That(session.LastError, Is.EqualTo(LIBSSH2_ERROR.NONE));
 
                 CollectionAssert.Contains(algorithms, "hmac-sha2-256");
                 CollectionAssert.Contains(algorithms, "hmac-sha2-512");
@@ -315,7 +313,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
+                Assert.That(session.LastError, Is.EqualTo(LIBSSH2_ERROR.NONE));
             }
         }
 

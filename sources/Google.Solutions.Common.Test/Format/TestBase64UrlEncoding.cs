@@ -31,41 +31,31 @@ namespace Google.Solutions.Common.Test.Format
         [Test]
         public void Encode()
         {
-            Assert.AreEqual(
-                "",
-                Base64UrlEncoding.Encode(Encoding.ASCII.GetBytes("")));
-            Assert.AreEqual(
-                "MQ",
-                Base64UrlEncoding.Encode(Encoding.ASCII.GetBytes("1")));
-            Assert.AreEqual(
-                "MTI",
-                Base64UrlEncoding.Encode(Encoding.ASCII.GetBytes("12")));
-            Assert.AreEqual(
-                "MTIz",
-                Base64UrlEncoding.Encode(Encoding.ASCII.GetBytes("123")));
-            Assert.AreEqual(
-                "MTIzNA",
-                Base64UrlEncoding.Encode(Encoding.ASCII.GetBytes("1234")));
+            Assert.That(
+                Base64UrlEncoding.Encode(Encoding.ASCII.GetBytes("")), Is.EqualTo(""));
+            Assert.That(
+                Base64UrlEncoding.Encode(Encoding.ASCII.GetBytes("1")), Is.EqualTo("MQ"));
+            Assert.That(
+                Base64UrlEncoding.Encode(Encoding.ASCII.GetBytes("12")), Is.EqualTo("MTI"));
+            Assert.That(
+                Base64UrlEncoding.Encode(Encoding.ASCII.GetBytes("123")), Is.EqualTo("MTIz"));
+            Assert.That(
+                Base64UrlEncoding.Encode(Encoding.ASCII.GetBytes("1234")), Is.EqualTo("MTIzNA"));
         }
 
         [Test]
         public void Decode()
         {
-            Assert.AreEqual(
-                "",
-                Encoding.ASCII.GetString(Base64UrlEncoding.Decode("")));
-            Assert.AreEqual(
-                "1",
-                Encoding.ASCII.GetString(Base64UrlEncoding.Decode("MQ")));
-            Assert.AreEqual(
-                "12",
-                Encoding.ASCII.GetString(Base64UrlEncoding.Decode("MTI")));
-            Assert.AreEqual(
-                "123",
-                Encoding.ASCII.GetString(Base64UrlEncoding.Decode("MTIz")));
-            Assert.AreEqual(
-                "1234",
-                Encoding.ASCII.GetString(Base64UrlEncoding.Decode("MTIzNA")));
+            Assert.That(
+                Encoding.ASCII.GetString(Base64UrlEncoding.Decode("")), Is.EqualTo(""));
+            Assert.That(
+                Encoding.ASCII.GetString(Base64UrlEncoding.Decode("MQ")), Is.EqualTo("1"));
+            Assert.That(
+                Encoding.ASCII.GetString(Base64UrlEncoding.Decode("MTI")), Is.EqualTo("12"));
+            Assert.That(
+                Encoding.ASCII.GetString(Base64UrlEncoding.Decode("MTIz")), Is.EqualTo("123"));
+            Assert.That(
+                Encoding.ASCII.GetString(Base64UrlEncoding.Decode("MTIzNA")), Is.EqualTo("1234"));
         }
     }
 }

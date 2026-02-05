@@ -40,9 +40,8 @@ namespace Google.Solutions.Ssh.Test
                     "username",
                     "password"))
                 {
-                    Assert.AreEqual(
-                        "username",
-                        credential.ToString());
+                    Assert.That(
+                        credential.ToString(), Is.EqualTo("username"));
                 }
             }
         }

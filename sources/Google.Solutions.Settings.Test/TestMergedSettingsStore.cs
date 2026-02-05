@@ -47,8 +47,8 @@ namespace Google.Solutions.Settings.Test
             var defaultValue = 1;
             var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-            Assert.AreEqual(defaultValue, setting.Value);
-            Assert.AreEqual(defaultValue, setting.DefaultValue);
+            Assert.That(setting.Value, Is.EqualTo(defaultValue));
+            Assert.That(setting.DefaultValue, Is.EqualTo(defaultValue));
             Assert.IsTrue(setting.IsDefault);
             Assert.IsFalse(setting.IsSpecified);
             Assert.IsFalse(setting.IsReadOnly);
@@ -74,8 +74,8 @@ namespace Google.Solutions.Settings.Test
             var defaultValue = 1;
             var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-            Assert.AreEqual(2, setting.Value);
-            Assert.AreEqual(defaultValue, setting.DefaultValue);
+            Assert.That(setting.Value, Is.EqualTo(2));
+            Assert.That(setting.DefaultValue, Is.EqualTo(defaultValue));
             Assert.IsFalse(setting.IsDefault);
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsFalse(setting.IsReadOnly);
@@ -101,8 +101,8 @@ namespace Google.Solutions.Settings.Test
             var defaultValue = 1;
             var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-            Assert.AreEqual(3, setting.Value);
-            Assert.AreEqual(defaultValue, setting.DefaultValue);
+            Assert.That(setting.Value, Is.EqualTo(3));
+            Assert.That(setting.DefaultValue, Is.EqualTo(defaultValue));
             Assert.IsFalse(setting.IsDefault);
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsTrue(setting.IsReadOnly);
@@ -136,8 +136,8 @@ namespace Google.Solutions.Settings.Test
             var defaultValue = 1;
             var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-            Assert.AreEqual(4, setting.Value);
-            Assert.AreEqual(defaultValue, setting.DefaultValue);
+            Assert.That(setting.Value, Is.EqualTo(4));
+            Assert.That(setting.DefaultValue, Is.EqualTo(defaultValue));
             Assert.IsFalse(setting.IsDefault);
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsTrue(setting.IsReadOnly);
@@ -161,8 +161,8 @@ namespace Google.Solutions.Settings.Test
             var defaultValue = 1;
             var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-            Assert.AreEqual(defaultValue, setting.Value);
-            Assert.AreEqual(defaultValue, setting.DefaultValue);
+            Assert.That(setting.Value, Is.EqualTo(defaultValue));
+            Assert.That(setting.DefaultValue, Is.EqualTo(defaultValue));
             Assert.IsTrue(setting.IsDefault);
             Assert.IsFalse(setting.IsSpecified);
             Assert.IsFalse(setting.IsReadOnly);
@@ -188,8 +188,8 @@ namespace Google.Solutions.Settings.Test
             var defaultValue = 1;
             var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-            Assert.AreEqual(2, setting.Value);
-            Assert.AreEqual(2, setting.DefaultValue);   // New default
+            Assert.That(setting.Value, Is.EqualTo(2));
+            Assert.That(setting.DefaultValue, Is.EqualTo(2));   // New default
             Assert.IsTrue(setting.IsDefault);
             Assert.IsFalse(setting.IsSpecified);
             Assert.IsFalse(setting.IsReadOnly);
@@ -215,8 +215,8 @@ namespace Google.Solutions.Settings.Test
             var defaultValue = 1;
             var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-            Assert.AreEqual(3, setting.Value);
-            Assert.AreEqual(defaultValue, setting.DefaultValue);
+            Assert.That(setting.Value, Is.EqualTo(3));
+            Assert.That(setting.DefaultValue, Is.EqualTo(defaultValue));
             Assert.IsFalse(setting.IsDefault);
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsFalse(setting.IsReadOnly);
@@ -250,8 +250,8 @@ namespace Google.Solutions.Settings.Test
             var defaultValue = 1;
             var setting = mergedKey.Read("test", "test", null, null, defaultValue);
 
-            Assert.AreEqual(4, setting.Value);
-            Assert.AreEqual(3, setting.DefaultValue);
+            Assert.That(setting.Value, Is.EqualTo(4));
+            Assert.That(setting.DefaultValue, Is.EqualTo(3));
             Assert.IsFalse(setting.IsDefault);
             Assert.IsTrue(setting.IsSpecified);
             Assert.IsFalse(setting.IsReadOnly);

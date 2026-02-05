@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             }
 
             var settings = settingsRepository.GetSettings();
-            Assert.AreEqual("project-1,project-2", settings.CollapsedProjects.Value);
+            Assert.That(settings.CollapsedProjects.Value, Is.EqualTo("project-1,project-2"));
         }
     }
 }

@@ -45,7 +45,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 var type2 = cache.Lookup("dir-2", FileAttributes.Directory, FileType.IconFlags.None);
 
                 Assert.AreSame(type1, type2);
-                Assert.AreEqual(1, cache.CacheSize);
+                Assert.That(cache.CacheSize, Is.EqualTo(1));
             }
         }
 
@@ -58,7 +58,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 var type2 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.None);
 
                 Assert.AreSame(type1, type2);
-                Assert.AreEqual(1, cache.CacheSize);
+                Assert.That(cache.CacheSize, Is.EqualTo(1));
             }
         }
 
@@ -71,7 +71,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 var type2 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.Open);
 
                 Assert.AreNotSame(type1, type2);
-                Assert.AreEqual(2, cache.CacheSize);
+                Assert.That(cache.CacheSize, Is.EqualTo(2));
             }
         }
 
@@ -84,7 +84,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 var type2 = cache.Lookup("test-1.txt", FileAttributes.ReadOnly, FileType.IconFlags.None);
 
                 Assert.AreNotSame(type1, type2);
-                Assert.AreEqual(2, cache.CacheSize);
+                Assert.That(cache.CacheSize, Is.EqualTo(2));
             }
         }
 

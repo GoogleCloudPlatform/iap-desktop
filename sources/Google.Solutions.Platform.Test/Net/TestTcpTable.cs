@@ -34,7 +34,7 @@ namespace Google.Solutions.Platform.Test.Net
             var netlogonListeningPorts = TcpTable.GetTcpTable2()
                 .Where(r => r.State == TcpTable.MibTcpState.MIB_TCP_STATE_LISTEN)
                 .Where(r => r.LocalEndpoint.Port == 135);
-            Assert.AreEqual(1, netlogonListeningPorts.Count());
+            Assert.That(netlogonListeningPorts.Count(), Is.EqualTo(1));
         }
     }
 }

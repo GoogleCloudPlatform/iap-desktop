@@ -94,7 +94,7 @@ namespace Google.Solutions.Iap.Test
                 await clientStream
                     .WriteAsync(message, 0, message.Length, tokenSource.Token)
                     .ConfigureAwait(false);
-                Assert.AreEqual(length, clientStreamStats.BytesTransmitted);
+                Assert.That(clientStreamStats.BytesTransmitted, Is.EqualTo(length));
 
                 // Read entire response.
                 var response = new byte[length];
@@ -122,10 +122,10 @@ namespace Google.Solutions.Iap.Test
 
                 await Task.Delay(50).ConfigureAwait(false);
 
-                Assert.AreEqual(length, totalBytesRead, "bytes read");
-                Assert.AreEqual(length, clientStreamStats.BytesReceived, "client received");
-                Assert.AreEqual(length, listener.Statistics.BytesReceived, "server received");
-                Assert.AreEqual(length, listener.Statistics.BytesTransmitted, "server sent");
+                Assert.That(totalBytesRead, Is.EqualTo(length), "bytes read");
+                Assert.That(clientStreamStats.BytesReceived, Is.EqualTo(length), "client received");
+                Assert.That(listener.Statistics.BytesReceived, Is.EqualTo(length), "server received");
+                Assert.That(listener.Statistics.BytesTransmitted, Is.EqualTo(length), "server sent");
             }
         }
     }

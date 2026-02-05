@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         [Test]
         public void ToString_ReturnsName()
         {
-            Assert.AreEqual("RDP", RdpProtocol.Protocol.ToString());
+            Assert.That(RdpProtocol.Protocol.ToString(), Is.EqualTo("RDP"));
         }
     }
 }

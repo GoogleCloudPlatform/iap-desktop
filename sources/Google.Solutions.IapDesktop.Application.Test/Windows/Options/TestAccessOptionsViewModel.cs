@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpClient());
 
-            Assert.AreEqual("psc", viewModel.PrivateServiceConnectEndpoint.Value);
+            Assert.That(viewModel.PrivateServiceConnectEndpoint.Value, Is.EqualTo("psc"));
             Assert.IsTrue(viewModel.IsPrivateServiceConnectEnabled.Value);
             Assert.IsTrue(viewModel.IsPrivateServiceConnectEditable.Value);
         }
@@ -205,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpClient());
 
-            Assert.AreEqual("psc-policy", viewModel.PrivateServiceConnectEndpoint.Value);
+            Assert.That(viewModel.PrivateServiceConnectEndpoint.Value, Is.EqualTo("psc-policy"));
             Assert.IsTrue(viewModel.IsPrivateServiceConnectEnabled.Value);
             Assert.IsFalse(viewModel.IsPrivateServiceConnectEditable.Value);
         }
@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.AreEqual(SamplePscEndpoint, settings.PrivateServiceConnectEndpoint.Value);
+            Assert.That(settings.PrivateServiceConnectEndpoint.Value, Is.EqualTo(SamplePscEndpoint));
         }
 
         [Test]
@@ -263,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpClient());
 
-            Assert.AreEqual(16, viewModel.ConnectionPoolLimit.Value);
+            Assert.That(viewModel.ConnectionPoolLimit.Value, Is.EqualTo(16));
         }
 
         [Test]
@@ -278,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpClient());
 
-            Assert.AreEqual(5, viewModel.ConnectionPoolLimit.Value);
+            Assert.That(viewModel.ConnectionPoolLimit.Value, Is.EqualTo(5));
         }
 
         [Test]
@@ -297,7 +297,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             Assert.IsFalse(viewModel.IsDirty.Value);
-            Assert.AreEqual(4, settingsRepository.GetSettings().ConnectionLimit.Value);
+            Assert.That(settingsRepository.GetSettings().ConnectionLimit.Value, Is.EqualTo(4));
         }
 
         //---------------------------------------------------------------------

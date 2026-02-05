@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         [Test]
         public void DisplayName()
         {
-            Assert.AreEqual("isWindows()", WindowsTrait.Instance.DisplayName);
+            Assert.That(WindowsTrait.Instance.DisplayName, Is.EqualTo("isWindows()"));
         }
 
         //---------------------------------------------------------------------
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         [Test]
         public void ToString_ReturnsExpression()
         {
-            Assert.AreEqual("isWindows()", WindowsTrait.Instance.ToString());
+            Assert.That(WindowsTrait.Instance.ToString(), Is.EqualTo("isWindows()"));
         }
 
         //---------------------------------------------------------------------

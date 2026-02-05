@@ -79,37 +79,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
         [Test]
         public void SuggestUsername_WhenEmailCompliant()
         {
-            Assert.AreEqual(
-                "bob.b",
+            Assert.That(
                 WindowsUser.SuggestUsername(
-                    CreateSession("bob.b@example.com")));
+                    CreateSession("bob.b@example.com")), Is.EqualTo("bob.b"));
         }
 
         [Test]
         public void SuggestUsername_WhenEmailTooLong()
         {
-            Assert.AreEqual(
-                "bob01234567890123456",
+            Assert.That(
                 WindowsUser.SuggestUsername(
-                    CreateSession("bob01234567890123456789@example.com")));
+                    CreateSession("bob01234567890123456789@example.com")), Is.EqualTo("bob01234567890123456"));
         }
 
         [Test]
         public void SuggestUsername_WhenEmailNull()
         {
-            Assert.AreEqual(
-                Environment.UserName,
+            Assert.That(
                 WindowsUser.SuggestUsername(
-                    CreateSession(null!)));
+                    CreateSession(null!)), Is.EqualTo(Environment.UserName));
         }
 
         [Test]
         public void SuggestUsername_WhenEmailInvalid()
         {
-            Assert.AreEqual(
-                Environment.UserName,
+            Assert.That(
                 WindowsUser.SuggestUsername(
-                    CreateSession("bob")));
+                    CreateSession("bob")), Is.EqualTo(Environment.UserName));
         }
     }
 }

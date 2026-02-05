@@ -68,8 +68,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var projects = repository.ListProjectsAsync().Result;
 
-                Assert.AreEqual(1, projects.Count());
-                Assert.AreEqual("test-123", projects.First().ProjectId);
+                Assert.That(projects.Count(), Is.EqualTo(1));
+                Assert.That(projects.First().ProjectId, Is.EqualTo("test-123"));
             }
         }
 
@@ -85,8 +85,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var projects = repository.ListProjectsAsync().Result;
 
-                Assert.AreEqual(1, projects.Count());
-                Assert.AreEqual("test-123", projects.First().ProjectId);
+                Assert.That(projects.Count(), Is.EqualTo(1));
+                Assert.That(projects.First().ProjectId, Is.EqualTo("test-123"));
             }
         }
 
@@ -159,8 +159,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var projects = repository.Projects;
 
-                Assert.AreEqual(1, projects.Count());
-                Assert.AreEqual("test-123", projects.First().ProjectId);
+                Assert.That(projects.Count(), Is.EqualTo(1));
+                Assert.That(projects.First().ProjectId, Is.EqualTo("test-123"));
             }
         }
 
@@ -176,8 +176,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var projects = repository.Projects;
 
-                Assert.AreEqual(1, projects.Count());
-                Assert.AreEqual("test-123", projects.First().ProjectId);
+                Assert.That(projects.Count(), Is.EqualTo(1));
+                Assert.That(projects.First().ProjectId, Is.EqualTo("test-123"));
             }
         }
 

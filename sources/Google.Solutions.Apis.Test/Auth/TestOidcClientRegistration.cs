@@ -42,8 +42,8 @@ namespace Google.Solutions.Apis.Test.Auth
 
             var secrets = registration.ToClientSecrets();
 
-            Assert.AreEqual("client-id", secrets.ClientId);
-            Assert.AreEqual("client-secret", secrets.ClientSecret);
+            Assert.That(secrets.ClientId, Is.EqualTo("client-id"));
+            Assert.That(secrets.ClientSecret, Is.EqualTo("client-secret"));
         }
 
         //---------------------------------------------------------------------
@@ -58,7 +58,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 "client-id",
                 "client-secret",
                 "/redirect");
-            Assert.AreEqual("client-id", registration.ToString());
+            Assert.That(registration.ToString(), Is.EqualTo("client-id"));
         }
     }
 }

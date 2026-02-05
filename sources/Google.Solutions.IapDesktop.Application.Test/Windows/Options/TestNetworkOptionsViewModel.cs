@@ -109,8 +109,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 Assert.IsFalse(viewModel.IsSystemProxyServerEnabled);
                 Assert.IsFalse(viewModel.IsProxyAutoConfigurationEnabled);
                 Assert.IsTrue(viewModel.IsCustomProxyServerEnabled);
-                Assert.AreEqual("proxy-server", viewModel.ProxyServer);
-                Assert.AreEqual("80", viewModel.ProxyPort);
+                Assert.That(viewModel.ProxyServer, Is.EqualTo("proxy-server"));
+                Assert.That(viewModel.ProxyPort, Is.EqualTo("80"));
                 Assert.IsNull(viewModel.ProxyAutoconfigurationAddress);
                 Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
                 Assert.IsNull(viewModel.ProxyUsername);
@@ -167,8 +167,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 Assert.IsFalse(viewModel.IsSystemProxyServerEnabled);
                 Assert.IsFalse(viewModel.IsProxyAutoConfigurationEnabled);
                 Assert.IsTrue(viewModel.IsCustomProxyServerEnabled);
-                Assert.AreEqual("proxy-server", viewModel.ProxyServer);
-                Assert.AreEqual("80", viewModel.ProxyPort);
+                Assert.That(viewModel.ProxyServer, Is.EqualTo("proxy-server"));
+                Assert.That(viewModel.ProxyPort, Is.EqualTo("80"));
                 Assert.IsNull(viewModel.ProxyAutoconfigurationAddress);
                 Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
                 Assert.IsNull(viewModel.ProxyUsername);
@@ -193,8 +193,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 Assert.IsFalse(viewModel.IsSystemProxyServerEnabled);
                 Assert.IsTrue(viewModel.IsCustomProxyServerEnabled);
                 Assert.IsFalse(viewModel.IsProxyAutoConfigurationEnabled);
-                Assert.AreEqual("proxy", viewModel.ProxyServer);
-                Assert.AreEqual("3128", viewModel.ProxyPort);
+                Assert.That(viewModel.ProxyServer, Is.EqualTo("proxy"));
+                Assert.That(viewModel.ProxyPort, Is.EqualTo("3128"));
                 Assert.IsNull(viewModel.ProxyAutoconfigurationAddress);
                 Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
                 Assert.IsNull(viewModel.ProxyUsername);
@@ -255,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 Assert.IsFalse(viewModel.IsCustomProxyServerEnabled);
                 Assert.IsNull(viewModel.ProxyServer);
                 Assert.IsNull(viewModel.ProxyPort);
-                Assert.AreEqual("http://proxy-server/proxy.pac", viewModel.ProxyAutoconfigurationAddress);
+                Assert.That(viewModel.ProxyAutoconfigurationAddress, Is.EqualTo("http://proxy-server/proxy.pac"));
                 Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
                 Assert.IsNull(viewModel.ProxyUsername);
                 Assert.IsNull(viewModel.ProxyPassword);
@@ -313,7 +313,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 Assert.IsFalse(viewModel.IsCustomProxyServerEnabled);
                 Assert.IsNull(viewModel.ProxyServer);
                 Assert.IsNull(viewModel.ProxyPort);
-                Assert.AreEqual("http://proxy-server/proxy.pac", viewModel.ProxyAutoconfigurationAddress);
+                Assert.That(viewModel.ProxyAutoconfigurationAddress, Is.EqualTo("http://proxy-server/proxy.pac"));
                 Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
                 Assert.IsNull(viewModel.ProxyUsername);
                 Assert.IsNull(viewModel.ProxyPassword);
@@ -339,7 +339,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 Assert.IsTrue(viewModel.IsProxyAutoConfigurationEnabled);
                 Assert.IsNull(viewModel.ProxyServer);
                 Assert.IsNull(viewModel.ProxyPort);
-                Assert.AreEqual("http://proxy/proxy.pac", viewModel.ProxyAutoconfigurationAddress);
+                Assert.That(viewModel.ProxyAutoconfigurationAddress, Is.EqualTo("http://proxy/proxy.pac"));
                 Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
                 Assert.IsNull(viewModel.ProxyUsername);
                 Assert.IsNull(viewModel.ProxyPassword);
@@ -397,11 +397,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
                 Assert.IsFalse(viewModel.IsSystemProxyServerEnabled);
                 Assert.IsTrue(viewModel.IsCustomProxyServerEnabled);
-                Assert.AreEqual("proxy-server", viewModel.ProxyServer);
-                Assert.AreEqual("80", viewModel.ProxyPort);
+                Assert.That(viewModel.ProxyServer, Is.EqualTo("proxy-server"));
+                Assert.That(viewModel.ProxyPort, Is.EqualTo("80"));
                 Assert.IsTrue(viewModel.IsProxyAuthenticationEnabled);
-                Assert.AreEqual("user", viewModel.ProxyUsername);
-                Assert.AreEqual("pass", viewModel.ProxyPassword);
+                Assert.That(viewModel.ProxyUsername, Is.EqualTo("user"));
+                Assert.That(viewModel.ProxyPassword, Is.EqualTo("pass"));
                 Assert.IsFalse(viewModel.IsDirty.Value);
             }
         }
@@ -420,7 +420,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                     IsProxyAuthenticationEnabled = true
                 };
 
-                Assert.AreEqual(Environment.UserName, viewModel.ProxyUsername);
+                Assert.That(viewModel.ProxyUsername, Is.EqualTo(Environment.UserName));
                 Assert.IsNull(viewModel.ProxyPassword);
                 Assert.IsTrue(viewModel.IsDirty.Value);
             }
@@ -590,16 +590,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 await viewModel.ApplyChangesAsync();
 
                 var settings = settingsRepository.GetSettings();
-                Assert.AreEqual("http://prx:123", settings.ProxyUrl.Value);
-                Assert.AreEqual("user", settings.ProxyUsername.Value);
-                Assert.AreEqual("pass", settings.ProxyPassword.GetClearTextValue());
+                Assert.That(settings.ProxyUrl.Value, Is.EqualTo("http://prx:123"));
+                Assert.That(settings.ProxyUsername.Value, Is.EqualTo("user"));
+                Assert.That(settings.ProxyPassword.GetClearTextValue(), Is.EqualTo("pass"));
 
                 // Disable authentication.
                 viewModel.IsProxyAuthenticationEnabled = false;
                 await viewModel.ApplyChangesAsync();
 
                 settings = settingsRepository.GetSettings();
-                Assert.AreEqual("http://prx:123", settings.ProxyUrl.Value);
+                Assert.That(settings.ProxyUrl.Value, Is.EqualTo("http://prx:123"));
                 Assert.IsNull(settings.ProxyUsername.Value);
                 Assert.IsNull(settings.ProxyPassword.GetClearTextValue());
 
@@ -634,16 +634,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 await viewModel.ApplyChangesAsync();
 
                 var settings = settingsRepository.GetSettings();
-                Assert.AreEqual("https://www/proxy.pac", settings.ProxyPacUrl.Value);
-                Assert.AreEqual("user", settings.ProxyUsername.Value);
-                Assert.AreEqual("pass", settings.ProxyPassword.GetClearTextValue());
+                Assert.That(settings.ProxyPacUrl.Value, Is.EqualTo("https://www/proxy.pac"));
+                Assert.That(settings.ProxyUsername.Value, Is.EqualTo("user"));
+                Assert.That(settings.ProxyPassword.GetClearTextValue(), Is.EqualTo("pass"));
 
                 // Disable authentication.
                 viewModel.IsProxyAuthenticationEnabled = false;
                 await viewModel.ApplyChangesAsync();
 
                 settings = settingsRepository.GetSettings();
-                Assert.AreEqual("https://www/proxy.pac", settings.ProxyPacUrl.Value);
+                Assert.That(settings.ProxyPacUrl.Value, Is.EqualTo("https://www/proxy.pac"));
                 Assert.IsNull(settings.ProxyUsername.Value);
                 Assert.IsNull(settings.ProxyPassword.GetClearTextValue());
 

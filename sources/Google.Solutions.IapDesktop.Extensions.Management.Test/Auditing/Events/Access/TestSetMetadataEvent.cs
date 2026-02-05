@@ -106,17 +106,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             var e = (SetMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.Principal);
-            Assert.AreEqual(20008111111111111, e.InstanceId);
-            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
-            Assert.AreEqual("project-1", e.Instance?.ProjectId);
-            Assert.AreEqual("NOTICE", e.Severity);
+            Assert.That(e.Principal, Is.EqualTo("user@example.com"));
+            Assert.That(e.InstanceId, Is.EqualTo(20008111111111111));
+            Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(e.Instance?.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Severity, Is.EqualTo("NOTICE"));
             Assert.IsNull(e.Status);
 
-            Assert.AreEqual("1.2.3.4", e.SourceHost);
-            Assert.AreEqual("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)", e.UserAgent);
+            Assert.That(e.SourceHost, Is.EqualTo("1.2.3.4"));
+            Assert.That(e.UserAgent, Is.EqualTo("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)"));
 
-            Assert.AreEqual("Windows credential update from 1.2.3.4 using IAP-Desktop/1.0.1.0 (operation started)", e.Message);
+            Assert.That(e.Message, Is.EqualTo("Windows credential update from 1.2.3.4 using IAP-Desktop/1.0.1.0 (operation started)"));
         }
 
         [Test]
@@ -173,17 +173,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             var e = (SetMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.Principal);
-            Assert.AreEqual(20008111111111111, e.InstanceId);
-            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
-            Assert.AreEqual("project-1", e.Instance?.ProjectId);
-            Assert.AreEqual("NOTICE", e.Severity);
+            Assert.That(e.Principal, Is.EqualTo("user@example.com"));
+            Assert.That(e.InstanceId, Is.EqualTo(20008111111111111));
+            Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(e.Instance?.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Severity, Is.EqualTo("NOTICE"));
             Assert.IsNull(e.Status);
 
             Assert.IsNull(e.SourceHost);
             Assert.IsNull(e.UserAgent);
 
-            Assert.AreEqual("Windows credential update from (unknown) using (unknown agent) (operation completed)", e.Message);
+            Assert.That(e.Message, Is.EqualTo("Windows credential update from (unknown) using (unknown agent) (operation completed)"));
         }
 
         [Test]
@@ -242,17 +242,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             var e = (SetMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.Principal);
-            Assert.AreEqual(37848154511111, e.InstanceId);
-            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
-            Assert.AreEqual("project-1", e.Instance?.ProjectId);
-            Assert.AreEqual("NOTICE", e.Severity);
+            Assert.That(e.Principal, Is.EqualTo("user@example.com"));
+            Assert.That(e.InstanceId, Is.EqualTo(37848154511111));
+            Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(e.Instance?.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Severity, Is.EqualTo("NOTICE"));
             Assert.IsNull(e.Status);
 
-            Assert.AreEqual("1.2.3.4", e.SourceHost);
-            Assert.AreEqual("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)", e.UserAgent);
+            Assert.That(e.SourceHost, Is.EqualTo("1.2.3.4"));
+            Assert.That(e.UserAgent, Is.EqualTo("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)"));
 
-            Assert.AreEqual("Linux SSH keys update from 1.2.3.4 using IAP-Desktop/1.0.1.0 (operation completed)", e.Message);
+            Assert.That(e.Message, Is.EqualTo("Linux SSH keys update from 1.2.3.4 using IAP-Desktop/1.0.1.0 (operation completed)"));
         }
 
         [Test]
@@ -319,18 +319,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             var e = (SetMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.Principal);
-            Assert.AreEqual(0, e.InstanceId);
-            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
-            Assert.AreEqual("project-1", e.Instance?.ProjectId);
-            Assert.AreEqual("ERROR", e.Severity);
-            Assert.AreEqual(7, e.Status?.Code);
-            Assert.AreEqual("Required ...", e.Status?.Message);
+            Assert.That(e.Principal, Is.EqualTo("user@example.com"));
+            Assert.That(e.InstanceId, Is.EqualTo(0));
+            Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(e.Instance?.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Severity, Is.EqualTo("ERROR"));
+            Assert.That(e.Status?.Code, Is.EqualTo(7));
+            Assert.That(e.Status?.Message, Is.EqualTo("Required ..."));
 
-            Assert.AreEqual("1.2.3.4", e.SourceHost);
-            Assert.AreEqual("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)", e.UserAgent);
+            Assert.That(e.SourceHost, Is.EqualTo("1.2.3.4"));
+            Assert.That(e.UserAgent, Is.EqualTo("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)"));
 
-            Assert.AreEqual("Metadata, Windows credentials, or SSH key update from 1.2.3.4 using IAP-Desktop/1.0.1.0 failed [Required ...]", e.Message);
+            Assert.That(e.Message, Is.EqualTo("Metadata, Windows credentials, or SSH key update from 1.2.3.4 using IAP-Desktop/1.0.1.0 failed [Required ...]"));
         }
 
         [Test]
@@ -408,17 +408,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             var e = (SetMetadataEvent)r.ToEvent();
 
-            Assert.AreEqual("user@example.com", e.Principal);
-            Assert.AreEqual(20008111111111111, e.InstanceId);
-            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
-            Assert.AreEqual("project-1", e.Instance?.ProjectId);
-            Assert.AreEqual("NOTICE", e.Severity);
+            Assert.That(e.Principal, Is.EqualTo("user@example.com"));
+            Assert.That(e.InstanceId, Is.EqualTo(20008111111111111));
+            Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(e.Instance?.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Severity, Is.EqualTo("NOTICE"));
             Assert.IsNull(e.Status);
 
-            Assert.AreEqual("1.2.3.4", e.SourceHost);
-            Assert.AreEqual("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)", e.UserAgent);
+            Assert.That(e.SourceHost, Is.EqualTo("1.2.3.4"));
+            Assert.That(e.UserAgent, Is.EqualTo("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)"));
 
-            Assert.AreEqual("Metadata update from 1.2.3.4 using IAP-Desktop/1.0.1.0 (operation started)", e.Message);
+            Assert.That(e.Message, Is.EqualTo("Metadata update from 1.2.3.4 using IAP-Desktop/1.0.1.0 (operation started)"));
         }
     }
 }

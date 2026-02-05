@@ -56,8 +56,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         public void Decode()
         {
             var jwt = UnverifiedGaiaJsonWebToken.Decode(SampleJwtWithInvalidSignature);
-            Assert.AreEqual("jwt", jwt.Header.Type);
-            Assert.AreEqual("x@example.com", jwt.Payload.Email);
+            Assert.That(jwt.Header.Type, Is.EqualTo("jwt"));
+            Assert.That(jwt.Payload.Email, Is.EqualTo("x@example.com"));
         }
 
         //---------------------------------------------------------------------
@@ -76,8 +76,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             Assert.IsTrue(UnverifiedGaiaJsonWebToken.TryDecode(
                 SampleJwtWithInvalidSignature,
                 out var jwt));
-            Assert.AreEqual("jwt", jwt!.Header.Type);
-            Assert.AreEqual("x@example.com", jwt.Payload.Email);
+            Assert.That(jwt!.Header.Type, Is.EqualTo("jwt"));
+            Assert.That(jwt.Payload.Email, Is.EqualTo("x@example.com"));
         }
 
         //---------------------------------------------------------------------
@@ -88,7 +88,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         public void ToString_ReturnsEncodedToken()
         {
             var jwt = UnverifiedGaiaJsonWebToken.Decode(SampleJwtWithInvalidSignature);
-            Assert.AreEqual(SampleJwtWithInvalidSignature, jwt.ToString());
+            Assert.That(jwt.ToString(), Is.EqualTo(SampleJwtWithInvalidSignature));
         }
     }
 }

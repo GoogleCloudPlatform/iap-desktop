@@ -63,7 +63,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
                 new CommonControlRuleSet().AutoSizeListViewColumns(listView);
                 form.Show();
 
-                Assert.AreEqual(100, column1.Width);
+                Assert.That(column1.Width, Is.EqualTo(100));
                 Assert.AreNotEqual(100, column2.Width);
 
                 form.Close();
@@ -105,7 +105,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
 
                 column1.Width = 50;
 
-                Assert.AreEqual(50, column1.Width);
+                Assert.That(column1.Width, Is.EqualTo(50));
                 Assert.AreNotEqual(200, column2.Width);
 
                 form.Close();
@@ -145,7 +145,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
                 new CommonControlRuleSet().AutoSizeListViewColumns(listView);
                 form.Show();
 
-                Assert.AreEqual(100, column1.Width);
+                Assert.That(column1.Width, Is.EqualTo(100));
                 Assert.AreNotEqual(100, column2.Width);
 
                 form.Close();

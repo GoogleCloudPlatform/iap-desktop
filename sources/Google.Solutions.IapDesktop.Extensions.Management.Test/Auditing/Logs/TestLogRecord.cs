@@ -67,20 +67,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
 
             var record = LogRecord.Deserialize(json)!;
 
-            Assert.AreEqual("kj1zbe4j2eg", record.InsertId);
-            Assert.AreEqual("projects/project-1/logs/cloudaudit.googleapis.com%2Fsystem_event", record.LogName);
-            Assert.AreEqual("INFO", record.Severity);
-            Assert.AreEqual(new DateTime(2020, 3, 23, 10, 35, 10), record.Timestamp);
+            Assert.That(record.InsertId, Is.EqualTo("kj1zbe4j2eg"));
+            Assert.That(record.LogName, Is.EqualTo("projects/project-1/logs/cloudaudit.googleapis.com%2Fsystem_event"));
+            Assert.That(record.Severity, Is.EqualTo("INFO"));
+            Assert.That(record.Timestamp, Is.EqualTo(new DateTime(2020, 3, 23, 10, 35, 10)));
 
             Assert.IsNotNull(record.Resource);
-            Assert.AreEqual("gce_instance", record.Resource?.Type);
-            Assert.AreEqual("project-1", record.Resource?.Labels?["project_id"]);
-            Assert.AreEqual("22470777052", record.Resource?.Labels?["instance_id"]);
-            Assert.AreEqual("asia-east1-c", record.Resource?.Labels?["zone"]);
+            Assert.That(record.Resource?.Type, Is.EqualTo("gce_instance"));
+            Assert.That(record.Resource?.Labels?["project_id"], Is.EqualTo("project-1"));
+            Assert.That(record.Resource?.Labels?["instance_id"], Is.EqualTo("22470777052"));
+            Assert.That(record.Resource?.Labels?["zone"], Is.EqualTo("asia-east1-c"));
 
             Assert.IsNull(record.Operation);
 
-            Assert.AreEqual("project-1", record.ProjectId);
+            Assert.That(record.ProjectId, Is.EqualTo("project-1"));
             Assert.IsTrue(record.IsSystemEvent);
             Assert.IsFalse(record.IsActivityEvent);
         }
@@ -150,22 +150,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
 
             var record = LogRecord.Deserialize(json)!;
 
-            Assert.AreEqual("-oyhqund58si", record.InsertId);
-            Assert.AreEqual("projects/project-1/logs/cloudaudit.googleapis.com%2Factivity", record.LogName);
-            Assert.AreEqual("NOTICE", record.Severity);
-            Assert.AreEqual(new DateTime(2020, 5, 11, 1, 26, 36, 738), record.Timestamp);
+            Assert.That(record.InsertId, Is.EqualTo("-oyhqund58si"));
+            Assert.That(record.LogName, Is.EqualTo("projects/project-1/logs/cloudaudit.googleapis.com%2Factivity"));
+            Assert.That(record.Severity, Is.EqualTo("NOTICE"));
+            Assert.That(record.Timestamp, Is.EqualTo(new DateTime(2020, 5, 11, 1, 26, 36, 738)));
 
             Assert.IsNotNull(record.Resource);
-            Assert.AreEqual("gce_instance", record.Resource?.Type);
-            Assert.AreEqual("project-1", record.Resource?.Labels?["project_id"]);
-            Assert.AreEqual("16752163", record.Resource?.Labels?["instance_id"]);
-            Assert.AreEqual("us-central1-b", record.Resource?.Labels?["zone"]);
+            Assert.That(record.Resource?.Type, Is.EqualTo("gce_instance"));
+            Assert.That(record.Resource?.Labels?["project_id"], Is.EqualTo("project-1"));
+            Assert.That(record.Resource?.Labels?["instance_id"], Is.EqualTo("16752163"));
+            Assert.That(record.Resource?.Labels?["zone"], Is.EqualTo("us-central1-b"));
 
-            Assert.AreEqual("operation-1589160396842-5a5553cf1e7c8-796d6bb5-473f0464", record.Operation?.Id);
+            Assert.That(record.Operation?.Id, Is.EqualTo("operation-1589160396842-5a5553cf1e7c8-796d6bb5-473f0464"));
             Assert.IsTrue(record.Operation?.IsFirst);
             Assert.IsFalse(record.Operation?.IsLast);
 
-            Assert.AreEqual("project-1", record.ProjectId);
+            Assert.That(record.ProjectId, Is.EqualTo("project-1"));
             Assert.IsFalse(record.IsSystemEvent);
             Assert.IsTrue(record.IsActivityEvent);
         }
@@ -219,12 +219,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
 
             var record = LogRecord.Deserialize(json)!;
 
-            Assert.AreEqual("-vwncp9d6006", record.InsertId);
+            Assert.That(record.InsertId, Is.EqualTo("-vwncp9d6006"));
 
             Assert.IsFalse(record.Operation?.IsFirst);
             Assert.IsTrue(record.Operation?.IsLast);
 
-            Assert.AreEqual("project-1", record.ProjectId);
+            Assert.That(record.ProjectId, Is.EqualTo("project-1"));
             Assert.IsFalse(record.IsSystemEvent);
             Assert.IsTrue(record.IsActivityEvent);
         }

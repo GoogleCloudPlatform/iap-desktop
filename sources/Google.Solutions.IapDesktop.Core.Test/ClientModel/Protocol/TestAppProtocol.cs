@@ -114,8 +114,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         {
             var protocol = CreateProtocol("app-1");
 
-            Assert.AreEqual("app-1", protocol.ToString());
-            Assert.AreEqual("app-1", protocol.Name);
+            Assert.That(protocol.ToString(), Is.EqualTo("app-1"));
+            Assert.That(protocol.Name, Is.EqualTo("app-1"));
         }
 
         //---------------------------------------------------------------------
@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
             Assert.IsTrue(protocol1.Equals(protocol2));
             Assert.IsFalse(protocol1 != protocol2);
-            Assert.AreEqual(protocol1.GetHashCode(), protocol2.GetHashCode());
+            Assert.That(protocol2.GetHashCode(), Is.EqualTo(protocol1.GetHashCode()));
         }
     }
 }

@@ -71,9 +71,9 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 CreateUserCredential("rt", "at", idToken),
                 idToken);
 
-            Assert.AreEqual("x@example.com", session.Username);
-            Assert.AreEqual("x@example.com", session.Email);
-            Assert.AreEqual("example.com", session.HostedDomain);
+            Assert.That(session.Username, Is.EqualTo("x@example.com"));
+            Assert.That(session.Email, Is.EqualTo("x@example.com"));
+            Assert.That(session.HostedDomain, Is.EqualTo("example.com"));
         }
 
         //---------------------------------------------------------------------
@@ -110,8 +110,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 CreateUserCredential("old-rt", "old-at", idToken),
                 idToken);
 
-            Assert.AreEqual("old-rt", ((UserCredential)session.ApiCredential).Token.RefreshToken);
-            Assert.AreEqual("old-at", ((UserCredential)session.ApiCredential).Token.AccessToken);
+            Assert.That(((UserCredential)session.ApiCredential).Token.RefreshToken, Is.EqualTo("old-rt"));
+            Assert.That(((UserCredential)session.ApiCredential).Token.AccessToken, Is.EqualTo("old-at"));
 
             var newIdToken = new UnverifiedGaiaJsonWebToken(
                 new GoogleJsonWebSignature.Header(),
@@ -125,8 +125,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
 
             session.Splice(newSession);
 
-            Assert.AreEqual("new-rt", ((UserCredential)session.ApiCredential).Token.RefreshToken);
-            Assert.AreEqual("new-at", ((UserCredential)session.ApiCredential).Token.AccessToken);
+            Assert.That(((UserCredential)session.ApiCredential).Token.RefreshToken, Is.EqualTo("new-rt"));
+            Assert.That(((UserCredential)session.ApiCredential).Token.AccessToken, Is.EqualTo("new-at"));
         }
 
         //---------------------------------------------------------------------
@@ -212,10 +212,9 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 CreateUserCredential("rt", "at", idToken),
                 idToken);
 
-            Assert.AreEqual(
-                new Uri("https://www.google.com/a/example.com/ServiceLogin" +
-                    "?continue=https:%2F%2Fconsole.cloud.google.com%2F"),
-                session.CreateDomainSpecificServiceUri(new Uri("https://console.cloud.google.com/")));
+            Assert.That(
+                session.CreateDomainSpecificServiceUri(new Uri("https://console.cloud.google.com/")), Is.EqualTo(new Uri("https://www.google.com/a/example.com/ServiceLogin" +
+                    "?continue=https:%2F%2Fconsole.cloud.google.com%2F")));
         }
 
         [Test]
@@ -231,9 +230,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 CreateUserCredential("rt", "at", idToken),
                 idToken);
 
-            Assert.AreEqual(
-                new Uri("https://console.cloud.google.com/"),
-                session.CreateDomainSpecificServiceUri(new Uri("https://console.cloud.google.com/")));
+            Assert.That(
+                session.CreateDomainSpecificServiceUri(new Uri("https://console.cloud.google.com/")), Is.EqualTo(new Uri("https://console.cloud.google.com/")));
         }
     }
 }

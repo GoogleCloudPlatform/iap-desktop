@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         [Test]
         public void ToString_ReturnsName()
         {
-            Assert.AreEqual("SSH", SshProtocol.Protocol.ToString());
+            Assert.That(SshProtocol.Protocol.ToString(), Is.EqualTo("SSH"));
         }
     }
 }

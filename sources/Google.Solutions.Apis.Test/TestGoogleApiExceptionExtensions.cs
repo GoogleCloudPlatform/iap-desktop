@@ -75,7 +75,7 @@ namespace Google.Solutions.Apis.Test
                 }
             };
 
-            Assert.AreEqual("ID123", e.VpcServiceControlTroubleshootingId());
+            Assert.That(e.VpcServiceControlTroubleshootingId(), Is.EqualTo("ID123"));
         }
 
         [Test]

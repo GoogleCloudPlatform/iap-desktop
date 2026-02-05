@@ -102,7 +102,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Predicate = s => s == s.ToUpper()
             };
 
-            Assert.AreEqual(1, filtered.Count);
+            Assert.That(filtered.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var result = new string[2];
             filtered.CopyTo(result, 1);
             Assert.IsNull(result[0]);
-            Assert.AreEqual("THREE", result[1]);
+            Assert.That(result[1], Is.EqualTo("THREE"));
         }
 
         [Test]
@@ -165,7 +165,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             filtered.CollectionChanged += (_, args) =>
             {
                 eventRaised = true;
-                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Reset));
             };
 
             filtered.Predicate = s => s == s.ToLower();
@@ -187,7 +187,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             filtered.CollectionChanged += (_, args) =>
             {
                 eventRaised = true;
-                Assert.AreEqual(NotifyCollectionChangedAction.Add, args.Action);
+                Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Add));
                 CollectionAssert.AreEquivalent(
                     new[] { "UPPERCASE" },
                     args.NewItems);
@@ -239,7 +239,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             filtered.CollectionChanged += (_, args) =>
             {
                 eventRaised = true;
-                Assert.AreEqual(NotifyCollectionChangedAction.Remove, args.Action);
+                Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Remove));
                 CollectionAssert.AreEquivalent(
                     new[] { "UPPERCASE" },
                     args.OldItems);
@@ -292,7 +292,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             filtered.CollectionChanged += (_, args) =>
             {
                 eventRaised = true;
-                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Reset));
             };
 
             collection.Clear();

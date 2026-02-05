@@ -187,18 +187,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             var attributes = GuestOsInfo.FromGuestAttributes(SampleLocator, SampleAttributes);
 
             Assert.IsNotNull(attributes);
-            Assert.AreEqual("x86_64", attributes.Architecture);
-            Assert.AreEqual("2.6.32-754.30.2.el6.x86_64", attributes.KernelRelease);
-            Assert.AreEqual("#1 SMP Wed Jun 10 11:14:37 UTC 2020", attributes.KernelVersion);
-            Assert.AreEqual("centos", attributes.OperatingSystem);
-            Assert.AreEqual("CentOS 6.10 (Final)\n", attributes.OperatingSystemFullName);
-            Assert.AreEqual(new Version(6, 10), attributes.OperatingSystemVersion);
-            Assert.AreEqual("20200709.00-g1.el6", attributes.AgentVersion);
-            Assert.AreEqual(
-                new DateTime(2020, 7, 3, 9, 10, 8, DateTimeKind.Utc),
-                attributes.LastUpdated?.ToUniversalTime());
+            Assert.That(attributes.Architecture, Is.EqualTo("x86_64"));
+            Assert.That(attributes.KernelRelease, Is.EqualTo("2.6.32-754.30.2.el6.x86_64"));
+            Assert.That(attributes.KernelVersion, Is.EqualTo("#1 SMP Wed Jun 10 11:14:37 UTC 2020"));
+            Assert.That(attributes.OperatingSystem, Is.EqualTo("centos"));
+            Assert.That(attributes.OperatingSystemFullName, Is.EqualTo("CentOS 6.10 (Final)\n"));
+            Assert.That(attributes.OperatingSystemVersion, Is.EqualTo(new Version(6, 10)));
+            Assert.That(attributes.AgentVersion, Is.EqualTo("20200709.00-g1.el6"));
+            Assert.That(
+                attributes.LastUpdated?.ToUniversalTime(), Is.EqualTo(new DateTime(2020, 7, 3, 9, 10, 8, DateTimeKind.Utc)));
 
-            Assert.AreEqual(392, attributes.InstalledPackages?.AllPackages.Count());
+            Assert.That(attributes.InstalledPackages?.AllPackages.Count(), Is.EqualTo(392));
         }
 
         [Test]
@@ -210,16 +209,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.IsNotNull(attributes.InstalledPackages);
 
             // RPM
-            Assert.AreEqual(392, attributes.InstalledPackages?.RpmPackages.Count);
-            Assert.AreEqual("wireless-tools", attributes.InstalledPackages?.RpmPackages[0].Name);
-            Assert.AreEqual("x86_64", attributes.InstalledPackages?.RpmPackages[0].Architecture);
-            Assert.AreEqual("29-6.el6", attributes.InstalledPackages?.RpmPackages[0].Version);
+            Assert.That(attributes.InstalledPackages?.RpmPackages.Count, Is.EqualTo(392));
+            Assert.That(attributes.InstalledPackages?.RpmPackages[0].Name, Is.EqualTo("wireless-tools"));
+            Assert.That(attributes.InstalledPackages?.RpmPackages[0].Architecture, Is.EqualTo("x86_64"));
+            Assert.That(attributes.InstalledPackages?.RpmPackages[0].Version, Is.EqualTo("29-6.el6"));
 
-            Assert.AreEqual("pm-utils", attributes.InstalledPackages?.RpmPackages[391].Name);
-            Assert.AreEqual("x86_64", attributes.InstalledPackages?.RpmPackages[391].Architecture);
-            Assert.AreEqual("1.2.5-11.el6", attributes.InstalledPackages?.RpmPackages[391].Version);
+            Assert.That(attributes.InstalledPackages?.RpmPackages[391].Name, Is.EqualTo("pm-utils"));
+            Assert.That(attributes.InstalledPackages?.RpmPackages[391].Architecture, Is.EqualTo("x86_64"));
+            Assert.That(attributes.InstalledPackages?.RpmPackages[391].Version, Is.EqualTo("1.2.5-11.el6"));
 
-            Assert.AreEqual(392, attributes.InstalledPackages?.AllPackages.Count());
+            Assert.That(attributes.InstalledPackages?.AllPackages.Count(), Is.EqualTo(392));
         }
 
         [Test]
@@ -231,20 +230,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.IsNotNull(attributes.AvailablePackages);
 
             // Yum
-            Assert.AreEqual(3, attributes.AvailablePackages?.YumPackages.Count);
-            Assert.AreEqual("kernel", attributes.AvailablePackages?.YumPackages[0].Name);
-            Assert.AreEqual("x86_64", attributes.AvailablePackages?.YumPackages[0].Architecture);
-            Assert.AreEqual("2.6.32-754.31.1.el6", attributes.AvailablePackages?.YumPackages[0].Version);
+            Assert.That(attributes.AvailablePackages?.YumPackages.Count, Is.EqualTo(3));
+            Assert.That(attributes.AvailablePackages?.YumPackages[0].Name, Is.EqualTo("kernel"));
+            Assert.That(attributes.AvailablePackages?.YumPackages[0].Architecture, Is.EqualTo("x86_64"));
+            Assert.That(attributes.AvailablePackages?.YumPackages[0].Version, Is.EqualTo("2.6.32-754.31.1.el6"));
 
-            Assert.AreEqual("google-osconfig-agent", attributes.AvailablePackages?.YumPackages[1].Name);
-            Assert.AreEqual("x86_64", attributes.AvailablePackages?.YumPackages[1].Architecture);
-            Assert.AreEqual("1:20200723.01-g1.el6", attributes.AvailablePackages?.YumPackages[1].Version);
+            Assert.That(attributes.AvailablePackages?.YumPackages[1].Name, Is.EqualTo("google-osconfig-agent"));
+            Assert.That(attributes.AvailablePackages?.YumPackages[1].Architecture, Is.EqualTo("x86_64"));
+            Assert.That(attributes.AvailablePackages?.YumPackages[1].Version, Is.EqualTo("1:20200723.01-g1.el6"));
 
-            Assert.AreEqual("kernel-firmware", attributes.AvailablePackages?.YumPackages[2].Name);
-            Assert.AreEqual("all", attributes.AvailablePackages?.YumPackages[2].Architecture);
-            Assert.AreEqual("2.6.32-754.31.1.el6", attributes.AvailablePackages?.YumPackages[2].Version);
+            Assert.That(attributes.AvailablePackages?.YumPackages[2].Name, Is.EqualTo("kernel-firmware"));
+            Assert.That(attributes.AvailablePackages?.YumPackages[2].Architecture, Is.EqualTo("all"));
+            Assert.That(attributes.AvailablePackages?.YumPackages[2].Version, Is.EqualTo("2.6.32-754.31.1.el6"));
 
-            Assert.AreEqual(392, attributes.InstalledPackages?.AllPackages.Count());
+            Assert.That(attributes.InstalledPackages?.AllPackages.Count(), Is.EqualTo(392));
         }
     }
 }

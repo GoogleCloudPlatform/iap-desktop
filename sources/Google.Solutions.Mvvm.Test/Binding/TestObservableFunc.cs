@@ -36,7 +36,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 source,
                 s => s.ToUpper());
 
-            Assert.AreEqual("ONE", dependent1.Value);
+            Assert.That(dependent1.Value, Is.EqualTo("ONE"));
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 source2,
                 (s1, s2) => s1 + s2);
 
-            Assert.AreEqual("OneTwo", dependent1.Value);
+            Assert.That(dependent1.Value, Is.EqualTo("OneTwo"));
         }
     }
 }

@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                  new Mock<IInputDialog>().Object,
                 new Mock<INotifyDialog>().Object);
 
-            Assert.AreEqual(command.GetType().Name, command.Id);
+            Assert.That(command.Id, Is.EqualTo(command.GetType().Name));
         }
 
         //---------------------------------------------------------------------

@@ -62,13 +62,13 @@ namespace Google.Solutions.Mvvm.Test.Controls
         {
             using (var progressBar = new LinearProgressBar())
             {
-                Assert.AreEqual(0, progressBar.Value);
+                Assert.That(progressBar.Value, Is.EqualTo(0));
 
                 progressBar.Value = progressBar.Maximum;
-                Assert.AreEqual(progressBar.Maximum, progressBar.Maximum);
+                Assert.That(progressBar.Maximum, Is.EqualTo(progressBar.Maximum));
 
                 progressBar.Maximum = progressBar.Maximum + 1;
-                Assert.AreEqual(progressBar.Maximum, progressBar.Maximum);
+                Assert.That(progressBar.Maximum, Is.EqualTo(progressBar.Maximum));
             }
         }
 
@@ -78,10 +78,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
             using (var progressBar = new LinearProgressBar())
             {
                 progressBar.Maximum = 0;
-                Assert.AreEqual(1, progressBar.Maximum);
+                Assert.That(progressBar.Maximum, Is.EqualTo(1));
 
                 progressBar.Maximum = -10;
-                Assert.AreEqual(1, progressBar.Maximum);
+                Assert.That(progressBar.Maximum, Is.EqualTo(1));
             }
         }
 
@@ -94,7 +94,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Assert.Throws<ArgumentException>(() => progressBar.Speed = -1);
 
                 progressBar.Speed = progressBar.Maximum + 1;
-                Assert.AreEqual(progressBar.Maximum, progressBar.Maximum);
+                Assert.That(progressBar.Maximum, Is.EqualTo(progressBar.Maximum));
             }
         }
 

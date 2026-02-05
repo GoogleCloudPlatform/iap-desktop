@@ -34,16 +34,16 @@ namespace Google.Solutions.Platform.Test.Interop
         [Test]
         public void StripExtension_WhenFileHasExtension_ThenStripExtensionRemovesExtension()
         {
-            Assert.AreEqual("file", Win32Filename.StripExtension("file.txt"));
-            Assert.AreEqual(".txt", Win32Filename.StripExtension(".txt.tmp"));
-            Assert.AreEqual("file.txt", Win32Filename.StripExtension("file.txt.tmp"));
+            Assert.That(Win32Filename.StripExtension("file.txt"), Is.EqualTo("file"));
+            Assert.That(Win32Filename.StripExtension(".txt.tmp"), Is.EqualTo(".txt"));
+            Assert.That(Win32Filename.StripExtension("file.txt.tmp"), Is.EqualTo("file.txt"));
         }
 
         [Test]
         public void StripExtension_WhenFileHasNoExtension_ThenStripExtensionRetainsName()
         {
-            Assert.AreEqual(".file", Win32Filename.StripExtension(".file"));
-            Assert.AreEqual("file", Win32Filename.StripExtension("file"));
+            Assert.That(Win32Filename.StripExtension(".file"), Is.EqualTo(".file"));
+            Assert.That(Win32Filename.StripExtension("file"), Is.EqualTo("file"));
         }
 
         //---------------------------------------------------------------------
@@ -85,10 +85,10 @@ namespace Google.Solutions.Platform.Test.Interop
         [Test]
         public void EscapeFilename_WhenFilenameIsWin32Compliant_ThenEscapeFilenameRetainsName()
         {
-            Assert.AreEqual("File.txt", Win32Filename.EscapeFilename("File.txt"));
-            Assert.AreEqual("File with spaces", Win32Filename.EscapeFilename("File with spaces"));
-            Assert.AreEqual(".dotfile", Win32Filename.EscapeFilename(".dotfile"));
-            Assert.AreEqual("NULl.AUX", Win32Filename.EscapeFilename("NULl.AUX"));
+            Assert.That(Win32Filename.EscapeFilename("File.txt"), Is.EqualTo("File.txt"));
+            Assert.That(Win32Filename.EscapeFilename("File with spaces"), Is.EqualTo("File with spaces"));
+            Assert.That(Win32Filename.EscapeFilename(".dotfile"), Is.EqualTo(".dotfile"));
+            Assert.That(Win32Filename.EscapeFilename("NULl.AUX"), Is.EqualTo("NULl.AUX"));
         }
 
         [Test]

@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var options = CommandLineOptions.Parse(
                 new[] { "/profile", "profile-1" });
 
-            Assert.AreEqual("profile-1", options.Profile);
+            Assert.That(options.Profile, Is.EqualTo("profile-1"));
             Assert.IsFalse(options.IsPostInstall);
         }
 
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             Assert.IsTrue(options.IsLoggingEnabled);
             Assert.IsNotNull(options.StartupUrl);
-            Assert.AreEqual("profile-1", options.Profile);
+            Assert.That(options.Profile, Is.EqualTo("profile-1"));
         }
 
         [Test]
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         public void ToString_WhenAllOptionsClear_ThenToStringReturnsEmptyString()
         {
             var options = new CommandLineOptions();
-            Assert.AreEqual(string.Empty, options.ToString());
+            Assert.That(options.ToString(), Is.EqualTo(string.Empty));
         }
 
         [Test]
@@ -185,9 +185,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 StartupUrl = IapRdpUrl.FromString("iap-rdp:///project-1/us-central1-a/vm-1")
             };
 
-            Assert.AreEqual(
-                "/debug /url \"iap-rdp:///project-1/us-central1-a/vm-1?\" /profile \"some profile\"",
-                options.ToString());
+            Assert.That(
+                options.ToString(), Is.EqualTo("/debug /url \"iap-rdp:///project-1/us-central1-a/vm-1?\" /profile \"some profile\""));
         }
     }
 }

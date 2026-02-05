@@ -55,14 +55,14 @@ namespace Google.Solutions.Iap.Test.Protocol
             };
             var relay = new SshRelayStream(endpoint);
 
-            Assert.AreEqual(0, endpoint.ConnectCount);
+            Assert.That(endpoint.ConnectCount, Is.EqualTo(0));
 
             var buffer = new byte[SshRelayStream.MinReadSize];
             await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(1, endpoint.ConnectCount);
+            Assert.That(endpoint.ConnectCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             };
             var relay = new SshRelayStream(endpoint);
 
-            Assert.AreEqual(0, endpoint.ConnectCount);
+            Assert.That(endpoint.ConnectCount, Is.EqualTo(0));
 
             var buffer = new byte[SshRelayStream.MinReadSize - 1];
 
@@ -109,7 +109,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             };
             var relay = new SshRelayStream(endpoint);
 
-            Assert.AreEqual(0, endpoint.ConnectCount);
+            Assert.That(endpoint.ConnectCount, Is.EqualTo(0));
 
             var buffer = new byte[SshRelayStream.MinReadSize];
 
@@ -151,14 +151,14 @@ namespace Google.Solutions.Iap.Test.Protocol
             var bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(2, bytesRead);
-            Assert.AreEqual(0xA, buffer[0]);
-            Assert.AreEqual(0xB, buffer[1]);
+            Assert.That(bytesRead, Is.EqualTo(2));
+            Assert.That(buffer[0], Is.EqualTo(0xA));
+            Assert.That(buffer[1], Is.EqualTo(0xB));
 
             bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(0, bytesRead);
+            Assert.That(bytesRead, Is.EqualTo(0));
         }
 
         [Test]
@@ -182,8 +182,8 @@ namespace Google.Solutions.Iap.Test.Protocol
             };
             var relay = new SshRelayStream(endpoint);
 
-            Assert.AreEqual(0, relay.UnacknoledgedMessageCount);
-            Assert.AreEqual(0, relay.ExpectedAck);
+            Assert.That(relay.UnacknoledgedMessageCount, Is.EqualTo(0));
+            Assert.That(relay.ExpectedAck, Is.EqualTo(0));
 
             // Send 3 messages.
             await relay
@@ -198,8 +198,8 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(3, relay.UnacknoledgedMessageCount);
-            Assert.AreEqual((byte)(request.Length * 3), relay.ExpectedAck);
+            Assert.That(relay.UnacknoledgedMessageCount, Is.EqualTo(3));
+            Assert.That(relay.ExpectedAck, Is.EqualTo((byte)(request.Length * 3)));
 
             // Receive 2 ACKs.
             var buffer = new byte[SshRelayStream.MinReadSize];
@@ -207,9 +207,9 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(0, bytesRead);
-            Assert.AreEqual(0, relay.UnacknoledgedMessageCount);
-            Assert.AreEqual(0, relay.ExpectedAck);
+            Assert.That(bytesRead, Is.EqualTo(0));
+            Assert.That(relay.UnacknoledgedMessageCount, Is.EqualTo(0));
+            Assert.That(relay.ExpectedAck, Is.EqualTo(0));
         }
 
         [Test]
@@ -291,9 +291,9 @@ namespace Google.Solutions.Iap.Test.Protocol
             var bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(2, bytesRead);
-            Assert.AreEqual(0xA, buffer[0]);
-            Assert.AreEqual(0xB, buffer[1]);
+            Assert.That(bytesRead, Is.EqualTo(2));
+            Assert.That(buffer[0], Is.EqualTo(0xA));
+            Assert.That(buffer[1], Is.EqualTo(0xB));
         }
 
         [Test]
@@ -318,12 +318,12 @@ namespace Google.Solutions.Iap.Test.Protocol
             var bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(1, bytesRead);
+            Assert.That(bytesRead, Is.EqualTo(1));
 
             bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(0, bytesRead);
+            Assert.That(bytesRead, Is.EqualTo(0));
         }
 
 
@@ -349,12 +349,12 @@ namespace Google.Solutions.Iap.Test.Protocol
             var bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(1, bytesRead);
+            Assert.That(bytesRead, Is.EqualTo(1));
 
             bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(0, bytesRead);
+            Assert.That(bytesRead, Is.EqualTo(0));
         }
 
         [Test]
@@ -382,7 +382,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             var bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(1, bytesRead);
+            Assert.That(bytesRead, Is.EqualTo(1));
 
             // connection breaks, triggering a reconnect that will fail.
             await ExceptionAssert
@@ -428,9 +428,9 @@ namespace Google.Solutions.Iap.Test.Protocol
             var bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(2, bytesRead);
-            Assert.AreEqual(2, endpoint.ConnectCount);
-            Assert.AreEqual(0, endpoint.ReconnectCount);
+            Assert.That(bytesRead, Is.EqualTo(2));
+            Assert.That(endpoint.ConnectCount, Is.EqualTo(2));
+            Assert.That(endpoint.ReconnectCount, Is.EqualTo(0));
         }
 
 
@@ -466,7 +466,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             var bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(1, bytesRead);
+            Assert.That(bytesRead, Is.EqualTo(1));
 
             // connection breaks, triggering a reconnect that will fail.
             await ExceptionAssert
@@ -517,15 +517,15 @@ namespace Google.Solutions.Iap.Test.Protocol
             var bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(1, bytesRead);
+            Assert.That(bytesRead, Is.EqualTo(1));
 
             // connection breaks, triggering a reconnect.
             bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(2, bytesRead);
-            Assert.AreEqual(2, endpoint.ConnectCount);
-            Assert.AreEqual(0, endpoint.ReconnectCount);
+            Assert.That(bytesRead, Is.EqualTo(2));
+            Assert.That(endpoint.ConnectCount, Is.EqualTo(2));
+            Assert.That(endpoint.ReconnectCount, Is.EqualTo(0));
         }
 
 
@@ -579,18 +579,18 @@ namespace Google.Solutions.Iap.Test.Protocol
             var bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(1, bytesRead);
-            Assert.AreEqual(1, endpoint.ConnectCount);
-            Assert.AreEqual(0, endpoint.ReconnectCount);
+            Assert.That(bytesRead, Is.EqualTo(1));
+            Assert.That(endpoint.ConnectCount, Is.EqualTo(1));
+            Assert.That(endpoint.ReconnectCount, Is.EqualTo(0));
 
             // connection breaks, triggering reconnect.
 
             bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(1, bytesRead);
-            Assert.AreEqual(1, endpoint.ConnectCount);
-            Assert.AreEqual(1, endpoint.ReconnectCount);
+            Assert.That(bytesRead, Is.EqualTo(1));
+            Assert.That(endpoint.ConnectCount, Is.EqualTo(1));
+            Assert.That(endpoint.ReconnectCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -629,10 +629,10 @@ namespace Google.Solutions.Iap.Test.Protocol
             var bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(1, bytesRead);
+            Assert.That(bytesRead, Is.EqualTo(1));
 
-            Assert.AreEqual(1, endpoint.ConnectCount);
-            Assert.AreEqual(0, endpoint.ReconnectCount);
+            Assert.That(endpoint.ConnectCount, Is.EqualTo(1));
+            Assert.That(endpoint.ReconnectCount, Is.EqualTo(0));
 
             await relay
                 .CloseAsync(this.tokenSource.Token)

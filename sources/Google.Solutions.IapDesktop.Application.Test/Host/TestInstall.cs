@@ -81,11 +81,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             {
                 var install = new Install(keyPath.Path);
                 Assert.IsNotNull(install.UniqueId);
-                Assert.AreEqual(16, install.UniqueId.Length);
+                Assert.That(install.UniqueId.Length, Is.EqualTo(16));
 
-                Assert.AreEqual(
-                    install.UniqueId,
-                    new Install(keyPath.Path).UniqueId);
+                Assert.That(
+                    new Install(keyPath.Path).UniqueId, Is.EqualTo(install.UniqueId));
             }
         }
 
@@ -99,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
                 var install = new Install(keyPath.Path);
-                Assert.AreEqual(keyPath.Path, install.BaseKeyPath);
+                Assert.That(install.BaseKeyPath, Is.EqualTo(keyPath.Path));
             }
         }
 
@@ -129,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
                 var install = new Install(keyPath.Path);
-                Assert.AreEqual(install.CurrentVersion, install.InitialVersion);
+                Assert.That(install.InitialVersion, Is.EqualTo(install.CurrentVersion));
             }
         }
 
@@ -141,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 var install = new Install(keyPath.Path);
                 keyPath.Delete();
 
-                Assert.AreEqual(install.CurrentVersion, install.InitialVersion);
+                Assert.That(install.InitialVersion, Is.EqualTo(install.CurrentVersion));
             }
         }
 
@@ -161,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 }
 
                 Assert.AreNotEqual(install.CurrentVersion, install.InitialVersion);
-                Assert.AreEqual(new Version(0, 0, 1, 0), install.InitialVersion);
+                Assert.That(install.InitialVersion, Is.EqualTo(new Version(0, 0, 1, 0)));
             }
         }
 
@@ -206,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                         RegistryValueKind.MultiString);
                 }
 
-                Assert.AreEqual(new Version(0, 0, 3, 0), install.PreviousVersion);
+                Assert.That(install.PreviousVersion, Is.EqualTo(new Version(0, 0, 3, 0)));
             }
         }
 
@@ -265,7 +264,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 using (var profile = install.CreateProfile(TestProfileName))
                 {
                     Assert.IsNotNull(profile);
-                    Assert.AreEqual(TestProfileName, profile.Name);
+                    Assert.That(profile.Name, Is.EqualTo(TestProfileName));
                 }
             }
         }
@@ -310,7 +309,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 using (var profile = install.OpenProfile(TestProfileName))
                 {
                     Assert.IsNotNull(profile);
-                    Assert.AreEqual(TestProfileName, profile.Name);
+                    Assert.That(profile.Name, Is.EqualTo(TestProfileName));
                     Assert.IsFalse(profile.IsDefault);
                     Assert.IsNotNull(profile.SettingsKey);
                 }
@@ -325,7 +324,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 var install = new Install(keyPath.Path);
 
                 var profile = install.OpenProfile(null);
-                Assert.AreEqual("Default", profile.Name);
+                Assert.That(profile.Name, Is.EqualTo("Default"));
                 Assert.IsTrue(profile.IsDefault);
             }
         }

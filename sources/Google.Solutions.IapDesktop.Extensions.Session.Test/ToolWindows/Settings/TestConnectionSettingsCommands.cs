@@ -49,9 +49,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
                 new Mock<IToolWindowHost>().Object,
                 settingsService.Object);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuOpen.QueryState(context.Object));
+            Assert.That(
+                commands.ContextMenuOpen.QueryState(context.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -67,9 +66,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
                 new Mock<IToolWindowHost>().Object,
                 settingsService.Object);
 
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuOpen.QueryState(context.Object));
+            Assert.That(
+                commands.ContextMenuOpen.QueryState(context.Object), Is.EqualTo(CommandState.Unavailable));
         }
 
         //---------------------------------------------------------------------
@@ -89,9 +87,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
                 new Mock<IToolWindowHost>().Object,
                 settingsService.Object);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ToolbarOpen.QueryState(context.Object));
+            Assert.That(
+                commands.ToolbarOpen.QueryState(context.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -107,9 +104,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
                 new Mock<IToolWindowHost>().Object,
                 settingsService.Object);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ToolbarOpen.QueryState(context.Object));
+            Assert.That(
+                commands.ToolbarOpen.QueryState(context.Object), Is.EqualTo(CommandState.Disabled));
         }
     }
 }

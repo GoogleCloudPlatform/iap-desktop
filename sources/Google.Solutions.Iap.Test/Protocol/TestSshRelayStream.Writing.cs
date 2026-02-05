@@ -61,14 +61,14 @@ namespace Google.Solutions.Iap.Test.Protocol
             };
             var relay = new SshRelayStream(endpoint);
 
-            Assert.AreEqual(0, endpoint.ConnectCount);
+            Assert.That(endpoint.ConnectCount, Is.EqualTo(0));
 
             var request = new byte[] { 1, 2, 3 };
             await relay
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(1, endpoint.ConnectCount);
+            Assert.That(endpoint.ConnectCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -104,10 +104,10 @@ namespace Google.Solutions.Iap.Test.Protocol
             var bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(1, bytesRead);
+            Assert.That(bytesRead, Is.EqualTo(1));
 
-            Assert.AreEqual(1, stream.WriteCount);
-            Assert.AreEqual(2, stream.ReadCount);
+            Assert.That(stream.WriteCount, Is.EqualTo(1));
+            Assert.That(stream.ReadCount, Is.EqualTo(2));
 
             // Write a second request - this should cause an ACK to be sent first.
             request = new byte[] { 2 };
@@ -115,8 +115,8 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(3, stream.WriteCount);
-            Assert.AreEqual(2, stream.ReadCount);
+            Assert.That(stream.WriteCount, Is.EqualTo(3));
+            Assert.That(stream.ReadCount, Is.EqualTo(2));
         }
 
         [Test]
@@ -151,8 +151,8 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(2, stream.WriteCount);
-            Assert.AreEqual(1, stream.ReadCount);
+            Assert.That(stream.WriteCount, Is.EqualTo(2));
+            Assert.That(stream.ReadCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -320,8 +320,8 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(1, endpoint.ConnectCount);
-            Assert.AreEqual(0, endpoint.ReconnectCount);
+            Assert.That(endpoint.ConnectCount, Is.EqualTo(1));
+            Assert.That(endpoint.ReconnectCount, Is.EqualTo(0));
 
             // Write another request - this should cause a reconnect and resend.
             request = new byte[] { 3 };
@@ -329,8 +329,8 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(2, endpoint.ConnectCount);
-            Assert.AreEqual(0, endpoint.ReconnectCount);
+            Assert.That(endpoint.ConnectCount, Is.EqualTo(2));
+            Assert.That(endpoint.ReconnectCount, Is.EqualTo(0));
         }
 
         [Test]
@@ -393,7 +393,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             var bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(2, bytesRead);
+            Assert.That(bytesRead, Is.EqualTo(2));
 
             // Write another request, causing an ACK to be sent.
             request = new byte[] { 2 };
@@ -407,8 +407,8 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(1, endpoint.ConnectCount);
-            Assert.AreEqual(1, endpoint.ReconnectCount);
+            Assert.That(endpoint.ConnectCount, Is.EqualTo(1));
+            Assert.That(endpoint.ReconnectCount, Is.EqualTo(1));
         }
 
 
@@ -471,7 +471,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             var bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.AreEqual(2, bytesRead);
+            Assert.That(bytesRead, Is.EqualTo(2));
 
             // Write another request, causing an ACK to be sent.
             request = new byte[] { 2 };
@@ -485,8 +485,8 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(1, endpoint.ConnectCount);
-            Assert.AreEqual(1, endpoint.ReconnectCount);
+            Assert.That(endpoint.ConnectCount, Is.EqualTo(1));
+            Assert.That(endpoint.ReconnectCount, Is.EqualTo(1));
         }
 
         [Test]

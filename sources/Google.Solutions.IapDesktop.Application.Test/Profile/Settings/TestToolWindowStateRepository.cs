@@ -41,8 +41,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                     "Sample1",
                     DockState.Unknown);
 
-                Assert.AreEqual(DockState.Unknown, settings.DockState.Value);
-                Assert.AreEqual(DockState.Unknown, settings.DockState.DefaultValue);
+                Assert.That(settings.DockState.Value, Is.EqualTo(DockState.Unknown));
+                Assert.That(settings.DockState.DefaultValue, Is.EqualTo(DockState.Unknown));
             }
         }
 
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                     "Sample1",
                     DockState.Unknown);
 
-                Assert.AreEqual(DockState.Float, settings.DockState.Value);
+                Assert.That(settings.DockState.Value, Is.EqualTo(DockState.Float));
             }
         }
     }

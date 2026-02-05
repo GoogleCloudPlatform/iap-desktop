@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
                 .ConfigureAwait(true);
 
             Assert.IsFalse(string.IsNullOrWhiteSpace(model.Output));
-            Assert.AreEqual("display-name", model.DisplayName);
+            Assert.That(model.DisplayName, Is.EqualTo("display-name"));
             StringAssert.Contains("Finished running startup scripts", model.Output);
         }
 

@@ -54,8 +54,8 @@ namespace Google.Solutions.Terminal.Test
                 Assert.IsNotNull(root);
                 Assert.IsFalse(root.Type.IsFile);
                 Assert.IsTrue(root.IsExpanded);
-                Assert.AreEqual("Server", root.Name);
-                Assert.AreEqual(string.Empty, root.Access);
+                Assert.That(root.Name, Is.EqualTo("Server"));
+                Assert.That(root.Access, Is.EqualTo(string.Empty));
             }
         }
 
@@ -73,9 +73,9 @@ namespace Google.Solutions.Terminal.Test
                 Assert.IsNotNull(drive);
                 Assert.IsFalse(drive.Type.IsFile);
                 Assert.IsFalse(drive.IsExpanded);
-                Assert.AreEqual("File system root", drive.Name);
-                Assert.AreEqual("/.", drive.Path);
-                Assert.AreEqual(string.Empty, drive.Access);
+                Assert.That(drive.Name, Is.EqualTo("File system root"));
+                Assert.That(drive.Path, Is.EqualTo("/."));
+                Assert.That(drive.Access, Is.EqualTo(string.Empty));
             }
         }
 
@@ -93,9 +93,9 @@ namespace Google.Solutions.Terminal.Test
                 Assert.IsNotNull(home);
                 Assert.IsFalse(home.Type.IsFile);
                 Assert.IsFalse(home.IsExpanded);
-                Assert.AreEqual("Home", home.Name);
-                Assert.AreEqual(".", home.Path);
-                Assert.AreEqual(string.Empty, home.Access);
+                Assert.That(home.Name, Is.EqualTo("Home"));
+                Assert.That(home.Path, Is.EqualTo("."));
+                Assert.That(home.Access, Is.EqualTo(string.Empty));
             }
         }
 
@@ -198,10 +198,10 @@ namespace Google.Solutions.Terminal.Test
                     .ConfigureAwait(false);
 
                 var dir = files.First();
-                Assert.AreEqual("dir", dir.Name);
+                Assert.That(dir.Name, Is.EqualTo("dir"));
                 Assert.IsFalse(dir.Type.IsFile);
                 Assert.IsTrue(dir.Attributes.HasFlag(FileAttributes.Directory));
-                Assert.AreEqual("dr-x---r--", dir.Access);
+                Assert.That(dir.Access, Is.EqualTo("dr-x---r--"));
             }
         }
 
@@ -311,9 +311,8 @@ namespace Google.Solutions.Terminal.Test
                 "/",
                 true,
                 FilePermissions.OwnerRead);
-            Assert.AreEqual(
-                FileAttributes.Directory,
-                attributes);
+            Assert.That(
+                attributes, Is.EqualTo(FileAttributes.Directory));
         }
 
         [Test]
@@ -324,9 +323,8 @@ namespace Google.Solutions.Terminal.Test
                 name,
                 true,
                 FilePermissions.OwnerRead);
-            Assert.AreEqual(
-                FileAttributes.Directory | FileAttributes.Hidden,
-                attributes);
+            Assert.That(
+                attributes, Is.EqualTo(FileAttributes.Directory | FileAttributes.Hidden));
         }
 
         [Test]
@@ -336,9 +334,8 @@ namespace Google.Solutions.Terminal.Test
                 "link",
                 false,
                 FilePermissions.OwnerRead | FilePermissions.SymbolicLink);
-            Assert.AreEqual(
-                FileAttributes.ReparsePoint,
-                attributes);
+            Assert.That(
+                attributes, Is.EqualTo(FileAttributes.ReparsePoint));
         }
 
         [Test]
@@ -353,9 +350,8 @@ namespace Google.Solutions.Terminal.Test
                 "device",
                 false,
                 FilePermissions.OwnerRead | permissions);
-            Assert.AreEqual(
-                FileAttributes.Device,
-                attributes);
+            Assert.That(
+                attributes, Is.EqualTo(FileAttributes.Device));
         }
 
         [Test]
@@ -365,9 +361,8 @@ namespace Google.Solutions.Terminal.Test
                 "file",
                 false,
                 FilePermissions.OwnerRead);
-            Assert.AreEqual(
-                FileAttributes.Normal,
-                attributes);
+            Assert.That(
+                attributes, Is.EqualTo(FileAttributes.Normal));
         }
 
         //---------------------------------------------------------------------

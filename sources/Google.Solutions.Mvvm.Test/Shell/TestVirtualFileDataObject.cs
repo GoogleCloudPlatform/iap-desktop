@@ -111,7 +111,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                             ShellDataFormats.CFSTR_FILECONTENTS).Id
                     },
                     out var _));
-            Assert.AreEqual(HRESULT.DV_E_TYMED, (HRESULT)e!.ErrorCode);
+            Assert.That((HRESULT)e!.ErrorCode, Is.EqualTo(HRESULT.DV_E_TYMED));
         }
 
         [Test]
@@ -140,9 +140,8 @@ namespace Google.Solutions.Mvvm.Test.Shell
                     },
                     out var medium);
 
-                Assert.AreEqual(
-                    TYMED.TYMED_ISTREAM,
-                    medium.tymed);
+                Assert.That(
+                    medium.tymed, Is.EqualTo(TYMED.TYMED_ISTREAM));
                 Assert.AreNotEqual(
                     IntPtr.Zero,
                     medium.unionmember);
@@ -176,9 +175,8 @@ namespace Google.Solutions.Mvvm.Test.Shell
                     },
                     out var medium);
 
-                Assert.AreEqual(
-                    TYMED.TYMED_HGLOBAL,
-                    medium.tymed);
+                Assert.That(
+                    medium.tymed, Is.EqualTo(TYMED.TYMED_HGLOBAL));
                 Assert.AreNotEqual(
                     IntPtr.Zero,
                     medium.unionmember);
@@ -230,7 +228,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
             dataObject.StartOperation(null);
 
             dataObject.InOperation(out var inOp);
-            Assert.AreEqual(-1, inOp);
+            Assert.That(inOp, Is.EqualTo(-1));
 
             Assert.IsTrue(eventRaised);
         }

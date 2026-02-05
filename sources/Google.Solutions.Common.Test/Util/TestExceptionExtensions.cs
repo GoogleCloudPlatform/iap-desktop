@@ -110,7 +110,7 @@ namespace Google.Solutions.Common.Test.Util
         public void FullMessage_WhenExceptionHasNoInnerException_ThenFullMessageIsSameAsMessage()
         {
             var ex = new ArgumentException("something went wrong!");
-            Assert.AreEqual(ex.Message, ex.FullMessage());
+            Assert.That(ex.FullMessage(), Is.EqualTo(ex.Message));
         }
 
         [Test]
@@ -119,7 +119,7 @@ namespace Google.Solutions.Common.Test.Util
             var ex = new ArgumentException("One",
                 new InvalidOperationException("two",
                     new Exception("three")));
-            Assert.AreEqual("One: two: three", ex.FullMessage());
+            Assert.That(ex.FullMessage(), Is.EqualTo("One: two: three"));
         }
 
         //---------------------------------------------------------------------
@@ -130,9 +130,8 @@ namespace Google.Solutions.Common.Test.Util
         public void ToString_WhenNoOptionsSet()
         {
             var ex = CreateException();
-            Assert.AreEqual(
-                ex.ToString(), 
-                ex.ToString(ExceptionFormatOptions.None));
+            Assert.That(
+                ex.ToString(ExceptionFormatOptions.None), Is.EqualTo(ex.ToString()));
         }
 
         [Test]
@@ -148,9 +147,8 @@ namespace Google.Solutions.Common.Test.Util
         public void ToString_WhenCompact()
         {
             var ex = CreateException();
-            Assert.AreEqual(
-                $"ArgumentException: sample at {GetType().FullName}.CreateException",
-                ex.ToString(ExceptionFormatOptions.Compact));
+            Assert.That(
+                ex.ToString(ExceptionFormatOptions.Compact), Is.EqualTo($"ArgumentException: sample at {GetType().FullName}.CreateException"));
         }
 
         //---------------------------------------------------------------------

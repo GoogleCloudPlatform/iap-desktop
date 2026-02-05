@@ -68,9 +68,8 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(
-                value,
-                instance.Metadata.Items.First(i => i.Key == key).Value);
+            Assert.That(
+                instance.Metadata.Items.First(i => i.Key == key).Value, Is.EqualTo(value));
         }
 
         [Test]
@@ -107,9 +106,8 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(
-                value,
-                instance.Metadata.Items.First(i => i.Key == key).Value);
+            Assert.That(
+                instance.Metadata.Items.First(i => i.Key == key).Value, Is.EqualTo(value));
         }
 
         [Test]
@@ -152,9 +150,8 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(
-                "value",
-                instance.Metadata.Items.First(i => i.Key == key).Value);
+            Assert.That(
+                instance.Metadata.Items.First(i => i.Key == key).Value, Is.EqualTo("value"));
         }
 
         [Test]
@@ -211,9 +208,8 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(
-                value,
-                project.CommonInstanceMetadata.Items.First(i => i.Key == key).Value);
+            Assert.That(
+                project.CommonInstanceMetadata.Items.First(i => i.Key == key).Value, Is.EqualTo(value));
         }
 
         [Test]
@@ -244,9 +240,8 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(
-                value,
-                project.CommonInstanceMetadata.Items.First(i => i.Key == key).Value);
+            Assert.That(
+                project.CommonInstanceMetadata.Items.First(i => i.Key == key).Value, Is.EqualTo(value));
         }
 
         [Test]
@@ -282,9 +277,8 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ExecuteAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(
-                "value",
-                project.CommonInstanceMetadata.Items.First(i => i.Key == key).Value);
+            Assert.That(
+                project.CommonInstanceMetadata.Items.First(i => i.Key == key).Value, Is.EqualTo("value"));
         }
 
         [Test]

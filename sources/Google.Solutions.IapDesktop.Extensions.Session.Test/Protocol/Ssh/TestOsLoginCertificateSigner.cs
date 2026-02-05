@@ -50,15 +50,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IAsymmetricKeySigner>().Object,
                 "ssh-rsa-cert-v01@openssh.com AAAA user"))
             {
-                Assert.AreEqual(
-                    "ssh-rsa-cert-v01@openssh.com",
-                    signer.PublicKey.Type);
+                Assert.That(
+                    signer.PublicKey.Type, Is.EqualTo("ssh-rsa-cert-v01@openssh.com"));
 
-                Assert.AreEqual(
-                    Convert.FromBase64String("AAAA"),
-                    signer.PublicKey.WireFormatValue);
+                Assert.That(
+                    signer.PublicKey.WireFormatValue, Is.EqualTo(Convert.FromBase64String("AAAA")));
 
-                Assert.AreEqual("user", signer.Username);
+                Assert.That(signer.Username, Is.EqualTo("user"));
             }
         }
     }

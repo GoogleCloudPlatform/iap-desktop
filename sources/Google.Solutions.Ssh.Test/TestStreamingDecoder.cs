@@ -34,7 +34,7 @@ namespace Google.Solutions.Ssh.Test
         {
             var decoder = new StreamingDecoder(Encoding.UTF8);
             var s = decoder.Decode(new byte[] { 0x24, 0x24 });
-            Assert.AreEqual("$$", s);
+            Assert.That(s, Is.EqualTo("$$"));
         }
 
 
@@ -43,7 +43,7 @@ namespace Google.Solutions.Ssh.Test
         {
             var decoder = new StreamingDecoder(Encoding.UTF8);
             var s = decoder.Decode(new byte[] { 0xC2, 0xA2 });
-            Assert.AreEqual("\u00A2", s);
+            Assert.That(s, Is.EqualTo("\u00A2"));
         }
 
         [Test]
@@ -51,7 +51,7 @@ namespace Google.Solutions.Ssh.Test
         {
             var decoder = new StreamingDecoder(Encoding.UTF8);
             var s = decoder.Decode(new byte[] { 0xE0, 0xA4, 0xB9 });
-            Assert.AreEqual("\u0939", s);
+            Assert.That(s, Is.EqualTo("\u0939"));
         }
 
         [Test]
@@ -60,10 +60,10 @@ namespace Google.Solutions.Ssh.Test
             var decoder = new StreamingDecoder(Encoding.UTF8);
 
             var s = decoder.Decode(new byte[] { 0xC2 });
-            Assert.AreEqual("", s);
+            Assert.That(s, Is.EqualTo(""));
 
             s = decoder.Decode(new byte[] { 0xA2, 0x20 });
-            Assert.AreEqual("\u00A2 ", s);
+            Assert.That(s, Is.EqualTo("\u00A2 "));
         }
 
         [Test]
@@ -72,10 +72,10 @@ namespace Google.Solutions.Ssh.Test
             var decoder = new StreamingDecoder(Encoding.UTF8);
 
             var s = decoder.Decode(new byte[] { 0xE0, 0xA4 });
-            Assert.AreEqual("", s);
+            Assert.That(s, Is.EqualTo(""));
 
             s = decoder.Decode(new byte[] { 0xB9, 0x20 });
-            Assert.AreEqual("\u0939 ", s);
+            Assert.That(s, Is.EqualTo("\u0939 "));
         }
     }
 }

@@ -79,11 +79,11 @@ namespace Google.Solutions.Settings.Test
                     17L,
                     Predicate.InRange(0L, 100L));
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(17L, setting.Value);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
+                Assert.That(setting.Value, Is.EqualTo(17L));
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -103,11 +103,11 @@ namespace Google.Solutions.Settings.Test
                     17L,
                     Predicate.InRange(0L, 100L));
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(17L, setting.Value);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
+                Assert.That(setting.Value, Is.EqualTo(17L));
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -129,11 +129,11 @@ namespace Google.Solutions.Settings.Test
                     17L,
                     Predicate.InRange(0L, long.MaxValue));
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(420000000000001, setting.Value);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
+                Assert.That(setting.Value, Is.EqualTo(420000000000001));
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -160,7 +160,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = 1L;
                 key.Write(setting);
 
-                Assert.AreEqual(1, key.BackingKey.GetValue("test"));
+                Assert.That(key.BackingKey.GetValue("test"), Is.EqualTo(1));
             }
         }
 
@@ -205,7 +205,7 @@ namespace Google.Solutions.Settings.Test
 
                 setting.Value = setting.DefaultValue;
 
-                Assert.AreEqual(17L, setting.Value);
+                Assert.That(setting.Value, Is.EqualTo(17L));
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }
@@ -288,7 +288,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = 1L;
                 ((IAnySetting)setting).AnyValue = null;
 
-                Assert.AreEqual(17L, setting.Value);
+                Assert.That(setting.Value, Is.EqualTo(17L));
                 Assert.IsTrue(setting.IsDefault);
             }
         }
@@ -334,7 +334,7 @@ namespace Google.Solutions.Settings.Test
                     17,
                     Predicate.InRange(0L, long.MaxValue));
 
-                Assert.AreEqual(420000000000001L, setting.Value);
+                Assert.That(setting.Value, Is.EqualTo(420000000000001L));
                 Assert.IsFalse(setting.IsReadOnly);
             }
         }
@@ -360,7 +360,7 @@ namespace Google.Solutions.Settings.Test
                     17,
                     Predicate.InRange(0, long.MaxValue));
 
-                Assert.AreEqual(420000000000001L, setting.Value);
+                Assert.That(setting.Value, Is.EqualTo(420000000000001L));
                 Assert.IsFalse(setting.IsReadOnly);
             }
         }
@@ -386,11 +386,11 @@ namespace Google.Solutions.Settings.Test
                     17,
                     Predicate.InRange(0L, long.MaxValue));
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(880000000000001L, setting.Value);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
+                Assert.That(setting.Value, Is.EqualTo(880000000000001L));
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsTrue(setting.IsReadOnly);

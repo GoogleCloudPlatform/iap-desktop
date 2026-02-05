@@ -42,10 +42,10 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void ExpectNotNull_WhenNotNull_ThenExpectNotNullReturnsValue()
         {
-            Assert.AreEqual("value", Invariant.ExpectNotNull("value", "test"));
+            Assert.That(Invariant.ExpectNotNull("value", "test"), Is.EqualTo("value"));
 
             var o = new object();
-            Assert.AreEqual(o, Precondition.ExpectNotNull(o, "test"));
+            Assert.That(Precondition.ExpectNotNull(o, "test"), Is.EqualTo(o));
         }
     }
 }

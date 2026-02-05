@@ -38,7 +38,7 @@ namespace Google.Solutions.Common.Test.Runtime
             using (Disposable.Create(() => invocations++))
             { }
 
-            Assert.AreEqual(1, invocations);
+            Assert.That(invocations, Is.EqualTo(1));
         }
 
         //--------------------------------------------------------------------
@@ -54,7 +54,7 @@ namespace Google.Solutions.Common.Test.Runtime
             d.Dispose();
             d.Dispose();
 
-            Assert.AreEqual(1, invocations);
+            Assert.That(invocations, Is.EqualTo(1));
         }
     }
 }

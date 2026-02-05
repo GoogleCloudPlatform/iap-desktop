@@ -63,11 +63,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
             var prop = ObservableProperty.Build<Dish>(Dish.Dumplings);
             var adapter = new BindableComboBox.SelectionAdapter<Dish>(prop);
 
-            Assert.AreEqual(1, adapter.SelectedIndex);
+            Assert.That(adapter.SelectedIndex, Is.EqualTo(1));
 
             prop.Value = Dish.Pizza;
 
-            Assert.AreEqual(0, adapter.SelectedIndex);
+            Assert.That(adapter.SelectedIndex, Is.EqualTo(0));
         }
 
         [Test]
@@ -78,8 +78,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
             {
                 SelectedIndex = 0
             };
-            Assert.AreEqual(0, adapter.SelectedIndex);
-            Assert.AreEqual(Dish.Pizza, prop.Value);
+            Assert.That(adapter.SelectedIndex, Is.EqualTo(0));
+            Assert.That(prop.Value, Is.EqualTo(Dish.Pizza));
         }
     }
 }

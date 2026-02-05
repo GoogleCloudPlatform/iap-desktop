@@ -65,9 +65,9 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             var subject = WorkforcePoolIdentity.FromPrincipalIdentifier(
                 "principal://iam.googleapis.com/locations/LOCATION/workforcePools/POOL/subject/SUBJECT");
 
-            Assert.AreEqual("LOCATION", subject.Location);
-            Assert.AreEqual("POOL", subject.Pool);
-            Assert.AreEqual("SUBJECT", subject.Subject);
+            Assert.That(subject.Location, Is.EqualTo("LOCATION"));
+            Assert.That(subject.Pool, Is.EqualTo("POOL"));
+            Assert.That(subject.Subject, Is.EqualTo("SUBJECT"));
         }
 
         //---------------------------------------------------------------------
@@ -80,7 +80,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             var id = "principal://iam.googleapis.com/locations/LOCATION/workforcePools/POOL/subject/SUBJECT";
             var subject = WorkforcePoolIdentity.FromPrincipalIdentifier(id);
 
-            Assert.AreEqual(id, subject.ToString());
+            Assert.That(subject.ToString(), Is.EqualTo(id));
         }
     }
 }

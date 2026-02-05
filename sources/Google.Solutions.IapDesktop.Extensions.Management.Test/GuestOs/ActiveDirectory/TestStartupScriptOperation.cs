@@ -251,9 +251,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
 
                 await operation.RestoreStartupScriptsAsync(CancellationToken.None);
 
-                Assert.AreEqual(1, metadata.Items.Count);
-                Assert.AreEqual("windows-startup-script-ps1", metadata.Items[0].Key);
-                Assert.AreEqual("original", metadata.Items[0].Value);
+                Assert.That(metadata.Items.Count, Is.EqualTo(1));
+                Assert.That(metadata.Items[0].Key, Is.EqualTo("windows-startup-script-ps1"));
+                Assert.That(metadata.Items[0].Value, Is.EqualTo("original"));
             }
         }
     }

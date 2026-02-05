@@ -79,9 +79,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(
-                ConnectionSettingsViewModel.RequiresReconnectWarning,
-                viewModel.InformationText.Value);
+            Assert.That(
+                viewModel.InformationText.Value, Is.EqualTo(ConnectionSettingsViewModel.RequiresReconnectWarning));
         }
 
         [Test]
@@ -133,9 +132,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
 
             Assert.IsNull(viewModel.InformationText.Value);
             Assert.IsNull(viewModel.InspectedObject.Value);
-            Assert.AreEqual(
-                ConnectionSettingsViewModel.DefaultWindowTitle,
-                viewModel.WindowTitle.Value);
+            Assert.That(
+                viewModel.WindowTitle.Value, Is.EqualTo(ConnectionSettingsViewModel.DefaultWindowTitle));
         }
 
         [Test]

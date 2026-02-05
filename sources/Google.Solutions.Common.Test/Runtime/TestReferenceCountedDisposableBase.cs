@@ -76,7 +76,7 @@ namespace Google.Solutions.Common.Test.Runtime
             for (var i = 0; i < 100; i++)
             {
                 var refCount = d.AddReference();
-                Assert.AreEqual(2, refCount);
+                Assert.That(refCount, Is.EqualTo(2));
 
                 d.Dispose();
                 Assert.IsFalse(d.IsDisposed);

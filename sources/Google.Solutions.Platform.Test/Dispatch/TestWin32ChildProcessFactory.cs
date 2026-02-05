@@ -103,7 +103,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                     .CloseAsync(cts.Token)
                     .ConfigureAwait(false);
 
-                Assert.AreEqual(0, closed);
+                Assert.That(closed, Is.EqualTo(0));
             }
         }
 
@@ -118,7 +118,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                     .CloseAsync(cts.Token)
                     .ConfigureAwait(false);
 
-                Assert.AreEqual(1, closed);
+                Assert.That(closed, Is.EqualTo(1));
             }
         }
 

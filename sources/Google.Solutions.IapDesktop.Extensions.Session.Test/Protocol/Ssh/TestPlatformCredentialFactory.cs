@@ -160,9 +160,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IResourceManagerClient>().Object,
                 new Mock<IOsLoginProfile>().Object);
 
-            Assert.AreEqual(
-                "user",
-                authorizer.CreateUsernameForMetadata("user"));
+            Assert.That(
+                authorizer.CreateUsernameForMetadata("user"), Is.EqualTo("user"));
         }
 
         [Test]
@@ -174,9 +173,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IResourceManagerClient>().Object,
                 new Mock<IOsLoginProfile>().Object);
 
-            Assert.AreEqual(
-                "j",
-                authorizer.CreateUsernameForMetadata(null));
+            Assert.That(
+                authorizer.CreateUsernameForMetadata(null), Is.EqualTo("j"));
         }
 
         [Test]
@@ -188,9 +186,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 new Mock<IResourceManagerClient>().Object,
                 new Mock<IOsLoginProfile>().Object);
 
-            Assert.AreEqual(
-                "abcdefghijklmnopqrstuvwxyzabcxyz",
-                authorizer.CreateUsernameForMetadata(null));
+            Assert.That(
+                authorizer.CreateUsernameForMetadata(null), Is.EqualTo("abcdefghijklmnopqrstuvwxyzabcxyz"));
         }
 
         //---------------------------------------------------------------------
@@ -221,8 +218,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(authorizedKey);
-            Assert.AreEqual(KeyAuthorizationMethods.Oslogin, authorizedKey.AuthorizationMethod);
-            Assert.AreEqual("bob", authorizedKey.Username);
+            Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
+            Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
         }
 
         [Test]
@@ -249,8 +246,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(authorizedKey);
-            Assert.AreEqual(KeyAuthorizationMethods.Oslogin, authorizedKey.AuthorizationMethod);
-            Assert.AreEqual("bob", authorizedKey.Username);
+            Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
+            Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
         }
 
         [Test]
@@ -277,8 +274,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(authorizedKey);
-            Assert.AreEqual(KeyAuthorizationMethods.Oslogin, authorizedKey.AuthorizationMethod);
-            Assert.AreEqual("bob", authorizedKey.Username);
+            Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
+            Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
         }
 
         [Test]
@@ -308,8 +305,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
-                Assert.AreEqual("bob", authorizedKey.Username);
+                Assert.That(authorizedKey.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.InstanceMetadata));
+                Assert.That(authorizedKey.Username, Is.EqualTo("bob"));
 
                 computeClient.Verify(a => a.UpdateMetadataAsync(
                     It.Is<InstanceLocator>(loc => loc == SampleLocator),

@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 certificateStore.Object,
                 settingsRepository);
 
-            Assert.AreEqual(DeviceEnrollmentState.Disabled, enrollment.State);
+            Assert.That(enrollment.State, Is.EqualTo(DeviceEnrollmentState.Disabled));
             Assert.IsNull(enrollment.Certificate);
 
             certificateStore.Verify(
@@ -182,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 certificateStore.Object,
                 settingsRepository);
 
-            Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
+            Assert.That(enrollment.State, Is.EqualTo(DeviceEnrollmentState.NotEnrolled));
             Assert.IsNull(enrollment.Certificate);
         }
 
@@ -208,9 +208,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 certificateStore.Object,
                 settingsRepository);
 
-            Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
+            Assert.That(enrollment.State, Is.EqualTo(DeviceEnrollmentState.Enrolled));
             Assert.IsNotNull(enrollment.Certificate);
-            Assert.AreEqual("CN=Google Endpoint Verification", enrollment.Certificate!.Subject);
+            Assert.That(enrollment.Certificate!.Subject, Is.EqualTo("CN=Google Endpoint Verification"));
         }
 
         [Test]
@@ -235,7 +235,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 certificateStore.Object,
                 settingsRepository);
 
-            Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
+            Assert.That(enrollment.State, Is.EqualTo(DeviceEnrollmentState.NotEnrolled));
             Assert.IsNull(enrollment.Certificate);
         }
 
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 certificateStore.Object,
                 settingsRepository);
 
-            Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
+            Assert.That(enrollment.State, Is.EqualTo(DeviceEnrollmentState.NotEnrolled));
             Assert.IsNull(enrollment.Certificate);
         }
 
@@ -309,7 +309,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 certificateStore.Object,
                 settingsRepository);
 
-            Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
+            Assert.That(enrollment.State, Is.EqualTo(DeviceEnrollmentState.NotEnrolled));
             Assert.IsNull(enrollment.Certificate);
         }
 
@@ -343,9 +343,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 certificateStore.Object,
                 settingsRepository);
 
-            Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
+            Assert.That(enrollment.State, Is.EqualTo(DeviceEnrollmentState.Enrolled));
             Assert.IsNotNull(enrollment.Certificate);
-            Assert.AreEqual("CN=Example", enrollment.Certificate!.Subject);
+            Assert.That(enrollment.Certificate!.Subject, Is.EqualTo("CN=Example"));
         }
     }
 }

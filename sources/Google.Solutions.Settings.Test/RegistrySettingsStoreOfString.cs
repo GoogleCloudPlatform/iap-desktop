@@ -76,11 +76,11 @@ namespace Google.Solutions.Settings.Test
                     "blue",
                     _ => true);
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual("blue", setting.Value);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
+                Assert.That(setting.Value, Is.EqualTo("blue"));
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -102,11 +102,11 @@ namespace Google.Solutions.Settings.Test
                     "blue",
                     _ => true);
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual("red", setting.Value);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
+                Assert.That(setting.Value, Is.EqualTo("red"));
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -133,7 +133,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = "green";
                 key.Write(setting);
 
-                Assert.AreEqual("green", key.BackingKey.GetValue("test"));
+                Assert.That(key.BackingKey.GetValue("test"), Is.EqualTo("green"));
             }
         }
 
@@ -178,7 +178,7 @@ namespace Google.Solutions.Settings.Test
 
                 setting.Value = setting.DefaultValue;
 
-                Assert.AreEqual("blue", setting.Value);
+                Assert.That(setting.Value, Is.EqualTo("blue"));
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }
@@ -244,7 +244,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = "red";
                 ((IAnySetting)setting).AnyValue = null;
 
-                Assert.AreEqual("blue", setting.Value);
+                Assert.That(setting.Value, Is.EqualTo("blue"));
                 Assert.IsTrue(setting.IsDefault);
             }
         }
@@ -290,7 +290,7 @@ namespace Google.Solutions.Settings.Test
                     "blue",
                     _ => true);
 
-                Assert.AreEqual("red", setting.Value);
+                Assert.That(setting.Value, Is.EqualTo("red"));
                 Assert.IsFalse(setting.IsReadOnly);
             }
         }
@@ -316,7 +316,7 @@ namespace Google.Solutions.Settings.Test
                     "black",
                     v => v.ToLower() == v);
 
-                Assert.AreEqual("red", setting.Value);
+                Assert.That(setting.Value, Is.EqualTo("red"));
                 Assert.IsFalse(setting.IsReadOnly);
             }
         }
@@ -342,11 +342,11 @@ namespace Google.Solutions.Settings.Test
                     "black",
                     _ => true);
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual("BLUE", setting.Value);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
+                Assert.That(setting.Value, Is.EqualTo("BLUE"));
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsTrue(setting.IsReadOnly);

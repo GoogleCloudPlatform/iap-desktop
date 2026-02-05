@@ -78,11 +78,11 @@ namespace Google.Solutions.Settings.Test
                     17,
                     Predicate.InRange(0, 100));
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(17, setting.Value);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
+                Assert.That(setting.Value, Is.EqualTo(17));
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -102,11 +102,11 @@ namespace Google.Solutions.Settings.Test
                     17,
                     Predicate.InRange(0, 100));
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(17, setting.Value);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
+                Assert.That(setting.Value, Is.EqualTo(17));
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -128,11 +128,11 @@ namespace Google.Solutions.Settings.Test
                     17,
                     Predicate.InRange(0, 100));
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(42, setting.Value);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
+                Assert.That(setting.Value, Is.EqualTo(42));
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -154,11 +154,11 @@ namespace Google.Solutions.Settings.Test
                     1,
                     Predicate.InRange(0, 100));
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(1, setting.Value);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
+                Assert.That(setting.Value, Is.EqualTo(1));
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsFalse(setting.IsReadOnly);
@@ -185,7 +185,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = 1;
                 key.Write(setting);
 
-                Assert.AreEqual(1, key.BackingKey.GetValue("test"));
+                Assert.That(key.BackingKey.GetValue("test"), Is.EqualTo(1));
             }
         }
 
@@ -230,7 +230,7 @@ namespace Google.Solutions.Settings.Test
 
                 setting.Value = setting.DefaultValue;
 
-                Assert.AreEqual(17, setting.Value);
+                Assert.That(setting.Value, Is.EqualTo(17));
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }
@@ -313,7 +313,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = 1;
                 ((IAnySetting)setting).AnyValue = null;
 
-                Assert.AreEqual(17, setting.Value);
+                Assert.That(setting.Value, Is.EqualTo(17));
                 Assert.IsTrue(setting.IsDefault);
             }
         }
@@ -359,7 +359,7 @@ namespace Google.Solutions.Settings.Test
                     17,
                     Predicate.InRange(0, 100));
 
-                Assert.AreEqual(42, setting.Value);
+                Assert.That(setting.Value, Is.EqualTo(42));
                 Assert.IsFalse(setting.IsReadOnly);
             }
         }
@@ -385,7 +385,7 @@ namespace Google.Solutions.Settings.Test
                     17,
                     Predicate.InRange(0, 100));
 
-                Assert.AreEqual(42, setting.Value);
+                Assert.That(setting.Value, Is.EqualTo(42));
                 Assert.IsFalse(setting.IsReadOnly);
             }
         }
@@ -411,11 +411,11 @@ namespace Google.Solutions.Settings.Test
                     17,
                     Predicate.InRange(0, 100));
 
-                Assert.AreEqual("test", setting.Key);
-                Assert.AreEqual("title", setting.DisplayName);
-                Assert.AreEqual("description", setting.Description);
-                Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual(88, setting.Value);
+                Assert.That(setting.Key, Is.EqualTo("test"));
+                Assert.That(setting.DisplayName, Is.EqualTo("title"));
+                Assert.That(setting.Description, Is.EqualTo("description"));
+                Assert.That(setting.Category, Is.EqualTo("category"));
+                Assert.That(setting.Value, Is.EqualTo(88));
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
                 Assert.IsTrue(setting.IsReadOnly);

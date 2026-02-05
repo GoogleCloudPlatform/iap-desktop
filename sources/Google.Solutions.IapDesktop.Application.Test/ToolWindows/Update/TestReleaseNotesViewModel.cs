@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
                 new Mock<IInstall>().Object,
                 new Mock<IReleaseFeed>().Object);
 
-            Assert.AreEqual("Loading...", viewModel.Summary.Value);
+            Assert.That(viewModel.Summary.Value, Is.EqualTo("Loading..."));
         }
 
         [Test]

@@ -59,11 +59,10 @@ namespace Google.Solutions.Mvvm.Test.Diagnostics
                 }
             });
 
-            Assert.AreEqual(
-                "0x00000001 (LParam: 0x0000000001234567, WParam: 0x0000000009ABCDEF, WM_CREATE)\n" +
+            Assert.That(
+                trace.ToString(), Is.EqualTo("0x00000001 (LParam: 0x0000000001234567, WParam: 0x0000000009ABCDEF, WM_CREATE)\n" +
                 "0x00000002 (LParam: 0x0000000001234567, WParam: 0x0000000009ABCDEF, WM_DESTROY)\n" +
-                "0x7FFFFFFF (LParam: 0x0000000001234567, WParam: 0x0000000009ABCDEF, 2147483647)\n",
-                trace.ToString());
+                "0x7FFFFFFF (LParam: 0x0000000001234567, WParam: 0x0000000009ABCDEF, 2147483647)\n"));
         }
     }
 }

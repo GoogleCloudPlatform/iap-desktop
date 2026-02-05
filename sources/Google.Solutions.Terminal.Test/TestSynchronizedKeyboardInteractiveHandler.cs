@@ -56,10 +56,9 @@ namespace Google.Solutions.Terminal.Test
                 handler.Object,
                 context);
 
-            Assert.AreEqual(
-                "result",
-                synchronizedHandler.Prompt("name", "instruction", "prompt", false));
-            Assert.AreEqual(1, context.SendCalls);
+            Assert.That(
+                synchronizedHandler.Prompt("name", "instruction", "prompt", false), Is.EqualTo("result"));
+            Assert.That(context.SendCalls, Is.EqualTo(1));
         }
 
 
@@ -81,7 +80,7 @@ namespace Google.Solutions.Terminal.Test
                 context);
 
             Assert.IsNotNull(synchronizedHandler.PromptForCredentials("username"));
-            Assert.AreEqual(1, context.SendCalls);
+            Assert.That(context.SendCalls, Is.EqualTo(1));
         }
     }
 }

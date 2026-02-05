@@ -96,7 +96,7 @@ namespace Google.Solutions.Platform.Test.Net
                 var policy = new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
                     .AddGroupPolicy(key)
                     .Build();
-                Assert.AreEqual(2, policy.Entries.Count);
+                Assert.That(policy.Entries.Count, Is.EqualTo(2));
             }
         }
 
@@ -111,7 +111,7 @@ namespace Google.Solutions.Platform.Test.Net
                 var policy = new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
                     .AddGroupPolicy(key)
                     .Build();
-                Assert.AreEqual(1, policy.Entries.Count);
+                Assert.That(policy.Entries.Count, Is.EqualTo(1));
             }
         }
 

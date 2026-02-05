@@ -127,8 +127,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                Assert.AreEqual("preferred", credential.Username);
-                Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, credential.AuthorizationMethod);
+                Assert.That(credential.Username, Is.EqualTo("preferred"));
+                Assert.That(credential.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.InstanceMetadata));
 
                 await
                     VerifyCredentialAsync(
@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false))
             {
                 StringAssert.StartsWith("sa_", credential.Username);
-                Assert.AreEqual(KeyAuthorizationMethods.Oslogin, credential.AuthorizationMethod);
+                Assert.That(credential.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
 
                 await
                     VerifyCredentialAsync(
@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false))
             {
                 StringAssert.StartsWith("sa_", credential.Username);
-                Assert.AreEqual(KeyAuthorizationMethods.Oslogin, credential.AuthorizationMethod);
+                Assert.That(credential.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
 
                 var instanceLocator = await instance;
                 var e = await ExceptionAssert
@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         credential,
                         new Mock<IKeyboardInteractiveHandler>().Object))
                     .ConfigureAwait(false);
-                Assert.AreEqual("Username/PublicKey combination invalid", e.Message);
+                Assert.That(e.Message, Is.EqualTo("Username/PublicKey combination invalid"));
             }
         }
 
@@ -230,8 +230,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                Assert.AreEqual("preferred", credential.Username);
-                Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, credential.AuthorizationMethod);
+                Assert.That(credential.Username, Is.EqualTo("preferred"));
+                Assert.That(credential.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.InstanceMetadata));
 
                 await
                     VerifyCredentialAsync(
@@ -266,10 +266,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                Assert.AreEqual(
-                    (await authorization).Session.Username,
-                    credential.Username);
-                Assert.AreEqual(KeyAuthorizationMethods.Oslogin, credential.AuthorizationMethod);
+                Assert.That(
+                    credential.Username, Is.EqualTo((await authorization).Session.Username));
+                Assert.That(credential.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
 
                 await
                     VerifyCredentialAsync(

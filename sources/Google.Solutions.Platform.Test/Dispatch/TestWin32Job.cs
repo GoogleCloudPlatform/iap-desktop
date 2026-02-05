@@ -139,7 +139,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 job.Add(process2);
 
                 var ids = job.ProcessIds;
-                Assert.AreEqual(2, ids.Count());
+                Assert.That(ids.Count(), Is.EqualTo(2));
                 CollectionAssert.Contains(ids, process1.Id);
                 CollectionAssert.Contains(ids, process2.Id);
             }

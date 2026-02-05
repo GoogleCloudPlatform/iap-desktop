@@ -68,7 +68,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(project);
-            Assert.AreEqual(TestProject.ProjectId, project.Name);
+            Assert.That(project.Name, Is.EqualTo(TestProject.ProjectId));
         }
 
         //---------------------------------------------------------------------
@@ -91,7 +91,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(project);
-            Assert.AreEqual(TestProject.ProjectId, project.Name);
+            Assert.That(project.Name, Is.EqualTo(TestProject.ProjectId));
         }
 
         [Test]

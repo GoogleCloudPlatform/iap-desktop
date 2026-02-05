@@ -57,7 +57,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 }
                 catch (TokenResponseException e)
                 {
-                    Assert.AreEqual("invalid_client", e.Error.Error);
+                    Assert.That(e.Error.Error, Is.EqualTo("invalid_client"));
                 }
             }
         }
@@ -87,7 +87,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 }
                 catch (TokenResponseException e)
                 {
-                    Assert.AreEqual("invalid_client", e.Error.Error);
+                    Assert.That(e.Error.Error, Is.EqualTo("invalid_client"));
                 }
             }
         }

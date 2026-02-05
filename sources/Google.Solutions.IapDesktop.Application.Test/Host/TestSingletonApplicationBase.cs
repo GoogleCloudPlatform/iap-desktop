@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             app.WaitTillRunning();
 
             app.Quit();
-            Assert.AreEqual(args, app.FirstInvocationArgs);
+            Assert.That(app.FirstInvocationArgs, Is.EqualTo(args));
         }
 
         [Test]
@@ -138,10 +138,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             // Wait till first app received data.
             app.WaitTillRunning();
-            Assert.AreEqual(args, app.SubsequentInvocationArgs);
+            Assert.That(app.SubsequentInvocationArgs, Is.EqualTo(args));
 
             app.Run(new[] { "third" });
-            Assert.AreEqual(new[] { "third" }, app.SubsequentInvocationArgs);
+            Assert.That(app.SubsequentInvocationArgs, Is.EqualTo(new[] { "third" }));
 
             app.Quit();
         }
@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             first.Quit();
             second.Quit();
 
-            Assert.AreEqual(new[] { "second" }, second.FirstInvocationArgs);
+            Assert.That(second.FirstInvocationArgs, Is.EqualTo(new[] { "second" }));
         }
 
         [Test]
@@ -189,9 +189,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             Task.Factory.StartNew(() => second.Run(new[] { "second" }));
 
             first.WaitTillRunning();
-            Assert.AreEqual(
-                new[] { "second" },
-                first.SubsequentInvocationArgs);
+            Assert.That(
+                first.SubsequentInvocationArgs, Is.EqualTo(new[] { "second" }));
 
             first.Quit();
             second.Quit();

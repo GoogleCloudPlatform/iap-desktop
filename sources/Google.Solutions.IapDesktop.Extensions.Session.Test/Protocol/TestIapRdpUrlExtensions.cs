@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
             Assert.IsTrue(url.TryGetParameter("RdpPort", out ushort value));
-            Assert.AreEqual(3389, value);
+            Assert.That(value, Is.EqualTo(3389));
         }
 
         //---------------------------------------------------------------------
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
             Assert.IsTrue(url.TryGetParameter("username", out string value));
-            Assert.AreEqual("bob", value);
+            Assert.That(value, Is.EqualTo("bob"));
         }
 
         //---------------------------------------------------------------------
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
             Assert.IsTrue(url.TryGetParameter<RdpAudioPlayback>("AudioMode", out var value));
-            Assert.AreEqual(RdpAudioPlayback.DoNotPlay, value);
+            Assert.That(value, Is.EqualTo(RdpAudioPlayback.DoNotPlay));
         }
 
         //---------------------------------------------------------------------
@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
                 "AudioMode",
                 (p, v) => p.AudioPlayback = v);
 
-            Assert.AreEqual(RdpAudioPlayback.PlayOnServer, parameters.AudioPlayback);
+            Assert.That(parameters.AudioPlayback, Is.EqualTo(RdpAudioPlayback.PlayOnServer));
         }
 
         [Test]
@@ -215,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
                 "AudioMode",
                 (p, v) => p.AudioPlayback = v);
 
-            Assert.AreEqual(RdpAudioPlayback.PlayOnServer, parameters.AudioPlayback);
+            Assert.That(parameters.AudioPlayback, Is.EqualTo(RdpAudioPlayback.PlayOnServer));
         }
 
         [Test]
@@ -238,7 +238,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
                 "AudioMode",
                 (p, v) => p.AudioPlayback = v);
 
-            Assert.AreEqual(RdpAudioPlayback.PlayOnServer, parameters.AudioPlayback);
+            Assert.That(parameters.AudioPlayback, Is.EqualTo(RdpAudioPlayback.PlayOnServer));
         }
 
         [Test]
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
                 "AudioMode",
                 (p, v) => p.AudioPlayback = v);
 
-            Assert.AreEqual(RdpAudioPlayback.DoNotPlay, parameters.AudioPlayback);
+            Assert.That(parameters.AudioPlayback, Is.EqualTo(RdpAudioPlayback.DoNotPlay));
         }
     }
 }

@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
             var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.All);
             Assert.IsNotNull(keys);
-            Assert.AreEqual(2, keys.Count());
+            Assert.That(keys.Count(), Is.EqualTo(2));
             CollectionAssert.AreEquivalent(
                 new[] { "alice", "bob" },
                 keys.Select(k => k.PosixUsername));

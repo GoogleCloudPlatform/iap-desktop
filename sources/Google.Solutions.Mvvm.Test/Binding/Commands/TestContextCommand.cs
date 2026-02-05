@@ -39,7 +39,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 _ => CommandState.Enabled,
                 _ => { });
 
-            Assert.AreEqual("Sample", command.ActivityText);
+            Assert.That(command.ActivityText, Is.EqualTo("Sample"));
         }
         [Test]
         public void ActivityText_WhenActivityTextSet_ThenActivityTextReturnsActivityText()
@@ -52,7 +52,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 ActivityText = "Doing tests"
             };
 
-            Assert.AreEqual("Doing tests", command.ActivityText);
+            Assert.That(command.ActivityText, Is.EqualTo("Doing tests"));
         }
     }
 }

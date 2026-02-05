@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .ConfigureAwait(true);
 
             Assert.IsNull(viewModel.InformationText.Value);
-            Assert.AreEqual("Authorized SSH keys", viewModel.WindowTitle.Value);
+            Assert.That(viewModel.WindowTitle.Value, Is.EqualTo("Authorized SSH keys"));
             Assert.IsFalse(viewModel.AllKeys.Any());
             Assert.IsFalse(viewModel.FilteredKeys.Any());
         }
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .ConfigureAwait(true);
 
             Assert.IsNull(viewModel.InformationText.Value);
-            Assert.AreEqual("Authorized SSH keys", viewModel.WindowTitle.Value);
+            Assert.That(viewModel.WindowTitle.Value, Is.EqualTo("Authorized SSH keys"));
             Assert.IsFalse(viewModel.AllKeys.Any());
             Assert.IsFalse(viewModel.FilteredKeys.Any());
         }
@@ -158,8 +158,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
             Assert.IsNotEmpty(viewModel.InformationText.Value);
             StringAssert.Contains("project-1", viewModel.WindowTitle.Value);
 
-            Assert.AreEqual(2, viewModel.AllKeys.Count);
-            Assert.AreEqual(2, viewModel.FilteredKeys.Count);
+            Assert.That(viewModel.AllKeys.Count, Is.EqualTo(2));
+            Assert.That(viewModel.FilteredKeys.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -186,8 +186,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
             Assert.IsNotEmpty(viewModel.InformationText.Value);
             StringAssert.Contains("instance-1", viewModel.WindowTitle.Value);
 
-            Assert.AreEqual(2, viewModel.AllKeys.Count);
-            Assert.AreEqual(2, viewModel.FilteredKeys.Count);
+            Assert.That(viewModel.AllKeys.Count, Is.EqualTo(2));
+            Assert.That(viewModel.FilteredKeys.Count, Is.EqualTo(2));
         }
 
         //---------------------------------------------------------------------
@@ -208,11 +208,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .ConfigureAwait(true);
 
             viewModel.Filter = "ice";
-            Assert.AreEqual(2, viewModel.AllKeys.Count);
-            Assert.AreEqual(1, viewModel.FilteredKeys.Count);
+            Assert.That(viewModel.AllKeys.Count, Is.EqualTo(2));
+            Assert.That(viewModel.FilteredKeys.Count, Is.EqualTo(1));
 
             viewModel.Filter = null;
-            Assert.AreEqual(2, viewModel.FilteredKeys.Count);
+            Assert.That(viewModel.FilteredKeys.Count, Is.EqualTo(2));
         }
 
         //---------------------------------------------------------------------

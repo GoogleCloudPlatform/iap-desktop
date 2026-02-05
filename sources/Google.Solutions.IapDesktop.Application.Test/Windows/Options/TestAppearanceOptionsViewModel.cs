@@ -97,8 +97,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             settingsRepository.SetSettings(settings);
 
             var viewModel = new AppearanceOptionsViewModel(settingsRepository);
-            Assert.AreEqual(ApplicationTheme.Dark, viewModel.SelectedTheme.Value);
-            Assert.AreEqual(ScalingMode.None, viewModel.ScalingMode.Value);
+            Assert.That(viewModel.SelectedTheme.Value, Is.EqualTo(ApplicationTheme.Dark));
+            Assert.That(viewModel.ScalingMode.Value, Is.EqualTo(ScalingMode.None));
         }
 
         [Test]
@@ -116,8 +116,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             var settings = settingsRepository.GetSettings();
-            Assert.AreEqual(ApplicationTheme.Dark, settings.Theme.Value);
-            Assert.AreEqual(ScalingMode.None, viewModel.ScalingMode.Value);
+            Assert.That(settings.Theme.Value, Is.EqualTo(ApplicationTheme.Dark));
+            Assert.That(viewModel.ScalingMode.Value, Is.EqualTo(ScalingMode.None));
         }
     }
 }

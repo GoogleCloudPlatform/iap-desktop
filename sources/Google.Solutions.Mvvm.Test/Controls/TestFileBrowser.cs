@@ -228,13 +228,13 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
                 Application.DoEvents();
 
-                Assert.AreEqual(1, browser.Directories.Nodes.Count);
-                Assert.AreEqual(0, browser.Directories.Nodes[0].Nodes.Count);
+                Assert.That(browser.Directories.Nodes.Count, Is.EqualTo(1));
+                Assert.That(browser.Directories.Nodes[0].Nodes.Count, Is.EqualTo(0));
 
                 children.Add(CreateDirectory().Object);
                 Application.DoEvents();
 
-                Assert.AreEqual(1, browser.Directories.Nodes[0].Nodes.Count);
+                Assert.That(browser.Directories.Nodes[0].Nodes.Count, Is.EqualTo(1));
             }
         }
 
@@ -276,13 +276,13 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Application.DoEvents();
 
                 // Root directory is empty.
-                Assert.AreEqual(0, browser.Files.Items.Count);
+                Assert.That(browser.Files.Items.Count, Is.EqualTo(0));
 
                 children.Add(CreateDirectory().Object);
                 Application.DoEvents();
 
                 // Root directory contains 1 item..
-                Assert.AreEqual(1, browser.Files.Items.Count);
+                Assert.That(browser.Files.Items.Count, Is.EqualTo(1));
             }
         }
 
@@ -312,7 +312,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Application.DoEvents();
 
                 Assert.AreSame(fileSystem.Root, browser.CurrentDirectory);
-                Assert.AreEqual(string.Empty, browser.CurrentPath);
+                Assert.That(browser.CurrentPath, Is.EqualTo(string.Empty));
             }
         }
 
@@ -392,7 +392,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     .ConfigureAwait(true);
 
                 Application.DoEvents();
-                Assert.AreEqual(string.Empty, browser.CurrentPath);
+                Assert.That(browser.CurrentPath, Is.EqualTo(string.Empty));
             }
         }
 
@@ -430,7 +430,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 Application.DoEvents();
                 Assert.IsNotNull(currentDirectory);
-                Assert.AreEqual("Item/Item", browser.CurrentPath);
+                Assert.That(browser.CurrentPath, Is.EqualTo("Item/Item"));
             }
         }
 
@@ -472,7 +472,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 }
 
                 Application.DoEvents();
-                Assert.AreEqual(string.Empty, browser.CurrentPath);
+                Assert.That(browser.CurrentPath, Is.EqualTo(string.Empty));
             }
         }
 
@@ -549,8 +549,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     item.Selected = true;
                 }
 
-                Assert.AreEqual(3, browser.SelectedFiles.Count());
-                Assert.AreEqual(3, selectionEvents);
+                Assert.That(browser.SelectedFiles.Count(), Is.EqualTo(3));
+                Assert.That(selectionEvents, Is.EqualTo(3));
             }
         }
 
@@ -586,8 +586,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 browser.SelectedFiles = new[] { files[0], files[1] };
 
-                Assert.AreEqual(2, browser.SelectedFiles.Count());
-                Assert.AreEqual(2, selectionEvents);
+                Assert.That(browser.SelectedFiles.Count(), Is.EqualTo(2));
+                Assert.That(selectionEvents, Is.EqualTo(2));
             }
         }
 
@@ -625,7 +625,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 using (var dataObject = browser.CopySelectedFiles())
                 {
-                    Assert.AreEqual(0, dataObject.Files.Count);
+                    Assert.That(dataObject.Files.Count, Is.EqualTo(0));
                 }
             }
         }
@@ -715,7 +715,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 using (var dataObject = browser.CopySelectedFiles())
                 {
-                    Assert.AreEqual(2, dataObject.Files.Count);
+                    Assert.That(dataObject.Files.Count, Is.EqualTo(2));
                     Assert.IsTrue(dataObject.IsAsync);
                 }
             }
@@ -897,12 +897,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     DataFormats.FileDrop,
                     new string[] { sourceFile.FullName });
 
-                Assert.AreEqual(
-                    sourceFile.Name,
+                Assert.That(
                     browser
                         .GetPastableFiles(dataObject, true)
                         .FirstOrDefault()?
-                        .Name);
+                        .Name, Is.EqualTo(sourceFile.Name));
 
                 taskDialog.Verify(
                     d => d.ShowDialog(browser, It.IsAny<TaskDialogParameters>()),

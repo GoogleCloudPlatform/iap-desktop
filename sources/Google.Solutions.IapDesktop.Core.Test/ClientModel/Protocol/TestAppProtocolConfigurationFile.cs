@@ -88,13 +88,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 }";
 
             var protocol = AppProtocolConfigurationFile.ReadJson(json);
-            Assert.AreEqual("protocol-1", protocol.Name);
+            Assert.That(protocol.Name, Is.EqualTo("protocol-1"));
             Assert.IsInstanceOf<WindowsTrait>(protocol.RequiredTraits.First());
-            Assert.AreEqual(8080, protocol.RemotePort);
+            Assert.That(protocol.RemotePort, Is.EqualTo(8080));
 
             var client = (AppProtocolClient?)protocol.Client;
             Assert.NotNull(client);
-            Assert.AreEqual("cmd", client!.Executable);
+            Assert.That(client!.Executable, Is.EqualTo("cmd"));
         }
 
         //---------------------------------------------------------------------

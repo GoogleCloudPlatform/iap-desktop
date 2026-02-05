@@ -116,13 +116,11 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
                 cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
 
             Assert.IsNotNull(certificates);
-            Assert.AreEqual(1, certificates.Count());
-            Assert.AreEqual(
-                ExampleCertificate.Thumbprint,
-                certificates.First().Thumbprint);
-            Assert.AreEqual(
-                ExampleCertitficateSubject,
-                certificates.First().Subject);
+            Assert.That(certificates.Count(), Is.EqualTo(1));
+            Assert.That(
+                certificates.First().Thumbprint, Is.EqualTo(ExampleCertificate.Thumbprint));
+            Assert.That(
+                certificates.First().Subject, Is.EqualTo(ExampleCertitficateSubject));
         }
 
         [Test]

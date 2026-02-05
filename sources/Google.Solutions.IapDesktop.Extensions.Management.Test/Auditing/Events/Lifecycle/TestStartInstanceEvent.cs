@@ -83,15 +83,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             var e = (StartInstanceEvent)r.ToEvent();
 
-            Assert.AreEqual(4894051111144103, e.InstanceId);
-            Assert.AreEqual("instance-1", e.Instance?.Name);
-            Assert.AreEqual("us-central1-a", e.Instance?.Zone);
-            Assert.AreEqual("project-1", e.Instance?.ProjectId);
-            Assert.AreEqual("NOTICE", e.Severity);
+            Assert.That(e.InstanceId, Is.EqualTo(4894051111144103));
+            Assert.That(e.Instance?.Name, Is.EqualTo("instance-1"));
+            Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(e.Instance?.ProjectId, Is.EqualTo("project-1"));
+            Assert.That(e.Severity, Is.EqualTo("NOTICE"));
             Assert.IsNull(e.Status);
-            Assert.AreEqual(
-                new InstanceLocator("project-1", "us-central1-a", "instance-1"),
-                e.Instance);
+            Assert.That(
+                e.Instance, Is.EqualTo(new InstanceLocator("project-1", "us-central1-a", "instance-1")));
         }
 
         [Test]

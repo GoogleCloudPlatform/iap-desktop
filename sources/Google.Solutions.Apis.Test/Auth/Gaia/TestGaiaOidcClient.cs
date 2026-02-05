@@ -109,12 +109,12 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 null,
                 tokenResponse);
 
-            Assert.AreEqual(freshIdToken, ((UserCredential)session.ApiCredential).Token.IdToken);
-            Assert.AreEqual(freshIdToken, session.OfflineCredential.IdToken);
-            Assert.AreEqual(freshIdToken, session.IdToken.ToString());
+            Assert.That(((UserCredential)session.ApiCredential).Token.IdToken, Is.EqualTo(freshIdToken));
+            Assert.That(session.OfflineCredential.IdToken, Is.EqualTo(freshIdToken));
+            Assert.That(session.IdToken.ToString(), Is.EqualTo(freshIdToken));
 
-            Assert.AreEqual("new-rt", ((UserCredential)session.ApiCredential).Token.RefreshToken);
-            Assert.AreEqual("new-rt", session.OfflineCredential.RefreshToken);
+            Assert.That(((UserCredential)session.ApiCredential).Token.RefreshToken, Is.EqualTo("new-rt"));
+            Assert.That(session.OfflineCredential.RefreshToken, Is.EqualTo("new-rt"));
         }
 
         [Test]
@@ -154,12 +154,12 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 offlineCredential,
                 tokenResponse);
 
-            Assert.AreEqual(freshIdToken, ((UserCredential)session.ApiCredential).Token.IdToken);
-            Assert.AreEqual(freshIdToken, session.OfflineCredential.IdToken);
-            Assert.AreEqual(freshIdToken, session.IdToken.ToString());
+            Assert.That(((UserCredential)session.ApiCredential).Token.IdToken, Is.EqualTo(freshIdToken));
+            Assert.That(session.OfflineCredential.IdToken, Is.EqualTo(freshIdToken));
+            Assert.That(session.IdToken.ToString(), Is.EqualTo(freshIdToken));
 
-            Assert.AreEqual("new-rt", ((UserCredential)session.ApiCredential).Token.RefreshToken);
-            Assert.AreEqual("new-rt", session.OfflineCredential.RefreshToken);
+            Assert.That(((UserCredential)session.ApiCredential).Token.RefreshToken, Is.EqualTo("new-rt"));
+            Assert.That(session.OfflineCredential.RefreshToken, Is.EqualTo("new-rt"));
         }
 
         [Test]
@@ -193,11 +193,11 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 tokenResponse);
 
             Assert.IsNull(((UserCredential)session.ApiCredential).Token.IdToken);
-            Assert.AreEqual(oldIdToken, session.OfflineCredential.IdToken);
-            Assert.AreEqual(oldIdToken, session.IdToken.ToString());
+            Assert.That(session.OfflineCredential.IdToken, Is.EqualTo(oldIdToken));
+            Assert.That(session.IdToken.ToString(), Is.EqualTo(oldIdToken));
 
-            Assert.AreEqual("new-rt", ((UserCredential)session.ApiCredential).Token.RefreshToken);
-            Assert.AreEqual("new-rt", session.OfflineCredential.RefreshToken);
+            Assert.That(((UserCredential)session.ApiCredential).Token.RefreshToken, Is.EqualTo("new-rt"));
+            Assert.That(session.OfflineCredential.RefreshToken, Is.EqualTo("new-rt"));
         }
 
         [Test]
@@ -361,9 +361,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(codeReceiver.RequestUrl);
-            Assert.AreEqual(
-                Scopes.Cloud,
-                codeReceiver.RequestUrl!.Scope,
+            Assert.That(
+                codeReceiver.RequestUrl!.Scope, Is.EqualTo(Scopes.Cloud),
                 "Minimal flow");
             StringAssert.Contains(
                 "login_hint=x%40example.com",
@@ -402,9 +401,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(codeReceiver.RequestUrl);
-            Assert.AreEqual(
-                $"{Scopes.Cloud} {Scopes.Email}",
-                codeReceiver.RequestUrl!.Scope,
+            Assert.That(
+                codeReceiver.RequestUrl!.Scope, Is.EqualTo($"{Scopes.Cloud} {Scopes.Email}"),
                 "Normal flow");
         }
 
@@ -432,9 +430,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(codeReceiver.RequestUrl);
-            Assert.AreEqual(
-                $"{Scopes.Cloud} {Scopes.Email}",
-                codeReceiver.RequestUrl!.Scope,
+            Assert.That(
+                codeReceiver.RequestUrl!.Scope, Is.EqualTo($"{Scopes.Cloud} {Scopes.Email}"),
                 "Normal flow");
         }
 
@@ -458,9 +455,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(codeReceiver.RequestUrl);
-            Assert.AreEqual(
-                $"{Scopes.Cloud} {Scopes.Email}",
-                codeReceiver.RequestUrl!.Scope,
+            Assert.That(
+                codeReceiver.RequestUrl!.Scope, Is.EqualTo($"{Scopes.Cloud} {Scopes.Email}"),
                 "Normal flow");
         }
 
@@ -605,9 +601,9 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(session);
-            Assert.AreEqual(SampleIdToken.Payload.Email, session.Username);
-            Assert.AreEqual("access-token", ((UserCredential)session.ApiCredential).Token.AccessToken);
-            Assert.AreEqual("refresh-token", ((UserCredential)session.ApiCredential).Token.RefreshToken);
+            Assert.That(session.Username, Is.EqualTo(SampleIdToken.Payload.Email));
+            Assert.That(((UserCredential)session.ApiCredential).Token.AccessToken, Is.EqualTo("access-token"));
+            Assert.That(((UserCredential)session.ApiCredential).Token.RefreshToken, Is.EqualTo("refresh-token"));
         }
 
         //---------------------------------------------------------------------
@@ -685,9 +681,9 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(session);
-            Assert.AreEqual(SampleIdToken.Payload.Email, session!.Username);
-            Assert.AreEqual("access-token", ((UserCredential)session.ApiCredential).Token.AccessToken);
-            Assert.AreEqual("refresh-token", ((UserCredential)session.ApiCredential).Token.RefreshToken);
+            Assert.That(session!.Username, Is.EqualTo(SampleIdToken.Payload.Email));
+            Assert.That(((UserCredential)session.ApiCredential).Token.AccessToken, Is.EqualTo("access-token"));
+            Assert.That(((UserCredential)session.ApiCredential).Token.RefreshToken, Is.EqualTo("refresh-token"));
 
             // Terminate session.
             Assert.IsNotNull(store.StoredCredential);

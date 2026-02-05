@@ -50,7 +50,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                Assert.AreEqual("cmd.exe", process.ImageName);
+                Assert.That(process.ImageName, Is.EqualTo("cmd.exe"));
 
                 process.Terminate(1);
             }
@@ -124,7 +124,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                Assert.AreEqual(process.Session, WtsSession.GetCurrent());
+                Assert.That(WtsSession.GetCurrent(), Is.EqualTo(process.Session));
 
                 process.Terminate(1);
             }
@@ -236,7 +236,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var process = factory.CreateProcess(CmdExe, null))
             {
                 process.Resume();
-                Assert.AreEqual(0, process.WindowCount);
+                Assert.That(process.WindowCount, Is.EqualTo(0));
 
                 var terminatedGracefully = await process
                     .CloseAsync(cts.Token)
@@ -346,7 +346,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                     .WaitAsync(cts.Token)
                     .ConfigureAwait(false);
 
-                Assert.AreEqual(1, exitCode);
+                Assert.That(exitCode, Is.EqualTo(1));
             }
         }
 
@@ -368,7 +368,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 using (var openedProcess = Win32Process.FromProcessId(process.Id))
                 {
                     Assert.IsNotNull(openedProcess);
-                    Assert.AreEqual(process.ImageName, openedProcess.ImageName);
+                    Assert.That(openedProcess.ImageName, Is.EqualTo(process.ImageName));
                     Assert.IsTrue(openedProcess.IsRunning);
                 }
 

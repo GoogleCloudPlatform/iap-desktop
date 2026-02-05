@@ -97,11 +97,11 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .ConfigureAwait(false);
 
             var buffer = new byte[SshRelayStream.MinReadSize];
-            Assert.AreEqual(0, stream.ReadAsync(
+            Assert.That(stream.ReadAsync(
                 buffer,
                 0,
                 buffer.Length,
-                CancellationToken.None).Result);
+                CancellationToken.None).Result, Is.EqualTo(0));
         }
     }
 }

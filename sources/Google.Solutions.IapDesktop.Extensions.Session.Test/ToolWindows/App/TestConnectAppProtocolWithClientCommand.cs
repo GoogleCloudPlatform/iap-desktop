@@ -100,9 +100,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<ICredentialDialog>().Object,
                 new Mock<INotifyDialog>().Object);
 
-            Assert.AreEqual(
-                $"{command.GetType().Name}.app-1",
-                command.Id);
+            Assert.That(
+                command.Id, Is.EqualTo($"{command.GetType().Name}.app-1"));
         }
 
         //---------------------------------------------------------------------
@@ -119,15 +118,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<ICredentialDialog>().Object,
                 new Mock<INotifyDialog>().Object);
 
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                command.QueryState(new Mock<IProjectModelCloudNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                command.QueryState(new Mock<IProjectModelProjectNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                command.QueryState(new Mock<IProjectModelZoneNode>().Object));
+            Assert.That(
+                command.QueryState(new Mock<IProjectModelCloudNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                command.QueryState(new Mock<IProjectModelProjectNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                command.QueryState(new Mock<IProjectModelZoneNode>().Object), Is.EqualTo(CommandState.Unavailable));
         }
 
         [Test]
@@ -143,9 +139,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<ICredentialDialog>().Object,
                 new Mock<INotifyDialog>().Object);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                command.QueryState(new Mock<IProjectModelInstanceNode>().Object));
+            Assert.That(
+                command.QueryState(new Mock<IProjectModelInstanceNode>().Object), Is.EqualTo(CommandState.Disabled));
         }
 
         //---------------------------------------------------------------------
@@ -258,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .ConfigureAwait(false);
 
             Assert.IsNull(context.NetworkCredential);
-            Assert.AreEqual("user", context.Parameters.PreferredUsername);
+            Assert.That(context.Parameters.PreferredUsername, Is.EqualTo("user"));
         }
 
         [Test]
@@ -294,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .ConfigureAwait(false);
 
             Assert.IsNull(context.NetworkCredential);
-            Assert.AreEqual("user", context.Parameters.PreferredUsername);
+            Assert.That(context.Parameters.PreferredUsername, Is.EqualTo("user"));
         }
 
         [Test]
@@ -332,7 +327,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .ConfigureAwait(false);
 
             Assert.IsNull(context.NetworkCredential);
-            Assert.AreEqual("user", context.Parameters.PreferredUsername);
+            Assert.That(context.Parameters.PreferredUsername, Is.EqualTo("user"));
         }
 
         [Test]
@@ -398,9 +393,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(context.NetworkCredential);
-            Assert.AreEqual("user", context.NetworkCredential!.UserName);
-            Assert.AreEqual("domain", context.NetworkCredential.Domain);
-            Assert.AreEqual("password", context.NetworkCredential.Password);
+            Assert.That(context.NetworkCredential!.UserName, Is.EqualTo("user"));
+            Assert.That(context.NetworkCredential.Domain, Is.EqualTo("domain"));
+            Assert.That(context.NetworkCredential.Password, Is.EqualTo("password"));
         }
 
 
@@ -437,9 +432,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(context.NetworkCredential);
-            Assert.AreEqual("user", context.NetworkCredential!.UserName);
-            Assert.AreEqual("domain", context.NetworkCredential.Domain);
-            Assert.AreEqual("password", context.NetworkCredential.Password);
+            Assert.That(context.NetworkCredential!.UserName, Is.EqualTo("user"));
+            Assert.That(context.NetworkCredential.Domain, Is.EqualTo("domain"));
+            Assert.That(context.NetworkCredential.Password, Is.EqualTo("password"));
         }
 
         [Test]
@@ -479,9 +474,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(context.NetworkCredential);
-            Assert.AreEqual("user", context!.NetworkCredential!.UserName);
-            Assert.AreEqual("domain", context.NetworkCredential.Domain);
-            Assert.AreEqual("password", context.NetworkCredential.Password);
+            Assert.That(context!.NetworkCredential!.UserName, Is.EqualTo("user"));
+            Assert.That(context.NetworkCredential.Domain, Is.EqualTo("domain"));
+            Assert.That(context.NetworkCredential.Password, Is.EqualTo("password"));
         }
 
         [Test]

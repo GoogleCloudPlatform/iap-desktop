@@ -45,8 +45,8 @@ namespace Google.Solutions.Apis.Test.Locator
                 out var ref1));
 
             Assert.IsNotNull(ref1);
-            Assert.AreEqual("organizations", ref1!.ResourceType);
-            Assert.AreEqual(12345678900001, ref1.Id);
+            Assert.That(ref1!.ResourceType, Is.EqualTo("organizations"));
+            Assert.That(ref1.Id, Is.EqualTo(12345678900001));
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace Google.Solutions.Apis.Test.Locator
             var path = "organizations/12345678900001";
             Assert.IsTrue(OrganizationLocator.TryParse(path, out var locator));
 
-            Assert.AreEqual(path, locator!.ToString());
+            Assert.That(locator!.ToString(), Is.EqualTo(path));
         }
     }
 }

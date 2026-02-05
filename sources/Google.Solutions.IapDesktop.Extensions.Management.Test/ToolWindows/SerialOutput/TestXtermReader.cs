@@ -74,21 +74,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
             var reader = new XtermReader(new EnumerationReader<string>(input));
 
-            Assert.AreEqual(
-                "some text",
+            Assert.That(
                 await reader
                     .ReadAsync(CancellationToken.None)
-                    .ConfigureAwait(false));
-            Assert.AreEqual(
-                "",
+                    .ConfigureAwait(false), Is.EqualTo("some text"));
+            Assert.That(
                 await reader
                     .ReadAsync(CancellationToken.None)
-                    .ConfigureAwait(false));
-            Assert.AreEqual(
-                " and more text",
+                    .ConfigureAwait(false), Is.EqualTo(""));
+            Assert.That(
                 await reader
                     .ReadAsync(CancellationToken.None)
-                    .ConfigureAwait(false));
+                    .ConfigureAwait(false), Is.EqualTo(" and more text"));
         }
 
         [Test]
@@ -103,21 +100,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
             var reader = new XtermReader(new EnumerationReader<string>(input));
 
-            Assert.AreEqual(
-                "some text\u001b",
+            Assert.That(
                 await reader
                     .ReadAsync(CancellationToken.None)
-                    .ConfigureAwait(false));
-            Assert.AreEqual(
-                "[2J",
+                    .ConfigureAwait(false), Is.EqualTo("some text\u001b"));
+            Assert.That(
                 await reader
                     .ReadAsync(CancellationToken.None)
-                    .ConfigureAwait(false));
-            Assert.AreEqual(
-                " and more text",
+                    .ConfigureAwait(false), Is.EqualTo("[2J"));
+            Assert.That(
                 await reader
                     .ReadAsync(CancellationToken.None)
-                    .ConfigureAwait(false));
+                    .ConfigureAwait(false), Is.EqualTo(" and more text"));
         }
 
         [Test]
@@ -133,26 +127,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
             var reader = new XtermReader(new EnumerationReader<string>(input));
 
-            Assert.AreEqual(
-                "some text\u001b",
+            Assert.That(
                 await reader
                     .ReadAsync(CancellationToken.None)
-                    .ConfigureAwait(false));
-            Assert.AreEqual(
-                "[2J",
+                    .ConfigureAwait(false), Is.EqualTo("some text\u001b"));
+            Assert.That(
                 await reader
                     .ReadAsync(CancellationToken.None)
-                    .ConfigureAwait(false));
-            Assert.AreEqual(
-                "\u001b[01;01\u001b",
+                    .ConfigureAwait(false), Is.EqualTo("[2J"));
+            Assert.That(
                 await reader
                     .ReadAsync(CancellationToken.None)
-                    .ConfigureAwait(false));
-            Assert.AreEqual(
-                "[01;01H and more text",
+                    .ConfigureAwait(false), Is.EqualTo("\u001b[01;01\u001b"));
+            Assert.That(
                 await reader
                     .ReadAsync(CancellationToken.None)
-                    .ConfigureAwait(false));
+                    .ConfigureAwait(false), Is.EqualTo("[01;01H and more text"));
         }
 
         [Test]
@@ -165,11 +155,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
             var reader = new XtermReader(new EnumerationReader<string>(input));
 
-            Assert.AreEqual(
-                input[0],
+            Assert.That(
                 await reader
                     .ReadAsync(CancellationToken.None)
-                    .ConfigureAwait(false));
+                    .ConfigureAwait(false), Is.EqualTo(input[0]));
         }
     }
 }

@@ -227,9 +227,9 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(session);
-            Assert.AreEqual("SUBJECT", session.Username);
-            Assert.AreEqual("access-token", ((UserCredential)session.ApiCredential).Token.AccessToken);
-            Assert.AreEqual("refresh-token", ((UserCredential)session.ApiCredential).Token.RefreshToken);
+            Assert.That(session.Username, Is.EqualTo("SUBJECT"));
+            Assert.That(((UserCredential)session.ApiCredential).Token.AccessToken, Is.EqualTo("access-token"));
+            Assert.That(((UserCredential)session.ApiCredential).Token.RefreshToken, Is.EqualTo("refresh-token"));
         }
 
         //---------------------------------------------------------------------
@@ -314,9 +314,9 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(session);
-            Assert.AreEqual("SUBJECT", session!.Username);
-            Assert.AreEqual("access-token", ((UserCredential)session.ApiCredential).Token.AccessToken);
-            Assert.AreEqual("refresh-token", ((UserCredential)session.ApiCredential).Token.RefreshToken);
+            Assert.That(session!.Username, Is.EqualTo("SUBJECT"));
+            Assert.That(((UserCredential)session.ApiCredential).Token.AccessToken, Is.EqualTo("access-token"));
+            Assert.That(((UserCredential)session.ApiCredential).Token.RefreshToken, Is.EqualTo("refresh-token"));
 
             // Terminate session.
             Assert.IsNotNull(store.StoredCredential);

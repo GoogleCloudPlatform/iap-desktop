@@ -54,7 +54,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         {
             var session = WtsSession.FromProcessId((uint)Process.GetCurrentProcess().Id);
             Assert.IsNotNull(session);
-            Assert.AreEqual(WtsSession.GetCurrent(), session);
+            Assert.That(session, Is.EqualTo(WtsSession.GetCurrent()));
         }
 
         [Test]

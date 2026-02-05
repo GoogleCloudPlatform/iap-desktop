@@ -103,8 +103,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(Guid.Empty.ToString(), message.OperationId);
-            Assert.AreEqual("test-message", message.MessageType);
+            Assert.That(message.OperationId, Is.EqualTo(Guid.Empty.ToString()));
+            Assert.That(message.MessageType, Is.EqualTo("test-message"));
         }
 
         //---------------------------------------------------------------------

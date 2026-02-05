@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var traits = section.ParseCondition();
             CollectionAssert.IsNotEmpty(traits);
 
-            Assert.AreEqual(3, traits.Count());
+            Assert.That(traits.Count(), Is.EqualTo(3));
             Assert.IsTrue(traits.Any(t => t is InstanceTrait));
             Assert.IsTrue(traits.Any(t => t is WindowsTrait));
             Assert.IsTrue(traits.Any(t => t is LinuxTrait));
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 RemotePort = "80"
             };
 
-            Assert.AreEqual(80, section.ParseRemotePort());
+            Assert.That(section.ParseRemotePort(), Is.EqualTo(80));
         }
 
         //---------------------------------------------------------------------
@@ -179,24 +179,21 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         [Test]
         public void ParseLocalEndpoint_WhenValueIsValid()
         {
-            Assert.AreEqual(
-                new IPEndPoint(IPAddress.Loopback, 80),
+            Assert.That(
                 new AppProtocolConfigurationFile.MainSection()
                 {
                     LocalPort = "80"
-                }.ParseLocalEndpoint());
-            Assert.AreEqual(
-                new IPEndPoint(IPAddress.Loopback, 80),
+                }.ParseLocalEndpoint(), Is.EqualTo(new IPEndPoint(IPAddress.Loopback, 80)));
+            Assert.That(
                 new AppProtocolConfigurationFile.MainSection()
                 {
                     LocalPort = "127.0.0.1:80"
-                }.ParseLocalEndpoint());
-            Assert.AreEqual(
-                new IPEndPoint(IPAddress.Parse("127.0.0.2"), 80),
+                }.ParseLocalEndpoint(), Is.EqualTo(new IPEndPoint(IPAddress.Loopback, 80)));
+            Assert.That(
                 new AppProtocolConfigurationFile.MainSection()
                 {
                     LocalPort = "127.0.0.2:80"
-                }.ParseLocalEndpoint());
+                }.ParseLocalEndpoint(), Is.EqualTo(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 80)));
         }
 
         //---------------------------------------------------------------------
@@ -276,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
             var client = (AppProtocolClient?)section.ParseClientSection();
             Assert.IsNotNull(client);
-            Assert.AreEqual(fileName, client!.Executable);
+            Assert.That(client!.Executable, Is.EqualTo(fileName));
         }
     }
 }

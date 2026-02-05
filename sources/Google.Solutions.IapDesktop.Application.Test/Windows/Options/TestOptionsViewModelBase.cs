@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 "Sample",
                 CreateRepositoryMock().Object);
 
-            Assert.AreEqual("Sample", optionsViewModel.Title);
+            Assert.That(optionsViewModel.Title, Is.EqualTo("Sample"));
         }
 
         //---------------------------------------------------------------------
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             repository.Verify(r => r.GetSettings(), Times.Exactly(1));
             repository.Verify(r => r.SetSettings(It.IsAny<ISettingsCollection>()), Times.Once);
-            Assert.AreEqual(1, optionsViewModel.SaveCalls);
+            Assert.That(optionsViewModel.SaveCalls, Is.EqualTo(1));
         }
 
         [Test]

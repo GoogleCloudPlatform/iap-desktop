@@ -120,7 +120,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(username, credentials.UserName);
+            Assert.That(credentials.UserName, Is.EqualTo(username));
             Assert.IsEmpty(credentials.Domain);
             Assert.IsNotEmpty(credentials.Password);
         }
@@ -153,7 +153,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(username, credentials.UserName);
+            Assert.That(credentials.UserName, Is.EqualTo(username));
             Assert.IsEmpty(credentials.Domain);
             Assert.IsNotEmpty(credentials.Password);
         }
@@ -186,7 +186,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(username, credentials.UserName);
+            Assert.That(credentials.UserName, Is.EqualTo(username));
             Assert.IsEmpty(credentials.Domain);
             Assert.IsNotEmpty(credentials.Password);
         }

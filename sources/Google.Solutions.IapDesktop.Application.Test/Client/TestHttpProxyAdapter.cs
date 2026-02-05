@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 await SendWebRequest(SampleHttpsUrl)
                     .ConfigureAwait(true);
 
-                Assert.AreEqual(1, proxy.ConnectionTargets.Distinct().Count());
+                Assert.That(proxy.ConnectionTargets.Distinct().Count(), Is.EqualTo(1));
                 CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
             }
         }
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 await SendWebRequest(SampleHttpsUrl)
                     .ConfigureAwait(true);
 
-                Assert.AreEqual(1, proxy.ConnectionTargets.Distinct().Count());
+                Assert.That(proxy.ConnectionTargets.Distinct().Count(), Is.EqualTo(1));
                 CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
             }
         }
@@ -127,15 +127,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
                 var proxiedUrl = WebRequest.DefaultWebProxy.GetProxy(SampleHttpsUrl);
 
-                Assert.AreEqual(
-                    new Uri($"http://localhost:{proxy.Port}/"),
-                    proxiedUrl,
+                Assert.That(
+                    proxiedUrl, Is.EqualTo(new Uri($"http://localhost:{proxy.Port}/")),
                     "This might fail on systems that have a proxy PAC configured by GPO");
 
                 await SendWebRequest(SampleHttpsUrl)
                     .ConfigureAwait(true);
 
-                Assert.AreEqual(1, proxy.ConnectionTargets.Distinct().Count());
+                Assert.That(proxy.ConnectionTargets.Distinct().Count(), Is.EqualTo(1));
                 CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
             }
         }
@@ -160,15 +159,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
                 var proxiedUrl = WebRequest.DefaultWebProxy.GetProxy(SampleHttpsUrl);
 
-                Assert.AreEqual(
-                    new Uri($"http://localhost:{proxy.Port}/"),
-                    proxiedUrl,
+                Assert.That(
+                    proxiedUrl, Is.EqualTo(new Uri($"http://localhost:{proxy.Port}/")),
                     "This might fail on systems that have a proxy PAC configured by GPO");
 
                 await SendWebRequest(SampleHttpsUrl)
                     .ConfigureAwait(true);
 
-                Assert.AreEqual(1, proxy.ConnectionTargets.Distinct().Count());
+                Assert.That(proxy.ConnectionTargets.Distinct().Count(), Is.EqualTo(1));
                 CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
             }
         }

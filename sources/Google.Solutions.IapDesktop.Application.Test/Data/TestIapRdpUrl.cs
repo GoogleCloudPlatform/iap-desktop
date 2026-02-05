@@ -101,9 +101,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Data
         {
             var url = IapRdpUrl.FromString("IaP-Rdp:///my-project/us-central1-a/my-instance");
 
-            Assert.AreEqual("my-project", url.Instance.ProjectId);
-            Assert.AreEqual("us-central1-a", url.Instance.Zone);
-            Assert.AreEqual("my-instance", url.Instance.Name);
+            Assert.That(url.Instance.ProjectId, Is.EqualTo("my-project"));
+            Assert.That(url.Instance.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(url.Instance.Name, Is.EqualTo("my-instance"));
         }
 
         [Test]
@@ -111,9 +111,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Data
         {
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance");
 
-            Assert.AreEqual("my-project", url.Instance.ProjectId);
-            Assert.AreEqual("us-central1-a", url.Instance.Zone);
-            Assert.AreEqual("my-instance", url.Instance.Name);
+            Assert.That(url.Instance.ProjectId, Is.EqualTo("my-project"));
+            Assert.That(url.Instance.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(url.Instance.Name, Is.EqualTo("my-instance"));
         }
 
         [Test]
@@ -121,25 +121,24 @@ namespace Google.Solutions.IapDesktop.Application.Test.Data
         {
             var url = IapRdpUrl.FromString("iap-rdp:/my-project/us-central1-a/my-instance");
 
-            Assert.AreEqual("my-project", url.Instance.ProjectId);
-            Assert.AreEqual("us-central1-a", url.Instance.Zone);
-            Assert.AreEqual("my-instance", url.Instance.Name);
+            Assert.That(url.Instance.ProjectId, Is.EqualTo("my-project"));
+            Assert.That(url.Instance.Zone, Is.EqualTo("us-central1-a"));
+            Assert.That(url.Instance.Name, Is.EqualTo("my-instance"));
         }
 
         [Test]
         public void FromString_WhenTripleSlashUsed_ThenToStringReturnsSameString()
         {
             var url = "iap-rdp:///my-project/us-central1-a/my-instance";
-            Assert.AreEqual(url, IapRdpUrl.FromString(url).ToString(false));
+            Assert.That(IapRdpUrl.FromString(url).ToString(false), Is.EqualTo(url));
         }
 
         [Test]
         public void FromString_WhenIncludeQueryIsFalse_ThenToStringStripsQuery()
         {
             var url = "iap-rdp:///my-project/us-central1-a/my-instance?a=b&c=d";
-            Assert.AreEqual(
-                "iap-rdp:///my-project/us-central1-a/my-instance",
-                IapRdpUrl.FromString(url).ToString(false));
+            Assert.That(
+                IapRdpUrl.FromString(url).ToString(false), Is.EqualTo("iap-rdp:///my-project/us-central1-a/my-instance"));
         }
 
         [Test]
@@ -147,9 +146,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Data
         {
             var url = "iap-rdp:///my-project/us-central1-a/my-instance?" +
                 "foo=%C2%B0!%22%C2%A7%24%25%26%2F()%3D%3F&bar=".ToLower();
-            Assert.AreEqual(
-                url,
-                IapRdpUrl.FromString(url).ToString(true));
+            Assert.That(
+                IapRdpUrl.FromString(url).ToString(true), Is.EqualTo(url));
         }
     }
 }

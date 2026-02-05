@@ -45,7 +45,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
                 var property = ObservableProperty.Build("initial", viewModel);
 
-                Assert.AreEqual("initial", property.Value);
+                Assert.That(property.Value, Is.EqualTo("initial"));
             }
         }
 

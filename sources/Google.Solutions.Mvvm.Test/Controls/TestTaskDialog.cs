@@ -58,7 +58,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 out int radioButtonPressed,
                 out bool verificationFlagChecked)
             {
-                Assert.AreEqual(0x0009, config.dwCommonButtons);
+                Assert.That(config.dwCommonButtons, Is.EqualTo(0x0009));
                 Assert.IsNull(config.pszVerificationText);
 
                 buttonPressed = TaskDialogStandardButton.OK.CommandId;
@@ -71,7 +71,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 TaskDialogIndirect = taskDialogIndirect
             };
 
-            Assert.AreEqual(DialogResult.OK, dialog.ShowDialog(null, parameters));
+            Assert.That(dialog.ShowDialog(null, parameters), Is.EqualTo(DialogResult.OK));
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 out int radioButtonPressed,
                 out bool verificationFlagChecked)
             {
-                Assert.AreEqual(0x000E, config.dwCommonButtons);
+                Assert.That(config.dwCommonButtons, Is.EqualTo(0x000E));
                 Assert.IsNull(config.pszVerificationText);
 
                 buttonPressed = TaskDialogStandardButton.Cancel.CommandId;
@@ -101,7 +101,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 TaskDialogIndirect = taskDialogIndirect
             };
 
-            Assert.AreEqual(DialogResult.Cancel, dialog.ShowDialog(null, parameters));
+            Assert.That(dialog.ShowDialog(null, parameters), Is.EqualTo(DialogResult.Cancel));
         }
 
         //---------------------------------------------------------------------
@@ -131,7 +131,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             {
                 Assert.IsNull(config.pszVerificationText);
                 Assert.IsNotNull(config.cButtons);
-                Assert.AreEqual(2, config.cButtons);
+                Assert.That(config.cButtons, Is.EqualTo(2));
 
                 buttonPressed = TaskDialog.CommandLinkIdOffset + 1; // No
                 radioButtonPressed = -1;
@@ -143,8 +143,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 TaskDialogIndirect = taskDialogIndirect
             };
 
-            Assert.AreEqual(DialogResult.No, dialog.ShowDialog(null, parameters));
-            Assert.AreEqual(1, clicks);
+            Assert.That(dialog.ShowDialog(null, parameters), Is.EqualTo(DialogResult.No));
+            Assert.That(clicks, Is.EqualTo(1));
         }
 
         //---------------------------------------------------------------------

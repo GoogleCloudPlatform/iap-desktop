@@ -43,7 +43,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                     message,
                     SshRelayMessageTag.ACK);
 
-                Assert.AreEqual(2, bytesWritten);
+                Assert.That(bytesWritten, Is.EqualTo(2));
                 CollectionAssert.AreEquivalent(
                     new byte[]
                     {
@@ -70,8 +70,8 @@ namespace Google.Solutions.Iap.Test.Protocol
 
                 var bytesRead = SshRelayFormat.Tag.Decode(message, out var tag);
 
-                Assert.AreEqual(2, bytesRead);
-                Assert.AreEqual(SshRelayMessageTag.DATA, tag);
+                Assert.That(bytesRead, Is.EqualTo(2));
+                Assert.That(tag, Is.EqualTo(SshRelayMessageTag.DATA));
             }
 
             [Test]
@@ -100,7 +100,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                     message,
                     "Sid");
 
-                Assert.AreEqual(9, bytesWritten);
+                Assert.That(bytesWritten, Is.EqualTo(9));
                 CollectionAssert.AreEquivalent(
                     new byte[]
                     {
@@ -113,7 +113,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 SshRelayFormat.ConnectSuccessSid.Decode(
                     message,
                     out var decodedSid);
-                Assert.AreEqual("Sid", decodedSid);
+                Assert.That(decodedSid, Is.EqualTo("Sid"));
             }
 
             [Test]
@@ -138,8 +138,8 @@ namespace Google.Solutions.Iap.Test.Protocol
                     message,
                     out var sid);
 
-                Assert.AreEqual(9, bytesRead);
-                Assert.AreEqual("Sid", sid);
+                Assert.That(bytesRead, Is.EqualTo(9));
+                Assert.That(sid, Is.EqualTo("Sid"));
             }
 
             [Test]
@@ -174,7 +174,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                     (message,
                     42);
 
-                Assert.AreEqual(10, bytesWritten);
+                Assert.That(bytesWritten, Is.EqualTo(10));
                 CollectionAssert.AreEquivalent(
                     new byte[]
                     {
@@ -184,7 +184,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                     message);
 
                 SshRelayFormat.ReconnectAck.Decode(message, out var ack);
-                Assert.AreEqual(42, ack);
+                Assert.That(ack, Is.EqualTo(42));
             }
 
             [Test]
@@ -208,8 +208,8 @@ namespace Google.Solutions.Iap.Test.Protocol
                     message, 
                     out var ack);
 
-                Assert.AreEqual(10, bytesRead);
-                Assert.AreEqual(3, ack);
+                Assert.That(bytesRead, Is.EqualTo(10));
+                Assert.That(ack, Is.EqualTo(3));
             }
 
             [Test]
@@ -241,7 +241,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
                 var bytesWritten = SshRelayFormat.Ack.Encode(message, 77);
 
-                Assert.AreEqual(10, bytesWritten);
+                Assert.That(bytesWritten, Is.EqualTo(10));
                 CollectionAssert.AreEquivalent(
                     new byte[]
                     {
@@ -270,8 +270,8 @@ namespace Google.Solutions.Iap.Test.Protocol
 
                 var bytesRead = SshRelayFormat.Ack.Decode(message, out var ack);
 
-                Assert.AreEqual(10, bytesRead);
-                Assert.AreEqual(3, ack);
+                Assert.That(bytesRead, Is.EqualTo(10));
+                Assert.That(ack, Is.EqualTo(3));
             }
 
             [Test]
@@ -351,9 +351,9 @@ namespace Google.Solutions.Iap.Test.Protocol
                     0,
                     SshRelayFormat.Data.MaxPayloadLength);
 
-                Assert.AreEqual(SshRelayFormat.MaxMessageSize, bytesWritten);
-                Assert.AreEqual(SshRelayFormat.MaxMessageSize, bytesWritten);
-                Assert.AreEqual((byte)'Z', message[SshRelayFormat.MaxMessageSize - 1]);
+                Assert.That(bytesWritten, Is.EqualTo(SshRelayFormat.MaxMessageSize));
+                Assert.That(bytesWritten, Is.EqualTo(SshRelayFormat.MaxMessageSize));
+                Assert.That(message[SshRelayFormat.MaxMessageSize - 1], Is.EqualTo((byte)'Z'));
             }
 
             [Test]
@@ -369,7 +369,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                     SshRelayFormat.Data.MaxPayloadLength,
                     1);
 
-                Assert.AreEqual(7, bytesWritten);
+                Assert.That(bytesWritten, Is.EqualTo(7));
                 CollectionAssert.AreEquivalent(
                     new byte[]
                     {
@@ -397,9 +397,9 @@ namespace Google.Solutions.Iap.Test.Protocol
                     (uint)data.Length,
                     out var dataLength);
 
-                Assert.AreEqual(7, bytesRead);
-                Assert.AreEqual('D', data[0]);
-                Assert.AreEqual(1, dataLength);
+                Assert.That(bytesRead, Is.EqualTo(7));
+                Assert.That(data[0], Is.EqualTo('D'));
+                Assert.That(dataLength, Is.EqualTo(1));
             }
 
             [Test]
@@ -419,9 +419,9 @@ namespace Google.Solutions.Iap.Test.Protocol
                     1,
                     out var dataLength);
 
-                Assert.AreEqual(7, bytesRead);
-                Assert.AreEqual('D', data[1]);
-                Assert.AreEqual(1, dataLength);
+                Assert.That(bytesRead, Is.EqualTo(7));
+                Assert.That(data[1], Is.EqualTo('D'));
+                Assert.That(dataLength, Is.EqualTo(1));
             }
 
             [Test]
@@ -494,7 +494,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                     SshRelayCloseCode.ERROR_UNKNOWN,
                     string.Empty);
 
-                Assert.AreEqual(SshRelayFormat.LongClose.MinMessageLength, bytesWritten);
+                Assert.That(bytesWritten, Is.EqualTo(SshRelayFormat.LongClose.MinMessageLength));
             }
 
             [Test]
@@ -512,9 +512,9 @@ namespace Google.Solutions.Iap.Test.Protocol
                     out var closeCode,
                     out var reason);
 
-                Assert.AreEqual(message.Length, bytesRead);
-                Assert.AreEqual(SshRelayCloseCode.SID_UNKNOWN, closeCode);
-                Assert.AreEqual("Fail", reason);
+                Assert.That(bytesRead, Is.EqualTo(message.Length));
+                Assert.That(closeCode, Is.EqualTo(SshRelayCloseCode.SID_UNKNOWN));
+                Assert.That(reason, Is.EqualTo("Fail"));
             }
 
             [Test]

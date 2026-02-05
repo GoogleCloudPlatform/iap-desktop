@@ -69,11 +69,11 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             var url = flow.CreateAuthorizationCodeRequest("http://localhost/").Build();
             var parameters = HttpUtility.ParseQueryString(url.Query);
 
-            Assert.AreEqual("auth.cloud.google", url.Host);
-            Assert.AreEqual(SampleProvider.ToString(), parameters.Get("provider_name"));
-            Assert.AreEqual("client-id", parameters.Get("client_id"));
-            Assert.AreEqual("http://localhost/", parameters.Get("redirect_uri"));
-            Assert.AreEqual("scope-1 scope-2", parameters.Get("scope"));
+            Assert.That(url.Host, Is.EqualTo("auth.cloud.google"));
+            Assert.That(parameters.Get("provider_name"), Is.EqualTo(SampleProvider.ToString()));
+            Assert.That(parameters.Get("client_id"), Is.EqualTo("client-id"));
+            Assert.That(parameters.Get("redirect_uri"), Is.EqualTo("http://localhost/"));
+            Assert.That(parameters.Get("scope"), Is.EqualTo("scope-1 scope-2"));
         }
 
         [Test]
@@ -92,8 +92,8 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 SampleClientCredentials,
                 TestProject.UserAgent);
 
-            Assert.AreEqual("https://auth.cloud.google/authorize", initializer.AuthorizationServerUrl);
-            Assert.AreEqual("https://sts.googleapis.com/v1/oauthtoken", initializer.TokenServerUrl);
+            Assert.That(initializer.AuthorizationServerUrl, Is.EqualTo("https://auth.cloud.google/authorize"));
+            Assert.That(initializer.TokenServerUrl, Is.EqualTo("https://sts.googleapis.com/v1/oauthtoken"));
         }
 
         [Test]
@@ -109,8 +109,8 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 SampleClientCredentials,
                 TestProject.UserAgent);
 
-            Assert.AreEqual("https://auth.cloud.google/authorize", initializer.AuthorizationServerUrl);
-            Assert.AreEqual("https://sts.mtls.googleapis.com/v1/oauthtoken", initializer.TokenServerUrl);
+            Assert.That(initializer.AuthorizationServerUrl, Is.EqualTo("https://auth.cloud.google/authorize"));
+            Assert.That(initializer.TokenServerUrl, Is.EqualTo("https://sts.mtls.googleapis.com/v1/oauthtoken"));
         }
     }
 }

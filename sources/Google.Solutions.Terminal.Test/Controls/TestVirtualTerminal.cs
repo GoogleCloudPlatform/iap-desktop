@@ -341,10 +341,10 @@ namespace Google.Solutions.Terminal.Test.Controls
                 var dimensions = form.VirtualTerminal.Dimensions;
 
                 form.WindowState = FormWindowState.Minimized;
-                Assert.AreEqual(dimensions, form.VirtualTerminal.Dimensions);
+                Assert.That(form.VirtualTerminal.Dimensions, Is.EqualTo(dimensions));
 
                 form.WindowState = FormWindowState.Normal;
-                Assert.AreEqual(dimensions, form.VirtualTerminal.Dimensions);
+                Assert.That(form.VirtualTerminal.Dimensions, Is.EqualTo(dimensions));
 
                 form.Close();
             }
@@ -363,15 +363,13 @@ namespace Google.Solutions.Terminal.Test.Controls
                 EnableTypographicQuoteConversion = false,
             };
 
-            Assert.AreEqual(
-                "\u00ABThis\u00BB\rand that", 
-                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that"));
+            Assert.That(
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that"), Is.EqualTo("\u00ABThis\u00BB\rand that"));
 
             terminal.EnableTypographicQuoteConversion = true;
 
-            Assert.AreEqual(
-                "\"This\"\rand that",
-                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that"));
+            Assert.That(
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that"), Is.EqualTo("\"This\"\rand that"));
         }
 
         [Test]
@@ -379,9 +377,8 @@ namespace Google.Solutions.Terminal.Test.Controls
         {
             var terminal = new VirtualTerminal();
 
-            Assert.AreEqual(
-                "\t\r  one\t\rtwo",
-                terminal.SanitizeTextForPasting("\t\r\n  one\t\r\ntwo \t\r\n "));
+            Assert.That(
+                terminal.SanitizeTextForPasting("\t\r\n  one\t\r\ntwo \t\r\n "), Is.EqualTo("\t\r  one\t\rtwo"));
         }
 
         [Test]
@@ -393,15 +390,13 @@ namespace Google.Solutions.Terminal.Test.Controls
                 EnableTypographicQuoteConversion = false,
             };
 
-            Assert.AreEqual(
-                "\u00ABThis\u00BBand that",
-                terminal.SanitizeTextForPasting("\u00ABThis\u00BBand that\n"));
+            Assert.That(
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BBand that\n"), Is.EqualTo("\u00ABThis\u00BBand that"));
 
             terminal.EnableBracketedPaste = true;
 
-            Assert.AreEqual(
-                "\u00ABThis\u00BBand that",
-                terminal.SanitizeTextForPasting("\u00ABThis\u00BBand that\n"));
+            Assert.That(
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BBand that\n"), Is.EqualTo("\u00ABThis\u00BBand that"));
         }
 
         [Test]
@@ -413,15 +408,13 @@ namespace Google.Solutions.Terminal.Test.Controls
                 EnableTypographicQuoteConversion = false,
             };
 
-            Assert.AreEqual(
-                "\u00ABThis\u00BB\rand that",
-                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that\n"));
+            Assert.That(
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that\n"), Is.EqualTo("\u00ABThis\u00BB\rand that"));
 
             terminal.EnableBracketedPaste = true;
 
-            Assert.AreEqual(
-                "\u001b[200~\u00ABThis\u00BB\rand that\u001b[201~",
-                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that\n"));
+            Assert.That(
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that\n"), Is.EqualTo("\u001b[200~\u00ABThis\u00BB\rand that\u001b[201~"));
         }
     }
 
@@ -442,7 +435,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             action();
             terminal.UserInput -= AccumulateData;
 
-            Assert.AreEqual(expectedData, receiveBuffer.ToString());
+            Assert.That(receiveBuffer.ToString(), Is.EqualTo(expectedData));
         }
     }
 }

@@ -142,9 +142,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
 
             Assert.IsTrue(viewModel.IsWorkforcePoolOptionChecked.Value);
 
-            Assert.AreEqual(SampleProviderLocator.Location, viewModel.WorkforcePoolLocationId.Value);
-            Assert.AreEqual(SampleProviderLocator.Pool, viewModel.WorkforcePoolId.Value);
-            Assert.AreEqual(SampleProviderLocator.Provider, viewModel.WorkforcePoolProviderId.Value);
+            Assert.That(viewModel.WorkforcePoolLocationId.Value, Is.EqualTo(SampleProviderLocator.Location));
+            Assert.That(viewModel.WorkforcePoolId.Value, Is.EqualTo(SampleProviderLocator.Pool));
+            Assert.That(viewModel.WorkforcePoolProviderId.Value, Is.EqualTo(SampleProviderLocator.Provider));
         }
     }
 }

@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                     })
                 .ConfigureAwait(true);
 
-            Assert.AreEqual("data", result);
+            Assert.That(result, Is.EqualTo("data"));
 
             jobHost.Verify(h => h.Reauthorize(), Times.Once);
         }
@@ -140,8 +140,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                     })
                 .ConfigureAwait(true);
 
-            Assert.AreEqual("data", result);
-            Assert.AreEqual(2, funcCall);
+            Assert.That(result, Is.EqualTo("data"));
+            Assert.That(funcCall, Is.EqualTo(2));
         }
 
         [Test]
@@ -199,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                     })
                 .ConfigureAwait(true);
 
-            Assert.AreEqual("data", result);
+            Assert.That(result, Is.EqualTo("data"));
 
             jobHost.Verify(h => h.Reauthorize(), Times.Once);
         }
@@ -232,8 +232,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                     })
                 .ConfigureAwait(true);
 
-            Assert.AreEqual("data", result);
-            Assert.AreEqual(2, funcCall);
+            Assert.That(result, Is.EqualTo("data"));
+            Assert.That(funcCall, Is.EqualTo(2));
         }
 
         [Test]

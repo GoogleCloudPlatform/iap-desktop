@@ -117,7 +117,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .CloseAsync(this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(response.ExpectedBytes, response.TotalBytesRead);
+            Assert.That(response.TotalBytesRead, Is.EqualTo(response.ExpectedBytes));
         }
 
         [Test, Repeat(RepeatCount)]
@@ -158,7 +158,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                     }
                 }
 
-                Assert.AreEqual(response.ExpectedBytes, response.TotalBytesRead);
+                Assert.That(response.TotalBytesRead, Is.EqualTo(response.ExpectedBytes));
             }
 
             await stream

@@ -62,12 +62,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var key = MetadataAuthorizedPublicKey.Parse(line);
             Assert.IsInstanceOf<UnmanagedMetadataAuthorizedPublicKey>(key);
 
-            Assert.AreEqual("login", key.PosixUsername);
-            Assert.AreEqual("ssh-rsa", key.KeyType);
-            Assert.AreEqual("key", key.PublicKey);
-            Assert.AreEqual("user", ((UnmanagedMetadataAuthorizedPublicKey)key).Email);
+            Assert.That(key.PosixUsername, Is.EqualTo("login"));
+            Assert.That(key.KeyType, Is.EqualTo("ssh-rsa"));
+            Assert.That(key.PublicKey, Is.EqualTo("key"));
+            Assert.That(((UnmanagedMetadataAuthorizedPublicKey)key).Email, Is.EqualTo("user"));
 
-            Assert.AreEqual("login:ssh-rsa key user", key.ToString());
+            Assert.That(key.ToString(), Is.EqualTo("login:ssh-rsa key user"));
         }
 
         [Test]
@@ -82,14 +82,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var key = MetadataAuthorizedPublicKey.Parse(line);
             Assert.IsInstanceOf<UnmanagedMetadataAuthorizedPublicKey>(key);
 
-            Assert.AreEqual("login", key.PosixUsername);
-            Assert.AreEqual("ssh-rsa", key.KeyType);
-            Assert.AreEqual("key", key.PublicKey);
+            Assert.That(key.PosixUsername, Is.EqualTo("login"));
+            Assert.That(key.KeyType, Is.EqualTo("ssh-rsa"));
+            Assert.That(key.PublicKey, Is.EqualTo("key"));
             Assert.IsNull(((UnmanagedMetadataAuthorizedPublicKey)key).Email);
 
-            Assert.AreEqual(
-                "login:ssh-rsa key",
-                key.ToString());
+            Assert.That(
+                key.ToString(), Is.EqualTo("login:ssh-rsa key"));
         }
 
         [Test]
@@ -104,14 +103,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var key = MetadataAuthorizedPublicKey.Parse(line);
             Assert.IsInstanceOf<UnmanagedMetadataAuthorizedPublicKey>(key);
 
-            Assert.AreEqual("login", key.PosixUsername);
-            Assert.AreEqual("ssh-rsa", key.KeyType);
-            Assert.AreEqual("key", key.PublicKey);
-            Assert.AreEqual("google-ssh", ((UnmanagedMetadataAuthorizedPublicKey)key).Email);
+            Assert.That(key.PosixUsername, Is.EqualTo("login"));
+            Assert.That(key.KeyType, Is.EqualTo("ssh-rsa"));
+            Assert.That(key.PublicKey, Is.EqualTo("key"));
+            Assert.That(((UnmanagedMetadataAuthorizedPublicKey)key).Email, Is.EqualTo("google-ssh"));
 
-            Assert.AreEqual(
-                "login:ssh-rsa key google-ssh",
-                key.ToString());
+            Assert.That(
+                key.ToString(), Is.EqualTo("login:ssh-rsa key google-ssh"));
         }
 
         [Test]
@@ -126,16 +124,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var key = MetadataAuthorizedPublicKey.Parse(line);
             Assert.IsInstanceOf<ManagedMetadataAuthorizedPublicKey>(key);
 
-            Assert.AreEqual("login", key.PosixUsername);
-            Assert.AreEqual("ecdsa-sha2-nistp256", key.KeyType);
-            Assert.AreEqual("AAAA", key.PublicKey);
-            Assert.AreEqual("ldap@machine.com", ((ManagedMetadataAuthorizedPublicKey)key).Metadata.Email);
-            Assert.AreEqual(new DateTime(2015, 11, 1, 10, 43, 1, 0, DateTimeKind.Utc),
-                ((ManagedMetadataAuthorizedPublicKey)key).Metadata.ExpireOn.ToUniversalTime());
+            Assert.That(key.PosixUsername, Is.EqualTo("login"));
+            Assert.That(key.KeyType, Is.EqualTo("ecdsa-sha2-nistp256"));
+            Assert.That(key.PublicKey, Is.EqualTo("AAAA"));
+            Assert.That(((ManagedMetadataAuthorizedPublicKey)key).Metadata.Email, Is.EqualTo("ldap@machine.com"));
+            Assert.That(((ManagedMetadataAuthorizedPublicKey)key).Metadata.ExpireOn.ToUniversalTime(), Is.EqualTo(new DateTime(2015, 11, 1, 10, 43, 1, 0, DateTimeKind.Utc)));
 
-            Assert.AreEqual(
-                "login:ecdsa-sha2-nistp256 AAAA google-ssh {\"userName\":\"ldap@machine.com\",\"expireOn\":\"2015-11-01T10:43:01+0000\"}",
-                key.ToString());
+            Assert.That(
+                key.ToString(), Is.EqualTo("login:ecdsa-sha2-nistp256 AAAA google-ssh {\"userName\":\"ldap@machine.com\",\"expireOn\":\"2015-11-01T10:43:01+0000\"}"));
         }
 
         [Test]
@@ -150,16 +146,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var key = MetadataAuthorizedPublicKey.Parse(line);
             Assert.IsInstanceOf<ManagedMetadataAuthorizedPublicKey>(key);
 
-            Assert.AreEqual("login", key.PosixUsername);
-            Assert.AreEqual("ssh-rsa", key.KeyType);
-            Assert.AreEqual("key", key.PublicKey);
-            Assert.AreEqual("username@example.com", ((ManagedMetadataAuthorizedPublicKey)key).Metadata.Email);
-            Assert.AreEqual(new DateTime(2021, 01, 15, 15, 22, 35, 0, DateTimeKind.Utc),
-                ((ManagedMetadataAuthorizedPublicKey)key).Metadata.ExpireOn.ToUniversalTime());
+            Assert.That(key.PosixUsername, Is.EqualTo("login"));
+            Assert.That(key.KeyType, Is.EqualTo("ssh-rsa"));
+            Assert.That(key.PublicKey, Is.EqualTo("key"));
+            Assert.That(((ManagedMetadataAuthorizedPublicKey)key).Metadata.Email, Is.EqualTo("username@example.com"));
+            Assert.That(((ManagedMetadataAuthorizedPublicKey)key).Metadata.ExpireOn.ToUniversalTime(), Is.EqualTo(new DateTime(2021, 01, 15, 15, 22, 35, 0, DateTimeKind.Utc)));
 
-            Assert.AreEqual(
-                "login:ssh-rsa key google-ssh {\"userName\":\"username@example.com\",\"expireOn\":\"2021-01-15T15:22:35+0000\"}",
-                key.ToString());
+            Assert.That(
+                key.ToString(), Is.EqualTo("login:ssh-rsa key google-ssh {\"userName\":\"username@example.com\",\"expireOn\":\"2021-01-15T15:22:35+0000\"}"));
         }
 
         //---------------------------------------------------------------------
@@ -177,9 +171,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     "joe@example.com",
                     new DateTime(2020, 1, 1, 23, 59, 59, 123, DateTimeKind.Utc)));
 
-            Assert.AreEqual(
-                "login:ssh-rsa key google-ssh {\"userName\":\"joe@example.com\",\"expireOn\":\"2020-01-01T23:59:59+0000\"}",
-                key.ToString());
+            Assert.That(
+                key.ToString(), Is.EqualTo("login:ssh-rsa key google-ssh {\"userName\":\"joe@example.com\",\"expireOn\":\"2020-01-01T23:59:59+0000\"}"));
         }
 
         //---------------------------------------------------------------------
@@ -215,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 "bob@gmail.com");
 
             Assert.IsTrue(key1.Equals(key2));
-            Assert.AreEqual(key1.GetHashCode(), key2.GetHashCode());
+            Assert.That(key2.GetHashCode(), Is.EqualTo(key1.GetHashCode()));
         }
 
         [Test]
@@ -234,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 "bob@example.com");
 
             Assert.IsTrue(key1.Equals(key2));
-            Assert.AreEqual(key1.GetHashCode(), key2.GetHashCode());
+            Assert.That(key2.GetHashCode(), Is.EqualTo(key1.GetHashCode()));
         }
 
         [Test]

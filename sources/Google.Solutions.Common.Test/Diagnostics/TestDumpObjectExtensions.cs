@@ -30,19 +30,18 @@ namespace Google.Solutions.Common.Test.Diagnostics
         [Test]
         public void DumpProperties_WhenObjectIsNull_ThenReturnsEmptyString()
         {
-            Assert.AreEqual(string.Empty, ((object?)null).DumpProperties());
+            Assert.That(((object?)null).DumpProperties(), Is.EqualTo(string.Empty));
         }
 
         [Test]
         public void DumpProperties_WhenObjectIsNotNull_ThenReturnsString()
         {
-            Assert.AreEqual(
-                "Foo: 1\nBar: test\nQuux: System.Object\n",
+            Assert.That(
                 new {
                     Foo = 1,
                     Bar = "test",
                     Quux = new object()
-                }.DumpProperties());
+                }.DumpProperties(), Is.EqualTo("Foo: 1\nBar: test\nQuux: System.Object\n"));
         }
     }
 }

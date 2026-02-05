@@ -41,8 +41,8 @@ namespace Google.Solutions.Apis.Test.Compute
             var metadata = new Metadata();
             metadata.Add("key", "value");
 
-            Assert.AreEqual(1, metadata.Items.Count);
-            Assert.AreEqual("value", metadata.Items.First(i => i.Key == "key").Value);
+            Assert.That(metadata.Items.Count, Is.EqualTo(1));
+            Assert.That(metadata.Items.First(i => i.Key == "key").Value, Is.EqualTo("value"));
         }
 
         [Test]
@@ -61,8 +61,8 @@ namespace Google.Solutions.Apis.Test.Compute
             };
             metadata.Add("key", "value");
 
-            Assert.AreEqual(1, metadata.Items.Count);
-            Assert.AreEqual("value", metadata.Items.First(i => i.Key == "key").Value);
+            Assert.That(metadata.Items.Count, Is.EqualTo(1));
+            Assert.That(metadata.Items.First(i => i.Key == "key").Value, Is.EqualTo("value"));
         }
 
         [Test]
@@ -81,9 +81,9 @@ namespace Google.Solutions.Apis.Test.Compute
             };
             metadata.Add("key", "value");
 
-            Assert.AreEqual(2, metadata.Items.Count);
-            Assert.AreEqual("value", metadata.Items.First(i => i.Key == "key").Value);
-            Assert.AreEqual("existingvalue", metadata.Items.First(i => i.Key == "existingkey").Value);
+            Assert.That(metadata.Items.Count, Is.EqualTo(2));
+            Assert.That(metadata.Items.First(i => i.Key == "key").Value, Is.EqualTo("value"));
+            Assert.That(metadata.Items.First(i => i.Key == "existingkey").Value, Is.EqualTo("existingvalue"));
         }
 
         //---------------------------------------------------------------------
@@ -107,8 +107,8 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             });
 
-            Assert.AreEqual(1, metadata.Items.Count);
-            Assert.AreEqual("value", metadata.Items.First(i => i.Key == "key").Value);
+            Assert.That(metadata.Items.Count, Is.EqualTo(1));
+            Assert.That(metadata.Items.First(i => i.Key == "key").Value, Is.EqualTo("value"));
         }
 
         [Test]
@@ -138,9 +138,9 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             });
 
-            Assert.AreEqual(2, metadata.Items.Count);
-            Assert.AreEqual("value", metadata.Items.First(i => i.Key == "key").Value);
-            Assert.AreEqual("existingvalue", metadata.Items.First(i => i.Key == "existingkey").Value);
+            Assert.That(metadata.Items.Count, Is.EqualTo(2));
+            Assert.That(metadata.Items.First(i => i.Key == "key").Value, Is.EqualTo("value"));
+            Assert.That(metadata.Items.First(i => i.Key == "existingkey").Value, Is.EqualTo("existingvalue"));
         }
 
         [Test]
@@ -170,8 +170,8 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             });
 
-            Assert.AreEqual(1, metadata.Items.Count);
-            Assert.AreEqual("newvalue", metadata.Items.First(i => i.Key == "key").Value);
+            Assert.That(metadata.Items.Count, Is.EqualTo(1));
+            Assert.That(metadata.Items.First(i => i.Key == "key").Value, Is.EqualTo("newvalue"));
         }
 
 
@@ -219,7 +219,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             };
 
-            Assert.AreEqual("value", metadata.GetValue("key"));
+            Assert.That(metadata.GetValue("key"), Is.EqualTo("value"));
         }
 
         //---------------------------------------------------------------------
@@ -324,7 +324,7 @@ namespace Google.Solutions.Apis.Test.Compute
         {
             var metadata = new Metadata();
 
-            Assert.AreEqual("[]", metadata.AsString());
+            Assert.That(metadata.AsString(), Is.EqualTo("[]"));
         }
 
         [Test]
@@ -347,7 +347,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             };
 
-            Assert.AreEqual("[foo=foovalue, bar=barvalue]", metadata.AsString());
+            Assert.That(metadata.AsString(), Is.EqualTo("[foo=foovalue, bar=barvalue]"));
         }
     }
 }

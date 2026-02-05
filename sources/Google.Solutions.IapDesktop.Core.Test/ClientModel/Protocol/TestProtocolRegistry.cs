@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var registry = new ProtocolRegistry();
             registry.RegisterProtocol(new Mock<IProtocol>().Object);
             registry.RegisterProtocol(new Mock<IProtocol>().Object);
-            Assert.AreEqual(2, registry.Protocols.Count());
+            Assert.That(registry.Protocols.Count(), Is.EqualTo(2));
         }
 
         //---------------------------------------------------------------------

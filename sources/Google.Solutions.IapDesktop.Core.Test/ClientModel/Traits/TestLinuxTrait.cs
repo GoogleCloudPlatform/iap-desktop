@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         [Test]
         public void DisplayName()
         {
-            Assert.AreEqual("isLinux()", LinuxTrait.Instance.DisplayName);
+            Assert.That(LinuxTrait.Instance.DisplayName, Is.EqualTo("isLinux()"));
         }
 
         //---------------------------------------------------------------------
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         [Test]
         public void ToString_ReturnsExpression()
         {
-            Assert.AreEqual("isLinux()", LinuxTrait.Instance.ToString());
+            Assert.That(LinuxTrait.Instance.ToString(), Is.EqualTo("isLinux()"));
         }
 
         //---------------------------------------------------------------------

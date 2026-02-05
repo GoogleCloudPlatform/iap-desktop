@@ -38,8 +38,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.AreEqual(ApplicationTheme._Default, settings.Theme.Value);
-                Assert.AreEqual(ScalingMode.SystemDpiAware, settings.ScalingMode.Value);
+                Assert.That(settings.Theme.Value, Is.EqualTo(ApplicationTheme._Default));
+                Assert.That(settings.ScalingMode.Value, Is.EqualTo(ScalingMode.SystemDpiAware));
             }
         }
     }

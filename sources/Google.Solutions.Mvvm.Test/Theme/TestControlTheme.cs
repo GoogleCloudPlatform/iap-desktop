@@ -145,8 +145,8 @@ namespace Google.Solutions.Mvvm.Test.Theme
                 form.Show();
                 form.Close();
 
-                Assert.AreEqual(1, buttonsApplied);
-                Assert.AreEqual(3, controlsApplied);
+                Assert.That(buttonsApplied, Is.EqualTo(1));
+                Assert.That(controlsApplied, Is.EqualTo(3));
             }
         }
 
@@ -175,8 +175,8 @@ namespace Google.Solutions.Mvvm.Test.Theme
                 form.Show();
                 form.Close();
 
-                Assert.AreEqual(1, buttonsApplied);
-                Assert.AreEqual(0, controlsApplied);
+                Assert.That(buttonsApplied, Is.EqualTo(1));
+                Assert.That(controlsApplied, Is.EqualTo(0));
             }
         }
 
@@ -196,7 +196,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
 
                 theme.ApplyTo(form);
 
-                Assert.AreEqual(1, appliedCalls, "Call is delayed");
+                Assert.That(appliedCalls, Is.EqualTo(1), "Call is delayed");
             }
         }
 
@@ -212,12 +212,12 @@ namespace Google.Solutions.Mvvm.Test.Theme
 
                 theme.ApplyTo(form);
 
-                Assert.AreEqual(0, appliedCalls, "Call is delayed");
+                Assert.That(appliedCalls, Is.EqualTo(0), "Call is delayed");
 
                 form.Show();
                 form.Close();
 
-                Assert.AreEqual(1, appliedCalls, "Call is delayed");
+                Assert.That(appliedCalls, Is.EqualTo(1), "Call is delayed");
             }
         }
     }

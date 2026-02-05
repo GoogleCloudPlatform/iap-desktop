@@ -89,9 +89,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
 
             Assert.IsNull(viewModel.InformationText.Value);
             Assert.IsNull(viewModel.InspectedObject.Value);
-            Assert.AreEqual(
-                InstancePropertiesInspectorViewModel.DefaultWindowTitle,
-                viewModel.WindowTitle.Value);
+            Assert.That(
+                viewModel.WindowTitle.Value, Is.EqualTo(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
         }
 
         [Test]
@@ -107,9 +106,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
 
             Assert.IsNull(viewModel.InformationText.Value);
             Assert.IsNull(viewModel.InspectedObject.Value);
-            Assert.AreEqual(
-                InstancePropertiesInspectorViewModel.DefaultWindowTitle,
-                viewModel.WindowTitle.Value);
+            Assert.That(
+                viewModel.WindowTitle.Value, Is.EqualTo(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
         }
 
         [Test]
@@ -125,9 +123,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
 
             Assert.IsNull(viewModel.InformationText.Value);
             Assert.IsNull(viewModel.InspectedObject.Value);
-            Assert.AreEqual(
-                InstancePropertiesInspectorViewModel.DefaultWindowTitle,
-                viewModel.WindowTitle.Value);
+            Assert.That(
+                viewModel.WindowTitle.Value, Is.EqualTo(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
         }
 
         [Test]
@@ -178,9 +175,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
 
             Assert.IsNull(viewModel.InformationText.Value);
             Assert.IsNull(viewModel.InspectedObject.Value);
-            Assert.AreEqual(
-                InstancePropertiesInspectorViewModel.DefaultWindowTitle,
-                viewModel.WindowTitle.Value);
+            Assert.That(
+                viewModel.WindowTitle.Value, Is.EqualTo(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
         }
     }
 }

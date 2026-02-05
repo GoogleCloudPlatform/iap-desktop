@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Nodes
                 new[] { InstanceTrait.Instance },
                 "RUNNING");
 
-            Assert.AreEqual(SampleLocator.Name, node.TargetName);
+            Assert.That(node.TargetName, Is.EqualTo(SampleLocator.Name));
         }
 
         //---------------------------------------------------------------------
@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Nodes
                 new ITrait[] { InstanceTrait.Instance, WindowsTrait.Instance },
                 "RUNNING");
 
-            Assert.AreEqual(OperatingSystems.Windows, node.OperatingSystem);
+            Assert.That(node.OperatingSystem, Is.EqualTo(OperatingSystems.Windows));
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Nodes
                 new[] { InstanceTrait.Instance },
                 "RUNNING");
 
-            Assert.AreEqual(OperatingSystems.Linux, node.OperatingSystem);
+            Assert.That(node.OperatingSystem, Is.EqualTo(OperatingSystems.Linux));
         }
 
         //---------------------------------------------------------------------

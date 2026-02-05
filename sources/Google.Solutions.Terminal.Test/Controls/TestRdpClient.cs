@@ -254,7 +254,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                     .ConfigureAwait(true);
 
                 Assert.NotNull(eventArgs);
-                Assert.AreEqual(RdpClient.DisconnectReason.FormClosed, eventArgs!.Reason);
+                Assert.That(eventArgs!.Reason, Is.EqualTo(RdpClient.DisconnectReason.FormClosed));
             }
         }
 
@@ -395,7 +395,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 window.Client.ConnectionClosed += (_, args) =>
                 {
                     connectionClosedEvents++;
-                    Assert.AreEqual(expectedReason, args.Reason);
+                    Assert.That(args.Reason, Is.EqualTo(expectedReason));
                 };
 
                 for (var i = 0; i < 5; i++)
@@ -408,7 +408,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                         .ConfigureAwait(true);
                 }
 
-                Assert.AreEqual(5, connectionClosedEvents);
+                Assert.That(connectionClosedEvents, Is.EqualTo(5));
 
                 expectedReason = ClientBase.DisconnectReason.FormClosed;
                 window.Close();

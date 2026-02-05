@@ -54,8 +54,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                 new ServiceRoute("endpoint"),
                 new HelpClient());
 
-            Assert.AreEqual("Enabled", viewModel.PrivateServiceConnectText);
-            Assert.AreEqual("Disabled", viewModel.DeviceCertificateLinkText);
+            Assert.That(viewModel.PrivateServiceConnectText, Is.EqualTo("Enabled"));
+            Assert.That(viewModel.DeviceCertificateLinkText, Is.EqualTo("Disabled"));
         }
 
         [Test]
@@ -69,8 +69,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                 ServiceRoute.Public,
                 new HelpClient());
 
-            Assert.AreEqual("Disabled", viewModel.PrivateServiceConnectText);
-            Assert.AreEqual("Disabled", viewModel.DeviceCertificateLinkText);
+            Assert.That(viewModel.PrivateServiceConnectText, Is.EqualTo("Disabled"));
+            Assert.That(viewModel.DeviceCertificateLinkText, Is.EqualTo("Disabled"));
         }
 
         [Test]
@@ -84,8 +84,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                 ServiceRoute.Public,
                 new HelpClient());
 
-            Assert.AreEqual("Disabled", viewModel.PrivateServiceConnectText);
-            Assert.AreEqual("Error", viewModel.DeviceCertificateLinkText);
+            Assert.That(viewModel.PrivateServiceConnectText, Is.EqualTo("Disabled"));
+            Assert.That(viewModel.DeviceCertificateLinkText, Is.EqualTo("Error"));
         }
 
         [Test]
@@ -99,8 +99,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                 ServiceRoute.Public,
                 new HelpClient());
 
-            Assert.AreEqual("Disabled", viewModel.PrivateServiceConnectText);
-            Assert.AreEqual("Enabled", viewModel.DeviceCertificateLinkText);
+            Assert.That(viewModel.PrivateServiceConnectText, Is.EqualTo("Disabled"));
+            Assert.That(viewModel.DeviceCertificateLinkText, Is.EqualTo("Enabled"));
         }
     }
 }

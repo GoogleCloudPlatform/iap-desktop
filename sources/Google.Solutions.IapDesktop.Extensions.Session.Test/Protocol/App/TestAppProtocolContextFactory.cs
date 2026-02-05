@@ -207,8 +207,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(context.NetworkCredential);
-            Assert.AreEqual("password", context.NetworkCredential!.Password);
-            Assert.AreEqual("domain", context.NetworkCredential.Domain);
+            Assert.That(context.NetworkCredential!.Password, Is.EqualTo("password"));
+            Assert.That(context.NetworkCredential.Domain, Is.EqualTo("domain"));
         }
 
         //---------------------------------------------------------------------
@@ -238,10 +238,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual("user", context.Parameters.PreferredUsername);
-            Assert.AreEqual(
-                AppNetworkLevelAuthenticationState.Disabled,
-                context.Parameters.NetworkLevelAuthentication);
+            Assert.That(context.Parameters.PreferredUsername, Is.EqualTo("user"));
+            Assert.That(
+                context.Parameters.NetworkLevelAuthentication, Is.EqualTo(AppNetworkLevelAuthenticationState.Disabled));
         }
 
         //---------------------------------------------------------------------

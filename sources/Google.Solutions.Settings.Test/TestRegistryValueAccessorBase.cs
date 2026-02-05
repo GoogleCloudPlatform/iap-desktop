@@ -62,7 +62,7 @@ namespace Google.Solutions.Settings.Test
                 accessor.Write(key, this.SampleData);
 
                 Assert.IsTrue(accessor.TryRead(key, out var read));
-                Assert.AreEqual(this.SampleData, read);
+                Assert.That(read, Is.EqualTo(this.SampleData));
             }
         }
 

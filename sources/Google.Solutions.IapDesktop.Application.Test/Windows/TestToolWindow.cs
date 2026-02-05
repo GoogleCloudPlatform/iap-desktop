@@ -67,8 +67,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             var view2 = window2.Bind();
 
             Assert.AreSame(window1, window2);
-            Assert.AreEqual(1, view1.BindCalls);
-            Assert.AreEqual(1, view2.BindCalls);
+            Assert.That(view1.BindCalls, Is.EqualTo(1));
+            Assert.That(view2.BindCalls, Is.EqualTo(1));
         }
 
         [Test]
@@ -87,8 +87,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             var view2 = window2.Bind();
 
             Assert.AreNotSame(window1, window2);
-            Assert.AreEqual(1, view1.BindCalls);
-            Assert.AreEqual(1, view2.BindCalls);
+            Assert.That(view1.BindCalls, Is.EqualTo(1));
+            Assert.That(view2.BindCalls, Is.EqualTo(1));
         }
     }
 }

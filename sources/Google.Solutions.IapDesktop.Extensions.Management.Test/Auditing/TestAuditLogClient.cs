@@ -111,12 +111,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
                 new[] { "INFO", "ERROR" },
                 new DateTime(2020, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc));
 
-            Assert.AreEqual(
-                "protoPayload.methodName=(\"method-1\" OR \"method-2\") " +
+            Assert.That(
+                filter, Is.EqualTo("protoPayload.methodName=(\"method-1\" OR \"method-2\") " +
                     "AND severity=(\"INFO\" OR \"ERROR\") " +
                     "AND resource.type=(\"gce_instance\" OR \"gce_project\" OR \"audited_resource\") " +
-                    "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
-                filter);
+                    "AND timestamp > \"2020-01-02T03:04:05.0060000Z\""));
         }
 
         [Test]
@@ -129,10 +128,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
                 null,
                 new DateTime(2020, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc));
 
-            Assert.AreEqual(
-                "resource.type=(\"gce_instance\" OR \"gce_project\" OR \"audited_resource\") " +
-                "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
-                filter);
+            Assert.That(
+                filter, Is.EqualTo("resource.type=(\"gce_instance\" OR \"gce_project\" OR \"audited_resource\") " +
+                "AND timestamp > \"2020-01-02T03:04:05.0060000Z\""));
         }
 
         [Test]
@@ -145,10 +143,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
                 Enumerable.Empty<string>(),
                 new DateTime(2020, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc));
 
-            Assert.AreEqual(
-                "resource.type=(\"gce_instance\" OR \"gce_project\" OR \"audited_resource\") " +
-                "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
-                filter);
+            Assert.That(
+                filter, Is.EqualTo("resource.type=(\"gce_instance\" OR \"gce_project\" OR \"audited_resource\") " +
+                "AND timestamp > \"2020-01-02T03:04:05.0060000Z\""));
         }
 
         [Test]
@@ -161,11 +158,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
                 Enumerable.Empty<string>(),
                 new DateTime(2020, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc));
 
-            Assert.AreEqual(
-                "(resource.labels.instance_id=(\"123454321234\") OR labels.instance_id=(\"123454321234\")) " +
+            Assert.That(
+                filter, Is.EqualTo("(resource.labels.instance_id=(\"123454321234\") OR labels.instance_id=(\"123454321234\")) " +
                 "AND resource.type=(\"gce_instance\" OR \"gce_project\" OR \"audited_resource\") " +
-                "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
-                filter);
+                "AND timestamp > \"2020-01-02T03:04:05.0060000Z\""));
         }
 
         [Test]
@@ -178,11 +174,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test
                 Enumerable.Empty<string>(),
                 new DateTime(2020, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc));
 
-            Assert.AreEqual(
-                "(resource.labels.zone=(\"us-central1-a\") OR labels.zone=(\"us-central1-a\")) " +
+            Assert.That(
+                filter, Is.EqualTo("(resource.labels.zone=(\"us-central1-a\") OR labels.zone=(\"us-central1-a\")) " +
                 "AND resource.type=(\"gce_instance\" OR \"gce_project\" OR \"audited_resource\") " +
-                "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
-                filter);
+                "AND timestamp > \"2020-01-02T03:04:05.0060000Z\""));
         }
     }
 }

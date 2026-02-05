@@ -42,7 +42,7 @@ namespace Google.Solutions.Ssh.Test
             catch (Exception e) when (!(e is AssertionException))
             {
                 Assert.IsInstanceOf(typeof(Libssh2Exception), e.Unwrap());
-                Assert.AreEqual(expected, ((Libssh2Exception)e.Unwrap()).ErrorCode);
+                Assert.That(((Libssh2Exception)e.Unwrap()).ErrorCode, Is.EqualTo(expected));
 
                 if (session != null)
                 {
@@ -64,7 +64,7 @@ namespace Google.Solutions.Ssh.Test
             catch (Exception e) when (!(e is AssertionException))
             {
                 Assert.IsInstanceOf(typeof(Libssh2SftpException), e.Unwrap());
-                Assert.AreEqual(expected, ((Libssh2SftpException)e.Unwrap()).ErrorCode);
+                Assert.That(((Libssh2SftpException)e.Unwrap()).ErrorCode, Is.EqualTo(expected));
             }
         }
 

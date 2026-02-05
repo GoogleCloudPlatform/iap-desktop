@@ -70,7 +70,7 @@ namespace Google.Solutions.Common.Test.Runtime
             var d = new SampleDisposable();
             d.Dispose();
             d.Dispose(); // Again.
-            Assert.AreEqual(1, d.DisposeCalls);
+            Assert.That(d.DisposeCalls, Is.EqualTo(1));
         }
     }
 }

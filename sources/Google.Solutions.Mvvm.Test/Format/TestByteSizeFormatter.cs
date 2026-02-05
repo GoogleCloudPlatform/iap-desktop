@@ -31,49 +31,49 @@ namespace Google.Solutions.Mvvm.Test.Format
         public void Format_WhenDataExceedsExabyte_ThenVolumeShownAsEB()
         {
             var volume = 2ul * 1024 * 1024 * 1024 * 1024 * 1024 * 1024;
-            Assert.AreEqual("2 EB", ByteSizeFormatter.Format(volume));
+            Assert.That(ByteSizeFormatter.Format(volume), Is.EqualTo("2 EB"));
         }
 
         [Test]
         public void Format_WhenDataExceedsPetabyte_ThenVolumeShownAsPB()
         {
             var volume = 2ul * 1024 * 1024 * 1024 * 1024 * 1024;
-            Assert.AreEqual("2 PB", ByteSizeFormatter.Format(volume));
+            Assert.That(ByteSizeFormatter.Format(volume), Is.EqualTo("2 PB"));
         }
 
         [Test]
         public void Format_WhenDataExceedsTerabyte_ThenVolumeShownAsTB()
         {
             var volume = 2ul * 1024 * 1024 * 1024 * 1024;
-            Assert.AreEqual("2 TB", ByteSizeFormatter.Format(volume));
+            Assert.That(ByteSizeFormatter.Format(volume), Is.EqualTo("2 TB"));
         }
 
         [Test]
         public void Format_WhenDataExceedsGigabyte_ThenVolumeShownAsGB()
         {
             var volume = 2ul * 1024 * 1024 * 1024;
-            Assert.AreEqual("2 GB", ByteSizeFormatter.Format(volume));
+            Assert.That(ByteSizeFormatter.Format(volume), Is.EqualTo("2 GB"));
         }
 
         [Test]
         public void Format_WhenDataExceedsMegabyte_ThenVolumeShownAsMB()
         {
             var volume = 2ul * 1024 * 1024;
-            Assert.AreEqual("2 MB", ByteSizeFormatter.Format(volume));
+            Assert.That(ByteSizeFormatter.Format(volume), Is.EqualTo("2 MB"));
         }
 
         [Test]
         public void Format_WhenDataExceedsKilobyte_ThenVolumeShownAsKB()
         {
             var volume = 2ul * 1024 + 200;
-            Assert.AreEqual("2.2 KB", ByteSizeFormatter.Format(volume));
+            Assert.That(ByteSizeFormatter.Format(volume), Is.EqualTo("2.2 KB"));
         }
 
         [Test]
         public void Format_WhenDataLessThanKilobyte_ThenVolumeShownAsB()
         {
             var volume = 765ul;
-            Assert.AreEqual("765 B", ByteSizeFormatter.Format(volume));
+            Assert.That(ByteSizeFormatter.Format(volume), Is.EqualTo("765 B"));
         }
     }
 }

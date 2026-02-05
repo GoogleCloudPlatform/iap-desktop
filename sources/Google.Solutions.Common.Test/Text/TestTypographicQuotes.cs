@@ -31,25 +31,23 @@ namespace Google.Solutions.Common.Test.Text
         public void ToAsciiQuotes_WhenStringContainsNoTypograhicQuotes_ThenToAsciiQuotesReturnsSameString()
         {
             var s = "This isn't \"typographic\" but `plain´ ASCII";
-            Assert.AreEqual(s, TypographicQuotes.ToAsciiQuotes(s));
+            Assert.That(TypographicQuotes.ToAsciiQuotes(s), Is.EqualTo(s));
         }
 
         [Test]
         public void ToAsciiQuotes_WhenStringContainsTypograhicDoubleQuotes_ThenToAsciiQuotesReturnsSanitizedString()
         {
             var s = "These are \u201CEnglish\u201d, \u201eGerman\u201c, and \u00bbFrench\u00ab double quotes";
-            Assert.AreEqual(
-                "These are \"English\", \"German\", and \"French\" double quotes",
-            TypographicQuotes.ToAsciiQuotes(s));
+            Assert.That(
+            TypographicQuotes.ToAsciiQuotes(s), Is.EqualTo("These are \"English\", \"German\", and \"French\" double quotes"));
         }
 
         [Test]
         public void ToAsciiQuotes_WhenStringContainsTypograhicSingleQuotes_ThenToAsciiQuotesReturnsSanitizedString()
         {
             var s = "These are \u2018English\u2019, \u201aGerman\u2018, and \u203aFrench\u2039 single quotes";
-            Assert.AreEqual(
-                "These are \'English\', \'German\', and \'French\' single quotes",
-                TypographicQuotes.ToAsciiQuotes(s));
+            Assert.That(
+                TypographicQuotes.ToAsciiQuotes(s), Is.EqualTo("These are \'English\', \'German\', and \'French\' single quotes"));
         }
     }
 }

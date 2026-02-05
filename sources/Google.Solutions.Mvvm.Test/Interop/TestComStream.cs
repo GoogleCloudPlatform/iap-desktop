@@ -50,7 +50,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
                 var buffer = new byte[16];
                 istream.Read(buffer, buffer.Length, bytesRead.DangerousGetHandle());
 
-                Assert.AreEqual(4, Marshal.ReadInt32(bytesRead.DangerousGetHandle()));
+                Assert.That(Marshal.ReadInt32(bytesRead.DangerousGetHandle()), Is.EqualTo(4));
             }
         }
 
@@ -65,7 +65,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
                 var buffer = new byte[16];
                 istream.Read(buffer, buffer.Length, bytesRead.DangerousGetHandle());
 
-                Assert.AreEqual(0, Marshal.ReadInt32(bytesRead.DangerousGetHandle()));
+                Assert.That(Marshal.ReadInt32(bytesRead.DangerousGetHandle()), Is.EqualTo(0));
             }
         }
 
@@ -121,7 +121,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
                 var buffer = Encoding.ASCII.GetBytes("abcd");
                 istream.Write(buffer, 4, bytesWritten.DangerousGetHandle());
 
-                Assert.AreEqual(4, Marshal.ReadInt32(bytesWritten.DangerousGetHandle()));
+                Assert.That(Marshal.ReadInt32(bytesWritten.DangerousGetHandle()), Is.EqualTo(4));
             }
         }
 
@@ -235,7 +235,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
                 var istream = (IStream)stream;
 
                 istream.Seek(4, ComStream.STREAM_SEEK_SET, IntPtr.Zero);
-                Assert.AreEqual(4, stream.SpeculatedPosition);
+                Assert.That(stream.SpeculatedPosition, Is.EqualTo(4));
             }
         }
 
@@ -251,7 +251,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
                 var istream = (IStream)stream;
 
                 istream.Seek(-2, ComStream.STREAM_SEEK_CUR, IntPtr.Zero);
-                Assert.AreEqual(2, stream.SpeculatedPosition);
+                Assert.That(stream.SpeculatedPosition, Is.EqualTo(2));
             }
         }
 
@@ -268,7 +268,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
                 var istream = (IStream)stream;
 
                 istream.Seek(-2, ComStream.STREAM_SEEK_END, IntPtr.Zero);
-                Assert.AreEqual(6, stream.SpeculatedPosition);
+                Assert.That(stream.SpeculatedPosition, Is.EqualTo(6));
             }
         }
 
@@ -290,9 +290,9 @@ namespace Google.Solutions.Mvvm.Test.Interop
 
                 istream.Stat(out var stat, 0);
 
-                Assert.AreEqual(ComStream.STGM_READ, stat.grfMode);
-                Assert.AreEqual(8, stat.cbSize);
-                Assert.AreEqual(ComStream.STGTY_STREAM, stat.type);
+                Assert.That(stat.grfMode, Is.EqualTo(ComStream.STGM_READ));
+                Assert.That(stat.cbSize, Is.EqualTo(8));
+                Assert.That(stat.type, Is.EqualTo(ComStream.STGTY_STREAM));
             }
         }
 
@@ -310,9 +310,9 @@ namespace Google.Solutions.Mvvm.Test.Interop
 
                 istream.Stat(out var stat, 0);
 
-                Assert.AreEqual(ComStream.STGM_WRITE, stat.grfMode);
-                Assert.AreEqual(8, stat.cbSize);
-                Assert.AreEqual(ComStream.STGTY_STREAM, stat.type);
+                Assert.That(stat.grfMode, Is.EqualTo(ComStream.STGM_WRITE));
+                Assert.That(stat.cbSize, Is.EqualTo(8));
+                Assert.That(stat.type, Is.EqualTo(ComStream.STGTY_STREAM));
             }
         }
 
@@ -330,9 +330,9 @@ namespace Google.Solutions.Mvvm.Test.Interop
 
                 istream.Stat(out var stat, 0);
 
-                Assert.AreEqual(ComStream.STGM_READWRITE, stat.grfMode);
-                Assert.AreEqual(8, stat.cbSize);
-                Assert.AreEqual(ComStream.STGTY_STREAM, stat.type);
+                Assert.That(stat.grfMode, Is.EqualTo(ComStream.STGM_READWRITE));
+                Assert.That(stat.cbSize, Is.EqualTo(8));
+                Assert.That(stat.type, Is.EqualTo(ComStream.STGTY_STREAM));
             }
         }
     }

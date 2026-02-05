@@ -116,7 +116,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual("10.11.12.13", address.ToString());
+            Assert.That(address.ToString(), Is.EqualTo("10.11.12.13"));
         }
 
         [Test]
@@ -159,7 +159,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual("10.11.12.13", address.ToString());
+            Assert.That(address.ToString(), Is.EqualTo("10.11.12.13"));
         }
 
         //---------------------------------------------------------------------
@@ -237,7 +237,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual("1.1.1.1", address.ToString());
+            Assert.That(address.ToString(), Is.EqualTo("1.1.1.1"));
         }
     }
 }

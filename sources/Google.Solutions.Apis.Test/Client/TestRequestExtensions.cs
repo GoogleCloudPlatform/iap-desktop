@@ -75,8 +75,8 @@ namespace Google.Solutions.Apis.Test.Client
                     .ExecuteAndAwaitOperationAsync("project-1", CancellationToken.None))
                     .ConfigureAwait(false);
 
-            Assert.AreEqual("MockError", e.Message);
-            Assert.AreEqual("MockError", e.Error.Message);
+            Assert.That(e.Message, Is.EqualTo("MockError"));
+            Assert.That(e.Error.Message, Is.EqualTo("MockError"));
             CollectionAssert.IsEmpty(e.Error.Errors);
         }
 
@@ -109,10 +109,10 @@ namespace Google.Solutions.Apis.Test.Client
                     .ExecuteAndAwaitOperationAsync("project-1", CancellationToken.None))
                 .ConfigureAwait(false);
 
-            Assert.AreEqual("MockError", e.Message);
-            Assert.AreEqual("MockError", e.Error.Message);
-            Assert.AreEqual(412, (int)e.Error.Code);
-            Assert.AreEqual("message", e.Error.Errors.First().Reason);
+            Assert.That(e.Message, Is.EqualTo("MockError"));
+            Assert.That(e.Error.Message, Is.EqualTo("MockError"));
+            Assert.That((int)e.Error.Code, Is.EqualTo(412));
+            Assert.That(e.Error.Errors.First().Reason, Is.EqualTo("message"));
         }
     }
 }

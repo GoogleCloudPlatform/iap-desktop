@@ -165,9 +165,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             await viewModel.ApplyChangesAsync();
 
-            Assert.AreEqual(
-                Screen.PrimaryScreen.DeviceName,
-                settingsRepository.GetSettings().FullScreenDevices.Value);
+            Assert.That(
+                settingsRepository.GetSettings().FullScreenDevices.Value, Is.EqualTo(Screen.PrimaryScreen.DeviceName));
         }
     }
 }

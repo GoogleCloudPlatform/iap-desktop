@@ -228,7 +228,7 @@ namespace Google.Solutions.Ssh.Test
                         Assert.IsFalse(outputStream.CanRead);
                         Assert.IsFalse(outputStream.CanSeek);
 
-                        Assert.AreEqual(0, outputStream.Length);
+                        Assert.That(outputStream.Length, Is.EqualTo(0));
 
                         ExceptionAssert.ThrowsAggregateException<NotSupportedException>(
                             () => outputStream.ReadAsync(new byte[1], 0, 1).Wait());
@@ -238,7 +238,7 @@ namespace Google.Solutions.Ssh.Test
                             .WriteAsync(data, 1, data.Length - 2)
                             .ConfigureAwait(false);
 
-                        Assert.AreEqual(data.Length - 2, outputStream.Position);
+                        Assert.That(outputStream.Position, Is.EqualTo(data.Length - 2));
                     }
 
                     //
@@ -266,15 +266,14 @@ namespace Google.Solutions.Ssh.Test
                             .ReadAsync(buffer, 1, buffer.Length - 1)
                             .ConfigureAwait(false);
 
-                        Assert.AreEqual(
-                            "Some data",
-                            Encoding.ASCII.GetString(buffer, 1, bytesRead));
-                        Assert.AreEqual(bytesRead, inputStream.Position);
+                        Assert.That(
+                            Encoding.ASCII.GetString(buffer, 1, bytesRead), Is.EqualTo("Some data"));
+                        Assert.That(inputStream.Position, Is.EqualTo(bytesRead));
 
                         bytesRead = await inputStream
                             .ReadAsync(buffer, 0, buffer.Length)
                             .ConfigureAwait(false);
-                        Assert.AreEqual(0, bytesRead);
+                        Assert.That(bytesRead, Is.EqualTo(0));
                     }
                 }
             }
@@ -322,7 +321,7 @@ namespace Google.Solutions.Ssh.Test
                         Assert.IsFalse(outputStream.CanRead);
                         Assert.IsFalse(outputStream.CanSeek);
 
-                        Assert.AreEqual(0, outputStream.Length);
+                        Assert.That(outputStream.Length, Is.EqualTo(0));
 
                         Assert.Throws<NotSupportedException>(
                             () => _ = outputStream.Read(new byte[1], 0, 1));
@@ -330,7 +329,7 @@ namespace Google.Solutions.Ssh.Test
                         var data = Encoding.ASCII.GetBytes("'Some data'");
                         outputStream.Write(data, 1, data.Length - 2);
 
-                        Assert.AreEqual(data.Length - 2, outputStream.Position);
+                        Assert.That(outputStream.Position, Is.EqualTo(data.Length - 2));
                     }
 
                     //
@@ -356,13 +355,12 @@ namespace Google.Solutions.Ssh.Test
                         var buffer = new byte[1024];
                         var bytesRead = inputStream.Read(buffer, 1, buffer.Length - 1);
 
-                        Assert.AreEqual(
-                            "Some data",
-                            Encoding.ASCII.GetString(buffer, 1, bytesRead));
-                        Assert.AreEqual(bytesRead, inputStream.Position);
+                        Assert.That(
+                            Encoding.ASCII.GetString(buffer, 1, bytesRead), Is.EqualTo("Some data"));
+                        Assert.That(inputStream.Position, Is.EqualTo(bytesRead));
 
                         bytesRead = inputStream.Read(buffer, 0, buffer.Length);
-                        Assert.AreEqual(0, bytesRead);
+                        Assert.That(bytesRead, Is.EqualTo(0));
                     }
                 }
             }

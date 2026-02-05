@@ -32,14 +32,14 @@ namespace Google.Solutions.Common.Test.Util
         public void ToUnixTimeMicroseconds_WhenTimestampIsEpoch_ThenToUnixTimeMicrosecondsReturnsZero()
         {
             var epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
-            Assert.AreEqual(0, epoch.ToUnixTimeMicroseconds());
+            Assert.That(epoch.ToUnixTimeMicroseconds(), Is.EqualTo(0));
         }
 
         [Test]
         public void ToUnixTimeMicroseconds_WhenTimestampIsZero_ThenFromUnixTimeMicrosecondsReturnsEpoch()
         {
             var epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
-            Assert.AreEqual(epoch, DateTimeOffsetExtensions.FromUnixTimeMicroseconds(0));
+            Assert.That(DateTimeOffsetExtensions.FromUnixTimeMicroseconds(0), Is.EqualTo(epoch));
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace Google.Solutions.Common.Test.Util
         {
             var firstOfJan = new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-            Assert.AreEqual(1640995200000000, firstOfJan.ToUnixTimeMicroseconds());
+            Assert.That(firstOfJan.ToUnixTimeMicroseconds(), Is.EqualTo(1640995200000000));
         }
     }
 }

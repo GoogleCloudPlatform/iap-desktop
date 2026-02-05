@@ -55,7 +55,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
                 form.Shown += (_, __) => form.Close();
                 form.Show();
 
-                Assert.AreEqual(form.Handle, callback.WindowHandle);
+                Assert.That(callback.WindowHandle, Is.EqualTo(form.Handle));
             }
         }
 

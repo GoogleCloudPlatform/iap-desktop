@@ -71,8 +71,8 @@ namespace Google.Solutions.Mvvm.Test.Format
                 "\n" +
                 "####### heading6");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [ParagraphBreak]\n" +
                 " [Heading level=1] heading1\n" +
                 " [Heading level=2] heading 2\n" +
@@ -80,8 +80,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 " [Heading level=4] heading4\n" +
                 " [Heading level=5] heading5\n" +
                 " [ParagraphBreak]\n" +
-                " [Heading level=7] heading6\n",
-                doc.ToString());
+                " [Heading level=7] heading6\n"));
         }
 
         //---------------------------------------------------------------------
@@ -98,15 +97,14 @@ namespace Google.Solutions.Mvvm.Test.Format
                 "block two" +
                 "\n");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [ParagraphBreak]\n" +
                 " [Span]\n" +
                 "  [Text] block one\n" +
                 " [ParagraphBreak]\n" +
                 " [Span]\n" +
-                "  [Text] block two\n",
-                doc.ToString());
+                "  [Text] block two\n"));
         }
 
         [Test]
@@ -120,15 +118,14 @@ namespace Google.Solutions.Mvvm.Test.Format
                 "block two, line 1\n" +
                 "block two, line 2");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [ParagraphBreak]\n" +
                 " [Span]\n" +
                 "  [Text] block one, line 1 block one, line 2\n" +
                 " [ParagraphBreak]\n" +
                 " [Span]\n" +
-                "  [Text] block two, line 1 block two, line 2\n",
-                doc.ToString());
+                "  [Text] block two, line 1 block two, line 2\n"));
         }
 
         //---------------------------------------------------------------------
@@ -159,15 +156,14 @@ namespace Google.Solutions.Mvvm.Test.Format
                  "* item2a" +
                  "  item2b");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [UnorderedListItem bullet=* indent=2]\n" +
                 "  [Span]\n" +
                 "   [Text] item1a item1b\n" +
                 " [UnorderedListItem bullet=* indent=2]\n" +
                 "  [Span]\n" +
-                "   [Text] item2a  item2b\n",
-                doc.ToString());
+                "   [Text] item2a  item2b\n"));
         }
 
         [Test]
@@ -179,16 +175,15 @@ namespace Google.Solutions.Mvvm.Test.Format
                  "- item2a\n" +
                  "  item2b");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [UnorderedListItem bullet=* indent=2]\n" +
                 "  [Span]\n" +
                 "   [Text] item1a\n" +
                 "  [ParagraphBreak]\n" +
                 " [UnorderedListItem bullet=- indent=2]\n" +
                 "  [Span]\n" +
-                "   [Text] item2a item2b\n",
-                doc.ToString());
+                "   [Text] item2a item2b\n"));
         }
 
         [Test]
@@ -202,8 +197,8 @@ namespace Google.Solutions.Mvvm.Test.Format
                  "  \n" +
                  "1. item3");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [UnorderedListItem bullet=- indent=2]\n" +
                 "  [Span]\n" +
                 "   [Text] item1a\n" +
@@ -217,8 +212,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 "  [ParagraphBreak]\n" +
                 " [OrderedListItem indent=3]\n" +
                 "  [Span]\n" +
-                "   [Text] item3\n",
-                doc.ToString());
+                "   [Text] item3\n"));
         }
 
         //---------------------------------------------------------------------
@@ -245,15 +239,14 @@ namespace Google.Solutions.Mvvm.Test.Format
                  "1. item2a\n" +
                  "   item2b");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [OrderedListItem indent=3]\n" +
                 "  [Span]\n" +
                 "   [Text] item1a item1b\n" +
                 " [OrderedListItem indent=3]\n" +
                 "  [Span]\n" +
-                "   [Text] item2a item2b\n",
-                doc.ToString());
+                "   [Text] item2a item2b\n"));
         }
 
         [Test]
@@ -266,8 +259,8 @@ namespace Google.Solutions.Mvvm.Test.Format
                  "   item2b\n" +
                  "notanitem");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [OrderedListItem indent=3]\n" +
                 "  [Span]\n" +
                 "   [Text] item1a\n" +
@@ -276,8 +269,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 "  [Span]\n" +
                 "   [Text] item2a item2b\n" +
                 " [Span]\n" +
-                "  [Text] notanitem\n",
-                doc.ToString());
+                "  [Text] notanitem\n"));
         }
 
         [Test]
@@ -290,8 +282,8 @@ namespace Google.Solutions.Mvvm.Test.Format
                  "      item2b\n" +
                  "1. item3");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [OrderedListItem indent=3]\n" +
                 "  [Span]\n" +
                 "   [Text] item1a\n" +
@@ -301,8 +293,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 "    [Text] item2a item2b\n" +
                 " [OrderedListItem indent=3]\n" +
                 "  [Span]\n" +
-                "   [Text] item3\n",
-                doc.ToString());
+                "   [Text] item3\n"));
         }
 
         //---------------------------------------------------------------------
@@ -315,14 +306,13 @@ namespace Google.Solutions.Mvvm.Test.Format
             var doc = MarkdownDocument.Parse(
                  "one _two_ three _four_");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [Span]\n" +
                 "  [Text] one \n" +
                 "  [Emphasis delimiter=_] two\n" +
                 "  [Text]  three \n" +
-                "  [Emphasis delimiter=_] four\n",
-                doc.ToString());
+                "  [Emphasis delimiter=_] four\n"));
         }
 
         [Test]
@@ -331,14 +321,13 @@ namespace Google.Solutions.Mvvm.Test.Format
             var doc = MarkdownDocument.Parse(
                  "one _two_ _ three");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [Span]\n" +
                 "  [Text] one \n" +
                 "  [Emphasis delimiter=_] two\n" +
                 "  [Text]  \n" +
-                "  [Text] _ three\n",
-                doc.ToString());
+                "  [Text] _ three\n"));
         }
 
         //---------------------------------------------------------------------
@@ -351,14 +340,13 @@ namespace Google.Solutions.Mvvm.Test.Format
             var doc = MarkdownDocument.Parse(
                  "one *two* three *four*");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [Span]\n" +
                 "  [Text] one \n" +
                 "  [Emphasis delimiter=*] two\n" +
                 "  [Text]  three \n" +
-                "  [Emphasis delimiter=*] four\n",
-                doc.ToString());
+                "  [Emphasis delimiter=*] four\n"));
         }
 
         [Test]
@@ -367,14 +355,13 @@ namespace Google.Solutions.Mvvm.Test.Format
             var doc = MarkdownDocument.Parse(
                  "one *two* * three");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [Span]\n" +
                 "  [Text] one \n" +
                 "  [Emphasis delimiter=*] two\n" +
                 "  [Text]  \n" +
-                "  [Text] * three\n",
-                doc.ToString());
+                "  [Text] * three\n"));
         }
 
         [Test]
@@ -383,13 +370,12 @@ namespace Google.Solutions.Mvvm.Test.Format
             var doc = MarkdownDocument.Parse(
                  "one *!* char");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [Span]\n" +
                 "  [Text] one \n" +
                 "  [Emphasis delimiter=*] !\n" +
-                "  [Text]  char\n",
-                doc.ToString());
+                "  [Text]  char\n"));
         }
 
         [Test]
@@ -400,13 +386,12 @@ namespace Google.Solutions.Mvvm.Test.Format
                 "*emphasized*\n" +
                 "text");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [Span]\n" +
                 "  [Text] This is \n" +
                 "  [Emphasis delimiter=*] emphasized\n" +
-                "  [Text]  text\n",
-                doc.ToString());
+                "  [Text]  text\n"));
         }
 
         //---------------------------------------------------------------------
@@ -419,14 +404,13 @@ namespace Google.Solutions.Mvvm.Test.Format
             var doc = MarkdownDocument.Parse(
                  "one **two** three **four**");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [Span]\n" +
                 "  [Text] one \n" +
                 "  [Emphasis delimiter=**] two\n" +
                 "  [Text]  three \n" +
-                "  [Emphasis delimiter=**] four\n",
-                doc.ToString());
+                "  [Emphasis delimiter=**] four\n"));
         }
 
         [Test]
@@ -435,12 +419,11 @@ namespace Google.Solutions.Mvvm.Test.Format
             var doc = MarkdownDocument.Parse(
                  "one ** three");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [Span]\n" +
                 "  [Text] one \n" +
-                "  [Text] ** three\n",
-                doc.ToString());
+                "  [Text] ** three\n"));
         }
 
 
@@ -454,14 +437,13 @@ namespace Google.Solutions.Mvvm.Test.Format
             var doc = MarkdownDocument.Parse(
                  "one `two` three `four`");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [Span]\n" +
                 "  [Text] one \n" +
                 "  [Emphasis delimiter=`] two\n" +
                 "  [Text]  three \n" +
-                "  [Emphasis delimiter=`] four\n",
-                doc.ToString());
+                "  [Emphasis delimiter=`] four\n"));
         }
 
         //---------------------------------------------------------------------
@@ -474,14 +456,13 @@ namespace Google.Solutions.Mvvm.Test.Format
             var doc = MarkdownDocument.Parse(
                  "a [link](href).");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [Span]\n" +
                 "  [Text] a \n" +
                 "  [Link href=href]\n" +
                 "   [Text] link\n" +
-                "  [Text] .\n",
-                doc.ToString());
+                "  [Text] .\n"));
         }
 
         [Test]
@@ -490,8 +471,8 @@ namespace Google.Solutions.Mvvm.Test.Format
             var doc = MarkdownDocument.Parse(
                  "a [link **emph** *and* _more_](href).");
             Assert.IsNotNull(doc);
-            Assert.AreEqual(
-                "[Document]\n" +
+            Assert.That(
+                doc.ToString(), Is.EqualTo("[Document]\n" +
                 " [Span]\n" +
                 "  [Text] a \n" +
                 "  [Link href=href]\n" +
@@ -499,8 +480,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 "   [Emphasis delimiter=**] emph\n" +
                 "   [Text]  \n   [Emphasis delimiter=*] and\n" +
                 "   [Text]  \n   [Emphasis delimiter=_] more\n" +
-                "  [Text] .\n",
-                doc.ToString());
+                "  [Text] .\n"));
         }
 
         //---------------------------------------------------------------------

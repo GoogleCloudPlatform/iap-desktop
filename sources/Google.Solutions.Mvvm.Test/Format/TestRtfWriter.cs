@@ -46,7 +46,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 buffer.Clear();
                 writer.Text(@"\{}");
 
-                Assert.AreEqual(@"\\\{\}", buffer.ToString());
+                Assert.That(buffer.ToString(), Is.EqualTo(@"\\\{\}"));
             }
         }
 
@@ -61,7 +61,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 buffer.Clear();
                 writer.Text("\r\n");
 
-                Assert.AreEqual(@"\line ", buffer.ToString());
+                Assert.That(buffer.ToString(), Is.EqualTo(@"\line "));
             }
         }
 
@@ -76,7 +76,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 buffer.Clear();
                 writer.Text("\u00fc");
 
-                Assert.AreEqual(@"\u252?", buffer.ToString());
+                Assert.That(buffer.ToString(), Is.EqualTo(@"\u252?"));
             }
         }
 
@@ -91,7 +91,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 buffer.Clear();
                 writer.Text("abc!");
 
-                Assert.AreEqual(@"abc!", buffer.ToString());
+                Assert.That(buffer.ToString(), Is.EqualTo(@"abc!"));
             }
         }
 
@@ -110,9 +110,8 @@ namespace Google.Solutions.Mvvm.Test.Format
                 buffer.Clear();
                 writer.FontTable(Array.Empty<FontFamily>());
 
-                Assert.AreEqual(
-                    "{\\fonttbl}\r\n",
-                    buffer.ToString());
+                Assert.That(
+                    buffer.ToString(), Is.EqualTo("{\\fonttbl}\r\n"));
             }
         }
 
@@ -131,9 +130,8 @@ namespace Google.Solutions.Mvvm.Test.Format
                     FontFamily.GenericMonospace
                 });
 
-                Assert.AreEqual(
-                    "{\\fonttbl{\\f0 Microsoft Sans Serif;}{\\f1 Courier New;}}\r\n",
-                    buffer.ToString());
+                Assert.That(
+                    buffer.ToString(), Is.EqualTo("{\\fonttbl{\\f0 Microsoft Sans Serif;}{\\f1 Courier New;}}\r\n"));
             }
         }
 
@@ -152,7 +150,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 buffer.Clear();
                 writer.ColorTable(Array.Empty<Color>());
 
-                Assert.AreEqual(string.Empty, buffer.ToString());
+                Assert.That(buffer.ToString(), Is.EqualTo(string.Empty));
             }
         }
 
@@ -171,9 +169,8 @@ namespace Google.Solutions.Mvvm.Test.Format
                     Color.Magenta
                 });
 
-                Assert.AreEqual(
-                    "\r\n{\\colortbl\\red0\\green255\\blue255;\\red255\\green0\\blue255;}\r\n",
-                    buffer.ToString());
+                Assert.That(
+                    buffer.ToString(), Is.EqualTo("\r\n{\\colortbl\\red0\\green255\\blue255;\\red255\\green0\\blue255;}\r\n"));
             }
         }
 
@@ -193,9 +190,8 @@ namespace Google.Solutions.Mvvm.Test.Format
                 writer.StartParagraph();
                 writer.EndParagraph();
 
-                Assert.AreEqual(
-                    "\r\n{\\pard\\par}\r\n\r\n",
-                    buffer.ToString());
+                Assert.That(
+                    buffer.ToString(), Is.EqualTo("\r\n{\\pard\\par}\r\n\r\n"));
             }
         }
 
@@ -215,9 +211,8 @@ namespace Google.Solutions.Mvvm.Test.Format
                 writer.SetSpaceBefore(100);
                 writer.SetSpaceAfter(200);
 
-                Assert.AreEqual(
-                    "\\sb100\r\n\\sa200\r\n",
-                    buffer.ToString());
+                Assert.That(
+                    buffer.ToString(), Is.EqualTo("\\sb100\r\n\\sa200\r\n"));
             }
         }
 
@@ -241,9 +236,8 @@ namespace Google.Solutions.Mvvm.Test.Format
                 writer.SetFontColor();
                 writer.SetHighlightColor();
 
-                Assert.AreEqual(
-                    "\\cf1 \\highlight2 \\fs48 \\f3 \\cf0 \\highlight0 ",
-                    buffer.ToString());
+                Assert.That(
+                    buffer.ToString(), Is.EqualTo("\\cf1 \\highlight2 \\fs48 \\f3 \\cf0 \\highlight0 "));
             }
         }
 
@@ -268,9 +262,8 @@ namespace Google.Solutions.Mvvm.Test.Format
                 writer.SetItalic(false);
                 writer.SetUnderline(false);
 
-                Assert.AreEqual(
-                    "\\b \\i \\ul text\\b0 \\i0 \\ul0 ",
-                    buffer.ToString());
+                Assert.That(
+                    buffer.ToString(), Is.EqualTo("\\b \\i \\ul text\\b0 \\i0 \\ul0 "));
             }
         }
 
@@ -289,9 +282,8 @@ namespace Google.Solutions.Mvvm.Test.Format
                 buffer.Clear();
                 writer.Hyperlink("text", "href");
 
-                Assert.AreEqual(
-                    "{\\field{\\*\\fldinst{HYPERLINK \"href\"}}{\\fldrslt{text}}}\r\n",
-                    buffer.ToString());
+                Assert.That(
+                    buffer.ToString(), Is.EqualTo("{\\field{\\*\\fldinst{HYPERLINK \"href\"}}{\\fldrslt{text}}}\r\n"));
             }
         }
 
@@ -313,9 +305,8 @@ namespace Google.Solutions.Mvvm.Test.Format
                     200,
                     1);
 
-                Assert.AreEqual(
-                    "{\\pntext\\1.\\tab}{\\*\\pn\\pnlvlbody\\pnf0\\pnindent0\\pnstart1\\pndec{\\pntxta.}}\\fi100\\li200",
-                    buffer.ToString());
+                Assert.That(
+                    buffer.ToString(), Is.EqualTo("{\\pntext\\1.\\tab}{\\*\\pn\\pnlvlbody\\pnf0\\pnindent0\\pnstart1\\pndec{\\pntxta.}}\\fi100\\li200"));
             }
         }
 
@@ -333,9 +324,8 @@ namespace Google.Solutions.Mvvm.Test.Format
                     200,
                     3);
 
-                Assert.AreEqual(
-                    "{\\pntext\\f3\\'B7\\f0\\tab}{\\*\\pn\\pnlvlblt\\pnf2\\pnindent0{\\pntxtb\\bullet}}\\fi100\\li200",
-                    buffer.ToString());
+                Assert.That(
+                    buffer.ToString(), Is.EqualTo("{\\pntext\\f3\\'B7\\f0\\tab}{\\*\\pn\\pnlvlblt\\pnf2\\pnindent0{\\pntxtb\\bullet}}\\fi100\\li200"));
             }
         }
     }

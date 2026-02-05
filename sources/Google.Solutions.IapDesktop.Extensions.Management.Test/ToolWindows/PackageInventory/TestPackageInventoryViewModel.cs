@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
 
             Assert.IsFalse(viewModel.IsPackageListEnabled.Value);
             Assert.IsNull(viewModel.InformationText.Value);
-            Assert.AreEqual("Installed packages", viewModel.WindowTitle.Value);
+            Assert.That(viewModel.WindowTitle.Value, Is.EqualTo("Installed packages"));
             Assert.IsFalse(viewModel.AllPackages.Any());
             Assert.IsFalse(viewModel.FilteredPackages.Any());
         }
@@ -191,8 +191,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
             Assert.IsNull(viewModel.InformationText.Value);
             StringAssert.Contains("project-1", viewModel.WindowTitle.Value);
 
-            Assert.AreEqual(4, viewModel.AllPackages.Count);
-            Assert.AreEqual(4, viewModel.FilteredPackages.Count);
+            Assert.That(viewModel.AllPackages.Count, Is.EqualTo(4));
+            Assert.That(viewModel.FilteredPackages.Count, Is.EqualTo(4));
         }
 
         [Test]
@@ -219,8 +219,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
             Assert.IsNull(viewModel.InformationText.Value);
             StringAssert.Contains("zone-1", viewModel.WindowTitle.Value);
 
-            Assert.AreEqual(2, viewModel.AllPackages.Count);
-            Assert.AreEqual(2, viewModel.FilteredPackages.Count);
+            Assert.That(viewModel.AllPackages.Count, Is.EqualTo(2));
+            Assert.That(viewModel.FilteredPackages.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -248,8 +248,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
             Assert.IsNull(viewModel.InformationText.Value);
             StringAssert.Contains("instance-1", viewModel.WindowTitle.Value);
 
-            Assert.AreEqual(2, viewModel.AllPackages.Count);
-            Assert.AreEqual(2, viewModel.FilteredPackages.Count);
+            Assert.That(viewModel.AllPackages.Count, Is.EqualTo(2));
+            Assert.That(viewModel.FilteredPackages.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -274,13 +274,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
                 .ConfigureAwait(true);
 
             Assert.IsTrue(viewModel.IsPackageListEnabled.Value);
-            Assert.AreEqual(
-                PackageInventoryViewModel.OsInventoryNotAvailableWarning,
-                viewModel.InformationText.Value);
+            Assert.That(
+                viewModel.InformationText.Value, Is.EqualTo(PackageInventoryViewModel.OsInventoryNotAvailableWarning));
             StringAssert.Contains("instance-3", viewModel.WindowTitle.Value);
 
-            Assert.AreEqual(0, viewModel.AllPackages.Count);
-            Assert.AreEqual(0, viewModel.FilteredPackages.Count);
+            Assert.That(viewModel.AllPackages.Count, Is.EqualTo(0));
+            Assert.That(viewModel.FilteredPackages.Count, Is.EqualTo(0));
         }
 
         //---------------------------------------------------------------------
@@ -298,7 +297,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(4, viewModel.FilteredPackages.Count);
+            Assert.That(viewModel.FilteredPackages.Count, Is.EqualTo(4));
         }
 
         [Test]
@@ -314,7 +313,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
 
             viewModel.Filter = "PACKAGE \t Arch-2   ver-3";
 
-            Assert.AreEqual(1, viewModel.FilteredPackages.Count);
+            Assert.That(viewModel.FilteredPackages.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -329,10 +328,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
                 .ConfigureAwait(true);
 
             viewModel.Filter = "   PACKAGE-3   ";
-            Assert.AreEqual(1, viewModel.FilteredPackages.Count);
+            Assert.That(viewModel.FilteredPackages.Count, Is.EqualTo(1));
 
             viewModel.Filter = string.Empty;
-            Assert.AreEqual(4, viewModel.FilteredPackages.Count);
+            Assert.That(viewModel.FilteredPackages.Count, Is.EqualTo(4));
         }
     }
 }

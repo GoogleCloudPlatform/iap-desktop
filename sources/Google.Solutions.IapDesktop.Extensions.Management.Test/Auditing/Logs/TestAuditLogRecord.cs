@@ -72,10 +72,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
             Assert.IsInstanceOf<AuditLogRecord>(record.ProtoPayload);
             var auditLog = (AuditLogRecord)record.ProtoPayload!;
 
-            Assert.AreEqual("system@google.com", auditLog.AuthenticationInfo?.PrincipalEmail);
-            Assert.AreEqual("compute.googleapis.com", auditLog.ServiceName);
-            Assert.AreEqual("NotifyInstanceLocation", auditLog.MethodName);
-            Assert.AreEqual("foo", auditLog.ResourceName);
+            Assert.That(auditLog.AuthenticationInfo?.PrincipalEmail, Is.EqualTo("system@google.com"));
+            Assert.That(auditLog.ServiceName, Is.EqualTo("compute.googleapis.com"));
+            Assert.That(auditLog.MethodName, Is.EqualTo("NotifyInstanceLocation"));
+            Assert.That(auditLog.ResourceName, Is.EqualTo("foo"));
         }
 
         [Test]
@@ -121,8 +121,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
             var auditLog = (AuditLogRecord)record.ProtoPayload!;
 
             Assert.IsNotNull(auditLog.Metadata);
-            Assert.AreEqual("b67639853d26e39b79a4fb306fd7d297", auditLog.Metadata?["serverId"]?.Value<string>());
-            Assert.AreEqual(new DateTime(2020, 3, 23, 10, 35, 9), auditLog.Metadata?["timestamp"]?.Value<DateTime>());
+            Assert.That(auditLog.Metadata?["serverId"]?.Value<string>(), Is.EqualTo("b67639853d26e39b79a4fb306fd7d297"));
+            Assert.That(auditLog.Metadata?["timestamp"]?.Value<DateTime>(), Is.EqualTo(new DateTime(2020, 3, 23, 10, 35, 9)));
         }
 
         [Test]
@@ -194,8 +194,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
             var auditLog = (AuditLogRecord)record.ProtoPayload!;
 
             Assert.IsNotNull(auditLog.Request);
-            Assert.AreEqual("my-managed-group2-f3ng", auditLog.Request?["name"]?.Value<string>());
-            Assert.AreEqual(false, auditLog.Request?["canIpForward"]?.Value<bool>());
+            Assert.That(auditLog.Request?["name"]?.Value<string>(), Is.EqualTo("my-managed-group2-f3ng"));
+            Assert.That(auditLog.Request?["canIpForward"]?.Value<bool>(), Is.EqualTo(false));
         }
 
         [Test]
@@ -267,8 +267,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
             var auditLog = (AuditLogRecord)record.ProtoPayload!;
 
             Assert.IsNotNull(auditLog.Response);
-            Assert.AreEqual("2713656233496483618", auditLog.Response?["id"]?.Value<string>());
-            Assert.AreEqual("operation-1589", auditLog.Response?["name"]?.Value<string>());
+            Assert.That(auditLog.Response?["id"]?.Value<string>(), Is.EqualTo("2713656233496483618"));
+            Assert.That(auditLog.Response?["name"]?.Value<string>(), Is.EqualTo("operation-1589"));
         }
     }
 }

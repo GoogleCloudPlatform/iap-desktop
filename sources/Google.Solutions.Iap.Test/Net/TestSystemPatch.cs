@@ -71,13 +71,13 @@ namespace Google.Solutions.Iap.Test.Net
 
             var requestWithoutUserInfo = (HttpWebRequest)
                 WebRequest.Create(new Uri("test+http://example.com"));
-            Assert.AreEqual(new Uri("http://example.com"), requestWithoutUserInfo.RequestUri);
-            Assert.AreEqual("example.com", requestWithoutUserInfo.Host);
+            Assert.That(requestWithoutUserInfo.RequestUri, Is.EqualTo(new Uri("http://example.com")));
+            Assert.That(requestWithoutUserInfo.Host, Is.EqualTo("example.com"));
 
             var requestWithUserInfo = (HttpWebRequest)
                 WebRequest.Create(new Uri("test+http://example.com@1.2.3.4/"));
-            Assert.AreEqual(new Uri("http://1.2.3.4"), requestWithUserInfo.RequestUri);
-            Assert.AreEqual("example.com", requestWithUserInfo.Host);
+            Assert.That(requestWithUserInfo.RequestUri, Is.EqualTo(new Uri("http://1.2.3.4")));
+            Assert.That(requestWithUserInfo.Host, Is.EqualTo("example.com"));
 
             patch.Uninstall();
             Assert.IsFalse(patch.IsInstalled);

@@ -43,9 +43,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
             var commands = new AuthorizedPublicKeysCommands(
                 new Mock<IToolWindowHost>().Object);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuOpen.QueryState(context.Object));
+            Assert.That(
+                commands.ContextMenuOpen.QueryState(context.Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -56,9 +55,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
             var commands = new AuthorizedPublicKeysCommands(
                 new Mock<IToolWindowHost>().Object);
 
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuOpen.QueryState(context.Object));
+            Assert.That(
+                commands.ContextMenuOpen.QueryState(context.Object), Is.EqualTo(CommandState.Unavailable));
         }
 
         //---------------------------------------------------------------------
@@ -73,9 +71,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
             var commands = new AuthorizedPublicKeysCommands(
                 new Mock<IToolWindowHost>().Object);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.WindowMenuOpen.QueryState(context.Object));
+            Assert.That(
+                commands.WindowMenuOpen.QueryState(context.Object), Is.EqualTo(CommandState.Enabled));
         }
     }
 }

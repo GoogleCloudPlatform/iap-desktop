@@ -70,10 +70,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 var tsv = f.ListView.ToTabSeparatedText(false);
 
-                Assert.AreEqual(
-                    "\"The 'first' header\"\t\"The second header\"\r\n\"" +
-                    "'first' item\"\t\"-42\"\r\n",
-                    tsv);
+                Assert.That(
+                    tsv, Is.EqualTo("\"The 'first' header\"\t\"The second header\"\r\n\"" +
+                    "'first' item\"\t\"-42\"\r\n"));
             }
         }
 
@@ -86,16 +85,15 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 f.Show();
                 var html = f.ListView.ToHtml(false);
 
-                Assert.AreEqual(
-                    "<table>\r\n" +
+                Assert.That(
+                    html, Is.EqualTo("<table>\r\n" +
                     "<tr>\r\n" +
                     "<th>The &quot;first&quot; header</th><th>The second header</th>\r\n" +
                     "</tr>\r\n" +
                     "<tr>\r\n" +
                     "<td>&quot;first&quot; item</td><td>-42</td>\r\n" +
                     "</tr>\r\n" +
-                    "</table>\r\n",
-                    html);
+                    "</table>\r\n"));
             }
         }
     }

@@ -44,16 +44,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 Assert.IsTrue(settings.IsQuoteConvertionOnPasteEnabled.Value);
                 Assert.IsTrue(settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
                 Assert.IsTrue(settings.IsScrollingUsingCtrlPageUpDownEnabled.Value);
-                Assert.AreEqual(TerminalSettings.DefaultFontFamily, settings.FontFamily.Value);
-                Assert.AreEqual(
-                    TerminalSettings.DefaultFontSize,
-                    TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.Value));
-                Assert.AreEqual(
-                    TerminalSettings.DefaultBackgroundColor.ToArgb(),
-                    settings.BackgroundColorArgb.Value);
-                Assert.AreEqual(
-                    Color.White.ToArgb(),
-                    settings.ForegroundColorArgb.Value);
+                Assert.That(settings.FontFamily.Value, Is.EqualTo(TerminalSettings.DefaultFontFamily));
+                Assert.That(
+                    TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.Value), Is.EqualTo(TerminalSettings.DefaultFontSize));
+                Assert.That(
+                    settings.BackgroundColorArgb.Value, Is.EqualTo(TerminalSettings.DefaultBackgroundColor.ToArgb()));
+                Assert.That(
+                    settings.ForegroundColorArgb.Value, Is.EqualTo(Color.White.ToArgb()));
             }
         }
 

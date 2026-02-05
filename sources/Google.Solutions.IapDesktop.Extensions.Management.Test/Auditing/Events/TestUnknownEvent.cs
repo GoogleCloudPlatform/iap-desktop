@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.IsInstanceOf<UnknownEvent>(r.ToEvent());
             var e = (UnknownEvent)r.ToEvent();
 
-            Assert.AreEqual("NOTICE", e.Severity);
+            Assert.That(e.Severity, Is.EqualTo("NOTICE"));
         }
 
         [Test]

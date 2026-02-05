@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
                 .ConfigureAwait(true);
 
             CollectionAssert.IsNotEmpty(viewModel.FilteredProjects);
-            Assert.AreEqual(3, viewModel.FilteredProjects.Count);
+            Assert.That(viewModel.FilteredProjects.Count, Is.EqualTo(3));
         }
 
         [Test]
@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
 
             Assert.IsFalse(viewModel.IsLoading.Value);
             Assert.IsNotNull(viewModel.LoadingError);
-            Assert.AreEqual("mock", viewModel.LoadingError.Value.Message);
+            Assert.That(viewModel.LoadingError.Value.Message, Is.EqualTo("mock"));
         }
     }
 }

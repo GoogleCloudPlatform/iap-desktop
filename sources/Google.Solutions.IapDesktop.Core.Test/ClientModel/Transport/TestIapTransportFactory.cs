@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                  CancellationToken.None);
 
             var pool = factory.Pool;
-            Assert.AreEqual(1, pool.Count());
+            Assert.That(pool.Count(), Is.EqualTo(1));
 
             validTransport.Result.Dispose();
         }
@@ -414,8 +414,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
 
             await invoker.AwaitPendingInvocationsAsync();
 
-            Assert.AreEqual(1, poolSizeWhenCreated);
-            Assert.AreEqual(0, poolSizeWhenClosed);
+            Assert.That(poolSizeWhenCreated, Is.EqualTo(1));
+            Assert.That(poolSizeWhenClosed, Is.EqualTo(0));
         }
 
         //---------------------------------------------------------------------
@@ -449,7 +449,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                     CancellationToken.None))
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(HelpTopics.IapAccess, e.Help);
+            Assert.That(e.Help, Is.EqualTo(HelpTopics.IapAccess));
         }
 
         [Test]
@@ -479,7 +479,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                     CancellationToken.None))
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(HelpTopics.CreateIapFirewallRule, e.Help);
+            Assert.That(e.Help, Is.EqualTo(HelpTopics.CreateIapFirewallRule));
         }
 
         [Test]
@@ -509,7 +509,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                     CancellationToken.None))
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(HelpTopics.ProxyConfiguration, e.Help);
+            Assert.That(e.Help, Is.EqualTo(HelpTopics.ProxyConfiguration));
         }
 
         //---------------------------------------------------------------------
@@ -535,11 +535,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
 
             // Dispose once, closing the tunnel.
             transport.Dispose();
-            Assert.AreEqual(1, tunnelClosedEvents);
+            Assert.That(tunnelClosedEvents, Is.EqualTo(1));
 
             // Dispose again.
             transport.Dispose();
-            Assert.AreEqual(1, tunnelClosedEvents);
+            Assert.That(tunnelClosedEvents, Is.EqualTo(1));
         }
 
         [Test]

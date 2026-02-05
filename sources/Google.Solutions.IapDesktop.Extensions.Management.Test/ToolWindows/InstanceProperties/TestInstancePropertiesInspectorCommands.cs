@@ -41,9 +41,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new InstancePropertiesInspectorCommands(toolWindowHost.Object);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ContextMenuOpen.QueryState(new Mock<IProjectModelInstanceNode>().Object));
+            Assert.That(
+                commands.ContextMenuOpen.QueryState(new Mock<IProjectModelInstanceNode>().Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -52,15 +51,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new InstancePropertiesInspectorCommands(toolWindowHost.Object);
 
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuOpen.QueryState(new Mock<IProjectModelCloudNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuOpen.QueryState(new Mock<IProjectModelProjectNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuOpen.QueryState(new Mock<IProjectModelZoneNode>().Object));
+            Assert.That(
+                commands.ContextMenuOpen.QueryState(new Mock<IProjectModelCloudNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                commands.ContextMenuOpen.QueryState(new Mock<IProjectModelProjectNode>().Object), Is.EqualTo(CommandState.Unavailable));
+            Assert.That(
+                commands.ContextMenuOpen.QueryState(new Mock<IProjectModelZoneNode>().Object), Is.EqualTo(CommandState.Unavailable));
         }
 
         //---------------------------------------------------------------------
@@ -73,9 +69,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new InstancePropertiesInspectorCommands(toolWindowHost.Object);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.ToolbarOpen.QueryState(new Mock<IProjectModelInstanceNode>().Object));
+            Assert.That(
+                commands.ToolbarOpen.QueryState(new Mock<IProjectModelInstanceNode>().Object), Is.EqualTo(CommandState.Enabled));
         }
 
         [Test]
@@ -84,15 +79,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             var toolWindowHost = new Mock<IToolWindowHost>();
             var commands = new InstancePropertiesInspectorCommands(toolWindowHost.Object);
 
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ToolbarOpen.QueryState(new Mock<IProjectModelCloudNode>().Object));
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ToolbarOpen.QueryState(new Mock<IProjectModelProjectNode>().Object));
-            Assert.AreEqual(
-                CommandState.Disabled,
-                commands.ToolbarOpen.QueryState(new Mock<IProjectModelZoneNode>().Object));
+            Assert.That(
+                commands.ToolbarOpen.QueryState(new Mock<IProjectModelCloudNode>().Object), Is.EqualTo(CommandState.Disabled));
+            Assert.That(
+                commands.ToolbarOpen.QueryState(new Mock<IProjectModelProjectNode>().Object), Is.EqualTo(CommandState.Disabled));
+            Assert.That(
+                commands.ToolbarOpen.QueryState(new Mock<IProjectModelZoneNode>().Object), Is.EqualTo(CommandState.Disabled));
         }
 
         //---------------------------------------------------------------------
@@ -107,9 +99,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
 
             var commands = new InstancePropertiesInspectorCommands(toolWindowHost.Object);
 
-            Assert.AreEqual(
-                CommandState.Enabled,
-                commands.WindowMenuOpen.QueryState(context.Object));
+            Assert.That(
+                commands.WindowMenuOpen.QueryState(context.Object), Is.EqualTo(CommandState.Enabled));
         }
     }
 }

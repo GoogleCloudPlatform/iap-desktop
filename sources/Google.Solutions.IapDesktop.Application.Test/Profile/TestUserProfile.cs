@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 using (var profile = install.OpenProfile(null))
                 {
                     Assert.AreNotEqual(UserProfile.SchemaVersion.Initial, profile.Version);
-                    Assert.AreEqual(UserProfile.SchemaVersion.Current, profile.Version);
+                    Assert.That(profile.Version, Is.EqualTo(UserProfile.SchemaVersion.Current));
                 }
             }
         }
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
 
                 using (var profile = install.OpenProfile(null))
                 {
-                    Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                    Assert.That(profile.Version, Is.EqualTo(UserProfile.SchemaVersion.Initial));
                 }
             }
         }
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 using (var profile = install.CreateProfile(TestProfileName))
                 {
                     Assert.AreNotEqual(UserProfile.SchemaVersion.Initial, profile.Version);
-                    Assert.AreEqual(UserProfile.SchemaVersion.Current, profile.Version);
+                    Assert.That(profile.Version, Is.EqualTo(UserProfile.SchemaVersion.Current));
                 }
             }
         }
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 using (var profile = install.CreateProfile(TestProfileName))
                 {
                     profile.SettingsKey.DeleteValue("SchemaVersion");
-                    Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                    Assert.That(profile.Version, Is.EqualTo(UserProfile.SchemaVersion.Initial));
                 }
             }
         }
@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
                 {
                     profile.SettingsKey.DeleteValue("SchemaVersion");
                     profile.SettingsKey.SetValue("SchemaVersion", "junk");
-                    Assert.AreEqual(UserProfile.SchemaVersion.Initial, profile.Version);
+                    Assert.That(profile.Version, Is.EqualTo(UserProfile.SchemaVersion.Initial));
                 }
             }
         }

@@ -42,7 +42,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
 
             var descriptor = new MaskedSettingDescriptor(setting);
 
-            Assert.AreEqual("******", descriptor.GetValue(setting));
+            Assert.That(descriptor.GetValue(setting), Is.EqualTo("******"));
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
 
             var descriptor = new MaskedSettingDescriptor(setting);
 
-            Assert.AreEqual(string.Empty, descriptor.GetValue(setting));
+            Assert.That(descriptor.GetValue(setting), Is.EqualTo(string.Empty));
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
             var descriptor = new MaskedSettingDescriptor(setting);
             descriptor.SetValue(setting, "secret");
 
-            Assert.AreEqual("secret", setting.GetClearTextValue());
+            Assert.That(setting.GetClearTextValue(), Is.EqualTo("secret"));
         }
 
 

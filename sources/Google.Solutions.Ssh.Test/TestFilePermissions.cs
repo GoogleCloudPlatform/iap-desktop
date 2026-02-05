@@ -98,7 +98,7 @@ namespace Google.Solutions.Ssh.Test
         public void ToListFormat_MapsPermissions(string octal, string expected)
         {
             var permissions = (FilePermissions)Convert.ToInt32(octal, 8);
-            Assert.AreEqual(expected, permissions.ToListFormat());
+            Assert.That(permissions.ToListFormat(), Is.EqualTo(expected));
         }
 
         [Test]
@@ -111,7 +111,7 @@ namespace Google.Solutions.Ssh.Test
         [TestCase(FilePermissions.Regular, "----------")]
         public void ToListFormat_MapsFileType(FilePermissions p, string expected)
         {
-            Assert.AreEqual(expected, p.ToListFormat());
+            Assert.That(p.ToListFormat(), Is.EqualTo(expected));
         }
     }
 }

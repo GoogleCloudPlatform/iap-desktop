@@ -110,26 +110,24 @@ namespace Google.Solutions.Settings.Test.ComponentModel
         public void ConvertTo_WhenMemberHasDescription()
         {
             var converter = new EnumDisplayNameConverter(typeof(EnumWithDescriptions));
-            Assert.AreEqual(
-                "eins",
+            Assert.That(
                 converter.ConvertTo(
                     new Mock<ITypeDescriptorContext>().Object,
                     CultureInfo.InvariantCulture,
                     EnumWithDescriptions.One,
-                    typeof(string)));
+                    typeof(string)), Is.EqualTo("eins"));
         }
 
         [Test]
         public void ConvertTo_WhenMemberLacksDescription()
         {
             var converter = new EnumDisplayNameConverter(typeof(EnumWithDescriptions));
-            Assert.AreEqual(
-                "Many",
+            Assert.That(
                 converter.ConvertTo(
                     new Mock<ITypeDescriptorContext>().Object,
                     CultureInfo.InvariantCulture,
                     EnumWithDescriptions.Many,
-                    typeof(string)));
+                    typeof(string)), Is.EqualTo("Many"));
         }
 
         [Test]
@@ -152,12 +150,11 @@ namespace Google.Solutions.Settings.Test.ComponentModel
         public void ConvertFrom_WhenMemberLacksDescription()
         {
             var converter = new EnumDisplayNameConverter(typeof(EnumWithDescriptions));
-            Assert.AreEqual(
-                EnumWithDescriptions.Many,
+            Assert.That(
                 converter.ConvertFrom(
                     new Mock<ITypeDescriptorContext>().Object,
                     CultureInfo.InvariantCulture,
-                    "Many"));
+                    "Many"), Is.EqualTo(EnumWithDescriptions.Many));
         }
 
         [Test]
@@ -186,12 +183,11 @@ namespace Google.Solutions.Settings.Test.ComponentModel
         public void ConvertFrom()
         {
             var converter = new EnumDisplayNameConverter(typeof(EnumWithDescriptions));
-            Assert.AreEqual(
-                EnumWithDescriptions.Two,
+            Assert.That(
                 converter.ConvertFrom(
                     new Mock<ITypeDescriptorContext>().Object,
                     CultureInfo.InvariantCulture,
-                    "zwei"));
+                    "zwei"), Is.EqualTo(EnumWithDescriptions.Two));
         }
     }
 }

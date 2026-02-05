@@ -38,8 +38,8 @@ namespace Google.Solutions.Apis.Test.Compute
             Assert.IsTrue(InternalDnsName.TryParse(name, out var parsed));
             Assert.IsNotNull(parsed);
             Assert.IsInstanceOf<InternalDnsName.ZonalName>(parsed);
-            Assert.AreEqual(name, parsed!.Name);
-            Assert.AreEqual(name, parsed.ToString());
+            Assert.That(parsed!.Name, Is.EqualTo(name));
+            Assert.That(parsed.ToString(), Is.EqualTo(name));
         }
 
         [Test]
@@ -49,8 +49,8 @@ namespace Google.Solutions.Apis.Test.Compute
             Assert.IsTrue(InternalDnsName.TryParse(name, out var parsed));
             Assert.IsNotNull(parsed);
             Assert.IsInstanceOf<InternalDnsName.GlobalName>(parsed);
-            Assert.AreEqual(name, parsed!.Name);
-            Assert.AreEqual(name, parsed.ToString());
+            Assert.That(parsed!.Name, Is.EqualTo(name));
+            Assert.That(parsed.ToString(), Is.EqualTo(name));
         }
 
         [Test]

@@ -121,7 +121,7 @@ namespace Google.Solutions.Apis.Test.Client
                 authorization.Object,
                 TestProject.UserAgent);
 
-            Assert.AreEqual(SampleEndpoint, client.Initializer.BaseUri);
+            Assert.That(client.Initializer.BaseUri, Is.EqualTo(SampleEndpoint));
             Assert.IsFalse(IsDeviceCertificateAuthenticationEnabled(client.Service));
         }
 
@@ -141,7 +141,7 @@ namespace Google.Solutions.Apis.Test.Client
                 authorization.Object,
                 TestProject.UserAgent);
 
-            Assert.AreEqual("https://sample.mtls.googleapis.com/", client.Initializer.BaseUri);
+            Assert.That(client.Initializer.BaseUri, Is.EqualTo("https://sample.mtls.googleapis.com/"));
             Assert.IsTrue(IsDeviceCertificateAuthenticationEnabled(client.Service));
         }
 
@@ -159,7 +159,7 @@ namespace Google.Solutions.Apis.Test.Client
                 authorization.Object,
                 TestProject.UserAgent);
 
-            Assert.AreEqual("https://crm.googleapis.com/", client.Initializer.BaseUri);
+            Assert.That(client.Initializer.BaseUri, Is.EqualTo("https://crm.googleapis.com/"));
             Assert.IsFalse(IsDeviceCertificateAuthenticationEnabled(client.Service));
         }
     }

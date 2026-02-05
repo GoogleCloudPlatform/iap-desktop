@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
                 .ListProjectsAsync(null, 2, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(2, result.Projects.Count());
+            Assert.That(result.Projects.Count(), Is.EqualTo(2));
         }
 
         [Test]
@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
                 .ListProjectsAsync("FO", 100, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.AreEqual(2, result.Projects.Count());
+            Assert.That(result.Projects.Count(), Is.EqualTo(2));
         }
     }
 }

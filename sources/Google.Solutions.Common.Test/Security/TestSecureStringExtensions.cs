@@ -42,13 +42,13 @@ namespace Google.Solutions.Common.Test.Security
             s.AppendChar('s');
             s.AppendChar('t');
 
-            Assert.AreEqual("test", s.ToClearText());
+            Assert.That(s.ToClearText(), Is.EqualTo("test"));
         }
 
         [Test]
         public void ToClearText_WhenSecureStringIsNull()
         {
-            Assert.AreEqual(string.Empty, SecureStringExtensions.ToClearText(null));
+            Assert.That(SecureStringExtensions.ToClearText(null), Is.EqualTo(string.Empty));
         }
 
         //---------------------------------------------------------------------
@@ -58,12 +58,10 @@ namespace Google.Solutions.Common.Test.Security
         [Test]
         public void FromClearText()
         {
-            Assert.AreEqual(
-                "test",
-                SecureStringExtensions.FromClearText("test").ToClearText());
-            Assert.AreEqual(
-                string.Empty,
-                SecureStringExtensions.FromClearText(null).ToClearText());
+            Assert.That(
+                SecureStringExtensions.FromClearText("test").ToClearText(), Is.EqualTo("test"));
+            Assert.That(
+                SecureStringExtensions.FromClearText(null).ToClearText(), Is.EqualTo(string.Empty));
         }
     }
 }

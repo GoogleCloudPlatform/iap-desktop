@@ -46,8 +46,8 @@ namespace Google.Solutions.Apis.Test.Locator
                 out var locator));
 
             Assert.IsNotNull(locator);
-            Assert.AreEqual("policy-1", locator!.AccessPolicy);
-            Assert.AreEqual("level-1", locator.AccessLevel);
+            Assert.That(locator!.AccessPolicy, Is.EqualTo("policy-1"));
+            Assert.That(locator.AccessLevel, Is.EqualTo("level-1"));
         }
 
         [Test]
@@ -74,8 +74,8 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref1 = AccessLevelLocator.Parse(
                 "accessPolicies/policy-1/accessLevels/level-1");
 
-            Assert.AreEqual("policy-1", ref1.AccessPolicy);
-            Assert.AreEqual("level-1", ref1.AccessLevel);
+            Assert.That(ref1.AccessPolicy, Is.EqualTo("policy-1"));
+            Assert.That(ref1.AccessLevel, Is.EqualTo("level-1"));
         }
 
         [Test]
@@ -114,9 +114,8 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var path = "accessPolicies/policy-1/accessLevels/level-1";
 
-            Assert.AreEqual(
-                path,
-                AccessLevelLocator.Parse(path).ToString());
+            Assert.That(
+                AccessLevelLocator.Parse(path).ToString(), Is.EqualTo(path));
         }
     }
 }

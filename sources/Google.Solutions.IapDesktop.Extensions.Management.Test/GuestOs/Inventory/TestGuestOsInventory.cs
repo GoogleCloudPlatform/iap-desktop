@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                 .ConfigureAwait(true);
 
             Assert.IsNotNull(info);
-            Assert.AreEqual(instanceRef, info?.Instance);
+            Assert.That(info?.Instance, Is.EqualTo(instanceRef));
             Assert.IsNotNull(info?.OperatingSystemVersion);
         }
 

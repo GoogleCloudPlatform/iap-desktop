@@ -215,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.AreEqual(1, (int)viewModel.PublicKeyValidityInDays.Value);
+            Assert.That((int)viewModel.PublicKeyValidityInDays.Value, Is.EqualTo(1));
             Assert.IsTrue(viewModel.IsPublicKeyValidityInDaysEditable.Value);
         }
 
@@ -234,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.AreEqual(2, viewModel.PublicKeyValidityInDays.Value);
+            Assert.That(viewModel.PublicKeyValidityInDays.Value, Is.EqualTo(2));
             Assert.IsFalse(viewModel.IsPublicKeyValidityInDaysEditable.Value);
         }
 
@@ -252,7 +252,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.AreEqual(365 * 2 * 24 * 60 * 60, settings.PublicKeyValidity.Value);
+            Assert.That(settings.PublicKeyValidity.Value, Is.EqualTo(365 * 2 * 24 * 60 * 60));
         }
 
         [Test]
@@ -282,7 +282,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.AreEqual(SshKeyType.EcdsaNistp256, viewModel.PublicKeyType.Value);
+            Assert.That(viewModel.PublicKeyType.Value, Is.EqualTo(SshKeyType.EcdsaNistp256));
             Assert.IsTrue(viewModel.IsPublicKeyTypeEditable);
         }
 
@@ -301,7 +301,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.AreEqual(SshKeyType.EcdsaNistp384, viewModel.PublicKeyType.Value);
+            Assert.That(viewModel.PublicKeyType.Value, Is.EqualTo(SshKeyType.EcdsaNistp384));
             Assert.IsFalse(viewModel.IsPublicKeyTypeEditable);
         }
 
@@ -319,7 +319,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.AreEqual(SshKeyType.EcdsaNistp384, settings.PublicKeyType.Value);
+            Assert.That(settings.PublicKeyType.Value, Is.EqualTo(SshKeyType.EcdsaNistp384));
         }
 
         [Test]

@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
                 .ConfigureAwait(true);
 
             Assert.IsFalse(viewModel.IsEventListEnabled);
-            Assert.AreEqual(EventLogViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            Assert.That(viewModel.WindowTitle, Is.EqualTo(EventLogViewModel.DefaultWindowTitle));
 
             Assert.IsFalse(viewModel.Events.Any());
         }
@@ -201,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
             StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, viewModel.WindowTitle);
             StringAssert.Contains("project-1", viewModel.WindowTitle);
 
-            Assert.AreEqual(2, viewModel.Events.Count);
+            Assert.That(viewModel.Events.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
             StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, viewModel.WindowTitle);
             StringAssert.Contains("zone-1", viewModel.WindowTitle);
 
-            Assert.AreEqual(2, viewModel.Events.Count);
+            Assert.That(viewModel.Events.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -254,7 +254,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
             StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, viewModel.WindowTitle);
             StringAssert.Contains("instance-1", viewModel.WindowTitle);
 
-            Assert.AreEqual(2, viewModel.Events.Count);
+            Assert.That(viewModel.Events.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -278,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
                 .SwitchToModelAsync(node1.Object)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(2, viewModel.Events.Count);
+            Assert.That(viewModel.Events.Count, Is.EqualTo(2));
             viewModel.SelectedEvent = viewModel.Events.First();
 
             // Switch to different node.
@@ -308,10 +308,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(2, viewModel.Events.Count);
+            Assert.That(viewModel.Events.Count, Is.EqualTo(2));
 
             viewModel.IsIncludeSystemEventsButtonChecked = false;
-            Assert.AreEqual(1, viewModel.Events.Count);
+            Assert.That(viewModel.Events.Count, Is.EqualTo(1));
             Assert.IsTrue(viewModel.Events.All(e => e.LogRecord.IsActivityEvent));
         }
 
@@ -330,10 +330,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(2, viewModel.Events.Count);
+            Assert.That(viewModel.Events.Count, Is.EqualTo(2));
 
             viewModel.IsIncludeLifecycleEventsButtonChecked = false;
-            Assert.AreEqual(1, viewModel.Events.Count);
+            Assert.That(viewModel.Events.Count, Is.EqualTo(1));
             Assert.IsTrue(viewModel.Events.All(e => e.LogRecord.IsSystemEvent));
         }
 
@@ -354,11 +354,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(1, jobService.JobsCompleted);
+            Assert.That(jobService.JobsCompleted, Is.EqualTo(1));
 
             viewModel.SelectedTimeframeIndex = 2;
 
-            Assert.AreEqual(2, jobService.JobsCompleted);
+            Assert.That(jobService.JobsCompleted, Is.EqualTo(2));
         }
     }
 }

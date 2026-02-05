@@ -30,7 +30,7 @@ namespace Google.Solutions.Platform.Test.IO
         [Test]
         public void ToString_ReturnsSize()
         {
-            Assert.AreEqual("80x24", new PseudoTerminalSize(80, 24).ToString());
+            Assert.That(new PseudoTerminalSize(80, 24).ToString(), Is.EqualTo("80x24"));
         }
     }
 }

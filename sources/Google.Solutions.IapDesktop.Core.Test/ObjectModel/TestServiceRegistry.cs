@@ -270,17 +270,15 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             var child = new ServiceRegistry(parent);
             child.AddTransient<ServiceWithServiceProviderConstructor>();
 
-            Assert.AreEqual(1, parent.Registrations.Count);
-            Assert.AreEqual(2, child.Registrations.Count);
+            Assert.That(parent.Registrations.Count, Is.EqualTo(1));
+            Assert.That(child.Registrations.Count, Is.EqualTo(2));
 
             var registrations = child.Registrations;
 
-            Assert.AreEqual(
-                ServiceLifetime.Singleton,
-                registrations[typeof(ServiceWithDefaultConstructor)]);
-            Assert.AreEqual(
-                ServiceLifetime.Transient,
-                registrations[typeof(ServiceWithServiceProviderConstructor)]);
+            Assert.That(
+                registrations[typeof(ServiceWithDefaultConstructor)], Is.EqualTo(ServiceLifetime.Singleton));
+            Assert.That(
+                registrations[typeof(ServiceWithServiceProviderConstructor)], Is.EqualTo(ServiceLifetime.Transient));
         }
 
         //---------------------------------------------------------------------
@@ -356,7 +354,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 
             var services = registry.GetServicesByCategory<ICategory>();
             Assert.IsNotNull(services);
-            Assert.AreEqual(2, services.Count());
+            Assert.That(services.Count(), Is.EqualTo(2));
         }
 
         [Test]
@@ -372,11 +370,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 
             var parentServices = parentRegistry.GetServicesByCategory<ICategory>();
             Assert.IsNotNull(parentServices);
-            Assert.AreEqual(1, parentServices.Count());
+            Assert.That(parentServices.Count(), Is.EqualTo(1));
 
             var childServices = childRegistry.GetServicesByCategory<ICategory>();
             Assert.IsNotNull(childServices);
-            Assert.AreEqual(2, childServices.Count());
+            Assert.That(childServices.Count(), Is.EqualTo(2));
         }
     }
 }
