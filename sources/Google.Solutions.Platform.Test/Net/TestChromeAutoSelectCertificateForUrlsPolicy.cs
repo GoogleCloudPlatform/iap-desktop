@@ -129,7 +129,7 @@ namespace Google.Solutions.Platform.Test.Net
                     .AddGroupPolicy(key)
                     .Build();
 
-                Assert.IsTrue(policy.IsApplicable(new Uri("https://www.example.org"), ExampleOrgCertificate));
+                Assert.That(policy.IsApplicable(new Uri("https://www.example.org"), ExampleOrgCertificate), Is.True);
                 Assert.That(policy.IsApplicable(new Uri("https://www.example.com"), ExampleOrgCertificate), Is.False);
             }
         }

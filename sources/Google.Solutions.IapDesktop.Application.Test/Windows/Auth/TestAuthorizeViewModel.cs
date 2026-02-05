@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
 
                 Assert.IsNull(viewModel.Authorization);
 
-                Assert.IsTrue(viewModel.IsSignOnControlVisible.Value);
+                Assert.That(viewModel.IsSignOnControlVisible.Value, Is.True);
                 Assert.That(viewModel.IsWaitControlVisible.Value, Is.False);
                 Assert.That(viewModel.IsAuthorizationComplete.Value, Is.False);
             }
@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
 
                 Assert.IsNull(viewModel.Authorization);
 
-                Assert.IsTrue(viewModel.IsSignOnControlVisible.Value);
+                Assert.That(viewModel.IsSignOnControlVisible.Value, Is.True);
                 Assert.That(viewModel.IsWaitControlVisible.Value, Is.False);
                 Assert.That(viewModel.IsAuthorizationComplete.Value, Is.False);
             }
@@ -182,8 +182,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                 Assert.IsNotNull(viewModel.Authorization);
 
                 Assert.That(viewModel.IsSignOnControlVisible.Value, Is.False);
-                Assert.IsTrue(viewModel.IsWaitControlVisible.Value);
-                Assert.IsTrue(viewModel.IsAuthorizationComplete.Value);
+                Assert.That(viewModel.IsWaitControlVisible.Value, Is.True);
+                Assert.That(viewModel.IsAuthorizationComplete.Value, Is.True);
             }
         }
 
@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
 
                 Assert.IsNull(viewModel.Authorization);
 
-                Assert.IsTrue(viewModel.IsSignOnControlVisible.Value);
+                Assert.That(viewModel.IsSignOnControlVisible.Value, Is.True);
                 Assert.That(viewModel.IsWaitControlVisible.Value, Is.False);
                 Assert.That(viewModel.IsAuthorizationComplete.Value, Is.False);
             }
@@ -278,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
 
                 Assert.IsNull(viewModel.Authorization);
 
-                Assert.IsTrue(viewModel.IsSignOnControlVisible.Value);
+                Assert.That(viewModel.IsSignOnControlVisible.Value, Is.True);
                 Assert.That(viewModel.IsWaitControlVisible.Value, Is.False);
                 Assert.That(viewModel.IsAuthorizationComplete.Value, Is.False);
             }
@@ -310,9 +310,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
 
                 Assert.IsNotNull(viewModel.Authorization);
 
-                Assert.IsTrue(viewModel.IsSignOnControlVisible.Value);
+                Assert.That(viewModel.IsSignOnControlVisible.Value, Is.True);
                 Assert.That(viewModel.IsWaitControlVisible.Value, Is.False);
-                Assert.IsTrue(viewModel.IsAuthorizationComplete.Value);
+                Assert.That(viewModel.IsAuthorizationComplete.Value, Is.True);
             }
         }
 
@@ -369,9 +369,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
 
                 Assert.That(viewModel.Authorization, Is.SameAs(authorization));
 
-                Assert.IsTrue(viewModel.IsSignOnControlVisible.Value);
+                Assert.That(viewModel.IsSignOnControlVisible.Value, Is.True);
                 Assert.That(viewModel.IsWaitControlVisible.Value, Is.False);
-                Assert.IsTrue(viewModel.IsAuthorizationComplete.Value);
+                Assert.That(viewModel.IsAuthorizationComplete.Value, Is.True);
             }
         }
     }

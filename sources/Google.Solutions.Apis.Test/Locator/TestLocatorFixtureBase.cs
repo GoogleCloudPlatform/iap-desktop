@@ -36,7 +36,7 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void ResourceType_IsPlural()
         {
-            Assert.IsTrue(CreateInstance().ResourceType.EndsWith("s"));
+            Assert.That(CreateInstance().ResourceType.EndsWith("s"), Is.True);
         }
 
         //---------------------------------------------------------------------

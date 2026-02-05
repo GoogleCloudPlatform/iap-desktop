@@ -187,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(viewModel.IsPackageListEnabled.Value);
+            Assert.That(viewModel.IsPackageListEnabled.Value, Is.True);
             Assert.IsNull(viewModel.InformationText.Value);
             Assert.That(viewModel.WindowTitle.Value, Does.Contain("project-1"));
 
@@ -215,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(viewModel.IsPackageListEnabled.Value);
+            Assert.That(viewModel.IsPackageListEnabled.Value, Is.True);
             Assert.IsNull(viewModel.InformationText.Value);
             Assert.That(viewModel.WindowTitle.Value, Does.Contain("zone-1"));
 
@@ -244,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(viewModel.IsPackageListEnabled.Value);
+            Assert.That(viewModel.IsPackageListEnabled.Value, Is.True);
             Assert.IsNull(viewModel.InformationText.Value);
             Assert.That(viewModel.WindowTitle.Value, Does.Contain("instance-1"));
 
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(viewModel.IsPackageListEnabled.Value);
+            Assert.That(viewModel.IsPackageListEnabled.Value, Is.True);
             Assert.That(
                 viewModel.InformationText.Value, Is.EqualTo(PackageInventoryViewModel.OsInventoryNotAvailableWarning));
             Assert.That(viewModel.WindowTitle.Value, Does.Contain("instance-3"));

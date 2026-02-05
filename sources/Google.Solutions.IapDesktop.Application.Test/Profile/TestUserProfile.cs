@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         [Test]
         public void IsValidProfileName_WhenNameIsAlphanumeric_ThenIsValidProfileNameReturnsTrue()
         {
-            Assert.IsTrue(UserProfile.IsValidProfileName("This is a valid name"));
+            Assert.That(UserProfile.IsValidProfileName("This is a valid name"), Is.True);
         }
 
         [Test]

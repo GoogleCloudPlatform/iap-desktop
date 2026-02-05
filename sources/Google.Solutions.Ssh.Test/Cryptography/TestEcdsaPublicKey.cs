@@ -117,7 +117,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
 
             using (var publicKey = new ECDsaPublicKey(key, true))
             {
-                Assert.IsTrue(key.IsDisposed());
+                Assert.That(key.IsDisposed(), Is.True);
             }
         }
 

@@ -107,8 +107,8 @@ namespace Google.Solutions.Ssh.Test.Cryptography
             using (var lhs = new SamplePublicKey("type", Convert.FromBase64String("ABCD")))
             using (var rhs = new SamplePublicKey("type", Convert.FromBase64String("ABCD")))
             {
-                Assert.IsTrue(lhs.Equals(rhs));
-                Assert.IsTrue(lhs.Equals((object)rhs));
+                Assert.That(lhs.Equals(rhs), Is.True);
+                Assert.That(lhs.Equals((object)rhs), Is.True);
             }
         }
 

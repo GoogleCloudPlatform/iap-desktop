@@ -521,19 +521,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
             Assert.IsNotNull(release);
 
-            Assert.IsTrue(release!.TryGetDownloadUrl(
+            Assert.That(release!.TryGetDownloadUrl(
                 Architecture.X86,
-                out var downloadUrlX86));
+                out var downloadUrlX86), Is.True);
             Assert.That(downloadUrlX86, Is.EqualTo("http://example.com/download.x86.MSI"));
 
-            Assert.IsTrue(release.TryGetDownloadUrl(
+            Assert.That(release.TryGetDownloadUrl(
                 Architecture.X64,
-                out var downloadUrlX64));
+                out var downloadUrlX64), Is.True);
             Assert.That(downloadUrlX64, Is.EqualTo("http://example.com/download.x64.msi"));
 
-            Assert.IsTrue(release.TryGetDownloadUrl(
+            Assert.That(release.TryGetDownloadUrl(
                 Architecture.Arm64,
-                out var downloadUrlArm64));
+                out var downloadUrlArm64), Is.True);
             Assert.That(downloadUrlArm64, Is.EqualTo("http://example.com/download.arm64.msi"));
         }
 
@@ -564,9 +564,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
-            Assert.IsTrue(release!.TryGetDownloadUrl(
+            Assert.That(release!.TryGetDownloadUrl(
                 Architecture.X86,
-                out var downloadUrl));
+                out var downloadUrl), Is.True);
             Assert.That(downloadUrl, Is.EqualTo("http://example.com/download.msi"));
         }
 
@@ -586,18 +586,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
             Assert.IsNotNull(release);
             Assert.IsNotNull(release!.TagVersion);
-            Assert.IsTrue(release.TagVersion!.Major >= 1);
+            Assert.That(release.TagVersion!.Major >= 1, Is.True);
 
-            Assert.IsTrue(release.TryGetDownloadUrl(
+            Assert.That(release.TryGetDownloadUrl(
                 Architecture.X86,
-                out var downloadUrl));
+                out var downloadUrl), Is.True);
 
             Assert.IsNotNull(downloadUrl);
-            Assert.IsTrue(Uri.IsWellFormedUriString(downloadUrl, UriKind.Absolute));
+            Assert.That(Uri.IsWellFormedUriString(downloadUrl, UriKind.Absolute), Is.True);
             Assert.That(downloadUrl, Does.EndWith(".msi"));
 
             Assert.IsNotNull(release.DetailsUrl);
-            Assert.IsTrue(Uri.IsWellFormedUriString(release.DetailsUrl, UriKind.Absolute));
+            Assert.That(Uri.IsWellFormedUriString(release.DetailsUrl, UriKind.Absolute), Is.True);
         }
     }
 }

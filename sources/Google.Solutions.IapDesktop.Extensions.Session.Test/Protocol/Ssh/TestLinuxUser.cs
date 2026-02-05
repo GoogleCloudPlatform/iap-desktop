@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var username = LinuxUser.SuggestUsername(session);
 
             Assert.That(username, Is.EqualTo("j"));
-            Assert.IsTrue(LinuxUser.IsValidUsername(username));
+            Assert.That(LinuxUser.IsValidUsername(username), Is.True);
         }
 
         [Test]
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var username = LinuxUser.SuggestUsername(session);
 
             Assert.That(username, Is.EqualTo("notanemailaddress"));
-            Assert.IsTrue(LinuxUser.IsValidUsername(username));
+            Assert.That(LinuxUser.IsValidUsername(username), Is.True);
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var username = LinuxUser.SuggestUsername(session);
 
             Assert.That(username, Is.EqualTo("abcdefghijklmnopqrstuvwxyzabcxyz"));
-            Assert.IsTrue(LinuxUser.IsValidUsername(username));
+            Assert.That(LinuxUser.IsValidUsername(username), Is.True);
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var username = LinuxUser.SuggestUsername(session);
 
             Assert.That(username, Is.EqualTo("g1_9"));
-            Assert.IsTrue(LinuxUser.IsValidUsername(username));
+            Assert.That(LinuxUser.IsValidUsername(username), Is.True);
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             var username = LinuxUser.SuggestUsername(session);
 
             Assert.That(username, Is.EqualTo("abc"));
-            Assert.IsTrue(LinuxUser.IsValidUsername(username));
+            Assert.That(LinuxUser.IsValidUsername(username), Is.True);
         }
 
         [Test]

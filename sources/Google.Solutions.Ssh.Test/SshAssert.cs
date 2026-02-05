@@ -46,8 +46,8 @@ namespace Google.Solutions.Ssh.Test
 
                 if (session != null)
                 {
-                    Assert.IsTrue(session.LastError == LIBSSH2_ERROR.NONE ||
-                                  session.LastError == expected);
+                    Assert.That(session.LastError == LIBSSH2_ERROR.NONE ||
+                                  session.LastError == expected, Is.True);
                 }
             }
         }

@@ -142,7 +142,7 @@ namespace Google.Solutions.Apis.Test.Client
                 TestProject.UserAgent);
 
             Assert.That(client.Initializer.BaseUri, Is.EqualTo("https://sample.mtls.googleapis.com/"));
-            Assert.IsTrue(IsDeviceCertificateAuthenticationEnabled(client.Service));
+            Assert.That(IsDeviceCertificateAuthenticationEnabled(client.Service), Is.True);
         }
 
         [Test]

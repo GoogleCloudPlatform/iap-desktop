@@ -181,7 +181,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             dialog.ShowDialog(null, parameters);
 
-            Assert.IsTrue(parameters.VerificationCheckBox.Checked);
+            Assert.That(parameters.VerificationCheckBox.Checked, Is.True);
         }
     }
 }

@@ -89,7 +89,7 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             using (var session = CreateSession())
             {
-                Assert.IsTrue(session.IsBlocking);
+                Assert.That(session.IsBlocking, Is.True);
             }
         }
 

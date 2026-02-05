@@ -64,10 +64,10 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var attributes = file.Attributes;
 
-                Assert.IsTrue(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.SIZE));
+                Assert.That(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.SIZE), Is.True);
                 Assert.That(attributes.filesize, Is.EqualTo(0));
 
-                Assert.IsTrue(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.PERMISSIONS));
+                Assert.That(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.PERMISSIONS), Is.True);
                 Assert.That(
                     attributes.permissions, Is.EqualTo(FilePermissions.OwnerRead |
                         FilePermissions.OwnerWrite |
@@ -99,10 +99,10 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var attributes = file.Attributes;
 
-                Assert.IsTrue(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.SIZE));
+                Assert.That(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.SIZE), Is.True);
                 Assert.That(attributes.filesize, Is.Not.EqualTo(0));
 
-                Assert.IsTrue(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.ACMODTIME));
+                Assert.That(attributes.flags.HasFlag(LIBSSH2_SFTP_ATTR.ACMODTIME), Is.True);
                 Assert.That(attributes.atime, Is.Not.EqualTo(0));
             }
         }

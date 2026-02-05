@@ -105,7 +105,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
             var descriptor = new MaskedSettingDescriptor(setting);
             descriptor.SetValue(setting, null);
 
-            Assert.IsTrue(setting.IsDefault);
+            Assert.That(setting.IsDefault, Is.True);
         }
     }
 }

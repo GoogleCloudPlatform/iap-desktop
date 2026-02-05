@@ -48,7 +48,7 @@ namespace Google.Solutions.Apis.Test.Client
         public void PscRoute()
         {
             var route = new ServiceRoute("www-endpoint.p.googleapis.com");
-            Assert.IsTrue(route.UsePrivateServiceConnect);
+            Assert.That(route.UsePrivateServiceConnect, Is.True);
             Assert.That(route.Endpoint, Is.EqualTo("www-endpoint.p.googleapis.com"));
             Assert.That(route.ToString(), Is.EqualTo("www-endpoint.p.googleapis.com"));
         }

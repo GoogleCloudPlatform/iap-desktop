@@ -139,7 +139,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 var passwd = files.First(f => f.Name == "passwd");
                 Assert.IsNotNull(passwd);
-                Assert.IsTrue(passwd.Permissions.HasFlag(FilePermissions.Regular));
+                Assert.That(passwd.Permissions.HasFlag(FilePermissions.Regular), Is.True);
                 Assert.That(passwd.IsDirectory, Is.False);
             }
         }
@@ -169,8 +169,8 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 var parent = files.First(f => f.Name == "..");
                 Assert.IsNotNull(parent);
-                Assert.IsTrue(parent.Permissions.HasFlag(FilePermissions.Directory));
-                Assert.IsTrue(parent.IsDirectory);
+                Assert.That(parent.Permissions.HasFlag(FilePermissions.Directory), Is.True);
+                Assert.That(parent.IsDirectory, Is.True);
             }
         }
 
@@ -258,9 +258,9 @@ namespace Google.Solutions.Ssh.Test.Native
                         FilePermissions.OwnerRead |
                         FilePermissions.OtherWrite);
 
-                Assert.IsTrue(channel
+                Assert.That(channel
                     .ListFiles(".")
-                    .Any(f => f.Name == directoryName),
+                    .Any(f => f.Name == directoryName), Is.True,
                     "Directory created");
             }
         }
@@ -413,9 +413,9 @@ namespace Google.Solutions.Ssh.Test.Native
                     FilePermissions.OwnerRead |
                     FilePermissions.OtherWrite))
             {
-                Assert.IsTrue(channel
+                Assert.That(channel
                     .ListFiles(".")
-                    .Any(f => f.Name == fileName),
+                    .Any(f => f.Name == fileName), Is.True,
                     "File created");
             }
         }

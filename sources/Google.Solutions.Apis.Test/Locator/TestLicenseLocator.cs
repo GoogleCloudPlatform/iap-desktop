@@ -48,9 +48,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathIsValid()
         {
-            Assert.IsTrue(LicenseLocator.TryParse(
+            Assert.That(LicenseLocator.TryParse(
                 "projects/project-1/global/licenses/windows-10-enterprise-byol",
-                out var ref1));
+                out var ref1), Is.True);
 
             Assert.IsNotNull(ref1);
             Assert.That(ref1!.ResourceType, Is.EqualTo("licenses"));
@@ -61,9 +61,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByComputeGoogleapisHost()
         {
-            Assert.IsTrue(LicenseLocator.TryParse(
+            Assert.That(LicenseLocator.TryParse(
                 "https://compute.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol",
-                out var ref1));
+                out var ref1), Is.True);
 
             Assert.IsNotNull(ref1);
             Assert.That(ref1!.ResourceType, Is.EqualTo("licenses"));
@@ -74,9 +74,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByGoogleapisHost()
         {
-            Assert.IsTrue(LicenseLocator.TryParse(
+            Assert.That(LicenseLocator.TryParse(
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol",
-                out var ref1));
+                out var ref1), Is.True);
 
             Assert.IsNotNull(ref1);
             Assert.That(ref1!.ResourceType, Is.EqualTo("licenses"));
@@ -174,7 +174,7 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.That(ref1.Equals(ref2), Is.False);
             Assert.That(ref1.Equals((object?)ref2), Is.False);
             Assert.That(ref1 == ref2, Is.False);
-            Assert.IsTrue(ref1 != ref2);
+            Assert.That(ref1 != ref2, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -209,7 +209,7 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var locator = LicenseLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol");
-            Assert.IsTrue(locator.IsWindowsLicense());
+            Assert.That(locator.IsWindowsLicense(), Is.True);
         }
 
         [Test]
@@ -225,7 +225,7 @@ namespace Google.Solutions.Apis.Test.Locator
         {
             var locator = LicenseLocator.Parse(
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol");
-            Assert.IsTrue(locator.IsWindowsByolLicense());
+            Assert.That(locator.IsWindowsByolLicense(), Is.True);
         }
 
         [Test]

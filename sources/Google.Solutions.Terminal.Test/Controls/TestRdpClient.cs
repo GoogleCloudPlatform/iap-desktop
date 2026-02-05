@@ -136,9 +136,9 @@ namespace Google.Solutions.Terminal.Test.Controls
                 // Enter full-screen.
                 //
                 Assert.That(window.Client.IsFullScreen, Is.False);
-                Assert.IsTrue(window.Client.CanEnterFullScreen);
-                Assert.IsTrue(window.Client.TryEnterFullScreen(null));
-                Assert.IsTrue(window.Client.IsFullScreen);
+                Assert.That(window.Client.CanEnterFullScreen, Is.True);
+                Assert.That(window.Client.TryEnterFullScreen(null), Is.True);
+                Assert.That(window.Client.IsFullScreen, Is.True);
 
                 await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
@@ -184,12 +184,12 @@ namespace Google.Solutions.Terminal.Test.Controls
                 // Enter full-screen.
                 //
                 Assert.That(window.Client.IsFullScreen, Is.False);
-                Assert.IsTrue(window.Client.CanEnterFullScreen);
-                Assert.IsTrue(window.Client.TryEnterFullScreen(null));
+                Assert.That(window.Client.CanEnterFullScreen, Is.True);
+                Assert.That(window.Client.TryEnterFullScreen(null), Is.True);
 
                 await Task.Delay(TimeSpan.FromSeconds(1));
 
-                Assert.IsTrue(window.Client.IsFullScreen);
+                Assert.That(window.Client.IsFullScreen, Is.True);
                 Assert.That(window.Client.CanEnterFullScreen, Is.False);
 
                 await AwaitStateAsync(window, ClientState.LoggedOn)
@@ -198,7 +198,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 // Leave full-screen.
                 //
-                Assert.IsTrue(window.Client.TryLeaveFullScreen());
+                Assert.That(window.Client.TryLeaveFullScreen(), Is.True);
                 Assert.That(window.Client.IsFullScreen, Is.False);
 
                 await AwaitStateAsync(window, ClientState.LoggedOn)
@@ -208,9 +208,9 @@ namespace Google.Solutions.Terminal.Test.Controls
                 // Enter full-screen again.
                 //
                 Assert.That(window.Client.IsFullScreen, Is.False);
-                Assert.IsTrue(window.Client.CanEnterFullScreen);
-                Assert.IsTrue(window.Client.TryEnterFullScreen(null));
-                Assert.IsTrue(window.Client.IsFullScreen);
+                Assert.That(window.Client.CanEnterFullScreen, Is.True);
+                Assert.That(window.Client.TryEnterFullScreen(null), Is.True);
+                Assert.That(window.Client.IsFullScreen, Is.True);
 
                 await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
@@ -218,7 +218,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 //
                 // Leave full-screen again.
                 //
-                Assert.IsTrue(window.Client.TryLeaveFullScreen());
+                Assert.That(window.Client.TryLeaveFullScreen(), Is.True);
                 Assert.That(window.Client.IsFullScreen, Is.False);
 
                 //
@@ -353,12 +353,12 @@ namespace Google.Solutions.Terminal.Test.Controls
                 await AwaitStateAsync(window, ClientState.LoggedOn)
                     .ConfigureAwait(true);
 
-                Assert.IsTrue(window.Client.CanSendText);
-                Assert.IsTrue(window.Client.CanShowTaskManager);
-                Assert.IsTrue(window.Client.CanShowSecurityScreen);
-                Assert.IsTrue(window.Client.CanEnterFullScreen);
-                Assert.IsTrue(window.Client.CanReconnect);
-                Assert.IsTrue(window.Client.CanLogoff);
+                Assert.That(window.Client.CanSendText, Is.True);
+                Assert.That(window.Client.CanShowTaskManager, Is.True);
+                Assert.That(window.Client.CanShowSecurityScreen, Is.True);
+                Assert.That(window.Client.CanEnterFullScreen, Is.True);
+                Assert.That(window.Client.CanReconnect, Is.True);
+                Assert.That(window.Client.CanLogoff, Is.True);
 
                 window.Client.Logoff();
 

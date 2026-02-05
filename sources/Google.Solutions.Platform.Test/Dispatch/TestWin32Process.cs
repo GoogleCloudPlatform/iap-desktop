@@ -85,10 +85,10 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                Assert.IsTrue(process.IsRunning);
+                Assert.That(process.IsRunning, Is.True);
 
                 process.Resume();
-                Assert.IsTrue(process.IsRunning);
+                Assert.That(process.IsRunning, Is.True);
 
                 process.Terminate(1);
                 Assert.That(process.IsRunning, Is.False);
@@ -145,7 +145,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 Assert.That(process.WaitHandle.WaitOne(1), Is.False);
 
                 process.Terminate(1);
-                Assert.IsTrue(process.WaitHandle.WaitOne(50));
+                Assert.That(process.WaitHandle.WaitOne(50), Is.True);
             }
         }
 
@@ -166,7 +166,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 process.Resume();
                 process.Resume(); // Again.
 
-                Assert.IsTrue(process.IsRunning);
+                Assert.That(process.IsRunning, Is.True);
 
                 process.Terminate(1);
             }
@@ -187,7 +187,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
                 Assert.IsNotNull(process.Handle);
                 Assert.That(process.Handle.IsInvalid, Is.False);
-                Assert.IsTrue(process.IsRunning);
+                Assert.That(process.IsRunning, Is.True);
 
                 process.Terminate(1);
 
@@ -215,7 +215,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
                 Assert.IsNotNull(process.Handle);
                 Assert.That(process.Handle.IsInvalid, Is.False);
-                Assert.IsTrue(process.IsRunning);
+                Assert.That(process.IsRunning, Is.True);
 
                 process.Terminate(1);
 
@@ -242,7 +242,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                     .CloseAsync(cts.Token)
                     .ConfigureAwait(false);
 
-                Assert.IsTrue(terminatedGracefully);
+                Assert.That(terminatedGracefully, Is.True);
             }
         }
 
@@ -267,7 +267,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 var terminatedGracefully = await process
                     .CloseAsync(cts.Token)
                     .ConfigureAwait(false);
-                Assert.IsTrue(terminatedGracefully);
+                Assert.That(terminatedGracefully, Is.True);
             }
         }
 
@@ -285,7 +285,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 var terminatedGracefully = await process
                     .CloseAsync(cts.Token)
                     .ConfigureAwait(false);
-                Assert.IsTrue(terminatedGracefully);
+                Assert.That(terminatedGracefully, Is.True);
             }
         }
 
@@ -369,7 +369,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 {
                     Assert.IsNotNull(openedProcess);
                     Assert.That(openedProcess.ImageName, Is.EqualTo(process.ImageName));
-                    Assert.IsTrue(openedProcess.IsRunning);
+                    Assert.That(openedProcess.IsRunning, Is.True);
                 }
 
                 process.Terminate(1);

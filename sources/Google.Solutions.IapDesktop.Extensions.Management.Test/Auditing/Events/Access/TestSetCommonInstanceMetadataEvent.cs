@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
               ";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r));
+            Assert.That(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r), Is.True);
 
             var e = (SetCommonInstanceMetadataEvent)r.ToEvent();
 
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r));
+            Assert.That(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r), Is.True);
 
             var e = (SetCommonInstanceMetadataEvent)r.ToEvent();
 
@@ -214,7 +214,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r));
+            Assert.That(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r), Is.True);
 
             var e = (SetCommonInstanceMetadataEvent)r.ToEvent();
 
@@ -300,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r));
+            Assert.That(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r), Is.True);
 
             var e = (SetCommonInstanceMetadataEvent)r.ToEvent();
 

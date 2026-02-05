@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
         public void IsClientProcessAllowed_WhenProcessIdCurrent()
         {
             var pid = (uint)Process.GetCurrentProcess().Id;
-            Assert.IsTrue(new CurrentProcessPolicy().IsClientProcessAllowed(pid));
+            Assert.That(new CurrentProcessPolicy().IsClientProcessAllowed(pid), Is.True);
         }
 
         [Test]

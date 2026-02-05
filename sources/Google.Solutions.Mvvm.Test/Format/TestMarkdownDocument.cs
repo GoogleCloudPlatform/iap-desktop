@@ -45,12 +45,12 @@ namespace Google.Solutions.Mvvm.Test.Format
         [Test]
         public void IsHeadingNode()
         {
-            Assert.IsTrue(MarkdownDocument.HeadingNode.IsHeadingNode("# H1"));
-            Assert.IsTrue(MarkdownDocument.HeadingNode.IsHeadingNode("## H12 "));
-            Assert.IsTrue(MarkdownDocument.HeadingNode.IsHeadingNode("### H3"));
-            Assert.IsTrue(MarkdownDocument.HeadingNode.IsHeadingNode("#### H4  "));
-            Assert.IsTrue(MarkdownDocument.HeadingNode.IsHeadingNode("###### H5"));
-            Assert.IsTrue(MarkdownDocument.HeadingNode.IsHeadingNode("####### H6"));
+            Assert.That(MarkdownDocument.HeadingNode.IsHeadingNode("# H1"), Is.True);
+            Assert.That(MarkdownDocument.HeadingNode.IsHeadingNode("## H12 "), Is.True);
+            Assert.That(MarkdownDocument.HeadingNode.IsHeadingNode("### H3"), Is.True);
+            Assert.That(MarkdownDocument.HeadingNode.IsHeadingNode("#### H4  "), Is.True);
+            Assert.That(MarkdownDocument.HeadingNode.IsHeadingNode("###### H5"), Is.True);
+            Assert.That(MarkdownDocument.HeadingNode.IsHeadingNode("####### H6"), Is.True);
 
             Assert.That(MarkdownDocument.HeadingNode.IsHeadingNode(" # "), Is.False);
             Assert.That(MarkdownDocument.HeadingNode.IsHeadingNode("#"), Is.False);
@@ -135,12 +135,12 @@ namespace Google.Solutions.Mvvm.Test.Format
         [Test]
         public void IsUnorderedListItemNode()
         {
-            Assert.IsTrue(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode("* i"));
-            Assert.IsTrue(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode("*   i"));
-            Assert.IsTrue(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode("*\ti"));
-            Assert.IsTrue(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode("- i"));
-            Assert.IsTrue(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode("+ i"));
-            Assert.IsTrue(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode("* i"));
+            Assert.That(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode("* i"), Is.True);
+            Assert.That(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode("*   i"), Is.True);
+            Assert.That(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode("*\ti"), Is.True);
+            Assert.That(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode("- i"), Is.True);
+            Assert.That(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode("+ i"), Is.True);
+            Assert.That(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode("* i"), Is.True);
 
             Assert.That(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode(" * i"), Is.False);
             Assert.That(MarkdownDocument.UnorderedListItemNode.IsUnorderedListItemNode(" *i"), Is.False);
@@ -222,9 +222,9 @@ namespace Google.Solutions.Mvvm.Test.Format
         [Test]
         public void IsOrderedListItemNode()
         {
-            Assert.IsTrue(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("1. i"));
-            Assert.IsTrue(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("123345.        \ti"));
-            Assert.IsTrue(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("0. i"));
+            Assert.That(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("1. i"), Is.True);
+            Assert.That(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("123345.        \ti"), Is.True);
+            Assert.That(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("0. i"), Is.True);
 
             Assert.That(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("-1. i"), Is.False);
             Assert.That(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("1 i"), Is.False);
@@ -532,8 +532,8 @@ namespace Google.Solutions.Mvvm.Test.Format
             var token1 = new MarkdownDocument.Token(MarkdownDocument.TokenType.Text, "text");
             var token2 = new MarkdownDocument.Token(MarkdownDocument.TokenType.Text, "text");
 
-            Assert.IsTrue(token1.Equals(token2));
-            Assert.IsTrue(token1 == token2);
+            Assert.That(token1.Equals(token2), Is.True);
+            Assert.That(token1 == token2, Is.True);
         }
 
         [Test]
@@ -546,7 +546,7 @@ namespace Google.Solutions.Mvvm.Test.Format
             Assert.That(token1.Equals(null!), Is.False);
             Assert.That(token1! == token2, Is.False);
             Assert.That(token1! == null!, Is.False);
-            Assert.IsTrue(token1! != token2);
+            Assert.That(token1! != token2, Is.True);
         }
     }
 }

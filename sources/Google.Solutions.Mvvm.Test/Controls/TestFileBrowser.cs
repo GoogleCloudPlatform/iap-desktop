@@ -185,7 +185,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 Application.DoEvents();
-                Assert.IsTrue(eventRaised);
+                Assert.That(eventRaised, Is.True);
             }
         }
 
@@ -716,7 +716,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 using (var dataObject = browser.CopySelectedFiles())
                 {
                     Assert.That(dataObject.Files.Count, Is.EqualTo(2));
-                    Assert.IsTrue(dataObject.IsAsync);
+                    Assert.That(dataObject.IsAsync, Is.True);
                 }
             }
         }
@@ -754,7 +754,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 DataFormats.FileDrop,
                 new string[] { Path.GetTempFileName() });
 
-            Assert.IsTrue(FileBrowser.CanPaste(dataObject));
+            Assert.That(FileBrowser.CanPaste(dataObject), Is.True);
         }
 
         //---------------------------------------------------------------------

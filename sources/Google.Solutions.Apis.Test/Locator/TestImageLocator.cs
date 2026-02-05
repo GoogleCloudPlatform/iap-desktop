@@ -48,9 +48,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathIsValid()
         {
-            Assert.IsTrue(ImageLocator.TryParse(
+            Assert.That(ImageLocator.TryParse(
                 "projects/project-1/global/images/image-1",
-                out var ref1));
+                out var ref1), Is.True);
 
             Assert.IsNotNull(ref1);
             Assert.That(ref1!.ResourceType, Is.EqualTo("images"));
@@ -61,9 +61,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenResourceNameCotainsSlash()
         {
-            Assert.IsTrue(ImageLocator.TryParse(
+            Assert.That(ImageLocator.TryParse(
                 "projects/debian-cloud/global/images/family/debian-9",
-                out var ref1));
+                out var ref1), Is.True);
 
             Assert.IsNotNull(ref1);
             Assert.That(ref1!.ResourceType, Is.EqualTo("images"));
@@ -74,9 +74,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByComputeGoogleapisHost()
         {
-            Assert.IsTrue(ImageLocator.TryParse(
+            Assert.That(ImageLocator.TryParse(
                 "https://compute.googleapis.com/compute/v1/projects/debian-cloud/global/images/family/debian-9",
-                out var ref1));
+                out var ref1), Is.True);
 
             Assert.IsNotNull(ref1);
             Assert.That(ref1!.ResourceType, Is.EqualTo("images"));
@@ -87,9 +87,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByGoogleapisHost()
         {
-            Assert.IsTrue(ImageLocator.TryParse(
+            Assert.That(ImageLocator.TryParse(
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/images/windows-server-core",
-                out var ref1));
+                out var ref1), Is.True);
 
             Assert.IsNotNull(ref1);
             Assert.That(ref1!.ResourceType, Is.EqualTo("images"));
@@ -100,9 +100,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenUsingBetaApi()
         {
-            Assert.IsTrue(ImageLocator.TryParse(
+            Assert.That(ImageLocator.TryParse(
                 "https://compute.googleapis.com/compute/beta/projects/eip-images/global/images/debian-9-drawfork-v20191004",
-                out var ref1));
+                out var ref1), Is.True);
 
             Assert.IsNotNull(ref1);
             Assert.That(ref1!.ResourceType, Is.EqualTo("images"));
@@ -222,7 +222,7 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.That(ref1.Equals(ref2), Is.False);
             Assert.That(ref1.Equals((object?)ref2), Is.False);
             Assert.That(ref1 == ref2, Is.False);
-            Assert.IsTrue(ref1 != ref2);
+            Assert.That(ref1 != ref2, Is.True);
         }
 
         //---------------------------------------------------------------------

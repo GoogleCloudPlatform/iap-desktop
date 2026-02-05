@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(StartWithEncryptionKeyEvent.IsStartWithEncryptionKeyEvent(r));
+            Assert.That(StartWithEncryptionKeyEvent.IsStartWithEncryptionKeyEvent(r), Is.True);
 
             var e = (StartWithEncryptionKeyEvent)r.ToEvent();
 
@@ -158,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(StartWithEncryptionKeyEvent.IsStartWithEncryptionKeyEvent(r));
+            Assert.That(StartWithEncryptionKeyEvent.IsStartWithEncryptionKeyEvent(r), Is.True);
 
             var e = (StartWithEncryptionKeyEvent)r.ToEvent();
 
@@ -239,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                  }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(StartWithEncryptionKeyEvent.IsStartWithEncryptionKeyEvent(r));
+            Assert.That(StartWithEncryptionKeyEvent.IsStartWithEncryptionKeyEvent(r), Is.True);
 
             var e = (StartWithEncryptionKeyEvent)r.ToEvent();
 

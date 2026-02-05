@@ -63,7 +63,7 @@ namespace Google.Solutions.Platform.Test.Net
             var registry = new BrowserProtocolRegistry();
             registry.Register(TestScheme, "Test", "app.exe");
 
-            Assert.IsTrue(registry.IsRegistered(TestScheme, "app.exe"));
+            Assert.That(registry.IsRegistered(TestScheme, "app.exe"), Is.True);
             Assert.That(registry.IsRegistered(TestScheme, "someotherapp.exe"), Is.False);
         }
 
@@ -78,7 +78,7 @@ namespace Google.Solutions.Platform.Test.Net
             registry.Register(TestScheme, "Test", "someotherapp.exe");
             registry.Register(TestScheme, "Test", "app.exe");
 
-            Assert.IsTrue(registry.IsRegistered(TestScheme, "app.exe"));
+            Assert.That(registry.IsRegistered(TestScheme, "app.exe"), Is.True);
         }
 
         //---------------------------------------------------------------------

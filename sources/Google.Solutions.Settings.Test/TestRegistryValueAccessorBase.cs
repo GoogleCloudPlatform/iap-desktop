@@ -61,7 +61,7 @@ namespace Google.Solutions.Settings.Test
                 var accessor = CreateAccessor("test");
                 accessor.Write(key, this.SampleData);
 
-                Assert.IsTrue(accessor.TryRead(key, out var read));
+                Assert.That(accessor.TryRead(key, out var read), Is.True);
                 Assert.That(read, Is.EqualTo(this.SampleData));
             }
         }

@@ -40,9 +40,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathIsValid_TryParseReturnsObject()
         {
-            Assert.IsTrue(OrganizationLocator.TryParse(
+            Assert.That(OrganizationLocator.TryParse(
                 "organizations/12345678900001",
-                out var ref1));
+                out var ref1), Is.True);
 
             Assert.IsNotNull(ref1);
             Assert.That(ref1!.ResourceType, Is.EqualTo("organizations"));
@@ -70,7 +70,7 @@ namespace Google.Solutions.Apis.Test.Locator
         public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
         {
             var path = "organizations/12345678900001";
-            Assert.IsTrue(OrganizationLocator.TryParse(path, out var locator));
+            Assert.That(OrganizationLocator.TryParse(path, out var locator), Is.True);
 
             Assert.That(locator!.ToString(), Is.EqualTo(path));
         }

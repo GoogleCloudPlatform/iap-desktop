@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(info.ToList().Where(i => i.Instance == instanceRef).Any());
+            Assert.That(info.ToList().Where(i => i.Instance == instanceRef).Any(), Is.True);
         }
 
         [Test]
@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(info.ToList().Where(i => i.Instance == instanceRef).Any());
+            Assert.That(info.ToList().Where(i => i.Instance == instanceRef).Any(), Is.True);
         }
 
         [Test]

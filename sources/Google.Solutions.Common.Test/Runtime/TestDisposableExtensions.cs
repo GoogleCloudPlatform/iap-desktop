@@ -41,7 +41,7 @@ namespace Google.Solutions.Common.Test.Runtime
                 .ToComponent())
             { }
 
-            Assert.IsTrue(disposed);
+            Assert.That(disposed, Is.True);
         }
     }
 }

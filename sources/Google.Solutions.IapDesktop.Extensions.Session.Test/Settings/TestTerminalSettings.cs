@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         [Test]
         public void IsValidFont_WhenFontMonospaced()
         {
-            Assert.IsTrue(TerminalSettings.IsValidFont(FontFamily.GenericMonospace.Name));
+            Assert.That(TerminalSettings.IsValidFont(FontFamily.GenericMonospace.Name), Is.True);
         }
 
         [Test]

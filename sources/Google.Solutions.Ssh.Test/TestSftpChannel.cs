@@ -224,7 +224,7 @@ namespace Google.Solutions.Ssh.Test
                             FilePermissions.OwnerWrite | FilePermissions.OwnerRead)
                         .ConfigureAwait(false))
                     {
-                        Assert.IsTrue(outputStream.CanWrite);
+                        Assert.That(outputStream.CanWrite, Is.True);
                         Assert.That(outputStream.CanRead, Is.False);
                         Assert.That(outputStream.CanSeek, Is.False);
 
@@ -252,7 +252,7 @@ namespace Google.Solutions.Ssh.Test
                             FilePermissions.None)
                         .ConfigureAwait(false))
                     {
-                        Assert.IsTrue(inputStream.CanRead);
+                        Assert.That(inputStream.CanRead, Is.True);
                         Assert.That(inputStream.CanWrite, Is.False);
                         Assert.That(inputStream.CanSeek, Is.False);
 
@@ -317,7 +317,7 @@ namespace Google.Solutions.Ssh.Test
                             FilePermissions.OwnerWrite | FilePermissions.OwnerRead)
                         .ConfigureAwait(false))
                     {
-                        Assert.IsTrue(outputStream.CanWrite);
+                        Assert.That(outputStream.CanWrite, Is.True);
                         Assert.That(outputStream.CanRead, Is.False);
                         Assert.That(outputStream.CanSeek, Is.False);
 
@@ -343,7 +343,7 @@ namespace Google.Solutions.Ssh.Test
                             FilePermissions.None)
                         .ConfigureAwait(false))
                     {
-                        Assert.IsTrue(inputStream.CanRead);
+                        Assert.That(inputStream.CanRead, Is.True);
                         Assert.That(inputStream.CanWrite, Is.False);
                         Assert.That(inputStream.CanSeek, Is.False);
 

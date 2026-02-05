@@ -109,9 +109,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository);
 
             Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
-            Assert.IsTrue(viewModel.Devices
+            Assert.That(viewModel.Devices
                 .First(d => d.DeviceName == Screen.PrimaryScreen.DeviceName)
-                .IsSelected);
+                .IsSelected, Is.True);
         }
 
         [Test]
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             viewModel.Devices.First().IsSelected = true;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         [Test]

@@ -40,7 +40,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             Assert.That(bound.HasValue, Is.False);
             bound.Value = "test";
-            Assert.IsTrue(bound.HasValue);
+            Assert.That(bound.HasValue, Is.True);
         }
 
         //-----------------------------------------------------------

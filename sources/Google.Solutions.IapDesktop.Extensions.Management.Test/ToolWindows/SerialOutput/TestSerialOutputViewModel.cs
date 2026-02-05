@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             viewModel.IsTailEnabled = false;
 
             // CTS cancelled => not tailing.
-            Assert.IsTrue(tailCts!.IsCancellationRequested, "tailing stopped");
+            Assert.That(tailCts!.IsCancellationRequested, Is.True, "tailing stopped");
             Assert.IsNull(viewModel.TailCancellationTokenSource);
         }
 
@@ -146,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             viewModel.IsTailBlocked = true;
 
             // CTS cancelled => not tailing.
-            Assert.IsTrue(tailCts!.IsCancellationRequested, "tailing stopped");
+            Assert.That(tailCts!.IsCancellationRequested, Is.True, "tailing stopped");
             Assert.IsNull(viewModel.TailCancellationTokenSource);
         }
 
@@ -197,8 +197,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
             var instanceLocator = await testInstance;
 
-            Assert.IsTrue(viewModel.IsEnableTailingButtonEnabled);
-            Assert.IsTrue(viewModel.IsOutputBoxEnabled);
+            Assert.That(viewModel.IsEnableTailingButtonEnabled, Is.True);
+            Assert.That(viewModel.IsOutputBoxEnabled, Is.True);
             Assert.That(viewModel.Output, Does.Contain("Finished running startup scripts"));
 
             Assert.That(viewModel.WindowTitle, Does.Contain(SerialOutputViewModel.DefaultWindowTitle));

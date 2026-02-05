@@ -275,9 +275,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
             criticalRelease.SetupGet(r => r.Description).Returns("[track:critical]");
             canaryRelease.SetupGet(r => r.IsCanaryRelease).Returns(true);
 
-            Assert.IsTrue(policy.IsUpdateAdvised(criticalRelease.Object));
-            Assert.IsTrue(policy.IsUpdateAdvised(normalRelease.Object));
-            Assert.IsTrue(policy.IsUpdateAdvised(canaryRelease.Object));
+            Assert.That(policy.IsUpdateAdvised(criticalRelease.Object), Is.True);
+            Assert.That(policy.IsUpdateAdvised(normalRelease.Object), Is.True);
+            Assert.That(policy.IsUpdateAdvised(canaryRelease.Object), Is.True);
         }
 
         [Test]
@@ -303,8 +303,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
             criticalRelease.SetupGet(r => r.Description).Returns("[track:critical]");
             canaryRelease.SetupGet(r => r.IsCanaryRelease).Returns(true);
 
-            Assert.IsTrue(policy.IsUpdateAdvised(criticalRelease.Object));
-            Assert.IsTrue(policy.IsUpdateAdvised(normalRelease.Object));
+            Assert.That(policy.IsUpdateAdvised(criticalRelease.Object), Is.True);
+            Assert.That(policy.IsUpdateAdvised(normalRelease.Object), Is.True);
             Assert.That(policy.IsUpdateAdvised(canaryRelease.Object), Is.False);
         }
 
@@ -331,7 +331,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
             criticalRelease.SetupGet(r => r.Description).Returns("[track:critical]");
             canaryRelease.SetupGet(r => r.IsCanaryRelease).Returns(true);
 
-            Assert.IsTrue(policy.IsUpdateAdvised(criticalRelease.Object));
+            Assert.That(policy.IsUpdateAdvised(criticalRelease.Object), Is.True);
             Assert.That(policy.IsUpdateAdvised(normalRelease.Object), Is.False);
             Assert.That(policy.IsUpdateAdvised(canaryRelease.Object), Is.False);
         }
@@ -374,8 +374,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
 
             Assert.That(policy.FollowedTrack, Is.EqualTo(ReleaseTrack.Normal));
 
-            Assert.IsTrue(policy.IsUpdateCheckDue(now.AddDays(-policy.DaysBetweenUpdateChecks)));
-            Assert.IsTrue(policy.IsUpdateCheckDue(now.AddDays(-policy.DaysBetweenUpdateChecks - 1)));
+            Assert.That(policy.IsUpdateCheckDue(now.AddDays(-policy.DaysBetweenUpdateChecks)), Is.True);
+            Assert.That(policy.IsUpdateCheckDue(now.AddDays(-policy.DaysBetweenUpdateChecks - 1)), Is.True);
         }
     }
 }

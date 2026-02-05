@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport.Policies
             var job = new Mock<IWin32ProcessSet>();
             job.Setup(j => j.Contains(It.IsAny<uint>())).Returns(true);
 
-            Assert.IsTrue(new ChildProcessPolicy(job.Object).IsClientProcessAllowed(1));
+            Assert.That(new ChildProcessPolicy(job.Object).IsClientProcessAllowed(1), Is.True);
         }
 
         [Test]

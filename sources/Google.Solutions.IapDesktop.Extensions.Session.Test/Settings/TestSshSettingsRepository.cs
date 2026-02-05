@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     UserProfile.SchemaVersion.Current);
                 var settings = repository.GetSettings();
 
-                Assert.IsTrue(settings.EnableLocalePropagation.Value);
+                Assert.That(settings.EnableLocalePropagation.Value, Is.True);
             }
         }
 
@@ -325,7 +325,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     UserProfile.SchemaVersion.Current);
                 var settings = repository.GetSettings();
 
-                Assert.IsTrue(settings.UsePersistentKey.Value);
+                Assert.That(settings.UsePersistentKey.Value, Is.True);
             }
         }
 
@@ -345,7 +345,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                     UserProfile.SchemaVersion.Current);
                 var settings = repository.GetSettings();
 
-                Assert.IsTrue(settings.EnableFileAccess.Value);
+                Assert.That(settings.EnableFileAccess.Value, Is.True);
             }
         }
     }

@@ -73,9 +73,9 @@ namespace Google.Solutions.Platform.Test
         [Test]
         public void TryResolveAppPath_WhenAppRegistered_ThenTryResolveAppPathReturnsPath()
         {
-            Assert.IsTrue(UserEnvironment.TryResolveAppPath("Powershell.EXE", out var powershell));
+            Assert.That(UserEnvironment.TryResolveAppPath("Powershell.EXE", out var powershell), Is.True);
             Assert.IsNotNull(powershell);
-            Assert.IsTrue(File.Exists(powershell));
+            Assert.That(File.Exists(powershell), Is.True);
         }
 
         [Test]

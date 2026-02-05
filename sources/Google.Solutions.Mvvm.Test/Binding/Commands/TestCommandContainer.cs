@@ -357,7 +357,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                     });
 
                 container.ExecuteDefaultCommand();
-                Assert.IsTrue(commandExecuted);
+                Assert.That(commandExecuted, Is.True);
             }
         }
 

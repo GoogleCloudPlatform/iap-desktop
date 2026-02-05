@@ -129,8 +129,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
         [Test]
         public void IsNodeSupported_WhenNodeIsProjectNode()
         {
-            Assert.IsTrue(AuthorizedPublicKeysModel.IsNodeSupported(
-                new Mock<IProjectModelProjectNode>().Object));
+            Assert.That(AuthorizedPublicKeysModel.IsNodeSupported(
+                new Mock<IProjectModelProjectNode>().Object), Is.True);
         }
 
         [Test]
@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
             node.SetupGet(n => n.OperatingSystem)
                 .Returns(OperatingSystems.Linux);
 
-            Assert.IsTrue(AuthorizedPublicKeysModel.IsNodeSupported(node.Object));
+            Assert.That(AuthorizedPublicKeysModel.IsNodeSupported(node.Object), Is.True);
         }
 
         //---------------------------------------------------------------------

@@ -39,7 +39,7 @@ namespace Google.Solutions.Common.Test.Threading
 
                 first.Cancel();
 
-                Assert.IsTrue(combined.Token.IsCancellationRequested);
+                Assert.That(combined.Token.IsCancellationRequested, Is.True);
             }
         }
 
@@ -54,7 +54,7 @@ namespace Google.Solutions.Common.Test.Threading
 
                 second.Cancel();
 
-                Assert.IsTrue(combined.Token.IsCancellationRequested);
+                Assert.That(combined.Token.IsCancellationRequested, Is.True);
             }
         }
     }

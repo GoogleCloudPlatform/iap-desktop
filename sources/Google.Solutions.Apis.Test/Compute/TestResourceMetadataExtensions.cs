@@ -347,7 +347,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             };
 
-            Assert.IsTrue(instance.GetFlag(project, "flag"));
+            Assert.That(instance.GetFlag(project, "flag"), Is.True);
         }
 
         [Test]
@@ -369,7 +369,7 @@ namespace Google.Solutions.Apis.Test.Compute
             };
             var instance = new Instance();
 
-            Assert.IsTrue(instance.GetFlag(project, "flag"));
+            Assert.That(instance.GetFlag(project, "flag"), Is.True);
         }
 
         [Test]
@@ -439,7 +439,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             };
 
-            Assert.IsTrue(instance.GetFlag(project, "flag"));
+            Assert.That(instance.GetFlag(project, "flag"), Is.True);
         }
     }
 }

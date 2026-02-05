@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 repository.SetSettings(originalSettings);
 
                 // Read.
-                Assert.IsTrue(repository.TryRead(out var offlineCredential));
+                Assert.That(repository.TryRead(out var offlineCredential), Is.True);
 
                 Assert.IsNotNull(offlineCredential);
                 Assert.That(offlineCredential!.RefreshToken, Is.EqualTo("rt"));
@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 repository.SetSettings(originalSettings);
 
                 // Read.
-                Assert.IsTrue(repository.TryRead(out var offlineCredential));
+                Assert.That(repository.TryRead(out var offlineCredential), Is.True);
 
                 Assert.IsNotNull(offlineCredential);
                 Assert.That(offlineCredential!.Issuer, Is.EqualTo(OidcIssuer.Gaia));
@@ -165,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 repository.SetSettings(originalSettings);
 
                 // Read.
-                Assert.IsTrue(repository.TryRead(out var offlineCredential));
+                Assert.That(repository.TryRead(out var offlineCredential), Is.True);
 
                 Assert.IsNotNull(offlineCredential);
                 Assert.That(offlineCredential!.Issuer, Is.EqualTo(OidcIssuer.Sts));
@@ -194,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                     "idt"));
 
                 // Read again.
-                Assert.IsTrue(repository.TryRead(out var offlineCredential));
+                Assert.That(repository.TryRead(out var offlineCredential), Is.True);
 
                 Assert.IsNotNull(offlineCredential);
                 Assert.That(offlineCredential!.Issuer, Is.EqualTo(OidcIssuer.Gaia));
@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                     null));
 
                 // Read again.
-                Assert.IsTrue(repository.TryRead(out var offlineCredential));
+                Assert.That(repository.TryRead(out var offlineCredential), Is.True);
 
                 Assert.IsNotNull(offlineCredential);
                 Assert.That(offlineCredential!.Issuer, Is.EqualTo(OidcIssuer.Sts));

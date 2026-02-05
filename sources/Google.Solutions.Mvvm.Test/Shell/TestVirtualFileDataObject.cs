@@ -228,7 +228,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
             dataObject.InOperation(out var inOp);
             Assert.That(inOp, Is.EqualTo(-1));
 
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
 
         //----------------------------------------------------------------------
@@ -245,13 +245,13 @@ namespace Google.Solutions.Mvvm.Test.Shell
             dataObject.AsyncOperationCompleted += (_, args) =>
             {
                 eventRaised = true;
-                Assert.IsTrue(args.Succeeded);
+                Assert.That(args.Succeeded, Is.True);
             };
 
             dataObject.StartOperation(null);
             dataObject.EndOperation(0, null, 0);
 
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
 
         [Test]
@@ -271,7 +271,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
             dataObject.StartOperation(null);
             dataObject.EndOperation((int)HRESULT.E_UNEXPECTED, null, 0);
 
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
 
         //----------------------------------------------------------------------
@@ -287,7 +287,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
             Assert.That(dataObject.IsOperationInProgress, Is.False);
 
             dataObject.StartOperation(null);
-            Assert.IsTrue(dataObject.IsOperationInProgress);
+            Assert.That(dataObject.IsOperationInProgress, Is.True);
 
             dataObject.EndOperation(0, null, 0);
             Assert.That(dataObject.IsOperationInProgress, Is.False);

@@ -40,7 +40,7 @@ namespace Google.Solutions.Iap.Test.Net
             var websocket = new ClientWebSocket();
 
             SystemPatch.UnrestrictUserAgentHeader.Install();
-            Assert.IsTrue(SystemPatch.UnrestrictUserAgentHeader.IsInstalled);
+            Assert.That(SystemPatch.UnrestrictUserAgentHeader.IsInstalled, Is.True);
 
             // Now the User-agent header can be set.
             websocket.Options.SetRequestHeader("User-Agent", "test");
@@ -67,7 +67,7 @@ namespace Google.Solutions.Iap.Test.Net
 
             var patch = new SystemPatch.SetUsernameAsHostHeaderPatch(TestHttpWebRequestCreate.Prefix);
             patch.Install();
-            Assert.IsTrue(patch.IsInstalled);
+            Assert.That(patch.IsInstalled, Is.True);
 
             var requestWithoutUserInfo = (HttpWebRequest)
                 WebRequest.Create(new Uri("test+http://example.com"));

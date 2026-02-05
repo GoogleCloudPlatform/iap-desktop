@@ -91,11 +91,11 @@ namespace Google.Solutions.Platform.Test.Net
             Assert.IsNull(selector.Filter.Issuer);
             Assert.IsNull(selector.Filter.Subject);
 
-            Assert.IsTrue(selector.IsMatch(
+            Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
                 SimpleSubjectDn,
-                null));
+                null), Is.True);
         }
 
         [Test]
@@ -112,11 +112,11 @@ namespace Google.Solutions.Platform.Test.Net
             Assert.IsNull(selector.Filter.Issuer);
             Assert.IsNull(selector.Filter.Subject);
 
-            Assert.IsTrue(selector.IsMatch(
+            Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
                 SimpleSubjectDn,
-                null));
+                null), Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -141,17 +141,17 @@ namespace Google.Solutions.Platform.Test.Net
             Assert.IsNotNull(selector.Filter.Issuer);
             Assert.IsNull(selector.Filter.Subject);
 
-            Assert.IsTrue(selector.IsMatch(
+            Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 ComplexIssuerDn,
                 ComplexSubjectDn,
-                null));
+                null), Is.True);
 
-            Assert.IsTrue(selector.IsMatch(
+            Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
                 ComplexSubjectDn,
-                null));
+                null), Is.True);
         }
 
         [Test]
@@ -177,11 +177,11 @@ namespace Google.Solutions.Platform.Test.Net
             Assert.IsNotNull(selector.Filter.Issuer);
             Assert.IsNull(selector.Filter.Subject);
 
-            Assert.IsTrue(selector.IsMatch(
+            Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 ComplexIssuerDn,
                 SimpleSubjectDn,
-                null));
+                null), Is.True);
 
             Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
@@ -240,17 +240,17 @@ namespace Google.Solutions.Platform.Test.Net
             Assert.IsNull(selector.Filter.Issuer);
             Assert.IsNotNull(selector.Filter.Subject);
 
-            Assert.IsTrue(selector.IsMatch(
+            Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
                 SimpleSubjectDn,
-                null));
+                null), Is.True);
 
-            Assert.IsTrue(selector.IsMatch(
+            Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
                 ComplexSubjectDn,
-                null));
+                null), Is.True);
         }
 
         [Test]
@@ -276,11 +276,11 @@ namespace Google.Solutions.Platform.Test.Net
             Assert.IsNull(selector.Filter.Issuer);
             Assert.IsNotNull(selector.Filter.Subject);
 
-            Assert.IsTrue(selector.IsMatch(
+            Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
                 ComplexSubjectDn,
-                null));
+                null), Is.True);
 
             Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
@@ -310,11 +310,11 @@ namespace Google.Solutions.Platform.Test.Net
             Assert.IsNull(selector.Filter.Subject);
             Assert.IsNotNull(selector.Filter.Thumbprint);
 
-            Assert.IsTrue(selector.IsMatch(
+            Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
                 SimpleSubjectDn,
-                "ABCD"));
+                "ABCD"), Is.True);
 
             Assert.That(selector.IsMatch(
                 new Uri("https://www.google.com"),

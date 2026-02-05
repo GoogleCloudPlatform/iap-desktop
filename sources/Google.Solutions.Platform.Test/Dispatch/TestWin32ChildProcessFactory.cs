@@ -44,8 +44,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var process = factory.CreateProcess(CmdExe, null))
             {
                 Assert.IsNotNull(process.Job);
-                Assert.IsTrue(process.Job!.Contains(process));
-                Assert.IsTrue(process.Job!.Contains(process.Id));
+                Assert.That(process.Job!.Contains(process), Is.True);
+                Assert.That(process.Job!.Contains(process.Id), Is.True);
             }
         }
 
@@ -70,8 +70,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var factory = new Win32ChildProcessFactory(true))
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                Assert.IsTrue(factory.Contains(process));
-                Assert.IsTrue(factory.Contains(process.Id));
+                Assert.That(factory.Contains(process), Is.True);
+                Assert.That(factory.Contains(process.Id), Is.True);
             }
         }
 
@@ -133,10 +133,10 @@ namespace Google.Solutions.Platform.Test.Dispatch
             var process = factory.CreateProcess(CmdExe, null);
             process.Resume();
 
-            Assert.IsTrue(process.IsRunning);
+            Assert.That(process.IsRunning, Is.True);
             factory.Dispose();
 
-            Assert.IsTrue(process.IsRunning);
+            Assert.That(process.IsRunning, Is.True);
             process.Terminate(0);
             process.Dispose();
         }
@@ -148,7 +148,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             var process = factory.CreateProcess(CmdExe, null);
             process.Resume();
 
-            Assert.IsTrue(process.IsRunning);
+            Assert.That(process.IsRunning, Is.True);
             factory.Dispose();
 
             Assert.That(process.IsRunning, Is.False);

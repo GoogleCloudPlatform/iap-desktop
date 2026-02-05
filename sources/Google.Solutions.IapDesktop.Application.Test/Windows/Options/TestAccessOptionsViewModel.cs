@@ -74,8 +74,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpClient());
 
-            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEnabled.Value);
-            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEditable.Value);
+            Assert.That(viewModel.IsDeviceCertificateAuthenticationEnabled.Value, Is.True);
+            Assert.That(viewModel.IsDeviceCertificateAuthenticationEditable.Value, Is.True);
         }
 
         [Test]
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new HelpClient());
 
             Assert.That(viewModel.IsDeviceCertificateAuthenticationEnabled.Value, Is.False);
-            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEditable.Value);
+            Assert.That(viewModel.IsDeviceCertificateAuthenticationEditable.Value, Is.True);
         }
 
         [Test]
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpClient());
 
-            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEnabled.Value);
+            Assert.That(viewModel.IsDeviceCertificateAuthenticationEnabled.Value, Is.True);
             Assert.That(viewModel.IsDeviceCertificateAuthenticationEditable.Value, Is.False);
         }
 
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             viewModel.IsDeviceCertificateAuthenticationEnabled.Value =
                 !viewModel.IsDeviceCertificateAuthenticationEnabled.Value;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -167,8 +167,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new HelpClient());
 
             Assert.That(viewModel.PrivateServiceConnectEndpoint.Value, Is.EqualTo("psc"));
-            Assert.IsTrue(viewModel.IsPrivateServiceConnectEnabled.Value);
-            Assert.IsTrue(viewModel.IsPrivateServiceConnectEditable.Value);
+            Assert.That(viewModel.IsPrivateServiceConnectEnabled.Value, Is.True);
+            Assert.That(viewModel.IsPrivateServiceConnectEditable.Value, Is.True);
         }
 
         [Test]
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             Assert.IsNull(viewModel.PrivateServiceConnectEndpoint.Value);
             Assert.That(viewModel.IsPrivateServiceConnectEnabled.Value, Is.False);
-            Assert.IsTrue(viewModel.IsPrivateServiceConnectEditable.Value);
+            Assert.That(viewModel.IsPrivateServiceConnectEditable.Value, Is.True);
         }
 
         [Test]
@@ -206,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 new HelpClient());
 
             Assert.That(viewModel.PrivateServiceConnectEndpoint.Value, Is.EqualTo("psc-policy"));
-            Assert.IsTrue(viewModel.IsPrivateServiceConnectEnabled.Value);
+            Assert.That(viewModel.IsPrivateServiceConnectEnabled.Value, Is.True);
             Assert.That(viewModel.IsPrivateServiceConnectEditable.Value, Is.False);
         }
 
@@ -248,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             viewModel.IsPrivateServiceConnectEnabled.Value = true;
             viewModel.PrivateServiceConnectEndpoint.Value = SamplePscEndpoint;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -292,7 +292,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             Assert.That(viewModel.IsDirty.Value, Is.False);
             viewModel.ConnectionPoolLimit.Value = 4;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
 
             await viewModel.ApplyChangesAsync();
 

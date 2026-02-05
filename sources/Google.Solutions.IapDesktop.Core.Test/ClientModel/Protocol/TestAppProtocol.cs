@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 null,
                 client.Object);
 
-            Assert.IsTrue(protocol.IsAvailable(target.Object));
+            Assert.That(protocol.IsAvailable(target.Object), Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 null);
 
             Assert.That(protocol1.Equals(protocol2), Is.False);
-            Assert.IsTrue(protocol1 != protocol2);
+            Assert.That(protocol1 != protocol2, Is.True);
             Assert.That(protocol2.GetHashCode(), Is.Not.EqualTo(protocol1.GetHashCode()));
         }
 
@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 null);
 
             Assert.That(protocol1.Equals(protocol2), Is.False);
-            Assert.IsTrue(protocol1 != protocol2);
+            Assert.That(protocol1 != protocol2, Is.True);
         }
 
         [Test]
@@ -180,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 null);
 
             Assert.That(protocol1.Equals(protocol2), Is.False);
-            Assert.IsTrue(protocol1 != protocol2);
+            Assert.That(protocol1 != protocol2, Is.True);
             Assert.That(protocol2.GetHashCode(), Is.Not.EqualTo(protocol1.GetHashCode()));
         }
 
@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 null,
                 new AppProtocolClient("cmd.exe", null));
 
-            Assert.IsTrue(protocol1.Equals(protocol2));
+            Assert.That(protocol1.Equals(protocol2), Is.True);
             Assert.That(protocol1 != protocol2, Is.False);
             Assert.That(protocol2.GetHashCode(), Is.EqualTo(protocol1.GetHashCode()));
         }

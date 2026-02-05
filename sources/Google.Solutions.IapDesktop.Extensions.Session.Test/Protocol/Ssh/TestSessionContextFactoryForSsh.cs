@@ -146,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .CreateSshSessionContextAsync(vmNode.Object, CancellationToken.None)
                 .ConfigureAwait(false))
             {
-                Assert.IsTrue(context.UsePlatformManagedCredential);
+                Assert.That(context.UsePlatformManagedCredential, Is.True);
 
                 Assert.That(context.Parameters.Port, Is.EqualTo(2222));
                 Assert.That(context.Parameters.PreferredUsername, Is.EqualTo("user"));

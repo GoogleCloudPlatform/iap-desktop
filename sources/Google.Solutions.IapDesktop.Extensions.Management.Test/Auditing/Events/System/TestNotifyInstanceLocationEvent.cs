@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              } ";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(NotifyInstanceLocationEvent.IsInstanceScheduledEvent(r));
+            Assert.That(NotifyInstanceLocationEvent.IsInstanceScheduledEvent(r), Is.True);
 
             var e = (NotifyInstanceLocationEvent)r.ToEvent();
 
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              } ";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(NotifyInstanceLocationEvent.IsInstanceScheduledEvent(r));
+            Assert.That(NotifyInstanceLocationEvent.IsInstanceScheduledEvent(r), Is.True);
 
             var e = (NotifyInstanceLocationEvent)r.ToEvent();
 
@@ -165,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              } ";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(NotifyInstanceLocationEvent.IsInstanceScheduledEvent(r));
+            Assert.That(NotifyInstanceLocationEvent.IsInstanceScheduledEvent(r), Is.True);
 
             var e = (NotifyInstanceLocationEvent)r.ToEvent();
 

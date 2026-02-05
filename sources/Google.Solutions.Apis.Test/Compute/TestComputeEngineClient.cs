@@ -366,7 +366,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     Permissions.ComputeInstancesGet)
                 .ConfigureAwait(false);
 
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -404,7 +404,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     Permissions.ComputeInstancesSetMetadata)
                 .ConfigureAwait(false);
 
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
     }
 }

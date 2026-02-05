@@ -151,7 +151,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             session.Terminated += (_, __) => eventRaised = true;
             session.Terminate();
 
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -191,7 +191,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             flow.Verify(
                 f => f.RevokeTokenAsync(null, "rt", CancellationToken.None),
                 Times.Once);
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
 
         //---------------------------------------------------------------------

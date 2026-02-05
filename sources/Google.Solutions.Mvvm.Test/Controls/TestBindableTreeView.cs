@@ -156,7 +156,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             Assert.That(this.tree.Nodes.Count, Is.EqualTo(1));
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
             Assert.That(rootTreeNode.Nodes.Count, Is.EqualTo(2));
-            Assert.IsTrue(rootTreeNode.IsExpanded);
+            Assert.That(rootTreeNode.IsExpanded, Is.True);
         }
 
         [Test]
@@ -225,8 +225,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
             rootTreeNode.Expand();
             RunPendingAsyncTasks();
             Assert.That(eventCount, Is.EqualTo(2));
-            Assert.IsTrue(rootTreeNode.IsExpanded);
-            Assert.IsTrue(root.IsExpanded);
+            Assert.That(rootTreeNode.IsExpanded, Is.True);
+            Assert.That(root.IsExpanded, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -395,7 +395,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             this.tree.Bind(root, new Mock<IBindingContext>().Object);
             RunPendingAsyncTasks();
 
-            Assert.IsTrue(child.HasPropertyChangeListeners);
+            Assert.That(child.HasPropertyChangeListeners, Is.True);
             root.Children.RemoveAt(0);
             Assert.That(child.HasPropertyChangeListeners, Is.False);
         }
@@ -413,7 +413,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             this.tree.Bind(root, new Mock<IBindingContext>().Object);
             RunPendingAsyncTasks();
 
-            Assert.IsTrue(root.HasPropertyChangeListeners);
+            Assert.That(root.HasPropertyChangeListeners, Is.True);
 
             var newRoot = new ModelNode()
             {
@@ -425,7 +425,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 new Mock<IBindingContext>().Object);
 
             Assert.That(root.HasPropertyChangeListeners, Is.False);
-            Assert.IsTrue(newRoot.HasPropertyChangeListeners);
+            Assert.That(newRoot.HasPropertyChangeListeners, Is.True);
         }
     }
 }

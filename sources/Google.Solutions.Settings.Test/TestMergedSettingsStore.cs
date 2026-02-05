@@ -49,7 +49,7 @@ namespace Google.Solutions.Settings.Test
 
             Assert.That(setting.Value, Is.EqualTo(defaultValue));
             Assert.That(setting.DefaultValue, Is.EqualTo(defaultValue));
-            Assert.IsTrue(setting.IsDefault);
+            Assert.That(setting.IsDefault, Is.True);
             Assert.That(setting.IsSpecified, Is.False);
             Assert.That(setting.IsReadOnly, Is.False);
         }
@@ -77,7 +77,7 @@ namespace Google.Solutions.Settings.Test
             Assert.That(setting.Value, Is.EqualTo(2));
             Assert.That(setting.DefaultValue, Is.EqualTo(defaultValue));
             Assert.That(setting.IsDefault, Is.False);
-            Assert.IsTrue(setting.IsSpecified);
+            Assert.That(setting.IsSpecified, Is.True);
             Assert.That(setting.IsReadOnly, Is.False);
         }
 
@@ -104,8 +104,8 @@ namespace Google.Solutions.Settings.Test
             Assert.That(setting.Value, Is.EqualTo(3));
             Assert.That(setting.DefaultValue, Is.EqualTo(defaultValue));
             Assert.That(setting.IsDefault, Is.False);
-            Assert.IsTrue(setting.IsSpecified);
-            Assert.IsTrue(setting.IsReadOnly);
+            Assert.That(setting.IsSpecified, Is.True);
+            Assert.That(setting.IsReadOnly, Is.True);
         }
 
         [Test]
@@ -139,8 +139,8 @@ namespace Google.Solutions.Settings.Test
             Assert.That(setting.Value, Is.EqualTo(4));
             Assert.That(setting.DefaultValue, Is.EqualTo(defaultValue));
             Assert.That(setting.IsDefault, Is.False);
-            Assert.IsTrue(setting.IsSpecified);
-            Assert.IsTrue(setting.IsReadOnly);
+            Assert.That(setting.IsSpecified, Is.True);
+            Assert.That(setting.IsReadOnly, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -163,7 +163,7 @@ namespace Google.Solutions.Settings.Test
 
             Assert.That(setting.Value, Is.EqualTo(defaultValue));
             Assert.That(setting.DefaultValue, Is.EqualTo(defaultValue));
-            Assert.IsTrue(setting.IsDefault);
+            Assert.That(setting.IsDefault, Is.True);
             Assert.That(setting.IsSpecified, Is.False);
             Assert.That(setting.IsReadOnly, Is.False);
         }
@@ -190,7 +190,7 @@ namespace Google.Solutions.Settings.Test
 
             Assert.That(setting.Value, Is.EqualTo(2));
             Assert.That(setting.DefaultValue, Is.EqualTo(2));   // New default
-            Assert.IsTrue(setting.IsDefault);
+            Assert.That(setting.IsDefault, Is.True);
             Assert.That(setting.IsSpecified, Is.False);
             Assert.That(setting.IsReadOnly, Is.False);
         }
@@ -218,7 +218,7 @@ namespace Google.Solutions.Settings.Test
             Assert.That(setting.Value, Is.EqualTo(3));
             Assert.That(setting.DefaultValue, Is.EqualTo(defaultValue));
             Assert.That(setting.IsDefault, Is.False);
-            Assert.IsTrue(setting.IsSpecified);
+            Assert.That(setting.IsSpecified, Is.True);
             Assert.That(setting.IsReadOnly, Is.False);
         }
 
@@ -253,7 +253,7 @@ namespace Google.Solutions.Settings.Test
             Assert.That(setting.Value, Is.EqualTo(4));
             Assert.That(setting.DefaultValue, Is.EqualTo(3));
             Assert.That(setting.IsDefault, Is.False);
-            Assert.IsTrue(setting.IsSpecified);
+            Assert.That(setting.IsSpecified, Is.True);
             Assert.That(setting.IsReadOnly, Is.False);
         }
 
@@ -282,7 +282,7 @@ namespace Google.Solutions.Settings.Test
             mergedKey.Write(setting);
 
             Assert.That(policyStore.Values.ContainsKey("test"), Is.False);
-            Assert.IsTrue(lesserStore.Values.ContainsKey("test"));
+            Assert.That(lesserStore.Values.ContainsKey("test"), Is.True);
         }
 
         [Test]
@@ -303,7 +303,7 @@ namespace Google.Solutions.Settings.Test
             setting.Value = 1;
             mergedKey.Write(setting);
 
-            Assert.IsTrue(overlayStore.Values.ContainsKey("test"));
+            Assert.That(overlayStore.Values.ContainsKey("test"), Is.True);
             Assert.That(lesserStore.Values.ContainsKey("test"), Is.False);
         }
 

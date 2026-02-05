@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }".Replace("v1", version);
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(OsLoginContinueSessionEvent.IsStartOsLoginContinueSessionEvent(r));
+            Assert.That(OsLoginContinueSessionEvent.IsStartOsLoginContinueSessionEvent(r), Is.True);
 
             var e = (OsLoginContinueSessionEvent)r.ToEvent();
 
@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(OsLoginContinueSessionEvent.IsStartOsLoginContinueSessionEvent(r));
+            Assert.That(OsLoginContinueSessionEvent.IsStartOsLoginContinueSessionEvent(r), Is.True);
 
             var e = (OsLoginContinueSessionEvent)r.ToEvent();
 

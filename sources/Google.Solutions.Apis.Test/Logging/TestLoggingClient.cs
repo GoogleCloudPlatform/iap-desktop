@@ -96,7 +96,7 @@ namespace Google.Solutions.Apis.Test.Logging
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsTrue(callbackInvoked);
+            Assert.That(callbackInvoked, Is.True);
         }
     }
 }

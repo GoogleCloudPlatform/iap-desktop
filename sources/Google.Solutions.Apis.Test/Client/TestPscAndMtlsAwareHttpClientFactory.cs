@@ -88,7 +88,7 @@ namespace Google.Solutions.Apis.Test.Client
                 .CreateHttpClient(new Google.Apis.Http.CreateHttpClientArgs())
                 .GetInnerHandler();
 
-            Assert.IsTrue(handler.UseProxy);
+            Assert.That(handler.UseProxy, Is.True);
         }
 
         [Test]

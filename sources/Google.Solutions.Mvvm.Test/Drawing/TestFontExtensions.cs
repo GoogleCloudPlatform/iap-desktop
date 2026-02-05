@@ -44,7 +44,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         {
             using (var font = new Font(FontFamily.GenericMonospace, 10))
             {
-                Assert.IsTrue(font.IsMonospaced());
+                Assert.That(font.IsMonospaced(), Is.True);
             }
         }
     }

@@ -90,7 +90,7 @@ namespace Google.Solutions.Apis.Test.Crm
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -208,7 +208,7 @@ namespace Google.Solutions.Apis.Test.Crm
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.Projects.Any());
+            Assert.That(result.Projects.Any(), Is.True);
             Assert.That(
                 result.Projects.Select(p => p.ProjectId), Has.Member(TestProject.ProjectId));
         }

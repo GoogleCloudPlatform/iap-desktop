@@ -30,7 +30,7 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void InRange_WhenInsideRange([Values(0, 1, 100)] int value)
         {
-            Assert.IsTrue(Predicate.InRange(0, 100)(value));
+            Assert.That(Predicate.InRange(0, 100)(value), Is.True);
         }
 
         [Test]

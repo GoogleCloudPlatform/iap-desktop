@@ -45,7 +45,7 @@ namespace Google.Solutions.Terminal.Test.Controls
             {
                 window.Show();
 
-                Assert.IsTrue(window.Client.EnableFileBrowser);
+                Assert.That(window.Client.EnableFileBrowser, Is.True);
                 Assert.That(window.Client.IsFileBrowserVisible, Is.False);
                 Assert.That(window.Client.CanShowFileBrowser, Is.False);
 
@@ -58,7 +58,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                     .ConfigureAwait(true);
 
                 Assert.That(window.Client.IsFileBrowserVisible, Is.False);
-                Assert.IsTrue(window.Client.CanShowFileBrowser);
+                Assert.That(window.Client.CanShowFileBrowser, Is.True);
 
                 window.Client.IsFileBrowserVisible = true;
                 window.Client.IsFileBrowserVisible = true;

@@ -50,7 +50,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
                 job.Add(process);
                 process.Resume();
-                Assert.IsTrue(process.IsRunning);
+                Assert.That(process.IsRunning, Is.True);
 
                 job.Dispose();
 
@@ -69,11 +69,11 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
                 job.Add(process);
                 process.Resume();
-                Assert.IsTrue(process.IsRunning);
+                Assert.That(process.IsRunning, Is.True);
 
                 job.Dispose();
 
-                Assert.IsTrue(process.IsRunning);
+                Assert.That(process.IsRunning, Is.True);
                 process.Terminate(0);
             }
         }
@@ -98,8 +98,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 job.Add(process);
                 job.Add(process); // Again.
 
-                Assert.IsTrue(job.Contains(process));
-                Assert.IsTrue(job.Contains(process.Id));
+                Assert.That(job.Contains(process), Is.True);
+                Assert.That(job.Contains(process.Id), Is.True);
             }
         }
 

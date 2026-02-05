@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
             using (var packed = new CredentialDialog.PackedCredential(empty))
             {
                 Assert.IsNotNull(packed.Handle);
-                Assert.IsTrue(packed.Size > 0);
+                Assert.That(packed.Size > 0, Is.True);
 
                 var unpacked = packed.Unpack();
 
@@ -196,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
             using (var packed = new CredentialDialog.PackedCredential(empty))
             {
                 Assert.IsNotNull(packed.Handle);
-                Assert.IsTrue(packed.Size > 0);
+                Assert.That(packed.Size > 0, Is.True);
 
                 var unpacked = packed.Unpack();
 
@@ -213,7 +213,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
             using (var packed = new CredentialDialog.PackedCredential(empty))
             {
                 Assert.IsNotNull(packed.Handle);
-                Assert.IsTrue(packed.Size > 0);
+                Assert.That(packed.Size > 0, Is.True);
 
                 var unpacked = packed.Unpack();
 
@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
             using (var packed = new CredentialDialog.PackedCredential(empty))
             {
                 Assert.IsNotNull(packed.Handle);
-                Assert.IsTrue(packed.Size > 0);
+                Assert.That(packed.Size > 0, Is.True);
 
                 var unpacked = packed.Unpack();
 

@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 settings = repository.GetSettings();
 
                 Assert.That(settings.PrivateServiceConnectEndpoint.Value, Is.EqualTo("psc.example.com"));
-                Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.Value);
+                Assert.That(settings.IsDeviceCertificateAuthenticationEnabled.Value, Is.True);
                 Assert.That(settings.DeviceCertificateSelector.Value, Is.EqualTo("{}"));
             }
         }
@@ -176,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 settingsPath.CreateKey().SetValue("IsDeviceCertificateAuthenticationEnabled", 1);
 
                 var settings = repository.GetSettings();
-                Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.Value);
+                Assert.That(settings.IsDeviceCertificateAuthenticationEnabled.Value, Is.True);
                 Assert.That(settings.IsDeviceCertificateAuthenticationEnabled.IsDefault, Is.False);
             }
         }
@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 userPolicyPath.CreateKey().SetValue("IsDeviceCertificateAuthenticationEnabled", 1);
 
                 var settings = repository.GetSettings();
-                Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.Value);
+                Assert.That(settings.IsDeviceCertificateAuthenticationEnabled.Value, Is.True);
                 Assert.That(settings.IsDeviceCertificateAuthenticationEnabled.IsDefault, Is.False);
             }
         }
@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 machinePolicyPath.CreateKey().SetValue("IsDeviceCertificateAuthenticationEnabled", 1);
 
                 var settings = repository.GetSettings();
-                Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.Value);
+                Assert.That(settings.IsDeviceCertificateAuthenticationEnabled.Value, Is.True);
                 Assert.That(settings.IsDeviceCertificateAuthenticationEnabled.IsDefault, Is.False);
             }
         }
@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 machinePolicyPath.CreateKey().SetValue("IsDeviceCertificateAuthenticationEnabled", 1);
 
                 var settings = repository.GetSettings();
-                Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.Value);
+                Assert.That(settings.IsDeviceCertificateAuthenticationEnabled.Value, Is.True);
                 Assert.That(settings.IsDeviceCertificateAuthenticationEnabled.IsDefault, Is.False);
             }
         }
@@ -390,7 +390,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                     machinePolicyPath.CreateKey(),
                     null);
 
-                Assert.IsTrue(repository.IsPolicyPresent);
+                Assert.That(repository.IsPolicyPresent, Is.True);
             }
         }
 
@@ -405,7 +405,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                     null,
                     userPolicyPath.CreateKey());
 
-                Assert.IsTrue(repository.IsPolicyPresent);
+                Assert.That(repository.IsPolicyPresent, Is.True);
             }
         }
     }

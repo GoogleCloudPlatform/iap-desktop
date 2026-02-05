@@ -48,9 +48,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathIsValid()
         {
-            Assert.IsTrue(InstanceLocator.TryParse(
+            Assert.That(InstanceLocator.TryParse(
                 "projects/project-1/zones/us-central1-a/instances/instance-1",
-                out var ref1));
+                out var ref1), Is.True);
 
             Assert.IsNotNull(ref1);
             Assert.That(ref1!.ResourceType, Is.EqualTo("instances"));
@@ -62,9 +62,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByComputeGoogleapisHost()
         {
-            Assert.IsTrue(InstanceLocator.TryParse(
+            Assert.That(InstanceLocator.TryParse(
                 "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/instances/instance-1",
-                out var ref1));
+                out var ref1), Is.True);
 
             Assert.IsNotNull(ref1);
             Assert.That(ref1!.ResourceType, Is.EqualTo("instances"));
@@ -76,9 +76,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByGoogleapisHost()
         {
-            Assert.IsTrue(InstanceLocator.TryParse(
+            Assert.That(InstanceLocator.TryParse(
                 "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/instances/instance-1",
-                out var ref1));
+                out var ref1), Is.True);
 
             Assert.IsNotNull(ref1);
             Assert.That(ref1!.ResourceType, Is.EqualTo("instances"));
@@ -90,9 +90,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenUsingBetaApi()
         {
-            Assert.IsTrue(InstanceLocator.TryParse(
+            Assert.That(InstanceLocator.TryParse(
                  "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/instances/instance-1",
-                out var ref1));
+                out var ref1), Is.True);
 
             Assert.IsNotNull(ref1);
             Assert.That(ref1!.ResourceType, Is.EqualTo("instances"));
@@ -228,7 +228,7 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.That(ref1.Equals(ref2), Is.False);
             Assert.That(ref1.Equals((object?)ref2), Is.False);
             Assert.That(ref1 == ref2, Is.False);
-            Assert.IsTrue(ref1 != ref2);
+            Assert.That(ref1 != ref2, Is.True);
         }
 
         [Test]

@@ -105,10 +105,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
             Assert.That(view.IsConnected, Is.False);
 
             view.Connect();
-            Assert.IsTrue(view.IsConnected);
+            Assert.That(view.IsConnected, Is.True);
 
             view.Client.Login();
-            Assert.IsTrue(view.IsConnected);
+            Assert.That(view.IsConnected, Is.True);
 
             view.Client.FailConnection(new Exception());
             Assert.That(view.IsConnected, Is.False);

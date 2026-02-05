@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(AutomaticRestartEvent.IsAutomaticRestartEvent(r));
+            Assert.That(AutomaticRestartEvent.IsAutomaticRestartEvent(r), Is.True);
 
             var e = (AutomaticRestartEvent)r.ToEvent();
 

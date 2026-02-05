@@ -135,7 +135,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             session.Terminated += (_, __) => eventRaised = true;
             session.Terminate();
 
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
 
         //---------------------------------------------------------------------

@@ -201,8 +201,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 new Mock<ISessionBroker>().Object,
                 new Mock<ICloudConsoleClient>().Object);
 
-            Assert.IsTrue(viewModel.IsWindowsIncluded);
-            Assert.IsTrue(viewModel.IsLinuxIncluded);
+            Assert.That(viewModel.IsWindowsIncluded, Is.True);
+            Assert.That(viewModel.IsLinuxIncluded, Is.True);
         }
 
         [Test]
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 m => m.IsWindowsIncluded,
                 v =>
                 {
-                    Assert.IsTrue(v);
+                    Assert.That(v, Is.True);
                     eventCount++;
                 },
                 new Mock<IBindingContext>().Object);
@@ -285,7 +285,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 m => m.IsLinuxIncluded,
                 v =>
                 {
-                    Assert.IsTrue(v);
+                    Assert.That(v, Is.True);
                     eventCount++;
                 },
                 new Mock<IBindingContext>().Object);
@@ -882,8 +882,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
                 .ToList();
 
-            Assert.IsTrue(instances[0].IsConnected);
-            Assert.IsTrue(instances[1].IsConnected);
+            Assert.That(instances[0].IsConnected, Is.True);
+            Assert.That(instances[1].IsConnected, Is.True);
         }
 
         [Test]
@@ -931,7 +931,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             sessionStartedEventHandler!(
                 new SessionStartedEvent((InstanceLocator)instances[0].Locator!));
 
-            Assert.IsTrue(instances[0].IsConnected);
+            Assert.That(instances[0].IsConnected, Is.True);
             Assert.That(instances[1].IsConnected, Is.False);
 
             sessionEndedEventHandler!(
@@ -1317,7 +1317,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             Assert.That(viewModel.IsUnloadProjectCommandVisible, Is.False);
             Assert.That(viewModel.IsRefreshProjectsCommandVisible, Is.False);
-            Assert.IsTrue(viewModel.IsRefreshAllProjectsCommandVisible);
+            Assert.That(viewModel.IsRefreshAllProjectsCommandVisible, Is.True);
             Assert.That(viewModel.IsCloudConsoleCommandVisible, Is.False);
         }
 
@@ -1343,10 +1343,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
             viewModel.SelectedNode = projects[0];
 
-            Assert.IsTrue(viewModel.IsUnloadProjectCommandVisible);
-            Assert.IsTrue(viewModel.IsRefreshProjectsCommandVisible);
+            Assert.That(viewModel.IsUnloadProjectCommandVisible, Is.True);
+            Assert.That(viewModel.IsRefreshProjectsCommandVisible, Is.True);
             Assert.That(viewModel.IsRefreshAllProjectsCommandVisible, Is.False);
-            Assert.IsTrue(viewModel.IsCloudConsoleCommandVisible);
+            Assert.That(viewModel.IsCloudConsoleCommandVisible, Is.True);
         }
 
         [Test]
@@ -1375,9 +1375,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             viewModel.SelectedNode = zones[0];
 
             Assert.That(viewModel.IsUnloadProjectCommandVisible, Is.False);
-            Assert.IsTrue(viewModel.IsRefreshProjectsCommandVisible);
+            Assert.That(viewModel.IsRefreshProjectsCommandVisible, Is.True);
             Assert.That(viewModel.IsRefreshAllProjectsCommandVisible, Is.False);
-            Assert.IsTrue(viewModel.IsCloudConsoleCommandVisible);
+            Assert.That(viewModel.IsCloudConsoleCommandVisible, Is.True);
         }
 
         [Test]
@@ -1401,9 +1401,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             viewModel.SelectedNode = instances[0];
 
             Assert.That(viewModel.IsUnloadProjectCommandVisible, Is.False);
-            Assert.IsTrue(viewModel.IsRefreshProjectsCommandVisible);
+            Assert.That(viewModel.IsRefreshProjectsCommandVisible, Is.True);
             Assert.That(viewModel.IsRefreshAllProjectsCommandVisible, Is.False);
-            Assert.IsTrue(viewModel.IsCloudConsoleCommandVisible);
+            Assert.That(viewModel.IsCloudConsoleCommandVisible, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -1433,7 +1433,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
                 .ToList();
 
             Assert.That(projectViewModelNodes.Count, Is.EqualTo(1));
-            Assert.IsTrue(projectViewModelNodes.First().IsExpanded);
+            Assert.That(projectViewModelNodes.First().IsExpanded, Is.True);
         }
 
         [Test]

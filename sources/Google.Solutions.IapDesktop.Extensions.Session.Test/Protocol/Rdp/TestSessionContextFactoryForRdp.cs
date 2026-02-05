@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
             Assert.That(context.Credential.User, Is.EqualTo("existinguser"));
             Assert.That(context.Credential.Password.ToClearText(), Is.EqualTo("password"));
 
-            Assert.IsTrue(settingsSaved);
+            Assert.That(settingsSaved, Is.True);
         }
 
         //---------------------------------------------------------------------

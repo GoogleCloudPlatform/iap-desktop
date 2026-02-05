@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 .Setup(t => t.Traits)
                 .Returns(new[] { WindowsTrait.Instance });
 
-            Assert.IsTrue(RdpProtocol.Protocol.IsAvailable(target.Object));
+            Assert.That(RdpProtocol.Protocol.IsAvailable(target.Object), Is.True);
         }
 
         //---------------------------------------------------------------------

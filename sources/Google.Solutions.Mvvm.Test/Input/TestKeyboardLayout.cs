@@ -42,13 +42,13 @@ namespace Google.Solutions.Mvvm.Test.Input
         [Test]
         public void TryMapVirtualKey_WhenCharMapped()
         {
-            Assert.IsTrue(KeyboardLayout.Current.TryMapVirtualKey('A', out var vk));
+            Assert.That(KeyboardLayout.Current.TryMapVirtualKey('A', out var vk), Is.True);
             Assert.That(vk, Is.EqualTo(Keys.A | Keys.Shift));
 
-            Assert.IsTrue(KeyboardLayout.Current.TryMapVirtualKey('a', out vk));
+            Assert.That(KeyboardLayout.Current.TryMapVirtualKey('a', out vk), Is.True);
             Assert.That(vk, Is.EqualTo(Keys.A));
 
-            Assert.IsTrue(KeyboardLayout.Current.TryMapVirtualKey('1', out vk));
+            Assert.That(KeyboardLayout.Current.TryMapVirtualKey('1', out vk), Is.True);
             Assert.That(vk, Is.EqualTo(Keys.D1));
         }
 

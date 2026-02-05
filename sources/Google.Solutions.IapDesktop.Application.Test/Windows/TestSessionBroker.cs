@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                 };
                 session.Show(form.MainPanel, DockState.Document);
 
-                Assert.IsTrue(broker.IsConnected(SampleLocator));
+                Assert.That(broker.IsConnected(SampleLocator), Is.True);
             }
         }
 
@@ -168,9 +168,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                 };
                 session.Show(form.MainPanel, DockState.Document);
 
-                Assert.IsTrue(broker.TryActivateSession(
+                Assert.That(broker.TryActivateSession(
                     SampleLocator,
-                    out var activated));
+                    out var activated), Is.True);
                 Assert.That(activated, Is.SameAs(session));
             }
         }

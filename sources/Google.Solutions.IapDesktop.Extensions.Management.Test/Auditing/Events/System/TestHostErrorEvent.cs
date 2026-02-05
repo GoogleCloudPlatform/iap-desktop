@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(HostErrorEvent.IsHostErrorEvent(r));
+            Assert.That(HostErrorEvent.IsHostErrorEvent(r), Is.True);
 
             var e = (HostErrorEvent)r.ToEvent();
 

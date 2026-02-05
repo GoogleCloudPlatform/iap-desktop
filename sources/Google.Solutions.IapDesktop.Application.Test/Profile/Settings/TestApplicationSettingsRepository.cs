@@ -382,7 +382,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                     null,
                     UserProfile.SchemaVersion.Current);
 
-                Assert.IsTrue(repository.IsPolicyPresent);
+                Assert.That(repository.IsPolicyPresent, Is.True);
             }
         }
 
@@ -398,7 +398,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                     userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Current);
 
-                Assert.IsTrue(repository.IsPolicyPresent);
+                Assert.That(repository.IsPolicyPresent, Is.True);
             }
         }
 
@@ -418,7 +418,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                     userPolicyPath.CreateKey(),
                     UserProfile.SchemaVersion.Version240);
 
-                Assert.IsTrue(repository.GetSettings().IsTelemetryEnabled.Value);
+                Assert.That(repository.GetSettings().IsTelemetryEnabled.Value, Is.True);
             }
         }
 

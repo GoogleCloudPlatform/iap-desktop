@@ -253,7 +253,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.ListView.BindColumn(0, m => m.Name);
                 form.ListView.BindCollection(items);
 
-                Assert.IsTrue(item.HasPropertyChangeListeners);
+                Assert.That(item.HasPropertyChangeListeners, Is.True);
 
                 items.RemoveAt(0);
 
@@ -276,7 +276,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.ListView.BindColumn(0, m => m.Name);
                 form.ListView.BindCollection(items);
 
-                Assert.IsTrue(item.HasPropertyChangeListeners);
+                Assert.That(item.HasPropertyChangeListeners, Is.True);
 
                 items.Clear();
 
@@ -299,7 +299,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.ListView.BindColumn(0, m => m.Name);
                 form.ListView.BindCollection(items);
 
-                Assert.IsTrue(item.HasPropertyChangeListeners);
+                Assert.That(item.HasPropertyChangeListeners, Is.True);
 
                 form.ListView.BindCollection(new ObservableCollection<ViewModelItem>());
 
@@ -394,7 +394,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 viewModel.SelectedItem = viewModel.Items[0];
 
-                Assert.IsTrue(form.ListView.Items[0].Selected);
+                Assert.That(form.ListView.Items[0].Selected, Is.True);
                 Assert.That(form.ListView.Items[1].Selected, Is.False);
             }
         }
@@ -459,8 +459,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 viewModel.SelectedItems = viewModel.Items;
 
-                Assert.IsTrue(form.ListView.Items[0].Selected);
-                Assert.IsTrue(form.ListView.Items[1].Selected);
+                Assert.That(form.ListView.Items[0].Selected, Is.True);
+                Assert.That(form.ListView.Items[1].Selected, Is.True);
             }
         }
     }

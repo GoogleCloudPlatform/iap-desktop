@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(viewModel.IsListEnabled.Value);
+            Assert.That(viewModel.IsListEnabled.Value, Is.True);
             Assert.IsNotEmpty(viewModel.InformationText.Value);
             Assert.That(viewModel.WindowTitle.Value, Does.Contain("project-1"));
 
@@ -182,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(viewModel.IsListEnabled.Value);
+            Assert.That(viewModel.IsListEnabled.Value, Is.True);
             Assert.IsNotEmpty(viewModel.InformationText.Value);
             Assert.That(viewModel.WindowTitle.Value, Does.Contain("instance-1"));
 
@@ -233,7 +233,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .ConfigureAwait(true);
 
             viewModel.SelectedItem = viewModel.AllKeys.FirstOrDefault();
-            Assert.IsTrue(viewModel.IsDeleteButtonEnabled);
+            Assert.That(viewModel.IsDeleteButtonEnabled, Is.True);
 
             // Switch again.
             await viewModel
@@ -263,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
             Assert.That(viewModel.IsDeleteButtonEnabled, Is.False);
 
             viewModel.SelectedItem = viewModel.AllKeys.FirstOrDefault();
-            Assert.IsTrue(viewModel.IsDeleteButtonEnabled);
+            Assert.That(viewModel.IsDeleteButtonEnabled, Is.True);
         }
 
         //---------------------------------------------------------------------

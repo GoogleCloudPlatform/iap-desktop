@@ -625,7 +625,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             Assert.That(terminated.IsRunning, Is.False);
 
             Assert.That(running.DisplayName, Is.EqualTo(SampleLinuxInstanceInZone1.Name));
-            Assert.IsTrue(running.IsRunning);
+            Assert.That(running.IsRunning, Is.True);
         }
 
         //---------------------------------------------------------------------

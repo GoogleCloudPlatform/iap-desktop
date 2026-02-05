@@ -56,9 +56,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 22,
                 LoopbackEndpoint);
 
-            Assert.IsTrue(ref1.Equals(ref2));
-            Assert.IsTrue(ref1.Equals((object)ref2));
-            Assert.IsTrue(ref1 == ref2);
+            Assert.That(ref1.Equals(ref2), Is.True);
+            Assert.That(ref1.Equals((object)ref2), Is.True);
+            Assert.That(ref1 == ref2, Is.True);
             Assert.That(ref1 != ref2, Is.False);
             Assert.That(ref2.GetHashCode(), Is.EqualTo(ref1.GetHashCode()));
         }
@@ -74,9 +74,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 LoopbackEndpoint);
             var ref2 = ref1;
 
-            Assert.IsTrue(ref1.Equals(ref2));
-            Assert.IsTrue(ref1.Equals((object)ref2));
-            Assert.IsTrue(ref1 == ref2);
+            Assert.That(ref1.Equals(ref2), Is.True);
+            Assert.That(ref1.Equals((object)ref2), Is.True);
+            Assert.That(ref1 == ref2, Is.True);
             Assert.That(ref1 != ref2, Is.False);
             Assert.That(ref2.GetHashCode(), Is.EqualTo(ref1.GetHashCode()));
         }
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             Assert.That(ref1.Equals(ref2), Is.False);
             Assert.That(ref1.Equals((object)ref2), Is.False);
             Assert.That(ref1 == ref2, Is.False);
-            Assert.IsTrue(ref1 != ref2);
+            Assert.That(ref1 != ref2, Is.True);
             Assert.That(ref2.GetHashCode(), Is.Not.EqualTo(ref1.GetHashCode()));
         }
 
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             Assert.That(ref1.Equals(ref2), Is.False);
             Assert.That(ref1.Equals((object)ref2), Is.False);
             Assert.That(ref1 == ref2, Is.False);
-            Assert.IsTrue(ref1 != ref2);
+            Assert.That(ref1 != ref2, Is.True);
             Assert.That(ref2.GetHashCode(), Is.Not.EqualTo(ref1.GetHashCode()));
         }
 
@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             Assert.That(ref1.Equals(ref2), Is.False);
             Assert.That(ref1.Equals((object)ref2), Is.False);
             Assert.That(ref1 == ref2, Is.False);
-            Assert.IsTrue(ref1 != ref2);
+            Assert.That(ref1 != ref2, Is.True);
             Assert.That(ref2.GetHashCode(), Is.Not.EqualTo(ref1.GetHashCode()));
         }
 
@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             Assert.That(ref1.Equals(ref2), Is.False);
             Assert.That(ref1.Equals((object)ref2), Is.False);
             Assert.That(ref1 == ref2, Is.False);
-            Assert.IsTrue(ref1 != ref2);
+            Assert.That(ref1 != ref2, Is.True);
             Assert.That(ref2.GetHashCode(), Is.Not.EqualTo(ref1.GetHashCode()));
         }
 
@@ -210,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             Assert.That(ref1.Equals(ref2), Is.False);
             Assert.That(ref1.Equals((object)ref2), Is.False);
             Assert.That(ref1 == ref2, Is.False);
-            Assert.IsTrue(ref1 != ref2);
+            Assert.That(ref1 != ref2, Is.True);
             Assert.That(ref2.GetHashCode(), Is.Not.EqualTo(ref1.GetHashCode()));
         }
 
@@ -228,8 +228,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             Assert.That(ref1!.Equals((object)null!), Is.False);
             Assert.That(ref1 == null, Is.False);
             Assert.That(null == ref1, Is.False);
-            Assert.IsTrue(ref1 != null);
-            Assert.IsTrue(null != ref1);
+            Assert.That(ref1 != null, Is.True);
+            Assert.That(null != ref1, Is.True);
         }
     }
 }

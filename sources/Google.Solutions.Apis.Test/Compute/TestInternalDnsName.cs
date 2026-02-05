@@ -35,7 +35,7 @@ namespace Google.Solutions.Apis.Test.Compute
         public void TryParse_WhenNameIsZonal_ThenReturnsZonalName()
         {
             var name = "instance-1.zone-1.c.project-1.internal";
-            Assert.IsTrue(InternalDnsName.TryParse(name, out var parsed));
+            Assert.That(InternalDnsName.TryParse(name, out var parsed), Is.True);
             Assert.IsNotNull(parsed);
             Assert.IsInstanceOf<InternalDnsName.ZonalName>(parsed);
             Assert.That(parsed!.Name, Is.EqualTo(name));
@@ -46,7 +46,7 @@ namespace Google.Solutions.Apis.Test.Compute
         public void TryParse_WhenNameIsGlobal_ThenReturnsGlobalName()
         {
             var name = "instance-1.c.project-1.internal";
-            Assert.IsTrue(InternalDnsName.TryParse(name, out var parsed));
+            Assert.That(InternalDnsName.TryParse(name, out var parsed), Is.True);
             Assert.IsNotNull(parsed);
             Assert.IsInstanceOf<InternalDnsName.GlobalName>(parsed);
             Assert.That(parsed!.Name, Is.EqualTo(name));

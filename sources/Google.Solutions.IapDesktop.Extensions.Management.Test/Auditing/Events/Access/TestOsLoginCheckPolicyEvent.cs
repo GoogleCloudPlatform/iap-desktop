@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }".Replace("v1", version);
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r));
+            Assert.That(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r), Is.True);
 
             var e = (OsLoginCheckPolicyEvent)r.ToEvent();
 
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.That(e.Instance?.Name, Is.EqualTo("instance-1"));
             Assert.That(e.InstanceId, Is.EqualTo(1234567890));
             Assert.That(e.Principal, Is.EqualTo("bob@example.com"));
-            Assert.IsTrue(e.IsSuccess);
+            Assert.That(e.IsSuccess, Is.True);
             Assert.That(e.Message, Is.EqualTo("OS Login access for bob@example.com and policy LOGIN granted"));
         }
 
@@ -153,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r));
+            Assert.That(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r), Is.True);
 
             var e = (OsLoginCheckPolicyEvent)r.ToEvent();
 
@@ -213,7 +213,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r));
+            Assert.That(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r), Is.True);
 
             var e = (OsLoginCheckPolicyEvent)r.ToEvent();
 
@@ -285,7 +285,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                 }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r));
+            Assert.That(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r), Is.True);
 
             var e = (OsLoginCheckPolicyEvent)r.ToEvent();
 

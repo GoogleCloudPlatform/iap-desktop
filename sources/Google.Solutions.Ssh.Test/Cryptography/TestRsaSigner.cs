@@ -110,7 +110,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
 
             using (var signer = new RsaSigner(key, true))
             {
-                Assert.IsTrue(key.IsDisposed());
+                Assert.That(key.IsDisposed(), Is.True);
             }
         }
 

@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
+            Assert.That(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r), Is.True);
 
             var e = (AuthorizeUserTunnelEvent)r.ToEvent();
 
@@ -203,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
+            Assert.That(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r), Is.True);
 
             var e = (AuthorizeUserTunnelEvent)r.ToEvent();
 
@@ -299,7 +299,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
+            Assert.That(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r), Is.True);
 
             var e = (AuthorizeUserTunnelEvent)r.ToEvent();
 
@@ -361,7 +361,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
+            Assert.That(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r), Is.True);
 
             var e = (AuthorizeUserTunnelEvent)r.ToEvent();
 
@@ -512,7 +512,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
+            Assert.That(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r), Is.True);
 
             var e = (AuthorizeUserTunnelEvent)r.ToEvent();
 

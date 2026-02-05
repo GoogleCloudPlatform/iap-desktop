@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(SetMetadataEvent.IsSetMetadataEvent(r));
+            Assert.That(SetMetadataEvent.IsSetMetadataEvent(r), Is.True);
 
             var e = (SetMetadataEvent)r.ToEvent();
 
@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(SetMetadataEvent.IsSetMetadataEvent(r));
+            Assert.That(SetMetadataEvent.IsSetMetadataEvent(r), Is.True);
 
             var e = (SetMetadataEvent)r.ToEvent();
 
@@ -238,7 +238,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(SetMetadataEvent.IsSetMetadataEvent(r));
+            Assert.That(SetMetadataEvent.IsSetMetadataEvent(r), Is.True);
 
             var e = (SetMetadataEvent)r.ToEvent();
 
@@ -315,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(SetMetadataEvent.IsSetMetadataEvent(r));
+            Assert.That(SetMetadataEvent.IsSetMetadataEvent(r), Is.True);
 
             var e = (SetMetadataEvent)r.ToEvent();
 
@@ -404,7 +404,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(SetMetadataEvent.IsSetMetadataEvent(r));
+            Assert.That(SetMetadataEvent.IsSetMetadataEvent(r), Is.True);
 
             var e = (SetMetadataEvent)r.ToEvent();
 

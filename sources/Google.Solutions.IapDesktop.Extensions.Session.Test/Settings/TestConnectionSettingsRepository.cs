@@ -67,22 +67,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var settings = repository.GetProjectSettings(project);
 
             Assert.That(settings.Resource, Is.EqualTo(project));
-            Assert.IsTrue(settings.RdpUsername.IsDefault);
-            Assert.IsTrue(settings.RdpPassword.IsDefault);
-            Assert.IsTrue(settings.RdpDomain.IsDefault);
-            Assert.IsTrue(settings.RdpConnectionBar.IsDefault);
-            Assert.IsTrue(settings.RdpAuthenticationLevel.IsDefault);
-            Assert.IsTrue(settings.RdpColorDepth.IsDefault);
-            Assert.IsTrue(settings.RdpAudioPlayback.IsDefault);
-            Assert.IsTrue(settings.RdpAudioInput.IsDefault);
-            Assert.IsTrue(settings.RdpRedirectClipboard.IsDefault);
-            Assert.IsTrue(settings.RdpAutomaticLogon.IsDefault);
-            Assert.IsTrue(settings.RdpConnectionTimeout.IsDefault);
-            Assert.IsTrue(settings.RdpPort.IsDefault);
-            Assert.IsTrue(settings.RdpTransport.IsDefault);
-            Assert.IsTrue(settings.RdpRedirectWebAuthn.IsDefault);
-            Assert.IsTrue(settings.RdpRestrictedAdminMode.IsDefault);
-            Assert.IsTrue(settings.RdpSessionType.IsDefault);
+            Assert.That(settings.RdpUsername.IsDefault, Is.True);
+            Assert.That(settings.RdpPassword.IsDefault, Is.True);
+            Assert.That(settings.RdpDomain.IsDefault, Is.True);
+            Assert.That(settings.RdpConnectionBar.IsDefault, Is.True);
+            Assert.That(settings.RdpAuthenticationLevel.IsDefault, Is.True);
+            Assert.That(settings.RdpColorDepth.IsDefault, Is.True);
+            Assert.That(settings.RdpAudioPlayback.IsDefault, Is.True);
+            Assert.That(settings.RdpAudioInput.IsDefault, Is.True);
+            Assert.That(settings.RdpRedirectClipboard.IsDefault, Is.True);
+            Assert.That(settings.RdpAutomaticLogon.IsDefault, Is.True);
+            Assert.That(settings.RdpConnectionTimeout.IsDefault, Is.True);
+            Assert.That(settings.RdpPort.IsDefault, Is.True);
+            Assert.That(settings.RdpTransport.IsDefault, Is.True);
+            Assert.That(settings.RdpRedirectWebAuthn.IsDefault, Is.True);
+            Assert.That(settings.RdpRestrictedAdminMode.IsDefault, Is.True);
+            Assert.That(settings.RdpSessionType.IsDefault, Is.True);
         }
 
         [Test]
@@ -177,23 +177,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var settings = repository.GetZoneSettings(zone);
 
             Assert.That(settings.Resource, Is.EqualTo(zone));
-            Assert.IsTrue(settings.RdpUsername.IsDefault);
-            Assert.IsTrue(settings.RdpPassword.IsDefault);
-            Assert.IsTrue(settings.RdpDomain.IsDefault);
-            Assert.IsTrue(settings.RdpConnectionBar.IsDefault);
-            Assert.IsTrue(settings.RdpAuthenticationLevel.IsDefault);
-            Assert.IsTrue(settings.RdpColorDepth.IsDefault);
-            Assert.IsTrue(settings.RdpAudioPlayback.IsDefault);
-            Assert.IsTrue(settings.RdpAudioInput.IsDefault);
-            Assert.IsTrue(settings.RdpRedirectClipboard.IsDefault);
-            Assert.IsTrue(settings.RdpAutomaticLogon.IsDefault);
-            Assert.IsTrue(settings.RdpConnectionTimeout.IsDefault);
-            Assert.IsTrue(settings.RdpPort.IsDefault);
-            Assert.IsTrue(settings.RdpTransport.IsDefault);
-            Assert.IsTrue(settings.RdpRedirectWebAuthn.IsDefault);
-            Assert.IsTrue(settings.RdpRestrictedAdminMode.IsDefault);
-            Assert.IsTrue(settings.RdpSessionType.IsDefault);
-            Assert.IsTrue(settings.RdpDesktopSize.IsDefault);
+            Assert.That(settings.RdpUsername.IsDefault, Is.True);
+            Assert.That(settings.RdpPassword.IsDefault, Is.True);
+            Assert.That(settings.RdpDomain.IsDefault, Is.True);
+            Assert.That(settings.RdpConnectionBar.IsDefault, Is.True);
+            Assert.That(settings.RdpAuthenticationLevel.IsDefault, Is.True);
+            Assert.That(settings.RdpColorDepth.IsDefault, Is.True);
+            Assert.That(settings.RdpAudioPlayback.IsDefault, Is.True);
+            Assert.That(settings.RdpAudioInput.IsDefault, Is.True);
+            Assert.That(settings.RdpRedirectClipboard.IsDefault, Is.True);
+            Assert.That(settings.RdpAutomaticLogon.IsDefault, Is.True);
+            Assert.That(settings.RdpConnectionTimeout.IsDefault, Is.True);
+            Assert.That(settings.RdpPort.IsDefault, Is.True);
+            Assert.That(settings.RdpTransport.IsDefault, Is.True);
+            Assert.That(settings.RdpRedirectWebAuthn.IsDefault, Is.True);
+            Assert.That(settings.RdpRestrictedAdminMode.IsDefault, Is.True);
+            Assert.That(settings.RdpSessionType.IsDefault, Is.True);
+            Assert.That(settings.RdpDesktopSize.IsDefault, Is.True);
         }
 
         [Test]
@@ -263,29 +263,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var settings = repository.GetInstanceSettings(instance);
 
             Assert.That(settings.Resource, Is.EqualTo(instance));
-            Assert.IsTrue(settings.RdpUsername.IsDefault);
-            Assert.IsTrue(settings.RdpPassword.IsDefault);
-            Assert.IsTrue(settings.RdpDomain.IsDefault);
-            Assert.IsTrue(settings.RdpConnectionBar.IsDefault);
-            Assert.IsTrue(settings.RdpAuthenticationLevel.IsDefault);
-            Assert.IsTrue(settings.RdpColorDepth.IsDefault);
-            Assert.IsTrue(settings.RdpAudioPlayback.IsDefault);
-            Assert.IsTrue(settings.RdpAudioInput.IsDefault);
-            Assert.IsTrue(settings.RdpAutomaticLogon.IsDefault);
-            Assert.IsTrue(settings.RdpConnectionTimeout.IsDefault);
-            Assert.IsTrue(settings.RdpRedirectClipboard.IsDefault);
-            Assert.IsTrue(settings.RdpRedirectPrinter.IsDefault);
-            Assert.IsTrue(settings.RdpRedirectSmartCard.IsDefault);
-            Assert.IsTrue(settings.RdpRedirectPort.IsDefault);
-            Assert.IsTrue(settings.RdpRedirectDrive.IsDefault);
-            Assert.IsTrue(settings.RdpRedirectDevice.IsDefault);
-            Assert.IsTrue(settings.RdpPort.IsDefault);
-            Assert.IsTrue(settings.RdpTransport.IsDefault);
-            Assert.IsTrue(settings.RdpRedirectWebAuthn.IsDefault);
-            Assert.IsTrue(settings.RdpRestrictedAdminMode.IsDefault);
-            Assert.IsTrue(settings.RdpSessionType.IsDefault);
-            Assert.IsTrue(settings.RdpDpiScaling.IsDefault);
-            Assert.IsTrue(settings.RdpDesktopSize.IsDefault);
+            Assert.That(settings.RdpUsername.IsDefault, Is.True);
+            Assert.That(settings.RdpPassword.IsDefault, Is.True);
+            Assert.That(settings.RdpDomain.IsDefault, Is.True);
+            Assert.That(settings.RdpConnectionBar.IsDefault, Is.True);
+            Assert.That(settings.RdpAuthenticationLevel.IsDefault, Is.True);
+            Assert.That(settings.RdpColorDepth.IsDefault, Is.True);
+            Assert.That(settings.RdpAudioPlayback.IsDefault, Is.True);
+            Assert.That(settings.RdpAudioInput.IsDefault, Is.True);
+            Assert.That(settings.RdpAutomaticLogon.IsDefault, Is.True);
+            Assert.That(settings.RdpConnectionTimeout.IsDefault, Is.True);
+            Assert.That(settings.RdpRedirectClipboard.IsDefault, Is.True);
+            Assert.That(settings.RdpRedirectPrinter.IsDefault, Is.True);
+            Assert.That(settings.RdpRedirectSmartCard.IsDefault, Is.True);
+            Assert.That(settings.RdpRedirectPort.IsDefault, Is.True);
+            Assert.That(settings.RdpRedirectDrive.IsDefault, Is.True);
+            Assert.That(settings.RdpRedirectDevice.IsDefault, Is.True);
+            Assert.That(settings.RdpPort.IsDefault, Is.True);
+            Assert.That(settings.RdpTransport.IsDefault, Is.True);
+            Assert.That(settings.RdpRedirectWebAuthn.IsDefault, Is.True);
+            Assert.That(settings.RdpRestrictedAdminMode.IsDefault, Is.True);
+            Assert.That(settings.RdpSessionType.IsDefault, Is.True);
+            Assert.That(settings.RdpDpiScaling.IsDefault, Is.True);
+            Assert.That(settings.RdpDesktopSize.IsDefault, Is.True);
         }
 
         [Test]
@@ -407,7 +407,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
             var settings = repository.GetInstanceSettings(url, out var foundInInventory);
             Assert.IsNotNull(settings);
-            Assert.IsTrue(foundInInventory);
+            Assert.That(foundInInventory, Is.True);
             Assert.That(settings.Resource, Is.EqualTo(instance));
 
             Assert.That(settings.RdpUsername.Value, Is.EqualTo("john doe"));

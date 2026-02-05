@@ -44,14 +44,14 @@ namespace Google.Solutions.Mvvm.Test.ComponentModel
 
             Assert.That(properties[0].Name, Is.EqualTo("key-a"));
             Assert.That(properties[0].PropertyType, Is.EqualTo(typeof(string)));
-            Assert.IsTrue(properties[0].IsBrowsable);
-            Assert.IsTrue(properties[0].IsReadOnly);
+            Assert.That(properties[0].IsBrowsable, Is.True);
+            Assert.That(properties[0].IsReadOnly, Is.True);
             Assert.That(properties[0].GetValue(dictionary), Is.EqualTo("value-a"));
 
             Assert.That(properties[1].Name, Is.EqualTo("key-b"));
             Assert.That(properties[1].PropertyType, Is.EqualTo(typeof(int)));
-            Assert.IsTrue(properties[1].IsBrowsable);
-            Assert.IsTrue(properties[1].IsReadOnly);
+            Assert.That(properties[1].IsBrowsable, Is.True);
+            Assert.That(properties[1].IsReadOnly, Is.True);
             Assert.That(properties[1].GetValue(dictionary), Is.EqualTo(1));
         }
 
@@ -67,14 +67,14 @@ namespace Google.Solutions.Mvvm.Test.ComponentModel
 
             Assert.That(properties[0].Name, Is.EqualTo(" "));
             Assert.That(properties[0].PropertyType, Is.EqualTo(typeof(string)));
-            Assert.IsTrue(properties[0].IsBrowsable);
-            Assert.IsTrue(properties[0].IsReadOnly);
+            Assert.That(properties[0].IsBrowsable, Is.True);
+            Assert.That(properties[0].IsReadOnly, Is.True);
             Assert.That(properties[0].GetValue(array), Is.EqualTo("value-a"));
 
             Assert.That(properties[1].Name, Is.EqualTo(" "));
             Assert.That(properties[1].PropertyType, Is.EqualTo(typeof(string)));
-            Assert.IsTrue(properties[1].IsBrowsable);
-            Assert.IsTrue(properties[1].IsReadOnly);
+            Assert.That(properties[1].IsBrowsable, Is.True);
+            Assert.That(properties[1].IsReadOnly, Is.True);
             Assert.That(properties[1].GetValue(array), Is.EqualTo("value-b"));
         }
     }

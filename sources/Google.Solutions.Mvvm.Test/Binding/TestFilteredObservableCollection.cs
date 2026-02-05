@@ -37,7 +37,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var collection = new FilteredObservableCollection<string>(
                 new ObservableCollection<string>());
 
-            Assert.IsTrue(collection.IsReadOnly);
+            Assert.That(collection.IsReadOnly, Is.True);
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             Assert.That(filtered.Contains("one"), Is.False);
             Assert.That(filtered.Contains("Two"), Is.False);
-            Assert.IsTrue(filtered.Contains("THREE"));
+            Assert.That(filtered.Contains("THREE"), Is.True);
         }
 
         [Test]
@@ -169,7 +169,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             filtered.Predicate = s => s == s.ToLower();
 
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
 
         [Test]
@@ -194,7 +194,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             collection.Add("UPPERCASE");
             collection.Add("lowercase");
 
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
 
         [Test]
@@ -245,7 +245,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             collection.Remove("UPPERCASE");
             collection.Remove("lowercase");
 
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
 
         [Test]
@@ -294,7 +294,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             collection.Clear();
 
-            Assert.IsTrue(eventRaised);
+            Assert.That(eventRaised, Is.True);
         }
     }
 }

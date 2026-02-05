@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         public void TryParse_WhenExpressionIsValid(
             [Values("isInstance()", " isInstance(  \n) \n\r\t ")] string expression)
         {
-            Assert.IsTrue(InstanceTrait.TryParse(expression, out var trait));
+            Assert.That(InstanceTrait.TryParse(expression, out var trait), Is.True);
             Assert.IsNotNull(trait);
         }
     }

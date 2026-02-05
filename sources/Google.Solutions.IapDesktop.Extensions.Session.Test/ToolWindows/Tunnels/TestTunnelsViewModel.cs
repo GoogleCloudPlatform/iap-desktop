@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Tunnel
                 new Mock<IEventQueue>().Object);
             viewModel.RefreshTunnels();
 
-            Assert.IsTrue(viewModel.IsRefreshButtonEnabled);
+            Assert.That(viewModel.IsRefreshButtonEnabled, Is.True);
         }
     }
 }

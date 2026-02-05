@@ -157,10 +157,10 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void IsComException()
         {
-            Assert.IsTrue(new COMException().IsComException());
-            Assert.IsTrue(new InvalidComObjectException().IsComException());
-            Assert.IsTrue(new AggregateException(new COMException()).IsComException());
-            Assert.IsTrue(new TargetInvocationException(new COMException()).IsComException());
+            Assert.That(new COMException().IsComException(), Is.True);
+            Assert.That(new InvalidComObjectException().IsComException(), Is.True);
+            Assert.That(new AggregateException(new COMException()).IsComException(), Is.True);
+            Assert.That(new TargetInvocationException(new COMException()).IsComException(), Is.True);
             Assert.That(new InvalidOperationException("...", new COMException()).IsComException(), Is.False);
         }
     }

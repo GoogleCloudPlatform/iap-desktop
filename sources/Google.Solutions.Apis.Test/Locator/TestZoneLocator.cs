@@ -56,9 +56,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathIsValid()
         {
-            Assert.IsTrue(ZoneLocator.TryParse(
+            Assert.That(ZoneLocator.TryParse(
                 "projects/project-1/zones/us-central1-a",
-                out var ref1));
+                out var ref1), Is.True);
 
             Assert.IsNotNull(ref1);
             Assert.That(ref1!.ResourceType, Is.EqualTo("zones"));
@@ -69,9 +69,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByComputeGoogleapisHost()
         {
-            Assert.IsTrue(ZoneLocator.TryParse(
+            Assert.That(ZoneLocator.TryParse(
                 "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a",
-                out var ref1));
+                out var ref1), Is.True);
 
             Assert.IsNotNull(ref1);
             Assert.That(ref1!.ResourceType, Is.EqualTo("zones"));
@@ -82,9 +82,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByGoogleapisHost()
         {
-            Assert.IsTrue(ZoneLocator.TryParse(
+            Assert.That(ZoneLocator.TryParse(
                 "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a",
-                out var ref1));
+                out var ref1), Is.True);
 
             Assert.IsNotNull(ref1);
             Assert.That(ref1!.ResourceType, Is.EqualTo("zones"));
@@ -177,7 +177,7 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.That(ref1.Equals(ref2), Is.False);
             Assert.That(ref1.Equals((object)ref2), Is.False);
             Assert.That(ref1 == ref2, Is.False);
-            Assert.IsTrue(ref1 != ref2);
+            Assert.That(ref1 != ref2, Is.True);
         }
 
         //---------------------------------------------------------------------

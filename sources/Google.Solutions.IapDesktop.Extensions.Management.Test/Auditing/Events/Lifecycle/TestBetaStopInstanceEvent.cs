@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
               }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(StopInstanceEvent.IsStopInstanceEvent(r));
+            Assert.That(StopInstanceEvent.IsStopInstanceEvent(r), Is.True);
 
             var e = (StopInstanceEvent)r.ToEvent();
 
@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
               }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(StopInstanceEvent.IsStopInstanceEvent(r));
+            Assert.That(StopInstanceEvent.IsStopInstanceEvent(r), Is.True);
 
             var e = (StopInstanceEvent)r.ToEvent();
 

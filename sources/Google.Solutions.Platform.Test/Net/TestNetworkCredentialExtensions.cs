@@ -92,7 +92,7 @@ namespace Google.Solutions.Platform.Test.Net
                 UserName = "user@domain"
             };
 
-            Assert.IsTrue(cred1.IsUpnFormat());
+            Assert.That(cred1.IsUpnFormat(), Is.True);
             Assert.That(cred1.IsNetBiosFormat(), Is.False);
         }
 
@@ -111,7 +111,7 @@ namespace Google.Solutions.Platform.Test.Net
                 UserName = "domain\\user",
             };
 
-            Assert.IsTrue(cred1.IsNetBiosFormat());
+            Assert.That(cred1.IsNetBiosFormat(), Is.True);
             Assert.That(cred1.IsUpnFormat(), Is.False);
 
             //
@@ -123,7 +123,7 @@ namespace Google.Solutions.Platform.Test.Net
                 Domain = "domain"
             };
 
-            Assert.IsTrue(cred2.IsNetBiosFormat());
+            Assert.That(cred2.IsNetBiosFormat(), Is.True);
             Assert.That(cred2.IsUpnFormat(), Is.False);
 
             //
@@ -134,7 +134,7 @@ namespace Google.Solutions.Platform.Test.Net
                 UserName = "user",
             };
 
-            Assert.IsTrue(cred3.IsNetBiosFormat());
+            Assert.That(cred3.IsNetBiosFormat(), Is.True);
             Assert.That(cred3.IsUpnFormat(), Is.False);
         }
 
@@ -161,10 +161,10 @@ namespace Google.Solutions.Platform.Test.Net
             //
             // UPN format.
             //
-            Assert.IsTrue(new NetworkCredential("user@domain", "").IsDomainOrHostQualified());
-            Assert.IsTrue(new NetworkCredential("user@domain", "", "domain").IsDomainOrHostQualified());
-            Assert.IsTrue(new NetworkCredential("user", "", "domain").IsDomainOrHostQualified());
-            Assert.IsTrue(new NetworkCredential("domain\\user", "", "domain").IsDomainOrHostQualified());
+            Assert.That(new NetworkCredential("user@domain", "").IsDomainOrHostQualified(), Is.True);
+            Assert.That(new NetworkCredential("user@domain", "", "domain").IsDomainOrHostQualified(), Is.True);
+            Assert.That(new NetworkCredential("user", "", "domain").IsDomainOrHostQualified(), Is.True);
+            Assert.That(new NetworkCredential("domain\\user", "", "domain").IsDomainOrHostQualified(), Is.True);
         }
 
         //---------------------------------------------------------------------

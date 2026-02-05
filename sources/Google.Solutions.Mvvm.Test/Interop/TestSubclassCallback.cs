@@ -129,7 +129,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
             form.Show();
             form.Dispose();
 
-            Assert.IsTrue(callback.IsDisposed);
+            Assert.That(callback.IsDisposed, Is.True);
         }
     }
 }

@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new NameValueCollection());
 
             Assert.That(locator1.Equals(locator2), Is.False);
-            Assert.IsTrue(locator1 != locator2);
+            Assert.That(locator1 != locator2, Is.True);
             Assert.That(locator2.GetHashCode(), Is.Not.EqualTo(locator1.GetHashCode()));
         }
 
@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new NameValueCollection());
 
             Assert.That(locator1.Equals(locator2), Is.False);
-            Assert.IsTrue(locator1 != locator2);
+            Assert.That(locator1 != locator2, Is.True);
         }
 
         [Test]
@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new NameValueCollection());
 
             Assert.That(locator1.Equals(locator2), Is.False);
-            Assert.IsTrue(locator1 != locator2);
+            Assert.That(locator1 != locator2, Is.True);
             Assert.That(locator2.GetHashCode(), Is.Not.EqualTo(locator1.GetHashCode()));
         }
 
@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 parameters);
 
             Assert.That(locator1.Equals(locator2), Is.False);
-            Assert.IsTrue(locator1 != locator2);
+            Assert.That(locator1 != locator2, Is.True);
             Assert.That(locator2.GetHashCode(), Is.Not.EqualTo(locator1.GetHashCode()));
         }
     }

@@ -60,7 +60,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     op.IsBlockedByError = true;
                     op.IsBlockedByError = true;
 
-                    Assert.IsTrue(op.IsBlockedByError);
+                    Assert.That(op.IsBlockedByError, Is.True);
 
                     op.IsBlockedByError = false;
                 }

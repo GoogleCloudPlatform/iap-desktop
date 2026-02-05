@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void IsExecutingTests()
         {
-            Assert.IsTrue(Install.IsExecutingTests);
+            Assert.That(Install.IsExecutingTests, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 var install = new Install(keyPath.Path);
 
                 Assert.IsNotNull(install.BaseDirectory);
-                Assert.IsTrue(Directory.Exists(install.BaseDirectory));
+                Assert.That(Directory.Exists(install.BaseDirectory), Is.True);
             }
         }
 
@@ -322,7 +322,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
                 var profile = install.OpenProfile(null);
                 Assert.That(profile.Name, Is.EqualTo("Default"));
-                Assert.IsTrue(profile.IsDefault);
+                Assert.That(profile.IsDefault, Is.True);
             }
         }
 

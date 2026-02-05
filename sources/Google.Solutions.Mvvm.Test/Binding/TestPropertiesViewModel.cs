@@ -79,7 +79,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                     () => sheetViewModel.IsDirty.Value = true,
                     "Value");
 
-                Assert.IsTrue(viewModel.IsDirty.Value);
+                Assert.That(viewModel.IsDirty.Value, Is.True);
 
                 PropertyAssert.RaisesPropertyChangedNotification(
                     sheetViewModel.IsDirty,
@@ -104,7 +104,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
                 sheetViewModel.IsDirty.Value = true;
 
-                Assert.IsTrue(viewModel.ApplyCommand.CanExecute.Value);
+                Assert.That(viewModel.ApplyCommand.CanExecute.Value, Is.True);
             }
         }
 

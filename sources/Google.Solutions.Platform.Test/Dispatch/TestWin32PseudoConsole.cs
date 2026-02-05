@@ -94,7 +94,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
                 await pty.DrainAsync().ConfigureAwait(false);
 
-                Assert.IsTrue(eventRaised);
+                Assert.That(eventRaised, Is.True);
             }
         }
 
@@ -113,8 +113,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
                     .CloseAsync()
                     .ConfigureAwait(false);
 
-                Assert.IsTrue(pty.IsClosed);
-                Assert.IsTrue(pty.Handle.IsClosed);
+                Assert.That(pty.IsClosed, Is.True);
+                Assert.That(pty.Handle.IsClosed, Is.True);
 
                 Assert.That(pty.InputPipe.WriteSideHandle.IsClosed, Is.False);
                 Assert.That(pty.OutputPipe.ReadSideHandle.IsClosed, Is.False);
@@ -147,13 +147,13 @@ namespace Google.Solutions.Platform.Test.Dispatch
             var pty = new Win32PseudoConsole(new PseudoTerminalSize(80, 24));
             pty.Dispose();
 
-            Assert.IsTrue(pty.IsClosed, "Close Pty");
-            Assert.IsTrue(pty.Handle.IsClosed, "Close handle");
+            Assert.That(pty.IsClosed, Is.True, "Close Pty");
+            Assert.That(pty.Handle.IsClosed, Is.True, "Close handle");
 
-            Assert.IsTrue(pty.InputPipe.ReadSideHandle.IsClosed, "Close input/read");
-            Assert.IsTrue(pty.InputPipe.WriteSideHandle.IsClosed, "Close input/write");
-            Assert.IsTrue(pty.OutputPipe.ReadSideHandle.IsClosed, "Close output/read");
-            Assert.IsTrue(pty.OutputPipe.WriteSideHandle.IsClosed, "Close output/write");
+            Assert.That(pty.InputPipe.ReadSideHandle.IsClosed, Is.True, "Close input/read");
+            Assert.That(pty.InputPipe.WriteSideHandle.IsClosed, Is.True, "Close input/write");
+            Assert.That(pty.OutputPipe.ReadSideHandle.IsClosed, Is.True, "Close output/read");
+            Assert.That(pty.OutputPipe.WriteSideHandle.IsClosed, Is.True, "Close output/write");
         }
     }
 }

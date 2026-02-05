@@ -39,11 +39,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.IsTrue(settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value);
-                Assert.IsTrue(settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value);
-                Assert.IsTrue(settings.IsQuoteConvertionOnPasteEnabled.Value);
-                Assert.IsTrue(settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
-                Assert.IsTrue(settings.IsScrollingUsingCtrlPageUpDownEnabled.Value);
+                Assert.That(settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value, Is.True);
+                Assert.That(settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value, Is.True);
+                Assert.That(settings.IsQuoteConvertionOnPasteEnabled.Value, Is.True);
+                Assert.That(settings.IsScrollingUsingCtrlHomeEndEnabled.Value, Is.True);
+                Assert.That(settings.IsScrollingUsingCtrlPageUpDownEnabled.Value, Is.True);
                 Assert.That(settings.FontFamily.Value, Is.EqualTo(TerminalSettings.DefaultFontFamily));
                 Assert.That(
                     TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.Value), Is.EqualTo(TerminalSettings.DefaultFontSize));
@@ -70,12 +70,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 };
 
                 var settings = repository.GetSettings();
-                Assert.IsTrue(settings.IsScrollingUsingCtrlHomeEndEnabled.Value);
+                Assert.That(settings.IsScrollingUsingCtrlHomeEndEnabled.Value, Is.True);
                 settings.IsScrollingUsingCtrlHomeEndEnabled.Value = false;
 
                 repository.SetSettings(settings);
 
-                Assert.IsTrue(eventFired);
+                Assert.That(eventFired, Is.True);
             }
         }
     }

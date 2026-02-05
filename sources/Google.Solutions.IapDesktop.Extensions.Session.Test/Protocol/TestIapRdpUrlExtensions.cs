@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
             };
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
-            Assert.IsTrue(url.TryGetParameter("RdpPort", out ushort value));
+            Assert.That(url.TryGetParameter("RdpPort", out ushort value), Is.True);
             Assert.That(value, Is.EqualTo(3389));
         }
 
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
             };
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
-            Assert.IsTrue(url.TryGetParameter("username", out string value));
+            Assert.That(url.TryGetParameter("username", out string value), Is.True);
             Assert.That(value, Is.EqualTo("bob"));
         }
 
@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol
             };
             var url = new IapRdpUrl(SampleLocator, queryParameters);
 
-            Assert.IsTrue(url.TryGetParameter<RdpAudioPlayback>("AudioMode", out var value));
+            Assert.That(url.TryGetParameter<RdpAudioPlayback>("AudioMode", out var value), Is.True);
             Assert.That(value, Is.EqualTo(RdpAudioPlayback.DoNotPlay));
         }
 

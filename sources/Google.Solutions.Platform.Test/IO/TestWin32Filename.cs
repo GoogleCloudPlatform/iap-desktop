@@ -75,7 +75,7 @@ namespace Google.Solutions.Platform.Test.Interop
         public void IsValidFilename_WhenFilenameIsWin32Compliant_ThenIsValidFilenameReturnsTrue(
             [Values(".file.txt", "f", "null.txt")] string name)
         {
-            Assert.IsTrue(Win32Filename.IsValidFilename(name));
+            Assert.That(Win32Filename.IsValidFilename(name), Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -94,12 +94,12 @@ namespace Google.Solutions.Platform.Test.Interop
         [Test]
         public void EscapeFilename_WhenFilenameNotWin32Compliant_ThenEscapeFilenameReturnsCompliantName()
         {
-            Assert.IsTrue(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename(".")));
-            Assert.IsTrue(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename("file.")));
-            Assert.IsTrue(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename("NUL")));
-            Assert.IsTrue(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename("NUL.")));
-            Assert.IsTrue(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename("AUX.txt")));
-            Assert.IsTrue(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename("\"file\"")));
+            Assert.That(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename(".")), Is.True);
+            Assert.That(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename("file.")), Is.True);
+            Assert.That(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename("NUL")), Is.True);
+            Assert.That(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename("NUL.")), Is.True);
+            Assert.That(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename("AUX.txt")), Is.True);
+            Assert.That(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename("\"file\"")), Is.True);
         }
     }
 }

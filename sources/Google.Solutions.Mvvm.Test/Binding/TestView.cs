@@ -171,8 +171,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 dialog.ShowDialog(null);
             }
 
-            Assert.IsTrue(form.IsDisposed);
-            Assert.IsTrue(viewModel.IsDisposed);
+            Assert.That(form.IsDisposed, Is.True);
+            Assert.That(viewModel.IsDisposed, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -227,8 +227,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             window.Form.Show();
             window.Form.Close();
 
-            Assert.IsTrue(form.IsDisposed);
-            Assert.IsTrue(viewModel.IsDisposed);
+            Assert.That(form.IsDisposed, Is.True);
+            Assert.That(viewModel.IsDisposed, Is.True);
         }
 
         [Test]

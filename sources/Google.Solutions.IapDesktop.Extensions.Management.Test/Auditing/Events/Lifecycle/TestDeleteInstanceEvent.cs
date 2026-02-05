@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(DeleteInstanceEvent.IsDeleteInstanceEvent(r));
+            Assert.That(DeleteInstanceEvent.IsDeleteInstanceEvent(r), Is.True);
 
             var e = (DeleteInstanceEvent)r.ToEvent();
 
@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                  }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(DeleteInstanceEvent.IsDeleteInstanceEvent(r));
+            Assert.That(DeleteInstanceEvent.IsDeleteInstanceEvent(r), Is.True);
 
             var e = (DeleteInstanceEvent)r.ToEvent();
 

@@ -42,7 +42,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
             Assert.That(descriptor.Description, Is.EqualTo("description"));
             Assert.That(descriptor.Category, Is.EqualTo("category"));
 
-            Assert.IsTrue(descriptor.IsBrowsable);
+            Assert.That(descriptor.IsBrowsable, Is.True);
             Assert.That(descriptor.IsReadOnly, Is.False);
 
             Assert.That(descriptor.ComponentType, Is.EqualTo(typeof(ISetting)));
@@ -81,7 +81,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
             //
             descriptor.SetValue(setting, "value-1");
             Assert.That(setting.Value, Is.EqualTo("value-1"));
-            Assert.IsTrue(descriptor.ShouldSerializeValue(setting));
+            Assert.That(descriptor.ShouldSerializeValue(setting), Is.True);
 
             //
             // Get value.
@@ -91,9 +91,9 @@ namespace Google.Solutions.Settings.Test.ComponentModel
             //
             // Reset.
             //
-            Assert.IsTrue(descriptor.CanResetValue(setting));
+            Assert.That(descriptor.CanResetValue(setting), Is.True);
             descriptor.ResetValue(setting);
-            Assert.IsTrue(setting.IsDefault);
+            Assert.That(setting.IsDefault, Is.True);
             Assert.That(descriptor.ShouldSerializeValue(setting), Is.False);
         }
 

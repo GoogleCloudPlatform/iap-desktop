@@ -36,7 +36,7 @@ namespace Google.Solutions.Common.Test.Interop
 
             handle.Dispose();
 
-            Assert.IsTrue(handle.IsClosed);
+            Assert.That(handle.IsClosed, Is.True);
             Assert.That(handle.IsInvalid, Is.False);
         }
     }

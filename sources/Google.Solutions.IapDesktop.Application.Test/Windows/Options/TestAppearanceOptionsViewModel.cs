@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             viewModel.SelectedTheme.Value = ApplicationTheme.Dark;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             viewModel.ScalingMode.Value = ScalingMode.SystemDpiAware;
 
-            Assert.IsTrue(viewModel.IsDirty.Value);
+            Assert.That(viewModel.IsDirty.Value, Is.True);
         }
 
         //---------------------------------------------------------------------

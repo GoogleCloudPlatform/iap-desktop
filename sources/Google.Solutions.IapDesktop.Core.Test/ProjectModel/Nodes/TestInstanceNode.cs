@@ -111,12 +111,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Nodes
                 new[] { InstanceTrait.Instance },
                 "RUNNING");
 
-            Assert.IsTrue(node.IsRunning);
+            Assert.That(node.IsRunning, Is.True);
             Assert.That(node.CanStart, Is.False);
-            Assert.IsTrue(node.CanReset);
-            Assert.IsTrue(node.CanSuspend);
+            Assert.That(node.CanReset, Is.True);
+            Assert.That(node.CanSuspend, Is.True);
             Assert.That(node.CanResume, Is.False);
-            Assert.IsTrue(node.CanStop);
+            Assert.That(node.CanStop, Is.True);
         }
 
         [Test]
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Nodes
                 "TERMINATED");
 
             Assert.That(node.IsRunning, Is.False);
-            Assert.IsTrue(node.CanStart);
+            Assert.That(node.CanStart, Is.True);
             Assert.That(node.CanReset, Is.False);
             Assert.That(node.CanSuspend, Is.False);
             Assert.That(node.CanResume, Is.False);
@@ -151,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Nodes
             Assert.That(node.CanStart, Is.False);
             Assert.That(node.CanReset, Is.False);
             Assert.That(node.CanSuspend, Is.False);
-            Assert.IsTrue(node.CanResume);
+            Assert.That(node.CanResume, Is.True);
             Assert.That(node.CanStop, Is.False);
         }
 
@@ -167,10 +167,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel.Nodes
 
             Assert.That(node.IsRunning, Is.False);
             Assert.That(node.CanStart, Is.False);
-            Assert.IsTrue(node.CanReset);
-            Assert.IsTrue(node.CanSuspend);
+            Assert.That(node.CanReset, Is.True);
+            Assert.That(node.CanSuspend, Is.True);
             Assert.That(node.CanResume, Is.False);
-            Assert.IsTrue(node.CanStop);
+            Assert.That(node.CanStop, Is.True);
         }
 
         //---------------------------------------------------------------------

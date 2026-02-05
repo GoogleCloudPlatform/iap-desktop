@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
                  }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(InstancePreemptedEvent.IsInstancePreemptedEvent(r));
+            Assert.That(InstancePreemptedEvent.IsInstancePreemptedEvent(r), Is.True);
 
             var e = (InstancePreemptedEvent)r.ToEvent();
 

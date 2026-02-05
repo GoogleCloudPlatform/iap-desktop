@@ -87,7 +87,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                 () => factory.CreateProcess(CmdExe, null));
 
             Assert.IsNotNull(createdProcess);
-            Assert.IsTrue(((Win32Process)createdProcess!).IsDisposed);
+            Assert.That(((Win32Process)createdProcess!).IsDisposed, Is.True);
         }
 
 
@@ -145,7 +145,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                     PseudoTerminalSize.Default));
 
             Assert.IsNotNull(createdProcess);
-            Assert.IsTrue(((Win32Process)createdProcess!).IsDisposed);
+            Assert.That(((Win32Process)createdProcess!).IsDisposed, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -240,7 +240,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                     new NetworkCredential("user", "invalid", "domain")));
 
             Assert.IsNotNull(createdProcess);
-            Assert.IsTrue(((Win32Process)createdProcess!).IsDisposed);
+            Assert.That(((Win32Process)createdProcess!).IsDisposed, Is.True);
         }
     }
 }

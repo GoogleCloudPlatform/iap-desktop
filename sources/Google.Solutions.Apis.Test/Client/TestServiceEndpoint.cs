@@ -76,7 +76,7 @@ namespace Google.Solutions.Apis.Test.Client
             Assert.That(details.BaseUri, Is.EqualTo(new Uri("https://sample.mtls.googleapis.com/compute")));
             Assert.That(details.Type, Is.EqualTo(ServiceEndpointType.MutualTls));
             Assert.That(details.Host, Is.EqualTo("sample.mtls.googleapis.com"));
-            Assert.IsTrue(details.UseClientCertificate);
+            Assert.That(details.UseClientCertificate, Is.True);
         }
 
         [Test]

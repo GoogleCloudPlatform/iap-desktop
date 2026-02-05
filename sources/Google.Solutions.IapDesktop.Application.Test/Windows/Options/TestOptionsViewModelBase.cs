@@ -180,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 repository.Object);
             optionsViewModel.MarkDirty();
 
-            Assert.IsTrue(optionsViewModel.IsDirty.Value);
+            Assert.That(optionsViewModel.IsDirty.Value, Is.True);
             await optionsViewModel.ApplyChangesAsync();
             Assert.That(optionsViewModel.IsDirty.Value, Is.False);
         }
@@ -198,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             Assert.That(optionsViewModel.IsDirty.Value, Is.False);
             property.Value = "new value";
-            Assert.IsTrue(optionsViewModel.IsDirty.Value);
+            Assert.That(optionsViewModel.IsDirty.Value, Is.True);
         }
     }
 }

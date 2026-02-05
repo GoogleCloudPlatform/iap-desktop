@@ -53,7 +53,7 @@ namespace Google.Solutions.Terminal.Test
 
                 Assert.IsNotNull(root);
                 Assert.That(root.Type.IsFile, Is.False);
-                Assert.IsTrue(root.IsExpanded);
+                Assert.That(root.IsExpanded, Is.True);
                 Assert.That(root.Name, Is.EqualTo("Server"));
                 Assert.That(root.Access, Is.EqualTo(string.Empty));
             }
@@ -198,7 +198,7 @@ namespace Google.Solutions.Terminal.Test
                 var dir = files.First();
                 Assert.That(dir.Name, Is.EqualTo("dir"));
                 Assert.That(dir.Type.IsFile, Is.False);
-                Assert.IsTrue(dir.Attributes.HasFlag(FileAttributes.Directory));
+                Assert.That(dir.Attributes.HasFlag(FileAttributes.Directory), Is.True);
                 Assert.That(dir.Access, Is.EqualTo("dr-x---r--"));
             }
         }
@@ -221,7 +221,7 @@ namespace Google.Solutions.Terminal.Test
                         "file",
                         FilePermissions.OtherRead | FilePermissions.OwnerExecute));
 
-                Assert.IsTrue(exeType.IsFile);
+                Assert.That(exeType.IsFile, Is.True);
                 Assert.That(exeType.TypeName, Is.Not.EqualTo(regularType.TypeName));
             }
         }
@@ -240,7 +240,7 @@ namespace Google.Solutions.Terminal.Test
                         "file",
                         FilePermissions.SymbolicLink));
 
-                Assert.IsTrue(linkType.IsFile);
+                Assert.That(linkType.IsFile, Is.True);
                 Assert.That(linkType.TypeName, Is.Not.EqualTo(regularType.TypeName));
             }
         }
@@ -259,7 +259,7 @@ namespace Google.Solutions.Terminal.Test
                         "file.conf",
                         FilePermissions.OtherRead | FilePermissions.OwnerExecute));
 
-                Assert.IsTrue(iniType.IsFile);
+                Assert.That(iniType.IsFile, Is.True);
                 Assert.That(iniType.TypeName, Is.Not.EqualTo(regularType.TypeName));
             }
         }
@@ -274,7 +274,7 @@ namespace Google.Solutions.Terminal.Test
                         "file",
                         FilePermissions.Directory));
 
-                Assert.IsTrue(!dirType.IsFile);
+                Assert.That(!dirType.IsFile, Is.True);
             }
         }
 
@@ -293,7 +293,7 @@ namespace Google.Solutions.Terminal.Test
                         "file",
                         FilePermissions.OtherRead | FilePermissions.OwnerExecute));
 
-                Assert.IsTrue(iniType.IsFile);
+                Assert.That(iniType.IsFile, Is.True);
                 Assert.That(iniType.TypeName, Is.Not.EqualTo(regularType.TypeName));
             }
         }

@@ -238,9 +238,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 new MockWindowActivator<NewCredentialsView, NewCredentialsViewModel, IDialogTheme>(),
                 new MockWindowActivator<ShowCredentialsView, ShowCredentialsViewModel, IDialogTheme>());
 
-            Assert.IsTrue(await editor
+            Assert.That(await editor
                 .IsGrantedPermissionToCreateWindowsCredentialsAsync()
-                .ConfigureAwait(false));
+                .ConfigureAwait(false), Is.True);
 
             credentialGenerator
                 .Verify(a => a.IsGrantedPermissionToCreateWindowsCredentialsAsync(SampleInstance), Times.Once);

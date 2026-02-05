@@ -207,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             // Inherited value is shown...
             var instanceSettings = service.GetConnectionSettings(CreateVmInstanceNode());
             Assert.That(instanceSettings.TypedCollection.RdpUsername.Value, Is.EqualTo(username));
-            Assert.IsTrue(instanceSettings.TypedCollection.RdpUsername.IsDefault);
+            Assert.That(instanceSettings.TypedCollection.RdpUsername.IsDefault, Is.True);
         }
 
         [Test]
@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
             var instanceSettings = service.GetConnectionSettings(CreateVmInstanceNode());
             Assert.That(instanceSettings.TypedCollection.RdpUsername.Value, Is.EqualTo("overriden-value"));
-            Assert.IsTrue(instanceSettings.TypedCollection.RdpUsername.IsDefault);
+            Assert.That(instanceSettings.TypedCollection.RdpUsername.IsDefault, Is.True);
         }
 
         [Test]
@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             // Inherited value is shown...
             var instanceSettings = service.GetConnectionSettings(CreateVmInstanceNode());
             Assert.That(instanceSettings.TypedCollection.RdpPort.Value, Is.EqualTo(13389));
-            Assert.IsTrue(instanceSettings.TypedCollection.RdpPort.IsDefault);
+            Assert.That(instanceSettings.TypedCollection.RdpPort.IsDefault, Is.True);
         }
 
         [Test]

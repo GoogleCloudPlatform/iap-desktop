@@ -207,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 "AAAA",
                 "bob@gmail.com");
 
-            Assert.IsTrue(key1.Equals(key2));
+            Assert.That(key1.Equals(key2), Is.True);
             Assert.That(key2.GetHashCode(), Is.EqualTo(key1.GetHashCode()));
         }
 
@@ -226,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 "AAAA",
                 "bob@example.com");
 
-            Assert.IsTrue(key1.Equals(key2));
+            Assert.That(key1.Equals(key2), Is.True);
             Assert.That(key2.GetHashCode(), Is.EqualTo(key1.GetHashCode()));
         }
 
@@ -247,8 +247,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     "bob@example.com",
                     new DateTime(2020, 1, 1, 23, 59, 59, 123, DateTimeKind.Utc)));
 
-            Assert.IsTrue(key2.Equals(key1));
-            Assert.IsTrue(key1.Equals(key2));
+            Assert.That(key2.Equals(key1), Is.True);
+            Assert.That(key1.Equals(key2), Is.True);
         }
     }
 }

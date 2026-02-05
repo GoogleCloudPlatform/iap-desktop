@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new Mock<IWin32ProcessFactory>().Object,
                 SampleLocator);
 
-            Assert.IsTrue(context.CanLaunchClient);
+            Assert.That(context.CanLaunchClient, Is.True);
         }
 
         //---------------------------------------------------------------------

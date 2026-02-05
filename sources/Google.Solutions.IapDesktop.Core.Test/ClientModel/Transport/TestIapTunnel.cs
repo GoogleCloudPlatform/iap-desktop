@@ -205,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 Assert.That(token.IsCancellationRequested, Is.False);
             }
 
-            Assert.IsTrue(token.IsCancellationRequested);
+            Assert.That(token.IsCancellationRequested, Is.True);
         }
 
         //---------------------------------------------------------------------
@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
             {
                 Assert.That(token.IsCancellationRequested, Is.False);
                 Assert.That(tunnel.CloseAsync(), Is.SameAs(listenTask));
-                Assert.IsTrue(token.IsCancellationRequested);
+                Assert.That(token.IsCancellationRequested, Is.True);
             }
         }
 

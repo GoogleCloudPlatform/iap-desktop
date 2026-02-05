@@ -99,7 +99,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 FileAttributes.ReadOnly | FileAttributes.Normal,
                 FileType.IconFlags.None))
             {
-                Assert.IsTrue(type.IsFile);
+                Assert.That(type.IsFile, Is.True);
             }
         }
     }

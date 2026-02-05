@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var traits = section.ParseCondition();
             Assert.That(traits, Is.Not.Empty);
 
-            Assert.IsTrue(traits.All(t => t is InstanceTrait));
+            Assert.That(traits.All(t => t is InstanceTrait), Is.True);
         }
 
         [Test]
@@ -91,9 +91,9 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             Assert.That(traits, Is.Not.Empty);
 
             Assert.That(traits.Count(), Is.EqualTo(3));
-            Assert.IsTrue(traits.Any(t => t is InstanceTrait));
-            Assert.IsTrue(traits.Any(t => t is WindowsTrait));
-            Assert.IsTrue(traits.Any(t => t is LinuxTrait));
+            Assert.That(traits.Any(t => t is InstanceTrait), Is.True);
+            Assert.That(traits.Any(t => t is WindowsTrait), Is.True);
+            Assert.That(traits.Any(t => t is LinuxTrait), Is.True);
         }
 
         [Test]
@@ -256,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
             var client = (AppProtocolClient?)section.ParseClientSection();
             Assert.IsNotNull(client);
-            Assert.IsTrue(File.Exists(client!.Executable));
+            Assert.That(File.Exists(client!.Executable), Is.True);
         }
 
         [Test]

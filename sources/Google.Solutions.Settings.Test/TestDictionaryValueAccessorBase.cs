@@ -54,7 +54,7 @@ namespace Google.Solutions.Settings.Test
             var accessor = CreateAccessor("test");
             accessor.Write(dictionary, this.SampleData);
 
-            Assert.IsTrue(accessor.TryRead(dictionary, out var read));
+            Assert.That(accessor.TryRead(dictionary, out var read), Is.True);
             Assert.That(read, Is.EqualTo(this.SampleData));
         }
 

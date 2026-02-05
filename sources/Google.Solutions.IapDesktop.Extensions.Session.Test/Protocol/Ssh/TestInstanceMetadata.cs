@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsTrue(processor.IsOsLoginEnabled);
+            Assert.That(processor.IsOsLoginEnabled, Is.True);
         }
 
         [Test]
@@ -261,7 +261,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsTrue(processor.IsOsLoginWithSecurityKeyEnabled);
+            Assert.That(processor.IsOsLoginWithSecurityKeyEnabled, Is.True);
         }
 
         [Test]
@@ -367,7 +367,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsTrue(processor.AreProjectSshKeysBlocked);
+            Assert.That(processor.AreProjectSshKeysBlocked, Is.True);
         }
 
         [Test]

@@ -47,7 +47,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 progressBar.Indeterminate = true;
                 progressBar.Indeterminate = true;
-                Assert.IsTrue(progressBar.Indeterminate);
+                Assert.That(progressBar.Indeterminate, Is.True);
                 Assert.IsNotNull(progressBar.Timer);
 
                 progressBar.Indeterminate = false;
@@ -111,7 +111,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 form.Show();
                 progressBar.Visible = true;
-                Assert.IsTrue(progressBar.Timer.Enabled);
+                Assert.That(progressBar.Timer.Enabled, Is.True);
 
                 progressBar.Visible = false;
                 Assert.That(progressBar.Timer.Enabled, Is.False);

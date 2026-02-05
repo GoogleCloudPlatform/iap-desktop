@@ -226,7 +226,7 @@ namespace Google.Solutions.Terminal.Test.Controls
 
                 device.Raise(d => d.Disconnected += null, EventArgs.Empty);
 
-                Assert.IsTrue(deviceClosedEventRaised);
+                Assert.That(deviceClosedEventRaised, Is.True);
             }
         }
 

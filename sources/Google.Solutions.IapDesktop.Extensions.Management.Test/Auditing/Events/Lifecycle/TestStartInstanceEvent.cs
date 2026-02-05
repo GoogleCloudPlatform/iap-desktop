@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(StartInstanceEvent.IsStartInstanceEvent(r));
+            Assert.That(StartInstanceEvent.IsStartInstanceEvent(r), Is.True);
 
             var e = (StartInstanceEvent)r.ToEvent();
 

@@ -76,7 +76,7 @@ namespace Google.Solutions.Settings.Test
             [Test]
             public void IsValid()
             {
-                Assert.IsTrue(CreateAccessor("test").IsValid(ConsoleColor.Blue));
+                Assert.That(CreateAccessor("test").IsValid(ConsoleColor.Blue), Is.True);
                 Assert.That(CreateAccessor("test").IsValid((ConsoleColor)(-1)), Is.False);
             }
         }

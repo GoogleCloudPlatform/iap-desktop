@@ -48,17 +48,17 @@ namespace Google.Solutions.Settings.Test
                     null);
 
                 Assert.That(setting.IsSpecified, Is.False);
-                Assert.IsTrue(setting.IsDefault);
+                Assert.That(setting.IsDefault, Is.True);
 
                 setting.SetClearTextValue("value");
 
-                Assert.IsTrue(setting.IsSpecified);
+                Assert.That(setting.IsSpecified, Is.True);
                 Assert.That(setting.IsDefault, Is.False);
 
                 setting.Value = setting.DefaultValue;
 
-                Assert.IsTrue(setting.IsSpecified);
-                Assert.IsTrue(setting.IsDefault);
+                Assert.That(setting.IsSpecified, Is.True);
+                Assert.That(setting.IsDefault, Is.True);
             }
         }
 
@@ -83,7 +83,7 @@ namespace Google.Solutions.Settings.Test
                 Assert.That(setting.Description, Is.EqualTo("description"));
                 Assert.That(setting.Category, Is.EqualTo("category"));
                 Assert.IsNull(setting.Value);
-                Assert.IsTrue(setting.IsDefault);
+                Assert.That(setting.IsDefault, Is.True);
                 Assert.That(setting.IsDirty, Is.False);
                 Assert.That(setting.IsReadOnly, Is.False);
             }
@@ -106,7 +106,7 @@ namespace Google.Solutions.Settings.Test
                 Assert.That(setting.Description, Is.EqualTo("description"));
                 Assert.That(setting.Category, Is.EqualTo("category"));
                 Assert.IsNull(setting.Value);
-                Assert.IsTrue(setting.IsDefault);
+                Assert.That(setting.IsDefault, Is.True);
                 Assert.That(setting.IsDirty, Is.False);
                 Assert.That(setting.IsReadOnly, Is.False);
             }
@@ -132,7 +132,7 @@ namespace Google.Solutions.Settings.Test
                 Assert.That(setting.Category, Is.EqualTo("category"));
                 Assert.IsNull(setting.Value);
                 Assert.IsNull(setting.GetClearTextValue());
-                Assert.IsTrue(setting.IsDefault);
+                Assert.That(setting.IsDefault, Is.True);
                 Assert.That(setting.IsDirty, Is.False);
                 Assert.That(setting.IsReadOnly, Is.False);
             }
@@ -248,7 +248,7 @@ namespace Google.Solutions.Settings.Test
 
                 setting.Value = null;
 
-                Assert.IsTrue(setting.IsDefault);
+                Assert.That(setting.IsDefault, Is.True);
                 Assert.That(setting.IsDirty, Is.False);
             }
         }
@@ -267,7 +267,7 @@ namespace Google.Solutions.Settings.Test
 
                 setting.Value = null;
 
-                Assert.IsTrue(setting.IsDefault);
+                Assert.That(setting.IsDefault, Is.True);
                 Assert.That(setting.IsDirty, Is.False);
             }
         }
@@ -287,7 +287,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = SecureStringExtensions.FromClearText("yellow");
 
                 Assert.That(setting.IsDefault, Is.False);
-                Assert.IsTrue(setting.IsDirty);
+                Assert.That(setting.IsDirty, Is.True);
             }
         }
 

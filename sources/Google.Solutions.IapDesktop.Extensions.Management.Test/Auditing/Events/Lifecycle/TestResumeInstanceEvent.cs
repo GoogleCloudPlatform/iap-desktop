@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }}";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(ResumeInstanceEvent.IsResumeInstanceEvent(r));
+            Assert.That(ResumeInstanceEvent.IsResumeInstanceEvent(r), Is.True);
 
             var e = (ResumeInstanceEvent)r.ToEvent();
 
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }}";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(ResumeInstanceEvent.IsResumeInstanceEvent(r));
+            Assert.That(ResumeInstanceEvent.IsResumeInstanceEvent(r), Is.True);
 
             var e = (ResumeInstanceEvent)r.ToEvent();
 
@@ -176,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }}";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsTrue(ResumeInstanceEvent.IsResumeInstanceEvent(r));
+            Assert.That(ResumeInstanceEvent.IsResumeInstanceEvent(r), Is.True);
 
             var e = (ResumeInstanceEvent)r.ToEvent();
 

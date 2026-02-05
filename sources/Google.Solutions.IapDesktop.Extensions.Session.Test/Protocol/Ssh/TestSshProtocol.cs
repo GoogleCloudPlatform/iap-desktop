@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .Setup(t => t.Traits)
                 .Returns(new[] { LinuxTrait.Instance });
 
-            Assert.IsTrue(SshProtocol.Protocol.IsAvailable(target.Object));
+            Assert.That(SshProtocol.Protocol.IsAvailable(target.Object), Is.True);
         }
 
         //---------------------------------------------------------------------

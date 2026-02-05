@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Traits
         public void TryParse_WhenExpressionIsValid(
             [Values("isLinux()", " isLinux(  \n) \n\r\t ")] string expression)
         {
-            Assert.IsTrue(LinuxTrait.TryParse(expression, out var trait));
+            Assert.That(LinuxTrait.TryParse(expression, out var trait), Is.True);
             Assert.IsNotNull(trait);
         }
 

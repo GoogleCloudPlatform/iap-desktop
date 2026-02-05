@@ -70,7 +70,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                     .StartNew(() => property.RaisePropertyChange())
                     .ConfigureAwait(true);
 
-                Assert.IsTrue(eventRaised);
+                Assert.That(eventRaised, Is.True);
             }
         }
 
@@ -98,7 +98,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                     .StartNew(() => property.RaisePropertyChange())
                     .ConfigureAwait(true);
 
-                Assert.IsTrue(eventRaised);
+                Assert.That(eventRaised, Is.True);
             }
         }
     }

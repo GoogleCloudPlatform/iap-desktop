@@ -92,7 +92,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
         public void CanConvertTo_WhenString()
         {
             var converter = new EnumDisplayNameConverter(typeof(EnumWithDescriptions));
-            Assert.IsTrue(converter.CanConvertTo(typeof(string)));
+            Assert.That(converter.CanConvertTo(typeof(string)), Is.True);
         }
 
         [Test]

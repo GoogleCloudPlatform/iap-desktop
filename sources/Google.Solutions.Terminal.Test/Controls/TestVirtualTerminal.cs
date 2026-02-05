@@ -224,7 +224,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.VirtualTerminal.ForeColor = Color.Yellow;
                 form.Close();
 
-                Assert.IsTrue(themeChangeEventRaised);
+                Assert.That(themeChangeEventRaised, Is.True);
             }
         }
 
@@ -241,7 +241,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.VirtualTerminal.BackColor = Color.Yellow;
                 form.Close();
 
-                Assert.IsTrue(themeChangeEventRaised);
+                Assert.That(themeChangeEventRaised, Is.True);
             }
         }
 
@@ -258,7 +258,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.VirtualTerminal.Font = SystemFonts.DialogFont;
                 form.Close();
 
-                Assert.IsTrue(themeChangeEventRaised);
+                Assert.That(themeChangeEventRaised, Is.True);
             }
         }
 
@@ -275,7 +275,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.VirtualTerminal.SelectionBackColor = Color.AliceBlue;
                 form.Close();
 
-                Assert.IsTrue(themeChangeEventRaised);
+                Assert.That(themeChangeEventRaised, Is.True);
             }
         }
 
@@ -292,7 +292,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.VirtualTerminal.SelectionBackgroundAlpha = .99f;
                 form.Close();
 
-                Assert.IsTrue(themeChangeEventRaised);
+                Assert.That(themeChangeEventRaised, Is.True);
             }
         }
 
@@ -309,7 +309,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.VirtualTerminal.Caret = VirtualTerminal.CaretStyle.BlinkingUnderline;
                 form.Close();
 
-                Assert.IsTrue(themeChangeEventRaised);
+                Assert.That(themeChangeEventRaised, Is.True);
             }
         }
 

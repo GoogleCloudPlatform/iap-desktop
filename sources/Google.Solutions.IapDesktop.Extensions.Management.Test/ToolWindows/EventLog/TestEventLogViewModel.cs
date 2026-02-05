@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(viewModel.IsEventListEnabled);
+            Assert.That(viewModel.IsEventListEnabled, Is.True);
             Assert.That(viewModel.WindowTitle, Does.Contain(EventLogViewModel.DefaultWindowTitle));
             Assert.That(viewModel.WindowTitle, Does.Contain("project-1"));
 
@@ -223,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(viewModel.IsEventListEnabled);
+            Assert.That(viewModel.IsEventListEnabled, Is.True);
             Assert.That(viewModel.WindowTitle, Does.Contain(EventLogViewModel.DefaultWindowTitle));
             Assert.That(viewModel.WindowTitle, Does.Contain("zone-1"));
 
@@ -250,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(viewModel.IsEventListEnabled);
+            Assert.That(viewModel.IsEventListEnabled, Is.True);
             Assert.That(viewModel.WindowTitle, Does.Contain(EventLogViewModel.DefaultWindowTitle));
             Assert.That(viewModel.WindowTitle, Does.Contain("instance-1"));
 
@@ -312,7 +312,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
 
             viewModel.IsIncludeSystemEventsButtonChecked = false;
             Assert.That(viewModel.Events.Count, Is.EqualTo(1));
-            Assert.IsTrue(viewModel.Events.All(e => e.LogRecord.IsActivityEvent));
+            Assert.That(viewModel.Events.All(e => e.LogRecord.IsActivityEvent), Is.True);
         }
 
         [Test]
@@ -334,7 +334,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
 
             viewModel.IsIncludeLifecycleEventsButtonChecked = false;
             Assert.That(viewModel.Events.Count, Is.EqualTo(1));
-            Assert.IsTrue(viewModel.Events.All(e => e.LogRecord.IsSystemEvent));
+            Assert.That(viewModel.Events.All(e => e.LogRecord.IsSystemEvent), Is.True);
         }
 
         [Test]

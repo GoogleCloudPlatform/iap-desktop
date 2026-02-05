@@ -70,7 +70,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 Assert.That(panel.NotificationBarVisible, Is.False);
                 panel.Text = "Note!";
-                Assert.IsTrue(panel.NotificationBarVisible);
+                Assert.That(panel.NotificationBarVisible, Is.True);
                 panel.Text = emptyValue;
                 Assert.That(panel.NotificationBarVisible, Is.False);
 

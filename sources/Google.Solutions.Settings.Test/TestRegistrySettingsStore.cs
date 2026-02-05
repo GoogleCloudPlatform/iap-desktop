@@ -66,7 +66,7 @@ namespace Google.Solutions.Settings.Test
                 key.Write(setting);
 
                 setting = key.Read("test", "test", null, null, 0);
-                Assert.IsTrue(setting.IsSpecified);
+                Assert.That(setting.IsSpecified, Is.True);
             }
         }
 
@@ -85,7 +85,7 @@ namespace Google.Solutions.Settings.Test
                 //
                 var defaultValue = -1;
                 var setting = key.Read("test", "test", null, null, defaultValue);
-                Assert.IsTrue(setting.IsDefault);
+                Assert.That(setting.IsDefault, Is.True);
                 Assert.That(setting.Value, Is.EqualTo(defaultValue));
 
                 //
@@ -164,7 +164,7 @@ namespace Google.Solutions.Settings.Test
                 //
                 setting = key.Read("test", "test", null, null, 0);
                 Assert.That(setting.IsSpecified, Is.False);
-                Assert.IsTrue(setting.IsDefault);
+                Assert.That(setting.IsDefault, Is.True);
             }
         }
 
