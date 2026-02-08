@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             Assert.That(key.PosixUsername, Is.EqualTo("login"));
             Assert.That(key.KeyType, Is.EqualTo("ssh-rsa"));
             Assert.That(key.PublicKey, Is.EqualTo("key"));
-            Assert.IsNull(((UnmanagedMetadataAuthorizedPublicKey)key).Email);
+            Assert.That(((UnmanagedMetadataAuthorizedPublicKey)key).Email, Is.Null);
 
             Assert.That(
                 key.ToString(), Is.EqualTo("login:ssh-rsa key"));

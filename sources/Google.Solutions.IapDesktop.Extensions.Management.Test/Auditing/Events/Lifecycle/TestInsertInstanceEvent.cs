@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
             Assert.That(e.Instance?.ProjectId, Is.EqualTo("project-1"));
             Assert.That(e.Severity, Is.EqualTo("NOTICE"));
-            Assert.IsNull(e.Status);
+            Assert.That(e.Status, Is.Null);
             Assert.That(
                 e.Instance, Is.EqualTo(new InstanceLocator("project-1", "us-central1-a", "instance-1")));
         }

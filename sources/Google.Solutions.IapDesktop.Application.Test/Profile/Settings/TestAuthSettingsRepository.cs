@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 var repository = new AuthSettingsRepository(settingsPath.CreateKey());
                 var settings = repository.GetSettings();
 
-                Assert.IsNull(settings.Credentials.Value);
+                Assert.That(settings.Credentials.Value, Is.Null);
             }
         }
 
@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 Assert.That(offlineCredential, Is.Not.Null);
                 Assert.That(offlineCredential!.Issuer, Is.EqualTo(OidcIssuer.Gaia));
                 Assert.That(offlineCredential.RefreshToken, Is.EqualTo("rt"));
-                Assert.IsNull(offlineCredential.IdToken);
+                Assert.That(offlineCredential.IdToken, Is.Null);
                 Assert.That(offlineCredential.Scope, Is.EqualTo("openid"));
             }
         }
@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 Assert.That(offlineCredential, Is.Not.Null);
                 Assert.That(offlineCredential!.Issuer, Is.EqualTo(OidcIssuer.Sts));
                 Assert.That(offlineCredential.RefreshToken, Is.EqualTo("rt"));
-                Assert.IsNull(offlineCredential.IdToken);
+                Assert.That(offlineCredential.IdToken, Is.Null);
                 Assert.That(offlineCredential.Scope, Is.EqualTo("openid"));
             }
         }
@@ -224,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 Assert.That(offlineCredential, Is.Not.Null);
                 Assert.That(offlineCredential!.Issuer, Is.EqualTo(OidcIssuer.Sts));
                 Assert.That(offlineCredential.RefreshToken, Is.EqualTo("rt"));
-                Assert.IsNull(offlineCredential.IdToken);
+                Assert.That(offlineCredential.IdToken, Is.Null);
                 Assert.That(offlineCredential.Scope, Is.EqualTo("openid"));
             }
         }

@@ -173,7 +173,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = setting.DefaultValue;
                 key.Write(setting);
 
-                Assert.IsNull(key.BackingKey.GetValue("test"));
+                Assert.That(key.BackingKey.GetValue("test"), Is.Null);
             }
         }
 
@@ -196,7 +196,7 @@ namespace Google.Solutions.Settings.Test
                 ((IAnySetting)setting).AnyValue = null;
                 key.Write(setting);
 
-                Assert.IsNull(key.BackingKey.GetValue("test"));
+                Assert.That(key.BackingKey.GetValue("test"), Is.Null);
             }
         }
 

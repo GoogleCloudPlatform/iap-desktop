@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsNull(viewModel.InformationText.Value);
+            Assert.That(viewModel.InformationText.Value, Is.Null);
             Assert.That(viewModel.WindowTitle.Value, Is.EqualTo("Authorized SSH keys"));
             Assert.That(viewModel.AllKeys.Any(), Is.False);
             Assert.That(viewModel.FilteredKeys.Any(), Is.False);
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsNull(viewModel.InformationText.Value);
+            Assert.That(viewModel.InformationText.Value, Is.Null);
             Assert.That(viewModel.WindowTitle.Value, Is.EqualTo("Authorized SSH keys"));
             Assert.That(viewModel.AllKeys.Any(), Is.False);
             Assert.That(viewModel.FilteredKeys.Any(), Is.False);

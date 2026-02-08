@@ -182,8 +182,8 @@ namespace Google.Solutions.Settings.Test
 
                 new RegistrySettingsStore(key).Clear();
 
-                Assert.IsNull(key.GetValue("foo"));
-                Assert.IsNull(key.GetValue("bar"));
+                Assert.That(key.GetValue("foo"), Is.Null);
+                Assert.That(key.GetValue("bar"), Is.Null);
             }
         }
     }

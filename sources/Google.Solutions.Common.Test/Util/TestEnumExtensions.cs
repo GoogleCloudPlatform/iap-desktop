@@ -119,7 +119,7 @@ namespace Google.Solutions.Common.Test.Util
         {
             var a = SampleEnumWithAttributes.NoAttribute
                 .GetAttribute<System.ComponentModel.DescriptionAttribute>();
-            Assert.IsNull(a);
+            Assert.That(a, Is.Null);
         }
     }
 }

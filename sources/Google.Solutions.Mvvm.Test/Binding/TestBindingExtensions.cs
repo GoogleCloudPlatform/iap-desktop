@@ -257,7 +257,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.One,
                 new Mock<IBindingContext>().Object);
 
-            Assert.IsNull(model.One);
+            Assert.That(model.One, Is.Null);
             control.Text = "test";
             Assert.That(model.One, Is.EqualTo("test"));
         }
@@ -337,9 +337,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.One,
                 new Mock<IBindingContext>().Object);
 
-            Assert.IsNull(model.One);
+            Assert.That(model.One, Is.Null);
             control.Text = "test";
-            Assert.IsNull(model.One);
+            Assert.That(model.One, Is.Null);
         }
 
         [Test]

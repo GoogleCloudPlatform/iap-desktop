@@ -38,7 +38,7 @@ namespace Google.Solutions.Mvvm.Test.Cache
         public void Lookup_WhenLookupNonexistingItem_ThenNullIsReturned()
         {
             var cache = new LeastRecentlyUsedCache<string, string>(2);
-            Assert.IsNull(cache.Lookup("key"));
+            Assert.That(cache.Lookup("key"), Is.Null);
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace Google.Solutions.Mvvm.Test.Cache
             cache.Add("two", "TWO");
             cache.Add("three", "THREE");
 
-            Assert.IsNull(cache.Lookup("one"));
+            Assert.That(cache.Lookup("one"), Is.Null);
             Assert.That(cache.Lookup("two"), Is.EqualTo("TWO"));
             Assert.That(cache.Lookup("three"), Is.EqualTo("THREE"));
         }
@@ -74,7 +74,7 @@ namespace Google.Solutions.Mvvm.Test.Cache
             cache.Lookup("one");
             cache.Add("three", "THREE");
 
-            Assert.IsNull(cache.Lookup("two"));
+            Assert.That(cache.Lookup("two"), Is.Null);
             Assert.That(cache.Lookup("one"), Is.EqualTo("ONE"));
             Assert.That(cache.Lookup("three"), Is.EqualTo("THREE"));
         }
@@ -99,7 +99,7 @@ namespace Google.Solutions.Mvvm.Test.Cache
             cache.Remove("one");
             cache.Remove("doesnotexist");
 
-            Assert.IsNull(cache.Lookup("one"));
+            Assert.That(cache.Lookup("one"), Is.Null);
         }
     }
 }

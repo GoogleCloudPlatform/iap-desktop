@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsNull(viewModel.InformationText.Value);
+            Assert.That(viewModel.InformationText.Value, Is.Null);
         }
 
         //---------------------------------------------------------------------
@@ -130,8 +130,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsNull(viewModel.InformationText.Value);
-            Assert.IsNull(viewModel.InspectedObject.Value);
+            Assert.That(viewModel.InformationText.Value, Is.Null);
+            Assert.That(viewModel.InspectedObject.Value, Is.Null);
             Assert.That(
                 viewModel.WindowTitle.Value, Is.EqualTo(ConnectionSettingsViewModel.DefaultWindowTitle));
         }

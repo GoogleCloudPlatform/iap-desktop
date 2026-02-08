@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository,
                 new HelpClient());
 
-            Assert.IsNull(viewModel.PrivateServiceConnectEndpoint.Value);
+            Assert.That(viewModel.PrivateServiceConnectEndpoint.Value, Is.Null);
             Assert.That(viewModel.IsPrivateServiceConnectEnabled.Value, Is.False);
             Assert.That(viewModel.IsPrivateServiceConnectEditable.Value, Is.True);
         }
@@ -320,7 +320,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
-            Assert.IsNull(settings.PrivateServiceConnectEndpoint.Value);
+            Assert.That(settings.PrivateServiceConnectEndpoint.Value, Is.Null);
         }
 
         [Test]

@@ -39,9 +39,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.That(package.PackageType, Is.EqualTo("Patch"));
             Assert.That(package.PackageId, Is.EqualTo("title"));
             Assert.That(package.Description, Is.EqualTo("summary (category)"));
-            Assert.IsNull(package.Version);
-            Assert.IsNull(package.Weblink);
-            Assert.IsNull(package.InstalledOn);
+            Assert.That(package.Version, Is.Null);
+            Assert.That(package.Weblink, Is.Null);
+            Assert.That(package.InstalledOn, Is.Null);
             Assert.That(package.Criticality, Is.EqualTo(PackageCriticality.NonCritical));
         }
 
@@ -57,9 +57,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.That(package.PackageType, Is.EqualTo("Patch"));
             Assert.That(package.PackageId, Is.EqualTo("title"));
             Assert.That(package.Description, Is.EqualTo(""));
-            Assert.IsNull(package.Version);
-            Assert.IsNull(package.Weblink);
-            Assert.IsNull(package.InstalledOn);
+            Assert.That(package.Version, Is.Null);
+            Assert.That(package.Weblink, Is.Null);
+            Assert.That(package.InstalledOn, Is.Null);
             Assert.That(package.Criticality, Is.EqualTo(PackageCriticality.NonCritical));
         }
     }

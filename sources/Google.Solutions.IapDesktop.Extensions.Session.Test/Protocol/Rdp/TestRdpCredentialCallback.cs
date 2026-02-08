@@ -57,9 +57,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
                 .GetCredentialsAsync(SampleCallbackUrl, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(credentials.User);
-            Assert.IsNull(credentials.Domain);
-            Assert.IsNull(credentials.Password);
+            Assert.That(credentials.User, Is.Null);
+            Assert.That(credentials.Domain, Is.Null);
+            Assert.That(credentials.Password, Is.Null);
         }
 
         [Test]

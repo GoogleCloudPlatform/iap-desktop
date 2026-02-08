@@ -73,9 +73,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             var e = (NotifyInstanceLocationEvent)r.ToEvent();
 
             Assert.That(e.InstanceId, Is.EqualTo(7045222222254025));
-            Assert.IsNull(e.Instance);
+            Assert.That(e.Instance, Is.Null);
             Assert.That(e.Severity, Is.EqualTo("INFO"));
-            Assert.IsNull(e.Status);
+            Assert.That(e.Status, Is.Null);
             Assert.That(e.ServerId, Is.EqualTo("4aaaa7b32a208e7ccb4ee62acedee725"));
             Assert.That(e.NodeType?.Name, Is.EqualTo("c2-node-60-240"));
             Assert.That(e.SchedulingTimestamp, Is.EqualTo(new DateTime(2020, 5, 4, 1, 50, 10, 917)));
@@ -121,11 +121,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             var e = (NotifyInstanceLocationEvent)r.ToEvent();
 
             Assert.That(e.InstanceId, Is.EqualTo(7045222222254025));
-            Assert.IsNull(e.Instance);
+            Assert.That(e.Instance, Is.Null);
             Assert.That(e.Severity, Is.EqualTo("INFO"));
-            Assert.IsNull(e.Status);
+            Assert.That(e.Status, Is.Null);
             Assert.That(e.ServerId, Is.EqualTo("4aaaa7b32a208e7ccb4ee62acedee725"));
-            Assert.IsNull(e.NodeType);
+            Assert.That(e.NodeType, Is.Null);
             Assert.That(e.SchedulingTimestamp, Is.EqualTo(new DateTime(2020, 5, 4, 1, 50, 10, 917)));
         }
 
@@ -170,11 +170,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             var e = (NotifyInstanceLocationEvent)r.ToEvent();
 
             Assert.That(e.InstanceId, Is.EqualTo(7045222222254025));
-            Assert.IsNull(e.Instance);
+            Assert.That(e.Instance, Is.Null);
             Assert.That(e.Severity, Is.EqualTo("INFO"));
-            Assert.IsNull(e.Status);
+            Assert.That(e.Status, Is.Null);
             Assert.That(e.ServerId, Is.EqualTo("4aaaa7b32a208e7ccb4ee62acedee725"));
-            Assert.IsNull(e.NodeType);
+            Assert.That(e.NodeType, Is.Null);
             Assert.That(e.SchedulingTimestamp, Is.EqualTo(new DateTime(2020, 5, 4, 1, 50, 10, 917)));
         }
     }

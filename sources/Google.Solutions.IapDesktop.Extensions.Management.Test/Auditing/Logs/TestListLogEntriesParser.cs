@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                 new JsonTextReader(new StringReader(json)),
                 events.Add);
 
-            Assert.IsNull(token);
+            Assert.That(token, Is.Null);
             Assert.That(events.Count, Is.EqualTo(0));
         }
 

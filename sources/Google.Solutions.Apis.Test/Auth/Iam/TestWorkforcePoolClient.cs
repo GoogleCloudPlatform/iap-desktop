@@ -268,7 +268,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                 .TryAuthorizeSilentlyAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(session);
+            Assert.That(session, Is.Null);
         }
 
         [Test]
@@ -321,7 +321,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
             // Terminate session.
             Assert.That(store.StoredCredential, Is.Not.Null);
             session.Terminate();
-            Assert.IsNull(store.StoredCredential);
+            Assert.That(store.StoredCredential, Is.Null);
         }
     }
 }

@@ -67,7 +67,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
 
             var descriptor = new MaskedSettingDescriptor(setting);
 
-            Assert.IsNull(descriptor.GetValue(setting));
+            Assert.That(descriptor.GetValue(setting), Is.Null);
         }
 
         //----------------------------------------------------------------------

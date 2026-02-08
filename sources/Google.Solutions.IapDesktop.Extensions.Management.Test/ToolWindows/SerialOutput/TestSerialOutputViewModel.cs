@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
                 .SwitchToModelAsync(node)
                 .ConfigureAwait(true);
 
-            Assert.IsNull(viewModel.TailCancellationTokenSource, "not tailing yet");
+            Assert.That(viewModel.TailCancellationTokenSource, "not tailing yet", Is.Null);
 
             viewModel.IsTailBlocked = false;
             viewModel.IsTailEnabled = true;
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
             // CTS cancelled => not tailing.
             Assert.That(tailCts!.IsCancellationRequested, Is.True, "tailing stopped");
-            Assert.IsNull(viewModel.TailCancellationTokenSource);
+            Assert.That(viewModel.TailCancellationTokenSource, Is.Null);
         }
 
         [Test]
@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             viewModel.IsTailBlocked = true;
             viewModel.IsTailEnabled = true;
 
-            Assert.IsNull(viewModel.TailCancellationTokenSource, "not tailing yet");
+            Assert.That(viewModel.TailCancellationTokenSource, "not tailing yet", Is.Null);
         }
 
         [Test]
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
                 .SwitchToModelAsync(node)
                 .ConfigureAwait(true);
 
-            Assert.IsNull(viewModel.TailCancellationTokenSource, "not tailing yet");
+            Assert.That(viewModel.TailCancellationTokenSource, "not tailing yet", Is.Null);
 
             viewModel.IsTailEnabled = true;
             viewModel.IsTailBlocked = false;
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
             // CTS cancelled => not tailing.
             Assert.That(tailCts!.IsCancellationRequested, Is.True, "tailing stopped");
-            Assert.IsNull(viewModel.TailCancellationTokenSource);
+            Assert.That(viewModel.TailCancellationTokenSource, Is.Null);
         }
 
         //---------------------------------------------------------------------

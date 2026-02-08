@@ -33,12 +33,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
         {
             var parameters = new SshParameters();
 
-            Assert.IsNull(parameters.Language);
+            Assert.That(parameters.Language, Is.Null);
 
             Assert.That(parameters.TransportType, Is.EqualTo(SessionTransportType._Default));
             Assert.That(parameters.Port, Is.EqualTo(SshParameters.DefaultPort));
             Assert.That(parameters.ConnectionTimeout, Is.EqualTo(SshParameters.DefaultConnectionTimeout));
-            Assert.IsNull(parameters.PreferredUsername);
+            Assert.That(parameters.PreferredUsername, Is.Null);
             Assert.That(parameters.PublicKeyValidity, Is.EqualTo(SshParameters.DefaultPublicKeyValidity));
         }
     }

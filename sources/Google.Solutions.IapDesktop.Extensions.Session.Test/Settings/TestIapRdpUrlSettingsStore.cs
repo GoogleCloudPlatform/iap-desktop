@@ -40,9 +40,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance");
             var settings = new ConnectionSettings(url.Instance, new IapRdpUrlSettingsStore(url));
 
-            Assert.IsNull(settings.RdpUsername.Value);
-            Assert.IsNull(settings.RdpPassword.Value);
-            Assert.IsNull(settings.RdpDomain.Value);
+            Assert.That(settings.RdpUsername.Value, Is.Null);
+            Assert.That(settings.RdpPassword.Value, Is.Null);
+            Assert.That(settings.RdpDomain.Value, Is.Null);
             Assert.That(settings.RdpConnectionBar.Value, Is.EqualTo(RdpConnectionBarState._Default));
             Assert.That(settings.RdpAuthenticationLevel.Value, Is.EqualTo(RdpAuthenticationLevel._Default));
             Assert.That(settings.RdpColorDepth.Value, Is.EqualTo(RdpColorDepth._Default));
@@ -56,9 +56,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?a=b&user=wrongcase&_");
             var settings = new ConnectionSettings(url.Instance, new IapRdpUrlSettingsStore(url));
 
-            Assert.IsNull(settings.RdpUsername.Value);
-            Assert.IsNull(settings.RdpPassword.Value);
-            Assert.IsNull(settings.RdpDomain.Value);
+            Assert.That(settings.RdpUsername.Value, Is.Null);
+            Assert.That(settings.RdpPassword.Value, Is.Null);
+            Assert.That(settings.RdpDomain.Value, Is.Null);
             Assert.That(settings.RdpConnectionBar.Value, Is.EqualTo(RdpConnectionBarState._Default));
             Assert.That(settings.RdpAuthenticationLevel.Value, Is.EqualTo(RdpAuthenticationLevel._Default));
             Assert.That(settings.RdpColorDepth.Value, Is.EqualTo(RdpColorDepth._Default));
@@ -75,9 +75,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
                 "CredentialGenerationBehavior=-11");
             var settings = new ConnectionSettings(url.Instance, new IapRdpUrlSettingsStore(url));
 
-            Assert.IsNull(settings.RdpUsername.Value);
-            Assert.IsNull(settings.RdpPassword.Value);
-            Assert.IsNull(settings.RdpDomain.Value);
+            Assert.That(settings.RdpUsername.Value, Is.Null);
+            Assert.That(settings.RdpPassword.Value, Is.Null);
+            Assert.That(settings.RdpDomain.Value, Is.Null);
             Assert.That(settings.RdpConnectionBar.Value, Is.EqualTo(RdpConnectionBarState._Default));
             Assert.That(settings.RdpAuthenticationLevel.Value, Is.EqualTo(RdpAuthenticationLevel._Default));
             Assert.That(settings.RdpColorDepth.Value, Is.EqualTo(RdpColorDepth._Default));
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             var settings = new ConnectionSettings(url.Instance, new IapRdpUrlSettingsStore(url));
 
             Assert.That(settings.RdpUsername.Value, Is.EqualTo("John Doe"));
-            Assert.IsNull(settings.RdpPassword.Value);
+            Assert.That(settings.RdpPassword.Value, Is.Null);
             Assert.That(settings.RdpDomain.Value, Is.EqualTo("  mydomain"));
         }
 

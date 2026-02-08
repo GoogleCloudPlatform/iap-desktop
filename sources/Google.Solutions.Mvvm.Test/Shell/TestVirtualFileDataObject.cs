@@ -78,7 +78,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
             var dataObject = new VirtualFileDataObject(
                 Array.Empty<VirtualFileDataObject.Descriptor>());
 
-            Assert.IsNull(dataObject.GetData("Unsupported", false));
+            Assert.That(dataObject.GetData("Unsupported", false), Is.Null);
         }
 
         [Test]

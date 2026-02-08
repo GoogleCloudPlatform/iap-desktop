@@ -65,8 +65,8 @@ namespace Google.Solutions.Platform.Test.Dispatch
             {
                 Assert.That(process.Handle, Is.Not.Null);
                 Assert.That(process.Handle.IsInvalid, Is.False);
-                Assert.IsNull(process.Job);
-                Assert.IsNull(process.PseudoTerminal);
+                Assert.That(process.Job, Is.Null);
+                Assert.That(process.PseudoTerminal, Is.Null);
 
                 process.Terminate(1);
             }
@@ -118,7 +118,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             {
                 Assert.That(process.Handle, Is.Not.Null);
                 Assert.That(process.Handle.IsInvalid, Is.False);
-                Assert.IsNull(process.Job);
+                Assert.That(process.Job, Is.Null);
 
                 Assert.That(process.PseudoTerminal, Is.Not.Null);
                 Assert.That(process.PseudoTerminal!.IsClosed, Is.False);
@@ -165,7 +165,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             {
                 Assert.That(process.Handle, Is.Not.Null);
                 Assert.That(process.Handle.IsInvalid, Is.False);
-                Assert.IsNull(process.Job);
+                Assert.That(process.Job, Is.Null);
 
                 process.Terminate(1);
             }

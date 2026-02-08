@@ -122,7 +122,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             var result = new string[2];
             filtered.CopyTo(result, 1);
-            Assert.IsNull(result[0]);
+            Assert.That(result[0], Is.Null);
             Assert.That(result[1], Is.EqualTo("THREE"));
         }
 

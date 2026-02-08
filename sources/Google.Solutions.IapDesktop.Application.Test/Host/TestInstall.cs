@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
                 var install = new Install(keyPath.Path);
-                Assert.IsNull(install.PreviousVersion);
+                Assert.That(install.PreviousVersion, Is.Null);
             }
         }
 
@@ -186,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 var install = new Install(keyPath.Path);
                 keyPath.Delete();
 
-                Assert.IsNull(install.PreviousVersion);
+                Assert.That(install.PreviousVersion, Is.Null);
             }
         }
 

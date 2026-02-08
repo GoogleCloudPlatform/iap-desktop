@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.IsNull(settings.PrivateServiceConnectEndpoint.Value);
+                Assert.That(settings.PrivateServiceConnectEndpoint.Value, Is.Null);
                 Assert.That(settings.IsDeviceCertificateAuthenticationEnabled.Value, Is.False);
                 Assert.That(
                     settings.DeviceCertificateSelector.Value, Does.Contain("Google Endpoint Verification"));

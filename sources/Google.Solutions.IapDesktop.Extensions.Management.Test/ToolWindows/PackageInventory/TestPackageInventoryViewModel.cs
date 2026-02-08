@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
                 .ConfigureAwait(true);
 
             Assert.That(viewModel.IsPackageListEnabled.Value, Is.False);
-            Assert.IsNull(viewModel.InformationText.Value);
+            Assert.That(viewModel.InformationText.Value, Is.Null);
             Assert.That(viewModel.WindowTitle.Value, Is.EqualTo("Installed packages"));
             Assert.That(viewModel.AllPackages.Any(), Is.False);
             Assert.That(viewModel.FilteredPackages.Any(), Is.False);
@@ -188,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
                 .ConfigureAwait(true);
 
             Assert.That(viewModel.IsPackageListEnabled.Value, Is.True);
-            Assert.IsNull(viewModel.InformationText.Value);
+            Assert.That(viewModel.InformationText.Value, Is.Null);
             Assert.That(viewModel.WindowTitle.Value, Does.Contain("project-1"));
 
             Assert.That(viewModel.AllPackages.Count, Is.EqualTo(4));
@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
                 .ConfigureAwait(true);
 
             Assert.That(viewModel.IsPackageListEnabled.Value, Is.True);
-            Assert.IsNull(viewModel.InformationText.Value);
+            Assert.That(viewModel.InformationText.Value, Is.Null);
             Assert.That(viewModel.WindowTitle.Value, Does.Contain("zone-1"));
 
             Assert.That(viewModel.AllPackages.Count, Is.EqualTo(2));
@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
                 .ConfigureAwait(true);
 
             Assert.That(viewModel.IsPackageListEnabled.Value, Is.True);
-            Assert.IsNull(viewModel.InformationText.Value);
+            Assert.That(viewModel.InformationText.Value, Is.Null);
             Assert.That(viewModel.WindowTitle.Value, Does.Contain("instance-1"));
 
             Assert.That(viewModel.AllPackages.Count, Is.EqualTo(2));

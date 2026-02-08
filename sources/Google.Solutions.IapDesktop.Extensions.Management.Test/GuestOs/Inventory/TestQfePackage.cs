@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.That(package.PackageType, Is.EqualTo("Hotfix"));
             Assert.That(package.PackageId, Is.EqualTo("kb123"));
             Assert.That(package.Description, Is.EqualTo("description"));
-            Assert.IsNull(package.Version);
+            Assert.That(package.Version, Is.Null);
             Assert.That(package.Weblink?.ToString(), Is.EqualTo("http://uri/"));
             Assert.That(package.InstalledOn, Is.EqualTo(new DateTime(2020, 1, 3, 4, 5, 6, DateTimeKind.Utc)));
             Assert.That(package.Criticality, Is.EqualTo(PackageCriticality.NonCritical));
@@ -57,10 +57,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
 
             Assert.That(package.PackageType, Is.EqualTo("Hotfix"));
             Assert.That(package.PackageId, Is.EqualTo("kb123"));
-            Assert.IsNull(package.Description);
-            Assert.IsNull(package.Version);
-            Assert.IsNull(package.Weblink);
-            Assert.IsNull(package.InstalledOn);
+            Assert.That(package.Description, Is.Null);
+            Assert.That(package.Version, Is.Null);
+            Assert.That(package.Weblink, Is.Null);
+            Assert.That(package.InstalledOn, Is.Null);
             Assert.That(package.Criticality, Is.EqualTo(PackageCriticality.NonCritical));
         }
     }

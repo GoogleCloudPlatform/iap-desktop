@@ -59,9 +59,9 @@ namespace Google.Solutions.Settings.Test.ComponentModel
             var descriptor = new SettingDescriptor(setting);
 
             Assert.That(descriptor.Name, Is.EqualTo("key"));
-            Assert.IsNull(descriptor.DisplayName);
-            Assert.IsNull(descriptor.Description);
-            Assert.IsNull(descriptor.Category);
+            Assert.That(descriptor.DisplayName, Is.Null);
+            Assert.That(descriptor.Description, Is.Null);
+            Assert.That(descriptor.Category, Is.Null);
 
             Assert.That(descriptor.IsBrowsable, Is.False);
         }

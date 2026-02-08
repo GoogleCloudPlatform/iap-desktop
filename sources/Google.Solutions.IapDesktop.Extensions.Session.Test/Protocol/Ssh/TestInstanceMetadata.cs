@@ -1222,7 +1222,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(processor.AttachedServiceAccount);
+            Assert.That(processor.AttachedServiceAccount, Is.Null);
         }
 
         [Test]

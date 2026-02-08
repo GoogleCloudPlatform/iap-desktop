@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
             Assert.That(record.Resource?.Labels?["instance_id"], Is.EqualTo("22470777052"));
             Assert.That(record.Resource?.Labels?["zone"], Is.EqualTo("asia-east1-c"));
 
-            Assert.IsNull(record.Operation);
+            Assert.That(record.Operation, Is.Null);
 
             Assert.That(record.ProjectId, Is.EqualTo("project-1"));
             Assert.That(record.IsSystemEvent, Is.True);

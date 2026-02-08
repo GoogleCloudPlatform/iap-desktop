@@ -408,7 +408,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             Assert.That(keys.First().Email, Is.EqualTo("bob@gmail.com"));
             Assert.That(keys.First().KeyType, Is.EqualTo("ssh-rsa"));
             Assert.That(keys.First().PublicKey, Is.EqualTo("AAAA"));
-            Assert.IsNull(keys.First().ExpireOn);
+            Assert.That(keys.First().ExpireOn, Is.Null);
         }
 
         [Test]

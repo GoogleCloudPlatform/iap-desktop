@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                 .ConfigureAwait(true);
 
             Assert.That(model.InstanceName, Is.EqualTo(locator.Name));
-            Assert.IsNull(model.Hostname);
+            Assert.That(model.Hostname, Is.Null);
             Assert.That(model.Status, Is.EqualTo("RUNNING"));
             Assert.That(model.InternalIp, Is.Not.Null);
             Assert.That(model.ExternalIp, Is.Not.Null);
@@ -116,10 +116,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             Assert.That(model.Status, Is.EqualTo("RUNNING"));
 
             Assert.That(model.IsOsInventoryInformationPopulated, Is.False);
-            Assert.IsNull(model.Architecture);
-            Assert.IsNull(model.KernelVersion);
-            Assert.IsNull(model.OperatingSystemFullName);
-            Assert.IsNull(model.OperatingSystemVersion);
+            Assert.That(model.Architecture, Is.Null);
+            Assert.That(model.KernelVersion, Is.Null);
+            Assert.That(model.OperatingSystemFullName, Is.Null);
+            Assert.That(model.OperatingSystemVersion, Is.Null);
         }
 
         //---------------------------------------------------------------------
@@ -162,10 +162,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                     null,
                     null,
                     null));
-            Assert.IsNull(model.Architecture);
-            Assert.IsNull(model.KernelVersion);
-            Assert.IsNull(model.OperatingSystemFullName);
-            Assert.IsNull(model.OperatingSystemVersion);
+            Assert.That(model.Architecture, Is.Null);
+            Assert.That(model.KernelVersion, Is.Null);
+            Assert.That(model.OperatingSystemFullName, Is.Null);
+            Assert.That(model.OperatingSystemVersion, Is.Null);
         }
 
         [Test]

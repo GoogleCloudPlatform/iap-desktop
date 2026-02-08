@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                     .ConfigureAwait(true);
 
                 Assert.That(session, Is.Not.Null);
-                Assert.IsNull(this.ExceptionShown);
+                Assert.That(this.ExceptionShown, Is.Null);
 
                 // Float.
                 session!.FloatAt(new Rectangle(0, 0, 800, 600));

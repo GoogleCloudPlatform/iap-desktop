@@ -126,7 +126,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             var request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
 
-            Assert.IsNull(stream.Sid);
+            Assert.That(stream.Sid, Is.Null);
             await stream
                 .WriteAsync(request, 0, request.Length, CancellationToken.None)
                 .ConfigureAwait(false);

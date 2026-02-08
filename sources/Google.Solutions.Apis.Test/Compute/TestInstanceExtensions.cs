@@ -91,7 +91,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(instance.PublicAddress());
+            Assert.That(instance.PublicAddress(), Is.Null);
         }
 
         [Test]

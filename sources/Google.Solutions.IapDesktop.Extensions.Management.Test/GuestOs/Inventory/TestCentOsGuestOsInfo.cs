@@ -171,14 +171,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                 new List<GuestAttributesEntry>());
 
             Assert.That(attributes, Is.Not.Null);
-            Assert.IsNull(attributes.Architecture);
-            Assert.IsNull(attributes.KernelRelease);
-            Assert.IsNull(attributes.KernelVersion);
-            Assert.IsNull(attributes.OperatingSystem);
-            Assert.IsNull(attributes.OperatingSystemFullName);
-            Assert.IsNull(attributes.OperatingSystemVersion);
-            Assert.IsNull(attributes.AgentVersion);
-            Assert.IsNull(attributes.LastUpdated);
+            Assert.That(attributes.Architecture, Is.Null);
+            Assert.That(attributes.KernelRelease, Is.Null);
+            Assert.That(attributes.KernelVersion, Is.Null);
+            Assert.That(attributes.OperatingSystem, Is.Null);
+            Assert.That(attributes.OperatingSystemFullName, Is.Null);
+            Assert.That(attributes.OperatingSystemVersion, Is.Null);
+            Assert.That(attributes.AgentVersion, Is.Null);
+            Assert.That(attributes.LastUpdated, Is.Null);
         }
 
         [Test]

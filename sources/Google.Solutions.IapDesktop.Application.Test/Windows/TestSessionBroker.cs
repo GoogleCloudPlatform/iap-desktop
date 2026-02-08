@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             using (var form = new TestMainForm())
             {
                 var broker = new SessionBroker(form);
-                Assert.IsNull(broker.ActiveSession);
+                Assert.That(broker.ActiveSession, Is.Null);
             }
         }
 
@@ -191,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                 Assert.That(broker.TryActivateSession(
                     SampleLocator,
                     out var activated), Is.False);
-                Assert.IsNull(activated);
+                Assert.That(activated, Is.Null);
             }
         }
     }

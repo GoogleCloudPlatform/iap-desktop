@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
 
             await viewModel.ApplyChangesAsync();
 
-            Assert.IsNull(settingsRepository.GetSettings().FullScreenDevices.Value);
+            Assert.That(settingsRepository.GetSettings().FullScreenDevices.Value, Is.Null);
         }
 
         [Test]

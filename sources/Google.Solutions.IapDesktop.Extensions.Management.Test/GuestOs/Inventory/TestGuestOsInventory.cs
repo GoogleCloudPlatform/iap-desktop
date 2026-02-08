@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test]

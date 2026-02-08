@@ -178,7 +178,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
 
                 istream.Seek(4, ComStream.STREAM_SEEK_SET, IntPtr.Zero);
 
-                Assert.IsNull(stream.SpeculatedPosition);
+                Assert.That(stream.SpeculatedPosition, Is.Null);
             }
 
             seekableStream.Verify(s => s.Seek(4, SeekOrigin.Begin));
@@ -196,7 +196,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
 
                 istream.Seek(4, ComStream.STREAM_SEEK_CUR, IntPtr.Zero);
 
-                Assert.IsNull(stream.SpeculatedPosition);
+                Assert.That(stream.SpeculatedPosition, Is.Null);
             }
 
             seekableStream.Verify(s => s.Seek(4, SeekOrigin.Current));
@@ -214,7 +214,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
 
                 istream.Seek(4, ComStream.STREAM_SEEK_END, IntPtr.Zero);
 
-                Assert.IsNull(stream.SpeculatedPosition);
+                Assert.That(stream.SpeculatedPosition, Is.Null);
             }
 
             seekableStream.Verify(s => s.Seek(4, SeekOrigin.End));
