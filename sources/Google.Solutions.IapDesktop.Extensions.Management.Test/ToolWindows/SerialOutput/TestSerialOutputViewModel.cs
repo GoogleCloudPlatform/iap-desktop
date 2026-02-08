@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
                 .SwitchToModelAsync(node)
                 .ConfigureAwait(true);
 
-            Assert.That(viewModel.TailCancellationTokenSource, "not tailing yet", Is.Null);
+            Assert.That(viewModel.TailCancellationTokenSource, Is.Null, "not tailing yet");
 
             viewModel.IsTailBlocked = false;
             viewModel.IsTailEnabled = true;
@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
             viewModel.IsTailBlocked = true;
             viewModel.IsTailEnabled = true;
 
-            Assert.That(viewModel.TailCancellationTokenSource, "not tailing yet", Is.Null);
+            Assert.That(viewModel.TailCancellationTokenSource, Is.Null, "not tailing yet");
         }
 
         [Test]
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
                 .SwitchToModelAsync(node)
                 .ConfigureAwait(true);
 
-            Assert.That(viewModel.TailCancellationTokenSource, "not tailing yet", Is.Null);
+            Assert.That(viewModel.TailCancellationTokenSource, Is.Null, "not tailing yet");
 
             viewModel.IsTailEnabled = true;
             viewModel.IsTailBlocked = false;
