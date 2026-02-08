@@ -47,7 +47,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
             {
                 var item = container.AddCommandGroup(emptyGroup.Object, 0);
 
-                Assert.NotNull(item);
+                Assert.That(item, Is.Not.Null);
                 Assert.That(container.MenuItems.Count, Is.EqualTo(1));
                 Assert.That(((CommandContainer<string>)item).MenuItems.Count, Is.EqualTo(0));
             }
@@ -68,7 +68,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
             {
                 var item = container.AddCommandGroup(emptyGroup.Object, 0);
 
-                Assert.NotNull(item);
+                Assert.That(item, Is.Not.Null);
                 Assert.That(container.MenuItems.Count, Is.EqualTo(1));
                 Assert.That(((CommandContainer<string>)item).MenuItems.Count, Is.EqualTo(0));
             }
@@ -92,7 +92,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
             {
                 var item = container.AddCommandGroup(emptyGroup.Object, 0);
 
-                Assert.NotNull(item);
+                Assert.That(item, Is.Not.Null);
                 Assert.That(container.MenuItems.Count, Is.EqualTo(1));
                 Assert.That(((CommandContainer<string>)item).MenuItems.Count, Is.EqualTo(2));
             }

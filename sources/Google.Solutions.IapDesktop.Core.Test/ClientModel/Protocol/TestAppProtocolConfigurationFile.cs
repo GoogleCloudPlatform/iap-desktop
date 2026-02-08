@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             Assert.That(protocol.RemotePort, Is.EqualTo(8080));
 
             var client = (AppProtocolClient?)protocol.Client;
-            Assert.NotNull(client);
+            Assert.That(client, Is.Not.Null);
             Assert.That(client!.Executable, Is.EqualTo("cmd"));
         }
 

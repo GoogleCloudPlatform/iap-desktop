@@ -115,7 +115,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                     .AwaitStateAsync(ClientState.NotConnected, CancellationToken.None)
                     .ConfigureAwait(true);
 
-                Assert.NotNull(eventArgs);
+                Assert.That(eventArgs, Is.Not.Null);
                 Assert.IsInstanceOf<SocketException>(eventArgs!.Exception);
 
                 window.Close();
@@ -149,7 +149,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                     .AwaitStateAsync(ClientState.NotConnected, CancellationToken.None)
                     .ConfigureAwait(true);
 
-                Assert.NotNull(eventArgs);
+                Assert.That(eventArgs, Is.Not.Null);
                 Assert.That(eventArgs!.Reason, Is.EqualTo(ClientBase.DisconnectReason.FormClosed));
             }
         }
