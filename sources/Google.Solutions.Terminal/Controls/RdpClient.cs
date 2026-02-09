@@ -176,6 +176,29 @@ namespace Google.Solutions.Terminal.Controls
         {
             base.Dispose(disposing);
 
+            if (disposing)
+            {
+                //
+                // Unhook events.
+                //
+                this.client.OnConnecting -= new System.EventHandler(OnRdpConnecting);
+                this.client.OnConnected -= new System.EventHandler(OnRdpConnected);
+                this.client.OnLoginComplete -= new System.EventHandler(OnRdpLoginComplete);
+                this.client.OnDisconnected -= new AxMSTSCLib.IMsTscAxEvents_OnDisconnectedEventHandler(OnRdpDisconnected);
+                this.client.OnRequestGoFullScreen -= new System.EventHandler(OnRdpRequestGoFullScreen);
+                this.client.OnRequestLeaveFullScreen -= new System.EventHandler(OnRdpRequestLeaveFullScreen);
+                this.client.OnFatalError -= new AxMSTSCLib.IMsTscAxEvents_OnFatalErrorEventHandler(OnRdpFatalError);
+                this.client.OnWarning -= new AxMSTSCLib.IMsTscAxEvents_OnWarningEventHandler(OnRdpWarning);
+                this.client.OnRemoteDesktopSizeChange -= new AxMSTSCLib.IMsTscAxEvents_OnRemoteDesktopSizeChangeEventHandler(OnRdpRemoteDesktopSizeChange);
+                this.client.OnRequestContainerMinimize -= new System.EventHandler(OnRdpRequestContainerMinimize);
+                this.client.OnAuthenticationWarningDisplayed -= new System.EventHandler(OnRdpAuthenticationWarningDisplayed);
+                this.client.OnLogonError -= new AxMSTSCLib.IMsTscAxEvents_OnLogonErrorEventHandler(OnRdpLogonError);
+                this.client.OnFocusReleased -= new AxMSTSCLib.IMsTscAxEvents_OnFocusReleasedEventHandler(OnRdpFocusReleased);
+                this.client.OnServiceMessageReceived -= new AxMSTSCLib.IMsTscAxEvents_OnServiceMessageReceivedEventHandler(OnRdpServiceMessageReceived);
+                this.client.OnAutoReconnected -= new System.EventHandler(OnRdpAutoReconnected);
+                this.client.OnAutoReconnecting2 -= new AxMSTSCLib.IMsTscAxEvents_OnAutoReconnecting2EventHandler(OnRdpAutoReconnecting2);
+            }
+
             this.client.Dispose();
             this.deferResize.Dispose();
         }
