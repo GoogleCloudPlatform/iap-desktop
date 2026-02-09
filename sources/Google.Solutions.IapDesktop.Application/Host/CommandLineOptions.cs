@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Text;
-using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;

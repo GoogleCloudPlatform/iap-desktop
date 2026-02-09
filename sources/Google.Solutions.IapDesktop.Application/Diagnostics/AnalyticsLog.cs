@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Diagnostics
     /// Telemetry log that relays events to Google Analytics.
     /// </summary>
     /// <remarks>
-    /// For cusom parameters, consider the requirements in
+    /// For custom parameters, consider the requirements in
     /// https://support.google.com/analytics/answer/12229021
     /// </remarks>
     public class AnalyticsLog : TelemetryLog

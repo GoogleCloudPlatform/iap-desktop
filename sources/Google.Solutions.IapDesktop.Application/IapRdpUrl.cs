@@ -30,7 +30,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace Google.Solutions.IapDesktop.Application.Data
+namespace Google.Solutions.IapDesktop.Application
 {
     /// <summary>
     /// Represents an iap-rdp:/// URI.
@@ -44,9 +44,12 @@ namespace Google.Solutions.IapDesktop.Application.Data
     {
         public const string Scheme = "iap-rdp";
 
-        private static readonly Regex ProjectPattern = new Regex(@"(?:(?:[-a-z0-9]{1,63}\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z0-9](?:[-a-z0-9]{0,61}[a-z0-9])?))");
-        private static readonly Regex ZonePattern = new Regex(@"[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
-        private static readonly Regex InstanceNamePattern = new Regex(@"[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?|[1-9][0-9]{0,19}");
+        private static readonly Regex ProjectPattern 
+            = new Regex(@"(?:(?:[-a-z0-9]{1,63}\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z0-9](?:[-a-z0-9]{0,61}[a-z0-9])?))");
+        private static readonly Regex ZonePattern 
+            = new Regex(@"[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
+        private static readonly Regex InstanceNamePattern 
+            = new Regex(@"[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?|[1-9][0-9]{0,19}");
 
         /// <summary>
         /// Instance referenced by this URL.
@@ -85,7 +88,8 @@ namespace Google.Solutions.IapDesktop.Application.Data
             var pathComponents = absolutePath.Split('/');
             if (pathComponents.Length != 4)
             {
-                throw new IapRdpUrlFormatException($"Path not in format project/zone/instance-name: {absolutePath}");
+                throw new IapRdpUrlFormatException(
+                    $"Path not in format project/zone/instance-name: {absolutePath}");
             }
 
             Debug.Assert(string.IsNullOrEmpty(pathComponents[0]));
