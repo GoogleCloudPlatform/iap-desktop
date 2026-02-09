@@ -198,11 +198,11 @@ namespace Google.Solutions.Terminal.Controls
                 this.client.OnAutoReconnected -= new System.EventHandler(OnRdpAutoReconnected);
                 this.client.OnAutoReconnecting2 -= new AxMSTSCLib.IMsTscAxEvents_OnAutoReconnecting2EventHandler(OnRdpAutoReconnecting2);
 
-                this.deferLogoff?.Dispose(); 
+                this.deferLogoff?.Dispose();
+                this.deferResize.Dispose();
             }
 
             this.client.Dispose();
-            this.deferResize.Dispose();
         }
 
         protected override void OnFormClosing(object sender, FormClosingEventArgs args)
@@ -360,6 +360,11 @@ namespace Google.Solutions.Terminal.Controls
         {
             using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
+                if (this.client.IsDisposed)
+                {
+                    return;
+                }
+
                 if (this.client.Size == this.Size)
                 {
                     //
@@ -1172,6 +1177,11 @@ namespace Google.Solutions.Terminal.Controls
                 this.deferLogoff = new DeferredCallback(
                     ctx =>
                     {
+                        if (this.client.IsDisposed)
+                        {
+                            return;
+                        }
+
                         //
                         // Select the second option on the list.
                         //
