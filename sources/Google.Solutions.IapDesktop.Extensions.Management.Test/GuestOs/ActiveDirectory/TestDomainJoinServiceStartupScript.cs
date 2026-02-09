@@ -77,8 +77,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                     Assert.That(hello, Is.Not.Null);
                     Assert.That(hello.OperationId, Is.EqualTo(Guid.Empty.ToString()));
                     Assert.That(hello.MessageType, Is.EqualTo(DomainJoinService.HelloMessage.MessageTypeString));
-                    Assert.IsNotEmpty(hello.Exponent);
-                    Assert.IsNotEmpty(hello.Modulus);
+                    Assert.That(hello.Exponent, Is.Not.Empty);
+                    Assert.That(hello.Modulus, Is.Not.Empty);
                 }
             }
         }
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                     Assert.That(response.OperationId, Is.EqualTo(Guid.Empty.ToString()));
                     Assert.That(response.MessageType, Is.EqualTo(DomainJoinService.JoinResponse.MessageTypeString));
                     Assert.That(response.Succeeded, Is.False);
-                    Assert.IsNotEmpty(response.ErrorDetails);
+                    Assert.That(response.ErrorDetails, Is.Not.Empty);
                 }
             }
         }

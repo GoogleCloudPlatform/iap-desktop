@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .ConfigureAwait(true);
 
             Assert.That(viewModel.IsListEnabled.Value, Is.True);
-            Assert.IsNotEmpty(viewModel.InformationText.Value);
+            Assert.That(viewModel.InformationText.Value, Is.Not.Empty);
             Assert.That(viewModel.WindowTitle.Value, Does.Contain("project-1"));
 
             Assert.That(viewModel.AllKeys.Count, Is.EqualTo(2));
@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                 .ConfigureAwait(true);
 
             Assert.That(viewModel.IsListEnabled.Value, Is.True);
-            Assert.IsNotEmpty(viewModel.InformationText.Value);
+            Assert.That(viewModel.InformationText.Value, Is.Not.Empty);
             Assert.That(viewModel.WindowTitle.Value, Does.Contain("instance-1"));
 
             Assert.That(viewModel.AllKeys.Count, Is.EqualTo(2));
