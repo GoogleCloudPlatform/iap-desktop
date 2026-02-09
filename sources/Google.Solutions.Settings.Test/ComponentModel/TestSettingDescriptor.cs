@@ -120,7 +120,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
                 .Read<string>("key", "display name", "description", "category", "default");
 
             var descriptor = new SettingDescriptor(setting);
-            Assert.IsNotInstanceOf<EnumDisplayNameConverter>(descriptor.Converter);
+            Assert.That(descriptor.Converter, Is.Not.InstanceOf<EnumDisplayNameConverter>());
         }
     }
 }

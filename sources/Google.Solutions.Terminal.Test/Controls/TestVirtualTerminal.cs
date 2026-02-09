@@ -90,8 +90,8 @@ namespace Google.Solutions.Terminal.Test.Controls
                 form.Size = new Size(form.Size.Width + 100, form.Size.Height + 100);
                 Application.DoEvents();
 
-                Assert.Greater(form.VirtualTerminal.Dimensions.Width, initialDimensions.Width);
-                Assert.Greater(form.VirtualTerminal.Dimensions.Height, initialDimensions.Height);
+                Assert.That(form.VirtualTerminal.Dimensions.Width, Is.GreaterThan(initialDimensions.Width));
+                Assert.That(form.VirtualTerminal.Dimensions.Height, Is.GreaterThan(initialDimensions.Height));
 
                 form.Close();
             }
@@ -324,8 +324,8 @@ namespace Google.Solutions.Terminal.Test.Controls
             {
                 form.Show();
 
-                Assert.Greater(form.VirtualTerminal.Dimensions.Width, 80);
-                Assert.Greater(form.VirtualTerminal.Dimensions.Height, 20);
+                Assert.That(form.VirtualTerminal.Dimensions.Width, Is.GreaterThan(80));
+                Assert.That(form.VirtualTerminal.Dimensions.Height, Is.GreaterThan(20));
 
                 form.Close();
             }

@@ -68,7 +68,7 @@ namespace Google.Solutions.Apis.Test.Analytics
                 .GenerateParameters()
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value)["engagement_time_msec"]);
 
-            Assert.Less(engagementTime1, 1000);
+            Assert.That(engagementTime1, Is.LessThan(1000));
         }
     }
 }

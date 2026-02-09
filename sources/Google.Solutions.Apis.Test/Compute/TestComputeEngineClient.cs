@@ -150,7 +150,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.Greater(instances.Count(), 1);
+            Assert.That(instances.Count(), Is.GreaterThan(1));
             Assert.That(instances.FirstOrDefault(i => i.Name == instanceRef.Name), Is.Not.Null);
         }
 
@@ -173,7 +173,7 @@ namespace Google.Solutions.Apis.Test.Compute
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.Greater(instances.Count(), 1);
+            Assert.That(instances.Count(), Is.GreaterThan(1));
             Assert.That(instances.FirstOrDefault(i => i.Name == instanceRef.Name), Is.Not.Null);
         }
 

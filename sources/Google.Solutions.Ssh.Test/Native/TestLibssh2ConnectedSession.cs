@@ -158,7 +158,8 @@ namespace Google.Solutions.Ssh.Test.Native
                     Assert.That(connection.GetRemoteHostKey(), Is.Not.Null);
 
                     Assert.That(
-                        connection.GetActiveAlgorithms(LIBSSH2_METHOD.HOSTKEY)[0], Is.EqualTo(new HostKeyType(hostKeyType).Name).AsCollection);
+                        connection.GetActiveAlgorithms(LIBSSH2_METHOD.HOSTKEY)[0],
+                        Is.EqualTo(new HostKeyType(hostKeyType).Name));
                 }
             }
         }

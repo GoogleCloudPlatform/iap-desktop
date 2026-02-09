@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new ScreenOptionsViewModel(
                 settingsRepository);
 
-            Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
+            Assert.That(viewModel.Devices.Count, Is.GreaterThanOrEqualTo(1));
             Assert.That(viewModel.Devices.Any(d => d.IsSelected), Is.False);
         }
 
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new ScreenOptionsViewModel(
                 settingsRepository);
 
-            Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
+            Assert.That(viewModel.Devices.Count, Is.GreaterThanOrEqualTo(1));
             Assert.That(viewModel.Devices.Any(d => d.IsSelected), Is.False);
         }
 
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new ScreenOptionsViewModel(
                 settingsRepository);
 
-            Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
+            Assert.That(viewModel.Devices.Count, Is.GreaterThanOrEqualTo(1));
             Assert.That(viewModel.Devices.Any(d => d.IsSelected), Is.False);
         }
 
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
             var viewModel = new ScreenOptionsViewModel(
                 settingsRepository);
 
-            Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
+            Assert.That(viewModel.Devices.Count, Is.GreaterThanOrEqualTo(1));
             Assert.That(viewModel.Devices
                 .First(d => d.DeviceName == Screen.PrimaryScreen.DeviceName)
                 .IsSelected, Is.True);
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
                 settingsRepository);
 
             Assert.That(viewModel.IsDirty.Value, Is.False);
-            Assert.GreaterOrEqual(viewModel.Devices.Count, 1);
+            Assert.That(viewModel.Devices.Count, Is.GreaterThanOrEqualTo(1));
 
             viewModel.Devices.First().IsSelected = true;
 

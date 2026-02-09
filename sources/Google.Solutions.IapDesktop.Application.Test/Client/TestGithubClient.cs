@@ -79,9 +79,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 restAdapter.Object,
                 SampleRepository);
 
-            Assert.IsNull(await adapter
-                .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
-                .ConfigureAwait(false));
+            Assert.That(
+                await adapter
+                    .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
+                    .ConfigureAwait(false),
+                Is.Null);
         }
 
         [Test]

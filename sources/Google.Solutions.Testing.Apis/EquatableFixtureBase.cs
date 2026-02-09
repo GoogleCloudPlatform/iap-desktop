@@ -106,7 +106,7 @@ namespace Google.Solutions.Testing.Apis
         {
             var obj1 = CreateInstance();
             var obj2 = CreateInstance();
-            Assert.AreEqual(obj1.GetHashCode(), obj2.GetHashCode());
+            Assert.That(obj1.GetHashCode(), Is.EqualTo(obj2.GetHashCode()));
         }
     }
 }

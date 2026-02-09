@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Util;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
-using NUnit.Framework.Internal;
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -47,7 +46,7 @@ namespace Google.Solutions.Testing.Apis
         {
             Exception? caughtException = null;
 
-            using (new TestExecutionContext.IsolatedContext())
+            using (new NUnit.Framework.Internal.TestExecutionContext.IsolatedContext())
             {
                 try
                 {
@@ -94,7 +93,10 @@ namespace Google.Solutions.Testing.Apis
                 var expectedValue = property.GetValue(expected, null);
                 var actualValue = property.GetValue(actual, null);
 
-                Assert.AreEqual(expectedValue, actualValue, $"{property.Name} must match");
+                Assert.That(
+                    expectedValue, 
+                    Is.EqualTo(actualValue), 
+                    $"{property.Name} must match");
             }
         }
 
@@ -107,7 +109,7 @@ namespace Google.Solutions.Testing.Apis
 
             void handler(object sender, PropertyChangedEventArgs args)
             {
-                Assert.AreSame(obj, sender);
+                Assert.That(obj, Is.SameAs(sender));
                 if (property == args.PropertyName)
                 {
                     callbacks++;
@@ -118,9 +120,9 @@ namespace Google.Solutions.Testing.Apis
             action();
             obj.PropertyChanged -= handler;
 
-            Assert.AreEqual(
+            Assert.That(
                 1,
-                callbacks,
+                Is.EqualTo(callbacks),
                 $"Expected PropertyChanged callback for {property}");
         }
 
@@ -153,7 +155,7 @@ namespace Google.Solutions.Testing.Apis
 
             void handler(object sender, NotifyCollectionChangedEventArgs args)
             {
-                Assert.AreSame(obj, sender);
+                Assert.That(obj, Is.SameAs(sender));
                 if (args.Action == expected)
                 {
                     callbacks++;
@@ -164,9 +166,9 @@ namespace Google.Solutions.Testing.Apis
             action();
             obj.CollectionChanged -= handler;
 
-            Assert.AreEqual(
+            Assert.That(
                 1,
-                callbacks,
+                Is.EqualTo(callbacks),
                 $"Expected CollectionChanged callback for {expected}");
         }
     }

@@ -41,7 +41,7 @@ namespace Google.Solutions.Ssh.Test
             }
             catch (Exception e) when (!(e is AssertionException))
             {
-                Assert.IsInstanceOf(typeof(Libssh2Exception), e.Unwrap());
+                Assert.That(e.Unwrap(), Is.InstanceOf<Libssh2Exception>());
                 Assert.That(((Libssh2Exception)e.Unwrap()).ErrorCode, Is.EqualTo(expected));
 
                 if (session != null)
@@ -63,7 +63,7 @@ namespace Google.Solutions.Ssh.Test
             }
             catch (Exception e) when (!(e is AssertionException))
             {
-                Assert.IsInstanceOf(typeof(Libssh2SftpException), e.Unwrap());
+                Assert.That(e.Unwrap(), Is.InstanceOf<Libssh2SftpException>());
                 Assert.That(((Libssh2SftpException)e.Unwrap()).ErrorCode, Is.EqualTo(expected));
             }
         }

@@ -663,16 +663,19 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true);
 
-            Assert.IsNull(await workspace.GetNodeAsync(
-                    new ProjectLocator("nonexisting-1"),
-                    CancellationToken.None)
-                .ConfigureAwait(true));
+            Assert.That(
+                await workspace
+                    .GetNodeAsync(
+                        new ProjectLocator("nonexisting-1"),
+                        CancellationToken.None)
+                    .ConfigureAwait(true),
+                Is.Null);
 
             var project = await workspace.GetNodeAsync(
                     SampleProjectId,
                     CancellationToken.None)
                 .ConfigureAwait(true);
-            Assert.IsInstanceOf(typeof(IProjectModelProjectNode), project);
+            Assert.That(project, Is.InstanceOf<IProjectModelProjectNode>());
             Assert.That(project, Is.Not.Null);
         }
 
@@ -687,18 +690,19 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            Assert.IsNull(await workspace
+            Assert.That(await workspace
                 .GetNodeAsync(
                     new ZoneLocator("nonexisting-1", "zone-1"),
                     CancellationToken.None)
-                .ConfigureAwait(true));
+                .ConfigureAwait(true),
+                Is.Null);
 
             var zone = await workspace
                 .GetNodeAsync(
                     new ZoneLocator(SampleProjectId, "zone-1"),
                     CancellationToken.None)
                 .ConfigureAwait(true);
-            Assert.IsInstanceOf(typeof(IProjectModelZoneNode), zone);
+            Assert.That(zone, Is.InstanceOf<IProjectModelZoneNode>());
             Assert.That(zone, Is.Not.Null);
         }
 
@@ -713,18 +717,20 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 CreateProjectRepositoryMock(SampleProjectId).Object,
                 new Mock<IEventQueue>().Object);
 
-            Assert.IsNull(await workspace
-                .GetNodeAsync(
-                    new InstanceLocator("nonexisting-1", "zone-1", SampleWindowsInstanceInZone1.Name),
-                    CancellationToken.None)
-                .ConfigureAwait(true));
+            Assert.That(
+                await workspace
+                    .GetNodeAsync(
+                        new InstanceLocator("nonexisting-1", "zone-1", SampleWindowsInstanceInZone1.Name),
+                        CancellationToken.None)
+                    .ConfigureAwait(true),
+                Is.Null);
 
             var instance = await workspace
                 .GetNodeAsync(
                     new InstanceLocator(SampleProjectId, "zone-1", SampleWindowsInstanceInZone1.Name),
                     CancellationToken.None)
                 .ConfigureAwait(true);
-            Assert.IsInstanceOf(typeof(IProjectModelInstanceNode), instance);
+            Assert.That(instance, Is.InstanceOf<IProjectModelInstanceNode>());
             Assert.That(instance, Is.Not.Null);
         }
 
@@ -739,11 +745,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 CreateProjectRepositoryMock().Object,
                 new Mock<IEventQueue>().Object);
 
-            Assert.IsNull(await workspace
+            Assert.That(await workspace
                 .GetNodeAsync(
                     new ZoneLocator(SampleProjectId, "zone-1"),
                     CancellationToken.None)
-                .ConfigureAwait(true));
+                .ConfigureAwait(true),
+                Is.Null);
         }
 
         [Test]
@@ -757,11 +764,13 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 CreateProjectRepositoryMock().Object,
                 new Mock<IEventQueue>().Object);
 
-            Assert.IsNull(await workspace
-                .GetNodeAsync(
-                    new InstanceLocator(SampleProjectId, "zone-1", SampleWindowsInstanceInZone1.Name),
-                    CancellationToken.None)
-                .ConfigureAwait(true));
+            Assert.That(
+                await workspace
+                    .GetNodeAsync(
+                        new InstanceLocator(SampleProjectId, "zone-1", SampleWindowsInstanceInZone1.Name),
+                        CancellationToken.None)
+                    .ConfigureAwait(true),
+                Is.Null);
         }
 
         //---------------------------------------------------------------------
@@ -819,7 +828,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 .GetActiveNodeAsync(CancellationToken.None)
                 .ConfigureAwait(true);
             Assert.That(activeNode, Is.Not.Null);
-            Assert.IsInstanceOf(typeof(IProjectModelProjectNode), activeNode);
+            Assert.That(activeNode, Is.InstanceOf<IProjectModelProjectNode>());
         }
 
         [Test]

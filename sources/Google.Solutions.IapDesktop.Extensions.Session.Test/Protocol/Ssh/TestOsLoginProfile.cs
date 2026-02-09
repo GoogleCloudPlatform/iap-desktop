@@ -267,8 +267,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 Assert.That(credential.Username, Is.EqualTo("joe"));
                 Assert.That(
                     credential.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
-                Assert.IsInstanceOf<OsLoginCertificateSigner>(
-                    credential.Signer);
+                Assert.That(credential.Signer, Is.InstanceOf<OsLoginCertificateSigner>());
 
                 client.Verify(
                     c => c.ProvisionPosixProfileAsync(
@@ -317,8 +316,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 Assert.That(credential.Username, Is.EqualTo("joe"));
                 Assert.That(
                     credential.AuthorizationMethod, Is.EqualTo(KeyAuthorizationMethods.Oslogin));
-                Assert.IsInstanceOf<OsLoginCertificateSigner>(
-                    credential.Signer);
+                Assert.That(credential.Signer, Is.InstanceOf<OsLoginCertificateSigner>());
 
                 client.Verify(
                     c => c.ProvisionPosixProfileAsync(
