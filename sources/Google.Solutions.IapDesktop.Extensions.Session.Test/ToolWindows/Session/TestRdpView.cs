@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                     RdpCredential.Empty))
                 .ConfigureAwait(true);
 
-            Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
+            Assert.That(this.ExceptionShown, Is.InstanceOf<RdpDisconnectedException>());
             Assert.That(((RdpDisconnectedException)this.ExceptionShown!).DisconnectReason, Is.EqualTo(516));
         }
 
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                     .ConfigureAwait(true);
 
                 Assert.That(this.ExceptionShown, Is.Not.Null);
-                Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
+                Assert.That(this.ExceptionShown, Is.InstanceOf<RdpDisconnectedException>());
                 Assert.That(((RdpDisconnectedException)this.ExceptionShown!).DisconnectReason, Is.EqualTo(2055));
             }
         }
@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                     .ConfigureAwait(true);
 
                 Assert.That(session, Is.Not.Null);
-                Assert.IsNull(this.ExceptionShown);
+                Assert.That(this.ExceptionShown, Is.Null);
 
                 // Float.
                 session!.FloatAt(new Rectangle(0, 0, 800, 600));

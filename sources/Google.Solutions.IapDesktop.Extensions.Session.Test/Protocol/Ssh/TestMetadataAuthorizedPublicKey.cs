@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             string line)
         {
             var key = MetadataAuthorizedPublicKey.Parse(line);
-            Assert.IsInstanceOf<UnmanagedMetadataAuthorizedPublicKey>(key);
+            Assert.That(key, Is.InstanceOf<UnmanagedMetadataAuthorizedPublicKey>());
 
             Assert.That(key.PosixUsername, Is.EqualTo("login"));
             Assert.That(key.KeyType, Is.EqualTo("ssh-rsa"));
@@ -80,12 +80,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             string line)
         {
             var key = MetadataAuthorizedPublicKey.Parse(line);
-            Assert.IsInstanceOf<UnmanagedMetadataAuthorizedPublicKey>(key);
+            Assert.That(key, Is.InstanceOf<UnmanagedMetadataAuthorizedPublicKey>());
 
             Assert.That(key.PosixUsername, Is.EqualTo("login"));
             Assert.That(key.KeyType, Is.EqualTo("ssh-rsa"));
             Assert.That(key.PublicKey, Is.EqualTo("key"));
-            Assert.IsNull(((UnmanagedMetadataAuthorizedPublicKey)key).Email);
+            Assert.That(((UnmanagedMetadataAuthorizedPublicKey)key).Email, Is.Null);
 
             Assert.That(
                 key.ToString(), Is.EqualTo("login:ssh-rsa key"));
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             string line)
         {
             var key = MetadataAuthorizedPublicKey.Parse(line);
-            Assert.IsInstanceOf<UnmanagedMetadataAuthorizedPublicKey>(key);
+            Assert.That(key, Is.InstanceOf<UnmanagedMetadataAuthorizedPublicKey>());
 
             Assert.That(key.PosixUsername, Is.EqualTo("login"));
             Assert.That(key.KeyType, Is.EqualTo("ssh-rsa"));
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             string line)
         {
             var key = MetadataAuthorizedPublicKey.Parse(line);
-            Assert.IsInstanceOf<ManagedMetadataAuthorizedPublicKey>(key);
+            Assert.That(key, Is.InstanceOf<ManagedMetadataAuthorizedPublicKey>());
 
             Assert.That(key.PosixUsername, Is.EqualTo("login"));
             Assert.That(key.KeyType, Is.EqualTo("ecdsa-sha2-nistp256"));
@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             string line)
         {
             var key = MetadataAuthorizedPublicKey.Parse(line);
-            Assert.IsInstanceOf<ManagedMetadataAuthorizedPublicKey>(key);
+            Assert.That(key, Is.InstanceOf<ManagedMetadataAuthorizedPublicKey>());
 
             Assert.That(key.PosixUsername, Is.EqualTo("login"));
             Assert.That(key.KeyType, Is.EqualTo("ssh-rsa"));

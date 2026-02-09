@@ -69,7 +69,7 @@ namespace Google.Solutions.Apis.Test.Client
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test]

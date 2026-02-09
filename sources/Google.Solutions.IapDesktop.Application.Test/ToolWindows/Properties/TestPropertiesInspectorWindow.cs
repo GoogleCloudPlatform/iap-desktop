@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Properties
                 .GetAllControls()
                 .OfType<PropertyGrid>()
                 .First();
-            Assert.IsNull(grid.SelectedGridItem.Parent);
+            Assert.That(grid.SelectedGridItem.Parent, Is.Null);
         }
 
         [Test]

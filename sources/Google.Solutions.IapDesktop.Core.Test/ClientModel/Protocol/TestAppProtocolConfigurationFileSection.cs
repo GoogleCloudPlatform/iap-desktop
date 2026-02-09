@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 LocalPort = value
             };
 
-            Assert.IsNull(section.ParseLocalEndpoint());
+            Assert.That(section.ParseLocalEndpoint(), Is.Null);
         }
 
         [Test]
@@ -203,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         [Test]
         public void ParseClientSection_WhenClientIsNull()
         {
-            Assert.IsNull(new AppProtocolConfigurationFile.MainSection().ParseClientSection());
+            Assert.That(new AppProtocolConfigurationFile.MainSection().ParseClientSection(), Is.Null);
         }
 
         [Test]
@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 }
             };
 
-            Assert.IsNull(section.ParseClientSection());
+            Assert.That(section.ParseClientSection(), Is.Null);
         }
 
         [Test]

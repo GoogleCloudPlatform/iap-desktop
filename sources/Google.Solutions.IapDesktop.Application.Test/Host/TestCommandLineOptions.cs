@@ -36,8 +36,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             var options = CommandLineOptions.Parse(Array.Empty<string>());
 
             Assert.That(options.IsLoggingEnabled, Is.False);
-            Assert.IsNull(options.StartupUrl);
-            Assert.IsNull(options.Profile);
+            Assert.That(options.StartupUrl, Is.Null);
+            Assert.That(options.Profile, Is.Null);
         }
 
         //---------------------------------------------------------------------
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             var options = CommandLineOptions.Parse(
                 new[] { "/profile", " " });
-            Assert.IsNull(options.Profile);
+            Assert.That(options.Profile, Is.Null);
 
         }
 

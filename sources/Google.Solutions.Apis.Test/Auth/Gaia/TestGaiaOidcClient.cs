@@ -192,7 +192,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 offlineCredential,
                 tokenResponse);
 
-            Assert.IsNull(((UserCredential)session.ApiCredential).Token.IdToken);
+            Assert.That(((UserCredential)session.ApiCredential).Token.IdToken, Is.Null);
             Assert.That(session.OfflineCredential.IdToken, Is.EqualTo(oldIdToken));
             Assert.That(session.IdToken.ToString(), Is.EqualTo(oldIdToken));
 
@@ -640,7 +640,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 .TryAuthorizeSilentlyAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(session);
+            Assert.That(session, Is.Null);
         }
 
         [Test]
@@ -687,7 +687,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             // Terminate session.
             Assert.That(store.StoredCredential, Is.Not.Null);
             session.Terminate();
-            Assert.IsNull(store.StoredCredential);
+            Assert.That(store.StoredCredential, Is.Null);
         }
     }
 }

@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<ICredentialDialog>().Object,
                 new Mock<INotifyDialog>().Object);
 
-            Assert.IsNull(command.Image);
+            Assert.That(command.Image, Is.Null);
         }
 
         [Test]
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<ICredentialDialog>().Object,
                 new Mock<INotifyDialog>().Object);
 
-            Assert.IsNull(command.Image);
+            Assert.That(command.Image, Is.Null);
         }
 
         [Test]
@@ -223,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(context.NetworkCredential);
+            Assert.That(context.NetworkCredential, Is.Null);
         }
 
         //---------------------------------------------------------------------
@@ -252,7 +252,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(context.NetworkCredential);
+            Assert.That(context.NetworkCredential, Is.Null);
             Assert.That(context.Parameters.PreferredUsername, Is.EqualTo("user"));
         }
 
@@ -288,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(context.NetworkCredential);
+            Assert.That(context.NetworkCredential, Is.Null);
             Assert.That(context.Parameters.PreferredUsername, Is.EqualTo("user"));
         }
 
@@ -326,7 +326,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 .CreateContextAsync(CreateInstanceNode(), CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(context.NetworkCredential);
+            Assert.That(context.NetworkCredential, Is.Null);
             Assert.That(context.Parameters.PreferredUsername, Is.EqualTo("user"));
         }
 

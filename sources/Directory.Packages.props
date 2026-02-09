@@ -1,7 +1,7 @@
 <Project>
     <PropertyGroup>
         <!-- 
-	        Enable central package management, cf
+	                Enable central package management, cf
 		https://learn.microsoft.com/en-us/nuget/consume-packages/Central-Package-Management 
 	-->
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
@@ -9,48 +9,48 @@
     <ItemGroup>
         <!-- Analyzers -->
         <PackageVersion Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15" />
-        <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" />
-	    
+        <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="10.0.102" />
+      
         <!-- .NET -->
         <PackageVersion Include="System.Diagnostics.TraceSource" Version="4.3.0" />
         <PackageVersion Include="System.Text.Encoding" Version="4.3.0" />
         <PackageVersion Include="System.Text.Encoding.Extensions" Version="4.3.0" />
         <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
-	    
+      
         <!-- Google Cloud client libraries-->
-        <PackageVersion Include="Google.Apis" Version="1.71.0" />
-        <PackageVersion Include="Google.Apis.Auth" Version="1.71.0" />
-        <PackageVersion Include="Google.Apis.CloudOSLogin.v1" Version="1.71.0.3916" />
-        <PackageVersion Include="Google.Apis.CloudResourceManager.v1" Version="1.70.0.3809" />
-        <PackageVersion Include="Google.Apis.CloudSecurityToken.v1" Version="1.70.0.3891" />
-        <PackageVersion Include="Google.Apis.Compute.v1" Version="1.71.0.3911" />
-        <PackageVersion Include="Google.Apis.Core" Version="1.71.0" />
-        <PackageVersion Include="Google.Apis.Iam.v1" Version="1.71.0.3914" />
-        <PackageVersion Include="Google.Apis.IAMCredentials.v1" Version="1.71.0.3906" />
-        <PackageVersion Include="Google.Apis.Logging.v2" Version="1.71.0.3914" />
+        <PackageVersion Include="Google.Apis" Version="1.73.0" />
+        <PackageVersion Include="Google.Apis.Auth" Version="1.73.0" />
+        <PackageVersion Include="Google.Apis.CloudOSLogin.v1" Version="1.73.0.3988" />
+        <PackageVersion Include="Google.Apis.CloudResourceManager.v1" Version="1.72.0.3959" />
+        <PackageVersion Include="Google.Apis.CloudSecurityToken.v1" Version="1.73.0.3989" />
+        <PackageVersion Include="Google.Apis.Compute.v1" Version="1.73.0.4039" />
+        <PackageVersion Include="Google.Apis.Core" Version="1.73.0" />
+        <PackageVersion Include="Google.Apis.Iam.v1" Version="1.73.0.4040" />
+        <PackageVersion Include="Google.Apis.IAMCredentials.v1" Version="1.72.0.3947" />
+        <PackageVersion Include="Google.Apis.Logging.v2" Version="1.73.0.4040" />
         <PackageVersion Include="Google.Solutions.IcuShim" Version="1.21.3231.3" />
         <PackageVersion Include="Google.Solutions.ThirdParty.DockPanelSuite" Version="3.0.6.11" />
         <PackageVersion Include="Google.Solutions.ThirdParty.Libssh2.Cng" Version="1.11.104" />
         <PackageVersion Include="Google.Solutions.ThirdParty.Terminal" Version="1.21.3231.3" />
         <PackageVersion Include="Google.Solutions.Tsc" Version="9.0.0.1" />
         <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
-	    
+      
         <!-- Unit testing -->
         <PackageVersion Include="Castle.Core" Version="5.2.1" />
         <PackageVersion Include="Moq" Version="4.20.72" />
-        <PackageVersion Include="NUnit" Version="3.14.0" />
-        <PackageVersion Include="NUnit.Console" Version="3.20.1" />
-        <PackageVersion Include="NUnit.ConsoleRunner" Version="3.20.1" />
+        <PackageVersion Include="NUnit" Version="4.4.0" />
+        <PackageVersion Include="NUnit.Console" Version="3.22.0" />
+        <PackageVersion Include="NUnit.ConsoleRunner" Version="3.22.0" />
         <PackageVersion Include="NUnit.Extension.VSProjectLoader" Version="3.9.0" />
-        <PackageVersion Include="NUnit3TestAdapter" Version="5.1.0" />
-        <PackageVersion Include="NUnit.Analyzers" Version="4.1.0">
+        <PackageVersion Include="NUnit3TestAdapter" Version="6.1.0" />
+        <PackageVersion Include="NUnit.Analyzers" Version="4.11.2">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageVersion>
       
         <!-- 
-            The following packages contain tools that need to match the CLR version,
-		    so the version numbers are fixed.
+        The following packages contain tools that need to match the CLR version,
+		so the version numbers are fixed.
         -->
         <PackageVersion Include="WiX" Version="[3.14.1]" />
         <PackageVersion Include="OpenCover" Version="[4.6.519]" />

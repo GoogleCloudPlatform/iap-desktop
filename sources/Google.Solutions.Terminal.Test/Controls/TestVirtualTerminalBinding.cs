@@ -112,7 +112,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 virtualTerminal.SimulateSend("data");
 
                 Assert.That(exception, Is.Not.Null);
-                Assert.IsInstanceOf<ArgumentException>(exception);
+                Assert.That(exception, Is.InstanceOf<ArgumentException>());
             }
         }
 
@@ -179,7 +179,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 virtualTerminal.Dimensions = new PseudoTerminalSize(81, 25);
 
                 Assert.That(exception, Is.Not.Null);
-                Assert.IsInstanceOf<ArgumentException>(exception);
+                Assert.That(exception, Is.InstanceOf<ArgumentException>());
             }
         }
 
@@ -204,7 +204,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                     new PseudoTerminalErrorEventArgs(new ArgumentException()));
 
                 Assert.That(exception, Is.Not.Null);
-                Assert.IsInstanceOf<ArgumentException>(exception);
+                Assert.That(exception, Is.InstanceOf<ArgumentException>());
             }
         }
 

@@ -112,14 +112,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.That(e.Zone, Is.EqualTo("us-central1-a"));
             Assert.That(e.ProjectId, Is.EqualTo("project-1"));
             Assert.That(e.Severity, Is.EqualTo("INFO"));
-            Assert.IsNull(e.Status);
+            Assert.That(e.Status, Is.Null);
             Assert.That(e.SourceHost, Is.EqualTo("3.4.5.6"));
             Assert.That(e.UserAgent, Is.EqualTo("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)"));
             Assert.That(e.DestinationHost, Is.EqualTo("10.0.0.1"));
             Assert.That(e.DestinationPort, Is.EqualTo("3389"));
 
             Assert.That(e.AccessLevels, Is.Empty);
-            Assert.IsNull(e.DeviceId);
+            Assert.That(e.DeviceId, Is.Null);
             Assert.That(e.DeviceState, Is.EqualTo("Unknown"));
 
             Assert.That(e.Message, Is.EqualTo("Authorize tunnel from 3.4.5.6 to 10.0.0.1:3389 using IAP-Desktop/1.0.1.0"));
@@ -211,7 +211,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.That(e.Zone, Is.EqualTo("us-central1-a"));
             Assert.That(e.ProjectId, Is.EqualTo("project-1"));
             Assert.That(e.Severity, Is.EqualTo("INFO"));
-            Assert.IsNull(e.Status);
+            Assert.That(e.Status, Is.Null);
             Assert.That(e.SourceHost, Is.EqualTo("3.4.5.6"));
             Assert.That(e.UserAgent, Is.EqualTo("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)"));
             Assert.That(e.DestinationHost, Is.EqualTo("10.0.0.1"));
@@ -314,7 +314,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.That(e.DestinationPort, Is.EqualTo("3389"));
 
             Assert.That(e.AccessLevels, Is.Empty);
-            Assert.IsNull(e.DeviceId);
+            Assert.That(e.DeviceId, Is.Null);
             Assert.That(e.DeviceState, Is.EqualTo("Unknown"));
 
             Assert.That(e.Message, Is.EqualTo("Authorize tunnel from 3.4.5.6 to 10.0.0.1:3389 using gzip [Permission Denied.]"));
@@ -370,14 +370,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.That(e.ProjectId, Is.EqualTo("project-1"));
             Assert.That(e.Severity, Is.EqualTo("ERROR"));
             Assert.That(e.Status?.Code, Is.EqualTo(7));
-            Assert.IsNull(e.SourceHost);
-            Assert.IsNull(e.UserAgent);
-            Assert.IsNull(e.DestinationHost);
-            Assert.IsNull(e.DestinationPort);
+            Assert.That(e.SourceHost, Is.Null);
+            Assert.That(e.UserAgent, Is.Null);
+            Assert.That(e.DestinationHost, Is.Null);
+            Assert.That(e.DestinationPort, Is.Null);
 
             Assert.That(e.AccessLevels, Is.Empty);
-            Assert.IsNull(e.DeviceId);
-            Assert.IsNull(e.DeviceState);
+            Assert.That(e.DeviceId, Is.Null);
+            Assert.That(e.DeviceState, Is.Null);
 
             Assert.That(e.Message, Is.EqualTo("Authorize tunnel from (unknown) to (unknown host):(unknown port) using (unknown agent) [Permission Denied.]"));
         }
@@ -522,13 +522,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.That(e.Zone, Is.EqualTo("asia-southeast1-b"));
             Assert.That(e.ProjectId, Is.EqualTo("project-1"));
             Assert.That(e.Severity, Is.EqualTo("INFO"));
-            Assert.IsNull(e.SourceHost);
-            Assert.IsNull(e.UserAgent);
-            Assert.IsNull(e.DestinationHost);
-            Assert.IsNull(e.DestinationPort);
+            Assert.That(e.SourceHost, Is.Null);
+            Assert.That(e.UserAgent, Is.Null);
+            Assert.That(e.DestinationHost, Is.Null);
+            Assert.That(e.DestinationPort, Is.Null);
 
             Assert.That(e.AccessLevels, Is.Empty);
-            Assert.IsNull(e.DeviceId);
+            Assert.That(e.DeviceId, Is.Null);
             Assert.That(e.DeviceState, Is.EqualTo("Unknown"));
 
             Assert.That(e.Message, Is.EqualTo("Authorize tunnel from (unknown) to (unknown host):(unknown port) using (unknown agent)"));

@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                 new JsonTextReader(new StringReader(json)),
                 events.Add);
 
-            Assert.IsNull(token);
+            Assert.That(token, Is.Null);
             Assert.That(events.Count, Is.EqualTo(0));
         }
 
@@ -223,12 +223,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
 
             Assert.That(events.Count(), Is.EqualTo(2));
 
-            Assert.IsInstanceOf(typeof(DeleteInstanceEvent), events.First());
+            Assert.That(events.First(), Is.InstanceOf<DeleteInstanceEvent>());
             var deleteEvent = (DeleteInstanceEvent)events.First();
             Assert.That(deleteEvent.Instance?.Name, Is.EqualTo("instance-1"));
 
 
-            Assert.IsInstanceOf(typeof(StartInstanceEvent), events.Last());
+            Assert.That(events.Last(), Is.InstanceOf<StartInstanceEvent>());
             var startEvent = (StartInstanceEvent)events.Last();
             Assert.That(startEvent.Instance?.Name, Is.EqualTo("instance-2"));
         }
@@ -332,11 +332,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
 
             Assert.That(events.Count(), Is.EqualTo(2));
 
-            Assert.IsInstanceOf(typeof(DeleteInstanceEvent), events.First());
+            Assert.That(events.First(), Is.InstanceOf<DeleteInstanceEvent>());
             var deleteEvent = (DeleteInstanceEvent)events.First();
             Assert.That(deleteEvent.Instance?.Name, Is.EqualTo("instance-1"));
 
-            Assert.IsInstanceOf(typeof(UnknownEvent), events.Last());
+            Assert.That(events.Last(), Is.InstanceOf<UnknownEvent>());
         }
 
         [Test]

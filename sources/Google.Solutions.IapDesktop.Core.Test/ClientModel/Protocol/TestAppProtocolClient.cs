@@ -61,9 +61,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var transport = new Mock<ITransport>();
             var client = new AppProtocolClient("doesnotexist.exe", null);
 
-            Assert.IsNull(client.FormatArguments(
-                transport.Object,
-                new AppProtocolParameters()));
+            Assert.That(
+                client.FormatArguments(
+                    transport.Object,
+                    new AppProtocolParameters()),
+                Is.Null);
         }
 
         [Test]

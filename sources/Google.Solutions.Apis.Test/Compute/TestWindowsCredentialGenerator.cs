@@ -61,7 +61,7 @@ namespace Google.Solutions.Apis.Test.Compute
             }
             catch (WindowsCredentialCreationFailedException e)
             {
-                Assert.IsNotEmpty(e.Message);
+                Assert.That(e.Message, Is.Not.Empty);
             }
         }
 
@@ -95,7 +95,7 @@ namespace Google.Solutions.Apis.Test.Compute
             }
             catch (WindowsCredentialCreationFailedException e)
             {
-                Assert.IsNotEmpty(e.Message);
+                Assert.That(e.Message, Is.Not.Empty);
             }
         }
 
@@ -121,8 +121,8 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ConfigureAwait(false);
 
             Assert.That(credentials.UserName, Is.EqualTo(username));
-            Assert.IsEmpty(credentials.Domain);
-            Assert.IsNotEmpty(credentials.Password);
+            Assert.That(credentials.Domain, Is.Empty);
+            Assert.That(credentials.Password, Is.Not.Empty);
         }
 
         [Test]
@@ -154,8 +154,8 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ConfigureAwait(false);
 
             Assert.That(credentials.UserName, Is.EqualTo(username));
-            Assert.IsEmpty(credentials.Domain);
-            Assert.IsNotEmpty(credentials.Password);
+            Assert.That(credentials.Domain, Is.Empty);
+            Assert.That(credentials.Password, Is.Not.Empty);
         }
 
         [Test]
@@ -187,8 +187,8 @@ namespace Google.Solutions.Apis.Test.Compute
                 .ConfigureAwait(false);
 
             Assert.That(credentials.UserName, Is.EqualTo(username));
-            Assert.IsEmpty(credentials.Domain);
-            Assert.IsNotEmpty(credentials.Password);
+            Assert.That(credentials.Domain, Is.Empty);
+            Assert.That(credentials.Password, Is.Not.Empty);
         }
 
         [Test]

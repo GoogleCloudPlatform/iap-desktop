@@ -315,7 +315,7 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public void GetFlag_WhenProjectMetadataIsNull_ThenGetFlagReturnsNull()
         {
-            Assert.IsNull(new Project().GetFlag("flag"));
+            Assert.That(new Project().GetFlag("flag"), Is.Null);
         }
 
         //---------------------------------------------------------------------
@@ -325,7 +325,7 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public void GetFlag_WhenInstanceMetadataIsNull_ThenGetFlagReturnsNull()
         {
-            Assert.IsNull(new Instance().GetFlag(new Project(), "flag"));
+            Assert.That(new Instance().GetFlag(new Project(), "flag"), Is.Null);
         }
 
         [Test]

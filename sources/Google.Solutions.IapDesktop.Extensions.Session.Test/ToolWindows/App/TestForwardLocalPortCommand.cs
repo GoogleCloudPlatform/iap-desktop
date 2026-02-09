@@ -126,9 +126,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(context.NetworkCredential);
+            Assert.That(context.NetworkCredential, Is.Null);
             Assert.That(context.CanLaunchClient, Is.False);
-            Assert.IsInstanceOf<CurrentWtsSessionPolicy>(context.CreateTransportPolicy());
+            Assert.That(context.CreateTransportPolicy(), Is.InstanceOf<CurrentWtsSessionPolicy>());
         }
 
         //---------------------------------------------------------------------

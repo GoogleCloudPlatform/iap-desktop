@@ -87,8 +87,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsNull(viewModel.InformationText.Value);
-            Assert.IsNull(viewModel.InspectedObject.Value);
+            Assert.That(viewModel.InformationText.Value, Is.Null);
+            Assert.That(viewModel.InspectedObject.Value, Is.Null);
             Assert.That(
                 viewModel.WindowTitle.Value, Is.EqualTo(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
         }
@@ -104,8 +104,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsNull(viewModel.InformationText.Value);
-            Assert.IsNull(viewModel.InspectedObject.Value);
+            Assert.That(viewModel.InformationText.Value, Is.Null);
+            Assert.That(viewModel.InspectedObject.Value, Is.Null);
             Assert.That(
                 viewModel.WindowTitle.Value, Is.EqualTo(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
         }
@@ -121,8 +121,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsNull(viewModel.InformationText.Value);
-            Assert.IsNull(viewModel.InspectedObject.Value);
+            Assert.That(viewModel.InformationText.Value, Is.Null);
+            Assert.That(viewModel.InspectedObject.Value, Is.Null);
             Assert.That(
                 viewModel.WindowTitle.Value, Is.EqualTo(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
         }
@@ -171,8 +171,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => viewModel.SwitchToModelAsync(deniedNode.Object).Wait());
 
-            Assert.IsNull(viewModel.InformationText.Value);
-            Assert.IsNull(viewModel.InspectedObject.Value);
+            Assert.That(viewModel.InformationText.Value, Is.Null);
+            Assert.That(viewModel.InspectedObject.Value, Is.Null);
             Assert.That(
                 viewModel.WindowTitle.Value, Is.EqualTo(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
         }

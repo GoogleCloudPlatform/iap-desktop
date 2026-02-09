@@ -82,7 +82,7 @@ namespace Google.Solutions.Settings.Test
                 Assert.That(setting.DisplayName, Is.EqualTo("title"));
                 Assert.That(setting.Description, Is.EqualTo("description"));
                 Assert.That(setting.Category, Is.EqualTo("category"));
-                Assert.IsNull(setting.Value);
+                Assert.That(setting.Value, Is.Null);
                 Assert.That(setting.IsDefault, Is.True);
                 Assert.That(setting.IsDirty, Is.False);
                 Assert.That(setting.IsReadOnly, Is.False);
@@ -105,7 +105,7 @@ namespace Google.Solutions.Settings.Test
                 Assert.That(setting.DisplayName, Is.EqualTo("title"));
                 Assert.That(setting.Description, Is.EqualTo("description"));
                 Assert.That(setting.Category, Is.EqualTo("category"));
-                Assert.IsNull(setting.Value);
+                Assert.That(setting.Value, Is.Null);
                 Assert.That(setting.IsDefault, Is.True);
                 Assert.That(setting.IsDirty, Is.False);
                 Assert.That(setting.IsReadOnly, Is.False);
@@ -130,8 +130,8 @@ namespace Google.Solutions.Settings.Test
                 Assert.That(setting.DisplayName, Is.EqualTo("title"));
                 Assert.That(setting.Description, Is.EqualTo("description"));
                 Assert.That(setting.Category, Is.EqualTo("category"));
-                Assert.IsNull(setting.Value);
-                Assert.IsNull(setting.GetClearTextValue());
+                Assert.That(setting.Value, Is.Null);
+                Assert.That(setting.GetClearTextValue(), Is.Null);
                 Assert.That(setting.IsDefault, Is.True);
                 Assert.That(setting.IsDirty, Is.False);
                 Assert.That(setting.IsReadOnly, Is.False);
@@ -226,7 +226,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = setting.DefaultValue;
                 key.Write(setting);
 
-                Assert.IsNull(key.BackingKey.GetValue("test"));
+                Assert.That(key.BackingKey.GetValue("test"), Is.Null);
             }
         }
 

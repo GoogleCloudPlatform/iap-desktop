@@ -146,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 settingsRepository);
 
             Assert.That(enrollment.State, Is.EqualTo(DeviceEnrollmentState.Disabled));
-            Assert.IsNull(enrollment.Certificate);
+            Assert.That(enrollment.Certificate, Is.Null);
 
             certificateStore.Verify(
                 s => s.ListMachineCertificates(It.IsAny<Predicate<X509Certificate2>>()),
@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 settingsRepository);
 
             Assert.That(enrollment.State, Is.EqualTo(DeviceEnrollmentState.NotEnrolled));
-            Assert.IsNull(enrollment.Certificate);
+            Assert.That(enrollment.Certificate, Is.Null);
         }
 
         [Test]
@@ -236,7 +236,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 settingsRepository);
 
             Assert.That(enrollment.State, Is.EqualTo(DeviceEnrollmentState.NotEnrolled));
-            Assert.IsNull(enrollment.Certificate);
+            Assert.That(enrollment.Certificate, Is.Null);
         }
 
         //---------------------------------------------------------------------
@@ -274,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 settingsRepository);
 
             Assert.That(enrollment.State, Is.EqualTo(DeviceEnrollmentState.NotEnrolled));
-            Assert.IsNull(enrollment.Certificate);
+            Assert.That(enrollment.Certificate, Is.Null);
         }
 
         [Test]
@@ -310,7 +310,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 settingsRepository);
 
             Assert.That(enrollment.State, Is.EqualTo(DeviceEnrollmentState.NotEnrolled));
-            Assert.IsNull(enrollment.Certificate);
+            Assert.That(enrollment.Certificate, Is.Null);
         }
 
         [Test]

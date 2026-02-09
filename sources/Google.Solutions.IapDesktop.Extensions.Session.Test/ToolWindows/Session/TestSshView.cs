@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                     new StaticPasswordCredential("user", string.Empty)))
                 .ConfigureAwait(true);
 
-            Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
+            Assert.That(this.ExceptionShown, Is.InstanceOf<SocketException>());
         }
 
         //---------------------------------------------------------------------
@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                     .ConfigureAwait(true);
 
                 Assert.That(this.ExceptionShown, Is.Not.Null);
-                Assert.IsInstanceOf(typeof(UnsupportedAuthenticationMethodException), this.ExceptionShown);
+                Assert.That(this.ExceptionShown, Is.InstanceOf<UnsupportedAuthenticationMethodException>());
             }
         }
 
@@ -204,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                     .ConfigureAwait(true);
 
                 Assert.That(session, Is.Not.Null);
-                Assert.IsNull(this.ExceptionShown);
+                Assert.That(this.ExceptionShown, Is.Null);
 
                 // Float.
                 session!.FloatAt(new Rectangle(0, 0, 800, 600));

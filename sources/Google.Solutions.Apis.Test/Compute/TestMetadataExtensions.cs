@@ -183,7 +183,7 @@ namespace Google.Solutions.Apis.Test.Compute
         public void GetValue_WhenMetadataIsNull_ThenReturnsNull()
         {
             var metadata = new Metadata();
-            Assert.IsNull(metadata.GetValue("key"));
+            Assert.That(metadata.GetValue("key"), Is.Null);
         }
 
         [Test]
@@ -200,7 +200,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             };
 
-            Assert.IsNull(metadata.GetValue("key"));
+            Assert.That(metadata.GetValue("key"), Is.Null);
         }
 
         [Test]
@@ -229,13 +229,13 @@ namespace Google.Solutions.Apis.Test.Compute
         [Test]
         public void GetFlag_WhenMetadataIsNull_ThenReturnsNull()
         {
-            Assert.IsNull(MetadataExtensions.GetFlag((Metadata?)null, "flag"));
+            Assert.That(MetadataExtensions.GetFlag((Metadata?)null, "flag"), Is.Null);
         }
 
         [Test]
         public void GetFlag_WhenMetadataItemsIsNull_ThenReturnsNull()
         {
-            Assert.IsNull(new Metadata().GetFlag("flag"));
+            Assert.That(new Metadata().GetFlag("flag"), Is.Null);
         }
 
         [Test]
@@ -253,7 +253,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             };
 
-            Assert.IsNull(metadata.GetFlag("flag"));
+            Assert.That(metadata.GetFlag("flag"), Is.Null);
         }
 
         [Test]
@@ -312,7 +312,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 }
             };
 
-            Assert.IsNull(metadata.GetFlag("flag"));
+            Assert.That(metadata.GetFlag("flag"), Is.Null);
         }
 
         //---------------------------------------------------------------------

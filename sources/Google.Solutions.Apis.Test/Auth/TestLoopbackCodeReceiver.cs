@@ -152,7 +152,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 var response = await receiveTask.ConfigureAwait(false);
 
                 Assert.That(response.Error, Is.EqualTo("c1"));
-                Assert.IsNull(response.State);
+                Assert.That(response.State, Is.Null);
             }
         }
 

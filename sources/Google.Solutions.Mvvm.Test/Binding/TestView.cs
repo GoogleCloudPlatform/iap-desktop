@@ -119,7 +119,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             using (var dialog = activator.CreateDialog())
             {
-                Assert.IsNull(form.ViewModel);
+                Assert.That(form.ViewModel, Is.Null);
 
                 dialog.ShowDialog(null);
             }
@@ -246,7 +246,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             window.Form.Dispose();
 
             Assert.That(viewModel.DisposeCount, Is.EqualTo(1));
-            Assert.IsNull(viewModel.View);
+            Assert.That(viewModel.View, Is.Null);
         }
     }
 }

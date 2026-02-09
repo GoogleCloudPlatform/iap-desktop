@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(model);
+            Assert.That(model, Is.Null);
         }
 
         [Test]
@@ -288,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.SshKey
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(model);
+            Assert.That(model, Is.Null);
         }
 
         [Test]

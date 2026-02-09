@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
                 },
                 out var input) == DialogResult.OK)
             {
-                Assert.NotNull(input);
+                Assert.That(input, Is.Not.Null);
                 Assert.That(int.TryParse(input, out var _), Is.True);
             }
         }

@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
             Assert.That(e.Instance?.ProjectId, Is.EqualTo("project-1"));
             Assert.That(e.Severity, Is.EqualTo("NOTICE"));
-            Assert.IsNull(e.Status);
+            Assert.That(e.Status, Is.Null);
 
             Assert.That(e.SourceHost, Is.EqualTo("1.2.3.4"));
             Assert.That(e.UserAgent, Is.EqualTo("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)"));
@@ -178,10 +178,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
             Assert.That(e.Instance?.ProjectId, Is.EqualTo("project-1"));
             Assert.That(e.Severity, Is.EqualTo("NOTICE"));
-            Assert.IsNull(e.Status);
+            Assert.That(e.Status, Is.Null);
 
-            Assert.IsNull(e.SourceHost);
-            Assert.IsNull(e.UserAgent);
+            Assert.That(e.SourceHost, Is.Null);
+            Assert.That(e.UserAgent, Is.Null);
 
             Assert.That(e.Message, Is.EqualTo("Windows credential update from (unknown) using (unknown agent) (operation completed)"));
         }
@@ -247,7 +247,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
             Assert.That(e.Instance?.ProjectId, Is.EqualTo("project-1"));
             Assert.That(e.Severity, Is.EqualTo("NOTICE"));
-            Assert.IsNull(e.Status);
+            Assert.That(e.Status, Is.Null);
 
             Assert.That(e.SourceHost, Is.EqualTo("1.2.3.4"));
             Assert.That(e.UserAgent, Is.EqualTo("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)"));
@@ -413,7 +413,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
             Assert.That(e.Instance?.ProjectId, Is.EqualTo("project-1"));
             Assert.That(e.Severity, Is.EqualTo("NOTICE"));
-            Assert.IsNull(e.Status);
+            Assert.That(e.Status, Is.Null);
 
             Assert.That(e.SourceHost, Is.EqualTo("1.2.3.4"));
             Assert.That(e.UserAgent, Is.EqualTo("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)"));

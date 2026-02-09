@@ -46,7 +46,7 @@ namespace Google.Solutions.Terminal.Test.Controls
         public void CurrentParentForm_WhenNotParented()
         {
             var control = new SampleForm();
-            Assert.IsNull(control.CurrentParentForm);
+            Assert.That(control.CurrentParentForm, Is.Null);
         }
 
         [WindowsFormsTest]

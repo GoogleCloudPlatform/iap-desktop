@@ -129,9 +129,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
             var viewModel = new AuthorizeOptionsViewModel(repository.Object);
 
             Assert.That(viewModel.IsWorkforcePoolOptionChecked.Value, Is.False);
-            Assert.IsNull(viewModel.WorkforcePoolLocationId.Value);
-            Assert.IsNull(viewModel.WorkforcePoolId.Value);
-            Assert.IsNull(viewModel.WorkforcePoolProviderId.Value);
+            Assert.That(viewModel.WorkforcePoolLocationId.Value, Is.Null);
+            Assert.That(viewModel.WorkforcePoolId.Value, Is.Null);
+            Assert.That(viewModel.WorkforcePoolProviderId.Value, Is.Null);
         }
 
         [Test]

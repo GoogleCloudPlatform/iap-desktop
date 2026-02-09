@@ -79,9 +79,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 restAdapter.Object,
                 SampleRepository);
 
-            Assert.IsNull(await adapter
-                .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
-                .ConfigureAwait(false));
+            Assert.That(
+                await adapter
+                    .FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None)
+                    .ConfigureAwait(false),
+                Is.Null);
         }
 
         [Test]
@@ -160,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ConfigureAwait(false);
 
             Assert.That(latest, Is.Not.Null);
-            Assert.IsNull(latest!.Survey);
+            Assert.That(latest!.Survey, Is.Null);
         }
 
         [Test]
@@ -195,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ConfigureAwait(false);
 
             Assert.That(latest, Is.Not.Null);
-            Assert.IsNull(latest!.Survey);
+            Assert.That(latest!.Survey, Is.Null);
         }
 
         [Test]
@@ -451,7 +453,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
                 .ConfigureAwait(false);
 
             Assert.That(release, Is.Not.Null);
-            Assert.IsNull(release!.TagVersion);
+            Assert.That(release!.TagVersion, Is.Null);
         }
 
         //---------------------------------------------------------------------
@@ -487,7 +489,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
             Assert.That(release!.TryGetDownloadUrl(
                 Architecture.X86,
                 out var downloadUrl), Is.False);
-            Assert.IsNull(downloadUrl);
+            Assert.That(downloadUrl, Is.Null);
         }
 
         [Test]

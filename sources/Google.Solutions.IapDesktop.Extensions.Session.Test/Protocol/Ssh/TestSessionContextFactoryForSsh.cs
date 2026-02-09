@@ -190,13 +190,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 .ConfigureAwait(false))
             {
                 Assert.That(context.UsePlatformManagedCredential, Is.False);
-                Assert.IsNull(context.Parameters.PreferredUsername);
+                Assert.That(context.Parameters.PreferredUsername, Is.Null);
 
                 var credential = await context
                     .AuthorizeCredentialAsync(CancellationToken.None)
                     .ConfigureAwait(false);
 
-                Assert.IsInstanceOf<StaticPasswordCredential>(credential);
+                Assert.That(credential, Is.InstanceOf<StaticPasswordCredential>());
                 Assert.That(
                     credential.Username, Is.EqualTo(string.IsNullOrEmpty(username) ? "bob" : username));
                 Assert.That(

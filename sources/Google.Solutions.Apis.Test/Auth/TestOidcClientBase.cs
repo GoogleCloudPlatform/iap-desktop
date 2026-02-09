@@ -103,7 +103,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 .TryAuthorizeSilentlyAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(session);
+            Assert.That(session, Is.Null);
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 .TryAuthorizeSilentlyAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(session);
+            Assert.That(session, Is.Null);
         }
 
         [Test]
@@ -141,7 +141,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 .TryAuthorizeSilentlyAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(session);
+            Assert.That(session, Is.Null);
             store.Verify(s => s.Clear(), Times.Never);
         }
 

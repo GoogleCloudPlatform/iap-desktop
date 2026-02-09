@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.ProjectPicker
                 .ConfigureAwait(true);
 
             Assert.That(viewModel.IsProjectSelected.Value, Is.False);
-            Assert.IsNull(viewModel.SelectedProjects.Value);
+            Assert.That(viewModel.SelectedProjects.Value, Is.Null);
         }
 
         [Test]

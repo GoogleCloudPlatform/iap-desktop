@@ -285,7 +285,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Eve
             await viewModel
                 .SwitchToModelAsync(node2.Object)
                 .ConfigureAwait(true);
-            Assert.IsNull(viewModel.SelectedEvent);
+            Assert.That(viewModel.SelectedEvent, Is.Null);
             Assert.That(viewModel.IsOpenSelectedEventInCloudConsoleButtonEnabled, Is.False);
         }
 

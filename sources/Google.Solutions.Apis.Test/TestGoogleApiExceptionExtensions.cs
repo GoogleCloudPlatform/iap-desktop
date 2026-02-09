@@ -103,7 +103,7 @@ namespace Google.Solutions.Apis.Test
                 }
             };
 
-            Assert.IsNull(e.VpcServiceControlTroubleshootingId());
+            Assert.That(e.VpcServiceControlTroubleshootingId(), Is.Null);
         }
     }
 }

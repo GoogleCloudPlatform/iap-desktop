@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
              }";
 
             var r = LogRecord.Deserialize(json)!;
-            Assert.IsInstanceOf<UnknownEvent>(r.ToEvent());
+            Assert.That(r.ToEvent(), Is.InstanceOf<UnknownEvent>());
             var e = (UnknownEvent)r.ToEvent();
 
             Assert.That(e.Severity, Is.EqualTo("NOTICE"));

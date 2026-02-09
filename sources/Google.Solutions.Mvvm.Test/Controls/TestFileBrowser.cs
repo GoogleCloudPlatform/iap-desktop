@@ -176,7 +176,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 browser.NavigationFailed += (sender, args) =>
                 {
                     Assert.That(sender, Is.SameAs(browser));
-                    Assert.IsInstanceOf<ApplicationException>(args.Exception.Unwrap());
+                    Assert.That(args.Exception.Unwrap(), Is.InstanceOf<ApplicationException>());
                     eventRaised = true;
                 };
 
@@ -680,7 +680,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     Assert.Throws<UnauthorizedAccessException>(
                         () => ucomDataObject.GetData(ref formatetc, out var medium));
 
-                    Assert.IsInstanceOf<UnauthorizedAccessException>(fileCopyException);
+                    Assert.That(fileCopyException, Is.InstanceOf<UnauthorizedAccessException>());
                 }
             }
         }
@@ -784,7 +784,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 var dataObject = new DataObject();
                 dataObject.SetData("Unknown", "data");
 
-                Assert.IsEmpty(browser.GetPastableFiles(dataObject, false));
+                Assert.That(browser.GetPastableFiles(dataObject, false), Is.Empty);
             }
         }
 
@@ -814,7 +814,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     DataFormats.FileDrop,
                     new string[] { path });
 
-                Assert.IsEmpty(browser.GetPastableFiles(dataObject, false));
+                Assert.That(browser.GetPastableFiles(dataObject, false), Is.Empty);
             }
         }
 
@@ -854,7 +854,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     DataFormats.FileDrop,
                     new string[] { sourceFile.FullName });
 
-                Assert.IsEmpty(browser.GetPastableFiles(dataObject, true));
+                Assert.That(browser.GetPastableFiles(dataObject, true), Is.Empty);
 
                 taskDialog.Verify(
                     d => d.ShowDialog(browser, It.IsAny<TaskDialogParameters>()),
@@ -944,7 +944,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     DataFormats.FileDrop,
                     new string[] { sourceFile.FullName });
 
-                Assert.IsEmpty(browser.GetPastableFiles(dataObject, true));
+                Assert.That(browser.GetPastableFiles(dataObject, true), Is.Empty);
 
                 taskDialog.Verify(
                     d => d.ShowDialog(browser, It.IsAny<TaskDialogParameters>()),

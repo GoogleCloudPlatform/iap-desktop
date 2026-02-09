@@ -46,7 +46,7 @@ namespace Google.Solutions.Common.Test.Linq
         public void WhenKeyNotFound_ThenTryGetReturnsNull()
         {
             var dict = new Dictionary<string, string>();
-            Assert.IsNull(dict.TryGet("key"));
+            Assert.That(dict.TryGet("key"), Is.Null);
         }
     }
 }

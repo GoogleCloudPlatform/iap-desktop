@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             var type = WuaPackageType.FromCategoryId(
                 "145233b6-2d99-4f56-ba70-3748c1b6fdbd");
 
-            Assert.IsNull(type);
+            Assert.That(type, Is.Null);
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
         {
             var type = WuaPackageType.FromCategoryId("145233b");
 
-            Assert.IsNull(type);
+            Assert.That(type, Is.Null);
         }
 
         [Test]

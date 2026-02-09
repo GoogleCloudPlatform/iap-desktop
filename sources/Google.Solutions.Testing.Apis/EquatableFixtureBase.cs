@@ -54,11 +54,11 @@ namespace Google.Solutions.Testing.Apis
         {
             var obj = CreateInstance();
 
-            Assert.IsFalse(obj.Equals((object?)null));
-            Assert.IsFalse(((IEquatable<TEquatable>)obj!).Equals((TEquatable)null!));
+            Assert.That(obj.Equals((object?)null), Is.False);
+            Assert.That(((IEquatable<TEquatable>)obj!).Equals((TEquatable)null!), Is.False);
 
-            Assert.IsFalse(EqualityOperator(obj, null));
-            Assert.IsTrue(InequalityOperator(obj, null));
+            Assert.That(EqualityOperator(obj, null), Is.False);
+            Assert.That(InequalityOperator(obj, null), Is.True);
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace Google.Solutions.Testing.Apis
         {
             var obj = CreateInstance();
 
-            Assert.IsFalse(obj.Equals("test"));
+            Assert.That(obj.Equals("test"), Is.False);
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace Google.Solutions.Testing.Apis
         {
             var obj = CreateInstance();
 
-            Assert.IsFalse(obj.Equals("test"));
+            Assert.That(obj.Equals("test"), Is.False);
         }
 
         [Test]
@@ -82,9 +82,9 @@ namespace Google.Solutions.Testing.Apis
         {
             var obj = CreateInstance();
             var other = obj;
-            Assert.IsTrue(obj.Equals(other));
-            Assert.IsTrue(EqualityOperator(obj, other));
-            Assert.IsFalse(InequalityOperator(obj, other));
+            Assert.That(obj.Equals(other), Is.True);
+            Assert.That(EqualityOperator(obj, other), Is.True);
+            Assert.That(InequalityOperator(obj, other), Is.False);
         }
 
         [Test]
@@ -92,9 +92,9 @@ namespace Google.Solutions.Testing.Apis
         {
             var obj1 = CreateInstance();
             var obj2 = CreateInstance();
-            Assert.IsTrue(obj1.Equals(obj2));
-            Assert.IsTrue(EqualityOperator(obj1, obj2));
-            Assert.IsFalse(InequalityOperator(obj1, obj2));
+            Assert.That(obj1.Equals(obj2), Is.True);
+            Assert.That(EqualityOperator(obj1, obj2), Is.True);
+            Assert.That(InequalityOperator(obj1, obj2), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -106,7 +106,7 @@ namespace Google.Solutions.Testing.Apis
         {
             var obj1 = CreateInstance();
             var obj2 = CreateInstance();
-            Assert.AreEqual(obj1.GetHashCode(), obj2.GetHashCode());
+            Assert.That(obj1.GetHashCode(), Is.EqualTo(obj2.GetHashCode()));
         }
     }
 }

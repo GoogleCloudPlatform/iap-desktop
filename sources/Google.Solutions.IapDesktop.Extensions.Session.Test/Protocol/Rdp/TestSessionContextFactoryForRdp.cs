@@ -211,7 +211,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
             Assert.That(context, Is.Not.Null);
 
             Assert.That(context.Parameters.Sources, Is.EqualTo(RdpParameters.ParameterSources.Url));
-            Assert.IsNull(context.Credential.User);
+            Assert.That(context.Credential.User, Is.Null);
 
             settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectModelNode>()), Times.Never);

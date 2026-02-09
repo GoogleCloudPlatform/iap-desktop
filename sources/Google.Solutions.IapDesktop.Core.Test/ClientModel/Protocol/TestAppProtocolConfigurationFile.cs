@@ -89,11 +89,11 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
 
             var protocol = AppProtocolConfigurationFile.ReadJson(json);
             Assert.That(protocol.Name, Is.EqualTo("protocol-1"));
-            Assert.IsInstanceOf<WindowsTrait>(protocol.RequiredTraits.First());
+            Assert.That(protocol.RequiredTraits.First(), Is.InstanceOf<WindowsTrait>());
             Assert.That(protocol.RemotePort, Is.EqualTo(8080));
 
             var client = (AppProtocolClient?)protocol.Client;
-            Assert.NotNull(client);
+            Assert.That(client, Is.Not.Null);
             Assert.That(client!.Executable, Is.EqualTo("cmd"));
         }
 

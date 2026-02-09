@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             using (queue.Subscribe<EventOne>(e => { }, SubscriptionOptions.None))
             {
                 var sub = queue.GetSubscriptions<EventOne>().First();
-                Assert.IsInstanceOf<EventQueue.StrongSubscription<EventOne>>(sub);
+                Assert.That(sub, Is.InstanceOf<EventQueue.StrongSubscription<EventOne>>());
             }
         }
 
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             using (queue.Subscribe<EventOne>(e => { }, SubscriptionOptions.WeakSubscriberReference))
             {
                 var sub = queue.GetSubscriptions<EventOne>().First();
-                Assert.IsInstanceOf<EventQueue.WeakSubscription<EventOne>>(sub);
+                Assert.That(sub, Is.InstanceOf<EventQueue.WeakSubscription<EventOne>>());
             }
         }
 

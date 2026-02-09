@@ -209,7 +209,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                     new Mock<IBindingContext>().Object);
 
                 Assert.That(form.ContextMenuStrip.Items.Count, Is.EqualTo(1));
-                Assert.IsInstanceOf<ToolStripSeparator>(form.ContextMenuStrip.Items[0]);
+                Assert.That(form.ContextMenuStrip.Items[0], Is.InstanceOf<ToolStripSeparator>());
             }
         }
 

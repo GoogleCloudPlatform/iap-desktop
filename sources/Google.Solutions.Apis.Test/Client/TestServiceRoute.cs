@@ -40,7 +40,7 @@ namespace Google.Solutions.Apis.Test.Client
         public void PublicRoute()
         {
             Assert.That(ServiceRoute.Public.UsePrivateServiceConnect, Is.False);
-            Assert.IsNull(ServiceRoute.Public.Endpoint);
+            Assert.That(ServiceRoute.Public.Endpoint, Is.Null);
             Assert.That(ServiceRoute.Public.ToString(), Is.EqualTo("public"));
         }
 

@@ -153,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(context.NetworkCredential);
+            Assert.That(context.NetworkCredential, Is.Null);
         }
 
 
@@ -176,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(context.NetworkCredential);
+            Assert.That(context.NetworkCredential, Is.Null);
 
             settingsService.Verify(
                 s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()),

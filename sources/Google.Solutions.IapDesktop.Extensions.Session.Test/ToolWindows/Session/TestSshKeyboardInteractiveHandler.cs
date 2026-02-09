@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 SampleLocator);
 
             var credentials = handler.PromptForCredentials("username");
-            Assert.IsInstanceOf<StaticPasswordCredential>(credentials);
+            Assert.That(credentials, Is.InstanceOf<StaticPasswordCredential>());
             Assert.That(((StaticPasswordCredential)credentials).Username, Is.EqualTo("username"));
             Assert.That(((StaticPasswordCredential)credentials).Password.ToClearText(), Is.EqualTo("password"));
         }

@@ -43,7 +43,7 @@ namespace Google.Solutions.Platform.Test.Net
             }
 
             var browser = Browser.Get(BrowserPreference.Chrome);
-            Assert.IsInstanceOf<ChromeBrowser>(browser);
+            Assert.That(browser, Is.InstanceOf<ChromeBrowser>());
         }
     }
 }

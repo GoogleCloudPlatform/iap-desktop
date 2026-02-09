@@ -253,7 +253,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                 await AwaitStateAsync(window, ClientState.NotConnected)
                     .ConfigureAwait(true);
 
-                Assert.NotNull(eventArgs);
+                Assert.That(eventArgs, Is.Not.Null);
                 Assert.That(eventArgs!.Reason, Is.EqualTo(RdpClient.DisconnectReason.FormClosed));
             }
         }

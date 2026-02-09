@@ -434,7 +434,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 new MockWindowActivator<NewCredentialsView, NewCredentialsViewModel, IDialogTheme>(),
                 new MockWindowActivator<ShowCredentialsView, ShowCredentialsViewModel, IDialogTheme>());
 
-            Assert.IsNull(editor.Settings.RdpUsername.Value);
+            Assert.That(editor.Settings.RdpUsername.Value, Is.Null);
 
             await editor
                 .AmendCredentialsAsync(RdpCredentialGenerationBehavior._Default)
@@ -458,7 +458,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Sessio
                 new MockWindowActivator<NewCredentialsView, NewCredentialsViewModel, IDialogTheme>(),
                 new MockWindowActivator<ShowCredentialsView, ShowCredentialsViewModel, IDialogTheme>());
 
-            Assert.IsNull(editor.Settings.RdpUsername.Value);
+            Assert.That(editor.Settings.RdpUsername.Value, Is.Null);
 
             await editor
                 .AmendCredentialsAsync(RdpCredentialGenerationBehavior._Default)

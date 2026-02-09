@@ -379,7 +379,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
             Assert.That(settings.RdpUsername.Value, Is.EqualTo("john doe"));
             Assert.That(settings.RdpPort.Value, Is.EqualTo(13389));
-            Assert.IsNull(settings.RdpDomain.Value);
+            Assert.That(settings.RdpDomain.Value, Is.Null);
         }
 
         [Test]

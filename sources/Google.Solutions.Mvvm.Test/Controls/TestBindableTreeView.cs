@@ -200,8 +200,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
             this.tree.LoadingChildrenFailed += (sender, args) =>
             {
                 eventCount++;
-                Assert.IsInstanceOf<ModelNode>(sender);
-                Assert.IsInstanceOf<ArgumentException>(args.Exception.Unwrap());
+                Assert.That(sender, Is.InstanceOf<ModelNode>());
+                Assert.That(args.Exception.Unwrap(), Is.InstanceOf<ArgumentException>());
             };
 
             this.tree.BindChildren(m => m.Throw());

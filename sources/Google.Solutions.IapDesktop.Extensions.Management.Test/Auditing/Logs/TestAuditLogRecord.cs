@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
 
             var record = LogRecord.Deserialize(json)!;
 
-            Assert.IsInstanceOf<AuditLogRecord>(record.ProtoPayload);
+            Assert.That(record.ProtoPayload, Is.InstanceOf<AuditLogRecord>());
             var auditLog = (AuditLogRecord)record.ProtoPayload!;
 
             Assert.That(auditLog.AuthenticationInfo?.PrincipalEmail, Is.EqualTo("system@google.com"));
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
 
             var record = LogRecord.Deserialize(json)!;
 
-            Assert.IsInstanceOf<AuditLogRecord>(record.ProtoPayload);
+            Assert.That(record.ProtoPayload, Is.InstanceOf<AuditLogRecord>());
             var auditLog = (AuditLogRecord)record.ProtoPayload!;
 
             Assert.That(auditLog.Metadata, Is.Not.Null);
@@ -190,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
 
             var record = LogRecord.Deserialize(json)!;
 
-            Assert.IsInstanceOf<AuditLogRecord>(record.ProtoPayload);
+            Assert.That(record.ProtoPayload, Is.InstanceOf<AuditLogRecord>());
             var auditLog = (AuditLogRecord)record.ProtoPayload!;
 
             Assert.That(auditLog.Request, Is.Not.Null);
@@ -263,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
 
             var record = LogRecord.Deserialize(json)!;
 
-            Assert.IsInstanceOf<AuditLogRecord>(record.ProtoPayload);
+            Assert.That(record.ProtoPayload, Is.InstanceOf<AuditLogRecord>());
             var auditLog = (AuditLogRecord)record.ProtoPayload!;
 
             Assert.That(auditLog.Response, Is.Not.Null);
