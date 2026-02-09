@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new Mock<IWin32ProcessFactory>().Object,
                 SampleLocator);
 
-            Assert.IsInstanceOf<CurrentWtsSessionPolicy>(context.CreateTransportPolicy());
+            Assert.That(context.CreateTransportPolicy(), Is.InstanceOf<CurrentWtsSessionPolicy>());
         }
 
         [Test]
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 new Mock<IWin32ProcessFactory>().Object,
                 SampleLocator);
 
-            Assert.IsInstanceOf<CurrentWtsSessionPolicy>(context.CreateTransportPolicy());
+            Assert.That(context.CreateTransportPolicy(), Is.InstanceOf<CurrentWtsSessionPolicy>());
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
                 factory,
                 SampleLocator);
 
-            Assert.IsInstanceOf<ChildProcessPolicy>(context.CreateTransportPolicy());
+            Assert.That(context.CreateTransportPolicy(), Is.InstanceOf<ChildProcessPolicy>());
         }
 
         //---------------------------------------------------------------------

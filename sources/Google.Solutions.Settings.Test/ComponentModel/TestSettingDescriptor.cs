@@ -109,7 +109,7 @@ namespace Google.Solutions.Settings.Test.ComponentModel
                 .Read<StringComparison>("key", null, null, null, StringComparison.Ordinal);
 
             var descriptor = new SettingDescriptor(setting);
-            Assert.IsInstanceOf<EnumDisplayNameConverter>(descriptor.Converter);
+            Assert.That(descriptor.Converter, Is.InstanceOf<EnumDisplayNameConverter>());
         }
 
         [Test]

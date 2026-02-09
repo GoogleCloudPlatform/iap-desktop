@@ -176,7 +176,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 browser.NavigationFailed += (sender, args) =>
                 {
                     Assert.That(sender, Is.SameAs(browser));
-                    Assert.IsInstanceOf<ApplicationException>(args.Exception.Unwrap());
+                    Assert.That(args.Exception.Unwrap(), Is.InstanceOf<ApplicationException>());
                     eventRaised = true;
                 };
 
@@ -680,7 +680,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     Assert.Throws<UnauthorizedAccessException>(
                         () => ucomDataObject.GetData(ref formatetc, out var medium));
 
-                    Assert.IsInstanceOf<UnauthorizedAccessException>(fileCopyException);
+                    Assert.That(fileCopyException, Is.InstanceOf<UnauthorizedAccessException>());
                 }
             }
         }

@@ -116,7 +116,7 @@ namespace Google.Solutions.Terminal.Test.Controls
                     .ConfigureAwait(true);
 
                 Assert.That(eventArgs, Is.Not.Null);
-                Assert.IsInstanceOf<SocketException>(eventArgs!.Exception);
+                Assert.That(eventArgs!.Exception, Is.InstanceOf<SocketException>());
 
                 window.Close();
             }

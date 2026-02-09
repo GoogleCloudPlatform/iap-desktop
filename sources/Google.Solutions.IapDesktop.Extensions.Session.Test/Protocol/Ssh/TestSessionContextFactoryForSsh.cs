@@ -196,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     .AuthorizeCredentialAsync(CancellationToken.None)
                     .ConfigureAwait(false);
 
-                Assert.IsInstanceOf<StaticPasswordCredential>(credential);
+                Assert.That(credential, Is.InstanceOf<StaticPasswordCredential>());
                 Assert.That(
                     credential.Username, Is.EqualTo(string.IsNullOrEmpty(username) ? "bob" : username));
                 Assert.That(

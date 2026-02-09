@@ -525,7 +525,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 }
 
                 Assert.That(exception, Is.Not.Null);
-                Assert.IsInstanceOf<ArgumentException>(exception);
+                Assert.That(exception, Is.InstanceOf<ArgumentException>());
             }
         }
 
