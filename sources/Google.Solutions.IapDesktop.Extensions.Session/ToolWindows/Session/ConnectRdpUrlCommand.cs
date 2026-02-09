@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using System.Diagnostics;

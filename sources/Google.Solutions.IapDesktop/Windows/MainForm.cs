@@ -22,7 +22,7 @@
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;

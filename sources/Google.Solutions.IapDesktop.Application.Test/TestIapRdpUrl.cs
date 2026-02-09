@@ -19,12 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Data
+namespace Google.Solutions.IapDesktop.Application.Test
 {
     [TestFixture]
     public class TestIapRdpUrl : ApplicationFixtureBase

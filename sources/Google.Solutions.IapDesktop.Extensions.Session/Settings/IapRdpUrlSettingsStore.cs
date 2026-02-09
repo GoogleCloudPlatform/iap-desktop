@@ -21,7 +21,7 @@
 
 using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.Settings;
 using System;
 using System.Linq;

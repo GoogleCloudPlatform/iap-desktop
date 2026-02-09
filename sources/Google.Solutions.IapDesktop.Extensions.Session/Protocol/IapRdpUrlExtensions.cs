@@ -21,7 +21,7 @@
 
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using System;
 

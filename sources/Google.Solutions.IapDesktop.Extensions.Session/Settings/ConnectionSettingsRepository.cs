@@ -21,7 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Settings;
@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
     /// <summary>
     /// Registry-backed repository for connection settings.
     /// 
-    /// To simplify key managent, a flat structure is used:
+    /// To simplify key management, a flat structure is used:
     /// 
     /// [base-key]
     ///    + [project-id]           => values...
@@ -194,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             out bool foundInInventory)
         {
             //
-            // Populate an ephermeral settings store from the
+            // Populate an ephemeral settings store from the
             // URL parameters.
             //
             using (var urlSettingStore = new IapRdpUrlSettingsStore(url))

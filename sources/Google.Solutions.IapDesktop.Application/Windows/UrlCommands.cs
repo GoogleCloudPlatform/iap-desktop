@@ -20,7 +20,7 @@
 //
 
 
-using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.Mvvm.Binding.Commands;
 
 namespace Google.Solutions.IapDesktop.Application.Windows

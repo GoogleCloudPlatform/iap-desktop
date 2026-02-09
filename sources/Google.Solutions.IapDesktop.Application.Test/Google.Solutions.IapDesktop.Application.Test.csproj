@@ -17,7 +17,7 @@
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit.Extension.VSProjectLoader" />
-    <PackageReference Include="NUnit3TestAdapter" >
+    <PackageReference Include="NUnit3TestAdapter">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Threading.Tasks.Extensions" />
@@ -40,5 +40,8 @@
     <ProjectReference Include="..\Google.Solutions.Platform\Google.Solutions.Platform.csproj" />
     <ProjectReference Include="..\Google.Solutions.Testing.Apis\Google.Solutions.Testing.Apis.csproj" />
     <ProjectReference Include="..\Google.Solutions.Testing.Application\Google.Solutions.Testing.Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\" />
   </ItemGroup>
 </Project>
