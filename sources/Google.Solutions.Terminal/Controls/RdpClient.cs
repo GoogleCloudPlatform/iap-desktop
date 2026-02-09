@@ -28,7 +28,6 @@ using Google.Solutions.Platform.Interop;
 using MSTSCLib;
 using System;
 using System.ComponentModel;
-using System.Data.Common;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -62,6 +61,7 @@ namespace Google.Solutions.Terminal.Controls
         private readonly IMsRdpExtendedSettings clientExtendedSettings;
 
         private readonly DeferredCallback deferResize;
+        private DeferredCallback? deferLogoff;
 
         private bool reconnectPending = false;
         private int connectionAttempt = 0;
@@ -176,8 +176,33 @@ namespace Google.Solutions.Terminal.Controls
         {
             base.Dispose(disposing);
 
+            if (disposing)
+            {
+                //
+                // Unhook events.
+                //
+                this.client.OnConnecting -= new System.EventHandler(OnRdpConnecting);
+                this.client.OnConnected -= new System.EventHandler(OnRdpConnected);
+                this.client.OnLoginComplete -= new System.EventHandler(OnRdpLoginComplete);
+                this.client.OnDisconnected -= new AxMSTSCLib.IMsTscAxEvents_OnDisconnectedEventHandler(OnRdpDisconnected);
+                this.client.OnRequestGoFullScreen -= new System.EventHandler(OnRdpRequestGoFullScreen);
+                this.client.OnRequestLeaveFullScreen -= new System.EventHandler(OnRdpRequestLeaveFullScreen);
+                this.client.OnFatalError -= new AxMSTSCLib.IMsTscAxEvents_OnFatalErrorEventHandler(OnRdpFatalError);
+                this.client.OnWarning -= new AxMSTSCLib.IMsTscAxEvents_OnWarningEventHandler(OnRdpWarning);
+                this.client.OnRemoteDesktopSizeChange -= new AxMSTSCLib.IMsTscAxEvents_OnRemoteDesktopSizeChangeEventHandler(OnRdpRemoteDesktopSizeChange);
+                this.client.OnRequestContainerMinimize -= new System.EventHandler(OnRdpRequestContainerMinimize);
+                this.client.OnAuthenticationWarningDisplayed -= new System.EventHandler(OnRdpAuthenticationWarningDisplayed);
+                this.client.OnLogonError -= new AxMSTSCLib.IMsTscAxEvents_OnLogonErrorEventHandler(OnRdpLogonError);
+                this.client.OnFocusReleased -= new AxMSTSCLib.IMsTscAxEvents_OnFocusReleasedEventHandler(OnRdpFocusReleased);
+                this.client.OnServiceMessageReceived -= new AxMSTSCLib.IMsTscAxEvents_OnServiceMessageReceivedEventHandler(OnRdpServiceMessageReceived);
+                this.client.OnAutoReconnected -= new System.EventHandler(OnRdpAutoReconnected);
+                this.client.OnAutoReconnecting2 -= new AxMSTSCLib.IMsTscAxEvents_OnAutoReconnecting2EventHandler(OnRdpAutoReconnecting2);
+
+                this.deferLogoff?.Dispose();
+                this.deferResize.Dispose();
+            }
+
             this.client.Dispose();
-            this.deferResize.Dispose();
         }
 
         protected override void OnFormClosing(object sender, FormClosingEventArgs args)
@@ -335,6 +360,11 @@ namespace Google.Solutions.Terminal.Controls
         {
             using (TerminalTraceSource.Log.TraceMethod().WithoutParameters())
             {
+                if (this.client.IsDisposed)
+                {
+                    return;
+                }
+
                 if (this.client.Size == this.Size)
                 {
                     //
@@ -1140,11 +1170,19 @@ namespace Google.Solutions.Terminal.Controls
                 // We have to wait a bit before we can send the next 
                 // keys.
                 //
-                DeferredCallback? deferredCallback = null;
-                deferredCallback = new DeferredCallback(
+                // NB. The client might be disposed before the deferred
+                //     callback has a chance to run. 
+                //
+                this.deferLogoff?.Dispose();
+                this.deferLogoff = new DeferredCallback(
                     ctx =>
                     {
-                        // 
+                        if (this.client.IsDisposed)
+                        {
+                            return;
+                        }
+
+                        //
                         // Select the second option on the list.
                         //
                         // NB. Navigating to the second item is slightly
@@ -1158,11 +1196,12 @@ namespace Google.Solutions.Terminal.Controls
                         }
                         catch
                         { }
-
-                        deferredCallback?.Dispose();
+                
+                        this.deferLogoff?.Dispose();
+                        this.deferLogoff = null;
                     },
                     TimeSpan.FromSeconds(1));
-                deferredCallback.Schedule();
+                this.deferLogoff.Schedule();          
             }
         }
 
