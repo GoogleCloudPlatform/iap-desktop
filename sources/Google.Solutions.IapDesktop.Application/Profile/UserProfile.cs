@@ -36,12 +36,12 @@ namespace Google.Solutions.IapDesktop.Application.Profile
         /// <summary>
         /// Name of the profile.
         /// </summary>
-        public string Name { get; }
+        string Name { get; }
 
         /// <summary>
         /// Determines if this is the default profile.
         /// </summary>
-        public bool IsDefault { get; }
+        bool IsDefault { get; }
 
         /// <summary>
         /// Launch a new instance of the application with this profile.

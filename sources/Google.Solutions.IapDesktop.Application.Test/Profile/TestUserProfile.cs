@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
             {
                 var install = new Install(keyPath.Path);
 
-                using (var profile = install.CreateProfile(TestProfileName))
+                using (var profile = (UserProfile)install.CreateProfile(TestProfileName))
                 {
                     Assert.That(profile.Version, Is.Not.EqualTo(UserProfile.SchemaVersion.Initial));
                     Assert.That(profile.Version, Is.EqualTo(UserProfile.SchemaVersion.Current));
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
             using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
                 var install = new Install(keyPath.Path);
-                using (var profile = install.CreateProfile(TestProfileName))
+                using (var profile = (UserProfile)install.CreateProfile(TestProfileName))
                 {
                     profile.SettingsKey.DeleteValue("SchemaVersion");
                     Assert.That(profile.Version, Is.EqualTo(UserProfile.SchemaVersion.Initial));
@@ -146,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
             {
                 var install = new Install(keyPath.Path);
 
-                using (var profile = install.CreateProfile(TestProfileName))
+                using (var profile = (UserProfile)install.CreateProfile(TestProfileName))
                 {
                     profile.SettingsKey.DeleteValue("SchemaVersion");
                     profile.SettingsKey.SetValue("SchemaVersion", "junk");
