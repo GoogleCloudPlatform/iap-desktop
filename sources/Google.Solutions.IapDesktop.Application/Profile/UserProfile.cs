@@ -19,8 +19,11 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Host;
 using Microsoft.Win32;
 using System;
+using System.Diagnostics;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace Google.Solutions.IapDesktop.Application.Profile
@@ -28,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile
     /// <summary>
     /// User profile containing settings.
     /// </summary>
-    public interface IUserProfile
+    public interface IUserProfile : IDisposable
     {
         /// <summary>
         /// Name of the profile.
@@ -39,9 +42,14 @@ namespace Google.Solutions.IapDesktop.Application.Profile
         /// Determines if this is the default profile.
         /// </summary>
         public bool IsDefault { get; }
+
+        /// <summary>
+        /// Launch a new instance of the application with this profile.
+        /// </summary>
+        void Launch();
     }
 
-    public sealed class UserProfile : IUserProfile, IDisposable
+    public sealed class UserProfile : IUserProfile
     {
         public enum SchemaVersion : uint
         {
@@ -118,6 +126,30 @@ namespace Google.Solutions.IapDesktop.Application.Profile
                 name.Trim() == name &&
                 name.Length < 32 &&
                 ProfileNamePattern.IsMatch(name);
+        }
+
+        public void Launch()
+        {
+            //
+            // Launch a new instance, passing the specified profile
+            // as parameter (unless it's the default profile).
+            // 
+            var options = new CommandLineOptions()
+            {
+                Profile = this.IsDefault ? null : this.Name
+            };
+
+            using (var process = new Process())
+            {
+                process.StartInfo = new ProcessStartInfo()
+                {
+                    FileName = Assembly.GetEntryAssembly().Location,
+                    Arguments = options.ToString(),
+                    WindowStyle = ProcessWindowStyle.Normal
+                };
+
+                process.Start();
+            }
         }
 
         public void Dispose()

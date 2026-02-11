@@ -183,20 +183,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.WindowTitle = newTitle;
         }
 
-        public void LaunchInstanceWithProfile(string profileName)
-        {
-            //
-            // Launch a new instance, passing the specified profile
-            // as parameter (unless it's the default profile).
-            // 
-            Program.LaunchNewInstance(new CommandLineOptions()
-            {
-                Profile = profileName != UserProfile.DefaultName
-                    ? profileName
-                    : null
-            });
-        }
-
         //---------------------------------------------------------------------
         // Helper classes.
         //---------------------------------------------------------------------
