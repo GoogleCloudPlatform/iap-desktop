@@ -234,7 +234,7 @@ namespace Google.Solutions.Terminal.Controls
                 // window.
                 //
                 TerminalTraceSource.Log.TraceVerbose(
-                    "RdpCLient: Aborting FormClosing because control is full-screen");
+                    "RdpClient: Aborting FormClosing because control is full-screen");
 
                 args.Cancel = true;
                 return;
@@ -249,7 +249,7 @@ namespace Google.Solutions.Terminal.Controls
                 try
                 {
                     TerminalTraceSource.Log.TraceVerbose(
-                        "RdpCLient: Disconnecting because form is closing");
+                        "RdpClient: Disconnecting because form is closing");
 
                     //
                     // NB. This does not trigger an OnDisconnected event.
@@ -261,7 +261,7 @@ namespace Google.Solutions.Terminal.Controls
                 catch (Exception e)
                 {
                     TerminalTraceSource.Log.TraceVerbose(
-                        "RdpCLient: Disconnecting failed");
+                        "RdpClient: Disconnecting failed");
 
                     OnConnectionFailed(e);
                 }
