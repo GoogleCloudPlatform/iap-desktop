@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// <summary>
         /// Create a new (secondary) profile.
         /// </summary>
-        UserProfile CreateProfile(string name);
+        IUserProfile CreateProfile(string name);
 
         /// <summary>
         /// Open the default profile or a secondary profile. The default profile
@@ -266,7 +266,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         // Manage profiles.
         //---------------------------------------------------------------------
 
-        public UserProfile CreateProfile(string name)
+        public IUserProfile CreateProfile(string name)
         {
             if (!UserProfile.IsValidProfileName(name))
             {

@@ -203,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.addProfileToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addProfileToolStripMenuItem.Image")));
             this.addProfileToolStripMenuItem.Name = "addProfileToolStripMenuItem";
             this.addProfileToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
-            this.addProfileToolStripMenuItem.Text = "&Add profile...";
+            this.addProfileToolStripMenuItem.Text = "&New profile...";
             this.addProfileToolStripMenuItem.Click += new System.EventHandler(this.addProfileToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1

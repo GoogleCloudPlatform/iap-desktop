@@ -130,8 +130,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.descriptionLabel.Name = "descriptionLabel";
             this.descriptionLabel.Size = new System.Drawing.Size(256, 26);
             this.descriptionLabel.TabIndex = 11;
-            this.descriptionLabel.Text = "Profiles let you use multiple instances of IAP Desktop\r\nand switch between differ" +
-    "nent user accounts.";
+            this.descriptionLabel.Text = "Profiles let you use multiple instances of IAP Desktop\r\nand switch between different user accounts.";
             // 
             // NewProfileView
             // 

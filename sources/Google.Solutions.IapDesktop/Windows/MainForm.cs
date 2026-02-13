@@ -254,7 +254,16 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 if (args.ClickedItem.Tag == dynamicProfileMenuItemTag)
                 {
-                    this.viewModel.LaunchInstanceWithProfile(args.ClickedItem.Name);
+                    var profileName = args.ClickedItem.Name == UserProfile.DefaultName
+                        ? null : 
+                        args.ClickedItem.Name;
+
+                    using (var profile = this.serviceProvider
+                        .GetService<IInstall>()
+                        .OpenProfile(profileName))
+                    {
+                        profile.Launch();
+                    }
                 }
             };
 
@@ -720,7 +729,7 @@ namespace Google.Solutions.IapDesktop.Windows
                             .GetService<IInstall>()
                             .CreateProfile(dialog.ViewModel.ProfileName))
                         {
-                            this.viewModel.LaunchInstanceWithProfile(profile.Name);
+                            profile.Launch();
                         }
                     }
                 }
