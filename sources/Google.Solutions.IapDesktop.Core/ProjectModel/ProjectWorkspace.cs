@@ -365,7 +365,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                         {
                             //
                             // Project is inaccessible or it doesn't exist. The project will
-                            // still show up in the model, but with with an empty list of zones.
+                            // still show up in the model, but with an empty list of zones.
                             //
                             this.cachedZones[loadProjectTask.Project] = 
                                 new List<IProjectModelZoneNode>();
@@ -445,7 +445,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                         .ConfigureAwait(false);
                     if (project == null)
                     {
-                        // Don't load a instance if the parent project has not been added.
+                        // Don't load an instance if the parent project has not been added.
                         return null;
                     }
 

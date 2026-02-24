@@ -392,7 +392,7 @@ namespace Google.Solutions.Ssh.Native
                     else if (result != LIBSSH2_ERROR.NONE)
                     {
                         //
-                        // Some other error occured, don't retry.
+                        // Some other error occurred, don't retry.
                         //
                         socket.Close();
                         throw CreateException(result);

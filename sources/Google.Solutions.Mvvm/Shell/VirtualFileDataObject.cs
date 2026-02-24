@@ -35,7 +35,7 @@ using UCOMIDataObject = System.Runtime.InteropServices.ComTypes.IDataObject;
 namespace Google.Solutions.Mvvm.Shell
 {
     /// <summary>
-    /// IDataObject that allows handling mutiple virtual files in a 
+    /// IDataObject that allows handling multiple virtual files in a 
     /// single operation.
     /// </summary>
     /// <remarks>

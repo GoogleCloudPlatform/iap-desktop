@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOu
             "\u001b\\[2J",                  // Clear the screen.
             "\u001b\\[[A-K]",               // Common VT-52 sequences.
             "\u001b\\[\\d{1,2};\\d{1,2}H",  // Set cursor position.
-            "\u001b\\[=3h",                 // Set the terminal to a application keypad mode.
+            "\u001b\\[=3h",                 // Set the terminal to an application keypad mode.
             "\u001b\\[\\d{1,2}m",           // Set Foreground or background colors.
         };
 

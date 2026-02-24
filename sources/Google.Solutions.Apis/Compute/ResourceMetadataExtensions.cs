@@ -87,7 +87,7 @@ namespace Google.Solutions.Apis.Compute
                     {
                         //
                         // 412 indicates a conflict, meaning we lost the
-                        // optimisitic concurrency control race agains
+                        // optimistic concurrency control race against
                         // someone else. 
                         //
                         // 503 indicates that the API is being flaky.

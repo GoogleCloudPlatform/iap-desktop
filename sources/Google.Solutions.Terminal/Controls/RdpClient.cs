@@ -1351,7 +1351,7 @@ namespace Google.Solutions.Terminal.Controls
 
                     //
                     // Set the parent to the window we want to bring to the front
-                    // when the user clicks minimize on the conection bar.
+                    // when the user clicks minimize on the connection bar.
                     //
                     Debug.Assert(this.MainWindow != null);
                     fullScreenForm.Show(this.MainWindow);
