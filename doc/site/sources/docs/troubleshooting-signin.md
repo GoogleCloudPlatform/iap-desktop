@@ -11,7 +11,7 @@ signed in, you therefore typically see a consent screen that looks similar to th
 
 ![Consent screen](images/03-consent.png){ width="300" }
 
-If instead, you see following error message, then  your Cloud Identity or Workspace administrator has 
+If instead, you see the following error message, then  your Cloud Identity or Workspace administrator has 
 [configured a policy :octicons-link-external-16:](https://support.google.com/a/answer/7281227) that restricts 
 applications like IAP Desktop from requesting your permission to access Google Cloud resources.
 

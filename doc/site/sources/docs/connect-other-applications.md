@@ -51,7 +51,7 @@ To launch and connect a client application automatically, do the following:
 
 ## Open a tunnel
 
-You can let IAP Desktop open a tunnel and connect to tha tunnel by doing the following:
+You can let IAP Desktop open a tunnel and connect to the tunnel by doing the following:
 
 === "Server port"
 

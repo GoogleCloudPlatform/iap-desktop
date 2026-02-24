@@ -21,7 +21,7 @@ You can manage IAP Desktop group policies using Active Directory or Intune.
     1.  In the **Group Policy Management Console**, create or select a GPO.
     1.  Link the GPO to an organizational unit that contains the users who should be able to use IAP Desktop.
     
-        Note: You can configure policies per-computer or per-user. Computer-based policies take precendence
+        Note: You can configure policies per-computer or per-user. Computer-based policies take precedence
         over user-based policies.
     
     1.  Right-click the GPO and select **Edit**.

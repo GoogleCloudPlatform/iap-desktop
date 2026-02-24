@@ -30,7 +30,7 @@ Together, IAP Desktop and IAP let you apply zero-trust security to your VMs:
 *   Apply fine-grained access controls that define 
     [who can access which VM :octicons-link-external-16:](https://cloud.google.com/iap/docs/using-tcp-forwarding#configuring_access_and_permissions)
 *   Use [access levels :octicons-link-external-16:](https://cloud.google.com/iap/docs/cloud-iap-context-aware-access-howto) to restrict access by time or location
-*   Use [BeycondCorp Enterprise :octicons-link-external-16:](https://cloud.google.com/beyondcorp-enterprise) to limit access to trusted devices
+*   Use [BeyondCorp Enterprise :octicons-link-external-16:](https://cloud.google.com/beyondcorp-enterprise) to limit access to trusted devices
 
 The application automatically manages IAP TCP tunnels for you, and protects them so that no other users or programs can access them.
 

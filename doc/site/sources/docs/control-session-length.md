@@ -11,7 +11,7 @@ more frequently than in the past, then this might be because your default settin
 
 ## Balance security and usability
 
-As a Cloud Identity or Workspace administrator, you can customize for how Google Cloud enforces session length:
+As a Cloud Identity or Workspace administrator, you can customize how Google Cloud enforces session length:
 
 *   You can [change the maximum duration of a Google Cloud session :octicons-link-external-16:](https://support.google.com/a/answer/9368756?).
 *   You can exempt individual apps from session length limits.

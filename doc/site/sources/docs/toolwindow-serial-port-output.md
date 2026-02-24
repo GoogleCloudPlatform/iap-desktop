@@ -6,7 +6,7 @@
     
     *   [ ] [Compute Viewer :octicons-link-external-16:](https://cloud.google.com/compute/docs/access/iam) on the VM.
 
-The **Serial port output window** view the 
+The **Serial port output window** lets you view the 
 [serial port output :octicons-link-external-16:](https://cloud.google.com/compute/docs/troubleshooting/viewing-serial-port-output)
 of a VM.
 

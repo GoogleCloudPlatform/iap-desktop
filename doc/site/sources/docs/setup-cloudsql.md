@@ -43,7 +43,7 @@ do the following:
 
         SERVICE_ACCOUNT=$(gcloud iam service-accounts create cloudsql-proxy-vm --display-name "Cloud SQL Proxy VM" --format "value(email)")
 
-1.  Allow the service accounr to connect to Cloud SQL by granting it the 
+1.  Allow the service account to connect to Cloud SQL by granting it the 
     _Cloud SQL Client_ role (`roles/cloudsql.client`):
 
         gcloud projects add-iam-policy-binding $(gcloud config get project) \

@@ -1,6 +1,6 @@
 # Deploy IAP Desktop automatically
 
-If multiple users in your organizations use IAP Desktop, you can automate the
+If multiple users in your organization use IAP Desktop, you can automate the
 process of deploying IAP Desktop to users' workstations by using Active Directory or Intune.
 
 === "Active Directory"
