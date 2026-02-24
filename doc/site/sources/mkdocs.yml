@@ -97,6 +97,7 @@ nav:
       - 'Access MySQL, PostgreSQL': 'connect-mysql-postgresql.md'
       - 'Access other applications': 'connect-other-applications.md'
       - 'Set up a Cloud SQL Proxy VM': 'setup-cloudsql.md'
+      - 'Join a VM to Active Directory': 'join-active-directory.md'
     - 'Use IAP Desktop':
       - 'Tool windows':
         - 'Connection settings': 'toolwindow-connection-settings.md'
