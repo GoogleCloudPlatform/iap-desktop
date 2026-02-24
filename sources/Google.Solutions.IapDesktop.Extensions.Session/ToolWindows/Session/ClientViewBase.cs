@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         // then its parent is temporarily set to null.
         // 
         // To "rescue" the client control in these situations, we temporarily
-        // move the the control to a rescue form when the drag begins, and
+        // move the control to a rescue form when the drag begins, and
         // restore it when it ends.
         //---------------------------------------------------------------------
 

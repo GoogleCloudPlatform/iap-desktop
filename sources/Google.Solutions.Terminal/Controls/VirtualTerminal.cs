@@ -1090,7 +1090,7 @@ namespace Google.Solutions.Terminal.Controls
                 case WindowMessage.WM_MOUSEWHEEL:
                     {
                         //
-                        // The hi-word contains the the distance, in multiples
+                        // The hi-word contains the distance, in multiples
                         // of 120. 
                         //
                         var delta = (short)(((long)m.WParam) >> 16);

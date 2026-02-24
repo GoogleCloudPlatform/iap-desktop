@@ -41,7 +41,7 @@ namespace Google.Solutions.Platform.IO
         event EventHandler<PseudoTerminalDataEventArgs>? OutputAvailable;
 
         /// <summary>
-        /// Raised when a fatal error occured. After a fatal error,
+        /// Raised when a fatal error occurred. After a fatal error,
         /// might be in an unusable state and should be closed.
         /// </summary>
         /// <remarks>

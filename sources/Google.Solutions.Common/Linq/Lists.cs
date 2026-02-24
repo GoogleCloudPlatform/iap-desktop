@@ -30,7 +30,7 @@ namespace Google.Solutions.Common.Linq
     public static class Lists
     {
         /// <summary>
-        /// Create an collection for a nullable value.
+        /// Create a collection for a nullable value.
         /// </summary>
         /// <returns>
         /// Empty collection if the object is null, a 

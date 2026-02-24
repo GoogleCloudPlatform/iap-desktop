@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App
             CancellationToken cancellationToken)
         {
             //
-            // We don't have a protocol, so we need to create on on the
+            // We don't have a protocol, so we need to create one on the
             // fly based on user input.
             //
             void validatePortNumber(
