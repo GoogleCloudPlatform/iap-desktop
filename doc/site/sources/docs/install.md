@@ -10,7 +10,7 @@
 
 
 
-To download install IAP Desktop on your computer, do the following:
+To download and install IAP Desktop on your computer, do the following:
 
 1.  Download the latest installer package:
 

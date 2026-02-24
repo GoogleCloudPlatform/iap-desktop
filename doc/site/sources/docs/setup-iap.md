@@ -74,7 +74,7 @@ To create a firewall rule, do the following:
 
 ???+ tip
 
-    We stongly recommend to disable or delete the firewall rules `default-allow-ssh` 
+    We strongly recommend to disable or delete the firewall rules `default-allow-ssh` 
     and `default-allow-rdp`. These [default rules](https://cloud.google.com/vpc/docs/firewalls#default_firewall_rules) 
     allow SSH and RDP connections from all IP addresses, not only from IAP, and might put
     your VM instances at risk.

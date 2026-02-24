@@ -30,7 +30,7 @@ While convenient for users, this level of access can increase risks
 as users might be connecting from compromised devices or untrusted networks.
 
 To reduce risk, you can configure IAP TCP-forwarding so that users can only access VM instances from certain devices or locations. 
-This is referred to a context-aware access.
+This is referred to as context-aware access.
 
 Context-aware access distinguishes between policy definition and policy enforcement:
 

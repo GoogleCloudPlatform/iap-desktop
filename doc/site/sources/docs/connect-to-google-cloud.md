@@ -17,7 +17,7 @@ By default, IAP Desktop connects to your Google Cloud resources via the public i
 If you've configured Windows to use a proxy server for HTTPS connections, then 
 IAP Desktop automatically applies these settings. Alternatively, you can
 [configure proxy settings manually](proxy-configuration.md) or 
-using [a group policy](group-policies.md).
+using a [group policy](group-policies.md).
 
 
 ## Connect through Private Service Connect

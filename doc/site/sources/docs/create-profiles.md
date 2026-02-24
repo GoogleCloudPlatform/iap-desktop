@@ -1,6 +1,6 @@
 # Create profiles
 
-If you have move than one Google account, you can use profiles to switch between your Google accounts. For each profile,
+If you have more than one Google account, you can use profiles to switch between your Google accounts. For each profile,
 IAP Desktop maintains a separate set of settings.
 
 ## Add a profile

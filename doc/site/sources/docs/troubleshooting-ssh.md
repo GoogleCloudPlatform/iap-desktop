@@ -103,5 +103,5 @@ automatically limits the lifetime of the key to one day.
 
 This behavior is expected and a result of the way `vim` handles mouse input. To copy text from `vim`, 
 use the [`set mouse=r` option](https://vimdoc.sourceforge.net/htmldoc/options.html#'mouse'), or
-hold the **Shift** key while coping text.
+hold the **Shift** key while copying text.
 
