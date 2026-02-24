@@ -25,7 +25,7 @@ serve: release-notes
 	@echo "========================================================"
     
     cd $(MAKEDIR)\sources
-    python -m mkdocs serve
+    python -m mkdocs serve --livereload
     cd $(MAKEDIR)
 
 release-notes:
