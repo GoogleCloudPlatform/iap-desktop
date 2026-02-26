@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
             Assert.That(string.IsNullOrWhiteSpace(model.Output), Is.False);
             Assert.That(model.DisplayName, Is.EqualTo("display-name"));
-            Assert.That(model.Output, Does.Contain("Finished running startup scripts"));
+            Assert.That(model.Output, Does.Contain("windows-startup-script-ps1"));
         }
 
         //---------------------------------------------------------------------
