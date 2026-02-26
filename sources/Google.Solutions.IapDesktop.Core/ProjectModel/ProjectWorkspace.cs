@@ -226,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                                 zoneLocator.Name,
                                 i.Name),
                             TraitDetector.DetectTraits(i),
-                            i.Status))
+                            i.Status ?? "UNKNOWN"))
                         .ToList();
 
                     zones.Add(new ZoneNode(
