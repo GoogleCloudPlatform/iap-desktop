@@ -38,6 +38,11 @@ namespace Google.Solutions.Apis
             return e.Error != null && e.Error.Code == 412;
         }
 
+        public static bool IsConflict(this GoogleApiException e)
+        {
+            return e.Error != null && e.Error.Code == 409;
+        }
+
         public static bool IsAccessDenied(this GoogleApiException e)
         {
             return e.Error != null && e.Error.Code == 403;

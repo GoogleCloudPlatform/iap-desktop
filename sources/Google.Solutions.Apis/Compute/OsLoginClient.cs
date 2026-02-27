@@ -282,22 +282,35 @@ namespace Google.Solutions.Apis.Compute
                     throw new OsLoginNotSupportedForWorkloadIdentityException();
                 }
 
-                try
+                var attempt = 0;
+                while (true)
                 {
-                    await this.service.Users.SshPublicKeys
-                        .Delete(
-                            $"users/{this.EncodedUserPathComponent}/" +
-                            $"sshPublicKeys/{fingerprint}")
-                        .ExecuteAsync(cancellationToken)
-                        .ConfigureAwait(false);
-                }
-                catch (GoogleApiException e) when (e.IsAccessDenied())
-                {
-                    throw new ResourceAccessDeniedException(
-                        "You do not have sufficient permissions to use OS Login: " +
-                        e.Error?.Message ?? "access denied",
-                        HelpTopics.ManagingOsLogin,
-                        e);
+                    try
+                    {
+                        await this.service.Users.SshPublicKeys
+                            .Delete(
+                                $"users/{this.EncodedUserPathComponent}/" +
+                                $"sshPublicKeys/{fingerprint}")
+                            .ExecuteAsync(cancellationToken)
+                            .ConfigureAwait(false);
+                        return;
+                    }
+                    catch (GoogleApiException e) when (e.IsAccessDenied())
+                    {
+                        throw new ResourceAccessDeniedException(
+                            "You do not have sufficient permissions to use OS Login: " +
+                            e.Error?.Message ?? "access denied",
+                            HelpTopics.ManagingOsLogin,
+                            e);
+                    }
+                    catch (GoogleApiException e) when (e.IsConflict() && attempt < 3)
+                    {
+                        //
+                        // Retry.
+                        //
+                        await Task.Delay(5);
+                        attempt++;
+                    }
                 }
             }
         }
