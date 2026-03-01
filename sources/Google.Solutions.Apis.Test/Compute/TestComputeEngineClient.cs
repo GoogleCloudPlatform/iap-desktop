@@ -275,7 +275,7 @@ namespace Google.Solutions.Apis.Test.Compute
                 var log = await stream
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false);
-                if (log.Contains("Initializing Google Guest Agent"))
+                if (log.Contains(GuestAgent.SerialLogMessage))
                 {
                     return;
                 }
