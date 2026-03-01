@@ -199,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
             Assert.That(viewModel.IsEnableTailingButtonEnabled, Is.True);
             Assert.That(viewModel.IsOutputBoxEnabled, Is.True);
-            Assert.That(viewModel.Output, Does.Contain("Finished running startup scripts"));
+            Assert.That(viewModel.Output, Does.Contain("Initializing Google Guest Agent"));
 
             Assert.That(viewModel.WindowTitle, Does.Contain(SerialOutputViewModel.DefaultWindowTitle));
             Assert.That(viewModel.WindowTitle, Does.Contain(instanceLocator.Name));
