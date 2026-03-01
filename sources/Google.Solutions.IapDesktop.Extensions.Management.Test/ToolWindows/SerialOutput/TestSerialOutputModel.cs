@@ -25,6 +25,7 @@ using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Text;
 using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOutput;
+using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
@@ -64,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
             Assert.That(string.IsNullOrWhiteSpace(model.Output), Is.False);
             Assert.That(model.DisplayName, Is.EqualTo("display-name"));
-            Assert.That(model.Output, Does.Contain("windows-startup-script-ps1"));
+            Assert.That(model.Output, Does.Contain(GuestAgent.SerialLogMessage));
         }
 
         //---------------------------------------------------------------------

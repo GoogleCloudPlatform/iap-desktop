@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.SerialOutput;
+using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
 using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Application.Test;
@@ -199,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ser
 
             Assert.That(viewModel.IsEnableTailingButtonEnabled, Is.True);
             Assert.That(viewModel.IsOutputBoxEnabled, Is.True);
-            Assert.That(viewModel.Output, Does.Contain("Finished running startup scripts"));
+            Assert.That(viewModel.Output, Does.Contain(GuestAgent.SerialLogMessage));
 
             Assert.That(viewModel.WindowTitle, Does.Contain(SerialOutputViewModel.DefaultWindowTitle));
             Assert.That(viewModel.WindowTitle, Does.Contain(instanceLocator.Name));
