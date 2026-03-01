@@ -111,6 +111,18 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             Status = "TERMINATED"
         };
 
+        private static readonly Instance SampleInstanceWithNullStatus = new Instance()
+        {
+            Id = 6u,
+            Name = "instance-null-status",
+            Disks = new[]
+            {
+                new AttachedDisk()
+            },
+            Zone = "https://www.googleapis.com/compute/v1/projects/project-1/zones/zone-1",
+            Status = null
+        };
+
         private static readonly ProjectLocator SampleProjectId = new ProjectLocator("project-1");
 
         private static Mock<IResourceManagerClient> CreateResourceManagerClientMock()
@@ -590,7 +602,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 
             Assert.That(zone1.Instances.Count(), Is.EqualTo(1));
             Assert.That(
-                zone1.Instances.First().DisplayName, Is.EqualTo(SampleLinuxInstanceInZone1.Name));
+                zone1.Instances.First().DisplayName,
+                Is.EqualTo(SampleLinuxInstanceInZone1.Name));
         }
 
         [Test]
@@ -621,11 +634,48 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
             var terminated = zone1.Instances.First();
             var running = zone1.Instances.Last();
 
-            Assert.That(terminated.DisplayName, Is.EqualTo(SampleTerminatedLinuxInstanceInZone1.Name));
             Assert.That(terminated.IsRunning, Is.False);
+            Assert.That(
+                terminated.DisplayName, 
+                Is.EqualTo(SampleTerminatedLinuxInstanceInZone1.Name));
 
-            Assert.That(running.DisplayName, Is.EqualTo(SampleLinuxInstanceInZone1.Name));
             Assert.That(running.IsRunning, Is.True);
+            Assert.That(
+                running.DisplayName,
+                Is.EqualTo(SampleLinuxInstanceInZone1.Name));
+        }
+
+        [Test]
+        public async Task GetZoneNodes_WhenInstanceStatusIsNull_ThenStatusIsUnknown()
+        {
+            var computeAdapter = CreateComputeEngineClientMock(
+                SampleProjectId,
+                SampleInstanceWithNullStatus);
+
+            var workspace = new ProjectWorkspace(
+                computeAdapter.Object,
+                CreateResourceManagerClientMock().Object,
+                CreateProjectRepositoryMock(SampleProjectId).Object,
+                new Mock<IEventQueue>().Object);
+
+            var zones = await workspace
+                .GetZoneNodesAsync(
+                    SampleProjectId,
+                    false,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
+
+            Assert.That(zones.Count, Is.EqualTo(1));
+            var zone1 = zones.First();
+
+            Assert.That(zone1.Instances.Count(), Is.EqualTo(1));
+
+            var instance = zone1.Instances.First();
+
+            Assert.That(instance.IsRunning, Is.False);
+            Assert.That(
+                instance.DisplayName, 
+                Is.EqualTo(SampleInstanceWithNullStatus.Name));
         }
 
         //---------------------------------------------------------------------
