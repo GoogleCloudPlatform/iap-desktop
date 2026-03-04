@@ -61,9 +61,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByComputeGoogleapisHost()
         {
-            Assert.That(ProjectLocator.TryParse(
-                "https://compute.googleapis.com/compute/v1/projects/project-1",
-                out var ref1), Is.True);
+            Assert.That(
+                ProjectLocator.TryParse(
+                    "https://compute.googleapis.com/compute/v1/projects/project-1",
+                    out var ref1),
+                Is.True);
 
             Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("projects"));
@@ -74,9 +76,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByGoogleapisHost()
         {
-            Assert.That(ProjectLocator.TryParse(
-                "https://www.googleapis.com/compute/v1/projects/project-1",
-                out var ref1), Is.True);
+            Assert.That(
+                ProjectLocator.TryParse(
+                    "https://www.googleapis.com/compute/v1/projects/project-1",
+                    out var ref1),
+                Is.True);
 
             Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("projects"));
@@ -191,7 +195,8 @@ namespace Google.Solutions.Apis.Test.Locator
 
             Assert.That(
                 ProjectLocator.Parse(
-                    "https://www.googleapis.com/compute/v1/" + path).ToString(), Is.EqualTo(path));
+                    "https://www.googleapis.com/compute/v1/" + path).ToString(),
+                Is.EqualTo(path));
         }
     }
 }

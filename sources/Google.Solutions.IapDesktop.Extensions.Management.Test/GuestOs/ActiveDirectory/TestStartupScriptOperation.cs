@@ -105,7 +105,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                 .ConfigureAwait(false);
 
             Assert.That(
-                metadata.Items.Select(i => i.Key).ToList(), Is.EquivalentTo(new[] { "windows-startup-script-ps1", guardKeyName }));
+                metadata.Items.Select(i => i.Key).ToList(),
+                Is.EquivalentTo(new[] { "windows-startup-script-ps1", guardKeyName }));
         }
 
         [Test]
@@ -152,7 +153,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                 .ConfigureAwait(false);
 
             Assert.That(
-                metadata.Items.Select(i => i.Key).ToList(), Is.EquivalentTo(new[] { "windows-startup-script-ps1", guardKeyName }));
+                metadata.Items.Select(i => i.Key).ToList(),
+                Is.EquivalentTo(new[] { "windows-startup-script-ps1", guardKeyName }));
         }
 
         //---------------------------------------------------------------------
@@ -196,7 +198,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                 .ConfigureAwait(false);
 
             Assert.That(
-                metadata.Items.Select(i => i.Key).ToList(), Is.EquivalentTo(new[] { "foo", guardKeyName }));
+                metadata.Items.Select(i => i.Key).ToList(),
+                Is.EquivalentTo(new[] { "foo", guardKeyName }));
         }
 
         //---------------------------------------------------------------------
