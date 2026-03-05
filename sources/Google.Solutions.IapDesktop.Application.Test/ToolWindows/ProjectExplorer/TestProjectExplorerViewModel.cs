@@ -33,7 +33,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Testing.Application.Mocks;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
@@ -325,7 +325,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
         [Test]
         public async Task InstanceFilter_WhenInstanceFilterChanged_ThenViewModelIsUpdated(
-            [Values("linux-zone", "Linux-Zone", "\tLINUX", " nux ")] 
+            [Values("linux-zone", "Linux-Zone", "\tLINUX", " nux ")]
             string filterMatchingLinuxInstance)
         {
             var computeClient = CreateComputeEngineClient();

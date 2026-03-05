@@ -48,9 +48,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathIsValid()
         {
-            Assert.That(NodeTypeLocator.TryParse(
-                "projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240",
-                out var ref1), Is.True);
+            Assert.That(
+                NodeTypeLocator.TryParse(
+                    "projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240",
+                    out var ref1),
+                Is.True);
 
             Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("nodeTypes"));
@@ -62,9 +64,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByComputeGoogleapisHost()
         {
-            Assert.That(NodeTypeLocator.TryParse(
-                "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240",
-                out var ref1), Is.True);
+            Assert.That(
+                NodeTypeLocator.TryParse(
+                    "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240",
+                    out var ref1),
+                Is.True);
 
             Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("nodeTypes"));
@@ -76,9 +80,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByGoogleapisHost()
         {
-            Assert.That(NodeTypeLocator.TryParse(
-                "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240",
-                out var ref1), Is.True);
+            Assert.That(
+                NodeTypeLocator.TryParse(
+                    "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240",
+                    out var ref1),
+                Is.True);
 
             Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("nodeTypes"));
@@ -90,9 +96,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenUsingBetaApi()
         {
-            Assert.That(NodeTypeLocator.TryParse(
-                 "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240",
-                out var ref1), Is.True);
+            Assert.That(
+                NodeTypeLocator.TryParse(
+                    "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240",
+                    out var ref1),
+                Is.True);
 
             Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("nodeTypes"));
@@ -177,8 +185,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void Parse_WhenPathLacksProject()
         {
-            Assert.Throws<ArgumentException>(() => NodeTypeLocator.Parse(
-                "project-1/zones/us-central1-a/nodeTypes/c2-node-60-240"));
+            Assert.Throws<ArgumentException>(
+                () => NodeTypeLocator.Parse(
+                    "project-1/zones/us-central1-a/nodeTypes/c2-node-60-240"));
         }
 
         [Test]
@@ -228,7 +237,8 @@ namespace Google.Solutions.Apis.Test.Locator
 
             Assert.That(
                 NodeTypeLocator.Parse(
-                    "https://www.googleapis.com/compute/v1/" + path).ToString(), Is.EqualTo(path));
+                    "https://www.googleapis.com/compute/v1/" + path).ToString(),
+                Is.EqualTo(path));
         }
     }
 }

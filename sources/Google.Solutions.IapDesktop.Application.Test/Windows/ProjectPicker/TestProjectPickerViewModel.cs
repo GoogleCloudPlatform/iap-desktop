@@ -22,7 +22,7 @@
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Solutions.Apis.Crm;
 using Google.Solutions.IapDesktop.Application.Windows.ProjectPicker;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using Moq;
 using NUnit.Framework;
 using System;

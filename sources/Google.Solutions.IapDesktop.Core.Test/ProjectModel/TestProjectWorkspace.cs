@@ -304,7 +304,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 .ConfigureAwait(true);
 
             Assert.That(
-                model.Projects.Select(p => p.Project.Name).ToList(), Is.EquivalentTo(new[] { "accessible-project", "inaccessible-project" }));
+                model.Projects.Select(p => p.Project.Name).ToList(),
+                Is.EquivalentTo(new[] { "accessible-project", "inaccessible-project" }));
 
             Assert.That(workspace.CachedProjectsCount, Is.EqualTo(2));
         }
@@ -356,7 +357,8 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
                 .ConfigureAwait(true);
 
             Assert.That(
-                model.Projects.Select(p => p.Project.Name).ToList(), Is.EquivalentTo(new[] { "accessible-project", "nonexisting-project" }));
+                model.Projects.Select(p => p.Project.Name).ToList(),
+                Is.EquivalentTo(new[] { "accessible-project", "nonexisting-project" }));
 
             Assert.That(workspace.CachedProjectsCount, Is.EqualTo(2));
         }
@@ -636,7 +638,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 
             Assert.That(terminated.IsRunning, Is.False);
             Assert.That(
-                terminated.DisplayName, 
+                terminated.DisplayName,
                 Is.EqualTo(SampleTerminatedLinuxInstanceInZone1.Name));
 
             Assert.That(running.IsRunning, Is.True);
@@ -674,7 +676,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
 
             Assert.That(instance.IsRunning, Is.False);
             Assert.That(
-                instance.DisplayName, 
+                instance.DisplayName,
                 Is.EqualTo(SampleInstanceWithNullStatus.Name));
         }
 

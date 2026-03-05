@@ -27,7 +27,6 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Settings.Collection;
 using Google.Solutions.Testing.Apis.Platform;
-using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 using System.Threading;

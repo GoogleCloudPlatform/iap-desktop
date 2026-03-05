@@ -168,7 +168,7 @@ namespace Google.Solutions.Iap.Net
                     // return 0. But if the connection was closed abnormally,
                     // the client needs to know the details.
                     //
-                    if (result.CloseStatus.Value 
+                    if (result.CloseStatus.Value
                         != WebSocketCloseStatus.NormalClosure)
                     {
                         throw new WebSocketStreamClosedByServerException(
@@ -266,7 +266,7 @@ namespace Google.Solutions.Iap.Net
         }
     }
 
-    public class WebSocketStreamClosedByClientException : 
+    public class WebSocketStreamClosedByClientException :
         NetworkStreamClosedException
     {
         public WebSocketStreamClosedByClientException()
@@ -283,7 +283,7 @@ namespace Google.Solutions.Iap.Net
         }
     }
 
-    public class WebSocketStreamClosedByServerException : 
+    public class WebSocketStreamClosedByServerException :
         NetworkStreamClosedException
     {
         public WebSocketCloseStatus CloseStatus { get; private set; }

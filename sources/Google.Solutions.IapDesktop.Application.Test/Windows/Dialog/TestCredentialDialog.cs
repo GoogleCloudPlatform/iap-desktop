@@ -23,7 +23,7 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Testing.Apis.Integration;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
                 AuthenticationPackage.Ntlm)] AuthenticationPackage package)
         {
             Assert.That(
-                CredentialDialog.LookupAuthenticationPackageId(package), 
+                CredentialDialog.LookupAuthenticationPackageId(package),
                 Is.GreaterThanOrEqualTo(0));
         }
 

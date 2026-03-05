@@ -23,11 +23,11 @@ using Google.Solutions.Apis;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Apis.Logging;
+using Google.Solutions.IapDesktop.Extensions.Management.Auditing;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events;
-using Google.Solutions.IapDesktop.Extensions.Management.History;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -35,7 +35,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.Test
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing
 {
     [TestFixture]
     [UsesCloudResources]

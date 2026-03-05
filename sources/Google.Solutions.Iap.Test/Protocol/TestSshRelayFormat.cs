@@ -58,7 +58,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
                 Assert.Throws<ArgumentException>(
                     () => SshRelayFormat.Tag.Encode(
-                        message, 
+                        message,
                         SshRelayMessageTag.ACK));
             }
 
@@ -202,7 +202,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 };
 
                 var bytesRead = SshRelayFormat.ReconnectAck.Decode(
-                    message, 
+                    message,
                     out var ack);
 
                 Assert.That(bytesRead, Is.EqualTo(10));
@@ -219,7 +219,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
                 Assert.Throws<ArgumentException>(
                     () => SshRelayFormat.ReconnectAck.Decode(
-                        message, 
+                        message,
                         out var ack));
             }
         }

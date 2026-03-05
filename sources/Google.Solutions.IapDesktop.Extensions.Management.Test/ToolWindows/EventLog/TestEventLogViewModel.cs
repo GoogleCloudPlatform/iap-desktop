@@ -28,11 +28,10 @@ using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.System;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs;
-using Google.Solutions.IapDesktop.Extensions.Management.History;
 using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.EventLog;
 using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Application.ObjectModel;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -40,6 +39,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.IapDesktop.Extensions.Management.Auditing;
+using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.EventLog
 {

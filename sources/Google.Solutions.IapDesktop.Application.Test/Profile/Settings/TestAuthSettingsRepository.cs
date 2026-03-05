@@ -24,7 +24,7 @@ using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Settings;
 using Google.Solutions.Testing.Apis.Platform;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings

@@ -77,8 +77,8 @@ namespace Google.Solutions.Iap.Test.Protocol
         [Test]
         public async Task WhenServerNotListening_ThenReadReturnsZero(
             [LinuxInstance] ResourceTask<InstanceLocator> vm,
-            
-            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+
+            [Credential(Role = PredefinedRole.IapTunnelUser)]
             ResourceTask<IAuthorization> auth)
         {
             var locator = await vm;

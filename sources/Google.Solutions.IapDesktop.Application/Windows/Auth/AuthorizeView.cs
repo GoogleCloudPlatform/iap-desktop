@@ -183,7 +183,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                         .ContinueWith(
                             t => Debug.Assert(false, "Should never throw an exception"),
                             TaskContinuationOptions.OnlyOnFaulted);
-                };
+                }
+                ;
             }
         }
     }

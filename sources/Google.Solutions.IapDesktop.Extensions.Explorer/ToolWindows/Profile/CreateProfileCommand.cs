@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Profile
 
         public CreateProfileCommand(
             IInstall install,
-            IMainWindow mainWindow, 
+            IMainWindow mainWindow,
             WindowActivator<NewProfileView, NewProfileViewModel, IDialogTheme> dialogActivator)
             : base("New &profile...")
         {

@@ -119,11 +119,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<INotifyDialog>().Object);
 
             Assert.That(
-                command.QueryState(new Mock<IProjectModelCloudNode>().Object), Is.EqualTo(CommandState.Unavailable));
+                command.QueryState(new Mock<IProjectModelCloudNode>().Object),
+                Is.EqualTo(CommandState.Unavailable));
             Assert.That(
-                command.QueryState(new Mock<IProjectModelProjectNode>().Object), Is.EqualTo(CommandState.Unavailable));
+                command.QueryState(new Mock<IProjectModelProjectNode>().Object),
+                Is.EqualTo(CommandState.Unavailable));
             Assert.That(
-                command.QueryState(new Mock<IProjectModelZoneNode>().Object), Is.EqualTo(CommandState.Unavailable));
+                command.QueryState(new Mock<IProjectModelZoneNode>().Object),
+                Is.EqualTo(CommandState.Unavailable));
         }
 
         [Test]
@@ -140,7 +143,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.App
                 new Mock<INotifyDialog>().Object);
 
             Assert.That(
-                command.QueryState(new Mock<IProjectModelInstanceNode>().Object), Is.EqualTo(CommandState.Disabled));
+                command.QueryState(new Mock<IProjectModelInstanceNode>().Object),
+                Is.EqualTo(CommandState.Disabled));
         }
 
         //---------------------------------------------------------------------

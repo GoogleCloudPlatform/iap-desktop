@@ -21,7 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using Moq;
 using NUnit.Framework;
 using System;

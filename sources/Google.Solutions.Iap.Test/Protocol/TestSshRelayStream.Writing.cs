@@ -34,7 +34,7 @@ namespace Google.Solutions.Iap.Test.Protocol
     [TestFixture]
     public class TestSshRelayStreamWriting : IapFixtureBase
     {
-        private readonly CancellationTokenSource tokenSource 
+        private readonly CancellationTokenSource tokenSource
             = new CancellationTokenSource();
 
         [SetUp]
@@ -50,8 +50,8 @@ namespace Google.Solutions.Iap.Test.Protocol
             {
                 ExpectedReadData = new byte[][]
                 {
-                    new byte[]{ 
-                        0, 
+                    new byte[]{
+                        0,
                         (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 }
                 }
             };

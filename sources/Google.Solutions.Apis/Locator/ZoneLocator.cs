@@ -83,7 +83,7 @@ namespace Google.Solutions.Apis.Locator
             // Derive region from zone by cutting the "-x".
             //
             get => new RegionLocator(
-                this.Project, 
+                this.Project,
                 this.Name.Substring(0, this.Name.Length - 2));
         }
 

@@ -44,11 +44,11 @@ namespace Google.Solutions.IapDesktop.Application
     {
         public const string Scheme = "iap-rdp";
 
-        private static readonly Regex ProjectPattern 
+        private static readonly Regex ProjectPattern
             = new Regex(@"(?:(?:[-a-z0-9]{1,63}\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z0-9](?:[-a-z0-9]{0,61}[a-z0-9])?))");
-        private static readonly Regex ZonePattern 
+        private static readonly Regex ZonePattern
             = new Regex(@"[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
-        private static readonly Regex InstanceNamePattern 
+        private static readonly Regex InstanceNamePattern
             = new Regex(@"[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?|[1-9][0-9]{0,19}");
 
         /// <summary>

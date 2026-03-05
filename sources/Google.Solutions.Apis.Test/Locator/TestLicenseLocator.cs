@@ -48,9 +48,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathIsValid()
         {
-            Assert.That(LicenseLocator.TryParse(
-                "projects/project-1/global/licenses/windows-10-enterprise-byol",
-                out var ref1), Is.True);
+            Assert.That(
+                LicenseLocator.TryParse(
+                    "projects/project-1/global/licenses/windows-10-enterprise-byol",
+                    out var ref1),
+                Is.True);
 
             Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("licenses"));
@@ -61,9 +63,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByComputeGoogleapisHost()
         {
-            Assert.That(LicenseLocator.TryParse(
-                "https://compute.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol",
-                out var ref1), Is.True);
+            Assert.That(
+                LicenseLocator.TryParse(
+                    "https://compute.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol",
+                    out var ref1),
+                Is.True);
 
             Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("licenses"));
@@ -74,9 +78,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByGoogleapisHost()
         {
-            Assert.That(LicenseLocator.TryParse(
-                "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol",
-                out var ref1), Is.True);
+            Assert.That(
+                LicenseLocator.TryParse(
+                    "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol",
+                    out var ref1),
+                Is.True);
 
             Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("licenses"));
@@ -146,17 +152,20 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void Parse_WhenPathLacksProject()
         {
-            Assert.Throws<ArgumentException>(() => LicenseLocator.Parse(
-                "/project-1/project-1/global/licenses/windows-10-enterprise-byol"));
+            Assert.Throws<ArgumentException>(
+                () => LicenseLocator.Parse(
+                    "/project-1/project-1/global/licenses/windows-10-enterprise-byol"));
         }
 
         [Test]
         public void Parse_WhenPathInvalid()
         {
-            Assert.Throws<ArgumentException>(() => LicenseLocator.Parse(
-                "projects/project-1/notglobal/licenses/windows-10-enterprise-byol"));
-            Assert.Throws<ArgumentException>(() => LicenseLocator.Parse(
-                "/project-1/global/licenses/windows-10-enterprise-byol"));
+            Assert.Throws<ArgumentException>(
+                () => LicenseLocator.Parse(
+                    "projects/project-1/notglobal/licenses/windows-10-enterprise-byol"));
+            Assert.Throws<ArgumentException>(
+                () => LicenseLocator.Parse(
+                    "/project-1/global/licenses/windows-10-enterprise-byol"));
             Assert.Throws<ArgumentException>(() => LicenseLocator.Parse(
                 "/"));
         }
@@ -197,7 +206,8 @@ namespace Google.Solutions.Apis.Test.Locator
 
             Assert.That(
                 LicenseLocator.Parse(
-                    "https://www.googleapis.com/compute/v1/" + path).ToString(), Is.EqualTo(path));
+                    "https://www.googleapis.com/compute/v1/" + path).ToString(),
+                Is.EqualTo(path));
         }
 
         //---------------------------------------------------------------------

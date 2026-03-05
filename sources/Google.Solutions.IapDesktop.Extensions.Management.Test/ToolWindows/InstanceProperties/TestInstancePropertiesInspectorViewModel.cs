@@ -29,7 +29,7 @@ using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.InstanceProperties;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.Mocks;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -90,7 +90,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             Assert.That(viewModel.InformationText.Value, Is.Null);
             Assert.That(viewModel.InspectedObject.Value, Is.Null);
             Assert.That(
-                viewModel.WindowTitle.Value, Is.EqualTo(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
+                viewModel.WindowTitle.Value,
+                Is.EqualTo(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
         }
 
         [Test]
@@ -107,7 +108,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             Assert.That(viewModel.InformationText.Value, Is.Null);
             Assert.That(viewModel.InspectedObject.Value, Is.Null);
             Assert.That(
-                viewModel.WindowTitle.Value, Is.EqualTo(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
+                viewModel.WindowTitle.Value,
+                Is.EqualTo(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
         }
 
         [Test]
@@ -124,7 +126,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             Assert.That(viewModel.InformationText.Value, Is.Null);
             Assert.That(viewModel.InspectedObject.Value, Is.Null);
             Assert.That(
-                viewModel.WindowTitle.Value, Is.EqualTo(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
+                viewModel.WindowTitle.Value,
+                Is.EqualTo(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
         }
 
         [Test]
@@ -146,7 +149,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
 
             Assert.That(viewModel.InspectedObject.Value, Is.Not.Null);
             Assert.That(
-                viewModel.WindowTitle.Value, Does.Contain(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
+                viewModel.WindowTitle.Value,
+                Does.Contain(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
             Assert.That(
                 viewModel.WindowTitle.Value, Does.Contain("instance-1"));
         }
@@ -174,7 +178,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Ins
             Assert.That(viewModel.InformationText.Value, Is.Null);
             Assert.That(viewModel.InspectedObject.Value, Is.Null);
             Assert.That(
-                viewModel.WindowTitle.Value, Is.EqualTo(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
+                viewModel.WindowTitle.Value,
+                Is.EqualTo(InstancePropertiesInspectorViewModel.DefaultWindowTitle));
         }
     }
 }

@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Util;
-using System.Diagnostics;
 
 namespace Google.Solutions.Common.Format
 {
@@ -63,7 +62,7 @@ namespace Google.Solutions.Common.Format
             var mask = (uint)(1 << this.lengthInBits) - 1;
             for (var i = 0; i < data.Length; i++)
             {
-                this.checksum = (this.checksum >> 1) + 
+                this.checksum = (this.checksum >> 1) +
                     ((this.checksum & 1) << (this.lengthInBits - 1));
                 this.checksum += data[i];
                 this.checksum &= mask;

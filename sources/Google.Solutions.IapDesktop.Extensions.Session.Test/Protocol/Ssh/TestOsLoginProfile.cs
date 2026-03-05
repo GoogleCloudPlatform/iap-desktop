@@ -220,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     c => c.ProvisionPosixProfileAsync(
                         It.IsAny<RegionLocator>(),
                         null,
-                        It.IsAny<CancellationToken>()), 
+                        It.IsAny<CancellationToken>()),
                     Times.Never);
             }
         }

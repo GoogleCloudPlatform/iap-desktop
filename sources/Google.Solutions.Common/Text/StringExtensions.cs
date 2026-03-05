@@ -49,7 +49,7 @@ namespace Google.Solutions.Common.Text
         /// </summary>
         /// <returns>Index, or -1 if not found</returns>
         public static int LastIndexOf(
-            this string str, 
+            this string str,
             Predicate<char> predicate)
         {
             for (var i = str.Length - 1; i >= 0; i--)

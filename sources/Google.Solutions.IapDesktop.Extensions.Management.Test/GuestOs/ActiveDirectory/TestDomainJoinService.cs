@@ -25,7 +25,7 @@ using Google.Solutions.Common.Text;
 using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirectory;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Application.ObjectModel;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;

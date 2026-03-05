@@ -24,7 +24,7 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Testing.Application.ObjectModel;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows

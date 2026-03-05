@@ -56,9 +56,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathIsValid()
         {
-            Assert.That(ZoneLocator.TryParse(
-                "projects/project-1/zones/us-central1-a",
-                out var ref1), Is.True);
+            Assert.That(
+                ZoneLocator.TryParse(
+                    "projects/project-1/zones/us-central1-a",
+                    out var ref1),
+                Is.True);
 
             Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("zones"));
@@ -69,9 +71,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByComputeGoogleapisHost()
         {
-            Assert.That(ZoneLocator.TryParse(
-                "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a",
-                out var ref1), Is.True);
+            Assert.That(
+                ZoneLocator.TryParse(
+                    "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a",
+                    out var ref1),
+                Is.True);
 
             Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("zones"));
@@ -82,9 +86,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByGoogleapisHost()
         {
-            Assert.That(ZoneLocator.TryParse(
-                "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a",
-                out var ref1), Is.True);
+            Assert.That(
+                ZoneLocator.TryParse(
+                    "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a",
+                    out var ref1),
+                Is.True);
 
             Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("zones"));
@@ -151,8 +157,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void Parse_WhenPathLacksProject()
         {
-            Assert.Throws<ArgumentException>(() => ZoneLocator.Parse(
-                "/project-1/project-1/zones/us-central1-a"));
+            Assert.Throws<ArgumentException>(
+                () => ZoneLocator.Parse(
+                    "/project-1/project-1/zones/us-central1-a"));
         }
 
         [Test]
@@ -200,7 +207,8 @@ namespace Google.Solutions.Apis.Test.Locator
 
             Assert.That(
                 ZoneLocator.Parse(
-                    "https://www.googleapis.com/compute/v1/" + path).ToString(), Is.EqualTo(path));
+                    "https://www.googleapis.com/compute/v1/" + path).ToString(),
+                Is.EqualTo(path));
         }
     }
 }

@@ -255,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 if (args.ClickedItem.Tag == dynamicProfileMenuItemTag)
                 {
                     var profileName = args.ClickedItem.Name == UserProfile.DefaultName
-                        ? null : 
+                        ? null :
                         args.ClickedItem.Name;
 
                     using (var profile = this.serviceProvider

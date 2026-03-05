@@ -26,7 +26,7 @@ namespace Google.Solutions.IapDesktop.Core.ResourceModel
     /// <summary>
     /// A resource that can be looked up by a locator.
     /// </summary>
-    public interface IResource<out TLocator> 
+    public interface IResource<out TLocator>
         where TLocator : ILocator
     {
         /// <summary>

@@ -26,7 +26,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.InstanceProperties;
 using Google.Solutions.Testing.Apis.Integration;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using Moq;
 using NUnit.Framework;
 using System.Linq;

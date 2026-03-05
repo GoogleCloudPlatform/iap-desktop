@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows;
 using Google.Solutions.Mvvm.Binding.Commands;
-using Google.Solutions.Testing.Apis.Mocks;
+using Google.Solutions.Testing.Apis.Mock;
 using Google.Solutions.Testing.Application.Mocks;
 using Moq;
 using NUnit.Framework;
@@ -216,32 +216,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
 
         [Test]
         public void ContextMenuXxx_WhenNotApplicable_ThenContextMenuXxxIsUnavailable(
-            [Values(
-                InstanceControlCommand.Start,
-                InstanceControlCommand.Stop,
-                InstanceControlCommand.Suspend,
-                InstanceControlCommand.Resume,
-                InstanceControlCommand.Reset)] InstanceControlCommand controlCommand)
+            [Values] InstanceControlCommand controlCommand)
         {
             var serviceProvider = new Mock<IServiceProvider>();
             var command = CreateCommand(serviceProvider.Object, controlCommand);
 
             Assert.That(
-                command.QueryState(new Mock<IProjectModelCloudNode>().Object), Is.EqualTo(CommandState.Unavailable));
+                command.QueryState(new Mock<IProjectModelCloudNode>().Object),
+                Is.EqualTo(CommandState.Unavailable));
             Assert.That(
-                command.QueryState(new Mock<IProjectModelProjectNode>().Object), Is.EqualTo(CommandState.Unavailable));
+                command.QueryState(new Mock<IProjectModelProjectNode>().Object),
+                Is.EqualTo(CommandState.Unavailable));
             Assert.That(
-                command.QueryState(new Mock<IProjectModelZoneNode>().Object), Is.EqualTo(CommandState.Unavailable));
+                command.QueryState(new Mock<IProjectModelZoneNode>().Object),
+                Is.EqualTo(CommandState.Unavailable));
         }
 
         [Test]
         public async Task ContextMenuXxx_WhenNotConfirmed_ThenContextMenuXxxDoesNothing(
-            [Values(
-                InstanceControlCommand.Start,
-                InstanceControlCommand.Stop,
-                InstanceControlCommand.Suspend,
-                InstanceControlCommand.Resume,
-                InstanceControlCommand.Reset)] InstanceControlCommand controlCommand)
+            [Values] InstanceControlCommand controlCommand)
         {
             var serviceProvider = new Mock<IServiceProvider>();
             var command = CreateCommand(serviceProvider.Object, controlCommand);
@@ -276,12 +269,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
 
         [Test]
         public async Task ContextMenuXxx_WhenConfirmed_ThenContextMenuXxxControlsInstance(
-            [Values(
-                InstanceControlCommand.Start,
-                InstanceControlCommand.Stop,
-                InstanceControlCommand.Suspend,
-                InstanceControlCommand.Resume,
-                InstanceControlCommand.Reset)] InstanceControlCommand controlCommand)
+            [Values] InstanceControlCommand controlCommand)
         {
             var serviceProvider = new Mock<IServiceProvider>();
             var command = CreateCommand(serviceProvider.Object, controlCommand);
@@ -358,13 +346,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows
             linuxVm.SetupGet(n => n.IsRunning).Returns(true);
 
             Assert.That(
-                commands.ContextMenuJoinToActiveDirectory.QueryState(linuxVm.Object), Is.EqualTo(CommandState.Unavailable));
+                commands.ContextMenuJoinToActiveDirectory.QueryState(linuxVm.Object),
+                Is.EqualTo(CommandState.Unavailable));
             Assert.That(
-                commands.ContextMenuJoinToActiveDirectory.QueryState(new Mock<IProjectModelCloudNode>().Object), Is.EqualTo(CommandState.Unavailable));
+                commands.ContextMenuJoinToActiveDirectory.QueryState(new Mock<IProjectModelCloudNode>().Object),
+                Is.EqualTo(CommandState.Unavailable));
             Assert.That(
-                commands.ContextMenuJoinToActiveDirectory.QueryState(new Mock<IProjectModelProjectNode>().Object), Is.EqualTo(CommandState.Unavailable));
+                commands.ContextMenuJoinToActiveDirectory.QueryState(new Mock<IProjectModelProjectNode>().Object),
+                Is.EqualTo(CommandState.Unavailable));
             Assert.That(
-                commands.ContextMenuJoinToActiveDirectory.QueryState(new Mock<IProjectModelZoneNode>().Object), Is.EqualTo(CommandState.Unavailable));
+                commands.ContextMenuJoinToActiveDirectory.QueryState(new Mock<IProjectModelZoneNode>().Object),
+                Is.EqualTo(CommandState.Unavailable));
         }
     }
 }

@@ -40,13 +40,16 @@ namespace Google.Solutions.Settings.Test
             });
 
             Assert.That(
-                store.Read<string>("string", "desc", null, null, null).Value, Is.EqualTo("a string"));
+                store.Read<string>("string", "desc", null, null, null).Value,
+                Is.EqualTo("a string"));
             Assert.That(
                 store.Read("int", "desc", null, null, 0).Value, Is.EqualTo(-42));
             Assert.That(
-                store.Read<long>("long", "desc", null, null, 0).Value, Is.EqualTo(1000000000000001L));
+                store.Read<long>("long", "desc", null, null, 0).Value,
+                Is.EqualTo(1000000000000001L));
             Assert.That(
-                store.Read("color", "desc", null, null, ConsoleColor.Black).Value, Is.EqualTo(ConsoleColor.DarkCyan));
+                store.Read("color", "desc", null, null, ConsoleColor.Black).Value,
+                Is.EqualTo(ConsoleColor.DarkCyan));
         }
 
         [Test]

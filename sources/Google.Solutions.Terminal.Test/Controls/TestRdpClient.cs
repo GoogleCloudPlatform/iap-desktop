@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Terminal.Controls;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;

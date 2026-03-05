@@ -110,8 +110,12 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 CreateUserCredential("old-rt", "old-at", idToken),
                 idToken);
 
-            Assert.That(((UserCredential)session.ApiCredential).Token.RefreshToken, Is.EqualTo("old-rt"));
-            Assert.That(((UserCredential)session.ApiCredential).Token.AccessToken, Is.EqualTo("old-at"));
+            Assert.That(
+                ((UserCredential)session.ApiCredential).Token.RefreshToken,
+                Is.EqualTo("old-rt"));
+            Assert.That(
+                ((UserCredential)session.ApiCredential).Token.AccessToken,
+                Is.EqualTo("old-at"));
 
             var newIdToken = new UnverifiedGaiaJsonWebToken(
                 new GoogleJsonWebSignature.Header(),
@@ -125,8 +129,12 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
 
             session.Splice(newSession);
 
-            Assert.That(((UserCredential)session.ApiCredential).Token.RefreshToken, Is.EqualTo("new-rt"));
-            Assert.That(((UserCredential)session.ApiCredential).Token.AccessToken, Is.EqualTo("new-at"));
+            Assert.That(
+                ((UserCredential)session.ApiCredential).Token.RefreshToken,
+                Is.EqualTo("new-rt"));
+            Assert.That(
+                ((UserCredential)session.ApiCredential).Token.AccessToken,
+                Is.EqualTo("new-at"));
         }
 
         //---------------------------------------------------------------------
@@ -213,7 +221,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 idToken);
 
             Assert.That(
-                session.CreateDomainSpecificServiceUri(new Uri("https://console.cloud.google.com/")), Is.EqualTo(new Uri("https://www.google.com/a/example.com/ServiceLogin" +
+                session.CreateDomainSpecificServiceUri(new Uri("https://console.cloud.google.com/")),
+                Is.EqualTo(new Uri("https://www.google.com/a/example.com/ServiceLogin" +
                     "?continue=https:%2F%2Fconsole.cloud.google.com%2F")));
         }
 
@@ -231,7 +240,8 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 idToken);
 
             Assert.That(
-                session.CreateDomainSpecificServiceUri(new Uri("https://console.cloud.google.com/")), Is.EqualTo(new Uri("https://console.cloud.google.com/")));
+                session.CreateDomainSpecificServiceUri(new Uri("https://console.cloud.google.com/")),
+                Is.EqualTo(new Uri("https://console.cloud.google.com/")));
         }
     }
 }

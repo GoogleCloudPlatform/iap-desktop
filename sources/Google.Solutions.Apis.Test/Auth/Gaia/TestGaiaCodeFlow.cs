@@ -44,9 +44,15 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 enrollment.Object,
                 TestProject.UserAgent);
 
-            Assert.That(initializer.AuthorizationServerUrl, Is.EqualTo("https://accounts.google.com/o/oauth2/v2/auth"));
-            Assert.That(initializer.TokenServerUrl, Is.EqualTo("https://oauth2.googleapis.com/token"));
-            Assert.That(initializer.RevokeTokenUrl, Is.EqualTo("https://oauth2.googleapis.com/revoke"));
+            Assert.That(
+                initializer.AuthorizationServerUrl,
+                Is.EqualTo("https://accounts.google.com/o/oauth2/v2/auth"));
+            Assert.That(
+                initializer.TokenServerUrl,
+                Is.EqualTo("https://oauth2.googleapis.com/token"));
+            Assert.That(
+                initializer.RevokeTokenUrl,
+                Is.EqualTo("https://oauth2.googleapis.com/revoke"));
         }
 
         [Test]
@@ -60,9 +66,15 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 enrollment.Object,
                 TestProject.UserAgent);
 
-            Assert.That(initializer.AuthorizationServerUrl, Is.EqualTo("https://accounts.google.com/o/oauth2/v2/auth"));
-            Assert.That(initializer.TokenServerUrl, Is.EqualTo("https://oauth2.mtls.googleapis.com/token"));
-            Assert.That(initializer.RevokeTokenUrl, Is.EqualTo("https://oauth2.mtls.googleapis.com/revoke"));
+            Assert.That(
+                initializer.AuthorizationServerUrl,
+                Is.EqualTo("https://accounts.google.com/o/oauth2/v2/auth"));
+            Assert.That(
+                initializer.TokenServerUrl,
+                Is.EqualTo("https://oauth2.mtls.googleapis.com/token"));
+            Assert.That(
+                initializer.RevokeTokenUrl,
+                Is.EqualTo("https://oauth2.mtls.googleapis.com/revoke"));
         }
     }
 }

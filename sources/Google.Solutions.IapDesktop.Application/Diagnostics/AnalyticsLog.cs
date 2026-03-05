@@ -19,14 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Apis.Analytics;
+using Google.Solutions.Common;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Common;
 
 namespace Google.Solutions.IapDesktop.Application.Diagnostics
 {

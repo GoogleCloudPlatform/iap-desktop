@@ -36,7 +36,7 @@ namespace Google.Solutions.Iap.Net
         private readonly SemaphoreSlim writerSemaphore = new SemaphoreSlim(1);
 
         private volatile bool closed;
-        private readonly CancellationTokenSource forceCloseSource 
+        private readonly CancellationTokenSource forceCloseSource
             = new CancellationTokenSource();
 
 #if DEBUG

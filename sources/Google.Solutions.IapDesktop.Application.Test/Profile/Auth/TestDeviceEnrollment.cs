@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.Platform.Security.Cryptography;
 using Google.Solutions.Testing.Apis.Cryptography;
 using Google.Solutions.Testing.Apis.Platform;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using Moq;
 using NUnit.Framework;
 using System;

@@ -22,7 +22,6 @@
 using Google.Solutions.Platform.IO;
 using Google.Solutions.Terminal.Controls;
 using Moq;
-using Newtonsoft.Json.Converters;
 using NUnit.Framework;
 using System;
 using System.Drawing;
@@ -364,12 +363,14 @@ namespace Google.Solutions.Terminal.Test.Controls
             };
 
             Assert.That(
-                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that"), Is.EqualTo("\u00ABThis\u00BB\rand that"));
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that"),
+                Is.EqualTo("\u00ABThis\u00BB\rand that"));
 
             terminal.EnableTypographicQuoteConversion = true;
 
             Assert.That(
-                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that"), Is.EqualTo("\"This\"\rand that"));
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that"),
+                Is.EqualTo("\"This\"\rand that"));
         }
 
         [Test]
@@ -378,7 +379,8 @@ namespace Google.Solutions.Terminal.Test.Controls
             var terminal = new VirtualTerminal();
 
             Assert.That(
-                terminal.SanitizeTextForPasting("\t\r\n  one\t\r\ntwo \t\r\n "), Is.EqualTo("\t\r  one\t\rtwo"));
+                terminal.SanitizeTextForPasting("\t\r\n  one\t\r\ntwo \t\r\n "),
+                Is.EqualTo("\t\r  one\t\rtwo"));
         }
 
         [Test]
@@ -391,12 +393,14 @@ namespace Google.Solutions.Terminal.Test.Controls
             };
 
             Assert.That(
-                terminal.SanitizeTextForPasting("\u00ABThis\u00BBand that\n"), Is.EqualTo("\u00ABThis\u00BBand that"));
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BBand that\n"),
+                Is.EqualTo("\u00ABThis\u00BBand that"));
 
             terminal.EnableBracketedPaste = true;
 
             Assert.That(
-                terminal.SanitizeTextForPasting("\u00ABThis\u00BBand that\n"), Is.EqualTo("\u00ABThis\u00BBand that"));
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BBand that\n"),
+                Is.EqualTo("\u00ABThis\u00BBand that"));
         }
 
         [Test]
@@ -409,12 +413,14 @@ namespace Google.Solutions.Terminal.Test.Controls
             };
 
             Assert.That(
-                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that\n"), Is.EqualTo("\u00ABThis\u00BB\rand that"));
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that\n"),
+                Is.EqualTo("\u00ABThis\u00BB\rand that"));
 
             terminal.EnableBracketedPaste = true;
 
             Assert.That(
-                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that\n"), Is.EqualTo("\u001b[200~\u00ABThis\u00BB\rand that\u001b[201~"));
+                terminal.SanitizeTextForPasting("\u00ABThis\u00BB\r\nand that\n"),
+                Is.EqualTo("\u001b[200~\u00ABThis\u00BB\rand that\u001b[201~"));
         }
     }
 

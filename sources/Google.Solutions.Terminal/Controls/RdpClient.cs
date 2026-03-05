@@ -819,7 +819,7 @@ namespace Google.Solutions.Terminal.Controls
             // reconnects in sequence.
             //
             this.reconnectPending = false;
-            connectionAttempt++;
+            this.connectionAttempt++;
 
             if (this.EnableWebAuthnRedirection)
             {
@@ -1196,12 +1196,12 @@ namespace Google.Solutions.Terminal.Controls
                         }
                         catch
                         { }
-                
+
                         this.deferLogoff?.Dispose();
                         this.deferLogoff = null;
                     },
                     TimeSpan.FromSeconds(1));
-                this.deferLogoff.Schedule();          
+                this.deferLogoff.Schedule();
             }
         }
 

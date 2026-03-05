@@ -72,7 +72,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 data.Value
                     .Split('\n')
                     .Where(line => !string.IsNullOrWhiteSpace(line))
-                    .Select(line => {
+                    .Select(line =>
+                    {
                         if (MetadataAuthorizedPublicKey.TryParse(line, out var key))
                         {
                             return (object)key!;
@@ -84,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                             //
                             return new UnrecognizedContent(line);
                         }
-                    }) 
+                    })
                     .ToList());
         }
 
@@ -140,14 +141,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
             return this.Items.Any(k => k.Equals(key));
         }
 
-        public MetadataAuthorizedPublicKeySet Remove(MetadataAuthorizedPublicKey key) 
+        public MetadataAuthorizedPublicKeySet Remove(MetadataAuthorizedPublicKey key)
         {
             return new MetadataAuthorizedPublicKeySet(this.Items
                 .Where(k => !k.Equals(key))
                 .ToList());
         }
 
-        public override string ToString() 
+        public override string ToString()
         {
             return string.Join("\n", this.Items);
         }
@@ -183,8 +184,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
             public override bool Equals(object obj)
             {
-                return 
-                    obj is UnrecognizedContent key && 
+                return
+                    obj is UnrecognizedContent key &&
                     Equals(key.Value, this.Value);
             }
         }

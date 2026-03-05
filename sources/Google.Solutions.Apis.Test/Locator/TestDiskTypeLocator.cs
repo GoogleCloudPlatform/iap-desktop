@@ -48,9 +48,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenPathIsValid()
         {
-            Assert.That(DiskTypeLocator.TryParse(
-                "projects/project-1/zones/us-central1-a/diskTypes/pd-standard",
-                out var ref1), Is.True);
+            Assert.That(
+                DiskTypeLocator.TryParse(
+                    "projects/project-1/zones/us-central1-a/diskTypes/pd-standard",
+                    out var ref1),
+                Is.True);
 
             Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("diskTypes"));
@@ -62,9 +64,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByComputeGoogleapisHost()
         {
-            Assert.That(DiskTypeLocator.TryParse(
-                "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard",
-                out var ref1), Is.True);
+            Assert.That(
+                DiskTypeLocator.TryParse(
+                    "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard",
+                    out var ref1),
+                Is.True);
 
             Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("diskTypes"));
@@ -76,9 +80,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenQualifiedByGoogleapisHost()
         {
-            Assert.That(DiskTypeLocator.TryParse(
-                "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard",
-                out var ref1), Is.True);
+            Assert.That(
+                DiskTypeLocator.TryParse(
+                    "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard",
+                    out var ref1),
+                Is.True);
 
             Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("diskTypes"));
@@ -90,9 +96,11 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void TryParse_WhenUsingBetaApi()
         {
-            Assert.That(DiskTypeLocator.TryParse(
-                 "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/diskTypes/pd-standard",
-                out var ref1), Is.True);
+            Assert.That(
+                DiskTypeLocator.TryParse(
+                    "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/diskTypes/pd-standard",
+                    out var ref1),
+                Is.True);
 
             Assert.That(ref1, Is.Not.Null);
             Assert.That(ref1!.ResourceType, Is.EqualTo("diskTypes"));
@@ -177,8 +185,9 @@ namespace Google.Solutions.Apis.Test.Locator
         [Test]
         public void Parse_WhenPathLacksProject()
         {
-            Assert.Throws<ArgumentException>(() => DiskTypeLocator.Parse(
-                "/project-1/zones/us-central1-a/diskTypes/pd-standard"));
+            Assert.Throws<ArgumentException>(
+                () => DiskTypeLocator.Parse(
+                    "/project-1/zones/us-central1-a/diskTypes/pd-standard"));
         }
 
         [Test]
@@ -228,7 +237,8 @@ namespace Google.Solutions.Apis.Test.Locator
 
             Assert.That(
                 DiskTypeLocator.Parse(
-                    "https://www.googleapis.com/compute/v1/" + path).ToString(), Is.EqualTo(path));
+                    "https://www.googleapis.com/compute/v1/" + path).ToString(),
+                Is.EqualTo(path));
         }
     }
 }

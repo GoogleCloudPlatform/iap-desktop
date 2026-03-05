@@ -1242,7 +1242,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Instance()
                 {
-                    ServiceAccounts = new []
+                    ServiceAccounts = new[]
                     {
                         new ServiceAccount()
                         {

@@ -210,7 +210,8 @@ namespace Google.Solutions.Apis.Test.Crm
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Projects.Any(), Is.True);
             Assert.That(
-                result.Projects.Select(p => p.ProjectId), Has.Member(TestProject.ProjectId));
+                result.Projects.Select(p => p.ProjectId),
+                Has.Member(TestProject.ProjectId));
         }
 
         //---------------------------------------------------------------------
@@ -302,21 +303,24 @@ namespace Google.Solutions.Apis.Test.Crm
         public void ProjectFilter_WhenTermContainsSpecialCharacters_ThenByProjectIdReturnsFilter()
         {
             Assert.That(
-                ProjectFilter.ByProjectId("foo:'\"-bar").ToString(), Is.EqualTo("id:\"foo-bar\""));
+                ProjectFilter.ByProjectId("foo:'\"-bar").ToString(),
+                Is.EqualTo("id:\"foo-bar\""));
         }
 
         [Test]
         public void ProjectFilter_WhenTermContainsSpecialCharacters_ThenByTermReturnsFilter()
         {
             Assert.That(
-                ProjectFilter.ByTerm("foo:'\"-bar").ToString(), Is.EqualTo("name:\"*foo-bar*\" OR id:\"*foo-bar*\""));
+                ProjectFilter.ByTerm("foo:'\"-bar").ToString(),
+                Is.EqualTo("name:\"*foo-bar*\" OR id:\"*foo-bar*\""));
         }
 
         [Test]
         public void ProjectFilter_WhenTermEmpty_ThenByTermReturnsFilter()
         {
             Assert.That(
-                ProjectFilter.ByTerm(string.Empty).ToString(), Is.EqualTo("name:\"**\" OR id:\"**\""));
+                ProjectFilter.ByTerm(string.Empty).ToString(),
+                Is.EqualTo("name:\"**\" OR id:\"**\""));
         }
     }
 }

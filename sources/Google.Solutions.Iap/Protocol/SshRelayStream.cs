@@ -241,7 +241,7 @@ namespace Google.Solutions.Iap.Protocol
 
                                     this.session.State.AddBytesReceived(dataLength);
 
-                                    if (this.session.State.BytesReceived - this.session.State.LastAckSent > 
+                                    if (this.session.State.BytesReceived - this.session.State.LastAckSent >
                                         SshRelaySession.MaxReadDataPerAck)
                                     {
                                         //

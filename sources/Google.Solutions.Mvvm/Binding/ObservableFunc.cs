@@ -53,7 +53,7 @@ namespace Google.Solutions.Mvvm.Binding
         {
             PropertyChanged?.Invoke(
                 this,
-                new PropertyChangedEventArgs("Value"));
+                new PropertyChangedEventArgs(nameof(this.Value)));
         }
     }
 }
