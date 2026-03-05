@@ -23,7 +23,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
-using Google.Solutions.Apis.Client;
 using Google.Solutions.Apis.Compute;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Linq;
@@ -404,8 +403,8 @@ namespace Google.Solutions.Apis.Test.Compute
         public async Task SignPublicKey_Gaia_WhenUserInRole(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceTask,
 
-            [Credential(Roles = new [] { 
-                PredefinedRole.OsLogin, 
+            [Credential(Roles = new [] {
+                PredefinedRole.OsLogin,
                 PredefinedRole.ComputeViewer })]
             ResourceTask<IAuthorization> authorizationTask)
         {

@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                         // they're incomplete or wrong.
                         //
                         this.Client.EnableCredentialPrompt = true;
-                        this.Client.Password = 
+                        this.Client.Password =
                             viewModel.Credential.Password?.ToClearText() ?? string.Empty;
                         break;
 
@@ -214,13 +214,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                         // So if there is a password, use it.
                         //
                         this.Client.EnableCredentialPrompt = true;
-                        this.Client.Password = 
+                        this.Client.Password =
                             viewModel.Credential.Password?.ToClearText() ?? string.Empty;
                         break;
 
                     case RdpAutomaticLogon.LegacyAbortOnFailure:
                         this.Client.EnableCredentialPrompt = false;
-                        this.Client.Password = 
+                        this.Client.Password =
                             viewModel.Credential.Password?.ToClearText() ?? string.Empty;
                         break;
                 }
@@ -255,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                     viewModel.Parameters.RedirectDrive == RdpRedirectDrive.Enabled;
                 this.Client.EnableDeviceRedirection =
                     viewModel.Parameters.RedirectDevice == RdpRedirectDevice.Enabled;
-                this.Client.EnableAudioCaptureRedirection = 
+                this.Client.EnableAudioCaptureRedirection =
                     viewModel.Parameters.AudioInput == RdpAudioInput.Enabled;
 
                 switch (viewModel.Parameters.AudioPlayback)

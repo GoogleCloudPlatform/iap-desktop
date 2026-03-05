@@ -26,7 +26,6 @@ using Google.Solutions.Mvvm.Shell;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;

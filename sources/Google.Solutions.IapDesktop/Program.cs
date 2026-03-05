@@ -64,7 +64,6 @@ using Google.Solutions.Mvvm.Theme;
 using Google.Solutions.Platform;
 using Google.Solutions.Platform.Dispatch;
 using Google.Solutions.Platform.Net;
-using Google.Solutions.Platform.Security;
 using Google.Solutions.Platform.Security.Cryptography;
 using Google.Solutions.Settings.Collection;
 using Google.Solutions.Ssh;
@@ -831,7 +830,7 @@ namespace Google.Solutions.IapDesktop
                     //
                     { "detail", (e as ObjectDisposedException)?.ObjectName ?? string.Empty},
                     { "data", string.Join(
-                        ";", 
+                        ";",
                         e.Data
                             .OfType<DictionaryEntry>()
                             .Select(e => $"{e.Key}={e.Value}")) }

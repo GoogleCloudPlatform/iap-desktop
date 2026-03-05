@@ -102,7 +102,8 @@ namespace Google.Solutions.Platform.Net
                     //
                     FileName = address.AbsoluteUri
                 }))
-                { };
+                { }
+                ;
             }
         }
     }
@@ -142,7 +143,8 @@ namespace Google.Solutions.Platform.Net
                 FileName = ChromeExecutablePath,
                 Arguments = $"{this.arguments ?? string.Empty} \"{address}\""
             }))
-            { };
+            { }
+            ;
         }
     }
 }

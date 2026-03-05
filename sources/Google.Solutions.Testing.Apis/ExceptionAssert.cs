@@ -94,8 +94,8 @@ namespace Google.Solutions.Testing.Apis
                 var actualValue = property.GetValue(actual, null);
 
                 Assert.That(
-                    expectedValue, 
-                    Is.EqualTo(actualValue), 
+                    expectedValue,
+                    Is.EqualTo(actualValue),
                     $"{property.Name} must match");
             }
         }

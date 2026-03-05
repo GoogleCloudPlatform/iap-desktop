@@ -68,7 +68,7 @@ namespace Google.Solutions.Common.Linq
         /// each have a maximum size.
         /// </summary>
         public static IEnumerable<IEnumerable<T>> Chunk<T>(
-            this IEnumerable<T> source, 
+            this IEnumerable<T> source,
             ushort chunkSize)
         {
             source.ExpectNotNull(nameof(source));

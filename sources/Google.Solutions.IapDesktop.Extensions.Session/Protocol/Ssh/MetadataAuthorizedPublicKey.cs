@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
 
         public static MetadataAuthorizedPublicKey Parse(string line)
         {
-            if (TryParse(line, out var result)) 
+            if (TryParse(line, out var result))
             {
                 return result!;
             }
@@ -177,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
     }
 
-    public class UnmanagedMetadataAuthorizedPublicKey 
+    public class UnmanagedMetadataAuthorizedPublicKey
         : MetadataAuthorizedPublicKey, IAuthorizedPublicKey
     {
         public override string? Email { get; }
@@ -206,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         }
     }
 
-    public class ManagedMetadataAuthorizedPublicKey 
+    public class ManagedMetadataAuthorizedPublicKey
         : MetadataAuthorizedPublicKey, IAuthorizedPublicKey
     {
         public PublicKeyMetadata Metadata { get; }

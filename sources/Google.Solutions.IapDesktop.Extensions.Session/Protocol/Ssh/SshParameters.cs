@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Settings;
 using System;
 using System.ComponentModel;
 using System.Globalization;

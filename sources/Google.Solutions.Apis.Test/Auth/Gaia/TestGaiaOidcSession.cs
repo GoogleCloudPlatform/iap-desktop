@@ -111,10 +111,10 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
                 idToken);
 
             Assert.That(
-                ((UserCredential)session.ApiCredential).Token.RefreshToken, 
+                ((UserCredential)session.ApiCredential).Token.RefreshToken,
                 Is.EqualTo("old-rt"));
             Assert.That(
-                ((UserCredential)session.ApiCredential).Token.AccessToken, 
+                ((UserCredential)session.ApiCredential).Token.AccessToken,
                 Is.EqualTo("old-at"));
 
             var newIdToken = new UnverifiedGaiaJsonWebToken(
@@ -130,10 +130,10 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
             session.Splice(newSession);
 
             Assert.That(
-                ((UserCredential)session.ApiCredential).Token.RefreshToken, 
+                ((UserCredential)session.ApiCredential).Token.RefreshToken,
                 Is.EqualTo("new-rt"));
             Assert.That(
-                ((UserCredential)session.ApiCredential).Token.AccessToken, 
+                ((UserCredential)session.ApiCredential).Token.AccessToken,
                 Is.EqualTo("new-at"));
         }
 

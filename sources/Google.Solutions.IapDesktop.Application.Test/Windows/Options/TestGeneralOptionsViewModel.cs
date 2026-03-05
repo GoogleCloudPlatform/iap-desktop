@@ -22,8 +22,6 @@
 using Google.Solutions.Common;
 using Google.Solutions.Common.Linq;
 using Google.Solutions.IapDesktop.Application.Client;
-using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Application.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Profile;
 using Google.Solutions.IapDesktop.Application.Profile.Settings;
@@ -34,7 +32,6 @@ using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

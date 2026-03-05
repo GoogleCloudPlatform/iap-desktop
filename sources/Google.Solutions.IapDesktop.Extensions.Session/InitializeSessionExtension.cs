@@ -21,6 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Linq;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer;
@@ -34,9 +35,9 @@ using Google.Solutions.IapDesktop.Extensions.Session.Protocol;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
 using Google.Solutions.IapDesktop.Extensions.Session.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.App;
-using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session;
+using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Settings;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.SshKeys;
 using Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Tunnels;
 using Google.Solutions.Mvvm.Binding.Commands;
@@ -47,7 +48,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.Common.Linq;
 
 
 #if DEBUG

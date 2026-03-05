@@ -94,7 +94,7 @@ namespace Google.Solutions.Apis.Compute
                         e);
                 }
                 catch (GoogleApiException e) when (
-                    e.IsNotFound() || 
+                    e.IsNotFound() ||
                     e.IsBadRequest())
                 {
                     //

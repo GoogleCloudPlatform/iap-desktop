@@ -106,7 +106,7 @@ namespace Google.Solutions.Iap.Net
             }
 
             private static void SetHeaderRestriction(
-                string header, 
+                string header,
                 bool restricted)
             {
                 //
@@ -127,7 +127,7 @@ namespace Google.Solutions.Iap.Net
                 //
                 if (typeof(WebHeaderCollection).GetField(
                     "HInfo",
-                    BindingFlags.NonPublic | BindingFlags.Static) 
+                    BindingFlags.NonPublic | BindingFlags.Static)
                         is FieldInfo hInfoField)
                 {
                     var headerInfoTable = hInfoField.GetValue(null);
@@ -149,7 +149,7 @@ namespace Google.Solutions.Iap.Net
                             if (headerInfo != null &&
                                 headerInfo.GetType().GetField(
                                     "IsRequestRestricted",
-                                    BindingFlags.NonPublic | BindingFlags.Instance) 
+                                    BindingFlags.NonPublic | BindingFlags.Instance)
                                         is FieldInfo restrictedField)
                             {
                                 restrictedField.SetValue(headerInfo, restricted);
@@ -190,7 +190,7 @@ namespace Google.Solutions.Iap.Net
 
             public override bool IsInstalled
             {
-                get =>  this.originalFactory != null;
+                get => this.originalFactory != null;
             }
 
             public override void Install()
@@ -285,7 +285,7 @@ namespace Google.Solutions.Iap.Net
                             "Accessing WebRequestPrefixElement.Prefix failed");
                     }
 
-                    if (prefixField.GetValue(entry) is string prefixValue && 
+                    if (prefixField.GetValue(entry) is string prefixValue &&
                         prefixValue == prefix)
                     {
                         var creatorProperty = entry
@@ -297,7 +297,7 @@ namespace Google.Solutions.Iap.Net
                                 "Accessing WebRequestPrefixElement.Creator failed");
                         }
 
-                        if (!(creatorProperty.GetValue(entry) 
+                        if (!(creatorProperty.GetValue(entry)
                             is IWebRequestCreate original))
                         {
                             throw new InvalidOperationException(

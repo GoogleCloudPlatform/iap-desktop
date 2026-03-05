@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
                 AuthenticationPackage.Ntlm)] AuthenticationPackage package)
         {
             Assert.That(
-                CredentialDialog.LookupAuthenticationPackageId(package), 
+                CredentialDialog.LookupAuthenticationPackageId(package),
                 Is.GreaterThanOrEqualTo(0));
         }
 

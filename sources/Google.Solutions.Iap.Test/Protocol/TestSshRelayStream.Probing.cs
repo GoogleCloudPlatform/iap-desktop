@@ -38,7 +38,7 @@ namespace Google.Solutions.Iap.Test.Protocol
     {
         [Test]
         public async Task ProbeConnection_WhenProjectDoesntExist(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            [Credential(Role = PredefinedRole.IapTunnelUser)]
             ResourceTask<IAuthorization> auth)
         {
             var client = new IapClient(
@@ -61,7 +61,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         [Test]
         public async Task ProbeConnection_WhenZoneDoesntExist(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            [Credential(Role = PredefinedRole.IapTunnelUser)]
             ResourceTask<IAuthorization> auth)
         {
             var client = new IapClient(
@@ -87,7 +87,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         [Test]
         public async Task ProbeConnection_WhenInstanceDoesntExist(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            [Credential(Role = PredefinedRole.IapTunnelUser)]
             ResourceTask<IAuthorization> auth)
         {
             var client = new IapClient(
@@ -137,7 +137,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         [Test]
         public async Task ProbeConnection_WhenInstanceExistsButNotListening(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            [Credential(Role = PredefinedRole.IapTunnelUser)]
             ResourceTask<IAuthorization> auth)
         {
             var client = new IapClient(

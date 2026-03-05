@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                     "EnableFileAccess",
                     "EnableFileAccess",
                     null,
-                    null, 
+                    null,
                     true);
             }
         }

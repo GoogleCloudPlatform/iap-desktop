@@ -52,10 +52,10 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         [Test]
         public async Task Read_WhenBufferIsTiny(
-            [LinuxInstance(InitializeScript = InstallApache)] 
+            [LinuxInstance(InitializeScript = InstallApache)]
             ResourceTask<InstanceLocator> vm,
 
-            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            [Credential(Role = PredefinedRole.IapTunnelUser)]
             ResourceTask<IAuthorization> auth)
         {
             var locator = await vm;
@@ -112,10 +112,10 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         [Test]
         public async Task Read_WhenFirstWriteCompleted(
-            [LinuxInstance(InitializeScript = InstallApache)] 
+            [LinuxInstance(InitializeScript = InstallApache)]
             ResourceTask<InstanceLocator> vm,
 
-            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            [Credential(Role = PredefinedRole.IapTunnelUser)]
             ResourceTask<IAuthorization> auth)
         {
             var locator = await vm;
@@ -137,7 +137,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         [Test]
         public async Task Read_WhenServerNotListening(
             [LinuxInstance] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            [Credential(Role = PredefinedRole.IapTunnelUser)]
             ResourceTask<IAuthorization> auth)
         {
             var stream = ConnectToWebServer(

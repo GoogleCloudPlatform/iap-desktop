@@ -210,7 +210,7 @@ namespace Google.Solutions.Mvvm.Shell
                         // Return data as a COM IStream.
                         //
                         var streamPtr = Marshal.GetIUnknownForObject(new ComStream(dataStream));
-                    
+
                         medium.tymed = TYMED.TYMED_ISTREAM;
                         medium.unionmember = streamPtr;
                     }

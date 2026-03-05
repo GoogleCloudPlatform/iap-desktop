@@ -764,7 +764,7 @@ namespace Google.Solutions.Mvvm.Controls
                             DialogResult.Ignore));
                         parameters.Buttons.Add(TaskDialogStandardButton.Cancel);
 
-                        if (this.TaskDialog.ShowDialog(this, parameters) 
+                        if (this.TaskDialog.ShowDialog(this, parameters)
                             == DialogResult.Cancel)
                         {
                             return;

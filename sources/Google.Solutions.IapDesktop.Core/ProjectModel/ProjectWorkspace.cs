@@ -367,7 +367,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
                             // Project is inaccessible or it doesn't exist. The project will
                             // still show up in the model, but with an empty list of zones.
                             //
-                            this.cachedZones[loadProjectTask.Project] = 
+                            this.cachedZones[loadProjectTask.Project] =
                                 new List<IProjectModelZoneNode>();
                         }
                     }

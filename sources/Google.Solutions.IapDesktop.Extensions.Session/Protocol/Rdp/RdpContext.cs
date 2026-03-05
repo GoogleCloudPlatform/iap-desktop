@@ -25,7 +25,6 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Core.ClientModel.Transport;
 using Google.Solutions.Platform.Net;
 using System.Collections.Generic;
-using System.Management;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;

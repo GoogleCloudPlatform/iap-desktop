@@ -108,7 +108,7 @@ namespace Google.Solutions.Iap
         {
             using (token.Register(this.listener.Stop))
             {
-                while (this.ClientAcceptLimit == 0 || 
+                while (this.ClientAcceptLimit == 0 ||
                     this.ClientAcceptLimit > this.ClientsAccepted)
                 {
                     try
@@ -118,14 +118,14 @@ namespace Google.Solutions.Iap
                             (IPEndPoint)socket.RemoteEndPoint))
                         {
                             IapTraceSource.Log.TraceInformation(
-                                "Connection from {0} allowed by policy", 
+                                "Connection from {0} allowed by policy",
                                 socket.RemoteEndPoint);
 
                         }
                         else
                         {
                             IapTraceSource.Log.TraceWarning(
-                                "Connection from {0} rejected by policy", 
+                                "Connection from {0} rejected by policy",
                                 socket.RemoteEndPoint);
                             socket.Close();
                             continue;
@@ -141,12 +141,12 @@ namespace Google.Solutions.Iap
 
                         _ = Task.WhenAll(
                                 clientStream.RelayToAsync(
-                                    serverStream, 
-                                    SshRelayStream.MaxWriteSize, 
+                                    serverStream,
+                                    SshRelayStream.MaxWriteSize,
                                     token),
                                 serverStream.RelayToAsync(
-                                    clientStream, 
-                                    SshRelayStream.MinReadSize, 
+                                    clientStream,
+                                    SshRelayStream.MinReadSize,
                                     token))
                             .ContinueWith(t =>
                             {
@@ -164,7 +164,7 @@ namespace Google.Solutions.Iap
                                 serverStream.Dispose();
                             });
                     }
-                    catch (SocketException e) 
+                    catch (SocketException e)
                     when (e.SocketErrorCode == SocketError.Interrupted)
                     {
                         // Operation cancelled, terminate gracefully.

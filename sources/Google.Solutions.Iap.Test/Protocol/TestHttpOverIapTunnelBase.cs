@@ -38,7 +38,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         protected const string InstallApache = "sudo apt-get install -y apache2";
 
         private const int RepeatCount = 5;
-        private readonly CancellationTokenSource tokenSource 
+        private readonly CancellationTokenSource tokenSource
             = new CancellationTokenSource();
 
         protected abstract INetworkStream ConnectToWebServer(
@@ -65,7 +65,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                     var contentLengthMatch = new Regex("Content-Length: (\\d+)")
                         .Match(this.response.ToString());
 
-                    if (this.ExpectedBytes == int.MaxValue && 
+                    if (this.ExpectedBytes == int.MaxValue &&
                         contentLengthMatch.Success)
                     {
                         this.ExpectedBytes = int.Parse(
@@ -86,10 +86,10 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         [Test, Repeat(RepeatCount)]
         public async Task Read_WhenServerClosesConnectionAfterSingleHttpRequest(
-            [LinuxInstance(InitializeScript = InstallApache)] 
+            [LinuxInstance(InitializeScript = InstallApache)]
             ResourceTask<InstanceLocator> vm,
 
-            [Credential(Role = PredefinedRole.IapTunnelUser)] 
+            [Credential(Role = PredefinedRole.IapTunnelUser)]
             ResourceTask<IAuthorization> auth)
         {
             var stream = ConnectToWebServer(
@@ -168,7 +168,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
         [Test, Repeat(RepeatCount)]
         public async Task Read_WhenClientClosesConnectionAfterSingleHttpRequest(
-            [LinuxInstance(InitializeScript = InstallApache)] 
+            [LinuxInstance(InitializeScript = InstallApache)]
             ResourceTask<InstanceLocator> vm,
 
             [Credential(Role = PredefinedRole.IapTunnelUser)]

@@ -22,7 +22,6 @@
 using Google.Solutions.Platform.IO;
 using Google.Solutions.Terminal.Controls;
 using Moq;
-using Newtonsoft.Json.Converters;
 using NUnit.Framework;
 using System;
 using System.Drawing;

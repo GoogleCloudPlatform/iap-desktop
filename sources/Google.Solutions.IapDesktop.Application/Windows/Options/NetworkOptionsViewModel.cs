@@ -351,7 +351,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
                 FileName = "rundll32.exe",
                 Arguments = "shell32.dll,Control_RunDLL inetcpl.cpl,,4"
             }))
-            { };
+            { }
+            ;
         }
     }
 }

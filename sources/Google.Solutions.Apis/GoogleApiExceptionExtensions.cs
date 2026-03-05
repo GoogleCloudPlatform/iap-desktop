@@ -145,7 +145,7 @@ namespace Google.Solutions.Apis
 
         public static bool IsAccessDeniedError(this Exception e)
         {
-            return e.Unwrap() is GoogleApiException apiEx && 
+            return e.Unwrap() is GoogleApiException apiEx &&
                 apiEx.Error.Code == 403;
         }
 

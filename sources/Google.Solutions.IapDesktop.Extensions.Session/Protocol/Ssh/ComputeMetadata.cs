@@ -279,21 +279,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
         public override bool IsOsLoginEnabled
         {
             get => this.instanceDetails.GetFlag(
-                this.projectDetails, 
+                this.projectDetails,
                 EnableOsLoginFlag) == true;
         }
 
         public override bool IsOsLoginWithSecurityKeyEnabled
         {
             get => this.instanceDetails.GetFlag(
-                this.projectDetails, 
+                this.projectDetails,
                 EnableOsLoginWithSecurityKeyFlag) == true;
         }
 
         public override bool AreProjectSshKeysBlocked
         {
             get => this.instanceDetails.GetFlag(
-                this.projectDetails, 
+                this.projectDetails,
                 BlockProjectSshKeysFlag) == true;
         }
 
@@ -514,7 +514,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                                 .UpdateMetadataAsync(
                                     this.instance,
                                     metadata => AddPublicKeyToMetadata(
-                                        metadata, 
+                                        metadata,
                                         metadataKey),
                                     token)
                                 .ConfigureAwait(false);
@@ -525,7 +525,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                                 .UpdateCommonInstanceMetadataAsync(
                                     this.instance.Project,
                                     metadata => AddPublicKeyToMetadata(
-                                        metadata, 
+                                        metadata,
                                         metadataKey),
                                     token)
                                .ConfigureAwait(false);

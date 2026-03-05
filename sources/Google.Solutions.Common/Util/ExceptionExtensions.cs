@@ -154,15 +154,15 @@ namespace Google.Solutions.Common.Util
         /// Format an exception.
         /// </summary>
         public static string ToString(
-            this Exception exception, 
+            this Exception exception,
             ExceptionFormatOptions options)
         {
             return options switch
             {
-                ExceptionFormatOptions.IncludeOffsets 
+                ExceptionFormatOptions.IncludeOffsets
                     => CreateStackTraceWithOffsets(exception),
 
-                ExceptionFormatOptions.Compact 
+                ExceptionFormatOptions.Compact
                     => CreateCompactStackTrace(exception),
 
                 _ => exception.ToString(),

@@ -212,7 +212,7 @@ namespace Google.Solutions.Apis.Compute
                             "an SSH key to OS Login",
                             HelpTopics.ManagingOsLogin,
                             new GoogleApiException(
-                                "oslogin", 
+                                "oslogin",
                                 response.Details ?? string.Empty));
                     }
                 }
@@ -330,7 +330,7 @@ namespace Google.Solutions.Apis.Compute
                         this.service,
                         new BetaSignSshPublicKeyRequestData()
                         {
-                            ComputeInstance = 
+                            ComputeInstance =
                                 $"projects/{zone.ProjectId}/" +
                                 $"zones/{zone.Name}/instances/{instanceId}",
                             ServiceAccount = attachedServiceAccount?.Value,
@@ -416,7 +416,7 @@ namespace Google.Solutions.Apis.Compute
                 {
                     throw new ResourceAccessDeniedException(
                         "You do not have sufficient access to create " +
-                        "a POSIX profile: " + 
+                        "a POSIX profile: " +
                         e.Error?.Message ?? "access denied",
                         HelpTopics.ManagingOsLogin,
                         e);
@@ -522,7 +522,7 @@ namespace Google.Solutions.Apis.Compute
             public virtual string? ETag { get; set; }
         }
 
-        public class BetaSignSshPublicKeyRequest : 
+        public class BetaSignSshPublicKeyRequest :
             CloudOSLoginBaseServiceRequest<BetaSignSshPublicKeyResponseData>
         {
             /// <summary>
@@ -539,14 +539,14 @@ namespace Google.Solutions.Apis.Compute
             public override string RestPath => "v1beta/{+parent}:signSshPublicKey";
 
             public BetaSignSshPublicKeyRequest(
-                IClientService service, 
-                BetaSignSshPublicKeyRequestData body, 
+                IClientService service,
+                BetaSignSshPublicKeyRequestData body,
                 string parent)
                 : base(service)
             {
                 this.Parent = parent;
                 this.Body = body;
-                
+
                 InitParameters();
             }
 
@@ -674,7 +674,7 @@ namespace Google.Solutions.Apis.Compute
             public virtual string? ETag { get; set; }
         }
 
-        private class BetaGetLoginProfileRequest : 
+        private class BetaGetLoginProfileRequest :
             CloudOSLoginBaseServiceRequest<BetaLoginProfile>
         {
             public enum ViewEnum

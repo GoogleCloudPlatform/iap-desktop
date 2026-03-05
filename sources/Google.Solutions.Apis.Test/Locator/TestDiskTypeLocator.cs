@@ -67,7 +67,7 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.That(
                 DiskTypeLocator.TryParse(
                     "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard",
-                    out var ref1), 
+                    out var ref1),
                 Is.True);
 
             Assert.That(ref1, Is.Not.Null);
@@ -83,7 +83,7 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.That(
                 DiskTypeLocator.TryParse(
                     "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard",
-                    out var ref1), 
+                    out var ref1),
                 Is.True);
 
             Assert.That(ref1, Is.Not.Null);
@@ -99,7 +99,7 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.That(
                 DiskTypeLocator.TryParse(
                     "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/diskTypes/pd-standard",
-                    out var ref1), 
+                    out var ref1),
                 Is.True);
 
             Assert.That(ref1, Is.Not.Null);

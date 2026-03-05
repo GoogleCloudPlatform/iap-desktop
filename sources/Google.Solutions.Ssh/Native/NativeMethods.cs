@@ -862,7 +862,8 @@ namespace Google.Solutions.Ssh.Native
             while ((result = (LIBSSH2_ERROR)
                 NativeMethods.libssh2_channel_free(this.handle))
                 == LIBSSH2_ERROR.EAGAIN)
-            { };
+            { }
+            ;
 
             Debug.Assert(result == LIBSSH2_ERROR.NONE);
         }
@@ -880,7 +881,8 @@ namespace Google.Solutions.Ssh.Native
             while ((result = (LIBSSH2_ERROR)
                 NativeMethods.libssh2_sftp_shutdown(this.handle))
                 == LIBSSH2_ERROR.EAGAIN)
-            { };
+            { }
+            ;
 
             Debug.Assert(result == LIBSSH2_ERROR.NONE);
         }
@@ -897,7 +899,8 @@ namespace Google.Solutions.Ssh.Native
             while ((result = (LIBSSH2_ERROR)
                 NativeMethods.libssh2_sftp_close_handle(this.handle))
                 == LIBSSH2_ERROR.EAGAIN)
-            { };
+            { }
+            ;
 
             Debug.Assert(result == LIBSSH2_ERROR.NONE);
         }

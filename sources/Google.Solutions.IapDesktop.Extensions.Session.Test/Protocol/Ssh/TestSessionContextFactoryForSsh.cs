@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 {
                     { "UsePersistentKey", "true" },
                     { "PublicKeyValidity", "86400" },
-                    { "EnableFileAccess", "false" } 
+                    { "EnableFileAccess", "false" }
                 });
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService

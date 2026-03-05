@@ -51,7 +51,7 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.That(
                 LicenseLocator.TryParse(
                     "projects/project-1/global/licenses/windows-10-enterprise-byol",
-                    out var ref1), 
+                    out var ref1),
                 Is.True);
 
             Assert.That(ref1, Is.Not.Null);
@@ -66,7 +66,7 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.That(
                 LicenseLocator.TryParse(
                     "https://compute.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol",
-                    out var ref1), 
+                    out var ref1),
                 Is.True);
 
             Assert.That(ref1, Is.Not.Null);
@@ -81,7 +81,7 @@ namespace Google.Solutions.Apis.Test.Locator
             Assert.That(
                 LicenseLocator.TryParse(
                     "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol",
-                    out var ref1), 
+                    out var ref1),
                 Is.True);
 
             Assert.That(ref1, Is.Not.Null);

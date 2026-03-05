@@ -34,7 +34,7 @@ namespace Google.Solutions.Common.Test.Runtime
         [Test]
         public void Dispose_InvokesAction()
         {
-            int invocations = 0;
+            var invocations = 0;
             using (Disposable.Create(() => invocations++))
             { }
 
@@ -48,7 +48,7 @@ namespace Google.Solutions.Common.Test.Runtime
         [Test]
         public void Dispose_WhenCalledTwice_InvokesActionOnce()
         {
-            int invocations = 0;
+            var invocations = 0;
             var d = Disposable.Create(() => invocations++);
 
             d.Dispose();

@@ -32,7 +32,7 @@ namespace Google.Solutions.Common.Interop
     /// </summary>
     public static class SafeHandleExtensions
     {
-        public static readonly TimeSpan Infinite 
+        public static readonly TimeSpan Infinite
             = TimeSpan.FromMilliseconds(int.MaxValue);
 
         /// <summary>

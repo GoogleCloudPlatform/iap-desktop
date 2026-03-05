@@ -67,7 +67,7 @@ namespace Google.Solutions.Mvvm.Controls
         /// Indicate that the operation is temporarily blocked
         /// by an error.
         /// </summary>
-        bool IsBlockedByError { get; set;  }
+        bool IsBlockedByError { get; set; }
     }
 
     [SkipCodeCoverage("UI code")]
@@ -162,10 +162,10 @@ namespace Google.Solutions.Mvvm.Controls
                 UpdateProgress();
             }
 
-            public bool IsBlockedByError 
+            public bool IsBlockedByError
             {
                 get => this.blockedByError;
-                set 
+                set
                 {
                     if (value != this.blockedByError)
                     {

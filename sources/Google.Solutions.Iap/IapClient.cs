@@ -87,7 +87,7 @@ namespace Google.Solutions.Iap
             instance.ExpectNotNull(nameof(instance));
 
             Precondition.ExpectNotNull(
-                this.authorization.DeviceEnrollment, 
+                this.authorization.DeviceEnrollment,
                 "DeviceEnrollment");
 
             var directions = this.Endpoint

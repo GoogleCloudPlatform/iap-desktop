@@ -325,7 +325,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
 
         [Test]
         public async Task InstanceFilter_WhenInstanceFilterChanged_ThenViewModelIsUpdated(
-            [Values("linux-zone", "Linux-Zone", "\tLINUX", " nux ")] 
+            [Values("linux-zone", "Linux-Zone", "\tLINUX", " nux ")]
             string filterMatchingLinuxInstance)
         {
             var computeClient = CreateComputeEngineClient();

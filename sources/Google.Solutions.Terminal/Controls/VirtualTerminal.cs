@@ -602,7 +602,8 @@ namespace Google.Solutions.Terminal.Controls
                     this.Bounds,
                     SystemColors.Control,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-            };
+            }
+            ;
 
             base.OnPaint(e);
         }
@@ -745,7 +746,7 @@ namespace Google.Solutions.Terminal.Controls
                 else
                 {
                     return false;
-                };
+                }
             }
 
             bool IsAcceleratorForPasting(Keys key)
@@ -761,7 +762,7 @@ namespace Google.Solutions.Terminal.Controls
                 else
                 {
                     return false;
-                };
+                }
             }
 
             bool IsAcceleratorForScrollingToTop(Keys key)
@@ -773,7 +774,7 @@ namespace Google.Solutions.Terminal.Controls
                 else
                 {
                     return false;
-                };
+                }
             }
 
             bool IsAcceleratorForScrollingToBottom(Keys key)
@@ -785,7 +786,7 @@ namespace Google.Solutions.Terminal.Controls
                 else
                 {
                     return false;
-                };
+                }
             }
 
             bool IsAcceleratorForScrollingUpOnePage(Keys key)
@@ -797,7 +798,7 @@ namespace Google.Solutions.Terminal.Controls
                 else
                 {
                     return false;
-                };
+                }
             }
 
             bool IsAcceleratorForScrollingDownOnePage(Keys key)
@@ -809,7 +810,7 @@ namespace Google.Solutions.Terminal.Controls
                 else
                 {
                     return false;
-                };
+                }
             }
 
             /// <summary>
@@ -1073,7 +1074,7 @@ namespace Google.Solutions.Terminal.Controls
                                 ClipboardUtil.Clear();
                             }
                             else
-                            { 
+                            {
                                 ClipboardUtil.SetText(selection);
                             }
                         }
@@ -1121,7 +1122,7 @@ namespace Google.Solutions.Terminal.Controls
                             //
                             // Translate delta to the number of lines (+/-) to scroll.
                             //
-                            var linesDelta = delta / 120 * 
+                            var linesDelta = delta / 120 *
                                 Math.Max(SystemInformation.MouseWheelScrollLines, 1);
                             ScrollTerminal(linesDelta);
                         }

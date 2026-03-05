@@ -39,7 +39,7 @@ namespace Google.Solutions.Mvvm.Interop
         }
 
         internal long? SpeculatedPosition { get; private set; } = null;
-        
+
         /// <summary>
         /// Verify and retire a speculation that a previous seek was
         /// unnecessary.
@@ -113,7 +113,7 @@ namespace Google.Solutions.Mvvm.Interop
             {
                 position = this.stream.Seek(offset, seekOrigin);
             }
-            else 
+            else
             {
                 //
                 // Assume we're at the right position already.
@@ -156,14 +156,14 @@ namespace Google.Solutions.Mvvm.Interop
         /// Retrieves the STATSTG structure for this stream.
         /// </summary>
         void IStream.Stat(
-            out System.Runtime.InteropServices.ComTypes.STATSTG streamStats, 
+            out System.Runtime.InteropServices.ComTypes.STATSTG streamStats,
             int grfStatFlag)
         {
             streamStats = new System.Runtime.InteropServices.ComTypes.STATSTG
             {
                 type = STGTY_STREAM,
                 cbSize = this.stream.Length,
-                grfMode = 0 
+                grfMode = 0
             };
 
             if (this.stream.CanRead && this.stream.CanWrite)
