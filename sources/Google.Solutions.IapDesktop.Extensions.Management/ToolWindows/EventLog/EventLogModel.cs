@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events;
-using Google.Solutions.IapDesktop.Extensions.Management.History;
 using System.Collections.Generic;
 using System.Linq;
 

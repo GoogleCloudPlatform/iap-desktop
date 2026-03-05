@@ -27,7 +27,7 @@ using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using NUnit.Framework;
 using System.Linq;
 using System.Threading;

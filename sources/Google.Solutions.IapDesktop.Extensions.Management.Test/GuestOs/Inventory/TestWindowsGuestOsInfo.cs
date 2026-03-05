@@ -22,7 +22,7 @@
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

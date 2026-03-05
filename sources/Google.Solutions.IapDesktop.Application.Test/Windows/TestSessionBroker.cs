@@ -21,7 +21,7 @@
 
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Windows;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using Google.Solutions.Testing.Application.Views;
 using NUnit.Framework;
 using System.Threading.Tasks;

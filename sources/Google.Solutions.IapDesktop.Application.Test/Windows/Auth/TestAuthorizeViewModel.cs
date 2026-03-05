@@ -31,7 +31,7 @@ using Google.Solutions.IapDesktop.Application.Windows.Auth;
 using Google.Solutions.Settings.Collection;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using Moq;
 using NUnit.Framework;
 using System;

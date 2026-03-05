@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Application.Profile.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.Options;
 using Google.Solutions.Settings;
 using Google.Solutions.Testing.Apis.Platform;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;

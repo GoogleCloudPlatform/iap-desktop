@@ -22,7 +22,7 @@
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System.Collections.Generic;

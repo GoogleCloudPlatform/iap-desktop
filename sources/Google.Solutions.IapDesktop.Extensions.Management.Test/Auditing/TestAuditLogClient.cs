@@ -27,7 +27,7 @@ using Google.Solutions.IapDesktop.Extensions.Management.Auditing;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using Moq;
 using NUnit.Framework;
 using System;

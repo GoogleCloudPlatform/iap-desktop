@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.ActiveDirectory;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.ActiveDirectory

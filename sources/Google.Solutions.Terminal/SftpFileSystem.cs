@@ -23,6 +23,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Platform.Interop;
+using Google.Solutions.Platform.IO;
 using Google.Solutions.Ssh;
 using System;
 using System.Collections.ObjectModel;

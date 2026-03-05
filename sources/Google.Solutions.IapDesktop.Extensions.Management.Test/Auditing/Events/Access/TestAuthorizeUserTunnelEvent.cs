@@ -23,7 +23,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events.Access;
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using NUnit.Framework;
 using System.Linq;
 

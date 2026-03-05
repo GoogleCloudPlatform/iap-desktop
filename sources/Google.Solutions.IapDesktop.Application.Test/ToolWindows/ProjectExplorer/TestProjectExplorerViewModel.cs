@@ -33,7 +33,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Testing.Application.Mocks;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;

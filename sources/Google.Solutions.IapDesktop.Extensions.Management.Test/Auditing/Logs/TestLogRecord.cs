@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Logs;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Application;
 using NUnit.Framework;
 using System;
 
