@@ -19,10 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events;
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Extensions.Management.History
+namespace Google.Solutions.IapDesktop.Extensions.Management.Auditing.Events
 {
     public interface IEventProcessor
     {

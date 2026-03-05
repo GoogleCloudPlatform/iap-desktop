@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Platform.Interop;
+using Google.Solutions.Platform.IO;
 using NUnit.Framework;
 
-namespace Google.Solutions.Platform.Test.Interop
+namespace Google.Solutions.Platform.Test.IO
 {
     [TestFixture]
     public class TestWindowsFilename

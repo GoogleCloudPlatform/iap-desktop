@@ -22,7 +22,7 @@
 using System.IO;
 using System.Linq;
 
-namespace Google.Solutions.Platform.Interop
+namespace Google.Solutions.Platform.IO
 {
     /// <summary>
     /// Utility methods for dealing with Win32 filenames.

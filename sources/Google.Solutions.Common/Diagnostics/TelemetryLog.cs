@@ -21,7 +21,7 @@
 
 using System.Collections.Generic;
 
-namespace Google.Solutions.Common
+namespace Google.Solutions.Common.Diagnostics
 {
     /// <summary>
     /// Log for telemetry events. The default implementation drops

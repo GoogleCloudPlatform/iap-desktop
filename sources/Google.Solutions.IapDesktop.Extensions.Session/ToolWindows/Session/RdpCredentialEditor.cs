@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         /// <summary>
         /// Check if changes are allowed to be saved.
         /// </summary>
-        public bool AllowSave { get; set; }
+        bool AllowSave { get; set; }
 
         /// <summary>
         /// Prompt user to enter password.

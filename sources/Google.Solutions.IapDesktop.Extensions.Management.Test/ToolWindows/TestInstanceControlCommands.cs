@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Application.Windows.Dialog;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows;
 using Google.Solutions.Mvvm.Binding.Commands;
-using Google.Solutions.Testing.Apis.Mocks;
+using Google.Solutions.Testing.Apis.Mock;
 using Google.Solutions.Testing.Application.Mocks;
 using Moq;
 using NUnit.Framework;

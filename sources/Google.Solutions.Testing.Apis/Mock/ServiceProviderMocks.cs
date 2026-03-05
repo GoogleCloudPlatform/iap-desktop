@@ -22,7 +22,7 @@
 using Moq;
 using System;
 
-namespace Google.Solutions.Testing.Apis.Mocks
+namespace Google.Solutions.Testing.Apis.Mock
 {
     public static class ServiceProviderMocks
     {
