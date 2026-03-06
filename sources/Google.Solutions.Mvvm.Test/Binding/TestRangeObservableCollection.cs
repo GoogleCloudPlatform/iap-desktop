@@ -35,7 +35,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var collection = new RangeObservableCollection<string>();
             collection.CollectionChanged += (sender, args) => { callbacks++; };
 
-            Assert.That(callbacks, Is.EqualTo(0));
+            Assert.That(callbacks, Is.Zero);
             collection.Add("one");
             collection.Add("two");
             Assert.That(callbacks, Is.EqualTo(2));
@@ -53,7 +53,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Assert.That(args.Action, Is.EqualTo(NotifyCollectionChangedAction.Reset));
             };
 
-            Assert.That(callbacks, Is.EqualTo(0));
+            Assert.That(callbacks, Is.Zero);
             collection.AddRange(new string[] { "one", "two", "three" });
             Assert.That(callbacks, Is.EqualTo(1));
         }

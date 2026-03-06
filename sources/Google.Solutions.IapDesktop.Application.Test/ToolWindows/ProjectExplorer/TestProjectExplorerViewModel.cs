@@ -32,8 +32,8 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Application;
+using Google.Solutions.Testing.Application.Mocks;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
@@ -1086,7 +1086,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.ProjectExplor
             await viewModel
                 .UnloadSelectedProjectAsync()
                 .ConfigureAwait(true);
-            Assert.That(projects.Count, Is.EqualTo(0));
+            Assert.That(projects.Count, Is.Zero);
         }
 
         [Test]

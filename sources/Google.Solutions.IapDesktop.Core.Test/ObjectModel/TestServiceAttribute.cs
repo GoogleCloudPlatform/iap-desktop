@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
 
             Assert.That(
-                registry.GetService<CounterService>().SingletonWithoutDelayCreationAttributeCount, Is.EqualTo(0));
+                registry.GetService<CounterService>().SingletonWithoutDelayCreationAttributeCount, Is.Zero);
 
             registry.GetService<SingletonWithoutDelayCreationAttribute>();
             registry.GetService<SingletonWithoutDelayCreationAttribute>();

@@ -243,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
 
             var e = (StartWithEncryptionKeyEvent)r.ToEvent();
 
-            Assert.That(e.InstanceId, Is.EqualTo(0));   // b/156451226
+            Assert.That(e.InstanceId, Is.Zero);   // b/156451226
             Assert.That(e.Instance?.Name, Is.EqualTo("instance-1"));
             Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
             Assert.That(e.Instance?.ProjectId, Is.EqualTo("project-1"));

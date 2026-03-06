@@ -34,7 +34,7 @@ namespace Google.Solutions.Common.Test.Format
         {
             var checksum = new BsdChecksum((ushort)lengthInBits);
             checksum.Add(Array.Empty<byte>());
-            Assert.That(checksum.Value, Is.EqualTo(0));
+            Assert.That(checksum.Value, Is.Zero);
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace Google.Solutions.Common.Test.Format
         {
             var checksum = new BsdChecksum((ushort)lengthInBits);
             checksum.Add(new byte[] { 0, 0, 0, 0 });
-            Assert.That(checksum.Value, Is.EqualTo(0));
+            Assert.That(checksum.Value, Is.Zero);
         }
 
         [Test]

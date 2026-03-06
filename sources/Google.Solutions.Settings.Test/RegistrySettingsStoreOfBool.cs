@@ -219,7 +219,7 @@ namespace Google.Solutions.Settings.Test
 
                 setting.Value = setting.DefaultValue;
 
-                Assert.That(setting.Value, Is.EqualTo(false));
+                Assert.That(setting.Value, Is.False);
                 Assert.That(setting.IsDefault, Is.True);
                 Assert.That(setting.IsDirty, Is.False);
             }
@@ -263,7 +263,7 @@ namespace Google.Solutions.Settings.Test
                 setting.Value = true;
                 ((IAnySetting)setting).AnyValue = null;
 
-                Assert.That(setting.Value, Is.EqualTo(false));
+                Assert.That(setting.Value, Is.False);
                 Assert.That(setting.IsDefault, Is.True);
             }
         }
@@ -307,7 +307,7 @@ namespace Google.Solutions.Settings.Test
                     "category",
                     false);
 
-                Assert.That(setting.Value, Is.EqualTo(true));
+                Assert.That(setting.Value, Is.True);
                 Assert.That(setting.IsReadOnly, Is.False);
             }
         }

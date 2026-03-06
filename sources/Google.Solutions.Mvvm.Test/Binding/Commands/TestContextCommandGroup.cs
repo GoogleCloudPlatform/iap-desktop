@@ -49,7 +49,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 Assert.That(item, Is.Not.Null);
                 Assert.That(container.MenuItems.Count, Is.EqualTo(1));
-                Assert.That(((CommandContainer<string>)item).MenuItems.Count, Is.EqualTo(0));
+                Assert.That(((CommandContainer<string>)item).MenuItems.Count, Is.Zero);
             }
         }
 
@@ -70,7 +70,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 Assert.That(item, Is.Not.Null);
                 Assert.That(container.MenuItems.Count, Is.EqualTo(1));
-                Assert.That(((CommandContainer<string>)item).MenuItems.Count, Is.EqualTo(0));
+                Assert.That(((CommandContainer<string>)item).MenuItems.Count, Is.Zero);
             }
         }
 

@@ -249,7 +249,7 @@ namespace Google.Solutions.Apis.Test.Crm
                 .ConfigureAwait(false);
 
             Assert.That(org, Is.Not.Null);
-            Assert.That(org!.Id, Is.Not.EqualTo(0));
+            Assert.That(org!.Id, Is.Not.Zero);
         }
 
         //---------------------------------------------------------------------

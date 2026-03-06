@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Tunnel
                 queue);
 
             factory.VerifyGet(f => f.Pool, Times.Never);
-            Assert.That(viewModel.Tunnels.Count, Is.EqualTo(0));
+            Assert.That(viewModel.Tunnels.Count, Is.Zero);
 
             queue.Publish(new TunnelEvents.TunnelCreated());
             factory.VerifyGet(f => f.Pool, Times.Exactly(1));

@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
                 var install = new Install(keyPath.Path);
-                Assert.That(install.CurrentVersion.Major, Is.Not.EqualTo(0));
+                Assert.That(install.CurrentVersion.Major, Is.Not.Zero);
             }
         }
 

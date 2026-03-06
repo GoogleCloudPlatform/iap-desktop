@@ -158,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             var e = (OsLoginCheckPolicyEvent)r.ToEvent();
 
             Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
-            Assert.That(e.InstanceId, Is.EqualTo(0));
+            Assert.That(e.InstanceId, Is.Zero);
         }
 
         [Test]

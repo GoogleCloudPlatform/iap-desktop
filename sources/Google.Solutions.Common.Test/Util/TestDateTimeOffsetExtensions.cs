@@ -32,7 +32,7 @@ namespace Google.Solutions.Common.Test.Util
         public void ToUnixTimeMicroseconds_WhenTimestampIsEpoch_ThenToUnixTimeMicrosecondsReturnsZero()
         {
             var epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
-            Assert.That(epoch.ToUnixTimeMicroseconds(), Is.EqualTo(0));
+            Assert.That(epoch.ToUnixTimeMicroseconds(), Is.Zero);
         }
 
         [Test]

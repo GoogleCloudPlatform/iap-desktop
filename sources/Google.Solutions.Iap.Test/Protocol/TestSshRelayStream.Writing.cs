@@ -61,7 +61,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             };
             var relay = new SshRelayStream(endpoint);
 
-            Assert.That(endpoint.ConnectCount, Is.EqualTo(0));
+            Assert.That(endpoint.ConnectCount, Is.Zero);
 
             var request = new byte[] { 1, 2, 3 };
             await relay
@@ -321,7 +321,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .ConfigureAwait(false);
 
             Assert.That(endpoint.ConnectCount, Is.EqualTo(1));
-            Assert.That(endpoint.ReconnectCount, Is.EqualTo(0));
+            Assert.That(endpoint.ReconnectCount, Is.Zero);
 
             // Write another request - this should cause a reconnect and resend.
             request = new byte[] { 3 };
@@ -330,7 +330,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .ConfigureAwait(false);
 
             Assert.That(endpoint.ConnectCount, Is.EqualTo(2));
-            Assert.That(endpoint.ReconnectCount, Is.EqualTo(0));
+            Assert.That(endpoint.ReconnectCount, Is.Zero);
         }
 
         [Test]

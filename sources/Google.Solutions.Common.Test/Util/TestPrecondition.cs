@@ -121,7 +121,7 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void ExpectInRange_WhenInRange_ThenExpectInRangeReturnsValue()
         {
-            Assert.That((0f).ExpectInRange(-1f, 1f, "range"), Is.EqualTo(0f));
+            Assert.That((0f).ExpectInRange(-1f, 1f, "range"), Is.Zero);
             Assert.That((1f).ExpectInRange(-1f, 1f, "range"), Is.EqualTo(1f));
             Assert.That((-1f).ExpectInRange(-1f, 1f, "range"), Is.EqualTo(-1f));
         }

@@ -228,7 +228,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Application.DoEvents();
 
                 Assert.That(browser.Directories.Nodes.Count, Is.EqualTo(1));
-                Assert.That(browser.Directories.Nodes[0].Nodes.Count, Is.EqualTo(0));
+                Assert.That(browser.Directories.Nodes[0].Nodes.Count, Is.Zero);
 
                 children.Add(CreateDirectory().Object);
                 Application.DoEvents();
@@ -275,7 +275,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Application.DoEvents();
 
                 // Root directory is empty.
-                Assert.That(browser.Files.Items.Count, Is.EqualTo(0));
+                Assert.That(browser.Files.Items.Count, Is.Zero);
 
                 children.Add(CreateDirectory().Object);
                 Application.DoEvents();
@@ -624,7 +624,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 using (var dataObject = browser.CopySelectedFiles())
                 {
-                    Assert.That(dataObject.Files.Count, Is.EqualTo(0));
+                    Assert.That(dataObject.Files.Count, Is.Zero);
                 }
             }
         }

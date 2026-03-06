@@ -67,7 +67,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
 
             using (var process = factory.CreateProcess(CmdExe, null))
             {
-                Assert.That(process.Id, Is.Not.EqualTo(0));
+                Assert.That(process.Id, Is.Not.Zero);
 
                 process.Terminate(1);
             }
@@ -236,7 +236,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
             using (var process = factory.CreateProcess(CmdExe, null))
             {
                 process.Resume();
-                Assert.That(process.WindowCount, Is.EqualTo(0));
+                Assert.That(process.WindowCount, Is.Zero);
 
                 var terminatedGracefully = await process
                     .CloseAsync(cts.Token)
