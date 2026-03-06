@@ -44,11 +44,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 var settings = repository.GetSettings();
 
-                Assert.That(settings.IsMainWindowMaximized.Value, Is.EqualTo(false));
-                Assert.That(settings.MainWindowHeight.Value, Is.EqualTo(0));
-                Assert.That(settings.MainWindowWidth.Value, Is.EqualTo(0));
-                Assert.That(settings.IsUpdateCheckEnabled.Value, Is.EqualTo(true));
-                Assert.That(settings.LastUpdateCheck.Value, Is.EqualTo(0));
+                Assert.That(settings.IsMainWindowMaximized.Value, Is.False);
+                Assert.That(settings.MainWindowHeight.Value, Is.Zero);
+                Assert.That(settings.MainWindowWidth.Value, Is.Zero);
+                Assert.That(settings.IsUpdateCheckEnabled.Value, Is.True);
+                Assert.That(settings.LastUpdateCheck.Value, Is.Zero);
             }
         }
 
@@ -73,10 +73,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
 
                 settings = repository.GetSettings();
 
-                Assert.That(settings.IsMainWindowMaximized.Value, Is.EqualTo(true));
+                Assert.That(settings.IsMainWindowMaximized.Value, Is.True);
                 Assert.That(settings.MainWindowHeight.Value, Is.EqualTo(480));
                 Assert.That(settings.MainWindowWidth.Value, Is.EqualTo(640));
-                Assert.That(settings.IsUpdateCheckEnabled.Value, Is.EqualTo(false));
+                Assert.That(settings.IsUpdateCheckEnabled.Value, Is.False);
                 Assert.That(settings.LastUpdateCheck.Value, Is.EqualTo(123));
             }
         }

@@ -25,8 +25,8 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Core.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.PackageInventory;
-using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Application;
+using Google.Solutions.Testing.Application.Mocks;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -168,9 +168,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
 
         [Test]
         public async Task SwitchToModel_WhenProjectNode_ThenListIsPopulated(
-            [Values(
-                PackageInventoryType.AvailablePackages,
-                PackageInventoryType.InstalledPackages)]  PackageInventoryType type)
+            [Values]  PackageInventoryType type)
         {
 
             var node = new Mock<IProjectModelProjectNode>();
@@ -197,9 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
 
         [Test]
         public async Task SwitchToModel_WhenZoneNode_ThenListIsPopulated(
-            [Values(
-                PackageInventoryType.AvailablePackages,
-                PackageInventoryType.InstalledPackages)]  PackageInventoryType type)
+            [Values]  PackageInventoryType type)
         {
             var node = new Mock<IProjectModelZoneNode>();
             node.SetupGet(n => n.Zone).Returns(new ZoneLocator("project-1", "zone-1"));
@@ -225,9 +221,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
 
         [Test]
         public async Task SwitchToModel_WhenInstanceNodeWithInventory_ThenListIsPopulated(
-            [Values(
-                PackageInventoryType.AvailablePackages,
-                PackageInventoryType.InstalledPackages)]  PackageInventoryType type)
+            [Values]  PackageInventoryType type)
         {
             var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.DisplayName).Returns("instance-1");
@@ -254,9 +248,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
 
         [Test]
         public async Task SwitchToModel_WhenInstanceNodeWithoutInventory_ThenListIsPopulated(
-            [Values(
-                PackageInventoryType.AvailablePackages,
-                PackageInventoryType.InstalledPackages)] PackageInventoryType type)
+            [Values] PackageInventoryType type)
         {
             var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.DisplayName).Returns("instance-3");
@@ -278,8 +270,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.ToolWindows.Pac
                 viewModel.InformationText.Value, Is.EqualTo(PackageInventoryViewModel.OsInventoryNotAvailableWarning));
             Assert.That(viewModel.WindowTitle.Value, Does.Contain("instance-3"));
 
-            Assert.That(viewModel.AllPackages.Count, Is.EqualTo(0));
-            Assert.That(viewModel.FilteredPackages.Count, Is.EqualTo(0));
+            Assert.That(viewModel.AllPackages.Count, Is.Zero);
+            Assert.That(viewModel.FilteredPackages.Count, Is.Zero);
         }
 
         //---------------------------------------------------------------------

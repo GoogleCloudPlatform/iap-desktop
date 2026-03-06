@@ -82,9 +82,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 Predicate = s => s == s.ToUpper()
             };
 
-            Assert.That(filtered.Contains("one"), Is.False);
-            Assert.That(filtered.Contains("Two"), Is.False);
-            Assert.That(filtered.Contains("THREE"), Is.True);
+            Assert.That(filtered, Does.Not.Contain("one"));
+            Assert.That(filtered, Does.Not.Contain("Two"));
+            Assert.That(filtered, Does.Contain("THREE"));
         }
 
         [Test]

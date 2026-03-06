@@ -173,7 +173,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
                 form.Close();
 
                 Assert.That(buttonsApplied, Is.EqualTo(1));
-                Assert.That(controlsApplied, Is.EqualTo(0));
+                Assert.That(controlsApplied, Is.Zero);
             }
         }
 
@@ -209,7 +209,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
 
                 theme.ApplyTo(form);
 
-                Assert.That(appliedCalls, Is.EqualTo(0), "Call is delayed");
+                Assert.That(appliedCalls, Is.Zero, "Call is delayed");
 
                 form.Show();
                 form.Close();

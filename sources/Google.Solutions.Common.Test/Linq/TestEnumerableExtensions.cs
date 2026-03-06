@@ -38,7 +38,7 @@ namespace Google.Solutions.Common.Test.Linq
         {
             IEnumerable<string>? e = null;
             Assert.That(e.EnsureNotNull(), Is.Not.Null);
-            Assert.That(e.EnsureNotNull().Count(), Is.EqualTo(0));
+            Assert.That(e.EnsureNotNull().Count(), Is.Zero);
         }
 
         //---------------------------------------------------------------------

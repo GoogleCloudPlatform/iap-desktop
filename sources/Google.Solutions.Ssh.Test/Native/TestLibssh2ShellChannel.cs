@@ -111,8 +111,8 @@ namespace Google.Solutions.Ssh.Test.Native
                 Assert.That(
                     output, Does.Contain($"whoami;exit\r\n{credential.Username}\r\nlogout\r\n"));
 
-                Assert.That(channel.ExitCode, Is.EqualTo(0));
-                Assert.That(channel.ExitSignal, Is.EqualTo(null));
+                Assert.That(channel.ExitCode, Is.Zero);
+                Assert.That(channel.ExitSignal, Is.Null);
             }
         }
 
@@ -159,7 +159,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 Assert.That(
                     output, Does.Contain("en_AU"));
 
-                Assert.That(channel.ExitCode, Is.EqualTo(0));
+                Assert.That(channel.ExitCode, Is.Zero);
             }
         }
 

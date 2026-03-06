@@ -320,7 +320,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
             var e = (SetMetadataEvent)r.ToEvent();
 
             Assert.That(e.Principal, Is.EqualTo("user@example.com"));
-            Assert.That(e.InstanceId, Is.EqualTo(0));
+            Assert.That(e.InstanceId, Is.Zero);
             Assert.That(e.Instance?.Zone, Is.EqualTo("us-central1-a"));
             Assert.That(e.Instance?.ProjectId, Is.EqualTo("project-1"));
             Assert.That(e.Severity, Is.EqualTo("ERROR"));

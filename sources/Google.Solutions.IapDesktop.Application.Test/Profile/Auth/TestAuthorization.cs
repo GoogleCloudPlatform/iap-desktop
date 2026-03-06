@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 .ConfigureAwait(false);
 
             Assert.That(authorization.Session, Is.SameAs(session.Object));
-            Assert.That(eventsRaised, Is.EqualTo(0));
+            Assert.That(eventsRaised, Is.Zero);
         }
 
         [Test]

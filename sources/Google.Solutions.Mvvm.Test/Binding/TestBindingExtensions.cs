@@ -104,7 +104,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 v => { callbacks++; }))
             {
                 observed.Two = 2;
-                Assert.That(callbacks, Is.EqualTo(0));
+                Assert.That(callbacks, Is.Zero);
             }
         }
 
@@ -125,7 +125,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 };
 
                 observed.One = "observed";
-                Assert.That(callbacks, Is.EqualTo(0));
+                Assert.That(callbacks, Is.Zero);
             }
         }
 
@@ -164,7 +164,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 v => { callbacks++; }))
             {
                 observed.TextAlign = HorizontalAlignment.Center;
-                Assert.That(callbacks, Is.EqualTo(0));
+                Assert.That(callbacks, Is.Zero);
             }
         }
 
@@ -185,7 +185,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 };
 
                 observed.TextAlign = HorizontalAlignment.Center;
-                Assert.That(callbacks, Is.EqualTo(0));
+                Assert.That(callbacks, Is.Zero);
             }
         }
 

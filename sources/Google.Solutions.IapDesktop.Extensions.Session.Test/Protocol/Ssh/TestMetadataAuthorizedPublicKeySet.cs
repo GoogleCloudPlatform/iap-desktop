@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             };
 
             var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata);
-            Assert.That(keySet.Keys.Count(), Is.EqualTo(0));
+            Assert.That(keySet.Keys.Count(), Is.Zero);
             Assert.That(keySet.Items.Count(), Is.EqualTo(1));
         }
 

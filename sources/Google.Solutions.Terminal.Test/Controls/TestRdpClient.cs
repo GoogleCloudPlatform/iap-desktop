@@ -80,7 +80,7 @@ namespace Google.Solutions.Terminal.Test.Controls
 
         [WindowsFormsTest]
         public async Task ResizeWindow(
-            [Values(true, false)] bool enableAutoResize)
+            [Values] bool enableAutoResize)
         {
             using (var window = CreateWindow())
             {
@@ -117,7 +117,7 @@ namespace Google.Solutions.Terminal.Test.Controls
 
         [WindowsFormsTest]
         public async Task MinimizeAndRestoreFullScreenWindow(
-            [Values(true, false)] bool enableAutoResize)
+            [Values] bool enableAutoResize)
         {
             using (var window = CreateWindow())
             {
@@ -165,7 +165,7 @@ namespace Google.Solutions.Terminal.Test.Controls
 
         [WindowsFormsTest]
         public async Task EnterAndLeaveFullscreen(
-            [Values(true, false)] bool enableAutoResize)
+            [Values] bool enableAutoResize)
         {
             using (var window = CreateWindow())
             {

@@ -140,7 +140,7 @@ namespace Google.Solutions.Iap.Test.Net
                         .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    Assert.That(bytesRead, Is.EqualTo(0));
+                    Assert.That(bytesRead, Is.Zero);
                 }
             }
         }
@@ -160,7 +160,7 @@ namespace Google.Solutions.Iap.Test.Net
                         .ReadAsync(Array.Empty<byte>(), 0, 0, CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    Assert.That(bytesRead, Is.EqualTo(0));
+                    Assert.That(bytesRead, Is.Zero);
                 }
             }
         }

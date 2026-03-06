@@ -150,6 +150,7 @@ csharp_style_expression_bodied_operators = false:silent
 csharp_style_expression_bodied_indexers = true:silent
 csharp_style_expression_bodied_lambdas = true:silent
 csharp_style_expression_bodied_local_functions = false:silent
+csharp_prefer_simple_using_statement = false
 
 [*.{cs,vb}]
 dotnet_style_qualification_for_field=true:suggestion
@@ -220,7 +221,7 @@ dotnet_style_explicit_tuple_names = true:suggestion
 dotnet_style_prefer_inferred_tuple_names = true:suggestion
 dotnet_style_prefer_compound_assignment = false
 
-# 	Null check can be simplified (if null check)
+# Null check can be simplified (if null check)
 dotnet_diagnostic.IDE0270.severity = none
 
 # VSTHRD103: Call async methods when in an async method
@@ -238,8 +239,6 @@ dotnet_diagnostic.VSTHRD110.severity = suggestion
 # VSTHRD200: Use "Async" suffix for async methods
 dotnet_diagnostic.VSTHRD200.severity = suggestion
 
-csharp_prefer_simple_using_statement = false
-
 # CA1861: Avoid constant arrays as arguments
 dotnet_diagnostic.CA1861.severity = none
 
@@ -254,3 +253,6 @@ dotnet_diagnostic.NUnit2045.severity = none
 
 # NUnit2046: Use Assert.That(<collection>, Has.CountEqualTo(<value))
 dotnet_diagnostic.NUnit2046.severity = none
+
+# NUnit2046: Use Is.Equals (not applicable when testing operators)
+dotnet_diagnostic.NUnit2010.severity = none

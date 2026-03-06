@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                 events.Add);
 
             Assert.That(token, Is.Null);
-            Assert.That(events.Count, Is.EqualTo(0));
+            Assert.That(events.Count, Is.Zero);
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                 events.Add);
 
             Assert.That(token, Is.EqualTo("EAE4oeeNuZes8rwyStsEIhoiCgoIZ"));
-            Assert.That(events.Count, Is.EqualTo(0));
+            Assert.That(events.Count, Is.Zero);
         }
 
         [Test]
@@ -353,7 +353,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
                 new JsonTextReader(new StringReader(json)),
                 events.Add);
 
-            Assert.That(events.Count(), Is.EqualTo(0));
+            Assert.That(events.Count(), Is.Zero);
         }
     }
 }

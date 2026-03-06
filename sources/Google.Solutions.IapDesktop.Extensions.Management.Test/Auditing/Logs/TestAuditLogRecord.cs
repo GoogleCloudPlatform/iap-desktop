@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Logs
 
             Assert.That(auditLog.Request, Is.Not.Null);
             Assert.That(auditLog.Request?["name"]?.Value<string>(), Is.EqualTo("my-managed-group2-f3ng"));
-            Assert.That(auditLog.Request?["canIpForward"]?.Value<bool>(), Is.EqualTo(false));
+            Assert.That(auditLog.Request?["canIpForward"]?.Value<bool>(), Is.False);
         }
 
         [Test]

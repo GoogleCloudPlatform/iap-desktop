@@ -132,7 +132,7 @@ namespace Google.Solutions.Apis.Test.Client
                 .CreateHttpClient(new Google.Apis.Http.CreateHttpClientArgs())
                 .GetInnerHandler();
 
-            Assert.That(handler.ClientCertificates.Count, Is.EqualTo(0));
+            Assert.That(handler.ClientCertificates.Count, Is.Zero);
         }
 
         [Test]

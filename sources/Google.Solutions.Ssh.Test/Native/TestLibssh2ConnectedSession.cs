@@ -551,11 +551,7 @@ namespace Google.Solutions.Ssh.Test.Native
         [Test]
         public async Task Authenticate_PublicKey_WhenPublicKeyValidAndKnownFromMetadata_ThenAuthenticateSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Values(
-                SshKeyType.Rsa3072,
-                SshKeyType.EcdsaNistp256,
-                SshKeyType.EcdsaNistp384,
-                SshKeyType.EcdsaNistp521)] SshKeyType keyType)
+            [Values] SshKeyType keyType)
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);

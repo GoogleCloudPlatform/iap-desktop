@@ -101,7 +101,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 buffer,
                 0,
                 buffer.Length,
-                CancellationToken.None).Result, Is.EqualTo(0));
+                CancellationToken.None).Result, Is.Zero);
         }
     }
 }

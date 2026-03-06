@@ -330,7 +330,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Assert.That(form.ListView.Items[1].ImageIndex, Is.EqualTo(2));
 
                 item1.ImageIndex = 0;
-                Assert.That(form.ListView.Items[0].ImageIndex, Is.EqualTo(0));
+                Assert.That(form.ListView.Items[0].ImageIndex, Is.Zero);
                 Assert.That(form.ListView.Items[1].ImageIndex, Is.EqualTo(2));
             }
         }

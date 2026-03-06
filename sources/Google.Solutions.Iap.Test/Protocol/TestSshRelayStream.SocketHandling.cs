@@ -195,7 +195,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                         .ConfigureAwait(false);
                 }
 
-                Assert.That(endpoint.ReconnectCalls, Is.EqualTo(0));
+                Assert.That(endpoint.ReconnectCalls, Is.Zero);
             }
         }
 
@@ -223,8 +223,8 @@ namespace Google.Solutions.Iap.Test.Protocol
                         .CloseAsync(CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    Assert.That(bytesRead, Is.EqualTo(0));
-                    Assert.That(endpoint.ReconnectCalls, Is.EqualTo(0));
+                    Assert.That(bytesRead, Is.Zero);
+                    Assert.That(endpoint.ReconnectCalls, Is.Zero);
                 }
             }
         }
@@ -251,7 +251,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                                 buffer.Length,
                                 CancellationToken.None))
                         .ConfigureAwait(false);
-                    Assert.That(endpoint.ReconnectCalls, Is.EqualTo(0));
+                    Assert.That(endpoint.ReconnectCalls, Is.Zero);
                 }
             }
         }
@@ -279,7 +279,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                                 buffer.Length,
                                 CancellationToken.None))
                         .ConfigureAwait(false);
-                    Assert.That(endpoint.ReconnectCalls, Is.EqualTo(0));
+                    Assert.That(endpoint.ReconnectCalls, Is.Zero);
                 }
             }
         }
@@ -307,7 +307,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                                 buffer.Length,
                                 CancellationToken.None))
                         .ConfigureAwait(false);
-                    Assert.That(endpoint.ReconnectCalls, Is.EqualTo(0));
+                    Assert.That(endpoint.ReconnectCalls, Is.Zero);
                 }
             }
         }
@@ -433,7 +433,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
                     Assert.That(bytesRead, Is.EqualTo(4));
                     Assert.That(endpoint.ConnectCalls, Is.EqualTo(2));
-                    Assert.That(endpoint.ReconnectCalls, Is.EqualTo(0));
+                    Assert.That(endpoint.ReconnectCalls, Is.Zero);
                 }
             }
         }
@@ -505,7 +505,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                         .ConfigureAwait(false);
                 }
 
-                Assert.That(endpoint.ReconnectCalls, Is.EqualTo(0));
+                Assert.That(endpoint.ReconnectCalls, Is.Zero);
             }
         }
 

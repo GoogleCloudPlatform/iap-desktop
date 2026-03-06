@@ -364,7 +364,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                     ApplicationTraceSource.Log.TraceWarning(
                         "Pipe {0} is busy, retrying", this.PipeName);
 
-                    await Task.Delay(500);
+                    await Task.Delay(500, token);
                 }
                 catch (IOException e)
                 {

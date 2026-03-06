@@ -51,7 +51,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         [Test]
         public void GetHashCode_EncodesHslValues()
         {
-            Assert.That(new HslColor(0.0f, 0.0f, 0.0f).GetHashCode(), Is.EqualTo(0));
+            Assert.That(new HslColor(0.0f, 0.0f, 0.0f).GetHashCode(), Is.Zero);
             Assert.That(new HslColor(1.0f, 1.0f, 1.0f).GetHashCode(), Is.EqualTo(0xFFFFFF));
             Assert.That(new HslColor(0.1f, 0.2f, 0.3f).GetHashCode(), Is.EqualTo(1651532));
         }

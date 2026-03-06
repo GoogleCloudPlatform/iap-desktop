@@ -103,7 +103,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
                     .CloseAsync(cts.Token)
                     .ConfigureAwait(false);
 
-                Assert.That(closed, Is.EqualTo(0));
+                Assert.That(closed, Is.Zero);
             }
         }
 

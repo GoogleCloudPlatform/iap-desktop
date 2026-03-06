@@ -66,7 +66,7 @@ namespace Google.Solutions.Ssh.Test
         public void CheckOpenHandles()
         {
             HandleTable.DumpOpenHandles();
-            Assert.That(HandleTable.HandleCount, Is.EqualTo(0));
+            Assert.That(HandleTable.HandleCount, Is.Zero);
         }
 
         //---------------------------------------------------------------------

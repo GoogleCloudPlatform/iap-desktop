@@ -65,7 +65,7 @@ namespace Google.Solutions.Mvvm.Test.Interop
                 var buffer = new byte[16];
                 istream.Read(buffer, buffer.Length, bytesRead.DangerousGetHandle());
 
-                Assert.That(Marshal.ReadInt32(bytesRead.DangerousGetHandle()), Is.EqualTo(0));
+                Assert.That(Marshal.ReadInt32(bytesRead.DangerousGetHandle()), Is.Zero);
             }
         }
 

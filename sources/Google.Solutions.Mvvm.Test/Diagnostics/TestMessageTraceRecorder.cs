@@ -50,7 +50,7 @@ namespace Google.Solutions.Mvvm.Test.Diagnostics
             var trace = recorder.Capture();
             Assert.That(trace.History.Count, Is.EqualTo(3));
 
-            Assert.That(trace.History[0].Msg, Is.EqualTo(0));
+            Assert.That(trace.History[0].Msg, Is.Zero);
             Assert.That(trace.History[1].Msg, Is.EqualTo(1));
             Assert.That(trace.History[2].Msg, Is.EqualTo(2));
         }

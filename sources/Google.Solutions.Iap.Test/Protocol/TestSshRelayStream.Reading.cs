@@ -55,7 +55,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             };
             var relay = new SshRelayStream(endpoint);
 
-            Assert.That(endpoint.ConnectCount, Is.EqualTo(0));
+            Assert.That(endpoint.ConnectCount, Is.Zero);
 
             var buffer = new byte[SshRelayStream.MinReadSize];
             await relay
@@ -82,7 +82,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             };
             var relay = new SshRelayStream(endpoint);
 
-            Assert.That(endpoint.ConnectCount, Is.EqualTo(0));
+            Assert.That(endpoint.ConnectCount, Is.Zero);
 
             var buffer = new byte[SshRelayStream.MinReadSize - 1];
 
@@ -109,7 +109,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             };
             var relay = new SshRelayStream(endpoint);
 
-            Assert.That(endpoint.ConnectCount, Is.EqualTo(0));
+            Assert.That(endpoint.ConnectCount, Is.Zero);
 
             var buffer = new byte[SshRelayStream.MinReadSize];
 
@@ -158,7 +158,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.That(bytesRead, Is.EqualTo(0));
+            Assert.That(bytesRead, Is.Zero);
         }
 
         [Test]
@@ -182,8 +182,8 @@ namespace Google.Solutions.Iap.Test.Protocol
             };
             var relay = new SshRelayStream(endpoint);
 
-            Assert.That(relay.UnacknoledgedMessageCount, Is.EqualTo(0));
-            Assert.That(relay.ExpectedAck, Is.EqualTo(0));
+            Assert.That(relay.UnacknoledgedMessageCount, Is.Zero);
+            Assert.That(relay.ExpectedAck, Is.Zero);
 
             // Send 3 messages.
             await relay
@@ -207,9 +207,9 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            Assert.That(bytesRead, Is.EqualTo(0));
-            Assert.That(relay.UnacknoledgedMessageCount, Is.EqualTo(0));
-            Assert.That(relay.ExpectedAck, Is.EqualTo(0));
+            Assert.That(bytesRead, Is.Zero);
+            Assert.That(relay.UnacknoledgedMessageCount, Is.Zero);
+            Assert.That(relay.ExpectedAck, Is.Zero);
         }
 
         [Test]
@@ -323,7 +323,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.That(bytesRead, Is.EqualTo(0));
+            Assert.That(bytesRead, Is.Zero);
         }
 
 
@@ -354,7 +354,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
-            Assert.That(bytesRead, Is.EqualTo(0));
+            Assert.That(bytesRead, Is.Zero);
         }
 
         [Test]
@@ -430,7 +430,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .ConfigureAwait(false);
             Assert.That(bytesRead, Is.EqualTo(2));
             Assert.That(endpoint.ConnectCount, Is.EqualTo(2));
-            Assert.That(endpoint.ReconnectCount, Is.EqualTo(0));
+            Assert.That(endpoint.ReconnectCount, Is.Zero);
         }
 
 
@@ -525,7 +525,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .ConfigureAwait(false);
             Assert.That(bytesRead, Is.EqualTo(2));
             Assert.That(endpoint.ConnectCount, Is.EqualTo(2));
-            Assert.That(endpoint.ReconnectCount, Is.EqualTo(0));
+            Assert.That(endpoint.ReconnectCount, Is.Zero);
         }
 
 
@@ -581,7 +581,7 @@ namespace Google.Solutions.Iap.Test.Protocol
                 .ConfigureAwait(false);
             Assert.That(bytesRead, Is.EqualTo(1));
             Assert.That(endpoint.ConnectCount, Is.EqualTo(1));
-            Assert.That(endpoint.ReconnectCount, Is.EqualTo(0));
+            Assert.That(endpoint.ReconnectCount, Is.Zero);
 
             // connection breaks, triggering reconnect.
 
@@ -632,7 +632,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             Assert.That(bytesRead, Is.EqualTo(1));
 
             Assert.That(endpoint.ConnectCount, Is.EqualTo(1));
-            Assert.That(endpoint.ReconnectCount, Is.EqualTo(0));
+            Assert.That(endpoint.ReconnectCount, Is.Zero);
 
             await relay
                 .CloseAsync(this.tokenSource.Token)

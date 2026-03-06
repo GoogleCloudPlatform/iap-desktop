@@ -86,6 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         // WindowTitle.
         //---------------------------------------------------------------------
 
+        [Test]
         public void WindowTitle()
         {
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter())
@@ -98,6 +99,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         // Version.
         //---------------------------------------------------------------------
 
+        [Test]
         public void Version()
         {
             var install = new Mock<IInstall>();

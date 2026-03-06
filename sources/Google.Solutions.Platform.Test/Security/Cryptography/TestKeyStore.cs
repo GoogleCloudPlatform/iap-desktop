@@ -74,13 +74,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
 
         [Test]
         public void OpenKey_WhenTypeIsValid_ThenOpenPersistentKeyReturnsKey(
-            [Values(
-                CommonKeyType.Rsa1024,
-                CommonKeyType.Rsa2048,
-                CommonKeyType.Rsa3072,
-                CommonKeyType.EcdsaP256,
-                CommonKeyType.EcdsaP384,
-                CommonKeyType.EcdsaP521)] CommonKeyType commonType)
+            [Values] CommonKeyType commonType)
         {
             var keyType = LookupCommonKeyType(commonType);
             using (var key = this.Store.OpenKey(
@@ -111,13 +105,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
 
         [Test]
         public void OpenKey_WhenKeyFoundAndForceCreateIsFalse_ThenOpenPersistentKeyReturnsExistingKey(
-            [Values(
-                CommonKeyType.Rsa1024,
-                CommonKeyType.Rsa2048,
-                CommonKeyType.Rsa3072,
-                CommonKeyType.EcdsaP256,
-                CommonKeyType.EcdsaP384,
-                CommonKeyType.EcdsaP521)] CommonKeyType commonType)
+            [Values] CommonKeyType commonType)
         {
             var keyType = LookupCommonKeyType(commonType);
             using (var createdKey = this.Store.OpenKey(
@@ -141,13 +129,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
 
         [Test]
         public void OpenKey_WhenKeyFoundAndForceCreateIsTrue_ThenOpenPersistentKeyReturnsNewKey(
-            [Values(
-                CommonKeyType.Rsa1024,
-                CommonKeyType.Rsa2048,
-                CommonKeyType.Rsa3072,
-                CommonKeyType.EcdsaP256,
-                CommonKeyType.EcdsaP384,
-                CommonKeyType.EcdsaP521)] CommonKeyType commonType)
+            [Values] CommonKeyType commonType)
         {
             var keyType = LookupCommonKeyType(commonType);
             using (var createdKey = this.Store.OpenKey(

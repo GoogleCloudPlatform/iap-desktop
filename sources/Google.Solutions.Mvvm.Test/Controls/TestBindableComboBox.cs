@@ -66,7 +66,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             prop.Value = Dish.Pizza;
 
-            Assert.That(adapter.SelectedIndex, Is.EqualTo(0));
+            Assert.That(adapter.SelectedIndex, Is.Zero);
         }
 
         [Test]
@@ -77,7 +77,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             {
                 SelectedIndex = 0
             };
-            Assert.That(adapter.SelectedIndex, Is.EqualTo(0));
+            Assert.That(adapter.SelectedIndex, Is.Zero);
             Assert.That(prop.Value, Is.EqualTo(Dish.Pizza));
         }
     }

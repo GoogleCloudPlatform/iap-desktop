@@ -43,8 +43,8 @@ namespace Google.Solutions.Common.Test.Format
         {
             var buffer = new byte[4];
             BigEndian.EncodeUInt16(ushort.MaxValue, buffer, 2);
-            Assert.That(buffer[0], Is.EqualTo(0));
-            Assert.That(buffer[1], Is.EqualTo(0));
+            Assert.That(buffer[0], Is.Zero);
+            Assert.That(buffer[1], Is.Zero);
             Assert.That(BigEndian.DecodeUInt16(buffer, 2), Is.EqualTo(ushort.MaxValue));
         }
 

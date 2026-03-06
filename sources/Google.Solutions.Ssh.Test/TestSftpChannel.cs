@@ -36,16 +36,6 @@ namespace Google.Solutions.Ssh.Test
     [UsesCloudResources]
     public class TestSftpChannel : SshFixtureBase
     {
-        public static Stream CreateStream(string content)
-        {
-            var stream = new MemoryStream();
-            var writer = new StreamWriter(stream);
-            writer.Write(content);
-            writer.Flush();
-            stream.Position = 0;
-            return stream;
-        }
-
         //---------------------------------------------------------------------
         // Close.
         //---------------------------------------------------------------------
@@ -228,7 +218,7 @@ namespace Google.Solutions.Ssh.Test
                         Assert.That(outputStream.CanRead, Is.False);
                         Assert.That(outputStream.CanSeek, Is.False);
 
-                        Assert.That(outputStream.Length, Is.EqualTo(0));
+                        Assert.That(outputStream.Length, Is.Zero);
 
                         ExceptionAssert.ThrowsAggregateException<NotSupportedException>(
                             () => outputStream.ReadAsync(new byte[1], 0, 1).Wait());
@@ -256,7 +246,7 @@ namespace Google.Solutions.Ssh.Test
                         Assert.That(inputStream.CanWrite, Is.False);
                         Assert.That(inputStream.CanSeek, Is.False);
 
-                        Assert.That(inputStream.Length, Is.Not.EqualTo(0));
+                        Assert.That(inputStream.Length, Is.Not.Zero);
 
                         ExceptionAssert.ThrowsAggregateException<NotSupportedException>(
                             () => inputStream.WriteAsync(new byte[1], 0, 1).Wait());
@@ -273,7 +263,7 @@ namespace Google.Solutions.Ssh.Test
                         bytesRead = await inputStream
                             .ReadAsync(buffer, 0, buffer.Length)
                             .ConfigureAwait(false);
-                        Assert.That(bytesRead, Is.EqualTo(0));
+                        Assert.That(bytesRead, Is.Zero);
                     }
                 }
             }
@@ -321,7 +311,7 @@ namespace Google.Solutions.Ssh.Test
                         Assert.That(outputStream.CanRead, Is.False);
                         Assert.That(outputStream.CanSeek, Is.False);
 
-                        Assert.That(outputStream.Length, Is.EqualTo(0));
+                        Assert.That(outputStream.Length, Is.Zero);
 
                         Assert.Throws<NotSupportedException>(
                             () => _ = outputStream.Read(new byte[1], 0, 1));
@@ -347,7 +337,7 @@ namespace Google.Solutions.Ssh.Test
                         Assert.That(inputStream.CanWrite, Is.False);
                         Assert.That(inputStream.CanSeek, Is.False);
 
-                        Assert.That(inputStream.Length, Is.Not.EqualTo(0));
+                        Assert.That(inputStream.Length, Is.Not.Zero);
 
                         Assert.Throws<NotSupportedException>(
                             () => inputStream.Write(new byte[1], 0, 1));
@@ -360,7 +350,7 @@ namespace Google.Solutions.Ssh.Test
                         Assert.That(inputStream.Position, Is.EqualTo(bytesRead));
 
                         bytesRead = inputStream.Read(buffer, 0, buffer.Length);
-                        Assert.That(bytesRead, Is.EqualTo(0));
+                        Assert.That(bytesRead, Is.Zero);
                     }
                 }
             }

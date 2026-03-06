@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 
         [Test]
         public void Subscribe(
-            [Values(SubscriptionOptions.None, SubscriptionOptions.WeakSubscriberReference)]
+            [Values]
             SubscriptionOptions options)
         {
             var queue = new EventQueue(new Mock<ISynchronizeInvoke>().Object);
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
             using (queue.Subscribe<EventOne>(e => { }, options))
             {
                 Assert.That(queue.GetSubscriptions<EventOne>().Count(), Is.EqualTo(2));
-                Assert.That(queue.GetSubscriptions<EventTwo>().Count(), Is.EqualTo(0));
+                Assert.That(queue.GetSubscriptions<EventTwo>().Count(), Is.Zero);
             }
         }
 
@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 
         [Test]
         public void Unsubscribe(
-            [Values(SubscriptionOptions.None, SubscriptionOptions.WeakSubscriberReference)]
+            [Values]
             SubscriptionOptions options)
         {
             var queue = new EventQueue(new Mock<ISynchronizeInvoke>().Object);
@@ -90,12 +90,12 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
                 Assert.That(queue.GetSubscriptions<EventOne>().Count(), Is.EqualTo(1));
             }
 
-            Assert.That(queue.GetSubscriptions<EventOne>().Count(), Is.EqualTo(0));
+            Assert.That(queue.GetSubscriptions<EventOne>().Count(), Is.Zero);
         }
 
         [Test]
         public void Unsubscribe_WhenSubscriptionDisposed(
-            [Values(SubscriptionOptions.None, SubscriptionOptions.WeakSubscriberReference)]
+            [Values]
             SubscriptionOptions options)
         {
             var queue = new EventQueue(new Mock<ISynchronizeInvoke>().Object);
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
                 var t = queue.PublishAsync(new EventOne());
 
                 // Susbcription auto-removed.
-                Assert.That(queue.GetSubscriptions<EventOne>().Count(), Is.EqualTo(0));
+                Assert.That(queue.GetSubscriptions<EventOne>().Count(), Is.Zero);
                 Assert.That(invoked, Is.False);
             }
         }

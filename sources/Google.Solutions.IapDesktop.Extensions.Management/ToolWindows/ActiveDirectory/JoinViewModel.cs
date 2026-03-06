@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.ToolWindows.ActiveDi
             this.IsOkButtonEnabled = ObservableProperty.Build(
                 this.DomainName,
                 this.ComputerName,
-                (string domain, string computer) =>
+                (domain, computer) =>
                     !string.IsNullOrEmpty(domain) && domain.Contains('.') &&
                     !string.IsNullOrEmpty(computer) && computer.Trim().Length <= 15);
         }

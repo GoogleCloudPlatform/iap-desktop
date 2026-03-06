@@ -137,7 +137,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 viewModel.ApplyCommand.ExecuteAsync(CancellationToken.None);
 
                 Assert.That(sheetViewModel1.ApplyCalls, Is.EqualTo(1));
-                Assert.That(sheetViewModel2.ApplyCalls, Is.EqualTo(0));
+                Assert.That(sheetViewModel2.ApplyCalls, Is.Zero);
             }
         }
     }

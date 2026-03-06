@@ -62,7 +62,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         {
             using (var progressBar = new LinearProgressBar())
             {
-                Assert.That(progressBar.Value, Is.EqualTo(0));
+                Assert.That(progressBar.Value, Is.Zero);
 
                 progressBar.Value = progressBar.Maximum;
                 Assert.That(progressBar.Value, Is.EqualTo(progressBar.Maximum));
