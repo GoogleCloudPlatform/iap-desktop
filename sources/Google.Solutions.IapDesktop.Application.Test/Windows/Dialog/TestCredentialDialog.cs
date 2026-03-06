@@ -42,11 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
 
         [Test]
         public void LookupAuthenticationPackageId_WhenInputValid(
-            [Values(
-                AuthenticationPackage.Any,
-                AuthenticationPackage.Kerberos,
-                AuthenticationPackage.Negoriate,
-                AuthenticationPackage.Ntlm)] AuthenticationPackage package)
+            [Values] AuthenticationPackage package)
         {
             Assert.That(
                 CredentialDialog.LookupAuthenticationPackageId(package),

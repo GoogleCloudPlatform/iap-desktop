@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 
         [Test]
         public void Subscribe(
-            [Values(SubscriptionOptions.None, SubscriptionOptions.WeakSubscriberReference)]
+            [Values]
             SubscriptionOptions options)
         {
             var queue = new EventQueue(new Mock<ISynchronizeInvoke>().Object);
@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 
         [Test]
         public void Unsubscribe(
-            [Values(SubscriptionOptions.None, SubscriptionOptions.WeakSubscriberReference)]
+            [Values]
             SubscriptionOptions options)
         {
             var queue = new EventQueue(new Mock<ISynchronizeInvoke>().Object);
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ObjectModel
 
         [Test]
         public void Unsubscribe_WhenSubscriptionDisposed(
-            [Values(SubscriptionOptions.None, SubscriptionOptions.WeakSubscriberReference)]
+            [Values]
             SubscriptionOptions options)
         {
             var queue = new EventQueue(new Mock<ISynchronizeInvoke>().Object);

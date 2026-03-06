@@ -34,11 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
 
         [Test]
         public void Get_WhenCalledTwice(
-            [Values(
-                SshKeyType.Rsa3072,
-                SshKeyType.EcdsaNistp256,
-                SshKeyType.EcdsaNistp384,
-                SshKeyType.EcdsaNistp521)] SshKeyType keyType)
+            [Values] SshKeyType keyType)
         {
             var signer1 = EphemeralKeySigners.Get(keyType);
             var signer2 = EphemeralKeySigners.Get(keyType);
