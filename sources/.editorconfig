@@ -253,3 +253,6 @@ dotnet_diagnostic.NUnit2045.severity = none
 
 # NUnit2046: Use Assert.That(<collection>, Has.CountEqualTo(<value))
 dotnet_diagnostic.NUnit2046.severity = none
+
+# NUnit2046: Use Is.Equals (not applicable when testing operators)
+dotnet_diagnostic.NUnit2010.severity = none

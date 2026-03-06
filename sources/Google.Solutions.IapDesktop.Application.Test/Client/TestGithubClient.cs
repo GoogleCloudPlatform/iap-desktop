@@ -588,7 +588,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
 
             Assert.That(release, Is.Not.Null);
             Assert.That(release!.TagVersion, Is.Not.Null);
-            Assert.That(release.TagVersion!.Major >= 1, Is.True);
+            Assert.That(release.TagVersion!.Major, Is.GreaterThanOrEqualTo(1));
 
             Assert.That(release.TryGetDownloadUrl(
                 Architecture.X86,

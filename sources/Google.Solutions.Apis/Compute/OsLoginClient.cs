@@ -308,7 +308,7 @@ namespace Google.Solutions.Apis.Compute
                         //
                         // Retry.
                         //
-                        await Task.Delay(5);
+                        await Task.Delay(5, cancellationToken);
                         attempt++;
                     }
                 }
