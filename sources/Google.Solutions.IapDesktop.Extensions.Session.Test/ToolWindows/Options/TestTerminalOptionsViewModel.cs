@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.That(viewModel.IsQuoteConvertionOnPasteEnabled.Value, Is.True);
+            Assert.That(viewModel.IsQuoteConversionOnPasteEnabled.Value, Is.True);
         }
 
         [Test]
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
 
-            Assert.That(viewModel.IsQuoteConvertionOnPasteEnabled.Value, Is.False);
+            Assert.That(viewModel.IsQuoteConversionOnPasteEnabled.Value, Is.False);
         }
 
         [Test]
@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             settingsRepository.SetSettings(settings);
 
             var viewModel = new TerminalOptionsViewModel(settingsRepository);
-            viewModel.IsQuoteConvertionOnPasteEnabled.Value = false;
+            viewModel.IsQuoteConversionOnPasteEnabled.Value = false;
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
@@ -212,8 +212,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
 
             Assert.That(viewModel.IsDirty.Value, Is.False);
 
-            viewModel.IsQuoteConvertionOnPasteEnabled.Value =
-                !viewModel.IsQuoteConvertionOnPasteEnabled.Value;
+            viewModel.IsQuoteConversionOnPasteEnabled.Value =
+                !viewModel.IsQuoteConversionOnPasteEnabled.Value;
 
             Assert.That(viewModel.IsDirty.Value, Is.True);
         }
@@ -543,7 +543,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
             viewModel.CaretStyle.Value = VirtualTerminal.CaretStyle.BlinkingBlock;
             await viewModel.ApplyChangesAsync();
 
-            settings = settingsRepository.GetSettings();
             Assert.That(
                 viewModel.CaretStyle.Value, Is.EqualTo(VirtualTerminal.CaretStyle.BlinkingBlock));
         }

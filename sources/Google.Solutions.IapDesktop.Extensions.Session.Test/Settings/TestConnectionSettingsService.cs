@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             return new ConnectionSettingsService(settingsRepository);
         }
 
-        private IProjectModelProjectNode CreateProjectNode()
+        private static IProjectModelProjectNode CreateProjectNode()
         {
             var projectNode = new Mock<IProjectModelProjectNode>();
             projectNode.SetupGet(n => n.Project).Returns(SampleProject);
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             return projectNode.Object;
         }
 
-        private IProjectModelZoneNode CreateZoneNode()
+        private static IProjectModelZoneNode CreateZoneNode()
         {
             var zoneNode = new Mock<IProjectModelZoneNode>();
             zoneNode.SetupGet(n => n.Zone).Returns(new ZoneLocator(SampleProject.ProjectId, "zone-1"));
@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             return zoneNode.Object;
         }
 
-        private IProjectModelInstanceNode CreateVmInstanceNode(bool isWindows = false)
+        private static IProjectModelInstanceNode CreateVmInstanceNode(bool isWindows = false)
         {
             var vmNode = new Mock<IProjectModelInstanceNode>();
             vmNode.SetupGet(n => n.Instance).Returns(

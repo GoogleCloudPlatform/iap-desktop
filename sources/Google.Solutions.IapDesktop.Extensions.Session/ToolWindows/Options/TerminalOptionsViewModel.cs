@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                 settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value);
             this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled = ObservableProperty.Build(
                 settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value);
-            this.IsQuoteConvertionOnPasteEnabled = ObservableProperty.Build(
+            this.IsQuoteConversionOnPasteEnabled = ObservableProperty.Build(
                 settings.IsQuoteConvertionOnPasteEnabled.Value);
             this.IsBracketedPasteEnabled = ObservableProperty.Build(
                 settings.IsBracketedPasteEnabled.Value);
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
 
             MarkDirtyWhenPropertyChanges(this.IsCopyPasteUsingCtrlCAndCtrlVEnabled);
             MarkDirtyWhenPropertyChanges(this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled);
-            MarkDirtyWhenPropertyChanges(this.IsQuoteConvertionOnPasteEnabled);
+            MarkDirtyWhenPropertyChanges(this.IsQuoteConversionOnPasteEnabled);
             MarkDirtyWhenPropertyChanges(this.IsBracketedPasteEnabled);
             MarkDirtyWhenPropertyChanges(this.IsScrollingUsingCtrlHomeEndEnabled);
             MarkDirtyWhenPropertyChanges(this.IsScrollingUsingCtrlPageUpDownEnabled);
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value =
                 this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value;
             settings.IsQuoteConvertionOnPasteEnabled.Value =
-                this.IsQuoteConvertionOnPasteEnabled.Value;
+                this.IsQuoteConversionOnPasteEnabled.Value;
             settings.IsBracketedPasteEnabled.Value =
                 this.IsBracketedPasteEnabled.Value;
             settings.IsScrollingUsingCtrlHomeEndEnabled.Value =
@@ -111,14 +111,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public float MaximumFontSize => TerminalSettings.MaximumFontSize;
-        public float MinimumFontSize => TerminalSettings.MinimumFontSize;
+        public static float MaximumFontSize => TerminalSettings.MaximumFontSize;
+        public static float MinimumFontSize => TerminalSettings.MinimumFontSize;
 
         public ObservableProperty<bool> IsCopyPasteUsingCtrlCAndCtrlVEnabled { get; }
 
         public ObservableProperty<bool> IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; }
 
-        public ObservableProperty<bool> IsQuoteConvertionOnPasteEnabled { get; }
+        public ObservableProperty<bool> IsQuoteConversionOnPasteEnabled { get; }
 
         public ObservableProperty<bool> IsBracketedPasteEnabled { get; }
 

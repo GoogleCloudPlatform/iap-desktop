@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //
         private const string SamplePscEndpoint = "www.googleapis.com";
 
-        private IRepository<IAccessSettings> CreateSettingsRepository(
+        private static IRepository<IAccessSettings> CreateSettingsRepository(
             IDictionary<string, object>? policies = null)
         {
             var settingsKey = RegistryKeyPath

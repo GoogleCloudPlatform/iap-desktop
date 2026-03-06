@@ -21,7 +21,7 @@
 
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Rdp
+namespace Google.Solutions.IapDesktop.Extensions.Session.Test
 {
     /// <summary>
     /// Annotation for test fixtures that use RDP.

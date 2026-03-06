@@ -252,7 +252,7 @@ namespace Google.Solutions.Platform.Dispatch
 
         internal class PseudoConsoleHandle : SafeHandleZeroOrMinusOneIsInvalid
         {
-            private PseudoConsoleHandle()
+            public PseudoConsoleHandle()
                 : base(true)
             {
             }

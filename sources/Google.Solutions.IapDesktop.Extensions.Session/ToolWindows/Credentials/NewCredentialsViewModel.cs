@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
 
         private string username = string.Empty;
 
-        public bool IsAllowedCharacterForUsername(char c)
+        public static bool IsAllowedCharacterForUsername(char c)
         {
             return !DisallowedCharactersInUsername.Contains(c);
         }

@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
             this.convertTypographicQuotesCheckBox.BindObservableProperty(
                 c => c.Checked,
                 viewModel,
-                m => m.IsQuoteConvertionOnPasteEnabled,
+                m => m.IsQuoteConversionOnPasteEnabled,
                 bindingContext);
             this.bracketedPastingCheckBox.BindObservableProperty(
                 c => c.Checked,
@@ -143,8 +143,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Options
                     ShowEffects = false,
 
                     // Sizes are in pixel, not points.
-                    MinSize = (int)Math.Ceiling(this.viewModel.Value.MinimumFontSize * this.PointsToPixelRatio),
-                    MaxSize = (int)Math.Floor(this.viewModel.Value.MaximumFontSize * this.PointsToPixelRatio),
+                    MinSize = (int)Math.Ceiling(TerminalOptionsViewModel.MinimumFontSize * this.PointsToPixelRatio),
+                    MaxSize = (int)Math.Floor(TerminalOptionsViewModel.MaximumFontSize * this.PointsToPixelRatio),
 
                     Font = this.viewModel.Value.TerminalFont.Value
                 })

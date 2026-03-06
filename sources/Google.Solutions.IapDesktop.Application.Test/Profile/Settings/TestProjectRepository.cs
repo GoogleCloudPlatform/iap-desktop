@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         private static readonly ProjectLocator SampleProject
             = new ProjectLocator("test-123");
 
-        private ProjectRepository CreateProjectRepository()
+        private static ProjectRepository CreateProjectRepository()
         {
             return new ProjectRepository(RegistryKeyPath.ForCurrentTest().CreateKey());
         }
