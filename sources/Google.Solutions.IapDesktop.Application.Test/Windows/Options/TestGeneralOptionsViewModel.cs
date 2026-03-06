@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
     [TestFixture]
     public class TestGeneralOptionsViewModel : ApplicationFixtureBase
     {
-        private IRepository<IApplicationSettings> CreateSettingsRepository(
+        private static IRepository<IApplicationSettings> CreateSettingsRepository(
             IDictionary<string, object>? policies = null)
         {
             var settingsKey = RegistryKeyPath

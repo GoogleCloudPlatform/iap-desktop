@@ -30,7 +30,7 @@ namespace Google.Solutions.Platform.Interop
     {
         internal static CoTaskMemAllocSafeHandle Zero = new CoTaskMemAllocSafeHandle(ownsHandle: false);
 
-        private CoTaskMemAllocSafeHandle()
+        public CoTaskMemAllocSafeHandle()
             : base(ownsHandle: true)
         {
         }

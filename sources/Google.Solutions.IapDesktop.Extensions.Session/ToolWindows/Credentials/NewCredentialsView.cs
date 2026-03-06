@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Credentials
             this.usernameText.KeyPress += (_, e) =>
             {
                 // Cancel any keypresses of disallowed characters.
-                e.Handled = !viewModel.IsAllowedCharacterForUsername(e.KeyChar);
+                e.Handled = !NewCredentialsViewModel.IsAllowedCharacterForUsername(e.KeyChar);
             };
         }
     }

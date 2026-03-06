@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.ActiveDirect
             }
         }
 
-        internal async Task<TMessage> AwaitMessageAsync<TMessage>(
+        internal static async Task<TMessage> AwaitMessageAsync<TMessage>(
             IStartupScriptOperation operation,
             string messageType,
             CancellationToken cancellationToken)

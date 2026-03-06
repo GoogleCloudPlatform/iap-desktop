@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                     DomainJoinService.MetadataKeys.JoinDomainGuard,
                     computeClient))
                 {
-                    var hello = await new DomainJoinService(new Mock<IComputeEngineClient>().AsService())
+                    var hello = await DomainJoinService
                         .AwaitMessageAsync<DomainJoinService.HelloMessage>(
                             operation,
                             DomainJoinService.HelloMessage.MessageTypeString,
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
                     DomainJoinService.MetadataKeys.JoinDomainGuard,
                     computeClient))
                 {
-                    var response = await new DomainJoinService(new Mock<IComputeEngineClient>().AsService())
+                    var response = await DomainJoinService
                         .AwaitMessageAsync<DomainJoinService.JoinResponse>(
                             operation,
                             DomainJoinService.JoinResponse.MessageTypeString,

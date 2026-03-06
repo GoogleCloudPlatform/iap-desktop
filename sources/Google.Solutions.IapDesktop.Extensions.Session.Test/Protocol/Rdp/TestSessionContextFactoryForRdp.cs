@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");
 
-        private Mock<IProjectModelInstanceNode> CreateInstanceNodeMock()
+        private static Mock<IProjectModelInstanceNode> CreateInstanceNodeMock()
         {
             var vmNode = new Mock<IProjectModelInstanceNode>();
             vmNode.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Rdp
             return vmNode;
         }
 
-        private SshSettingsRepository CreateSshSettingsRepository()
+        private static SshSettingsRepository CreateSshSettingsRepository()
         {
             return new SshSettingsRepository(
                 RegistryKeyPath.ForCurrentTest().CreateKey(),

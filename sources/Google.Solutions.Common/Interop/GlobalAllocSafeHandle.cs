@@ -32,7 +32,7 @@ namespace Google.Solutions.Common.Interop
     {
         internal static GlobalAllocSafeHandle Zero = new GlobalAllocSafeHandle(ownsHandle: false);
 
-        private GlobalAllocSafeHandle()
+        public GlobalAllocSafeHandle()
             : base(ownsHandle: true)
         {
         }

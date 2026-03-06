@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
     [TestFixture]
     public class TestAppearanceOptionsViewModel
     {
-        private ThemeSettingsRepository CreateSettingsRepository()
+        private static ThemeSettingsRepository CreateSettingsRepository()
         {
             return new ThemeSettingsRepository(RegistryKeyPath
                 .ForCurrentTest(RegistryKeyPath.KeyType.Settings)

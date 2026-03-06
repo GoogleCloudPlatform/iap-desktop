@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Option
     [TestFixture]
     public class TestSshOptionsViewModel
     {
-        private SshSettingsRepository CreateSettingsRepository(
+        private static SshSettingsRepository CreateSettingsRepository(
             IDictionary<string, object>? policies = null)
         {
             var settingsKey = RegistryKeyPath
