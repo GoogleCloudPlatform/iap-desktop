@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Dialog
         // Prompt.
         //---------------------------------------------------------------------
 
-        public void Prompt(string message, bool password)
+        private static void Prompt(string message, bool password)
         {
             void validate(
                 string value,
