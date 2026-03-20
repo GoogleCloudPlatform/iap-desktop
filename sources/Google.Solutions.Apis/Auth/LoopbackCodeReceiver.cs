@@ -49,6 +49,9 @@ namespace Google.Solutions.Apis.Auth
         private readonly string path;
         private readonly string responseHtml;
 
+        private static int portFindSeed = 1; // Any non-zero value is fine.
+        private static readonly PortFinder portFinder = new PortFinder();
+
         public LoopbackCodeReceiver(
             string path,
             string responseHtml)
@@ -71,23 +74,6 @@ namespace Google.Solutions.Apis.Auth
             Process.Start(url);
         }
 
-        /// <summary>
-        /// Return a random, unused port.
-        /// </summary>
-        private static int GetRandomUnusedPort()
-        {
-            var listener = new TcpListener(IPAddress.Loopback, 0);
-            try
-            {
-                listener.Start();
-                return ((IPEndPoint)listener.LocalEndpoint).Port;
-            }
-            finally
-            {
-                listener.Stop();
-            }
-        }
-
         //---------------------------------------------------------------------
         // ICodeReceiver.
         //---------------------------------------------------------------------
@@ -99,7 +85,20 @@ namespace Google.Solutions.Apis.Auth
                 if (this.redirectUri == null ||
                     string.IsNullOrEmpty(this.redirectUri))
                 {
-                    var port = GetRandomUnusedPort();
+                    //
+                    // Amend seed so that we start the search with a different
+                    // port each time we try to find a free port. This
+                    // way, we ensure that:
+                    //
+                    // - The first time the receiver is used, we start with
+                    //   a deterministic port.
+                    // - The next time the receiver is used (which might be
+                    //   after encountering a port conflict), we start with
+                    //   a different port.
+                    //
+                    portFinder.AddSeed(BitConverter.GetBytes(portFindSeed++));
+
+                    var port = portFinder.FindPort(out var _);
                     this.redirectUri = new UriBuilder()
                     {
                         Scheme = "http",
