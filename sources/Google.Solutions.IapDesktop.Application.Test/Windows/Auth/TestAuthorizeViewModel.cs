@@ -104,7 +104,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         {
             var install = new Mock<IInstall>();
             install.SetupGet(i => i.CurrentVersion).Returns(new Version(1, 2, 3, 4));
-            using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter())
+            using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter(
+                install.Object,
+                new Mock<IOidcOfflineCredentialStore>().Object))
             {
                 Assert.That(viewModel.Version.Value, Does.StartWith("Version 1.2.3.4"));
             }

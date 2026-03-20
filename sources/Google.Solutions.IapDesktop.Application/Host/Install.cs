@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
     /// 
     /// The class also maintains a history of previously installed versions 
     /// in the registry. This history is used to distinguish between "fresh"
-    /// instals and upgraded installs.
+    /// installs and upgraded installs.
     /// </summary>
     public interface IInstall
     {
