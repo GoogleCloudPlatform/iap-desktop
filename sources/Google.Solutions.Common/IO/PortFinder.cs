@@ -28,10 +28,10 @@ using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 
-namespace Google.Solutions.Iap.Net
+namespace Google.Solutions.Common.IO
 {
     /// <summary>
-    /// Helper class to find unsed local TCP ports.
+    /// Helper class to find unused local TCP ports.
     /// </summary>
     public class PortFinder
     {

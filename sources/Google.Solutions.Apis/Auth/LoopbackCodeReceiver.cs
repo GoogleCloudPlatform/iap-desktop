@@ -23,6 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.IO;
 using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
@@ -48,6 +49,9 @@ namespace Google.Solutions.Apis.Auth
         private readonly string path;
         private readonly string responseHtml;
 
+        private static int portFindSeed = 1; // Any non-zero value is fine.
+        private static readonly PortFinder portFinder = new PortFinder();
+
         public LoopbackCodeReceiver(
             string path,
             string responseHtml)
@@ -70,23 +74,6 @@ namespace Google.Solutions.Apis.Auth
             Process.Start(url);
         }
 
-        /// <summary>
-        /// Return a random, unused port.
-        /// </summary>
-        private static int GetRandomUnusedPort()
-        {
-            var listener = new TcpListener(IPAddress.Loopback, 0);
-            try
-            {
-                listener.Start();
-                return ((IPEndPoint)listener.LocalEndpoint).Port;
-            }
-            finally
-            {
-                listener.Stop();
-            }
-        }
-
         //---------------------------------------------------------------------
         // ICodeReceiver.
         //---------------------------------------------------------------------
@@ -98,7 +85,20 @@ namespace Google.Solutions.Apis.Auth
                 if (this.redirectUri == null ||
                     string.IsNullOrEmpty(this.redirectUri))
                 {
-                    var port = GetRandomUnusedPort();
+                    //
+                    // Amend seed so that we start the search with a different
+                    // port each time we try to find a free port. This
+                    // way, we ensure that:
+                    //
+                    // - The first time the receiver is used, we start with
+                    //   a deterministic port.
+                    // - The next time the receiver is used (which might be
+                    //   after encountering a port conflict), we start with
+                    //   a different port.
+                    //
+                    portFinder.AddSeed(BitConverter.GetBytes(portFindSeed++));
+
+                    var port = portFinder.FindPort(out var _);
                     this.redirectUri = new UriBuilder()
                     {
                         Scheme = "http",
@@ -115,6 +115,8 @@ namespace Google.Solutions.Apis.Auth
             AuthorizationCodeRequestUrl url,
             CancellationToken cancellationToken)
         {
+            const int ERROR_ACCESS_DENIED = 5;
+
             var authorizationUrl = url.Build().AbsoluteUri;
 
             //
@@ -129,7 +131,33 @@ namespace Google.Solutions.Apis.Auth
                     "Start listener for {0}...", this.RedirectUri);
 
                 listener.Prefixes.Add(this.RedirectUri);
-                listener.Start();
+
+                try
+                {
+                    listener.Start();
+                }
+                catch (HttpListenerException e)
+                when (e.ErrorCode == ERROR_ACCESS_DENIED)
+                {
+                    ApiTraceSource.Log.TraceError(e);
+
+                    //
+                    // Invalidate the URI so that the next attempt uses a new port.
+                    //
+                    var deniedRedirectUri = this.RedirectUri;
+                    this.redirectUri = null;
+
+                    //
+                    // This can happen if the endpoint overlaps with a persistent 
+                    // port reservation.
+                    //
+                    throw new PortAccessDeniedException(deniedRedirectUri);
+                }
+                catch (Exception e)
+                {
+                    ApiTraceSource.Log.TraceError(e);
+                    throw;
+                }
 
                 ApiTraceSource.Log.TraceVerbose(
                     "Open a browser for {0}...", authorizationUrl);

@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Common.IO;
 using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Client;
@@ -46,6 +47,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     public class AuthorizeViewModel : ViewModelBase
     {
+        private const int MaxPortConflictRetries = 10;
+
         private readonly ServiceEndpoint<GaiaOidcClient> gaiaEndpoint;
         private readonly ServiceEndpoint<WorkforcePoolClient> stsEndpoint;
         private readonly IOidcOfflineCredentialStore offlineStore;
@@ -342,6 +345,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             try
             {
                 var retry = true;
+                var portAccessDeniedCount = 0;
                 while (retry)
                 {
                     try
@@ -381,6 +385,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                         var args = new RecoverableExceptionEventArgs(e);
                         this.OAuthScopeNotGranted?.Invoke(this, args);
                         retry = args.Retry;
+                    }
+                    catch (PortAccessDeniedException) 
+                    when (portAccessDeniedCount < MaxPortConflictRetries)
+                    {
+                        //
+                        // Retry with another port.
+                        //
+                        portAccessDeniedCount++;
                     }
                     catch (Exception e) when (!e.IsCancellation())
                     {
