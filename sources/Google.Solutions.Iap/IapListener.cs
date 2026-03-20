@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.IO;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Iap.Protocol;
@@ -233,7 +234,7 @@ namespace Google.Solutions.Iap
         public Task ListenAsync(CancellationToken token)
         {
             //
-            // Start listening before returning from the menthod.
+            // Start listening before returning from the method.
             //
             try
             {
@@ -253,16 +254,6 @@ namespace Google.Solutions.Iap
             // All communication is then handled asynchronously.
             //
             return Task.Run(() => RunListenerLoopAsync(token));
-        }
-    }
-
-    public class PortAccessDeniedException : Exception
-    {
-        public PortAccessDeniedException(EndPoint endpoint)
-            : base(
-                  $"Attempting to bind to port {endpoint} failed, " +
-                  "possibly because of a persistent port reservation")
-        {
         }
     }
 }

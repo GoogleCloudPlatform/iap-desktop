@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Auth;
 using Google.Solutions.Apis.Auth.Gaia;
 using Google.Solutions.Apis.Auth.Iam;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Common.IO;
 using Google.Solutions.Common.Linq;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Client;
@@ -342,6 +343,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             try
             {
                 var retry = true;
+                var portAccessDeniedCount = 0;
                 while (retry)
                 {
                     try
@@ -381,6 +383,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                         var args = new RecoverableExceptionEventArgs(e);
                         this.OAuthScopeNotGranted?.Invoke(this, args);
                         retry = args.Retry;
+                    }
+                    catch (PortAccessDeniedException) 
+                    when (portAccessDeniedCount < 10)
+                    {
+                        //
+                        // Retry with another port.
+                        //
+                        portAccessDeniedCount++;
                     }
                     catch (Exception e) when (!e.IsCancellation())
                     {

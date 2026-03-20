@@ -23,6 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.IO;
 using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
@@ -115,6 +116,8 @@ namespace Google.Solutions.Apis.Auth
             AuthorizationCodeRequestUrl url,
             CancellationToken cancellationToken)
         {
+            const int ERROR_ACCESS_DENIED = 5;
+
             var authorizationUrl = url.Build().AbsoluteUri;
 
             //
@@ -129,7 +132,27 @@ namespace Google.Solutions.Apis.Auth
                     "Start listener for {0}...", this.RedirectUri);
 
                 listener.Prefixes.Add(this.RedirectUri);
-                listener.Start();
+
+                try
+                {
+                    listener.Start();
+                }
+                catch (HttpListenerException e)
+                when (e.ErrorCode == ERROR_ACCESS_DENIED)
+                {
+                    ApiTraceSource.Log.TraceError(e);
+
+                    //
+                    // This can happen if the endpoint overlaps with a persistent port
+                    // reservation.
+                    //
+                    throw new PortAccessDeniedException(this.RedirectUri);
+                }
+                catch (Exception e)
+                {
+                    ApiTraceSource.Log.TraceError(e);
+                    throw;
+                }
 
                 ApiTraceSource.Log.TraceVerbose(
                     "Open a browser for {0}...", authorizationUrl);
