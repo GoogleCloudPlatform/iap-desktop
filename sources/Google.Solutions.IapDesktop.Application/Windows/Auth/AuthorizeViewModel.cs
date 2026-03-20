@@ -47,6 +47,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 {
     public class AuthorizeViewModel : ViewModelBase
     {
+        private const int MaxPortConflictRetries = 10;
+
         private readonly ServiceEndpoint<GaiaOidcClient> gaiaEndpoint;
         private readonly ServiceEndpoint<WorkforcePoolClient> stsEndpoint;
         private readonly IOidcOfflineCredentialStore offlineStore;
@@ -385,7 +387,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                         retry = args.Retry;
                     }
                     catch (PortAccessDeniedException) 
-                    when (portAccessDeniedCount < 10)
+                    when (portAccessDeniedCount < MaxPortConflictRetries)
                     {
                         //
                         // Retry with another port.

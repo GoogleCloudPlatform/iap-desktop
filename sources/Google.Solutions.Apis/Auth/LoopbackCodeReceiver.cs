@@ -142,10 +142,16 @@ namespace Google.Solutions.Apis.Auth
                     ApiTraceSource.Log.TraceError(e);
 
                     //
-                    // This can happen if the endpoint overlaps with a persistent port
-                    // reservation.
+                    // Invalidate the URI so that the next attempt uses a new port.
                     //
-                    throw new PortAccessDeniedException(this.RedirectUri);
+                    var deniedRedirectUri = this.RedirectUri;
+                    this.redirectUri = null;
+
+                    //
+                    // This can happen if the endpoint overlaps with a persistent 
+                    // port reservation.
+                    //
+                    throw new PortAccessDeniedException(deniedRedirectUri);
                 }
                 catch (Exception e)
                 {
