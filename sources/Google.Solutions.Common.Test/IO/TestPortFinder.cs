@@ -19,11 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.Iap.Net;
+using Google.Solutions.Common.IO;
 using NUnit.Framework;
 using System.Text;
 
-namespace Google.Solutions.Iap.Test.Net
+namespace Google.Solutions.Common.Test.IO
 {
     [TestFixture]
     public class TestPortFinder

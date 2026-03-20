@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Iap.Net;
+using Google.Solutions.Common.IO;
 using System;
 using System.Net;
 using System.Net.WebSockets;
