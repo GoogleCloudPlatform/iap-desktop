@@ -20,6 +20,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Locator\GlobalResourceLocator.cs">
@@ -35,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj" />
+    <ProjectReference Include="..\Google.Solutions.Platform\Google.Solutions.Platform.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Locator\GlobalResourceLocator.tt">

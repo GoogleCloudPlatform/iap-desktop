@@ -118,9 +118,13 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
             // Use a receiver that uses the preferred browser and
             // a redirect path that matches the registration.
             //
-            var receiver = new BrowserCodeReceiver(
-                this.client.Registration,
-                browserPreference);
+            var receiver = new LoopbackCodeReceiver(
+                Browser.Get(browserPreference),
+                this.client.Registration.RedirectPath,
+                Resources.AuthorizationSuccessful)
+            {
+                UseHttpSys = false // TODO: Make configurable
+            };
 
             var newSession = await this.client
                 .AuthorizeAsync(
@@ -128,32 +132,6 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
                     cancellationToken)
                 .ConfigureAwait(false);
             SetOrSpliceSession(newSession);
-        }
-
-        //---------------------------------------------------------------------
-        // Inner classes.
-        //---------------------------------------------------------------------
-
-        private class BrowserCodeReceiver : LoopbackCodeReceiver
-        {
-            private readonly BrowserPreference browserPreference;
-
-            public BrowserCodeReceiver(
-                OidcClientRegistration registration,
-                BrowserPreference browserPreference)
-                : base(
-                      registration.RedirectPath,
-                      Resources.AuthorizationSuccessful)
-            {
-                this.browserPreference = browserPreference;
-            }
-
-            protected override void OpenBrowser(string url)
-            {
-                Browser
-                    .Get(this.browserPreference)
-                    .Navigate(url);
-            }
         }
     }
 }
