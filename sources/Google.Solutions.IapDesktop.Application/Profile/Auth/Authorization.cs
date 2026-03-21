@@ -121,7 +121,10 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
             var receiver = new LoopbackCodeReceiver(
                 Browser.Get(browserPreference),
                 this.client.Registration.RedirectPath,
-                Resources.AuthorizationSuccessful);
+                Resources.AuthorizationSuccessful)
+            {
+                UseHttpSys = false // TODO: Make configurable
+            };
 
             var newSession = await this.client
                 .AuthorizeAsync(
