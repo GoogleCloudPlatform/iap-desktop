@@ -21,7 +21,9 @@
 
 using Google.Apis.Auth.OAuth2.Requests;
 using Google.Solutions.Apis.Auth;
+using Google.Solutions.Platform.Net;
 using Google.Solutions.Testing.Apis;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Net.Http;
@@ -39,8 +41,14 @@ namespace Google.Solutions.Apis.Test.Auth
         {
             public Action<string> OpenBrowserCallback = _ => { };
 
-            public Receiver(string path, string responseHtml)
-                : base(path, responseHtml)
+            public Receiver(
+                IBrowser browser,
+                string path, 
+                string responseHtml)
+                : base(
+                      browser,
+                      path, 
+                      responseHtml)
             {
             }
 
@@ -54,7 +62,10 @@ namespace Google.Solutions.Apis.Test.Auth
         public void WhenPathLacksSlash_ThenConstructorThrowsException()
         {
             Assert.Throws<ArgumentException>(
-                () => new LoopbackCodeReceiver("/auth", "response"));
+                () => new LoopbackCodeReceiver(
+                    new Mock<IBrowser>().Object,
+                    "/auth", 
+                    "response"));
         }
 
         //---------------------------------------------------------------------
@@ -66,7 +77,7 @@ namespace Google.Solutions.Apis.Test.Auth
         {
             using (var tokenSource = new CancellationTokenSource())
             {
-                var receiver = new Receiver("/", "done")
+                var receiver = new Receiver(new Mock<IBrowser>().Object, "/", "done")
                 {
                     OpenBrowserCallback = _ => tokenSource.Cancel()
                 };
@@ -85,7 +96,7 @@ namespace Google.Solutions.Apis.Test.Auth
         {
             using (var tokenSource = new CancellationTokenSource())
             {
-                var receiver = new Receiver("/", "done");
+                var receiver = new Receiver(new Mock<IBrowser>().Object, "/", "done");
                 var url = new AuthorizationCodeRequestUrl(SampleUri);
 
                 var receiveTask = receiver.ReceiveCodeAsync(url, tokenSource.Token);
@@ -103,7 +114,7 @@ namespace Google.Solutions.Apis.Test.Auth
         {
             using (var tokenSource = new CancellationTokenSource())
             {
-                var receiver = new Receiver("/", "done");
+                var receiver = new Receiver(new Mock<IBrowser>().Object, "/", "done");
                 var url = new AuthorizationCodeRequestUrl(SampleUri);
 
                 var receiveTask = receiver.ReceiveCodeAsync(url, tokenSource.Token);
@@ -132,7 +143,7 @@ namespace Google.Solutions.Apis.Test.Auth
         {
             using (var tokenSource = new CancellationTokenSource())
             {
-                var receiver = new Receiver("/", "done");
+                var receiver = new Receiver(new Mock<IBrowser>().Object, "/", "done");
                 var url = new AuthorizationCodeRequestUrl(SampleUri);
 
                 var receiveTask = receiver.ReceiveCodeAsync(url, tokenSource.Token);
@@ -162,7 +173,7 @@ namespace Google.Solutions.Apis.Test.Auth
         {
             using (var tokenSource = new CancellationTokenSource())
             {
-                var receiver = new Receiver(path, "done");
+                var receiver = new Receiver(new Mock<IBrowser>().Object, path, "done");
                 var url = new AuthorizationCodeRequestUrl(SampleUri);
 
                 var receiveTask = receiver.ReceiveCodeAsync(url, tokenSource.Token);

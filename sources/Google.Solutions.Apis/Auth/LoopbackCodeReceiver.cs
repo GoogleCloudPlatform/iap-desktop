@@ -25,6 +25,7 @@ using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.IO;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Platform.Net;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -45,6 +46,7 @@ namespace Google.Solutions.Apis.Auth
     /// </summary>
     public class LoopbackCodeReceiver : ICodeReceiver
     {
+        private readonly IBrowser browser;
         private string? redirectUri;
         private readonly string path;
         private readonly string responseHtml;
@@ -53,9 +55,11 @@ namespace Google.Solutions.Apis.Auth
         private static readonly PortFinder portFinder = new PortFinder();
 
         public LoopbackCodeReceiver(
+            IBrowser browser,
             string path,
             string responseHtml)
         {
+            this.browser = browser.ExpectNotNull(nameof(browser));
             this.path = path.ExpectNotEmpty(nameof(path));
             this.responseHtml = responseHtml.ExpectNotEmpty(nameof(responseHtml));
 
@@ -71,7 +75,7 @@ namespace Google.Solutions.Apis.Auth
 
         protected virtual void OpenBrowser(string url)
         {
-            Process.Start(url);
+            this.browser.Navigate(url);
         }
 
         //---------------------------------------------------------------------
