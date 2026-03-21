@@ -282,7 +282,7 @@ namespace Google.Solutions.Apis.Auth
                             .AcceptTcpClientAsync()
                             .ConfigureAwait(false))
                         using (var stream = client.GetStream())
-                        using (var writer = new StreamWriter(stream, Encoding.UTF8)
+                        using (var writer = new StreamWriter(stream, new UTF8Encoding(false))
                         {
                             AutoFlush = true
                         })
@@ -327,11 +327,13 @@ namespace Google.Solutions.Apis.Auth
                             }
 
                             var requestUrl = new Uri(redirectUri, parts[1]);
+                            var requestParameters = HttpUtility.ParseQueryString(requestUrl.Query);
 
                             if (string.Equals(
                                 this.path,
                                 requestUrl.AbsolutePath, 
-                                StringComparison.Ordinal))
+                                StringComparison.Ordinal) &&
+                                requestParameters.Count > 0)
                             {
                                 //
                                 // Respond with the provided page.
@@ -348,8 +350,7 @@ namespace Google.Solutions.Apis.Auth
                                         $"{this.responseHtml}")
                                     .ConfigureAwait(false);
 
-                                return CreateResponseUrl(
-                                    HttpUtility.ParseQueryString(requestUrl.Query));
+                                return CreateResponseUrl(requestParameters);
                             }
                             else
                             {
@@ -362,10 +363,21 @@ namespace Google.Solutions.Apis.Auth
                                         "Content-Length: 0\r\n" +
                                         "Connection: close\r\n\r\n")
                                     .ConfigureAwait(false); 
-                                continue;
                             }
                         }
                     }
+                }
+                catch (InvalidOperationException) 
+                when (cancellationToken.IsCancellationRequested)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    //
+                    // Next line will never be reached because cancellation will
+                    // always have been requested in this catch block.
+                    // But it's required to satisfy compiler.
+                    //
+                    throw new InvalidOperationException();
                 }
                 catch (Exception e)
                 {

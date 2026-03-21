@@ -73,13 +73,15 @@ namespace Google.Solutions.Apis.Test.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task ReceiveCode_WhenCancelledBeforeListen_ThenThrowsException()
+        public async Task ReceiveCode_WhenCancelledBeforeListen_ThenThrowsException(
+            [Values] bool useHttpSys)
         {
             using (var tokenSource = new CancellationTokenSource())
             {
                 var receiver = new Receiver(new Mock<IBrowser>().Object, "/", "done")
                 {
-                    OpenBrowserCallback = _ => tokenSource.Cancel()
+                    OpenBrowserCallback = _ => tokenSource.Cancel(),
+                    UseHttpSys = useHttpSys
                 };
 
                 var url = new AuthorizationCodeRequestUrl(SampleUri);
@@ -92,13 +94,17 @@ namespace Google.Solutions.Apis.Test.Auth
         }
 
         [Test]
-        public async Task ReceiveCode_WhenCancelledAfterListen_ThenThrowsException()
+        public async Task ReceiveCode_WhenCancelledAfterListen_ThenThrowsException(
+            [Values] bool useHttpSys)
         {
             using (var tokenSource = new CancellationTokenSource())
             {
-                var receiver = new Receiver(new Mock<IBrowser>().Object, "/", "done");
-                var url = new AuthorizationCodeRequestUrl(SampleUri);
+                var receiver = new Receiver(new Mock<IBrowser>().Object, "/", "done")
+                {
+                    UseHttpSys = useHttpSys
+                };
 
+                var url = new AuthorizationCodeRequestUrl(SampleUri);
                 var receiveTask = receiver.ReceiveCodeAsync(url, tokenSource.Token);
 
                 tokenSource.Cancel();
@@ -110,13 +116,17 @@ namespace Google.Solutions.Apis.Test.Auth
         }
 
         [Test]
-        public async Task ReceiveCode_WhenCodeReceived_ThenReturns()
+        public async Task ReceiveCode_WhenCodeReceived_ThenReturns(
+            [Values] bool useHttpSys)
         {
             using (var tokenSource = new CancellationTokenSource())
             {
-                var receiver = new Receiver(new Mock<IBrowser>().Object, "/", "done");
-                var url = new AuthorizationCodeRequestUrl(SampleUri);
+                var receiver = new Receiver(new Mock<IBrowser>().Object, "/", "done")
+                {
+                    UseHttpSys = useHttpSys
+                };
 
+                var url = new AuthorizationCodeRequestUrl(SampleUri);
                 var receiveTask = receiver.ReceiveCodeAsync(url, tokenSource.Token);
                 using (var client = new HttpClient())
                 {
@@ -139,13 +149,17 @@ namespace Google.Solutions.Apis.Test.Auth
         }
 
         [Test]
-        public async Task ReceiveCode_WhenErrorReceived_ThenReturns()
+        public async Task ReceiveCode_WhenErrorReceived_ThenReturns(
+            [Values] bool useHttpSys)
         {
             using (var tokenSource = new CancellationTokenSource())
             {
-                var receiver = new Receiver(new Mock<IBrowser>().Object, "/", "done");
-                var url = new AuthorizationCodeRequestUrl(SampleUri);
+                var receiver = new Receiver(new Mock<IBrowser>().Object, "/", "done")
+                {
+                    UseHttpSys = useHttpSys
+                };
 
+                var url = new AuthorizationCodeRequestUrl(SampleUri);
                 var receiveTask = receiver.ReceiveCodeAsync(url, tokenSource.Token);
                 using (var client = new HttpClient())
                 {
@@ -169,13 +183,17 @@ namespace Google.Solutions.Apis.Test.Auth
 
         [Test]
         public async Task ReceiveCode_WhenReceivingIrrelevantRequests_ThenKeepsListening(
-            [Values("/", "/auth/")] string path)
+            [Values("/", "/auth/")] string path,
+            [Values] bool useHttpSys)
         {
             using (var tokenSource = new CancellationTokenSource())
             {
-                var receiver = new Receiver(new Mock<IBrowser>().Object, path, "done");
-                var url = new AuthorizationCodeRequestUrl(SampleUri);
+                var receiver = new Receiver(new Mock<IBrowser>().Object, path, "done")
+                {
+                    UseHttpSys = useHttpSys
+                };
 
+                var url = new AuthorizationCodeRequestUrl(SampleUri);
                 var receiveTask = receiver.ReceiveCodeAsync(url, tokenSource.Token);
                 using (var client = new HttpClient())
                 {
