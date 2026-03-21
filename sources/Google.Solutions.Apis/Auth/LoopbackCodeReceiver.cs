@@ -98,8 +98,6 @@ namespace Google.Solutions.Apis.Auth
             AuthorizationCodeRequestUrl url,
             CancellationToken cancellationToken)
         {
-            const int ERROR_ACCESS_DENIED = 5;
-
             var authorizationUrl = url.Build().AbsoluteUri;
 
             //
@@ -124,7 +122,6 @@ namespace Google.Solutions.Apis.Auth
                     listener.Start();
                 }
                 catch (HttpListenerException e)
-                when (e.ErrorCode == ERROR_ACCESS_DENIED)
                 {
                     ApiTraceSource.Log.TraceError(e);
 
@@ -252,7 +249,6 @@ namespace Google.Solutions.Apis.Auth
                     listener.Start();
                 }
                 catch (SocketException e)
-                when (e.SocketErrorCode == SocketError.AccessDenied)
                 {
                     ApiTraceSource.Log.TraceError(e);
                     throw new PortAccessDeniedException(listener.LocalEndpoint);
