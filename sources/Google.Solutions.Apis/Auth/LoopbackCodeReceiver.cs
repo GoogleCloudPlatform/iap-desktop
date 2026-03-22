@@ -32,6 +32,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices.Expando;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -284,11 +285,31 @@ namespace Google.Solutions.Apis.Auth
                         })
                         {
                             var buffer = new byte[4096];
-                            int bytesRead = await stream
-                                .ReadAsync(buffer, 0, buffer.Length, cancellationToken)
-                                .ConfigureAwait(false);
+                            int totalBytesRead = 0;
+                            int read = 0;
+                            string? requestHeader = null;
+                            while ((read = await stream
+                                .ReadAsync(
+                                    buffer,
+                                    totalBytesRead,
+                                    buffer.Length - totalBytesRead,
+                                    cancellationToken)
+                                .ConfigureAwait(false)) > 0)
+                            {
+                                totalBytesRead += read;
 
-                            if (bytesRead == 0)
+                                //
+                                // Read until we have at least the entire first
+                                // line of the request.
+                                //
+                                requestHeader = Encoding.UTF8.GetString(buffer, 0, totalBytesRead);
+                                if (requestHeader.Contains("\r\n"))
+                                {
+                                    break;
+                                }
+                            }
+
+                            if (requestHeader == null || requestHeader.Length == 0)
                             {
                                 //
                                 // No data received, ignore.
@@ -299,19 +320,17 @@ namespace Google.Solutions.Apis.Auth
                             //
                             // Parse the request line.
                             //
-                            var parts = Encoding.UTF8
-                                .GetString(buffer, 0, bytesRead)
+                            var parts = requestHeader
                                 .Split(new[] { "\r\n" }, StringSplitOptions.None)[0]
                                 .Split(' ');
                             if (parts.Length != 3 ||
                                 !string.Equals(
-                                    parts[0], 
-                                    "GET", 
+                                    parts[0],
+                                    "GET",
                                     StringComparison.OrdinalIgnoreCase) ||
                                 !parts[1].StartsWith("/") ||
-                                !string.Equals(
-                                    parts[2], 
-                                    "HTTP/1.1", 
+                                !parts[2].StartsWith(
+                                    "HTTP/1.",
                                     StringComparison.OrdinalIgnoreCase))
                             {
                                 //
@@ -326,9 +345,9 @@ namespace Google.Solutions.Apis.Auth
                             var requestParameters = HttpUtility.ParseQueryString(requestUrl.Query);
 
                             if (string.Equals(
-                                this.path,
-                                requestUrl.AbsolutePath, 
-                                StringComparison.Ordinal) &&
+                                    this.path,
+                                    requestUrl.AbsolutePath, 
+                                    StringComparison.Ordinal) &&
                                 requestParameters.Count > 0)
                             {
                                 //
@@ -363,21 +382,19 @@ namespace Google.Solutions.Apis.Auth
                         }
                     }
                 }
-                catch (InvalidOperationException) 
-                when (cancellationToken.IsCancellationRequested)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    //
-                    // Next line will never be reached because cancellation will
-                    // always have been requested in this catch block.
-                    // But it's required to satisfy compiler.
-                    //
-                    throw new InvalidOperationException();
-                }
                 catch (Exception e)
                 {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        //
+                        // If a cancellation was requested, the error
+                        // doesn't matter.
+                        //
+                        cancellationToken.ThrowIfCancellationRequested();
+                    }
+
                     ApiTraceSource.Log.TraceError(e);
+
                     throw;
                 }
                 finally
@@ -429,7 +446,16 @@ namespace Google.Solutions.Apis.Auth
                     {
                         Scheme = "http",
                         Port = port,
-                        Path = this.path
+                        Path = this.path,
+
+                        //
+                        // NB. The TcpListener implementation is IPv4 only.
+                        //     Use 127.0.0.1 to prevent any v4/v6 resolution
+                        //     mismatch.
+                        //
+                        Host = this.UseHttpSys 
+                            ? "localhost" 
+                            : IPAddress.Loopback.ToString(),
                     }.Uri.ToString();
                 }
 
