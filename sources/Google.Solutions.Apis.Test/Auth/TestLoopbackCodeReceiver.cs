@@ -27,6 +27,8 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Net.Http;
+using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -69,11 +71,41 @@ namespace Google.Solutions.Apis.Test.Auth
         }
 
         //---------------------------------------------------------------------
+        // RedirectUri.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void RedirectUri_WithHttpSys()
+        {
+            var receiver = new Receiver(new Mock<IBrowser>().Object, "/", "done")
+            {
+                UseHttpSys = true
+            };
+
+            var redirectUri = new Uri(receiver.RedirectUri);
+            Assert.That(redirectUri.Host, Is.EqualTo("localhost"));
+            Assert.That(redirectUri.PathAndQuery, Is.EqualTo("/"));
+        }
+
+        [Test]
+        public void RedirectUri_WithoutHttpSys()
+        {
+            var receiver = new Receiver(new Mock<IBrowser>().Object, "/", "done")
+            {
+                UseHttpSys = false
+            };
+
+            var redirectUri = new Uri(receiver.RedirectUri);
+            Assert.That(redirectUri.Host, Is.EqualTo("127.0.0.1"));
+            Assert.That(redirectUri.PathAndQuery, Is.EqualTo("/"));
+        }
+
+        //---------------------------------------------------------------------
         // ReceiveCode.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task ReceiveCode_WhenCancelledBeforeListen_ThenThrowsException(
+        public async Task ReceiveCode_WhenCancelledBeforeListen(
             [Values] bool useHttpSys)
         {
             using (var tokenSource = new CancellationTokenSource())
@@ -94,7 +126,7 @@ namespace Google.Solutions.Apis.Test.Auth
         }
 
         [Test]
-        public async Task ReceiveCode_WhenCancelledAfterListen_ThenThrowsException(
+        public async Task ReceiveCode_WhenCancelledAfterListen(
             [Values] bool useHttpSys)
         {
             using (var tokenSource = new CancellationTokenSource())
@@ -116,40 +148,7 @@ namespace Google.Solutions.Apis.Test.Auth
         }
 
         [Test]
-        public async Task ReceiveCode_WhenCodeReceived_ThenReturns(
-            [Values] bool useHttpSys)
-        {
-            using (var tokenSource = new CancellationTokenSource())
-            {
-                var receiver = new Receiver(new Mock<IBrowser>().Object, "/", "done")
-                {
-                    UseHttpSys = useHttpSys
-                };
-
-                var url = new AuthorizationCodeRequestUrl(SampleUri);
-                var receiveTask = receiver.ReceiveCodeAsync(url, tokenSource.Token);
-                using (var client = new HttpClient())
-                {
-                    var htmlResponse = await client
-                        .GetAsync($"{receiver.RedirectUri}?code=c1&state=s1")
-                        .ConfigureAwait(false);
-
-                    var html = await htmlResponse.Content
-                        .ReadAsStringAsync()
-                        .ConfigureAwait(false);
-
-                    Assert.That(html, Is.EqualTo("done"));
-                }
-
-                var response = await receiveTask.ConfigureAwait(false);
-
-                Assert.That(response.Code, Is.EqualTo("c1"));
-                Assert.That(response.State, Is.EqualTo("s1"));
-            }
-        }
-
-        [Test]
-        public async Task ReceiveCode_WhenErrorReceived_ThenReturns(
+        public async Task ReceiveCode_WhenErrorReceived(
             [Values] bool useHttpSys)
         {
             using (var tokenSource = new CancellationTokenSource())
@@ -182,7 +181,7 @@ namespace Google.Solutions.Apis.Test.Auth
         }
 
         [Test]
-        public async Task ReceiveCode_WhenReceivingIrrelevantRequests_ThenKeepsListening(
+        public async Task ReceiveCode_WhenReceivingIrrelevantRequests(
             [Values("/", "/auth/")] string path,
             [Values] bool useHttpSys)
         {
@@ -210,6 +209,101 @@ namespace Google.Solutions.Apis.Test.Auth
                         .GetAsync(receiver.RedirectUri) // Missing parameters
                         .ConfigureAwait(false);
 
+                    var htmlResponse = await client
+                        .GetAsync($"{receiver.RedirectUri}?code=c1&state=s1")
+                        .ConfigureAwait(false);
+
+                    var html = await htmlResponse.Content
+                        .ReadAsStringAsync()
+                        .ConfigureAwait(false);
+
+                    Assert.That(html, Is.EqualTo("done"));
+                }
+
+                var response = await receiveTask.ConfigureAwait(false);
+
+                Assert.That(response.Code, Is.EqualTo("c1"));
+                Assert.That(response.State, Is.EqualTo("s1"));
+            }
+        }
+
+        [Test]
+        public async Task ReceiveCode_WithoutHttpSys_WhenRequestStuttered()
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                var receiver = new Receiver(new Mock<IBrowser>().Object, "/", "done")
+                {
+                    UseHttpSys = false
+                };
+
+                var url = new AuthorizationCodeRequestUrl(SampleUri);
+                var receiveTask = receiver.ReceiveCodeAsync(url, tokenSource.Token);
+                var redirectUri = new Uri(receiver.RedirectUri);
+
+                using (var client = new TcpClient(redirectUri.Host, redirectUri.Port))
+                using (var stream = client.GetStream())
+                {
+                    // Send an empty request.
+                    await stream
+                        .FlushAsync()
+                        .ConfigureAwait(false);
+                }
+
+                using (var client = new TcpClient(redirectUri.Host, redirectUri.Port))
+                using (var stream = client.GetStream())
+                {
+                    // Send a oversized, malformed request.
+                    var junk = Encoding.ASCII.GetBytes(
+                        "GET " + new string('x', 8291));
+                    await stream
+                        .WriteAsync(junk, 0, junk.Length)
+                        .ConfigureAwait(false);
+                    await stream
+                        .FlushAsync()
+                        .ConfigureAwait(false);
+                }
+
+                using (var client = new TcpClient(redirectUri.Host, redirectUri.Port))
+                using (var stream = client.GetStream())
+                {
+                    var requestLine = Encoding.ASCII.GetBytes(
+                        "GET /?code=c1&state=s1 HTTP/1.0\r\n\r\n");
+
+                    // Stutter the request line.
+                    foreach (var c in requestLine)
+                    {
+                        await stream
+                            .WriteAsync(new[] { c }, 0, 1)
+                            .ConfigureAwait(false);
+                        await stream
+                            .FlushAsync()
+                            .ConfigureAwait(false);
+                    }
+                }
+
+                var response = await receiveTask.ConfigureAwait(false);
+
+                Assert.That(response.Code, Is.EqualTo("c1"));
+                Assert.That(response.State, Is.EqualTo("s1"));
+            }
+        }
+
+        [Test]
+        public async Task ReceiveCode(
+            [Values] bool useHttpSys)
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                var receiver = new Receiver(new Mock<IBrowser>().Object, "/", "done")
+                {
+                    UseHttpSys = useHttpSys
+                };
+
+                var url = new AuthorizationCodeRequestUrl(SampleUri);
+                var receiveTask = receiver.ReceiveCodeAsync(url, tokenSource.Token);
+                using (var client = new HttpClient())
+                {
                     var htmlResponse = await client
                         .GetAsync($"{receiver.RedirectUri}?code=c1&state=s1")
                         .ConfigureAwait(false);
