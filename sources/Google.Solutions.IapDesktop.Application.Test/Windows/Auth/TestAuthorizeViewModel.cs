@@ -378,5 +378,36 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
                 Assert.That(viewModel.IsAuthorizationComplete.Value, Is.True);
             }
         }
+
+        //---------------------------------------------------------------------
+        // UseHttpSysCheckedCommand.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task UseHttpSysCheckedCommand()
+        {
+            using (var view = new Form())
+            using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
+            {
+                View = view
+            })
+            {
+                Assert.That(viewModel.IsUseHttpSysChecked.Value, Is.False);
+
+                // Toggle.
+                await viewModel.UseHttpSysCheckedCommand
+                    .ExecuteAsync(CancellationToken.None)
+                    .ConfigureAwait(true);
+
+                Assert.That(viewModel.IsUseHttpSysChecked.Value, Is.True);
+
+                // Toggle back.
+                await viewModel.UseHttpSysCheckedCommand
+                    .ExecuteAsync(CancellationToken.None)
+                    .ConfigureAwait(true);
+
+                Assert.That(viewModel.IsUseHttpSysChecked.Value, Is.False);
+            }
+        }
     }
 }

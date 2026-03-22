@@ -54,13 +54,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuthorizeView));
+            System.Windows.Forms.ToolStripSeparator separatorMenuItem2;
+            System.Windows.Forms.ToolStripSeparator separatorMenuItem1;
             this.cancelSignInLink = new System.Windows.Forms.LinkLabel();
             this.cancelSignInLabel = new System.Windows.Forms.Label();
             this.signInMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.signInWithChromeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.signInWithChromeGuestMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.signInWithDefaultBrowserMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.separatorMenuItem = new System.Windows.Forms.ToolStripSeparator();
             this.showOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.introLabel = new System.Windows.Forms.Label();
             this.spinner = new Google.Solutions.Mvvm.Controls.CircularProgressBar();
@@ -70,6 +71,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.signInButton = new Google.Solutions.Mvvm.Controls.DropDownButton();
             this.versionLabel = new System.Windows.Forms.Label();
             this.helpLink = new System.Windows.Forms.LinkLabel();
+            this.useHttpSysToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            separatorMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            separatorMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.signInMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.watermarkPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gradient)).BeginInit();
@@ -102,11 +106,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.signInWithChromeMenuItem,
             this.signInWithChromeGuestMenuItem,
             this.signInWithDefaultBrowserMenuItem,
-            this.separatorMenuItem,
+            separatorMenuItem1,
+            this.useHttpSysToolStripMenuItem,
+            separatorMenuItem2,
             this.showOptionsToolStripMenuItem});
             this.signInMenuStrip.Name = "signInMenuStrip";
             this.signInMenuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.signInMenuStrip.Size = new System.Drawing.Size(258, 98);
+            this.signInMenuStrip.Size = new System.Drawing.Size(258, 148);
             // 
             // signInWithChromeMenuItem
             // 
@@ -127,10 +133,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.signInWithDefaultBrowserMenuItem.Size = new System.Drawing.Size(257, 22);
             this.signInWithDefaultBrowserMenuItem.Text = "Sign in with &default browser";
             // 
-            // separatorMenuItem
+            // separatorMenuItem2
             // 
-            this.separatorMenuItem.Name = "separatorMenuItem";
-            this.separatorMenuItem.Size = new System.Drawing.Size(254, 6);
+            separatorMenuItem2.Name = "separatorMenuItem2";
+            separatorMenuItem2.Size = new System.Drawing.Size(254, 6);
             // 
             // showOptionsToolStripMenuItem
             // 
@@ -227,6 +233,17 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.helpLink.Text = "Help";
             this.helpLink.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // separatorMenuItem1
+            // 
+            separatorMenuItem1.Name = "separatorMenuItem1";
+            separatorMenuItem1.Size = new System.Drawing.Size(254, 6);
+            // 
+            // useHttpSysToolStripMenuItem
+            // 
+            this.useHttpSysToolStripMenuItem.Name = "useHttpSysToolStripMenuItem";
+            this.useHttpSysToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
+            this.useHttpSysToolStripMenuItem.Text = "Use http.sys to receive code";
+            // 
             // AuthorizeView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -270,8 +287,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
         private Mvvm.Controls.HeaderLabel headerLabel;
         private System.Windows.Forms.PictureBox watermarkPictureBox;
         private System.Windows.Forms.Label versionLabel;
-        private System.Windows.Forms.ToolStripSeparator separatorMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showOptionsToolStripMenuItem;
         private System.Windows.Forms.LinkLabel helpLink;
+        private System.Windows.Forms.ToolStripMenuItem useHttpSysToolStripMenuItem;
     }
 }

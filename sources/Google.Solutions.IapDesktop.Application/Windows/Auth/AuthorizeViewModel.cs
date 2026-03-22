@@ -88,6 +88,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.IsChromeSingnInButtonEnabled = ObservableProperty.Build(ChromeBrowser.IsAvailable);
             this.IsAuthorizationComplete = ObservableProperty.Build(false, this);
 
+            this.IsUseHttpSysChecked = ObservableProperty.Build(false, this);
+            this.UseHttpSysCheckedCommand = ObservableCommand.Build(
+                string.Empty,
+                () => this.IsUseHttpSysChecked.Value = !this.IsUseHttpSysChecked.Value);
+
             this.HelpCommand = ObservableCommand.Build(
                 string.Empty,
                 () => helpClient.OpenTopic(HelpTopics.SignInTroubleshooting));
@@ -237,6 +242,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
 
         public ObservableProperty<bool> IsAuthorizationComplete { get; }
 
+        public ObservableProperty<bool> IsUseHttpSysChecked { get; }
+
+        public ObservableCommand UseHttpSysCheckedCommand { get; }
+
         //---------------------------------------------------------------------
         // Input/output properties.
         //---------------------------------------------------------------------
@@ -259,7 +268,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.WindowTitle.Value = "Session expired";
             this.IsShowOptionsMenuEnabled.Value = false;
             this.IntroductionText.Value =
-                "Your session has expired.\nSign in again to continue using IAP Destop.";
+                "Your session has expired.\nSign in again to continue using IAP Desktop.";
         }
 
         //---------------------------------------------------------------------
@@ -369,6 +378,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                         await authorization
                             .AuthorizeAsync(
                                 browserPreference,
+                                this.IsUseHttpSysChecked.Value,
                                 this.cancelCurrentSignin.Token)
                             .ConfigureAwait(true);
 
