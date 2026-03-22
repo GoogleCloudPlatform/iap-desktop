@@ -268,7 +268,7 @@ namespace Google.Solutions.Apis.Test.Auth
                 using (var stream = client.GetStream())
                 {
                     var requestLine = Encoding.ASCII.GetBytes(
-                        "GET /?code=c1&state=s1 HTTP/1.0\r\n\r\n");
+                        "GET /?code=c1&state=s1 HTTP/1.0\r\n");
 
                     // Stutter the request line.
                     foreach (var c in requestLine)
