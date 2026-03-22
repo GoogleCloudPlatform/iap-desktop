@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Application.Windows.Auth;
 using Google.Solutions.Settings.Collection;
 using Google.Solutions.Testing.Apis;
 using Google.Solutions.Testing.Apis.Integration;
+using Google.Solutions.Testing.Apis.Platform;
 using Google.Solutions.Testing.Application;
 using Moq;
 using NUnit.Framework;
@@ -51,19 +52,30 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
 
             public AuthorizeViewModelWithMockSigninAdapter(
                 IInstall install,
-                IOidcOfflineCredentialStore offlineStore)
+                IOidcOfflineCredentialStore offlineStore,
+                IRepository<IAccessSettings> settings)
                 : base(
                     GaiaOidcClient.CreateEndpoint(),
                     WorkforcePoolClient.CreateEndpoint(),
                     install,
                     offlineStore,
-                    new Mock<IRepository<IAccessSettings>>().Object,
+                    settings,
                     new HelpClient(),
                     TestProject.UserAgent)
             {
                 this.Client
                     .SetupGet(c => c.Registration)
                     .Returns(new OidcClientRegistration(OidcIssuer.Gaia, "client-id", "", "/"));
+            }
+
+            public AuthorizeViewModelWithMockSigninAdapter(
+                IInstall install,
+                IOidcOfflineCredentialStore offlineStore)
+                : this(
+                      install,
+                      offlineStore,
+                      new Mock<IRepository<IAccessSettings>>().Object)
+            {
             }
 
             public AuthorizeViewModelWithMockSigninAdapter()
@@ -386,27 +398,44 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         [Test]
         public async Task UseHttpSysCheckedCommand()
         {
-            using (var view = new Form())
-            using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
+            using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
-                View = view
-            })
-            {
-                Assert.That(viewModel.IsUseHttpSysChecked.Value, Is.False);
+                var settingsRepository = new AccessSettingsRepository(
+                    settingsPath.CreateKey(),
+                    null,
+                    null);
 
-                // Toggle.
-                await viewModel.UseHttpSysCheckedCommand
-                    .ExecuteAsync(CancellationToken.None)
-                    .ConfigureAwait(true);
+                using (var view = new Form())
+                using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter(
+                    new Mock<IInstall>().Object,
+                    new Mock<IOidcOfflineCredentialStore>().Object,
+                    settingsRepository)
+                {
+                    View = view
+                })
+                {
+                    Assert.That(viewModel.IsUseHttpSysChecked.Value, Is.False);
 
-                Assert.That(viewModel.IsUseHttpSysChecked.Value, Is.True);
+                    // Toggle.
+                    await viewModel.UseHttpSysCheckedCommand
+                        .ExecuteAsync(CancellationToken.None)
+                        .ConfigureAwait(true);
 
-                // Toggle back.
-                await viewModel.UseHttpSysCheckedCommand
-                    .ExecuteAsync(CancellationToken.None)
-                    .ConfigureAwait(true);
+                    Assert.That(viewModel.IsUseHttpSysChecked.Value, Is.True);
+                    Assert.That(
+                        settingsRepository.GetSettings().UseHttpSysCodeReceiver.Value,
+                        Is.True);
 
-                Assert.That(viewModel.IsUseHttpSysChecked.Value, Is.False);
+                    // Toggle back.
+                    await viewModel.UseHttpSysCheckedCommand
+                        .ExecuteAsync(CancellationToken.None)
+                        .ConfigureAwait(true);
+
+                    Assert.That(viewModel.IsUseHttpSysChecked.Value, Is.False);
+                    Assert.That(
+                        settingsRepository.GetSettings().UseHttpSysCodeReceiver.Value,
+                        Is.False);
+                }
             }
         }
     }

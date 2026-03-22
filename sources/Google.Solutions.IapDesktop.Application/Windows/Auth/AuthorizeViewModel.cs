@@ -88,10 +88,19 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.IsChromeSingnInButtonEnabled = ObservableProperty.Build(ChromeBrowser.IsAvailable);
             this.IsAuthorizationComplete = ObservableProperty.Build(false, this);
 
-            this.IsUseHttpSysChecked = ObservableProperty.Build(false, this);
+            this.IsUseHttpSysChecked = ObservableProperty.Build(
+                accessSettings.GetSettings()?.UseHttpSysCodeReceiver.Value ?? false,
+                this);
             this.UseHttpSysCheckedCommand = ObservableCommand.Build(
                 string.Empty,
-                () => this.IsUseHttpSysChecked.Value = !this.IsUseHttpSysChecked.Value);
+                () =>
+                {
+                    this.IsUseHttpSysChecked.Value = !this.IsUseHttpSysChecked.Value;
+
+                    var settings = accessSettings.GetSettings();
+                    settings.UseHttpSysCodeReceiver.Value = this.IsUseHttpSysChecked.Value;
+                    accessSettings.SetSettings(settings);
+                });
 
             this.HelpCommand = ObservableCommand.Build(
                 string.Empty,
