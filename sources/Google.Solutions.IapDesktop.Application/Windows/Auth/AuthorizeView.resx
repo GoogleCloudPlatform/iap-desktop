@@ -124,7 +124,7 @@
   <data name="signInWithChromeMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wwAADsMBx2+oZAAAAeZJREFUOE+1kt1LmlEcx/0nyhb0Qnf7AwYrIYeaucwyX2L5srKtuhmsVkFR3fZm
+        wgAADsIBFShKgAAAAeZJREFUOE+1kt1LmlEcx/0nyhb0Qnf7AwYrIYeaucwyX2L5srKtuhmsVkFR3fZm
         TRO6G1bq1S5G4UVzg6CIagsVyoUSj5YRZN2VXow5v51zdNOnJmMX+8Hn5pzn8zkHniP4LxN/1YWoRp5F
         LQPXKsVprwm57eJzNj6MmL4JUZ0CUW0jL8C1SMCpnuB87M2fQ5HR1/imluJYR0T906IBTikmkf77EWeH
         BEHyAY3QG3BtRH6mRMJhJcwgsTCLhG2acWGb4gfqV0fQPNWB3SYRDkgkOtCHUPAEix9vGKFwDFefOnHt
@@ -135,4 +135,10 @@
         /UwWOg249tMA+X2Hxr+L/z4CwS2GJLdy9evANwAAAABJRU5ErkJggg==
 </value>
   </data>
+  <metadata name="separatorMenuItem1.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </metadata>
+  <metadata name="separatorMenuItem2.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </metadata>
 </root>

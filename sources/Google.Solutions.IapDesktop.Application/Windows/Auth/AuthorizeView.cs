@@ -107,6 +107,16 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
                 m => m.Version,
                 bindingContext);
 
+            this.useHttpSysToolStripMenuItem.BindObservableProperty(
+                c => c.Checked,
+                viewModel,
+                m => m.IsUseHttpSysChecked,
+                bindingContext);
+            this.useHttpSysToolStripMenuItem.BindObservableCommand(
+                viewModel,
+                m => m.UseHttpSysCheckedCommand,
+                bindingContext);
+
             //
             // Bind sign-in commands.
             //

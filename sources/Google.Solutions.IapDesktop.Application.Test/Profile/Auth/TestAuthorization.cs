@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
             authorization.Reauthorized += (_, __) => eventsRaised++;
 
             await authorization
-                .AuthorizeAsync(BrowserPreference.Default, CancellationToken.None)
+                .AuthorizeAsync(BrowserPreference.Default, false, CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.That(authorization.Session, Is.SameAs(session.Object));
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 .Setup(c => c.AuthorizeAsync(It.IsAny<ICodeReceiver>(), CancellationToken.None))
                 .ReturnsAsync(firstSession.Object);
             await authorization
-                .AuthorizeAsync(BrowserPreference.Default, CancellationToken.None)
+                .AuthorizeAsync(BrowserPreference.Default, false, CancellationToken.None)
                 .ConfigureAwait(false);
 
             // Second session.
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
                 .Setup(c => c.AuthorizeAsync(It.IsAny<ICodeReceiver>(), CancellationToken.None))
                 .ReturnsAsync(secondSession.Object);
             await authorization
-                .AuthorizeAsync(BrowserPreference.Default, CancellationToken.None)
+                .AuthorizeAsync(BrowserPreference.Default, false, CancellationToken.None)
                 .ConfigureAwait(false);
 
             firstSession.Verify(s => s.Splice(secondSession.Object), Times.Once);

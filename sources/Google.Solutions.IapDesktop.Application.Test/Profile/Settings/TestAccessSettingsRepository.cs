@@ -46,6 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 Assert.That(
                     settings.DeviceCertificateSelector.Value, Does.Contain("Google Endpoint Verification"));
                 Assert.That(settings.ConnectionLimit.Value, Is.EqualTo(16));
+                Assert.That(settings.UseHttpSysCodeReceiver.Value, Is.False);
             }
         }
 
@@ -63,6 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 settings.IsDeviceCertificateAuthenticationEnabled.Value = true;
                 settings.PrivateServiceConnectEndpoint.Value = "psc.example.com";
                 settings.DeviceCertificateSelector.Value = "{}";
+                settings.UseHttpSysCodeReceiver.Value = true;
                 repository.SetSettings(settings);
 
                 settings = repository.GetSettings();
@@ -70,6 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
                 Assert.That(settings.PrivateServiceConnectEndpoint.Value, Is.EqualTo("psc.example.com"));
                 Assert.That(settings.IsDeviceCertificateAuthenticationEnabled.Value, Is.True);
                 Assert.That(settings.DeviceCertificateSelector.Value, Is.EqualTo("{}"));
+                Assert.That(settings.UseHttpSysCodeReceiver.Value, Is.True);
             }
         }
 

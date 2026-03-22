@@ -112,6 +112,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
         /// </summary>
         public async Task AuthorizeAsync(
             BrowserPreference browserPreference,
+            bool useHttpSys,
             CancellationToken cancellationToken)
         {
             //
@@ -123,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Auth
                 this.client.Registration.RedirectPath,
                 Resources.AuthorizationSuccessful)
             {
-                UseHttpSys = false // TODO: Make configurable
+                UseHttpSys = useHttpSys
             };
 
             var newSession = await this.client

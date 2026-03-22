@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     {
         /// <summary>
         /// IP or hostname to use for Private Service Connect (PSC). 
-        /// If null, PSC is diabled.
+        /// If null, PSC is disabled.
         /// </summary>
         ISetting<string?> PrivateServiceConnectEndpoint { get; }
 
@@ -63,6 +63,12 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         /// identity instead of Gaia.
         /// </summary>
         ISetting<string?> WorkforcePoolProvider { get; }
+
+        /// <summary>
+        /// Use a http.sys-based web server to receive OAuth authorization 
+        /// codes.
+        /// </summary>
+        ISetting<bool> UseHttpSysCodeReceiver { get; }
     }
 
     /// <summary>
@@ -99,13 +105,16 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
 
             public ISetting<int> ConnectionLimit { get; }
 
+            public ISetting<bool> UseHttpSysCodeReceiver { get; }
+
             public IEnumerable<ISetting> Settings => new ISetting[]
             {
                 this.WorkforcePoolProvider,
                 this.PrivateServiceConnectEndpoint,
                 this.IsDeviceCertificateAuthenticationEnabled,
                 this.DeviceCertificateSelector,
-                this.ConnectionLimit
+                this.ConnectionLimit,
+                this.UseHttpSysCodeReceiver,
             };
 
 
@@ -155,6 +164,13 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
                     null,
                     16,
                     Predicate.InRange(1, 32));
+                this.UseHttpSysCodeReceiver = store.Read<bool>(
+                    "UseHttpSysCodeReceiver",
+                    "Use http.sys code receiver",
+                    null,
+                    null,
+                    false,
+                    null);
             }
         }
     }

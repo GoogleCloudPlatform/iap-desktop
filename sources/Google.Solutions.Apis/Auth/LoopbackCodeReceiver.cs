@@ -109,7 +109,7 @@ namespace Google.Solutions.Apis.Auth
             using (cancellationToken.Register(listener.Stop))
             {
                 ApiTraceSource.Log.TraceVerbose(
-                    "Start listener for {0}...", this.RedirectUri);
+                    "Start HTTP listener for {0}...", this.RedirectUri);
 
                 listener.Prefixes.Add(this.RedirectUri);
 
@@ -237,7 +237,7 @@ namespace Google.Solutions.Apis.Auth
             // because of a persistent port reservation.
             //
             ApiTraceSource.Log.TraceVerbose(
-                "Start TcpListener for {0}...", this.RedirectUri);
+                "Start TCP listener for {0}...", this.RedirectUri);
 
             var redirectUri = new Uri(this.RedirectUri);
             var listener = new TcpListener(IPAddress.Loopback, redirectUri.Port);
