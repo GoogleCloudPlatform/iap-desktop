@@ -276,8 +276,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Auth
             this.Authorization = authorization.ExpectNotNull(nameof(authorization));
             this.WindowTitle.Value = "Session expired";
             this.IsShowOptionsMenuEnabled.Value = false;
-            this.IntroductionText.Value =
-                "Your session has expired.\nSign in again to continue using IAP Desktop.";
+            this.IntroductionText.Value = "Your session has expired.";
         }
 
         //---------------------------------------------------------------------
