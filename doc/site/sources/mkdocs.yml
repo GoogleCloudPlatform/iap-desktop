@@ -64,10 +64,9 @@ repo_name: iap-desktop
 repo_url: https://github.com/GoogleCloudPlatform/iap-desktop
 download_url: https://github.com/GoogleCloudPlatform/iap-desktop/releases/latest/download/IapDesktopX64.msi
 copyright: |
-    IAP Desktop is an open-source project developed and maintained by the Google Cloud Solutions Architects team.<br>
+    IAP Desktop is an open-source project developed and maintained by <a href='https://jpassing.com/'>Johannes Passing</a>.<br>
     The project is not an officially supported Google product.<br>
-    Copyright &copy; 2019-2025 Google LLC<br>
-    <a href='https://cloud.google.com/'><img src='https://googlecloudplatform.github.io/iap-desktop/images/cloud.svg' width='240' height='160'/></a>
+    Copyright &copy; 2019-2026 Google LLC<br>
 
 markdown_extensions:
   - admonition

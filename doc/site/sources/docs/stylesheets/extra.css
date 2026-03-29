@@ -91,6 +91,12 @@ body {
     font-size: .6rem;
 }
 
+html .md-footer-meta.md-typeset a,
+html .md-footer-meta.md-typeset a:hover,
+html .md-footer-meta.md-typeset a:active {
+    color: var(--md-typeset-a-color);
+}
+
 article li {
   padding: 2px;   
 }
