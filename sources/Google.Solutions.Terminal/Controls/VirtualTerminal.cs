@@ -919,22 +919,13 @@ namespace Google.Solutions.Terminal.Controls
                             //     be delivered as two separate WM_KEYUP messages (one for
                             //     Control, one for the character).
                             //
-                            try
+                            var selection = NativeMethods.TerminalGetSelection(terminalHandle);
+                            if (!string.IsNullOrWhiteSpace(selection))
                             {
-                                var selection = NativeMethods.TerminalGetSelection(terminalHandle);
-                                if (!string.IsNullOrWhiteSpace(selection))
-                                {
-                                    ClipboardUtil.SetText(selection);
-                                }
+                                ClipboardUtil.SetText(selection);
+                            }
 
-                                NativeMethods.TerminalClearSelection(terminalHandle);
-                            }
-                            catch (ExternalException)
-                            {
-                                //
-                                // Clipboard busy, ignore.
-                                //
-                            }
+                            NativeMethods.TerminalClearSelection(terminalHandle);
 
                             //
                             // Ignore the subsequent WM_CHAR.
@@ -953,19 +944,10 @@ namespace Google.Solutions.Terminal.Controls
                             //     be delivered as two separate WM_KEYUP messages (one for
                             //     Control, one for the character).
                             //
-                            try
+                            var contents = ClipboardUtil.GetText();
+                            if (!string.IsNullOrWhiteSpace(contents))
                             {
-                                var contents = Clipboard.GetText();
-                                if (!string.IsNullOrWhiteSpace(contents))
-                                {
-                                    OnUserInput(SanitizeTextForPasting(contents));
-                                }
-                            }
-                            catch (ExternalException)
-                            {
-                                //
-                                // Clipboard busy, ignore.
-                                //
+                                OnUserInput(SanitizeTextForPasting(contents));
                             }
 
                             //
