@@ -722,7 +722,16 @@ namespace Google.Solutions.Terminal.Controls
         {
             bool IsAcceleratorForCopyingCurrentSelection(Keys key)
             {
-                if (ModifierKeys == Keys.None && key == Keys.Enter)
+                //
+                // Ctrl+Shift+C is unlikely to cause collisions, so
+                // it's always active. Most other combinations might
+                // collide, so they're configurable.
+                //
+                if (ModifierKeys == (Keys.Control | Keys.Shift) && key == Keys.C)
+                {
+                    return true;
+                }
+                else if (ModifierKeys == Keys.None && key == Keys.Enter)
                 {
                     //
                     // Consistent with the classic Windows console, treat
@@ -750,7 +759,16 @@ namespace Google.Solutions.Terminal.Controls
 
             bool IsAcceleratorForPasting(Keys key)
             {
-                if (ModifierKeys == Keys.Shift && key == Keys.Insert)
+                //
+                // Ctrl+Shift+V is unlikely to cause collisions, so
+                // it's always active. All other combinations might
+                // collide, so they're configurable.
+                //
+                if (ModifierKeys == (Keys.Control | Keys.Shift) && key == Keys.V)
+                {
+                    return true;
+                }
+                else if (ModifierKeys == Keys.Shift && key == Keys.Insert)
                 {
                     return this.EnableShiftInsert;
                 }
