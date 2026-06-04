@@ -97,7 +97,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             //
             return new MergedSettingsStore(new[]
                 {
-                    CreateProjectSettingsStore(instance.Project),
                     CreateZoneSettingsStore(new ZoneLocator(instance.ProjectId, instance.Zone)),
                     new RegistrySettingsStore(key)
                 },
