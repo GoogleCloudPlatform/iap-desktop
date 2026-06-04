@@ -22,9 +22,11 @@
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Testing.Apis;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,7 +37,7 @@ namespace Google.Solutions.Apis.Test.Client
     public class TestRestClient : CommonFixtureBase
     {
         private const string SampleRestUrl = "https://accounts.google.com/.well-known/openid-configuration";
-        private const string NotFoundUrl = "http://accounts.google.com/.well-known/openid-configuration";
+        private const string NotFoundUrl = "https://gstatic.com/generate_404";
         private const string NoContentUrl = "https://gstatic.com/generate_204";
         private static readonly UserAgent userAgent = new UserAgent(
             "test",
@@ -73,26 +75,16 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         [Test]
-        [Ignore("Unreliable in CI")]
         public void Get_WhenUrlReturns404()
         {
             var client = new RestClient(userAgent, null);
 
-            try
-            {
-                client.GetAsync<SampleResource>(
-                    NotFoundUrl + "-invalid",
-                    CancellationToken.None).Wait();
-
-                Assert.Fail("Expected call to fail");
-            }
-            catch (Exception e) when (e.Is<HttpRequestException>())
-            {
-            }
-            catch (Exception e)
-            {
-                Assert.Fail($"Did not expect exception of type {e.GetType()}");
-            }
+            var e = ExceptionAssert.ThrowsAggregateException<RestClientException>(
+                () => client.GetAsync<SampleResource>(
+                        NotFoundUrl,
+                        CancellationToken.None)
+                    .Wait());
+            Assert.That(e!.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
     }
 }

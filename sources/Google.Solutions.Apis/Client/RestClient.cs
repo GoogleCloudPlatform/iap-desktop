@@ -25,7 +25,9 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;
+using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -111,7 +113,12 @@ namespace Google.Solutions.Apis.Client
                             cancellationToken)
                         .ConfigureAwait(false))
                     {
-                        response.EnsureSuccessStatusCode();
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            throw new RestClientException(
+                                response.StatusCode,
+                                response.ReasonPhrase);
+                        }
 
                         var stream = await response.Content
                             .ReadAsStreamAsync()
@@ -144,6 +151,18 @@ namespace Google.Solutions.Apis.Client
         public void Dispose()
         {
             this.client.Dispose();
+        }
+    }
+
+    public class RestClientException : HttpRequestException
+    {
+        public HttpStatusCode StatusCode { get; }
+
+        internal RestClientException(
+            HttpStatusCode statusCode, 
+            string message) : base(message)
+        {
+            this.StatusCode = statusCode;
         }
     }
 }

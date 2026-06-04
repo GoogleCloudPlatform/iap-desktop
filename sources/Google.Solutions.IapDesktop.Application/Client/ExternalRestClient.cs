@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Host;
@@ -50,14 +49,11 @@ namespace Google.Solutions.IapDesktop.Application.Client
         // Use the same client for all connections to benefit
         // from connection pooling.
         //
-        private readonly RestClient client;
+        private readonly RestClient client = new RestClient(Install.UserAgent, null);
 
-        public ExternalRestClient(ClientSecrets? clientCredentials = null)
-        {
-            this.client = new RestClient(Install.UserAgent, clientCredentials);
-        }
-
-        public async Task<TModel?> GetAsync<TModel>(Uri url, CancellationToken cancellationToken)
+        public async Task<TModel?> GetAsync<TModel>(
+            Uri url,
+            CancellationToken cancellationToken)
             where TModel : class
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(url))

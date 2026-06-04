@@ -621,7 +621,7 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IOsLoginClient, OsLoginClient>();
                 mainLayer.AddSingleton<IIapClient, IapClient>();
                 mainLayer.AddSingleton<IReleaseFeed>(new GithubClient(
-                    new ExternalRestClient(),
+                    new GitHubRestClient(OAuthClient.GitHubSecrets),
                     OAuthClient.RepositoryName));
 
                 mainLayer.AddTransient<IAddressResolver, AddressResolver>();
