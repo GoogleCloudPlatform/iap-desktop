@@ -49,9 +49,11 @@ namespace Google.Solutions.IapDesktop.Application.Client
         // Use the same client for all connections to benefit
         // from connection pooling.
         //
-        private readonly RestClient client = new RestClient(Install.UserAgent);
+        private readonly RestClient client = new RestClient(Install.UserAgent, null);
 
-        public async Task<TModel?> GetAsync<TModel>(Uri url, CancellationToken cancellationToken)
+        public async Task<TModel?> GetAsync<TModel>(
+            Uri url,
+            CancellationToken cancellationToken)
             where TModel : class
         {
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(url))

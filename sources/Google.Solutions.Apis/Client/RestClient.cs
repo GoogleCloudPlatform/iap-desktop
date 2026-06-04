@@ -19,13 +19,18 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;
+using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -54,17 +59,25 @@ namespace Google.Solutions.Apis.Client
             this.client.Timeout = DefaultTimeout;
         }
 
-        public RestClient(UserAgent userAgent)
+        public RestClient(
+            UserAgent userAgent,
+            ClientSecrets? clientCredentials)
             : this(
                   new HttpClient(),
                   userAgent)
         {
+            this.ClientCredentials = clientCredentials;
         }
 
         /// <summary>
         /// User agent to add to HTTP requests.
         /// </summary>
         public UserAgent UserAgent { get; }
+
+        /// <summary>
+        /// Client credentials to pass as Basic authentication header.
+        /// </summary>
+        public ClientSecrets? ClientCredentials { get; }
 
         /// <summary>
         /// Perform a GET request.
@@ -77,9 +90,20 @@ namespace Google.Solutions.Apis.Client
             using (CommonTraceSource.Log.TraceMethod().WithParameters(url))
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {
-                if (this.UserAgent != null)
+                request.Headers.UserAgent.ParseAdd(this.UserAgent.ToString());
+
+                if (this.ClientCredentials != null &&
+                    !string.IsNullOrEmpty(this.ClientCredentials.ClientId) &&
+                    !string.IsNullOrEmpty(this.ClientCredentials.ClientSecret))
                 {
-                    request.Headers.UserAgent.ParseAdd(this.UserAgent.ToString());
+                    request.Headers.Authorization = new AuthenticationHeaderValue(
+                        "Basic",
+                        Convert.ToBase64String(
+                            Encoding.ASCII.GetBytes(
+                                string.Join(
+                                    ":",
+                                    this.ClientCredentials.ClientId,
+                                    this.ClientCredentials.ClientSecret))));
                 }
 
                 try
@@ -91,7 +115,15 @@ namespace Google.Solutions.Apis.Client
                             cancellationToken)
                         .ConfigureAwait(false))
                     {
-                        response.EnsureSuccessStatusCode();
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            throw new RestClientException(
+                                response.StatusCode,
+                                response.ReasonPhrase ?? 
+                                    $"Response status code does not indicate " +
+                                    $"success: {(int)response.StatusCode} " +
+                                    $"({response.StatusCode}).");
+                        }
 
                         var stream = await response.Content
                             .ReadAsStreamAsync()
@@ -124,6 +156,18 @@ namespace Google.Solutions.Apis.Client
         public void Dispose()
         {
             this.client.Dispose();
+        }
+    }
+
+    public class RestClientException : HttpRequestException
+    {
+        public HttpStatusCode StatusCode { get; }
+
+        internal RestClientException(
+            HttpStatusCode statusCode, 
+            string message) : base(message)
+        {
+            this.StatusCode = statusCode;
         }
     }
 }
