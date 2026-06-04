@@ -92,7 +92,9 @@ namespace Google.Solutions.Apis.Client
             {
                 request.Headers.UserAgent.ParseAdd(this.UserAgent.ToString());
 
-                if (this.ClientCredentials != null)
+                if (this.ClientCredentials != null &&
+                    !string.IsNullOrEmpty(this.ClientCredentials.ClientId) &&
+                    !string.IsNullOrEmpty(this.ClientCredentials.ClientSecret))
                 {
                     request.Headers.Authorization = new AuthenticationHeaderValue(
                         "Basic",
@@ -117,7 +119,10 @@ namespace Google.Solutions.Apis.Client
                         {
                             throw new RestClientException(
                                 response.StatusCode,
-                                response.ReasonPhrase);
+                                response.ReasonPhrase ?? 
+                                    $"Response status code does not indicate " +
+                                    $"success: {(int)response.StatusCode} " +
+                                    $"({response.StatusCode}).");
                         }
 
                         var stream = await response.Content
