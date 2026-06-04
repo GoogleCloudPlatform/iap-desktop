@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
@@ -26,6 +27,8 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -54,17 +57,25 @@ namespace Google.Solutions.Apis.Client
             this.client.Timeout = DefaultTimeout;
         }
 
-        public RestClient(UserAgent userAgent)
+        public RestClient(
+            UserAgent userAgent,
+            ClientSecrets? clientCredentials)
             : this(
                   new HttpClient(),
                   userAgent)
         {
+            this.ClientCredentials = clientCredentials;
         }
 
         /// <summary>
         /// User agent to add to HTTP requests.
         /// </summary>
         public UserAgent UserAgent { get; }
+
+        /// <summary>
+        /// Client credentials to pass as Basic authentication header.
+        /// </summary>
+        public ClientSecrets? ClientCredentials { get; }
 
         /// <summary>
         /// Perform a GET request.
@@ -77,9 +88,18 @@ namespace Google.Solutions.Apis.Client
             using (CommonTraceSource.Log.TraceMethod().WithParameters(url))
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {
-                if (this.UserAgent != null)
+                request.Headers.UserAgent.ParseAdd(this.UserAgent.ToString());
+
+                if (this.ClientCredentials != null)
                 {
-                    request.Headers.UserAgent.ParseAdd(this.UserAgent.ToString());
+                    request.Headers.Authorization = new AuthenticationHeaderValue(
+                        "Basic",
+                        Convert.ToBase64String(
+                            Encoding.ASCII.GetBytes(
+                                string.Join(
+                                    ":",
+                                    this.ClientCredentials.ClientId,
+                                    this.ClientCredentials.ClientSecret))));
                 }
 
                 try
