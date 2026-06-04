@@ -47,10 +47,15 @@ namespace Google.Solutions.IapDesktop
         };
 
         /// <summary>
-        /// API Key (for OS Login only).
+        /// OAuth client secrets used for the GitHub releases API to 
+        /// extend request quota.
         /// </summary>
-        internal static ApiKey ApiKey = new ApiKey("<<your-key-here>>");
-        
+        internal static readonly ClientSecrets GitHubSecrets = new ClientSecrets()
+        {
+            ClientId = "<<your-client-id-here>>",
+            ClientSecret = "<<your-client-secret-here>>"
+        };
+
         /// <summary>
         /// Repository to source updates from.
         /// </summary>
