@@ -228,19 +228,19 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             {
                 Client = new AppProtocolConfigurationFile.ClientSection()
                 {
-                    Executable = "%ProgramFiles(x86)%\\foo.exe",
-                    Arguments = "%ProgramFiles(x86)%\\foo.txt {host}",
+                    Executable = "%SystemRoot%\\system32\\mstsc.exe",
+                    Arguments = "/v:{host}:{port} /prompt",
                 }
             };
 
             var client = (AppProtocolClient?)section.ParseClientSection();
             Assert.That(client, Is.Not.Null);
 
-            var programsFolder = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            var systemFolder = Environment.GetFolderPath(Environment.SpecialFolder.System);
 
-            Assert.That(client!.Executable, Does.Contain(programsFolder));
-            Assert.That(client.ArgumentsTemplate, Does.Contain(programsFolder));
-            Assert.That(client.ArgumentsTemplate, Does.Contain("{host}"));
+            Assert.That(client!.Executable, Does.Contain(systemFolder));
+            Assert.That(client.ArgumentsTemplate, Does.Contain("{host}:{port}"));
+            Assert.That(client.IsAvailable, Is.True);
         }
 
         [Test]
@@ -257,6 +257,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var client = (AppProtocolClient?)section.ParseClientSection();
             Assert.That(client, Is.Not.Null);
             Assert.That(File.Exists(client!.Executable), Is.True);
+            Assert.That(client.IsAvailable, Is.True);
         }
 
         [Test]
@@ -274,6 +275,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
             var client = (AppProtocolClient?)section.ParseClientSection();
             Assert.That(client, Is.Not.Null);
             Assert.That(client!.Executable, Is.EqualTo(fileName));
+            Assert.That(client.IsAvailable, Is.False);
         }
     }
 }
