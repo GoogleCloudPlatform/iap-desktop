@@ -244,6 +244,48 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
+        public void ParseClientSection_WhenClientExecutableContainsMatchingGlob()
+        {
+            var section = new AppProtocolConfigurationFile.MainSection()
+            {
+                Client = new AppProtocolConfigurationFile.ClientSection()
+                {
+                    Executable = "%SystemRoot%\\system3*\\msts*.EX*",
+                }
+            };
+
+            var client = (AppProtocolClient?)section.ParseClientSection();
+            Assert.That(client, Is.Not.Null);
+
+            var systemFolder = Environment.GetFolderPath(Environment.SpecialFolder.System);
+
+            Assert.That(client!.Executable, Does.Contain(systemFolder).IgnoreCase);
+            Assert.That(client!.Executable, Does.EndWith("mstsc.exe").IgnoreCase);
+            Assert.That(client.IsAvailable, Is.True);
+        }
+
+        [Test]
+        public void ParseClientSection_WhenClientExecutableContainsNonMatchingGlob()
+        {
+            var section = new AppProtocolConfigurationFile.MainSection()
+            {
+                Client = new AppProtocolConfigurationFile.ClientSection()
+                {
+                    Executable = "%SystemRoot%\\system32\\doesnot*.exe",
+                }
+            };
+
+            var client = (AppProtocolClient?)section.ParseClientSection();
+            Assert.That(client, Is.Not.Null);
+
+            var systemFolder = Environment.GetFolderPath(Environment.SpecialFolder.System);
+
+            Assert.That(client!.Executable, Does.Contain(systemFolder).IgnoreCase);
+            Assert.That(client!.Executable, Does.EndWith("doesnot*.exe").IgnoreCase);
+            Assert.That(client.IsAvailable, Is.False);
+        }
+
+        [Test]
         public void ParseClientSection_WhenClientExecutableContainsFilenameOfRegisteredApp()
         {
             var section = new AppProtocolConfigurationFile.MainSection()
