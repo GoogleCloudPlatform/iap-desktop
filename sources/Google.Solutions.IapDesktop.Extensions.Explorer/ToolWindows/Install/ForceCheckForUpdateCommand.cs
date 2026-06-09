@@ -36,6 +36,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
     [Service]
     public class ForceCheckForUpdateCommand : CheckForUpdateCommand<IInstall>
     {
+        private readonly IWin32Window parentWindow;
+        private readonly ITaskDialog taskDialog;
+
         public ForceCheckForUpdateCommand(
             IWin32Window parentWindow,
             IInstall install,
@@ -45,6 +48,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
             IBrowser browser)
             : base(parentWindow, install, updatePolicy, feed, taskDialog, browser)
         {
+            this.taskDialog = taskDialog;
+            this.parentWindow = parentWindow;
         }
 
         protected override bool IsUpdateAdvised(IRelease release)
@@ -62,6 +67,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.ToolWindows.Install
                 //
                 // Installed version is up to date.
                 //
+                var parameters = new TaskDialogParameters(
+                    "No update available",
+                    "You're using the latest version of IAP Desktop",
+                    $"You're using version {this.InstalledVersion}, which " +
+                    $"is the latest version of IAP Desktop.");
+                parameters.Buttons.Add(TaskDialogStandardButton.OK);
+                this.taskDialog.ShowDialog(
+                    this.parentWindow,
+                    parameters);
                 return false;
             }
             else
