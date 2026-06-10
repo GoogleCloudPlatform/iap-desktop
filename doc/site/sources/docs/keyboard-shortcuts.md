@@ -186,11 +186,19 @@
   </tr>
   <tr>
    <td>Copy selected text</td>
-   <td><code>Ctrl + C</code> or <code>Ctrl + Insert</code></td>
+   <td>
+    <code>Ctrl + Shift + C</code><br/>
+	<code>Ctrl + C</code> <span title="You can disable this shortcut in Tools &gt; Options &gt; Terminal">𝒊</span><br/>
+	<code>Ctrl + Insert</code> <span title="You can disable this shortcut in Tools &gt; Options &gt; Terminal">𝒊</span>
+   </td>
   </tr>
   <tr>
    <td>Paste</td>
-   <td><code>Ctrl + V</code> or <code>Shift + Insert</code></td>
+   <td>
+    <code>Ctrl + Shift + V</code><br/>
+	<code>Ctrl + V</code> <span title="You can disable this shortcut in Tools &gt; Options &gt; Terminal">𝒊</span><br/>
+	<code>Shift + Insert</code> <span title="You can disable this shortcut in Tools &gt; Options &gt; Terminal">𝒊</span>
+   </td>
   </tr>
   <tr>
    <td>Scroll to top/bottom</td>
