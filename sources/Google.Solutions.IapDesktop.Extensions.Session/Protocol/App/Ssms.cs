@@ -23,6 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.Platform.Interop;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -37,11 +38,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
         public const ushort DefaultServerPort = 1433;
         private const string SsmsFileExtension = ".ssmssln";
 
+        /// <summary>
+        /// Path to executable.
+        /// </summary>
         public string ExecutablePath { get; }
 
-        private Ssms(string executablePath)
+        /// <summary>
+        /// SSMS version.
+        /// </summary>
+        public Version Version { get; }
+
+        private Ssms(string executablePath, Version version)
         {
             this.ExecutablePath = executablePath;
+            this.Version = version;
         }
 
         //---------------------------------------------------------------------
@@ -113,7 +123,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
                 return false;
             }
 
-            ssms = new Ssms(executablePath);
+            //
+            // Read product version because supported command line 
+            // arguments vary by version.
+            //
+            // NB. ProductVersion may contain additional suffixes, 
+            //     so it's better to construct the Version from the
+            //     individual fields.
+            //
+            var versionInfo = FileVersionInfo.GetVersionInfo(executablePath);
+
+            ssms = new Ssms(
+                executablePath, 
+                new Version(
+                    versionInfo.ProductMajorPart, 
+                    versionInfo.ProductMinorPart, 
+                    versionInfo.ProductBuildPart, 
+                    versionInfo.ProductPrivatePart));
+
+            ApplicationTraceSource.Log.TraceInformation(
+                "Found SSMS version {0} at {1}",
+                ssms.Version,
+                ssms.ExecutablePath);
+
             return true;
         }
 
