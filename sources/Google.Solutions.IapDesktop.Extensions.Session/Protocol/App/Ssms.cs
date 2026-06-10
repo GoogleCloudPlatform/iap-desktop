@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
         /// </summary>
         public Version Version { get; }
 
-        private Ssms(string executablePath, Version version)
+        internal Ssms(string executablePath, Version version)
         {
             this.ExecutablePath = executablePath;
             this.Version = version;
