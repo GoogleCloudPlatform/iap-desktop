@@ -339,13 +339,14 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                 //
                 // Resolve glob.
                 //
-                if (executablePath.Contains('*'))
+                if (Path.GetPathRoot(executablePath) is string rootPath &&
+                    !string.IsNullOrEmpty(rootPath) &&
+                    executablePath.Contains('*'))
                 {
                     //
                     // Matcher expects a root and a relative path, so we need
                     // to split the path first.
                     //
-                    var rootPath = Path.GetPathRoot(executablePath);
                     var relativePath = executablePath.Substring(rootPath.Length);
 
                     if (new Matcher(StringComparison.OrdinalIgnoreCase)
@@ -354,7 +355,7 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
                         .FirstOrDefault() is string matchedExecutablePath)
                     {
                         //
-                        // Matched -> replace path.
+                        // Match -> replace path.
                         //
                         executablePath = matchedExecutablePath;
                     }

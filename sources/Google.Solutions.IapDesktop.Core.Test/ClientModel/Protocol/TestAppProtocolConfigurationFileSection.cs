@@ -286,6 +286,24 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Protocol
         }
 
         [Test]
+        public void ParseClientSection_WhenClientExecutableContainsRelativeGlob()
+        {
+            var section = new AppProtocolConfigurationFile.MainSection()
+            {
+                Client = new AppProtocolConfigurationFile.ClientSection()
+                {
+                    Executable = ".\\doesnot*.exe",
+                }
+            };
+
+            var client = (AppProtocolClient?)section.ParseClientSection();
+            Assert.That(client, Is.Not.Null);
+
+            Assert.That(client!.Executable, Is.EqualTo(".\\doesnot*.exe"));
+            Assert.That(client.IsAvailable, Is.False);
+        }
+
+        [Test]
         public void ParseClientSection_WhenClientExecutableContainsFilenameOfRegisteredApp()
         {
             var section = new AppProtocolConfigurationFile.MainSection()
