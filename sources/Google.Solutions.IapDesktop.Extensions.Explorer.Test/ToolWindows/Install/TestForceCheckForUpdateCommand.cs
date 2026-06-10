@@ -85,8 +85,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Test.ToolWindows.Insta
             command.Execute(new Mock<IInstall>().Object);
 
             dialog.Verify(
-                d => d.ShowDialog(It.IsAny<IWin32Window>(), It.IsAny<TaskDialogParameters>()),
-                Times.Never);
+                d => d.ShowDialog(
+                    It.IsAny<IWin32Window>(), 
+                    It.Is<TaskDialogParameters>(p => p.Caption == "No update available")),
+                Times.Once);
             feed.Verify(
                 f => f.FindLatestReleaseAsync(ReleaseFeedOptions.None, CancellationToken.None),
                 Times.Once);
@@ -122,7 +124,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Explorer.Test.ToolWindows.Insta
             command.Execute(new Mock<IInstall>().Object);
 
             dialog.Verify(
-                d => d.ShowDialog(It.IsAny<IWin32Window>(), It.IsAny<TaskDialogParameters>()),
+                d => d.ShowDialog(
+                    It.IsAny<IWin32Window>(),
+                    It.Is<TaskDialogParameters>(p => p.Caption == "Update available")),
                 Times.Once);
         }
 

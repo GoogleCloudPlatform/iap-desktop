@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.Update
                 //
                 // Get download URL. 
                 //
-                // In case there are multple download URLs, prefer the
+                // In case there are multiple download URLs, prefer the
                 // one that matches the current platform.
                 //
                 var downloadButton = new TaskDialogCommandLinkButton(
