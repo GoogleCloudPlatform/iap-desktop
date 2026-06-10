@@ -1,10 +1,10 @@
 ﻿{
   "version": 1,
-  "name": "PostgreSQL Shell 17.0",
+  "name": "PostgreSQL Shell",
   "condition": "isInstance()",
   "remotePort": "5432",
   "client": {
-    "executable": "%ProgramW6432%\\PostgreSQL\\17\\bin\\psql.exe",
+    "executable": "%ProgramW6432%\\PostgreSQL\\*\\bin\\psql.exe",
     "arguments": "-h {host} -p {port} -U \"{username}\""
   }
 }
