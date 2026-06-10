@@ -16,6 +16,7 @@
         <PackageVersion Include="System.Text.Encoding" Version="4.3.0" />
         <PackageVersion Include="System.Text.Encoding.Extensions" Version="4.3.0" />
         <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
+        <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="10.0.9" />
         
         <!-- Google Cloud client libraries-->
         <PackageVersion Include="Google.Apis" Version="1.74.0" />

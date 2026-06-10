@@ -13,6 +13,7 @@
     <PackageReference Include="Google.Apis.Compute.v1" />
     <PackageReference Include="Google.Apis.Core" />
     <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Data.DataSetExtensions" />

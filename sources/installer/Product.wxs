@@ -383,6 +383,12 @@
                 DiskId="1"
                 Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Newtonsoft.Json.dll"
                 Vital="yes"/>
+              <File
+                Id="FileMicrosoftExtensionsFileSystemGlobbingDll"
+                Name="Microsoft.Extensions.FileSystemGlobbing.dll"
+                DiskId="1"
+                Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Microsoft.Extensions.FileSystemGlobbing.dll"
+                Vital="yes"/>
             </Component>
 
             <Directory Id="DirLogs" Name="Logs">

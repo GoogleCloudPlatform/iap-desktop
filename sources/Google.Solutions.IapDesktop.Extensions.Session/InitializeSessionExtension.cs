@@ -48,6 +48,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics.CodeAnalysis;
+
 
 
 #if DEBUG
@@ -139,7 +141,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                 .ConfigureAwait(false);
         }
 
-        private async Task LoadAndRegisterAppProtocolsAsync(
+        [SuppressMessage("Usage", "VSTHRD002:Avoid problematic synchronous waits")]
+        private void LoadAndRegisterAppProtocols(
             IWin32Window window,
             ProtocolRegistry protocolRegistry)
         {
@@ -149,13 +152,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                     this.serviceProvider.GetService<IInstall>().BaseDirectory,
                     "Config");
 
-                await Task
-                    .WhenAll(
+                //
+                // Block until everything is loaded because we need
+                // the results to populate commands.
+                //
+                Task.WhenAll(
                         LoadAndRegisterDefaultAppProtocolsAsync(protocolRegistry),
                         LoadAndRegisterCustomAppProtocolsAsync(
                             protocolsPath,
                             protocolRegistry))
-                    .ConfigureAwait(true); // Back to UI thread (for exception dialog).
+                    .Wait();
             }
             catch (Exception e)
             {
@@ -191,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session
                     null,
                     new SsmsClient()));
 
-            _ = LoadAndRegisterAppProtocolsAsync(mainForm, protocolRegistry);
+            LoadAndRegisterAppProtocols(mainForm, protocolRegistry);
 
             //
             // Let this extension handle all URL activations.

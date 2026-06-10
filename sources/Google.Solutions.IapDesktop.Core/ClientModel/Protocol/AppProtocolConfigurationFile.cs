@@ -22,6 +22,7 @@
 using Google.Apis.Json;
 using Google.Solutions.IapDesktop.Core.ClientModel.Traits;
 using Google.Solutions.Platform;
+using Microsoft.Extensions.FileSystemGlobbing;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -324,12 +325,46 @@ namespace Google.Solutions.IapDesktop.Core.ClientModel.Protocol
 
                 Debug.Assert(this.Client.Executable != null);
 
+                //
+                // Resolve AppPath.
+                //
                 if (!UserEnvironment.TryResolveAppPath(
                     this.Client.Executable!,
-                    out var executablePath))
+                    out var executablePath) || executablePath == null)
                 {
                     executablePath = UserEnvironment.ExpandEnvironmentStrings(
-                        this.Client.Executable!);
+                        this.Client.Executable!)!;
+                }
+
+                //
+                // Resolve glob.
+                //
+                if (Path.GetPathRoot(executablePath) is string rootPath &&
+                    !string.IsNullOrEmpty(rootPath) &&
+                    executablePath.Contains('*'))
+                {
+                    //
+                    // Matcher expects a root and a relative path, so we need
+                    // to split the path first.
+                    //
+                    var relativePath = executablePath.Substring(rootPath.Length);
+
+                    if (new Matcher(StringComparison.OrdinalIgnoreCase)
+                        .AddInclude(relativePath)
+                        .GetResultsInFullPath(rootPath)
+                        .FirstOrDefault() is string matchedExecutablePath)
+                    {
+                        //
+                        // Match -> replace path.
+                        //
+                        executablePath = matchedExecutablePath;
+                    }
+                    else
+                    {
+                        //
+                        // No match -> keep path as is.
+                        //
+                    }
                 }
 
                 Debug.Assert(executablePath != null);
