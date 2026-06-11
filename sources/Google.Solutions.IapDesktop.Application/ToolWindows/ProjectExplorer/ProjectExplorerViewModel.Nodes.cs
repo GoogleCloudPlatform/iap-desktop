@@ -325,7 +325,7 @@ namespace Google.Solutions.IapDesktop.Application.ToolWindows.ProjectExplorer
 
             private static string CreateDisplayName(IProjectModelProjectNode node)
             {
-                if (!node.IsAccesible)
+                if (!node.IsAccessible)
                 {
                     return $"inaccessible project ({node.Project.Name})";
                 }

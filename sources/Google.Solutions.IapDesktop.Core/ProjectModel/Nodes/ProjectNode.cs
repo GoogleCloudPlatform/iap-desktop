@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
 
         public string DisplayName { get; }
 
-        public bool IsAccesible { get; }
+        public bool IsAccessible { get; }
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel.Nodes
             string displayName)
         {
             this.Project = locator;
-            this.IsAccesible = accessible;
+            this.IsAccessible = accessible;
             this.DisplayName = displayName;
         }
     }

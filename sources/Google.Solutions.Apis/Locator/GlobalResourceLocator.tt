@@ -86,13 +86,6 @@ namespace Google.Solutions.Apis.Locator
                 }
             }
 
-            public override int GetHashCode()
-            {
-                return
-                    this.ProjectId.GetHashCode() ^
-                    this.Name.GetHashCode();
-            }
-
             public override string ToString()
             {
                 return $"projects/{this.ProjectId}/global/{this.ResourceType}/{this.Name}";
@@ -108,11 +101,6 @@ namespace Google.Solutions.Apis.Locator
             public override bool Equals(ComputeEngineLocator? other)
             {
                 return other is <#= className #>Locator locator && Equals(locator);
-            }
-
-            public override bool Equals(object? obj)
-            {
-                return obj is <#= className #>Locator locator && Equals(locator);
             }
 
             public static bool operator ==(<#= className #>Locator? obj1, <#= className #>Locator? obj2)

@@ -85,5 +85,15 @@ namespace Google.Solutions.Apis.Locator
         }
 
         public abstract bool Equals(ComputeEngineLocator? other);
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as ComputeEngineLocator);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.ProjectId.GetHashCode() ^ this.Name.GetHashCode();
+        }
     }
 }
