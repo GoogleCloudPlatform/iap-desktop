@@ -51,6 +51,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
             return new ConnectionSettingsService(settingsRepository);
         }
 
+        private static IProjectModelCloudNode CreateUniverseNode()
+        {
+            var cloudNode = new Mock<IProjectModelCloudNode>();
+            return cloudNode.Object;
+        }
+
         private static IProjectModelProjectNode CreateProjectNode()
         {
             var projectNode = new Mock<IProjectModelProjectNode>();
@@ -89,8 +95,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
             Assert.That(service.IsConnectionSettingsAvailable(
                 new Mock<IProjectModelNode>().Object), Is.False);
-            Assert.That(service.IsConnectionSettingsAvailable(
-                new Mock<IProjectModelCloudNode>().Object), Is.False);
         }
 
         //---------------------------------------------------------------------
@@ -104,6 +108,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
 
             Assert.Throws<ArgumentException>(() => service.GetConnectionSettings(
                 new Mock<IProjectModelNode>().Object));
+        }
+
+        //---------------------------------------------------------------------
+        // GetConnectionSettings - Universe.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void GetConnectionSettings_WhenReadingUniverseSettings()
+        {
+            var service = CreateConnectionSettingsService();
+            var universeNode = CreateUniverseNode();
+
+            var settings = service.GetConnectionSettings(universeNode);
+            Assert.That(settings.TypedCollection.RdpDomain.Value, Is.Null);
+        }
+
+        [Test]
+        public void GetConnectionSettings_WhenChangingUniverseSetting()
+        {
+            var service = CreateConnectionSettingsService();
+            var universeNode = CreateUniverseNode();
+
+            var firstSettings = service.GetConnectionSettings(universeNode);
+            firstSettings.TypedCollection.RdpUsername.Value = "bob";
+            firstSettings.Save();
+
+            var secondSettings = service.GetConnectionSettings(universeNode);
+            Assert.That(secondSettings.TypedCollection.RdpUsername.Value, Is.EqualTo("bob"));
         }
 
         //---------------------------------------------------------------------
@@ -193,6 +225,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         //---------------------------------------------------------------------
         // GetConnectionSettings - Inheritance.
         //---------------------------------------------------------------------
+
+        [Test]
+        public void GetConnectionSettings_WhenUsernameSetInUniverse_ProjectValueIsInheritedDownToVm(
+            [Values("user", null)] string? username)
+        {
+            var service = CreateConnectionSettingsService();
+
+            var universeSettings = service.GetConnectionSettings(CreateUniverseNode());
+            universeSettings.TypedCollection.RdpUsername.Value = username;
+            universeSettings.Save();
+
+            // Inherited value is shown...
+            var instanceSettings = service.GetConnectionSettings(CreateVmInstanceNode());
+            Assert.That(instanceSettings.TypedCollection.RdpUsername.Value, Is.EqualTo(username));
+            Assert.That(instanceSettings.TypedCollection.RdpUsername.IsDefault, Is.True);
+        }
 
         [Test]
         public void GetConnectionSettings_WhenUsernameSetInProject_ProjectValueIsInheritedDownToVm(
