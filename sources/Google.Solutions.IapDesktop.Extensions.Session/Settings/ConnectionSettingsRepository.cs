@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.projectRepository = projectRepository.ExpectNotNull(nameof(projectRepository));
         }
 
-        private ISettingsStore CreateRootSettingsStore()
+        private ISettingsStore CreateUniverseSettingsStore()
         {
             return new RegistrySettingsStore(
                 this.projectRepository.OpenRegistryKey());
@@ -71,12 +71,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             }
 
             //
-            // Return project settings, applying root settings
+            // Return project settings, applying universe settings
             // as defaults.
             //
             return new MergedSettingsStore(new[]
                 {
-                    CreateRootSettingsStore(),
+                    CreateUniverseSettingsStore(),
                     new RegistrySettingsStore(key)
                 },
                 MergedSettingsStore.MergeBehavior.Overlay);
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 ZonePrefix + zone.Name);
 
             //
-            // Return zone settings, applying root and project settings
+            // Return zone settings, applying universe and project settings
             // as defaults.
             //
             return new MergedSettingsStore(new[]
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 VmPrefix + instance.Name);
 
             //
-            // Return instance settings, applying root, project, and
+            // Return instance settings, applying universe, project, and
             // zone settings as defaults.
             //
             return new MergedSettingsStore(new[]
