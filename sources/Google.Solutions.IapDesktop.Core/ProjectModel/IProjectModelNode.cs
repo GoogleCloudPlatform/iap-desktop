@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Core.ProjectModel
         /// Indicates whether additional details about this
         /// project are accessible.
         /// </summary>
-        bool IsAccesible { get; }
+        bool IsAccessible { get; }
 
         /// <summary>
         /// Project locator.
