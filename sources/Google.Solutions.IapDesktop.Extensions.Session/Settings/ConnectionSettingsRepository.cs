@@ -130,6 +130,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         }
 
         //---------------------------------------------------------------------
+        // Universe.
+        //---------------------------------------------------------------------
+
+        public ConnectionSettings GetUniverseSettings()
+        {
+            using (var store = CreateUniverseSettingsStore())
+            {
+                return new ConnectionSettings(UniverseLocator.Cloud, store);
+            }
+        }
+
+        public void SetUniverseSettings(ConnectionSettings settings)
+        {
+            if (!(settings.Resource is UniverseLocator))
+            {
+                throw new ArgumentException(nameof(settings));
+            }
+
+            using (var store = CreateUniverseSettingsStore())
+            {
+                WriteAllSettings(store, settings);
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Projects.
         //---------------------------------------------------------------------
 

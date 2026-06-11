@@ -41,6 +41,68 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Settings
         }
 
         //---------------------------------------------------------------------
+        // GetUniverseSettings.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void GetUniverseSettings()
+        {
+            var repository = new ConnectionSettingsRepository(CreateProjectRepository());
+            var settings = repository.GetUniverseSettings();
+
+            Assert.That(settings.Resource, Is.EqualTo(UniverseLocator.Cloud));
+            Assert.That(settings.RdpUsername.IsDefault, Is.True);
+            Assert.That(settings.RdpPassword.IsDefault, Is.True);
+            Assert.That(settings.RdpDomain.IsDefault, Is.True);
+            Assert.That(settings.RdpConnectionBar.IsDefault, Is.True);
+            Assert.That(settings.RdpAuthenticationLevel.IsDefault, Is.True);
+            Assert.That(settings.RdpColorDepth.IsDefault, Is.True);
+            Assert.That(settings.RdpAudioPlayback.IsDefault, Is.True);
+            Assert.That(settings.RdpAudioInput.IsDefault, Is.True);
+            Assert.That(settings.RdpRedirectClipboard.IsDefault, Is.True);
+            Assert.That(settings.RdpAutomaticLogon.IsDefault, Is.True);
+            Assert.That(settings.RdpConnectionTimeout.IsDefault, Is.True);
+            Assert.That(settings.RdpPort.IsDefault, Is.True);
+            Assert.That(settings.RdpTransport.IsDefault, Is.True);
+            Assert.That(settings.RdpRedirectWebAuthn.IsDefault, Is.True);
+            Assert.That(settings.RdpRestrictedAdminMode.IsDefault, Is.True);
+            Assert.That(settings.RdpSessionType.IsDefault, Is.True);
+        }
+
+        [Test]
+        public void GetUniverseSettings_WhenUniverseSettingsSaved()
+        {
+            var repository = new ConnectionSettingsRepository(CreateProjectRepository());
+            var originalSettings = repository.GetUniverseSettings();
+            originalSettings.RdpUsername.Value = "user";
+
+            repository.SetUniverseSettings(originalSettings);
+
+            var settings = repository.GetUniverseSettings();
+
+            Assert.That(settings.Resource, Is.EqualTo(originalSettings.Resource));
+            Assert.That(settings.RdpUsername.Value, Is.EqualTo(originalSettings.RdpUsername.Value));
+        }
+
+        [Test]
+        public void GetUniverseSettings_WhenUniverseSettingsSavedTwice()
+        {
+            var repository = new ConnectionSettingsRepository(CreateProjectRepository());
+            var originalSettings = repository.GetUniverseSettings();
+            originalSettings.RdpUsername.Value = "user";
+
+            repository.SetUniverseSettings(originalSettings);
+
+            originalSettings.RdpUsername.Value = "new-user";
+            repository.SetUniverseSettings(originalSettings);
+
+            var settings = repository.GetUniverseSettings();
+
+            Assert.That(settings.Resource, Is.EqualTo(originalSettings.Resource));
+            Assert.That(settings.RdpUsername.Value, Is.EqualTo(originalSettings.RdpUsername.Value));
+        }
+
+        //---------------------------------------------------------------------
         // GetProjectSettings.
         //---------------------------------------------------------------------
 
