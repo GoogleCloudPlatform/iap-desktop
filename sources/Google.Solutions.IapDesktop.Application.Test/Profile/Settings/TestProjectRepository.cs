@@ -184,7 +184,24 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void OpenRegistryKey_WhenProjectNotAdded()
+        public void OpenRegistryKey_Root()
+        {
+            using (var repository = CreateProjectRepository())
+            {
+                using (var root = repository.OpenRegistryKey())
+                {
+                    _ = root.GetValueNames();
+                }
+
+                using (var root = repository.OpenRegistryKey())
+                {
+                    _ = root.GetValueNames();
+                }
+            }
+        }
+
+        [Test]
+        public void OpenRegistryKey_Project_WhenProjectNotAdded()
         {
             using (var repository = CreateProjectRepository())
             {

@@ -56,6 +56,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.projectRepository = projectRepository.ExpectNotNull(nameof(projectRepository));
         }
 
+        private ISettingsStore CreateRootSettingsStore()
+        {
+            return new RegistrySettingsStore(
+                this.projectRepository.OpenRegistryKey());
+        }
+
         private ISettingsStore CreateProjectSettingsStore(ProjectLocator project)
         {
             var key = this.projectRepository.OpenRegistryKey(project.Name);
@@ -64,7 +70,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 throw new KeyNotFoundException(project.Name);
             }
 
-            return new RegistrySettingsStore(key);
+            //
+            // Return project settings, applying root settings
+            // as defaults.
+            //
+            return new MergedSettingsStore(new[]
+                {
+                    CreateRootSettingsStore(),
+                    new RegistrySettingsStore(key)
+                },
+                MergedSettingsStore.MergeBehavior.Overlay);
         }
 
         private ISettingsStore CreateZoneSettingsStore(ZoneLocator zone)
@@ -74,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 ZonePrefix + zone.Name);
 
             //
-            // Return zone settings, applying project settings
+            // Return zone settings, applying root and project settings
             // as defaults.
             //
             return new MergedSettingsStore(new[]
@@ -92,12 +107,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 VmPrefix + instance.Name);
 
             //
-            // Return instance settings, applying zone and
-            // project settings as defaults.
+            // Return instance settings, applying root, project, and
+            // zone settings as defaults.
             //
             return new MergedSettingsStore(new[]
                 {
-                    CreateZoneSettingsStore(new ZoneLocator(instance.ProjectId, instance.Zone)),
+                    CreateZoneSettingsStore(
+                        new ZoneLocator(instance.ProjectId, instance.Zone)),
                     new RegistrySettingsStore(key)
                 },
                 MergedSettingsStore.MergeBehavior.Overlay);
