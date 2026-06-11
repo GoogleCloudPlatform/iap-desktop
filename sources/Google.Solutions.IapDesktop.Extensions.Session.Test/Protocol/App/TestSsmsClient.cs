@@ -79,7 +79,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             };
 
             Assert.That(
-                client.FormatArguments(transport.Object, parameters), Is.EqualTo("-S 127.0.0.2\\instance-1.zone-1.c.project-1.internal,11443 -U sa"));
+                client.FormatArguments(transport.Object, parameters), 
+                Is.EqualTo("-S 127.0.0.2\\instance-1.zone-1.c.project-1.internal,11443 -U sa"));
         }
 
         [Test]
@@ -99,7 +100,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             };
 
             Assert.That(
-                client.FormatArguments(transport.Object, parameters), Is.EqualTo("-S 127.0.0.2\\instance-1.zone-1.c.project-1.internal,11443 -U \"username\""));
+                client.FormatArguments(transport.Object, parameters), 
+                Is.EqualTo("-S 127.0.0.2\\instance-1.zone-1.c.project-1.internal,11443 -U \"username\""));
         }
 
         [Test]
@@ -124,14 +126,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
         }
 
         [Test]
-        public void FormatArguments_WhenNlaEnabled()
+        public void FormatArguments_WhenNlaEnabledAndSsmsV21()
         {
             var transport = new Mock<ITransport>();
             transport.SetupGet(t => t.Target).Returns(SampleInstance);
             transport
                 .SetupGet(t => t.Endpoint)
                 .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
-            var client = new SsmsClient();
+            var client = new SsmsClient(new Ssms("ssms.exe", new Version(21, 0)));
 
             var parameters = new AppProtocolParameters()
             {
@@ -139,7 +141,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             };
 
             Assert.That(
-                client.FormatArguments(transport.Object, parameters), Is.EqualTo("-S 127.0.0.2\\instance-1.zone-1.c.project-1.internal,11443 -E"));
+                client.FormatArguments(transport.Object, parameters), 
+                Is.EqualTo("-S 127.0.0.2\\instance-1.zone-1.c.project-1.internal,11443 -E"));
+        }
+
+        [Test]
+        public void FormatArguments_WhenNlaEnabledAndSsmsV22()
+        {
+            var transport = new Mock<ITransport>();
+            transport.SetupGet(t => t.Target).Returns(SampleInstance);
+            transport
+                .SetupGet(t => t.Endpoint)
+                .Returns(new IPEndPoint(IPAddress.Parse("127.0.0.2"), 11443));
+            var client = new SsmsClient(new Ssms("ssms.exe", new Version(22, 0)));
+
+            var parameters = new AppProtocolParameters()
+            {
+                NetworkLevelAuthentication = AppNetworkLevelAuthenticationState.Enabled
+            };
+
+            Assert.That(
+                client.FormatArguments(transport.Object, parameters),
+                Is.EqualTo("-S 127.0.0.2\\instance-1.zone-1.c.project-1.internal,11443 -A ActiveDirectoryIntegrated"));
         }
     }
 }

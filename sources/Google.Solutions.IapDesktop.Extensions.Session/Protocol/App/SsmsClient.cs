@@ -89,10 +89,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.App
                 //
                 // Windows authentication.
                 //
-                authFlag = "-E";
+                if (this.ssms != null && this.ssms.Version.Major >= 22)
+                {
+                    authFlag = "-A ActiveDirectoryIntegrated";
+                }
+                else
+                {
+                    authFlag = "-E";
+                }
             }
             else if (!string.IsNullOrWhiteSpace(parameters.PreferredUsername))
             {
+                //
+                // SQL Server authentication.
+                //
                 if (parameters.PreferredUsername!.Contains("\"") ||
                     parameters.PreferredUsername!.Contains("'"))
                 {

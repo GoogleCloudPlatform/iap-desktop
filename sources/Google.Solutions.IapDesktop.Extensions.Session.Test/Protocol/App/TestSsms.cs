@@ -22,6 +22,7 @@
 
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.App;
 using NUnit.Framework;
+using System;
 using System.IO;
 
 namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
@@ -39,6 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.App
             }
 
             Assert.That(File.Exists(ssms!.ExecutablePath), Is.True);
+            Assert.That(ssms.Version, Is.Not.EqualTo(new Version(0, 0)));
         }
     }
 }
