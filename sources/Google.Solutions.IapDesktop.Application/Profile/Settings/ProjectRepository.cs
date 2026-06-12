@@ -97,10 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
             // Ensure disposing the returned instance doesn't
             // affect the base key.
             //
-            return RegistryKey.FromHandle(
-                new SafeRegistryHandle(
-                    this.BaseKey.Handle.DangerousGetHandle(), 
-                    false));
+            return this.BaseKey.OpenSubKey(string.Empty, true);
         }
 
         public RegistryKey OpenRegistryKey(string projectId)

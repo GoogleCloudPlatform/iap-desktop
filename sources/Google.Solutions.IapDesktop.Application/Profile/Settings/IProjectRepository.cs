@@ -30,9 +30,8 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
     public interface IProjectSettingsRepository : IProjectRepository
     {
         /// <summary>
-        /// Open registry key for storing global settings.
+        /// Open registry key for storing universe settings.
         /// </summary>
-        /// <exception cref="KeyNotFoundException">When project not found</exception>
         RegistryKey OpenRegistryKey();
 
         /// <summary>

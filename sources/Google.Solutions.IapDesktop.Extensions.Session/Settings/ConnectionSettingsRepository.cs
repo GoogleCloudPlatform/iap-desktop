@@ -145,7 +145,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         {
             if (!(settings.Resource is UniverseLocator))
             {
-                throw new ArgumentException(nameof(settings));
+                throw new ArgumentException(
+                    "The settings must be associated with a universe resource",
+                    nameof(settings));
             }
 
             using (var store = CreateUniverseSettingsStore())
@@ -170,7 +172,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         {
             if (!(settings.Resource is ProjectLocator project))
             {
-                throw new ArgumentException(nameof(settings));
+                throw new ArgumentException(
+                    "The settings must be associated with a project",
+                    nameof(settings));
             }
 
             using (var store = CreateProjectSettingsStore(project))
@@ -195,7 +199,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         {
             if (!(settings.Resource is ZoneLocator zone))
             {
-                throw new ArgumentException(nameof(settings));
+                throw new ArgumentException(
+                    "The settings must be associated with a zone",
+                    nameof(settings));
             }
 
             using (var store = CreateZoneSettingsStore(zone))
@@ -220,7 +226,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         {
             if (!(settings.Resource is InstanceLocator instance))
             {
-                throw new ArgumentException(nameof(settings));
+                throw new ArgumentException(
+                    "The settings must be associated with a VM instance",
+                    nameof(settings));
             }
 
             using (var store = CreateInstanceSettingsStore(instance))
