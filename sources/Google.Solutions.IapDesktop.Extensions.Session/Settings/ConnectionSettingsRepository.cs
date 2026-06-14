@@ -56,6 +56,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             this.projectRepository = projectRepository.ExpectNotNull(nameof(projectRepository));
         }
 
+        private ISettingsStore CreateUniverseSettingsStore()
+        {
+            return new RegistrySettingsStore(
+                this.projectRepository.OpenRegistryKey());
+        }
+
         private ISettingsStore CreateProjectSettingsStore(ProjectLocator project)
         {
             var key = this.projectRepository.OpenRegistryKey(project.Name);
@@ -64,7 +70,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 throw new KeyNotFoundException(project.Name);
             }
 
-            return new RegistrySettingsStore(key);
+            //
+            // Return project settings, applying universe settings
+            // as defaults.
+            //
+            return new MergedSettingsStore(new[]
+                {
+                    CreateUniverseSettingsStore(),
+                    new RegistrySettingsStore(key)
+                },
+                MergedSettingsStore.MergeBehavior.Overlay);
         }
 
         private ISettingsStore CreateZoneSettingsStore(ZoneLocator zone)
@@ -74,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 ZonePrefix + zone.Name);
 
             //
-            // Return zone settings, applying project settings
+            // Return zone settings, applying universe and project settings
             // as defaults.
             //
             return new MergedSettingsStore(new[]
@@ -92,12 +107,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
                 VmPrefix + instance.Name);
 
             //
-            // Return instance settings, applying zone and
-            // project settings as defaults.
+            // Return instance settings, applying universe, project, and
+            // zone settings as defaults.
             //
             return new MergedSettingsStore(new[]
                 {
-                    CreateZoneSettingsStore(new ZoneLocator(instance.ProjectId, instance.Zone)),
+                    CreateZoneSettingsStore(
+                        new ZoneLocator(instance.ProjectId, instance.Zone)),
                     new RegistrySettingsStore(key)
                 },
                 MergedSettingsStore.MergeBehavior.Overlay);
@@ -110,6 +126,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
             foreach (var setting in settings.Settings.Where(s => s.IsDirty))
             {
                 store.Write(setting);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Universe.
+        //---------------------------------------------------------------------
+
+        public ConnectionSettings GetUniverseSettings()
+        {
+            using (var store = CreateUniverseSettingsStore())
+            {
+                return new ConnectionSettings(UniverseLocator.Cloud, store);
+            }
+        }
+
+        public void SetUniverseSettings(ConnectionSettings settings)
+        {
+            if (!(settings.Resource is UniverseLocator))
+            {
+                throw new ArgumentException(
+                    "The settings must be associated with a universe resource",
+                    nameof(settings));
+            }
+
+            using (var store = CreateUniverseSettingsStore())
+            {
+                WriteAllSettings(store, settings);
             }
         }
 
@@ -129,7 +172,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         {
             if (!(settings.Resource is ProjectLocator project))
             {
-                throw new ArgumentException(nameof(settings));
+                throw new ArgumentException(
+                    "The settings must be associated with a project",
+                    nameof(settings));
             }
 
             using (var store = CreateProjectSettingsStore(project))
@@ -154,7 +199,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         {
             if (!(settings.Resource is ZoneLocator zone))
             {
-                throw new ArgumentException(nameof(settings));
+                throw new ArgumentException(
+                    "The settings must be associated with a zone",
+                    nameof(settings));
             }
 
             using (var store = CreateZoneSettingsStore(zone))
@@ -179,7 +226,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         {
             if (!(settings.Resource is InstanceLocator instance))
             {
-                throw new ArgumentException(nameof(settings));
+                throw new ArgumentException(
+                    "The settings must be associated with a VM instance",
+                    nameof(settings));
             }
 
             using (var store = CreateInstanceSettingsStore(instance))

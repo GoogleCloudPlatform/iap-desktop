@@ -61,7 +61,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
 
         public bool IsConnectionSettingsAvailable(IProjectModelNode node)
         {
-            return node is IProjectModelProjectNode ||
+            return node is IProjectModelCloudNode ||
+                   node is IProjectModelProjectNode ||
                    node is IProjectModelZoneNode ||
                    node is IProjectModelInstanceNode;
         }
@@ -69,7 +70,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Settings
         public IPersistentSettingsCollection<ConnectionSettings> GetConnectionSettings(
             IProjectModelNode node)
         {
-            if (node is IProjectModelProjectNode projectNode)
+            if (node is IProjectModelCloudNode)
+            {
+                return this.repository
+                    .GetUniverseSettings()
+
+                    // Save back to same repository.
+                    .ToPersistentSettingsCollection(s => this.repository.SetUniverseSettings(s));
+            }
+            else if (node is IProjectModelProjectNode projectNode)
             {
                 return this.repository
                     .GetProjectSettings(projectNode.Project)

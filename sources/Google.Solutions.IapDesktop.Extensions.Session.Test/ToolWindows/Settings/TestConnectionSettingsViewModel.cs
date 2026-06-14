@@ -126,14 +126,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.ToolWindows.Settin
                 broker.Object);
 
             var node = new Mock<IProjectModelCloudNode>();
+            node.SetupGet(n => n.DisplayName).Returns("display");
             await viewModel
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
             Assert.That(viewModel.InformationText.Value, Is.Null);
-            Assert.That(viewModel.InspectedObject.Value, Is.Null);
+            Assert.That(viewModel.InspectedObject.Value, Is.Not.Null);
             Assert.That(
-                viewModel.WindowTitle.Value, Is.EqualTo(ConnectionSettingsViewModel.DefaultWindowTitle));
+                viewModel.WindowTitle.Value, Does.Contain(ConnectionSettingsViewModel.DefaultWindowTitle));
+            Assert.That(
+                viewModel.WindowTitle.Value, Does.Contain("display"));
         }
 
         [Test]

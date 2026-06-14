@@ -22,6 +22,7 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Core.ResourceModel;
 using Microsoft.Win32;
+using Microsoft.Win32.SafeHandles;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -89,6 +90,15 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         //---------------------------------------------------------------------
         // IProjectSettingsRepository.
         //---------------------------------------------------------------------
+
+        public RegistryKey OpenRegistryKey()
+        {
+            //
+            // Ensure disposing the returned instance doesn't
+            // affect the base key.
+            //
+            return this.BaseKey.OpenSubKey(string.Empty, true);
+        }
 
         public RegistryKey OpenRegistryKey(string projectId)
         {
