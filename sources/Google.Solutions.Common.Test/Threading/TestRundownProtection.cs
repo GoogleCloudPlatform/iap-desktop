@@ -29,7 +29,7 @@ namespace Google.Solutions.Common.Test.Threading
     public class TestRundownProtection
     {
         [Test]
-        public async Task Await_WhenRundown_ThenAwaitRundownReturns()
+        public async Task Await_WhenRundown()
         {
             using (var protection = new RundownProtection())
             {

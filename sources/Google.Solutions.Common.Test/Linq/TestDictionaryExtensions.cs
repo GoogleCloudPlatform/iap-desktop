@@ -33,7 +33,7 @@ namespace Google.Solutions.Common.Test.Linq
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenKeyFound_ThenTryGetReturnsValue()
+        public void WhenKeyFound()
         {
             var dict = new Dictionary<string, string>()
             {
@@ -43,7 +43,7 @@ namespace Google.Solutions.Common.Test.Linq
         }
 
         [Test]
-        public void WhenKeyNotFound_ThenTryGetReturnsNull()
+        public void WhenKeyNotFound()
         {
             var dict = new Dictionary<string, string>();
             Assert.That(dict.TryGet("key"), Is.Null);

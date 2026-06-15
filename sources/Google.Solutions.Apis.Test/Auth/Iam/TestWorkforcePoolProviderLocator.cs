@@ -65,7 +65,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public void TryParse_WhenStringValid_ThenReturnsTrue()
+        public void TryParse_WhenStringValid()
         {
             Assert.That(WorkforcePoolProviderLocator.TryParse(
                 "locations/LOCATION/workforcePools/POOL/providers/PROVIDER",

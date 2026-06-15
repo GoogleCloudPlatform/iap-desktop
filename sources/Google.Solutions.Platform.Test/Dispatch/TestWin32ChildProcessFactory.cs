@@ -65,7 +65,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void Contains_WhenProcessFound_ThenContainsReturnsTrue()
+        public void Contains_WhenProcessFound()
         {
             using (var factory = new Win32ChildProcessFactory(true))
             using (var process = factory.CreateProcess(CmdExe, null))
@@ -76,7 +76,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void Contains_WhenProcessNotFound_ThenContainsReturnsFalse()
+        public void Contains_WhenProcessNotFound()
         {
             using (var factory = new Win32ChildProcessFactory(true))
             {
@@ -89,7 +89,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Close_WhenChildTerminated_ThenCloseReturns()
+        public async Task Close_WhenChildTerminated()
         {
             using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
             using (var factory = new Win32ChildProcessFactory(false))
@@ -108,7 +108,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public async Task Close_WhenChildRunning_ThenCloseReturns()
+        public async Task Close_WhenChildRunning()
         {
             using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
             using (var factory = new Win32ChildProcessFactory(false))

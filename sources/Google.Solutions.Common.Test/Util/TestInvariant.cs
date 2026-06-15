@@ -40,7 +40,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void ExpectNotNull_WhenNotNull_ThenExpectNotNullReturnsValue()
+        public void ExpectNotNull_WhenNotNull()
         {
             Assert.That(Invariant.ExpectNotNull("value", "test"), Is.EqualTo("value"));
 

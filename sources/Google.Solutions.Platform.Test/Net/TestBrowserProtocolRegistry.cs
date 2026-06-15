@@ -41,14 +41,14 @@ namespace Google.Solutions.Platform.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsRegistered_WhenProtocolNotRegistered_ThenIsRegisteredReturnsFalse()
+        public void IsRegistered_WhenProtocolNotRegistered()
         {
             var registry = new BrowserProtocolRegistry();
             Assert.That(registry.IsRegistered("unknown-scheme", "app.exe"), Is.False);
         }
 
         [Test]
-        public void IsRegistered_WhenProtocolRegisteredByDifferentApp_ThenIsRegisteredReturnsFalse()
+        public void IsRegistered_WhenProtocolRegisteredByDifferentApp()
         {
             var registry = new BrowserProtocolRegistry();
             registry.Register(TestScheme, "Test", "app.exe");
@@ -58,7 +58,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void IsRegistered_WhenProtocolRegistered_ThenIsRegisteredReturnsTrue()
+        public void IsRegistered_WhenProtocolRegistered()
         {
             var registry = new BrowserProtocolRegistry();
             registry.Register(TestScheme, "Test", "app.exe");

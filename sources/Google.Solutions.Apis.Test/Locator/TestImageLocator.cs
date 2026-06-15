@@ -214,7 +214,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void Equals_WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
+        public void Equals_WhenObjectsNotEquivalent()
         {
             var ref1 = new ImageLocator("proj-1", "image-1");
             var ref2 = new ImageLocator("proj-2", "image-1");
@@ -230,7 +230,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromPath()
         {
             var path = "projects/project-1/global/images/image-1";
 
@@ -239,7 +239,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void ToString_WhenCreatedFromUrl_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromUrl()
         {
             var path = "projects/project-1/global/images/image-1";
 

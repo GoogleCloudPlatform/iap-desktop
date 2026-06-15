@@ -313,7 +313,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void GetFlag_WhenProjectMetadataIsNull_ThenGetFlagReturnsNull()
+        public void GetFlag_WhenProjectMetadataIsNull()
         {
             Assert.That(new Project().GetFlag("flag"), Is.Null);
         }
@@ -323,13 +323,13 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void GetFlag_WhenInstanceMetadataIsNull_ThenGetFlagReturnsNull()
+        public void GetFlag_WhenInstanceMetadataIsNull()
         {
             Assert.That(new Instance().GetFlag(new Project(), "flag"), Is.Null);
         }
 
         [Test]
-        public void GetFlag_WhenInstanceFlagTrue_ThenGetFlagReturnsTrue()
+        public void GetFlag_WhenInstanceFlagTrue()
         {
             var project = new Project();
             var instance = new Instance()
@@ -351,7 +351,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void GetFlag_WhenProjectFlagTrueAndInstanceFlagNull_ThenGetFlagReturnsTrue()
+        public void GetFlag_WhenProjectFlagTrueAndInstanceFlagNull()
         {
             var project = new Project()
             {
@@ -373,7 +373,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void GetFlag_WhenProjectFlagTrueAndInstanceFlagFalse_ThenGetFlagReturnsFalse()
+        public void GetFlag_WhenProjectFlagTrueAndInstanceFlagFalse()
         {
             var project = new Project()
             {
@@ -408,7 +408,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void GetFlag_WhenProjectFlagFalseAndInstanceFlagTrue_ThenGetFlagReturnsTrue()
+        public void GetFlag_WhenProjectFlagFalseAndInstanceFlagTrue()
         {
             var project = new Project()
             {

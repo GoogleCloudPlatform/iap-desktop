@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void UpdateCheck_WhenLastCheckIsZero_ThenLastUpdateCheckReturnsNever()
+        public void UpdateCheck_WhenLastCheckIsZero()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new GeneralOptionsViewModel(
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void UpdateCheck_WhenLastCheckIsNonZero_ThenLastUpdateCheckReturnsNever()
+        public void UpdateCheck_WhenLastCheckIsNonZero()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();

@@ -356,7 +356,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsPolicyPresent_WhenMachineAnduserPolicyKeysAreNull_ThenIsPolicyPresentReturnsFalse()
+        public void IsPolicyPresent_WhenMachineAnduserPolicyKeysAreNull()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             {
@@ -371,7 +371,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void IsPolicyPresent_WhenMachinePolicyKeyExists_ThenIsPolicyPresentReturnsTrue()
+        public void IsPolicyPresent_WhenMachinePolicyKeyExists()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             using (var machinePolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.MachinePolicy))
@@ -387,7 +387,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void IsPolicyPresent_WhenuserPolicyKeyExists_ThenIsPolicyPresentReturnsTrue()
+        public void IsPolicyPresent_WhenuserPolicyKeyExists()
         {
             using (var settingsPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings))
             using (var userPolicyPath = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.UserPolicy))

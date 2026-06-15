@@ -50,7 +50,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void FromProcessId_WhenPidIsFromCurrentProcess_ThenFromProcessIdReturnsSession()
+        public void FromProcessId_WhenPidIsFromCurrentProcess()
         {
             var session = WtsSession.FromProcessId((uint)Process.GetCurrentProcess().Id);
             Assert.That(session, Is.Not.Null);

@@ -206,7 +206,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void Equals_WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
+        public void Equals_WhenObjectsNotEquivalent()
         {
             var ref1 = new NodeTypeLocator("proj", "zone1", "c2-node-60-240");
             var ref2 = new NodeTypeLocator("proj", "zone2", "c2-node-60-240");
@@ -222,7 +222,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromPath()
         {
             var path = "projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240";
 
@@ -231,7 +231,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void ToString_WhenCreatedFromUrl_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromUrl()
         {
             var path = "projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240";
 

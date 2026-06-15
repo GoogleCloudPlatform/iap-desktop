@@ -37,7 +37,7 @@ namespace Google.Solutions.Platform.Test.Interop
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToWaitHandle_WhenTransferOwnershipIsFalse_ThenToWaitHandleReturnsNonOwningHandle()
+        public void ToWaitHandle_WhenTransferOwnershipIsFalse()
         {
             using (var handle = Process.GetCurrentProcess().SafeHandle)
             {
@@ -51,7 +51,7 @@ namespace Google.Solutions.Platform.Test.Interop
         }
 
         [Test]
-        public void ToWaitHandle_WhenTransferOwnershipIsTrue_ThenToWaitHandleReturnsOwningHandle()
+        public void ToWaitHandle_WhenTransferOwnershipIsTrue()
         {
             var handle = Process.GetCurrentProcess().SafeHandle;
             var waitHandle = handle.ToWaitHandle(false);
@@ -94,7 +94,7 @@ namespace Google.Solutions.Platform.Test.Interop
         }
 
         [Test]
-        public async Task Wait_WhenSignalled_ThenWaitAsyncReturns()
+        public async Task Wait_WhenSignalled()
         {
             using (var ev = new ManualResetEvent(true))
             {

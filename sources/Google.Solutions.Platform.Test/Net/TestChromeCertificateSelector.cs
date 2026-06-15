@@ -44,7 +44,7 @@ namespace Google.Solutions.Platform.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void TryParse_WhenJsonMalformed_ThenTryParseReturnsFalse()
+        public void TryParse_WhenJsonMalformed()
         {
             Assert.That(ChromeCertificateSelector.TryParse(
                 "{asd'",
@@ -59,7 +59,7 @@ namespace Google.Solutions.Platform.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsMatch_WhenUrlMismatches_ThenIsMatchReturnsFalse()
+        public void IsMatch_WhenUrlMismatches()
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
@@ -80,7 +80,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void IsMatch_WhenUrlAndFilterEmpty_ThenIsMatchReturnsTrue()
+        public void IsMatch_WhenUrlAndFilterEmpty()
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
@@ -99,7 +99,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void IsMatch_WhenUrlMatchesAndFilterEmpty_ThenIsMatchReturnsTrue()
+        public void IsMatch_WhenUrlMatchesAndFilterEmpty()
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
@@ -124,7 +124,7 @@ namespace Google.Solutions.Platform.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsMatch_WhenUrlAndIssuerMatchesBySingleField_ThenIsMatchReturnsTrue()
+        public void IsMatch_WhenUrlAndIssuerMatchesBySingleField()
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
@@ -155,7 +155,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void IsMatch_WhenUrlAndIssuerMatchByAllFields_ThenIsMatchReturnsTrue()
+        public void IsMatch_WhenUrlAndIssuerMatchByAllFields()
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
@@ -191,7 +191,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void IsMatch_WhenUrlAndIssuerMatchButSubjectMismatches_ThenIsMatchReturnsFalse()
+        public void IsMatch_WhenUrlAndIssuerMatchButSubjectMismatches()
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
@@ -223,7 +223,7 @@ namespace Google.Solutions.Platform.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsMatch_WhenUrlAndSubjectMatchesBySingleField_ThenIsMatchReturnsTrue()
+        public void IsMatch_WhenUrlAndSubjectMatchesBySingleField()
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
@@ -254,7 +254,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void IsMatch_WhenUrlAndSubjectMatchByAllFields_ThenIsMatchReturnsTrue()
+        public void IsMatch_WhenUrlAndSubjectMatchByAllFields()
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
@@ -294,7 +294,7 @@ namespace Google.Solutions.Platform.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsMatch_WhenThumbprintMatches_ThenIsMatchReturnsTrue()
+        public void IsMatch_WhenThumbprintMatches()
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
@@ -324,7 +324,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void IsMatch_WhenThumbprintMatchesButSubjectDoesnt_ThenIsMatchReturnsFalse()
+        public void IsMatch_WhenThumbprintMatchesButSubjectDoesnt()
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{

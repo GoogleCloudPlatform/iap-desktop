@@ -488,14 +488,14 @@ namespace Google.Solutions.Mvvm.Test.Format
         //---------------------------------------------------------------------
 
         [Test]
-        public void Tokenize_WhenTextEmpty_ThenTokenizeReturnsNoTokens()
+        public void Tokenize_WhenTextEmpty()
         {
             var tokens = MarkdownDocument.Token.Tokenize(string.Empty);
             Assert.That(tokens, Is.Empty);
         }
 
         [Test]
-        public void Tokenize_WhenTextHasNoDelimeter_ThenTokenizeReturnsSingleToken()
+        public void Tokenize_WhenTextHasNoDelimeter()
         {
             var tokens = MarkdownDocument.Token.Tokenize("t");
             Assert.That(
@@ -506,7 +506,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         }
 
         [Test]
-        public void Tokenize_WhenTextHasDelimeters_ThenTokenizeReturnsTokens()
+        public void Tokenize_WhenTextHasDelimeters()
         {
             var tokens = MarkdownDocument.Token.Tokenize("t[a]()* *_ text");
             Assert.That(
@@ -527,7 +527,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         }
 
         [Test]
-        public void Tokenize_WhenTokensEquivalent_ThenEqualsReturnsTrue()
+        public void Tokenize_WhenTokensEquivalent()
         {
             var token1 = new MarkdownDocument.Token(MarkdownDocument.TokenType.Text, "text");
             var token2 = new MarkdownDocument.Token(MarkdownDocument.TokenType.Text, "text");
@@ -537,7 +537,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         }
 
         [Test]
-        public void Tokenize_WhenTokensNotEquivalent_ThenEqualsReturnsFalse()
+        public void Tokenize_WhenTokensNotEquivalent()
         {
             var token1 = new MarkdownDocument.Token(MarkdownDocument.TokenType.Text, "text");
             var token2 = new MarkdownDocument.Token(MarkdownDocument.TokenType.Delimiter, ")");

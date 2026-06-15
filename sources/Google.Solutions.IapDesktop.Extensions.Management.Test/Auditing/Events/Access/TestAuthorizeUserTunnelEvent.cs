@@ -383,7 +383,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void ToEvent_WhenRecordIsFromIapWeb_ThenIsAuthorizeUserEventReturnsFalse()
+        public void ToEvent_WhenRecordIsFromIapWeb()
         {
             var json = @"
              {

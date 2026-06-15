@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             };
 
         [Test]
-        public void FromGuestAttributes_WhenGuestAttributesEmpty_ThenReturnsDefaults()
+        public void FromGuestAttributes_WhenGuestAttributesEmpty()
         {
             var attributes = GuestOsInfo.FromGuestAttributes(
                 SampleLocator,

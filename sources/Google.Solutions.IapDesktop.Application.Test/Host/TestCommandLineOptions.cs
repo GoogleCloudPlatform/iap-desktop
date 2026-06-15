@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
     public class TestCommandLineOptions : ApplicationFixtureBase
     {
         [Test]
-        public void Parse_WhenArgsEmpty_ThenParseReturnsValidOptions()
+        public void Parse_WhenArgsEmpty()
         {
             var options = CommandLineOptions.Parse(Array.Empty<string>());
 
@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
-        public void Parse_WhenUrlSpecified_ThenParseReturnsValidOptions()
+        public void Parse_WhenUrlSpecified()
         {
             var options = CommandLineOptions.Parse(
                 new[] { "/url", "iap-rdp:///project-1/us-central1-a/vm-1" });
@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void Parse_WhenUrlAndDebugSpecified_ThenParseReturnsValidOptions()
+        public void Parse_WhenUrlAndDebugSpecified()
         {
             var options = CommandLineOptions.Parse(
                 new[] { "/url", "iap-rdp:///project-1/us-central1-a/vm-1", "/debug" });
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void Parse_WhenDebugAndUrlSpecified_ThenParseReturnsValidOptions()
+        public void Parse_WhenDebugAndUrlSpecified()
         {
             var options = CommandLineOptions.Parse(
                 new[] { "/debug", "/url", "iap-rdp:///project-1/us-central1-a/vm-1" });
@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
-        public void Parse_WhenProfileSpecified_ThenParseReturnsValidOptions()
+        public void Parse_WhenProfileSpecified()
         {
             var options = CommandLineOptions.Parse(
                 new[] { "/profile", "profile-1" });
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void Parse_WhenProfileAndDebugAndUrlSpecified_ThenParseReturnsValidOptions()
+        public void Parse_WhenProfileAndDebugAndUrlSpecified()
         {
             var options = CommandLineOptions.Parse(
                 new[] {
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
-        public void Parse_WhenPostInstallSpecified_ThenParseReturnsValidOptions()
+        public void Parse_WhenPostInstallSpecified()
         {
             var options = CommandLineOptions.Parse(
                 new[] { "/profile", "profile-1", "/postinstall", "/debug" });
@@ -168,14 +168,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToString_WhenAllOptionsClear_ThenToStringReturnsEmptyString()
+        public void ToString_WhenAllOptionsClear()
         {
             var options = new CommandLineOptions();
             Assert.That(options.ToString(), Is.EqualTo(string.Empty));
         }
 
         [Test]
-        public void ToString_WhenOptionsSpecified_ThenToStringReturnsQuotedString()
+        public void ToString_WhenOptionsSpecified()
         {
             var options = new CommandLineOptions()
             {

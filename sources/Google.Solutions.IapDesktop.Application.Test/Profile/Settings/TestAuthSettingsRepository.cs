@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void TryRead_WhenBlobContainsFullTokenResponse_ThenTryReadReturnsTrue()
+        public void TryRead_WhenBlobContainsFullTokenResponse()
         {
             var value = @"{
                 'access_token':'ya29.a0A...',
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void TryRead_WhenBlobOnlyContainsGaiaRefreshToken_ThenTryReadReturnsTrue()
+        public void TryRead_WhenBlobOnlyContainsGaiaRefreshToken()
         {
             var value = @"{
                 'refresh_token':'rt',
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Settings
         }
 
         [Test]
-        public void TryRead_WhenBlobOnlyContainsStsRefreshToken_ThenTryReadReturnsTrue()
+        public void TryRead_WhenBlobOnlyContainsStsRefreshToken()
         {
             var value = @"{
                 'refresh_token':'rt',

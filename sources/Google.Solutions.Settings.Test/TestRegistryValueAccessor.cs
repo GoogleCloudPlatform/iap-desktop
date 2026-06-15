@@ -85,7 +85,7 @@ namespace Google.Solutions.Settings.Test
             }
 
             [Test]
-            public override void TryRead_WhenValueSet_ThenTryReadReturnsTrue()
+            public override void TryRead_WhenValueSet()
             {
                 using (var key = RegistryKeyPath.ForCurrentTest().CreateKey())
                 {

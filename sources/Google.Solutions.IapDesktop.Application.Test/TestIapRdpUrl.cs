@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Test
         }
 
         [Test]
-        public void FromString_WhenTripleSlashUsed_ThenToStringReturnsSameString()
+        public void FromString_WhenTripleSlashUsed()
         {
             var url = "iap-rdp:///my-project/us-central1-a/my-instance";
             Assert.That(IapRdpUrl.FromString(url).ToString(false), Is.EqualTo(url));

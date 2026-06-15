@@ -33,7 +33,7 @@ namespace Google.Solutions.Platform.Test.Net
         //---------------------------------------------------------------------
 
         [Test]
-        public void Normalize_WhenUserInUpnFormat_ThenNormalizeReturnsCredential()
+        public void Normalize_WhenUserInUpnFormat()
         {
             var normalized = new NetworkCredential(
                 "user@example.org",
@@ -45,7 +45,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void Normalize_WhenUserInNetBiosFormat_ThenNormalizeReturnsCredential()
+        public void Normalize_WhenUserInNetBiosFormat()
         {
             var normalized = new NetworkCredential(
                 "EXAMPLE\\user",
@@ -57,7 +57,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void Normalize_WhenDomainSpecifiedSeparately_ThenNormalizeReturnsCredential()
+        public void Normalize_WhenDomainSpecifiedSeparately()
         {
             var normalized = new NetworkCredential(
                 "user",
@@ -69,7 +69,7 @@ namespace Google.Solutions.Platform.Test.Net
         }
 
         [Test]
-        public void Normalize_WhenDomainMissing_ThenNormalizeReturnsCredential()
+        public void Normalize_WhenDomainMissing()
         {
             var normalized = new NetworkCredential(
                 "user",

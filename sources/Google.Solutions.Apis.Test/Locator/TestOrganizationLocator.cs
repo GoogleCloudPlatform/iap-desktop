@@ -67,7 +67,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromPath()
         {
             var path = "organizations/12345678900001";
             Assert.That(OrganizationLocator.TryParse(path, out var locator), Is.True);

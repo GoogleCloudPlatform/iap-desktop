@@ -34,21 +34,21 @@ namespace Google.Solutions.Common.Test.Util
         //---------------------------------------------------------------------
 
         [Test]
-        public void FullName_WhenTypeNotGeneric_ThenFullNameReturnsName()
+        public void FullName_WhenTypeNotGeneric()
         {
             Assert.That(
                 typeof(TestTypeExtensions).FullName(), Is.EqualTo(typeof(TestTypeExtensions).Name));
         }
 
         [Test]
-        public void FullName_WhenTypeIsGeneric_ThenFullNameReturnsName()
+        public void FullName_WhenTypeIsGeneric()
         {
             Assert.That(
                 typeof(KeyValuePair<string, int>).FullName(), Is.EqualTo("KeyValuePair<String,Int32>"));
         }
 
         [Test]
-        public void FullName_WhenTypeIsNestedGeneric_ThenFullNameReturnsName()
+        public void FullName_WhenTypeIsNestedGeneric()
         {
             Assert.That(
                 typeof(KeyValuePair<string, Tuple<string, int>>).FullName(), Is.EqualTo("KeyValuePair<String,Tuple<String,Int32>>"));

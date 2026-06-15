@@ -168,7 +168,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void Equals_WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
+        public void Equals_WhenObjectsNotEquivalent()
         {
             var ref1 = new RegionLocator("proj-1", "us-central1");
             var ref2 = new RegionLocator("proj-2", "us-central1");
@@ -184,7 +184,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromPath()
         {
             var path = "projects/project-1/regions/us-central1";
 
@@ -193,7 +193,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void ToString_WhenCreatedFromUrl_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromUrl()
         {
             var path = "projects/project-1/regions/us-central1";
 

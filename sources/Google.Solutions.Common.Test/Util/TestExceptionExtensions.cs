@@ -57,7 +57,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void Unwrap_WhenAggregateException_ThenUnwrapReturnsFirstInnerException()
+        public void Unwrap_WhenAggregateException()
         {
             var inner1 = new ApplicationException();
             var inner2 = new ApplicationException();
@@ -69,7 +69,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void Unwrap_WhenAggregateExceptionContainsAggregateException_ThenUnwrapReturnsFirstInnerException()
+        public void Unwrap_WhenAggregateExceptionContainsAggregateException()
         {
             var inner1 = new ApplicationException();
             var inner2 = new ApplicationException();
@@ -92,7 +92,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void Unwrap_WhenTargetInvocationException_ThenUnwrapReturnsInnerException()
+        public void Unwrap_WhenTargetInvocationException()
         {
             var inner = new ApplicationException();
             var target = new TargetInvocationException("", inner);

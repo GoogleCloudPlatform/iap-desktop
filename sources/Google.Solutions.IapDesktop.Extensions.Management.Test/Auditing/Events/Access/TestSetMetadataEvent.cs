@@ -334,7 +334,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Auditing.Events
         }
 
         [Test]
-        public void ToEvent_WhenRecordContainsOtherMetadataKeys_ThenIsResetWindowsUserEventReturnsFalse()
+        public void ToEvent_WhenRecordContainsOtherMetadataKeys()
         {
             var json = @"
              {

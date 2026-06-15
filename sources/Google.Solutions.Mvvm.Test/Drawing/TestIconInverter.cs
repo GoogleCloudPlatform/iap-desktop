@@ -109,7 +109,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         //---------------------------------------------------------------------
 
         [Test]
-        public void Invert_WhenImageInvertedBefore_ThenInvertReturnsFalse()
+        public void Invert_WhenImageInvertedBefore()
         {
             var icon = Resources.Copy_16x;
             var inverter = new IconInverter()
@@ -123,7 +123,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         }
 
         [Test]
-        public void Invert_WhenImageListInvertedBefore_ThenInvertReturnsFalse()
+        public void Invert_WhenImageListInvertedBefore()
         {
             var icon = Resources.Copy_16x;
             using (var imageList = new ImageList())

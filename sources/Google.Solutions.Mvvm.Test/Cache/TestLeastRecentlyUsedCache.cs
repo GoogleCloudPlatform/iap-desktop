@@ -35,14 +35,14 @@ namespace Google.Solutions.Mvvm.Test.Cache
         }
 
         [Test]
-        public void Lookup_WhenLookupNonexistingItem_ThenNullIsReturned()
+        public void Lookup_WhenLookupNonexistingItem()
         {
             var cache = new LeastRecentlyUsedCache<string, string>(2);
             Assert.That(cache.Lookup("key"), Is.Null);
         }
 
         [Test]
-        public void Lookup_WhenLookupCachedItem_ThenItemIsReturned()
+        public void Lookup_WhenLookupCachedItem()
         {
             var cache = new LeastRecentlyUsedCache<string, string>(2);
             cache.Add("one", "ONE");

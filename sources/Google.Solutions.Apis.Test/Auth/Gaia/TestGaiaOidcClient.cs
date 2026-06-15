@@ -537,7 +537,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public async Task AuthorizeWithBrowser_WhenScopeNotGranted_ThenReturnsSession()
+        public async Task AuthorizeWithBrowser_WhenScopeNotGranted()
         {
             var store = new OfflineStore();
             var client = new GaiaOidcClientWithMockFlow(
@@ -577,7 +577,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public async Task AuthorizeWithBrowser_WhenTokenExchangeSucceeds_ThenReturnsSession()
+        public async Task AuthorizeWithBrowser_WhenTokenExchangeSucceeds()
         {
             var store = new OfflineStore();
             var client = new GaiaOidcClientWithMockFlow(
@@ -629,7 +629,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task TryAuthorizeSilently_WhenTokenExchangeFails_ThenReturnsNull()
+        public async Task TryAuthorizeSilently_WhenTokenExchangeFails()
         {
             var store = new OfflineStore()
             {
@@ -663,7 +663,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public async Task TryAuthorizeSilently_WhenTokenExchangeSucceeds_ThenReturnsSession()
+        public async Task TryAuthorizeSilently_WhenTokenExchangeSucceeds()
         {
             var store = new OfflineStore()
             {

@@ -28,14 +28,14 @@ namespace Google.Solutions.Common.Test.Text
     public class TestTypographicQuotes
     {
         [Test]
-        public void ToAsciiQuotes_WhenStringContainsNoTypograhicQuotes_ThenToAsciiQuotesReturnsSameString()
+        public void ToAsciiQuotes_WhenStringContainsNoTypograhicQuotes()
         {
             var s = "This isn't \"typographic\" but `plain´ ASCII";
             Assert.That(TypographicQuotes.ToAsciiQuotes(s), Is.EqualTo(s));
         }
 
         [Test]
-        public void ToAsciiQuotes_WhenStringContainsTypograhicDoubleQuotes_ThenToAsciiQuotesReturnsSanitizedString()
+        public void ToAsciiQuotes_WhenStringContainsTypograhicDoubleQuotes()
         {
             var s = "These are \u201CEnglish\u201d, \u201eGerman\u201c, and \u00bbFrench\u00ab double quotes";
             Assert.That(
@@ -43,7 +43,7 @@ namespace Google.Solutions.Common.Test.Text
         }
 
         [Test]
-        public void ToAsciiQuotes_WhenStringContainsTypograhicSingleQuotes_ThenToAsciiQuotesReturnsSanitizedString()
+        public void ToAsciiQuotes_WhenStringContainsTypograhicSingleQuotes()
         {
             var s = "These are \u2018English\u2019, \u201aGerman\u2018, and \u203aFrench\u2039 single quotes";
             Assert.That(

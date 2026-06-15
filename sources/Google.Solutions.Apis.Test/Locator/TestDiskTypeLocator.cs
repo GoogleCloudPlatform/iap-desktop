@@ -206,7 +206,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void Equals_WhenObjectsNotEquivalent_ThenEqualsReturnsFalse()
+        public void Equals_WhenObjectsNotEquivalent()
         {
             var ref1 = new DiskTypeLocator("proj", "zone1", "pd-standard");
             var ref2 = new DiskTypeLocator("proj", "zone2", "pd-standard");
@@ -222,7 +222,7 @@ namespace Google.Solutions.Apis.Test.Locator
         //---------------------------------------------------------------------
 
         [Test]
-        public void ToString_WhenCreatedFromPath_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromPath()
         {
             var path = "projects/project-1/zones/us-central1-a/diskTypes/pd-standard";
 
@@ -231,7 +231,7 @@ namespace Google.Solutions.Apis.Test.Locator
         }
 
         [Test]
-        public void ToString_WhenCreatedFromUrl_ThenToStringReturnsPath()
+        public void ToString_WhenCreatedFromUrl()
         {
             var path = "projects/project-1/zones/us-central1-a/diskTypes/pd-standard";
 

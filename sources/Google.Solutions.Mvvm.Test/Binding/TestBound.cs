@@ -55,7 +55,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void Value_WhenInitialized_ThenGetValueReturns()
+        public void Value_WhenInitialized()
         {
             var bound = new Bound<string>
             {
@@ -88,7 +88,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void ConversionOp_WhenInitialized_ThenGetConversionReturns()
+        public void ConversionOp_WhenInitialized()
         {
             var bound = new Bound<string>
             {
@@ -104,14 +104,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //-----------------------------------------------------------
 
         [Test]
-        public void ToString_WhenNotInitialized_ThenToStringReturnsEmpty()
+        public void ToString_WhenNotInitialized()
         {
             var bound = new Bound<string>();
             Assert.That(bound.ToString(), Is.EqualTo(""));
         }
 
         [Test]
-        public void ToString_WhenInitialized_ThenToStringReturnsValue()
+        public void ToString_WhenInitialized()
         {
             var bound = new Bound<string>
             {

@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsValidProfileName_WhenNameIsNullOrEmpty_ThenIsValidProfileNameReturnsFalse()
+        public void IsValidProfileName_WhenNameIsNullOrEmpty()
         {
             Assert.That(UserProfile.IsValidProfileName(null), Is.False);
             Assert.That(UserProfile.IsValidProfileName(string.Empty), Is.False);
@@ -45,32 +45,32 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         }
 
         [Test]
-        public void IsValidProfileName_WhenNameHasLeadingOrTrailingSpaces_ThenIsValidProfileNameReturnsFalse()
+        public void IsValidProfileName_WhenNameHasLeadingOrTrailingSpaces()
         {
             Assert.That(UserProfile.IsValidProfileName(" foo"), Is.False);
             Assert.That(UserProfile.IsValidProfileName("foo\t"), Is.False);
         }
 
         [Test]
-        public void IsValidProfileName_WhenNameContainsUmlauts_ThenIsValidProfileNameReturnsFalse()
+        public void IsValidProfileName_WhenNameContainsUmlauts()
         {
             Assert.That(UserProfile.IsValidProfileName("Föö"), Is.False);
         }
 
         [Test]
-        public void IsValidProfileName_WhenNameIsTooLong_ThenIsValidProfileNameReturnsFalse()
+        public void IsValidProfileName_WhenNameIsTooLong()
         {
             Assert.That(UserProfile.IsValidProfileName("This profile name is way too long"), Is.False);
         }
 
         [Test]
-        public void IsValidProfileName_WhenNameIsAlphanumeric_ThenIsValidProfileNameReturnsTrue()
+        public void IsValidProfileName_WhenNameIsAlphanumeric()
         {
             Assert.That(UserProfile.IsValidProfileName("This is a valid name"), Is.True);
         }
 
         [Test]
-        public void IsValidProfileName_WhenNameIsDefault_ThenIsValidProfileNameReturnsFalse()
+        public void IsValidProfileName_WhenNameIsDefault()
         {
             Assert.That(UserProfile.IsValidProfileName(UserProfile.DefaultName.ToLower()), Is.False);
         }

@@ -39,7 +39,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void TryRead_WhenValueNotSet_ThenTryReadReturnsFalse()
+        public void TryRead_WhenValueNotSet()
         {
             var dictionary = new Dictionary<string, string>();
             var accessor = CreateAccessor("test");
@@ -48,7 +48,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public virtual void TryRead_WhenValueSet_ThenTryReadReturnsTrue()
+        public virtual void TryRead_WhenValueSet()
         {
             var dictionary = new Dictionary<string, string>();
             var accessor = CreateAccessor("test");
@@ -63,7 +63,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void Delete_WhenValueNotSet_ThenDeleteReturns()
+        public void Delete_WhenValueNotSet()
         {
             var dictionary = new Dictionary<string, string>();
             var accessor = CreateAccessor("test");

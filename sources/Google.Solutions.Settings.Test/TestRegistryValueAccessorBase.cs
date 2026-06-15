@@ -43,7 +43,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void TryRead_WhenValueNotSet_ThenTryReadReturnsFalse()
+        public void TryRead_WhenValueNotSet()
         {
             using (var key = RegistryKeyPath.ForCurrentTest().CreateKey())
             {
@@ -54,7 +54,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public virtual void TryRead_WhenValueSet_ThenTryReadReturnsTrue()
+        public virtual void TryRead_WhenValueSet()
         {
             using (var key = RegistryKeyPath.ForCurrentTest().CreateKey())
             {
@@ -84,7 +84,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void Delete_WhenValueNotSet_ThenDeleteReturns()
+        public void Delete_WhenValueNotSet()
         {
             using (var key = RegistryKeyPath.ForCurrentTest().CreateKey())
             {

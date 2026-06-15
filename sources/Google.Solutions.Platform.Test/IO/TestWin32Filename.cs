@@ -92,7 +92,7 @@ namespace Google.Solutions.Platform.Test.IO
         }
 
         [Test]
-        public void EscapeFilename_WhenFilenameNotWin32Compliant_ThenEscapeFilenameReturnsCompliantName()
+        public void EscapeFilename_WhenFilenameNotWin32Compliant()
         {
             Assert.That(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename(".")), Is.True);
             Assert.That(Win32Filename.IsValidFilename(Win32Filename.EscapeFilename("file.")), Is.True);

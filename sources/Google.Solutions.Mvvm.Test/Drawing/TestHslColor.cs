@@ -61,7 +61,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         //---------------------------------------------------------------------
 
         [Test]
-        public void Equals_WhenValuesSame_ThenEqualsReturnTrue()
+        public void Equals_WhenValuesSame()
         {
             var c = new HslColor(1.0f, 1.0f, 1.0f);
 

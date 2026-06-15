@@ -297,7 +297,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task Read_WhenServerClosesConnectionGracefully_ThenReadReturnsZero()
+        public async Task Read_WhenServerClosesConnectionGracefully()
         {
             var stream = new MockStream()
             {

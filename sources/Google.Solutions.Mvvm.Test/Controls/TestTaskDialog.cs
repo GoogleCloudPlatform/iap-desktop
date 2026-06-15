@@ -45,7 +45,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void ShowDialog_WhenOkClicked_ThenShowDialogReturnsOk()
+        public void ShowDialog_WhenOkClicked()
         {
             var parameters = new TaskDialogParameters("heading", "caption", "text");
             parameters.Buttons.Add(TaskDialogStandardButton.OK);
@@ -75,7 +75,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void ShowDialog_WhenCancelClicked_ThenShowDialogReturnsCancel()
+        public void ShowDialog_WhenCancelClicked()
         {
             var parameters = new TaskDialogParameters("heading", "caption", "text");
             parameters.Buttons.Add(TaskDialogStandardButton.Yes);
