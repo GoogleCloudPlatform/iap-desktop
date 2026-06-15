@@ -29,7 +29,7 @@ namespace Google.Solutions.Mvvm.Test.Cache
     public class TestLeastRecentlyUsedCache
     {
         [Test]
-        public void Ctor_WhenCapacityTooSmall_ThenArgumentExceptionIsThrown()
+        public void Ctor_WhenCapacityTooSmall()
         {
             Assert.Throws<ArgumentException>(() => new LeastRecentlyUsedCache<string, string>(0));
         }

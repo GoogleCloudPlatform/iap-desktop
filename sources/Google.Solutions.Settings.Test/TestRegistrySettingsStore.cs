@@ -33,7 +33,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void Read_WhenTypeUnsupported_ThenReadThrowsException()
+        public void Read_WhenTypeUnsupported()
         {
             using (var key = new RegistrySettingsStore(
                 RegistryKeyPath.ForCurrentTest().CreateKey()))
@@ -105,7 +105,7 @@ namespace Google.Solutions.Settings.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void SetValue_WhenCustomValidationFails_ThenSetValueThrowsException()
+        public void SetValue_WhenCustomValidationFails()
         {
             using (var key = new RegistrySettingsStore(
                 RegistryKeyPath.ForCurrentTest().CreateKey()))

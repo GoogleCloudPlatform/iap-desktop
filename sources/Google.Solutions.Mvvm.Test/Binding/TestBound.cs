@@ -48,7 +48,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //-----------------------------------------------------------
 
         [Test]
-        public void Value_WhenNotInitialized_ThenGetValueThrowsException()
+        public void Value_WhenNotInitialized()
         {
             var bound = new Bound<string>();
             Assert.Throws<InvalidOperationException>(() => bound.Value.ToString());
@@ -66,7 +66,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void Value_WhenInitialized_ThenSetValueThrowsException()
+        public void Value_WhenReinitialized()
         {
             var bound = new Bound<string>
             {
@@ -81,7 +81,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //-----------------------------------------------------------
 
         [Test]
-        public void ConversionOp_WhenNotInitialized_ThenGetConversionThrowsException()
+        public void ConversionOp_WhenNotInitialized()
         {
             var bound = new Bound<string>();
             Assert.Throws<InvalidOperationException>(() => ((string)bound).ToString());

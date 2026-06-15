@@ -33,63 +33,63 @@ namespace Google.Solutions.IapDesktop.Application.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void FromString_WhenStringIsNull_ThenFromStringThrowsArgumentNullException()
+        public void FromString_WhenStringIsNull()
         {
             Assert.Throws<ArgumentNullException>(() => IapRdpUrl.FromString(null!));
         }
 
         [Test]
-        public void FromString_WhenStringIsEmpty_ThenFromStringThrowsUriFormatException()
+        public void FromString_WhenStringIsEmpty()
         {
             Assert.Throws<UriFormatException>(() => IapRdpUrl.FromString(string.Empty));
         }
 
         [Test]
-        public void FromString_WhenStringIsNotAUri_ThenFromStringThrowsUriFormatException()
+        public void FromString_WhenStringIsNotAUri()
         {
             Assert.Throws<UriFormatException>(() => IapRdpUrl.FromString("::"));
         }
 
         [Test]
-        public void FromString_WhenSchemeIsWrong_ThenFromStringThrowsIapRdpUrlFormatException()
+        public void FromString_WhenSchemeIsWrong()
         {
             Assert.Throws<IapRdpUrlFormatException>(() => IapRdpUrl.FromString("http://www/"));
         }
 
         [Test]
-        public void FromString_WhenHostNotEmpty_ThenFromStringThrowsIapRdpUrlFormatException()
+        public void FromString_WhenHostNotEmpty()
         {
             Assert.Throws<IapRdpUrlFormatException>(() => IapRdpUrl.FromString("iap-rdp://host/my-project/us-central1-a/my-instance"));
         }
 
         [Test]
-        public void FromString_WhenLeadingSlashMissing_ThenFromStringThrowsIapRdpUrlFormatException()
+        public void FromString_WhenLeadingSlashMissing()
         {
             Assert.Throws<IapRdpUrlFormatException>(() => IapRdpUrl.FromString("iap-rdp:my-project/us-central1-a/my-instance"));
         }
 
         [Test]
-        public void FromString_WhenTooManySlashed_ThenFromStringThrowsIapRdpUrlFormatException()
+        public void FromString_WhenTooManySlashed()
         {
             Assert.Throws<IapRdpUrlFormatException>(() => IapRdpUrl.FromString("iap-rdp:my-project/us-central1-a/my-instance/baz"));
         }
 
         [Test]
-        public void FromString_WhenProjectIdIsIsInvalid_ThenFromStringThrowsIapRdpUrlFormatException()
+        public void FromString_WhenProjectIdIsIsInvalid()
         {
             Assert.Throws<IapRdpUrlFormatException>(() =>
                 IapRdpUrl.FromString("iap-rdp:///__/us-central1-a/my-instance"));
         }
 
         [Test]
-        public void FromString_WhenZoneIdIsIsInvalid_ThenFromStringThrowsIapRdpUrlFormatException()
+        public void FromString_WhenZoneIdIsIsInvalid()
         {
             Assert.Throws<IapRdpUrlFormatException>(() =>
                 IapRdpUrl.FromString("iap-rdp:///my-project/__/my-instance"));
         }
 
         [Test]
-        public void FromString_WhenInstanceNameIsIsInvalid_ThenFromStringThrowsIapRdpUrlFormatException()
+        public void FromString_WhenInstanceNameIsIsInvalid()
         {
             Assert.Throws<IapRdpUrlFormatException>(() =>
                 IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/__"));

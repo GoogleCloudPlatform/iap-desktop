@@ -104,7 +104,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void Contains_WhenProcessDoesNotExist_ThenContainsThrowsException()
+        public void Contains_WhenProcessDoesNotExist()
         {
             using (var job = new Win32Job(true))
             {
@@ -161,7 +161,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void WaitForProcesses_WhenTimeoutElapses_ThenWaitThrowsException()
+        public void WaitForProcesses_WhenTimeoutElapses()
         {
             var factory = new Win32ProcessFactory();
 

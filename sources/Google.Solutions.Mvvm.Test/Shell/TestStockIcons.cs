@@ -31,7 +31,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
     public class TestStockIcons
     {
         [Test]
-        public void GetIcon_WhenIdInvalid_ThenGetIconThrowsException()
+        public void GetIcon_WhenIdInvalid()
         {
             Assert.Throws<COMException>(
                 () => StockIcons.GetIcon(

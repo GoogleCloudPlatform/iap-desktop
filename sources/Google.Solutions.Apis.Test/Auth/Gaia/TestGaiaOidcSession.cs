@@ -81,7 +81,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         //---------------------------------------------------------------------
 
         [Test]
-        public void Splice_WhenNewSessionNotCompatible_ThenThrowsException()
+        public void Splice_WhenNewSessionNotCompatible()
         {
             var idToken = new UnverifiedGaiaJsonWebToken(
                 new GoogleJsonWebSignature.Header(),

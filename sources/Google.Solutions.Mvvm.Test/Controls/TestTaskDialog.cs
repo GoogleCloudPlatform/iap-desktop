@@ -33,7 +33,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
     public class TestTaskDialog
     {
         [Test]
-        public void WhenButtonsEmpty_ThenShowDialogThrowsException()
+        public void WhenButtonsEmpty()
         {
             var parameters = new TaskDialogParameters("heading", "caption", "text");
             Assert.Throws<InvalidOperationException>(

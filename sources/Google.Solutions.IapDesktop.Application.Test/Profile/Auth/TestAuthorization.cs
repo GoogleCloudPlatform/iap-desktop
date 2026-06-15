@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public void Session_WhenNotAuthorized_ThenSessionThrowsException()
+        public void Session_WhenNotAuthorized()
         {
             var client = CreateClient();
             var authorization = new Authorization(

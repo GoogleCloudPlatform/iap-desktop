@@ -58,7 +58,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void FromProcessId_WhenPidNotFound_ThenFromProcessIdThrowsException()
+        public void FromProcessId_WhenPidNotFound()
         {
             Assert.Throws<DispatchException>(
                 () => WtsSession.FromProcessId(uint.MaxValue));

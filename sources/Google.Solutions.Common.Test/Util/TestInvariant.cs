@@ -33,7 +33,7 @@ namespace Google.Solutions.Common.Test.Util
         //---------------------------------------------------------------------
 
         [Test]
-        public void ExpectNotNull_WhenNull_ThenExpectNotNullThrowsException()
+        public void ExpectNotNull_WhenNull()
         {
             Assert.Throws<ArgumentNullException>(
                 () => Invariant.ExpectNotNull<string>(null, "variable"));

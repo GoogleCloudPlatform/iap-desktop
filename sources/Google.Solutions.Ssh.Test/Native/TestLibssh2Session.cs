@@ -43,7 +43,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public void Handle_WhenNotInitialized_ThenHandleThrowsException()
+        public void Handle_WhenNotInitialized()
         {
             using (var session = CreateSession())
             {
@@ -232,7 +232,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void GetSupportedAlgorithms_WhenRequestingInvalidType_ThenSupportedAlgorithmsThrowsException()
+        public void GetSupportedAlgorithms_WhenRequestingInvalidType()
         {
             using (var session = CreateSession())
             {
@@ -288,7 +288,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void SetPreferredMethods_WhenPreferredMethodIsEmpty_ThenSetPreferredMethodsThrowsNotSupportedError()
+        public void SetPreferredMethods_WhenPreferredMethodIsEmpty()
         {
             using (var session = CreateSession())
             {
@@ -333,7 +333,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void Connect_WhenPortIsNotSsh_ThenHandshakeThrowsDisconnect()
+        public void Connect_WhenPortIsNotSsh()
         {
             using (var session = CreateSession())
             {

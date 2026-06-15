@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void FindLatestRelease_WhenServerReturnsError_ThenFindLatestReleaseThrowsException()
+        public void FindLatestRelease_WhenServerReturnsError()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void ListReleases_WhenServerReturnsError_ThenListReleasesThrowsException()
+        public void ListReleases_WhenServerReturnsError()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter

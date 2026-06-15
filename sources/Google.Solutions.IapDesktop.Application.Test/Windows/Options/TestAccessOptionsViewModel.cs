@@ -324,7 +324,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void ApplyChanges_WhenPscAndDcaEnabled_ThenApplyChangesThrowsException()
+        public void ApplyChanges_WhenPscAndDcaEnabled()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -342,7 +342,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void ApplyChanges_WhenPscEndpointInvalid_ThenApplyChangesThrowsException()
+        public void ApplyChanges_WhenPscEndpointInvalid()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();

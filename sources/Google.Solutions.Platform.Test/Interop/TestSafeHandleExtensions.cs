@@ -67,7 +67,7 @@ namespace Google.Solutions.Platform.Test.Interop
         //---------------------------------------------------------------------
 
         [Test]
-        public void Wait_WhenTimeoutElapses_ThenWaitAsyncThrowsException()
+        public void Wait_WhenTimeoutElapses()
         {
             using (var cts = new CancellationTokenSource())
             using (var ev = new ManualResetEvent(false))
@@ -80,7 +80,7 @@ namespace Google.Solutions.Platform.Test.Interop
         }
 
         [Test]
-        public void Wait_WhenCancelled_ThenWaitAsyncThrowsException()
+        public void Wait_WhenCancelled()
         {
             using (var ev = new ManualResetEvent(false))
             using (var cts = new CancellationTokenSource())

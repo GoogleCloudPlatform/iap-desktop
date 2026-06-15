@@ -319,7 +319,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void SetAnyValue_WhenValueIsOfWrongType_ThenThrowsException()
+        public void SetAnyValue_WhenValueIsOfWrongType()
         {
             using (var key = CreateSettingsStore())
             {

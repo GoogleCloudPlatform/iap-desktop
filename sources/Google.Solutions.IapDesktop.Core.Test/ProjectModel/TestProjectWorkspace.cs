@@ -685,7 +685,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task GetNode_WhenLocatorOfUnknownType_ThenGetNodeAsyncThrowsArgumentException()
+        public async Task GetNode_WhenLocatorOfUnknownType()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(SampleProjectId).Object,

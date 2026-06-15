@@ -328,7 +328,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
 
         [Test]
-        public async Task Read_WhenServerClosesConnectionWithNonNormalError_ThenReadThrowsException()
+        public async Task Read_WhenServerClosesConnectionWithNonNormalError()
         {
             var stream = new MockStream()
             {

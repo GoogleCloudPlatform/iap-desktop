@@ -85,7 +85,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         //---------------------------------------------------------------------
 
         [Test]
-        public void Splice_WhenNewSessionNotCompatible_ThenThrowsException()
+        public void Splice_WhenNewSessionNotCompatible()
         {
             var session = new WorkforcePoolSession(
                 CreateUserCredential("rt", "at"),

@@ -118,7 +118,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public async Task Authorize_WhenBrowserFlowFails_ThenThrowsException()
+        public async Task Authorize_WhenBrowserFlowFails()
         {
             var store = new OfflineStore();
             var client = new WorkforcePoolClientWithMockFlow(
@@ -145,7 +145,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public async Task Authorize_WhenTokenExchangeFails_ThenThrowsException()
+        public async Task Authorize_WhenTokenExchangeFails()
         {
             var store = new OfflineStore();
             var client = new WorkforcePoolClientWithMockFlow(

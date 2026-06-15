@@ -67,7 +67,7 @@ namespace Google.Solutions.Settings.Test
         }
 
         [Test]
-        public void TryRead_WhenValueHasWrongKind_ThenTryReadThrowsException()
+        public void TryRead_WhenValueHasWrongKind()
         {
             using (var key = RegistryKeyPath.ForCurrentTest().CreateKey())
             {

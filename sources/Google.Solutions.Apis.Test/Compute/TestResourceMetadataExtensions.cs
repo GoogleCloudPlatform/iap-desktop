@@ -282,7 +282,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public async Task AddMetadata_WhenUpdateKeepsConflicting_ThenThrowsException()
+        public async Task AddMetadata_WhenUpdateKeepsConflicting()
         {
             var key = Guid.NewGuid().ToString();
             var projectsResource = TestProject.CreateComputeService().Projects;

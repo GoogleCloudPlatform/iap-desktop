@@ -33,7 +33,7 @@ namespace Google.Solutions.Common.Test.Util
         //---------------------------------------------------------------------
 
         [Test]
-        public void ExpectNotNull_WhenNull_ThenExpectNotNullThrowsException()
+        public void ExpectNotNull_WhenNull()
         {
             Assert.Throws<ArgumentNullException>(
                 () => ((string?)null).ExpectNotNull("test"));
@@ -53,7 +53,7 @@ namespace Google.Solutions.Common.Test.Util
         //---------------------------------------------------------------------
 
         [Test]
-        public void ExpectNotEmpty_WhenNullOrEmpty_ThenExpectNotEmptyThrowsException()
+        public void ExpectNotEmpty_WhenNullOrEmpty()
         {
             Assert.Throws<ArgumentNullException>(
                 () => ((string?)null).ExpectNotEmpty("test"));
@@ -72,7 +72,7 @@ namespace Google.Solutions.Common.Test.Util
         //---------------------------------------------------------------------
 
         [Test]
-        public void ExpectNotNullOrZeroSized_WhenNullOrEmpty_ThenExpectNotNullOrZeroSizedThrowsException()
+        public void ExpectNotNullOrZeroSized_WhenNullOrEmpty()
         {
             Assert.Throws<ArgumentNullException>(
                 () => Precondition.ExpectNotNullOrZeroSized((string[]?)null, "test"));
@@ -92,7 +92,7 @@ namespace Google.Solutions.Common.Test.Util
         //---------------------------------------------------------------------
 
         [Test]
-        public void Expect_WhenConditionFalse_ThenExpectThrowsException()
+        public void Expect_WhenConditionFalse()
         {
             Assert.Throws<ArgumentException>(
                 () => Precondition.Expect(false, "test"));
@@ -110,7 +110,7 @@ namespace Google.Solutions.Common.Test.Util
         //---------------------------------------------------------------------
 
         [Test]
-        public void ExpectInRange_WhenOutOfRange_ThenExpectInRangeThrowsException()
+        public void ExpectInRange_WhenOutOfRange()
         {
             Assert.Throws<ArgumentOutOfRangeException>(
                 () => (1.1f).ExpectInRange(0f, 1f, "test"));

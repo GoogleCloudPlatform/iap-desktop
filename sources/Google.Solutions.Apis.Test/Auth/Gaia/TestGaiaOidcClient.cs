@@ -211,7 +211,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void CreateSession_WhenTokenResponseLacksIdTokenAndOfflineCredentialIsNull_ThenThrowsException()
+        public void CreateSession_WhenTokenResponseLacksIdTokenAndOfflineCredentialIsNull()
         {
             var oldIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
@@ -237,7 +237,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void CreateSession_WhenTokenResponseLacksIdTokenAndOfflineCredentialContainsUnusableIdToken_ThenThrowsException()
+        public void CreateSession_WhenTokenResponseLacksIdTokenAndOfflineCredentialContainsUnusableIdToken()
         {
             var oldIdToken = new UnverifiedGaiaJsonWebToken(
                 new Google.Apis.Auth.GoogleJsonWebSignature.Header(),
@@ -269,7 +269,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public void CreateSession_WhenTokenResponseLacksIdTokenAndOfflineCredentialLacksIdToken_ThenThrowsException()
+        public void CreateSession_WhenTokenResponseLacksIdTokenAndOfflineCredentialLacksIdToken()
         {
             var tokenResponse = new TokenResponse()
             {
@@ -475,7 +475,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public async Task AuthorizeWithBrowser_WhenBrowserFlowFails_ThenThrowsException()
+        public async Task AuthorizeWithBrowser_WhenBrowserFlowFails()
         {
             var store = new OfflineStore();
             var client = new GaiaOidcClientWithMockFlow(
@@ -501,7 +501,7 @@ namespace Google.Solutions.Apis.Test.Auth.Gaia
         }
 
         [Test]
-        public async Task AuthorizeWithBrowser_WhenTokenExchangeFails_ThenThrowsException()
+        public async Task AuthorizeWithBrowser_WhenTokenExchangeFails()
         {
             var store = new OfflineStore();
             var client = new GaiaOidcClientWithMockFlow(
