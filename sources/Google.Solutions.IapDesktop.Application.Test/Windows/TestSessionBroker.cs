@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsConnected_WhenNoSessionActive_ThenIsConnectedReturnsFalse()
+        public void IsConnected_WhenNoSessionActive()
         {
             using (var form = new TestMainForm())
             {
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void IsConnected_WhenOnlyOtherSessionsFound_ThenIsConnectedReturnsFalse()
+        public void IsConnected_WhenOnlyOtherSessionsFound()
         {
             using (var form = new TestMainForm())
             {
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void IsConnected_WhenMatchingSessionFound_ThenIsConnectedReturnsTrue()
+        public void IsConnected_WhenMatchingSessionFound()
         {
             using (var form = new TestMainForm())
             {
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void IsConnected_WhenMatchingSessionIsClosing_ThenIsConnectedReturnsFalse()
+        public void IsConnected_WhenMatchingSessionIsClosing()
         {
             using (var form = new TestMainForm())
             {
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         //---------------------------------------------------------------------
 
         [Test]
-        public void TryActivateSession_WhenNoSessionActive_ThenTryActivateReturnsFalse()
+        public void TryActivateSession_WhenNoSessionActive()
         {
 
             using (var form = new TestMainForm())
@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void TryActivateSession_WhenMatchingSessionFound_ThenTryActivateReturnsTrue()
+        public void TryActivateSession_WhenMatchingSessionFound()
         {
             using (var form = new TestMainForm())
             {
@@ -176,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void TryActivateSession_WhenMatchingSessionIsClosing_ThenTryActivateReturnsFalse()
+        public void TryActivateSession_WhenMatchingSessionIsClosing()
         {
             using (var form = new TestMainForm())
             {

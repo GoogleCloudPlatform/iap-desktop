@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void Wait_WhenDialogCancelled_ThenWaitThrowsException()
+        public void Wait_WhenDialogCancelled()
         {
             Assert.Throws<TaskCanceledException>(
                 () => WaitDialog.Wait(

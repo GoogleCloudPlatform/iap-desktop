@@ -67,7 +67,7 @@ namespace Google.Solutions.Apis.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void GetDirections__WhenMtlsEnabled_ThenReturnsMtlsEndpoint()
+        public void GetDirections__WhenMtlsEnabled()
         {
             var endpoint = new ServiceEndpoint<SampleAdapter>(
                 ServiceRoute.Public,
@@ -84,7 +84,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         [Test]
-        public void GetDirections_WhenMtlsEnabledButMtlsEndpointisNull_ThenReturnsTlsEndpoint()
+        public void GetDirections_WhenMtlsEnabledButMtlsEndpointisNull()
         {
             var endpoint = new ServiceEndpoint<SampleAdapter>(
                 ServiceRoute.Public,

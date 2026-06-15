@@ -30,7 +30,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
     public class TestBadgeIcon
     {
         [Test]
-        public void ForTextInitial_WhenTextIsNullOrEmpty_ThenForTextInitialThrowsException()
+        public void ForTextInitial_WhenTextIsNullOrEmpty()
         {
             Assert.Throws<ArgumentNullException>(() => BadgeIcon.ForTextInitial(null!));
             Assert.Throws<ArgumentException>(() => BadgeIcon.ForTextInitial(string.Empty));

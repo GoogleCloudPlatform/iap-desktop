@@ -28,13 +28,13 @@ namespace Google.Solutions.Platform.Test.Net
     public class TestBrowser
     {
         [Test]
-        public void Get_WhenPreferenceIsDefault_ThenGetReturnsDefaultBrowser()
+        public void Get_WhenPreferenceIsDefault()
         {
             Assert.That(Browser.Get(BrowserPreference.Default), Is.SameAs(Browser.Default));
         }
 
         [Test]
-        public void Get_WhenPreferenceIsChrome_ThenGetReturnsDefaultBrowser()
+        public void Get_WhenPreferenceIsChrome()
         {
             if (!ChromeBrowser.IsAvailable)
             {

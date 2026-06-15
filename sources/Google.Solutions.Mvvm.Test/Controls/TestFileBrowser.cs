@@ -121,7 +121,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void Bind_WhenBoundAlready_ThenBindThrowsException()
+        public void Bind_WhenBoundAlready()
         {
             using (var form = new Form()
             {

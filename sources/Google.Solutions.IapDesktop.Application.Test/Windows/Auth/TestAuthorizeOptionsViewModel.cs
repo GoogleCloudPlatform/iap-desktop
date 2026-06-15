@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsOkButtonEnabled_WhenGaiaOptionChecked_ThenIsOkButtonEnabledReturnsTrue()
+        public void IsOkButtonEnabled_WhenGaiaOptionChecked()
         {
             var repository = CreateSettingsRepository(null);
             var viewModel = new AuthorizeOptionsViewModel(repository.Object);
@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public void IsOkButtonEnabled_WhenWorkforcePoolOptionChecked_ThenIsOkButtonEnabledReturnsFalse()
+        public void IsOkButtonEnabled_WhenWorkforcePoolOptionChecked()
         {
             var repository = CreateSettingsRepository(null);
             var viewModel = new AuthorizeOptionsViewModel(repository.Object);
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public void IsOkButtonEnabled_WhenWorkforcePoolOptionCheckedAndDetailsProvided_ThenIsOkButtonEnabledReturnsTrue()
+        public void IsOkButtonEnabled_WhenWorkforcePoolOptionCheckedAndDetailsProvided()
         {
             var repository = CreateSettingsRepository(null);
             var viewModel = new AuthorizeOptionsViewModel(repository.Object);
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Auth
         }
 
         [Test]
-        public void WorkforcePool_WhenLocatorSet_ThenIsWorkforcePoolOptionCheckedReturnsTrue()
+        public void WorkforcePool_WhenLocatorSet()
         {
             var repository = CreateSettingsRepository(SampleProviderLocator);
             var viewModel = new AuthorizeOptionsViewModel(repository.Object);

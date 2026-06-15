@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.ActiveD
         }
 
         [Test]
-        public void JoinDomain_WhenJoinResponseContainsError_ThenJoinDomainThrowsException()
+        public void JoinDomain_WhenJoinResponseContainsError()
         {
             var operationId = Guid.NewGuid();
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");

@@ -77,7 +77,7 @@ namespace Google.Solutions.Common.Test.Linq
         //---------------------------------------------------------------------
 
         [Test]
-        public void Chunk_WhenListSmallerThanChunk_ThenChunkReturnsSingleList()
+        public void Chunk_WhenListSmallerThanChunk()
         {
             var list = new[] { "a", "b", "c" };
             var chunks = list.Chunk(4);
@@ -87,7 +87,7 @@ namespace Google.Solutions.Common.Test.Linq
         }
 
         [Test]
-        public void Chunk_WhenListFillsTwoChunks_ThenChunkReturnsTwoLists()
+        public void Chunk_WhenListFillsTwoChunks()
         {
             var list = new[] { "a", "b", "c", "d" };
             var chunks = list.Chunk(2);
@@ -98,7 +98,7 @@ namespace Google.Solutions.Common.Test.Linq
         }
 
         [Test]
-        public void Chunk_WhenListLargerThanSingleChunk_ThenChunkReturnsTwoLists()
+        public void Chunk_WhenListLargerThanSingleChunk()
         {
             var list = new[] { "a", "b", "c" };
             var chunks = list.Chunk(2);
@@ -113,7 +113,7 @@ namespace Google.Solutions.Common.Test.Linq
         //---------------------------------------------------------------------
 
         [Test]
-        public void ConcatItem_WhenEnumEmpty_ThenConcatItemReturnsSingleItem()
+        public void ConcatItem_WhenEnumEmpty()
         {
             var e = Enumerable.Empty<string>()
                 .ConcatItem("test");

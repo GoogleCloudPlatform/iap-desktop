@@ -364,7 +364,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task GetRootNode_WhenProjectsCached_ThenGetRootNodeAsyncReturnsCachedProjects()
+        public async Task GetRootNode_WhenProjectsCached()
         {
             var computeClient = CreateComputeEngineClientMock(SampleProjectId);
             var resourceManagerAdapter = CreateResourceManagerClientMock();
@@ -512,7 +512,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task GetZoneNodes_WhenZonesCached_ThenGetZoneNodesAsyncReturnsCachedZones()
+        public async Task GetZoneNodes_WhenZonesCached()
         {
             var computeAdapter = CreateComputeEngineClientMock(
                 SampleProjectId,
@@ -685,7 +685,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task GetNode_WhenLocatorOfUnknownType_ThenGetNodeAsyncThrowsArgumentException()
+        public async Task GetNode_WhenLocatorOfUnknownType()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(SampleProjectId).Object,
@@ -703,7 +703,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task GetNode_WhenProjectLocatorValid_ThenGetNodeAsyncReturnsNode()
+        public async Task GetNode_WhenProjectLocatorValid()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(SampleProjectId).Object,
@@ -732,7 +732,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task GetNode_WhenZoneLocatorValid_ThenGetNodeAsyncReturnsNode()
+        public async Task GetNode_WhenZoneLocatorValid()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(
@@ -759,7 +759,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task GetNode_WhenInstanceLocatorValid_ThenGetNodeAsyncReturnsNode()
+        public async Task GetNode_WhenInstanceLocatorValid()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(
@@ -787,7 +787,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task GetNode_WhenProjectNotAddedButZoneLocatorValid_ThenGetNodeAsyncReturnsNull()
+        public async Task GetNode_WhenProjectNotAddedButZoneLocatorValid()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(
@@ -806,7 +806,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         }
 
         [Test]
-        public async Task GetNode_WhenProjectNotAddedButInstanceLocatorValid_ThenGetNodeAsyncReturnsNull()
+        public async Task GetNode_WhenProjectNotAddedButInstanceLocatorValid()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(
@@ -830,7 +830,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task GetActiveNode_WhenNoActiveNodeSet_ThenGetActiveNodeAsyncReturnsRoot()
+        public async Task GetActiveNode_WhenNoActiveNodeSet()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(SampleProjectId).Object,
@@ -854,7 +854,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ProjectModel
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task SetActiveNode_WhenActiveNodeSet_ThenGetActiveNodeAsyncReturnsNode()
+        public async Task SetActiveNode_WhenActiveNodeSet()
         {
             var workspace = new ProjectWorkspace(
                 CreateComputeEngineClientMock(

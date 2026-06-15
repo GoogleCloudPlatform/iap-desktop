@@ -32,7 +32,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
     public class TestControlTheme
     {
         [Test]
-        public void WhenControlIsNull_ThenApplyToReturns()
+        public void WhenControlIsNull()
         {
             new ControlTheme().ApplyTo(null!);
         }

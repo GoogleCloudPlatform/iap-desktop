@@ -49,7 +49,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void CreateProcess_WhenExecutableNotFound_ThenCreateProcessThrowsException()
+        public void CreateProcess_WhenExecutableNotFound()
         {
             var factory = new Win32ProcessFactory();
 
@@ -96,7 +96,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void CreateProcessWithPseudoConsole_WhenExecutableNotFound_ThenThrowsException()
+        public void CreateProcessWithPseudoConsole_WhenExecutableNotFound()
         {
             var factory = new Win32ProcessFactory();
 
@@ -208,7 +208,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void CreateProcessAsUser_WhenUsingInvalidLocalCredentialsForNetonlyLogon_ThenCreateProcessAsUserThrowsException()
+        public void CreateProcessAsUser_WhenUsingInvalidLocalCredentialsForNetonlyLogon()
         {
             var factory = new Win32ProcessFactory();
 

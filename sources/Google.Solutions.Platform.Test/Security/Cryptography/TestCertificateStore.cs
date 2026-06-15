@@ -107,7 +107,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         //---------------------------------------------------------------------
 
         [Test]
-        public void ListUserCertificates_WhenPredicateMatches_ThenListUserCertificatesReturnsUserCertificate()
+        public void ListUserCertificates_WhenPredicateMatches()
         {
             CertificateStore.AddUserCertitficate(ExampleCertificate);
 
@@ -124,7 +124,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         }
 
         [Test]
-        public void ListUserCertificates_WhenPredicateDoesNotMatch_ThenListUserCertificatesReturnsEmpty()
+        public void ListUserCertificates_WhenPredicateDoesNotMatch()
         {
             CertificateStore.AddUserCertitficate(ExampleCertificate);
 

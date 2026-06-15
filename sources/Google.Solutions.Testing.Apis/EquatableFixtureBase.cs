@@ -50,7 +50,7 @@ namespace Google.Solutions.Testing.Apis
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenOtherIsNull_ThenEqualsReturnsFalse()
+        public void WhenOtherIsNull()
         {
             var obj = CreateInstance();
 
@@ -62,7 +62,7 @@ namespace Google.Solutions.Testing.Apis
         }
 
         [Test]
-        public void WhenOtherIsDifferent_ThenEqualsReturnsFalse()
+        public void WhenOtherIsDifferent()
         {
             var obj = CreateInstance();
 
@@ -70,7 +70,7 @@ namespace Google.Solutions.Testing.Apis
         }
 
         [Test]
-        public void WhenOtherIsOfDifferentType_ThenEqualsReturnsFalse()
+        public void WhenOtherIsOfDifferentType()
         {
             var obj = CreateInstance();
 
@@ -78,7 +78,7 @@ namespace Google.Solutions.Testing.Apis
         }
 
         [Test]
-        public void WhenObjectsAreSame_ThenEqualsReturnsTrue()
+        public void WhenObjectsAreSame()
         {
             var obj = CreateInstance();
             var other = obj;
@@ -88,7 +88,7 @@ namespace Google.Solutions.Testing.Apis
         }
 
         [Test]
-        public void WhenObjectsAreEquivalent_ThenEqualsReturnsTrue()
+        public void WhenObjectsAreEquivalent()
         {
             var obj1 = CreateInstance();
             var obj2 = CreateInstance();

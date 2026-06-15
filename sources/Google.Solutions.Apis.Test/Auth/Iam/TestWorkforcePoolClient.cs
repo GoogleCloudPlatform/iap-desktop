@@ -118,7 +118,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public async Task Authorize_WhenBrowserFlowFails_ThenThrowsException()
+        public async Task Authorize_WhenBrowserFlowFails()
         {
             var store = new OfflineStore();
             var client = new WorkforcePoolClientWithMockFlow(
@@ -145,7 +145,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public async Task Authorize_WhenTokenExchangeFails_ThenThrowsException()
+        public async Task Authorize_WhenTokenExchangeFails()
         {
             var store = new OfflineStore();
             var client = new WorkforcePoolClientWithMockFlow(
@@ -183,7 +183,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public async Task Authorize_WhenTokenExchangeSucceeds_ThenReturnsSession()
+        public async Task Authorize_WhenTokenExchangeSucceeds()
         {
             var store = new OfflineStore();
             var client = new WorkforcePoolClientWithMockFlow(
@@ -237,7 +237,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task TryAuthorizeSilently_WhenTokenExchangeFails_ThenReturnsNull()
+        public async Task TryAuthorizeSilently_WhenTokenExchangeFails()
         {
             var store = new OfflineStore()
             {
@@ -272,7 +272,7 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
         }
 
         [Test]
-        public async Task TryAuthorizeSilently_WhenTokenExchangeSucceeds_ThenReturnsSession()
+        public async Task TryAuthorizeSilently_WhenTokenExchangeSucceeds()
         {
             var store = new OfflineStore()
             {

@@ -61,7 +61,7 @@ namespace Google.Solutions.Apis.Test.Auth
         }
 
         [Test]
-        public void WhenPathLacksSlash_ThenConstructorThrowsException()
+        public void WhenPathLacksSlash()
         {
             Assert.Throws<ArgumentException>(
                 () => new LoopbackCodeReceiver(

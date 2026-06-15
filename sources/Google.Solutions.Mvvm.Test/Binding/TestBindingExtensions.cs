@@ -190,7 +190,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void OnControlPropertyChange_WhenControlHasNoAppropriateEvent_ThenOnControlPropertyChangeThrowsArgumentException()
+        public void OnControlPropertyChange_WhenControlHasNoAppropriateEvent()
         {
             var observed = new TextBox();
 

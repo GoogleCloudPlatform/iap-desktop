@@ -297,7 +297,7 @@ namespace Google.Solutions.Iap.Test.Protocol
         }
 
         [Test]
-        public async Task Read_WhenServerClosesConnectionGracefully_ThenReadReturnsZero()
+        public async Task Read_WhenServerClosesConnectionGracefully()
         {
             var stream = new MockStream()
             {
@@ -328,7 +328,7 @@ namespace Google.Solutions.Iap.Test.Protocol
 
 
         [Test]
-        public async Task Read_WhenServerClosesConnectionWithNonNormalError_ThenReadThrowsException()
+        public async Task Read_WhenServerClosesConnectionWithNonNormalError()
         {
             var stream = new MockStream()
             {

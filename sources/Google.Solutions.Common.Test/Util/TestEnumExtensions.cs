@@ -42,7 +42,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void IsSingleFlag_WhenZero_ThenIsSingleFlagReturnsFalse()
+        public void IsSingleFlag_WhenZero()
         {
             var e = SampleFlags.Zero;
             Assert.That(e.IsSingleFlag(), Is.False);
@@ -50,7 +50,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void IsSingleFlag_WhenOneFlagSet_ThenIsSingleFlagReturnsTrue()
+        public void IsSingleFlag_WhenOneFlagSet()
         {
             var e = SampleFlags.Four;
             Assert.That(e.IsSingleFlag(), Is.True);
@@ -58,7 +58,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void IsSingleFlag_WhenTwoFlagsSet_ThenIsSingleFlagReturnsFalse()
+        public void IsSingleFlag_WhenTwoFlagsSet()
         {
             var e = SampleFlags.One | SampleFlags.Four;
             Assert.That(e.IsSingleFlag(), Is.False);
@@ -70,25 +70,25 @@ namespace Google.Solutions.Common.Test.Util
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsValidFlagCombination_WhenAllFlagsClear_ThenIsValidFlagCombinationReturnsTrue()
+        public void IsValidFlagCombination_WhenAllFlagsClear()
         {
             Assert.That(SampleFlags.Zero.IsValidFlagCombination(), Is.True);
         }
 
         [Test]
-        public void IsValidFlagCombination_WhenOneFlagSet_ThenIsValidFlagCombinationReturnsTrue()
+        public void IsValidFlagCombination_WhenOneFlagSet()
         {
             Assert.That(SampleFlags.One.IsValidFlagCombination(), Is.True);
         }
 
         [Test]
-        public void IsValidFlagCombination_WhenMultipleFlagsSet_ThenIsValidFlagCombinationReturnsTrue()
+        public void IsValidFlagCombination_WhenMultipleFlagsSet()
         {
             Assert.That((SampleFlags.One | SampleFlags.Four).IsValidFlagCombination(), Is.True);
         }
 
         [Test]
-        public void IsValidFlagCombination_WhenNonexistingFlagSet_ThenIsValidFlagCombinationReturnsFalse()
+        public void IsValidFlagCombination_WhenNonexistingFlagSet()
         {
             Assert.That((SampleFlags.One | (SampleFlags)16).IsValidFlagCombination(), Is.False);
         }
@@ -106,7 +106,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void GetAttribute_WhenValueHasAttribute_ThenGetAttributeReturnsValue()
+        public void GetAttribute_WhenValueHasAttribute()
         {
             var a = SampleEnumWithAttributes.WithAttribute
                 .GetAttribute<System.ComponentModel.DescriptionAttribute>();
@@ -115,7 +115,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void GetAttribute_WhenValueHasNoAttribute_ThenGetAttributeReturnsNull()
+        public void GetAttribute_WhenValueHasNoAttribute()
         {
             var a = SampleEnumWithAttributes.NoAttribute
                 .GetAttribute<System.ComponentModel.DescriptionAttribute>();

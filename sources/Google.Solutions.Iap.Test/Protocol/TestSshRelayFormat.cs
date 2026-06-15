@@ -52,7 +52,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void Encode_WhenBufferTooSmall_ThenEncodeThrowsException()
+            public void Encode_WhenBufferTooSmall()
             {
                 var message = new byte[1];
 
@@ -74,7 +74,7 @@ namespace Google.Solutions.Iap.Test.Protocol
             }
 
             [Test]
-            public void Decode_WhenMessageTruncated_ThenDecodeThrowsException()
+            public void Decode_WhenMessageTruncated()
             {
                 var message = new byte[] { 0 };
 

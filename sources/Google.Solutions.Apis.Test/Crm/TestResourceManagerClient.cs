@@ -300,23 +300,18 @@ namespace Google.Solutions.Apis.Test.Crm
         //---------------------------------------------------------------------
 
         [Test]
-        public void ProjectFilter_WhenTermContainsSpecialCharacters_ThenByProjectIdReturnsFilter()
+        public void ProjectFilter_WhenTermContainsSpecialCharacters()
         {
             Assert.That(
                 ProjectFilter.ByProjectId("foo:'\"-bar").ToString(),
                 Is.EqualTo("id:\"foo-bar\""));
-        }
-
-        [Test]
-        public void ProjectFilter_WhenTermContainsSpecialCharacters_ThenByTermReturnsFilter()
-        {
             Assert.That(
                 ProjectFilter.ByTerm("foo:'\"-bar").ToString(),
                 Is.EqualTo("name:\"*foo-bar*\" OR id:\"*foo-bar*\""));
         }
 
         [Test]
-        public void ProjectFilter_WhenTermEmpty_ThenByTermReturnsFilter()
+        public void ProjectFilter_WhenTermEmpty()
         {
             Assert.That(
                 ProjectFilter.ByTerm(string.Empty).ToString(),

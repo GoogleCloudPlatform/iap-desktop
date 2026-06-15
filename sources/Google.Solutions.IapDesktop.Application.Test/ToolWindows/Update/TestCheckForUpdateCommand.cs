@@ -151,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         //---------------------------------------------------------------------
 
         [Test]
-        public void PromptForAction_WhenReleaseIsNull_ThenPromptForActionReturns()
+        public void PromptForAction_WhenReleaseIsNull()
         {
             var policy = new Mock<IUpdatePolicy>();
 
@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public void PromptForAction_WhenPolicyDoesNotAdviseUpdate_ThenPromptForActionReturns()
+        public void PromptForAction_WhenPolicyDoesNotAdviseUpdate()
         {
             var policy = new Mock<IUpdatePolicy>();
 
@@ -187,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public void PromptForAction_WhenUserCancels_ThenPromptForActionReturns()
+        public void PromptForAction_WhenUserCancels()
         {
             var command = new CheckForUpdateCommand<IMainWindow>(
                 new Mock<IWin32Window>().Object,
@@ -279,7 +279,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public void PromptForAction_WhenUserSelectsLater_ThenPromptForActionReturns()
+        public void PromptForAction_WhenUserSelectsLater()
         {
             var browser = new Mock<IBrowser>();
 
@@ -301,7 +301,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         //---------------------------------------------------------------------
 
         [Test]
-        public void PromptForAction_WhenReleaseHasNoSurvey_ThenPromptForActionReturns()
+        public void PromptForAction_WhenReleaseHasNoSurvey()
         {
             var release = new Mock<IRelease>();
             release.SetupGet(r => r.Survey).Returns((IReleaseSurvey?)null);
@@ -328,7 +328,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public void PromptForAction_WhenReleaseHasSurveyButSurveysAreDisabled_ThenPromptForActionReturns()
+        public void PromptForAction_WhenReleaseHasSurveyButSurveysAreDisabled()
         {
             var survey = new Mock<IReleaseSurvey>();
             var release = new Mock<IRelease>();
@@ -356,7 +356,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ToolWindows.Update
         }
 
         [Test]
-        public void PromptForAction_WhenReleaseHasSurveyButSurveysWasTakenBefore_ThenPromptForActionReturns()
+        public void PromptForAction_WhenReleaseHasSurveyButSurveysWasTakenBefore()
         {
             var lastVersion = new Version("2.1.3");
 

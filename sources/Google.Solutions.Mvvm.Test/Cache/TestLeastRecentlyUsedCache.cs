@@ -29,20 +29,20 @@ namespace Google.Solutions.Mvvm.Test.Cache
     public class TestLeastRecentlyUsedCache
     {
         [Test]
-        public void Ctor_WhenCapacityTooSmall_ThenArgumentExceptionIsThrown()
+        public void Ctor_WhenCapacityTooSmall()
         {
             Assert.Throws<ArgumentException>(() => new LeastRecentlyUsedCache<string, string>(0));
         }
 
         [Test]
-        public void Lookup_WhenLookupNonexistingItem_ThenNullIsReturned()
+        public void Lookup_WhenLookupNonexistingItem()
         {
             var cache = new LeastRecentlyUsedCache<string, string>(2);
             Assert.That(cache.Lookup("key"), Is.Null);
         }
 
         [Test]
-        public void Lookup_WhenLookupCachedItem_ThenItemIsReturned()
+        public void Lookup_WhenLookupCachedItem()
         {
             var cache = new LeastRecentlyUsedCache<string, string>(2);
             cache.Add("one", "ONE");

@@ -177,7 +177,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void Terminate_WhenTerminatedAlready_ThenTerminateThrowsException()
+        public void Terminate_WhenTerminatedAlready()
         {
             var factory = new Win32ProcessFactory();
 
@@ -228,7 +228,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task Close_WhenProcessHasNoWindows_ThenCloseReturnsTrue()
+        public async Task Close_WhenProcessHasNoWindows()
         {
             var factory = new Win32ProcessFactory();
 
@@ -247,7 +247,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public async Task Close_WhenProcessHasWindows_ThenCloseReturnsTrue()
+        public async Task Close_WhenProcessHasWindows()
         {
             var factory = new Win32ProcessFactory();
 
@@ -272,7 +272,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public async Task Close_WhenProcessTerminated_ThenCloseReturnsTrue()
+        public async Task Close_WhenProcessTerminated()
         {
             var factory = new Win32ProcessFactory();
 
@@ -294,7 +294,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void Wait_WhenTimeoutElapses_ThenWaitThrowsException()
+        public void Wait_WhenTimeoutElapses()
         {
             var factory = new Win32ProcessFactory();
 
@@ -313,7 +313,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void Wait_WhenCancelled_ThenWaitThrowsException()
+        public void Wait_WhenCancelled()
         {
             var factory = new Win32ProcessFactory();
 
@@ -355,7 +355,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         //---------------------------------------------------------------------
 
         [Test]
-        public void FromProcessId_WhenProcessAccessible_ThenFromProcessIdReturnsProcess()
+        public void FromProcessId_WhenProcessAccessible()
         {
             var factory = new Win32ProcessFactory();
 
@@ -377,7 +377,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void FromProcessId_WhenProcessInccessible_ThenFromProcessThrowsException()
+        public void FromProcessId_WhenProcessInccessible()
         {
             var factory = new Win32ProcessFactory();
 
@@ -386,7 +386,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void FromProcessId_WhenProcessOpenedById_ThenResumeThrowsException()
+        public void FromProcessId_WhenProcessOpenedById()
         {
             var factory = new Win32ProcessFactory();
 
@@ -406,7 +406,7 @@ namespace Google.Solutions.Platform.Test.Dispatch
         }
 
         [Test]
-        public void FromProcessId_WhenProcessIdDoesNotExist_ThenFromProcessThrowsException()
+        public void FromProcessId_WhenProcessIdDoesNotExist()
         {
             var factory = new Win32ProcessFactory();
 

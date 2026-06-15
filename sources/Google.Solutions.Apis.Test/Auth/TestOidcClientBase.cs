@@ -91,7 +91,7 @@ namespace Google.Solutions.Apis.Test.Auth
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task TryAuthorizeSilently_WhenOfflineCredentialNotFound_ThenReturnsNull()
+        public async Task TryAuthorizeSilently_WhenOfflineCredentialNotFound()
         {
             // Empty store.
             var store = new Mock<IOidcOfflineCredentialStore>();

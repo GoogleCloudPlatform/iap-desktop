@@ -81,7 +81,7 @@ namespace Google.Solutions.Apis.Test.Client
         }
 
         [Test]
-        public async Task ExecuteAndAwaitOperation_WhenOperationFailsWithErrorDetails_ThenThrowsExceptionWithReason()
+        public async Task ExecuteAndAwaitOperation_WhenOperationFailsWithErrorDetails()
         {
             var request = new Mock<IClientServiceRequest<Operation>>();
             request

@@ -180,14 +180,14 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void GetValue_WhenMetadataIsNull_ThenReturnsNull()
+        public void GetValue_WhenMetadataIsNull()
         {
             var metadata = new Metadata();
             Assert.That(metadata.GetValue("key"), Is.Null);
         }
 
         [Test]
-        public void GetValue_WhenItemNotPresent_ThenReturnsNull()
+        public void GetValue_WhenItemNotPresent()
         {
             var metadata = new Metadata()
             {
@@ -204,7 +204,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void GetValue_WhenItemPresent_ThenReturnsValue()
+        public void GetValue_WhenItemPresent()
         {
 
             var metadata = new Metadata()
@@ -227,19 +227,19 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void GetFlag_WhenMetadataIsNull_ThenReturnsNull()
+        public void GetFlag_WhenMetadataIsNull()
         {
             Assert.That(MetadataExtensions.GetFlag((Metadata?)null, "flag"), Is.Null);
         }
 
         [Test]
-        public void GetFlag_WhenMetadataItemsIsNull_ThenReturnsNull()
+        public void GetFlag_WhenMetadataItemsIsNull()
         {
             Assert.That(new Metadata().GetFlag("flag"), Is.Null);
         }
 
         [Test]
-        public void GetFlag_WhenValueNull_ThenReturnsNull()
+        public void GetFlag_WhenValueNull()
         {
             var metadata = new Metadata()
             {
@@ -320,7 +320,7 @@ namespace Google.Solutions.Apis.Test.Compute
         //---------------------------------------------------------------------
 
         [Test]
-        public void AsString_WhenMetadataIsEmpty_ThenReturnsEmptyList()
+        public void AsString_WhenMetadataIsEmpty()
         {
             var metadata = new Metadata();
 
@@ -328,7 +328,7 @@ namespace Google.Solutions.Apis.Test.Compute
         }
 
         [Test]
-        public void AsString_WhenMetadataContainsEntries_ThenReturnsList()
+        public void AsString_WhenMetadataContainsEntries()
         {
             var metadata = new Metadata()
             {

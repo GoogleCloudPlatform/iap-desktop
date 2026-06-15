@@ -177,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         }
 
         [Test]
-        public void GetReleaseTrackForRelease_WhenDescriptionContainsCriticalTag_ThenGetReleaseTrackReturnsCritical()
+        public void GetReleaseTrackForRelease_WhenDescriptionContainsCriticalTag()
         {
             var description = "This release is [track:critical]!!1!";
 
@@ -190,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         }
 
         [Test]
-        public void GetReleaseTrackForRelease_WhenPrerelease_ThenGetReleaseTrackReturnsCanary()
+        public void GetReleaseTrackForRelease_WhenPrerelease()
         {
             var description = "This release is on the canary track!!1!";
 
@@ -208,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsUpdateAdvised_WhenReleaseHasNoVersion_ThenIsUpdateAdvisedReturnsFalse()
+        public void IsUpdateAdvised_WhenReleaseHasNoVersion()
         {
             var release = new Mock<IRelease>();
             var policy = new UpdatePolicy(
@@ -221,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         }
 
         [Test]
-        public void IsUpdateAdvised_WhenReleaseOlderThanInstalled_ThenIsUpdateAdvisedReturnsFalse()
+        public void IsUpdateAdvised_WhenReleaseOlderThanInstalled()
         {
             var release = new Mock<IRelease>();
             release.SetupGet(r => r.TagVersion).Returns(new Version(1, 0));
@@ -236,7 +236,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         }
 
         [Test]
-        public void IsUpdateAdvised_WhenReleaseSameAsInstalled_ThenIsUpdateAdvisedReturnsFalse()
+        public void IsUpdateAdvised_WhenReleaseSameAsInstalled()
         {
             var install = CreateInstall();
 
@@ -253,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         }
 
         [Test]
-        public void IsUpdateAdvised_WhenReleaseNewerAndUserOnCanaryTrack_ThenIsUpdateAdvisedReturnsTrueForCanaryTrackAndBelow()
+        public void IsUpdateAdvised_WhenReleaseNewerAndUserOnCanaryTrack()
         {
             var policy = new UpdatePolicy(
                 CreateSettingsRepository(true).Object,
@@ -281,7 +281,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         }
 
         [Test]
-        public void IsUpdateAdvised_WhenReleaseNewerAndUserOnNormalTrack_ThenIsUpdateAdvisedReturnsTrueForNormalAndBelow()
+        public void IsUpdateAdvised_WhenReleaseNewerAndUserOnNormalTrack()
         {
             var policy = new UpdatePolicy(
                 CreateSettingsRepository(true).Object,
@@ -309,7 +309,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         }
 
         [Test]
-        public void IsUpdateAdvised_WhenReleaseNewerAndUserOnCriticalTrack_ThenIsUpdateAdvisedReturnsTrueForCriticalOnly()
+        public void IsUpdateAdvised_WhenReleaseNewerAndUserOnCriticalTrack()
         {
             var policy = new UpdatePolicy(
                 CreateSettingsRepository(false).Object,
@@ -341,7 +341,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         //---------------------------------------------------------------------
 
         [Test]
-        public void IsUpdateCheckDue_WhenNotEnoughDaysElapsed_ThenIsUpdateCheckDueReturnsFalse()
+        public void IsUpdateCheckDue_WhenNotEnoughDaysElapsed()
         {
             var clock = SystemClock.Default;
             var now = clock.UtcNow;
@@ -361,7 +361,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Profile
         }
 
         [Test]
-        public void IsUpdateCheckDue_WhenTooManyDaysElapsed_ThenIsUpdateCheckDueReturnsTrue()
+        public void IsUpdateCheckDue_WhenTooManyDaysElapsed()
         {
             var clock = SystemClock.Default;
             var now = clock.UtcNow;

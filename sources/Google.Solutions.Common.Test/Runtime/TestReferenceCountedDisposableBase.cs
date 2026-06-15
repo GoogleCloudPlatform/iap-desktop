@@ -62,7 +62,7 @@ namespace Google.Solutions.Common.Test.Runtime
         //---------------------------------------------------------------------
 
         [Test]
-        public void Dispose_WhenDisposedTwice_ThenDisposeThrowsException()
+        public void Dispose_WhenDisposedTwice()
         {
             var d = new SampleDisposable();
             d.Dispose();

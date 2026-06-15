@@ -34,7 +34,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         //---------------------------------------------------------------------
 
         [Test]
-        public void Sign_WhenChallengeRequiresSha512_ThenSignReturnsSignature()
+        public void Sign_WhenChallengeRequiresSha512()
         {
             var challengeBlob = Convert.FromBase64String(
                 "AAAAIEVr/Hy4lWvHE87XI+c+jchQ4kkz/gCEpWzdIYU+PLvjMgAAAAh0ZX" +
@@ -65,7 +65,7 @@ namespace Google.Solutions.Ssh.Test.Cryptography
         }
 
         [Test]
-        public void Sign_WhenChallengeRequiresSha256_ThenSignReturnsSignature()
+        public void Sign_WhenChallengeRequiresSha256()
         {
             var challengeBlob = Convert.FromBase64String(
                 "AAAAIEVr/Hy4lWvHE87XI+c+jchQ4kkz/gCEpWzdIYU+PLvjMgAAAAh0ZX" +

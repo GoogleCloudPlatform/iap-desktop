@@ -65,13 +65,13 @@ namespace Google.Solutions.Platform.Test
         //---------------------------------------------------------------------
 
         [Test]
-        public void TryResolveAppPath_WhenAppUnknown_ThenTryResolveAppPathReturnsFalse()
+        public void TryResolveAppPath_WhenAppUnknown()
         {
             Assert.That(UserEnvironment.TryResolveAppPath("doesnotexist.exe", out var _), Is.False);
         }
 
         [Test]
-        public void TryResolveAppPath_WhenAppRegistered_ThenTryResolveAppPathReturnsPath()
+        public void TryResolveAppPath_WhenAppRegistered()
         {
             Assert.That(UserEnvironment.TryResolveAppPath("Powershell.EXE", out var powershell), Is.True);
             Assert.That(powershell, Is.Not.Null);

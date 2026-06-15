@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void FindLatestRelease_WhenServerReturnsError_ThenFindLatestReleaseThrowsException()
+        public void FindLatestRelease_WhenServerReturnsError()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         }
 
         [Test]
-        public async Task FindLatestRelease_WhenServerReturnsEmptyResult_ThenFindLatestReleaseReturnsNull()
+        public async Task FindLatestRelease_WhenServerReturnsEmptyResult()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         }
 
         [Test]
-        public async Task FindLatestRelease_WhenIncludeCanaryReleasesIsOff_ThenFindLatestReleaseReturnsLatest()
+        public async Task FindLatestRelease_WhenIncludeCanaryReleasesIsOff()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task FindLatestRelease_WhenReleaseDoesNotIncludeSurvey_ThenFindLatestReleaseReturnsReleaseWithoutSurvey()
+        public async Task FindLatestRelease_WhenReleaseDoesNotIncludeSurvey()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         }
 
         [Test]
-        public async Task FindLatestRelease_WhenSurveyDownloadFails_ThenFindLatestReleaseReturnsReleaseWithoutSurvey()
+        public async Task FindLatestRelease_WhenSurveyDownloadFails()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -201,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         }
 
         [Test]
-        public async Task FindLatestRelease_WhenReleaseIncludesSurvey_ThenFindLatestReleaseReturnsReleaseWithSurvey()
+        public async Task FindLatestRelease_WhenReleaseIncludesSurvey()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         //---------------------------------------------------------------------
 
         [Test]
-        public void ListReleases_WhenServerReturnsError_ThenListReleasesThrowsException()
+        public void ListReleases_WhenServerReturnsError()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -266,7 +266,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         }
 
         [Test]
-        public async Task ListReleases_WhenServerReturnsEmptyResult_ThenListReleasesReturnsEmptyList()
+        public async Task ListReleases_WhenServerReturnsEmptyResult()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter
@@ -285,7 +285,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Client
         }
 
         [Test]
-        public async Task ListReleases_WhenServerReturnsMultiplePages_ThenListReleasesReturnsOrderedList()
+        public async Task ListReleases_WhenServerReturnsMultiplePages()
         {
             var restAdapter = new Mock<IExternalRestClient>();
             restAdapter

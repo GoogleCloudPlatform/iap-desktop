@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
-        public void CreateProfile_WhenProfileNameIsNotValid_ThenCreateProfileThrowsException()
+        public void CreateProfile_WhenProfileNameIsNotValid()
         {
             using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void CreateProfile_WhenProfileNameIsNull_ThenCreateProfileThrowsException()
+        public void CreateProfile_WhenProfileNameIsNull()
         {
             using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
@@ -271,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
-        public void OpenProfile_WhenProfileNameIsNotValid_ThenOpenProfileThrowsException()
+        public void OpenProfile_WhenProfileNameIsNotValid()
         {
             using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {
@@ -282,7 +282,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
-        public void OpenProfile_WhenProfileDoesNotExist_ThenOpenProfileThrowsException()
+        public void OpenProfile_WhenProfileDoesNotExist()
         {
             using (var keyPath = RegistryKeyPath.ForCurrentTest())
             {

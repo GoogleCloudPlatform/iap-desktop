@@ -90,7 +90,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         }
 
         [Test]
-        public void OpenKey_WhenTypeIsInvalid_ThenOpenPersistentKeyThrowsException()
+        public void OpenKey_WhenTypeIsInvalid()
         {
             var keyType = new KeyType(CngAlgorithm.Rsa, 1);
 
@@ -152,7 +152,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         }
 
         [Test]
-        public void OpenKey_WhenKeyFoundButAlgorithmMismatches_ThenOpenPersistentKeyThrowsException()
+        public void OpenKey_WhenKeyFoundButAlgorithmMismatches()
         {
             using (this.Store.OpenKey(
                 IntPtr.Zero,
@@ -172,7 +172,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         }
 
         [Test]
-        public void OpenKey_WhenKeyFoundButSizeMismatches_ThenOpenPersistentKeyThrowsException()
+        public void OpenKey_WhenKeyFoundButSizeMismatches()
         {
             using (this.Store.OpenKey(
                 IntPtr.Zero,
@@ -192,7 +192,7 @@ namespace Google.Solutions.Platform.Test.Security.Cryptography
         }
 
         [Test]
-        public void OpenKey_WhenKeyFoundButUsageMismatches_ThenOpenPersistentKeyThrowsException()
+        public void OpenKey_WhenKeyFoundButUsageMismatches()
         {
             using (this.Store.OpenKey(
                 IntPtr.Zero,

@@ -454,7 +454,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public void ApplyChanges_WhenProxyServerInvalid_ThenApplyChangesThrowsArgumentException()
+        public void ApplyChanges_WhenProxyServerInvalid()
         {
             using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
@@ -473,7 +473,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void ApplyChanges_WhenProxyPortIsZero_ThenApplyChangesThrowsArgumentException()
+        public void ApplyChanges_WhenProxyPortIsZero()
         {
             using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
@@ -492,7 +492,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void ApplyChanges_WhenProxyPortIsOutOfBounds_ThenApplyChangesThrowsArgumentException()
+        public void ApplyChanges_WhenProxyPortIsOutOfBounds()
         {
             using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
@@ -511,7 +511,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void ApplyChanges_WhenProxyAutoconfigUrlInvalid_ThenApplyChangesThrowsArgumentException()
+        public void ApplyChanges_WhenProxyAutoconfigUrlInvalid()
         {
             using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {
@@ -529,7 +529,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows.Options
         }
 
         [Test]
-        public void ApplyChanges_WhenProxyAuthIncomplete_ThenApplyChangesThrowsArgumentException()
+        public void ApplyChanges_WhenProxyAuthIncomplete()
         {
             using (var settingsKey = RegistryKeyPath.ForCurrentTest(RegistryKeyPath.KeyType.Settings).CreateKey())
             {

@@ -29,7 +29,7 @@ namespace Google.Solutions.Platform.Test.Net
     public class TestChromePolicyUrlPattern
     {
         [Test]
-        public void Parse_WhenPatternIsMalformed_ThenParseThrowsException()
+        public void Parse_WhenPatternIsMalformed()
         {
             Assert.Throws<ArgumentException>(
                 () => ChromePolicyUrlPattern.Parse("//"));
