@@ -32,6 +32,7 @@ using Google.Solutions.IapDesktop.Core.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Session.Properties;
 using Google.Solutions.IapDesktop.Extensions.Session.Protocol.Rdp;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Settings.Collection;
 using Google.Solutions.Terminal.Controls;
 using System;
@@ -55,6 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
         private readonly IRepository<IApplicationSettings> settingsRepository;
 
         private Bound<RdpViewModel> viewModel;
+        private readonly ITaskDialog taskDialog;
 
         // For testing only.
         internal event EventHandler? AuthenticationWarningDisplayed;
@@ -92,6 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
             ToolWindowStateRepository stateRepository,
             IEventQueue eventQueue,
             IExceptionDialog exceptionDialog,
+            ITaskDialog taskDialog,
             IBindingContext bindingContext)
             : base(
                   mainWindow,
@@ -100,6 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                   exceptionDialog,
                   bindingContext)
         {
+            this.taskDialog = taskDialog;
             this.settingsRepository = settingsRepository;
             this.Icon = Resources.ComputerBlue_16;
         }
@@ -155,6 +159,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.ToolWindows.Session
                 this.Client!.MainWindow = (Form)this.MainWindow;
                 this.Client.ServerAuthenticationWarningDisplayed += (_, args)
                     => this.AuthenticationWarningDisplayed?.Invoke(this, args);
+                this.Client.DisplaySettingsConflict += (_, args)
+                    =>
+                {
+                    var dialog = new TaskDialogParameters(
+                        $"Display settings",
+                        "Problem adjusting display settings",
+                        args.Exception.Message)
+                    {
+                        Icon = TaskDialogIcon.Warning,
+                    };
+                    dialog.Buttons.Add(TaskDialogStandardButton.OK);
+
+                    this.taskDialog.ShowDialog(this, dialog);
+                };
 
                 //
                 // Basic connection settings.

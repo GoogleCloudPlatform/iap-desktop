@@ -259,4 +259,12 @@ namespace Google.Solutions.Terminal.Controls
             this.DisconnectReason = disconnectReason;
         }
     }
+
+    public class RdpDisplaySettingsConflictException : RdpException
+    {
+        internal RdpDisplaySettingsConflictException(string message) 
+            : base(message)
+        {
+        }
+    }
 }
