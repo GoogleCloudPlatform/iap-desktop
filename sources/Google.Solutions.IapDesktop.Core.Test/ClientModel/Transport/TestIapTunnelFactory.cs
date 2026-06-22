@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
     public class TestIapTunnelFactory
     {
         private static readonly InstanceLocator SampleLocator =
-            new InstanceLocator("project-1", "zone-1", "instance-1");
+            new InstanceLocator("project-1", "us-central1-a", "instance-1");
 
         private static readonly UserAgent SampleUserAgent = new UserAgent(
             "Test",
@@ -85,6 +85,10 @@ namespace Google.Solutions.IapDesktop.Core.Test.ClientModel.Transport
                 IapClient.CreateEndpoint(),
                 TestProject.InvalidAuthorization,
                 SampleUserAgent);
+
+            //
+            // NB. The zone must exist, the project and instance can be invalid.
+            //
 
             var profile = new IapTunnel.Profile(
                 protocol.Object,
