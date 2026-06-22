@@ -68,6 +68,8 @@ namespace Google.Solutions.Terminal.Controls
 
         private int keysSent = 0;
 
+        public event EventHandler<ExceptionEventArgs>? DisplaySettingsConflict;
+
         public RdpClient()
         {
             this.client = new Google.Solutions.Tsc.MsRdpClient
@@ -883,29 +885,24 @@ namespace Google.Solutions.Terminal.Controls
             // 
             try
             {
-                if (this.DesktopScaleFactor is var desktopFactor)
-                {
-                    this.clientExtendedSettings.set_Property(
-                        "DesktopScaleFactor",
-                        desktopFactor);
-                }
-
-                if (this.DeviceScaleFactor is var deviceFactor)
-                {
-                    this.clientExtendedSettings.set_Property(
-                        "DeviceScaleFactor",
-                        deviceFactor);
-                }
+                this.clientExtendedSettings.set_Property(
+                    "DesktopScaleFactor",
+                    this.DesktopScaleFactor);
+                this.clientExtendedSettings.set_Property(
+                    "DeviceScaleFactor",
+                    this.DeviceScaleFactor);
             }
-            catch (COMException e) when (e.HResult == (int)HRESULT.E_FAIL)
+            catch (COMException e) 
+            when (e.HResult == (int)HRESULT.E_FAIL ||
+                  e.HResult == (int)HRESULT.E_UNEXPECTED)
             {
                 //
                 // Applying the properties can fail spuriously. If that happens,
-                // rethrow with additional context information.
+                // raise an event, but don't abort the connection attempt.
                 //
-                var exception = new InvalidOperationException(
-                    $"The display scaling settings are invalid or could not be applied",
-                    e);
+                var exception = new RdpDisplaySettingsConflictException(
+                    "Some of your display scaling settings could not be " +
+                    "applied");
 
                 exception.Data["Attempt"] = this.connectionAttempt;
                 exception.Data["Desktop"] = this.DesktopScaleFactor;
@@ -913,7 +910,9 @@ namespace Google.Solutions.Terminal.Controls
                 exception.Data["Resize"] = this.EnableAutoResize;
                 exception.Data["Dpi"] = this.EnableDpiScaling;
 
-                throw exception;
+                this.DisplaySettingsConflict?.Invoke(
+                    this, 
+                    new ExceptionEventArgs(exception));
             }
 
             //
