@@ -192,6 +192,18 @@ namespace Google.Solutions.Iap
                 //
                 throw new WebSocketConnectionDeniedException();
             }
+            catch (WebSocketException e)
+                when (e.InnerException is WebException webException &&
+                      webException?.Response is HttpWebResponse httpResponse &&
+                      httpResponse.StatusCode == HttpStatusCode.NotFound)
+            {
+                //
+                // Connection rejected because one of the resource
+                // coordinates (such as zone) doesn't exist.
+                //
+                throw new SshRelayBackendNotFoundException(
+                    "The zone or backend could not be found");
+            }
         }
 
         //---------------------------------------------------------------------
