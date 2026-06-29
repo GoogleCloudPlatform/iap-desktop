@@ -38,7 +38,7 @@ process is running, do the following:
 ### Check local policies
 
 If your local computer is managed by an organization, it's possible that your organization
-has [applied a policy that disables copy/paste for RDP :octicons-link-external-16:](https://learn.microsoft.com/en-us/azure/virtual-desktop/configure-device-redirections#disable-redirection-on-the-local-device).
+has [applied a policy that disables copy/paste for RDP :octicons-link-external-16:](https://gpsearch.azurewebsites.net/default.aspx?policyid=2508).
 To check if this is the case, do the following:
 
 1.  On your local computer, right-click the **Start** button and select **Windows PowerShell**.
@@ -65,7 +65,7 @@ To check if this is the case, do the following:
 ### Check remote policies
 
 If the remote VM is managed by an organization, it's possible that your organization
-has [applied a policy that disables copy/paste for RDP :octicons-link-external-16:](https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TerminalServer::TS_CLIENT_CLIPBOARD).
+has [applied a policy that disables copy/paste for RDP :octicons-link-external-16:](https://gpsearch.azurewebsites.net/default.aspx?policyid=2508).
 To check if this is the case, do the following:
 
 
@@ -106,7 +106,7 @@ by your current keyboard layout. Unsupported characters are replaced with `?`.
 After re-entering the same credentials again, the connection succeeds.
 
 This issue can be the intentional effect of the
-[Always prompt for password upon connection :octicons-link-external-16:](https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TerminalServer::TS_PASSWORD) 
+[Always prompt for password upon connection :octicons-link-external-16:](https://gpsearch.azurewebsites.net/default.aspx?policyid=2471&lang=en-US#2471) 
 group policy setting. This policy is configured by default on [CIS hardened images :octicons-link-external-16:](https://www.cisecurity.org/cis-hardened-images/google/).
 
 To mitigate this issue,  [disable automatic logons](toolwindow-connection-settings.md#remote-desktop-security-settings) in
