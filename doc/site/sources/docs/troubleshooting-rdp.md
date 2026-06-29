@@ -38,7 +38,7 @@ process is running, do the following:
 ### Check local policies
 
 If your local computer is managed by an organization, it's possible that your organization
-has [applied a policy that disables copy/paste for RDP :octicons-link-external-16:](https://gpsearch.azurewebsites.net/default.aspx?policyid=2471&lang=en-US#2508).
+has [applied a policy that disables copy/paste for RDP :octicons-link-external-16:](https://gpsearch.azurewebsites.net/default.aspx?policyid=2508).
 To check if this is the case, do the following:
 
 1.  On your local computer, right-click the **Start** button and select **Windows PowerShell**.
@@ -65,7 +65,7 @@ To check if this is the case, do the following:
 ### Check remote policies
 
 If the remote VM is managed by an organization, it's possible that your organization
-has [applied a policy that disables copy/paste for RDP :octicons-link-external-16:](https://gpsearch.azurewebsites.net/default.aspx?policyid=2471&lang=en-US#2508).
+has [applied a policy that disables copy/paste for RDP :octicons-link-external-16:](https://gpsearch.azurewebsites.net/default.aspx?policyid=2508).
 To check if this is the case, do the following:
 
 
