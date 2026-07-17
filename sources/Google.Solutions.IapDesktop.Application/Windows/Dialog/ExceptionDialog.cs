@@ -168,6 +168,16 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Dialog
         {
             Debug.Assert(!(parent is Control control) || !control.InvokeRequired);
 
+            if (parent is Control parentControl && 
+                (parentControl.IsDisposed || !parentControl.IsHandleCreated))
+            {
+                //
+                // The control has been disposed or not initialized yet.
+                // Either way, it's not suitable to use as owner.
+                //
+                parent = null;
+            }
+
             e = e.Unwrap();
 
             using (ApplicationTraceSource.Log.TraceMethod().WithParameters(caption, e))
