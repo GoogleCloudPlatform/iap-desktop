@@ -178,7 +178,7 @@ namespace Google.Solutions.Testing.Apis.Integration
     public sealed class LinuxInstanceAttribute : InstanceAttribute
     {
         public const string DefaultMachineType = "f1-micro";
-        public const string Debian = "projects/debian-cloud/global/images/family/debian-11";
+        public const string Debian = "projects/debian-cloud/global/images/family/debian-13";
 
         protected override string InstanceNamePrefix => "u";
         public override string ImageFamily { get; set; } = Debian;
