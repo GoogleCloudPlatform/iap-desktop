@@ -236,7 +236,7 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref2 = new InstanceLocator("proj", "zone", "other");
 
             Assert.That(ref1.Equals(ref2), Is.False);
-            Assert.That(ref1.Equals((object?)ref2), Is.False);
+            Assert.That(ref1.Equals((object)ref2), Is.False);
             Assert.That(ref1 == ref2, Is.False);
             Assert.That(ref1 != ref2, Is.True);
         }
@@ -248,9 +248,9 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref2 = new InstanceLocator("proj", "zone", "instance-1");
 
             Assert.That(ref2.Equals(ref1), Is.False);
-            Assert.That(ref2.Equals((object?)ref1), Is.False);
+            Assert.That(ref2.Equals((object)ref1), Is.False);
             Assert.That(ref1.Equals(ref2), Is.False);
-            Assert.That(ref1.Equals((object?)ref2), Is.False);
+            Assert.That(ref1.Equals((object)ref2), Is.False);
         }
     }
 }

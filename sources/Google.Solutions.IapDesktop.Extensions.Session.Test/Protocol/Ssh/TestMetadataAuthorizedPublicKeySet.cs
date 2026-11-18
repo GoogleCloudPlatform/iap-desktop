@@ -173,8 +173,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 Key = MetadataAuthorizedPublicKeySet.MetadataKey,
                 Value = $"alice:ssh-rsa key alice\n" +
                         $":ssh-rsa phantomkey2 phantom\n" +
-                        $":ssh-rsa phantomkey3 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(1):O}\"}}\n" +
-                        $"moe:ssh-rsa key2 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(1):O}\"}}\n"
+                        $":ssh-rsa phantomkey3 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{System.DateTime.UtcNow.AddMinutes(1):O}\"}}\n" +
+                        $"moe:ssh-rsa key2 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{System.DateTime.UtcNow.AddMinutes(1):O}\"}}\n"
             };
 
             var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata)
@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 Value = $"alice:ssh-rsa key alice\n" +
                         $"junk\n" +
                         $"junk:ssh-rsa phantomkey3 google-ssh {{\n" +
-                        $"moe:ssh-rsa key2 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(1):O}\"}}\n"
+                        $"moe:ssh-rsa key2 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{System.DateTime.UtcNow.AddMinutes(1):O}\"}}\n"
             };
 
             var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata)
@@ -254,7 +254,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 Value = $"alice:ssh-rsa key alice\n" +
                         $"junk\n" +
                         $"junk:ssh-rsa phantomkey3 google-ssh {{\n" +
-                        $"moe:ssh-rsa key2 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(1):O}\"}}\n"
+                        $"moe:ssh-rsa key2 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{System.DateTime.UtcNow.AddMinutes(1):O}\"}}\n"
             };
 
             var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata);
@@ -277,8 +277,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
             {
                 Key = MetadataAuthorizedPublicKeySet.MetadataKey,
                 Value = $"alice:ssh-rsa key alice\n" +
-                        $"joe:ssh-rsa key2 google-ssh {{\"userName\":\"joe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(-1):O}\"}}\n" +
-                        $"moe:ssh-rsa key2 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(1):O}\"}}\n"
+                        $"joe:ssh-rsa key2 google-ssh {{\"userName\":\"joe@example.com\",\"expireOn\":\"{System.DateTime.UtcNow.AddMinutes(-1):O}\"}}\n" +
+                        $"moe:ssh-rsa key2 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{System.DateTime.UtcNow.AddMinutes(1):O}\"}}\n"
             };
 
             var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata)

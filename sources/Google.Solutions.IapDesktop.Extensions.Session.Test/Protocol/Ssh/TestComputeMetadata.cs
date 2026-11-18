@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 "KEY-ALICE",
                 new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
                     "alice@example.com",
-                    DateTime.Now.AddDays(-1)));
+                    System.DateTime.Now.AddDays(-1)));
 
             var metadata = new Metadata();
             metadata.Add(
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                     "KEY-ALICE",
                     new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
                         "alice@example.com",
-                        DateTime.Now.AddDays(+1))));
+                        System.DateTime.Now.AddDays(+1))));
 
             Assert.That(metadata.Items.First().Value, Does.Not.Contain("alice-expired"));
             Assert.That(metadata.Items.First().Value, Does.Contain("alice-valid"));
@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 "KEY-ALICE",
                 new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
                     "alice@example.com",
-                    DateTime.Now.AddDays(-1)));
+                    System.DateTime.Now.AddDays(-1)));
 
             var validKey = new ManagedMetadataAuthorizedPublicKey(
                 "alice-valid",
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                 "KEY-ALICE",
                 new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
                     "alice@example.com",
-                    DateTime.Now.AddDays(+1)));
+                    System.DateTime.Now.AddDays(+1)));
 
             var metadata = new Metadata();
             metadata.Add(

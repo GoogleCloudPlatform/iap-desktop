@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.That(attributes.OperatingSystemVersion, Is.EqualTo(new Version(10, 0, 17763)));
             Assert.That(attributes.AgentVersion, Is.EqualTo("20200402.01"));
             Assert.That(
-                attributes.LastUpdated?.ToUniversalTime(), Is.EqualTo(new DateTime(2020, 7, 3, 9, 10, 8, DateTimeKind.Utc)));
+                attributes.LastUpdated?.ToUniversalTime(), Is.EqualTo(new System.DateTime(2020, 7, 3, 9, 10, 8, DateTimeKind.Utc)));
         }
 
         [Test]
@@ -201,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.That(attributes.InstalledPackages?.WuaPackages[0].UpdateID, Is.EqualTo("c01629fc-64ea-45f3-b7cb-cabc7d566933"));
             Assert.That(attributes.InstalledPackages?.WuaPackages[0].RevisionNumber, Is.EqualTo(200));
             Assert.That(
-                attributes.InstalledPackages?.WuaPackages?[0]?.LastDeploymentChangeTime?.ToUniversalTime(), Is.EqualTo(new DateTime(2020, 5, 1, 0, 0, 0, 0, DateTimeKind.Utc)));
+                attributes.InstalledPackages?.WuaPackages?[0]?.LastDeploymentChangeTime?.ToUniversalTime(), Is.EqualTo(new System.DateTime(2020, 5, 1, 0, 0, 0, 0, DateTimeKind.Utc)));
 
             // Qfe
             Assert.That(attributes.InstalledPackages?.QfePackages.Count, Is.EqualTo(10));
@@ -210,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.That(attributes.InstalledPackages?.QfePackages[0].Description, Is.EqualTo("Update"));
             Assert.That(attributes.InstalledPackages?.QfePackages[0].HotFixID, Is.EqualTo("KB4552930"));
             Assert.That(
-                attributes.InstalledPackages?.QfePackages?[0]?.InstalledOn?.ToUniversalTime(), Is.EqualTo(new DateTime(2020, 5, 14, 0, 0, 0, 0, DateTimeKind.Utc)));
+                attributes.InstalledPackages?.QfePackages?[0]?.InstalledOn?.ToUniversalTime(), Is.EqualTo(new System.DateTime(2020, 5, 14, 0, 0, 0, 0, DateTimeKind.Utc)));
 
             Assert.That(attributes.InstalledPackages?.AllPackages.Count(), Is.EqualTo(34));
         }
@@ -247,7 +247,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.That(attributes.AvailablePackages?.WuaPackages[0].UpdateID, Is.EqualTo("5ee77da1-660e-404c-b075-cc955a64549b"));
             Assert.That(attributes.AvailablePackages?.WuaPackages[0].RevisionNumber, Is.EqualTo(200));
             Assert.That(
-                attributes.AvailablePackages?.WuaPackages?[0]?.LastDeploymentChangeTime?.ToUniversalTime(), Is.EqualTo(new DateTime(2020, 7, 3, 0, 0, 0, 0, DateTimeKind.Utc)));
+                attributes.AvailablePackages?.WuaPackages?[0]?.LastDeploymentChangeTime?.ToUniversalTime(), Is.EqualTo(new System.DateTime(2020, 7, 3, 0, 0, 0, 0, DateTimeKind.Utc)));
 
             // Qfe
             Assert.That(attributes.AvailablePackages?.QfePackages.Any(), Is.False);

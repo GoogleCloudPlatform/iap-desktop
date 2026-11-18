@@ -70,7 +70,7 @@ namespace Google.Solutions.Ssh.Test
 
         public static void ThrowsAggregateExceptionWithError(
             LIBSSH2_ERROR expected,
-            TestDelegate code)
+            Action code)
         {
             ThrowsNativeExceptionWithError(
                 null,
@@ -90,7 +90,7 @@ namespace Google.Solutions.Ssh.Test
 
         public static void ThrowsAggregateExceptionWithError(
             LIBSSH2_FX_ERROR expected,
-            TestDelegate code)
+            Action code)
         {
             ThrowsSftpNativeExceptionWithError(
                 expected,

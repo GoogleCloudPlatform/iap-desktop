@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.GuestOs.Invento
             Assert.That(attributes.OperatingSystemVersion, Is.EqualTo(new Version(6, 10)));
             Assert.That(attributes.AgentVersion, Is.EqualTo("20200709.00-g1.el6"));
             Assert.That(
-                attributes.LastUpdated?.ToUniversalTime(), Is.EqualTo(new DateTime(2020, 7, 3, 9, 10, 8, DateTimeKind.Utc)));
+                attributes.LastUpdated?.ToUniversalTime(), Is.EqualTo(new System.DateTime(2020, 7, 3, 9, 10, 8, DateTimeKind.Utc)));
 
             Assert.That(attributes.InstalledPackages?.AllPackages.Count(), Is.EqualTo(392));
         }
