@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -121,7 +122,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         // Loading.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public void Bind_WhenNoOtherPropertiesBound_ThenBindSucceeds()
         {
             this.tree.Bind(
@@ -131,7 +132,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             Assert.That(this.tree.Nodes.Count, Is.EqualTo(1));
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void Bind_WhenIsExpandedIsTrueInModel_ThenTreeAutoExpands()
         {
             var root = new ModelNode()
@@ -159,7 +160,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             Assert.That(rootTreeNode.IsExpanded, Is.True);
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void Bind_WhenIsExpandedIsFalseInModel_ThenTreeHasHiddenLoadingNode()
         {
             var root = new ModelNode()
@@ -187,7 +188,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             Assert.That(rootTreeNode.IsExpanded, Is.False);
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void Bind_WhenLoadingChildrenFails_ThenEventIsFiredAndExpandCanBeRetried()
         {
             var root = new ModelNode()
@@ -233,7 +234,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         // Binding.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public void Bind_WhenModelTextIsUpdated_ThenTreeViewIsUpdated()
         {
             var root = new ModelNode()
@@ -254,7 +255,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             Assert.That(rootTreeNode.Name, Is.EqualTo("root"));
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void Bind_WhenModelImageIndexIsUpdated_ThenTreeViewIsUpdated()
         {
             var root = new ModelNode()
@@ -276,7 +277,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             Assert.That(rootTreeNode.SelectedImageIndex, Is.EqualTo(2));
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void Bind_WhenModelAddsChildren_ThenTreeViewIsUpdated()
         {
             var root = new ModelNode()
@@ -309,7 +310,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             Assert.That(rootTreeNode.Nodes.Count, Is.EqualTo(3));
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void Bind_WhenModelRemovesChildren_ThenTreeViewIsUpdated()
         {
             var root = new ModelNode()
@@ -339,7 +340,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             Assert.That(rootTreeNode.Nodes.Count, Is.EqualTo(1));
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void Bind_WhenModelReplacesChildren_ThenTreeViewIsUpdated()
         {
             var root = new ModelNode()
@@ -373,7 +374,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             Assert.That(rootTreeNode.Nodes.OfType<ModelTreeView.Node>().First().Model.Name, Is.EqualTo("new"));
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void Bind_WhenModelRemovesChild_ThenEventListenersAreRemoved()
         {
             var root = new ModelNode()
@@ -400,7 +401,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             Assert.That(child.HasPropertyChangeListeners, Is.False);
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void Bind_WhenModelIsRebound_ThenEventListenersAreRemoved()
         {
             var root = new ModelNode()
