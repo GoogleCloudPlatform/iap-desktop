@@ -23,6 +23,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
+using Google.Solutions.Testing.Apis;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -120,7 +121,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         // Bind.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public void Bind_WhenBoundAlready()
         {
             using (var form = new Form()
@@ -144,7 +145,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void Bind_WhenListingFilesFails_ThenBindRaisesNavigationFailedEvent()
         {
             var root = new Mock<IFileItem>();
@@ -183,7 +184,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     fileSystem.Object,
                     new Mock<IBindingContext>().Object);
 
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
                 Assert.That(eventRaised, Is.True);
             }
         }
@@ -192,7 +193,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         // Bind - observation.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public void Bind_WhenDirectoryAdded_ThenDirectoryTreeIsUpdated()
         {
             var root = CreateDirectory();
@@ -225,19 +226,19 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 browser.Bind(
                     fileSystem.Object,
                     new Mock<IBindingContext>().Object);
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 Assert.That(browser.Directories.Nodes.Count, Is.EqualTo(1));
                 Assert.That(browser.Directories.Nodes[0].Nodes.Count, Is.Zero);
 
                 children.Add(CreateDirectory().Object);
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 Assert.That(browser.Directories.Nodes[0].Nodes.Count, Is.EqualTo(1));
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public async Task Bind_WhenDirectoryAdded_ThenFileListIsUpdated()
         {
             var root = CreateDirectory();
@@ -272,13 +273,13 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 await browser.NavigateAsync(null);
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 // Root directory is empty.
                 Assert.That(browser.Files.Items.Count, Is.Zero);
 
                 children.Add(CreateDirectory().Object);
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 // Root directory contains 1 item..
                 Assert.That(browser.Files.Items.Count, Is.EqualTo(1));
@@ -289,7 +290,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         // CurrentDirectory.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public void CurrentDirectory_WhenBound_ThenCurrentDirectorySetToRoot()
         {
             using (var form = new Form()
@@ -308,7 +309,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 browser.Bind(
                     fileSystem,
                     new Mock<IBindingContext>().Object);
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 Assert.That(browser.CurrentDirectory, Is.SameAs(fileSystem.Root));
                 Assert.That(browser.CurrentPath, Is.EqualTo(string.Empty));
@@ -319,7 +320,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         // CurrentDirectory.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public async Task Navigate_WhenPathInvalid_ThenRaisesEvent()
         {
             using (var form = new Form()
@@ -340,7 +341,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 Exception? exception = null;
                 browser.NavigationFailed += (s, e) =>
@@ -359,7 +360,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 { }
             }
         }
-        [Test]
+
+        [WindowsFormsTest]
         public async Task Navigate_WhenPathIsNull_ThenNavigatesToRoot()
         {
             using (var form = new Form()
@@ -380,7 +382,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 await browser
                     .NavigateAsync(new[] { "Item", "Item" })
@@ -390,12 +392,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     .NavigateAsync(null)
                     .ConfigureAwait(true);
 
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
                 Assert.That(browser.CurrentPath, Is.EqualTo(string.Empty));
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public async Task Navigate()
         {
             using (var form = new Form()
@@ -421,13 +423,13 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 };
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 await browser
                     .NavigateAsync(new[] { "Item", "Item" })
                     .ConfigureAwait(true);
 
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
                 Assert.That(currentDirectory, Is.Not.Null);
                 Assert.That(browser.CurrentPath, Is.EqualTo("Item/Item"));
             }
@@ -437,7 +439,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         // NavigateUp.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public async Task NavigateUp()
         {
             using (var form = new Form()
@@ -457,7 +459,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 await browser
                     .NavigateAsync(new[] { "Item", "Item" })
@@ -470,7 +472,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                         .ConfigureAwait(false);
                 }
 
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
                 Assert.That(browser.CurrentPath, Is.EqualTo(string.Empty));
             }
         }
@@ -479,7 +481,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         // Refresh.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public async Task Refresh()
         {
             using (var form = new Form()
@@ -499,7 +501,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 await browser
                     .RefreshAsync()
@@ -515,7 +517,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         // SelectedFiles.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public void SelectedFiles_WhenFilesSelectedOneByOne_ThenSelectedFileIsSet()
         {
             using (var form = new Form()
@@ -538,7 +540,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 var selectionEvents = 0;
                 browser.SelectedFilesChanged += (s, a) => selectionEvents++;
@@ -553,7 +555,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void SelectedFiles_WhenFilesSelected_ThenSelectedFileIsSet()
         {
             using (var form = new Form()
@@ -578,7 +580,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 var selectionEvents = 0;
                 browser.SelectedFilesChanged += (s, a) => selectionEvents++;
@@ -594,7 +596,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         // CopySelectedFiles.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public void CopySelectedFiles_WhenDirectorySelected()
         {
             using (var form = new Form()
@@ -618,7 +620,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 browser.SelectedFiles = new[] { files[0] };
 
@@ -629,7 +631,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void CopySelectedFiles_WhenOpenStreamFails_ThenRaisesException()
         {
             using (var form = new Form()
@@ -659,7 +661,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 browser.SelectedFiles = new[] { file };
 
@@ -684,7 +686,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void CopySelectedFiles()
         {
             using (var form = new Form()
@@ -708,7 +710,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 browser.SelectedFiles = new[] { files[0], files[1], files[2] };
 
@@ -724,7 +726,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         // CanPaste.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public void CanPaste_WhenFormatIncompatible()
         {
             var dataObject = new DataObject();
@@ -733,7 +735,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             Assert.That(FileBrowser.CanPaste(dataObject), Is.False);
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void CanPaste_WhenDataObjectContainsNonFiles(
             [Values("__doesnotexist.txt", "\\", "COM1")] string path)
         {
@@ -745,7 +747,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             Assert.That(FileBrowser.CanPaste(dataObject), Is.False);
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void CanPaste_WhenDataObjectContainsFile()
         {
             var dataObject = new DataObject();
@@ -760,7 +762,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         // GetPastableFiles.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public void GetPastableFiles_WhenFormatIncompatible()
         {
             using (var form = new Form()
@@ -778,7 +780,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 var dataObject = new DataObject();
                 dataObject.SetData("Unknown", "data");
@@ -787,7 +789,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void GetPastableFiles_WhenDataObjectContainsNonFiles(
             [Values("__doesnotexist.txt", "\\", "COM1")] string path)
         {
@@ -806,7 +808,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 var dataObject = new DataObject();
                 dataObject.SetData(
@@ -817,7 +819,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void GetPastableFiles_WhenDataObjectContainsFileThatConflictsWithExistingDirectory(
             [Values(DialogResult.Cancel, DialogResult.Ignore)] DialogResult dialogResult)
         {
@@ -846,7 +848,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 var dataObject = new DataObject();
                 dataObject.SetData(
@@ -861,7 +863,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void GetPastableFiles_WhenDataObjectContainsFileToOverwriteAndUserConfirms()
         {
             using (var form = new Form()
@@ -889,7 +891,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 var dataObject = new DataObject();
                 dataObject.SetData(
@@ -908,7 +910,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public void GetPastableFiles_WhenDataObjectContainsFileToOverwriteAndUserDeclines()
         {
             using (var form = new Form()
@@ -936,7 +938,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 var dataObject = new DataObject();
                 dataObject.SetData(
@@ -955,7 +957,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         // PasteFiles.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public async Task PasteFiles_WhenUserCancels()
         {
             var cts = new CancellationTokenSource();
@@ -991,7 +993,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 var dataObject = new DataObject();
                 dataObject.SetData(
@@ -1013,7 +1015,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public async Task PasteFiles_WhenCopyFails_ThenUserCanIgnore()
         {
             var sourceFiles = new[]
@@ -1055,7 +1057,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 var dataObject = new DataObject();
                 dataObject.SetData(
@@ -1075,7 +1077,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
-        [Test]
+        [WindowsFormsTest]
         public async Task PasteFiles_WhenCopyCancelled_ThenNoErrorShown()
         {
             using (var form = new Form()
@@ -1110,7 +1112,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 var dataObject = new DataObject();
                 dataObject.SetData(
@@ -1136,7 +1138,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         // Dispose.
         //---------------------------------------------------------------------
 
-        [Test]
+        [WindowsFormsTest]
         public void Dispose_DisposesFileSystem()
         {
             var fileSystem = new Mock<IFileSystem>();
@@ -1162,7 +1164,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 browser.Bind(
                     fileSystem.Object,
                     new Mock<IBindingContext>().Object);
-                Application.DoEvents();
+                WindowsFormsTest.DoEvents();
 
                 form.Show();
             }
