@@ -114,7 +114,7 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
-                    LIBSSH2_ERROR.AUTHENTICATION_FAILED,
+                    LIBSSH2_ERROR.METHOD_NONE,
                     () => connection.Authenticate(
                         credential,
                         new KeyboardInteractiveHandler()));
