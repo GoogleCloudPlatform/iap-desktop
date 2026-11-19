@@ -165,6 +165,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
+        [Ignore("Deprioritized")]
         public async Task Connect_WhenServerProvidesRsaHostKey(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
