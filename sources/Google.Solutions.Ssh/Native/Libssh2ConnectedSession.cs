@@ -302,7 +302,7 @@ namespace Google.Solutions.Ssh.Native
                     Encoding.UTF8);
                 var instruction = NativeMethods.PtrToString(
                     instructionPtr,
-                    nameLength,
+                    instructionLength,
                     Encoding.UTF8);
                 var prompts = NativeMethods.PtrToStructureArray<
                         NativeMethods.LIBSSH2_USERAUTH_KBDINT_PROMPT>(
