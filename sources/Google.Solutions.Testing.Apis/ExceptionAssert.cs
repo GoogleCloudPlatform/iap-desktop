@@ -40,7 +40,7 @@ namespace Google.Solutions.Testing.Apis
         /// wrapped in an AggregateException.
         /// </summary>
         public static async Task<TActual> ThrowsAsync<TActual>(
-            AsyncTestDelegate code,
+            Func<Task> code,
             string? message = null)
             where TActual : Exception
         {
@@ -66,7 +66,7 @@ namespace Google.Solutions.Testing.Apis
             return (TActual)caughtException!;
         }
 
-        public static TActual? ThrowsAggregateException<TActual>(TestDelegate code)
+        public static TActual? ThrowsAggregateException<TActual>(Action code)
             where TActual : Exception
         {
             return Assert.Throws<TActual>(() =>

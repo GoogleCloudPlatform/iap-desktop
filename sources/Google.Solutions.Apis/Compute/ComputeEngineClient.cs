@@ -122,12 +122,6 @@ namespace Google.Solutions.Apis.Compute
                 {
                     var request = this.service.Instances.AggregatedList(project.Name);
 
-                    //
-                    // Ignore zones or regions that are currently unavailable,
-                    // cf. go/drd-cp.
-                    //
-                    request.ReturnPartialSuccess = true;
-
                     var instancesByZone = await new PageStreamer<
                         InstancesScopedList,
                         InstancesResource.AggregatedListRequest,

@@ -212,7 +212,7 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref2 = new NodeTypeLocator("proj", "zone2", "c2-node-60-240");
 
             Assert.That(ref1.Equals(ref2), Is.False);
-            Assert.That(ref1.Equals((object?)ref2), Is.False);
+            Assert.That(ref1.Equals((object)ref2), Is.False);
             Assert.That(ref1 == ref2, Is.False);
             Assert.That(ref1 != ref2, Is.True);
         }

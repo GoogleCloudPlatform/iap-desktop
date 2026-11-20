@@ -212,7 +212,7 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref2 = new MachineTypeLocator("proj", "zone2", "n2d-standard-64");
 
             Assert.That(ref1.Equals(ref2), Is.False);
-            Assert.That(ref1.Equals((object?)ref2), Is.False);
+            Assert.That(ref1.Equals((object)ref2), Is.False);
             Assert.That(ref1 == ref2, Is.False);
             Assert.That(ref1 != ref2, Is.True);
         }

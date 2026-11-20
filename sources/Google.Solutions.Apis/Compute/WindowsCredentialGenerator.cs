@@ -126,7 +126,7 @@ namespace Google.Solutions.Apis.Compute
 
                 var requestPayload = new RequestPayload()
                 {
-                    ExpireOn = DateTime.UtcNow.AddMinutes(5),
+                    ExpireOn = System.DateTime.UtcNow.AddMinutes(5),
                     Username = username,
                     Email = username,
                     Modulus = Convert.ToBase64String(keyParameters.Modulus),
@@ -359,7 +359,7 @@ namespace Google.Solutions.Apis.Compute
             public string? Email { get; set; }
 
             [JsonProperty("expireOn")]
-            public DateTime? ExpireOn { get; set; }
+            public System.DateTime? ExpireOn { get; set; }
 
             [JsonProperty("modulus")]
             public string? Modulus { get; set; }

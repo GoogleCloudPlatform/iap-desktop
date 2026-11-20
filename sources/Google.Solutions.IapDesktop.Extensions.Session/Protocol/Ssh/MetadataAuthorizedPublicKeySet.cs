@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 {
                     if (k is ManagedMetadataAuthorizedPublicKey managed)
                     {
-                        return managed.Metadata.ExpireOn >= DateTime.UtcNow;
+                        return managed.Metadata.ExpireOn >= System.DateTime.UtcNow;
                     }
                     else
                     {

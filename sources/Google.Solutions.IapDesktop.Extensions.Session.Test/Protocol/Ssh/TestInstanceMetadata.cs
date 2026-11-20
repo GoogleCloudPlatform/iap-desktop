@@ -522,7 +522,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         "bob",
                         signer.PublicKey.Type,
                         Convert.ToBase64String(signer.PublicKey.WireFormatValue),
-                        new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(SampleEmailAddress, DateTime.UtcNow.AddMinutes(5))));
+                        new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(SampleEmailAddress, System.DateTime.UtcNow.AddMinutes(5))));
 
                 var computeClient = CreateComputeEngineAdapterMock(
                     legacySshKeyPresent: false,
@@ -577,7 +577,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         "AAAA",
                         new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
                             SampleEmailAddress,
-                            DateTime.UtcNow.AddMinutes(5))));
+                            System.DateTime.UtcNow.AddMinutes(5))));
 
                 var computeClient = CreateComputeEngineAdapterMock(
                     legacySshKeyPresent: false,
@@ -632,7 +632,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Test.Protocol.Ssh
                         "AAAA",
                         new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
                             SampleEmailAddress,
-                            DateTime.UtcNow.AddMinutes(-5))));
+                            System.DateTime.UtcNow.AddMinutes(-5))));
 
                 var computeClient = CreateComputeEngineAdapterMock(
                     legacySshKeyPresent: false,

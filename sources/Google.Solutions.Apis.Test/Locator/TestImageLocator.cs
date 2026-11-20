@@ -220,7 +220,7 @@ namespace Google.Solutions.Apis.Test.Locator
             var ref2 = new ImageLocator("proj-2", "image-1");
 
             Assert.That(ref1.Equals(ref2), Is.False);
-            Assert.That(ref1.Equals((object?)ref2), Is.False);
+            Assert.That(ref1.Equals((object)ref2), Is.False);
             Assert.That(ref1 == ref2, Is.False);
             Assert.That(ref1 != ref2, Is.True);
         }

@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
         public string? Architecture { get; }
         public string? KernelRelease { get; }
         public string? KernelVersion { get; }
-        public DateTime? LastUpdated { get; }
+        public System.DateTime? LastUpdated { get; }
         public string? OperatingSystem { get; }
         public string? OperatingSystemFullName { get; }
         public Version? OperatingSystemVersion { get; }
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
             string? operatingSystemFullName,
             Version? operatingSystemVersion,
             string? agentVersion,
-            DateTime? lastUpdated,
+            System.DateTime? lastUpdated,
             GuestPackages? installedPackages,
             GuestPackages? availablePackages)
         {
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.GuestOs.Inventory
                     : null,
                 guestAttributes.FirstOrDefault(a => a.Key == "OSConfigAgentVersion")?.Value,
                 lastUpdated != null
-                    ? (DateTime?)DateTime.Parse(lastUpdated)
+                    ? (System.DateTime?)System.DateTime.Parse(lastUpdated)
                     : null,
                 installedPackages != null
                     ? DecodeAndParseBase64Gzip<GuestPackages>(installedPackages)

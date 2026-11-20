@@ -477,7 +477,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Session.Protocol.Ssh
                 Convert.ToBase64String(key.PublicKey.WireFormatValue),
                 new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
                     authorization.Session.Username,
-                    DateTime.UtcNow.Add(validity)));
+                    System.DateTime.UtcNow.Add(validity)));
 
             var existingKeySet = MetadataAuthorizedPublicKeySet.FromMetadata(
                 useInstanceKeySet
