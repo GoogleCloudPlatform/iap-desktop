@@ -25,6 +25,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Format;
 using Google.Solutions.Mvvm.Shell;
+using Google.Solutions.Platform.IO;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -514,7 +515,7 @@ namespace Google.Solutions.Mvvm.Controls
 
             var dataObject = new VirtualFileDataObject(files
                 .Select(f => new VirtualFileDataObject.Descriptor(
-                    f.Name,
+                    Win32Filename.EscapeFilename(f.Name),
                     f.Size,
                     f.Attributes,
                     () =>

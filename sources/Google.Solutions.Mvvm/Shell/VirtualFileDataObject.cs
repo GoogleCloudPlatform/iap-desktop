@@ -24,6 +24,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Interop;
 using Google.Solutions.Platform.Interop;
+using Google.Solutions.Platform.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -392,8 +393,13 @@ namespace Google.Solutions.Mvvm.Shell
                 OpenStreamDelegate openContentStream)
             {
                 Precondition.Expect(
+                    !name.Contains("..") && 
+                    !name.Contains("/") &&
                     !name.Contains("\\"),
-                    "Name must not contain a path separator");
+                    "The file name must not contain a path separator");
+                Precondition.Expect(
+                    Win32Filename.IsValidFilename(name),
+                    "The file name must be a valid Win32 file name");
 
                 this.Name = name;
                 this.Size = size;
