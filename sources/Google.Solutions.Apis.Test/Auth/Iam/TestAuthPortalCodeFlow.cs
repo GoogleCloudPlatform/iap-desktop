@@ -66,14 +66,19 @@ namespace Google.Solutions.Apis.Test.Auth.Iam
                     Scopes = new[] { "scope-1", "scope-2" }
                 });
 
-            var url = flow.CreateAuthorizationCodeRequest("http://localhost/").Build();
+            var url = flow.CreateAuthorizationCodeRequest(
+                "http://localhost/",
+                out var pkceVerifier).Build();
             var parameters = HttpUtility.ParseQueryString(url.Query);
 
+            Assert.That(pkceVerifier, Is.Not.Empty);
             Assert.That(url.Host, Is.EqualTo("auth.cloud.google"));
             Assert.That(parameters.Get("provider_name"), Is.EqualTo(SampleProvider.ToString()));
             Assert.That(parameters.Get("client_id"), Is.EqualTo("client-id"));
             Assert.That(parameters.Get("redirect_uri"), Is.EqualTo("http://localhost/"));
             Assert.That(parameters.Get("scope"), Is.EqualTo("scope-1 scope-2"));
+            Assert.That(parameters.Get("code_challenge"), Is.Not.Empty);
+            Assert.That(parameters.Get("code_challenge_method"), Is.EqualTo("S256"));
         }
 
         [Test]
