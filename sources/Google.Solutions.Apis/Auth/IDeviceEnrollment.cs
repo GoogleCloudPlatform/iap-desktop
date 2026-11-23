@@ -25,7 +25,7 @@ namespace Google.Solutions.Apis.Auth
 {
     /// <summary>
     /// Enrollment information for the current device. Device enrollment
-    /// is optional and only used in the context of BeyondCorp.
+    /// is optional and only used for CBA.
     /// </summary>
     public interface IDeviceEnrollment
     {
