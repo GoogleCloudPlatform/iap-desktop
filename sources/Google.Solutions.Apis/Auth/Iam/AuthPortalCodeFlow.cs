@@ -22,12 +22,18 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Requests;
+using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Http;
 using Google.Apis.Util;
 using Google.Solutions.Apis.Client;
+using Google.Solutions.Common.Format;
 using System;
+using System.Diagnostics;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Apis.Auth.Iam
 {
@@ -35,8 +41,9 @@ namespace Google.Solutions.Apis.Auth.Iam
     /// Authorization code flow that uses the workforce identity
     /// "auth portal".
     /// </summary>
-    internal class AuthPortalCodeFlow : AuthorizationCodeFlow
+    internal class AuthPortalCodeFlow : AuthorizationCodeFlow, IPkceAuthorizationCodeFlow
     {
+        private const int CodeVerifierLength = 128;
         private readonly Initializer initializer;
 
         public AuthPortalCodeFlow(Initializer initializer) : base(initializer)
@@ -44,15 +51,58 @@ namespace Google.Solutions.Apis.Auth.Iam
             this.initializer = initializer;
         }
 
-        public override AuthorizationCodeRequestUrl CreateAuthorizationCodeRequest(string redirectUri)
+        //---------------------------------------------------------------------
+        // IPkceAuthorizationCodeFlow.
+        //---------------------------------------------------------------------
+
+        public AuthorizationCodeRequestUrl CreateAuthorizationCodeRequest(
+            string redirectUri, 
+            out string codeVerifier)
         {
-            return new RequestUrl(new Uri(this.initializer.AuthorizationServerUrl))
+            using (var rng = RandomNumberGenerator.Create())
+            using (var hash = SHA256.Create())
             {
-                ClientId = this.initializer.ClientId,
-                Scope = string.Join(" ", base.Scopes),
-                RedirectUri = redirectUri,
-                ProviderName = this.initializer.Provider.ToString()
-            };
+                //
+                // Generate a PKCE challenge and verifier.
+                //
+                // The code verifier is only allowed to contain certain
+                // characters. To meet this requirement, we use URL-encode
+                // the raw bytes.
+                //
+                var randomBytes = new byte[CodeVerifierLength * 3 / 4];
+                rng.GetBytes(randomBytes);
+                codeVerifier = Base64UrlEncoding.Encode(randomBytes);
+                Debug.Assert(codeVerifier.Length == CodeVerifierLength);
+
+                return new RequestUrl(new Uri(this.initializer.AuthorizationServerUrl))
+                {
+                    ClientId = this.initializer.ClientId,
+                    Scope = string.Join(" ", base.Scopes),
+                    RedirectUri = redirectUri,
+                    ProviderName = this.initializer.Provider.ToString(),
+
+                    CodeChallenge = Base64UrlEncoding.Encode(
+                        hash.ComputeHash(Encoding.ASCII.GetBytes(codeVerifier))),
+                    CodeChallengeMethod = "S256",
+                };
+            }
+        }
+
+        public async Task<TokenResponse> ExchangeCodeForTokenAsync(
+            string userId,
+            string code,
+            string codeVerifier,
+            string redirectUri,
+            CancellationToken taskCancellationToken)
+        {
+            var request = CreateAuthorizationCodeTokenRequest(userId, code, redirectUri);
+            request.CodeVerifier = codeVerifier;
+
+            return await ExchangeCodeForTokenAsync(
+                    userId,
+                    request,
+                    taskCancellationToken)
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------
@@ -134,6 +184,12 @@ namespace Google.Solutions.Apis.Auth.Iam
 
             [RequestParameter("provider_name", RequestParameterType.Query)]
             public string? ProviderName { get; set; }
+
+            [RequestParameter("code_challenge", RequestParameterType.Query)]
+            public string? CodeChallenge { get; set; }
+
+            [RequestParameter("code_challenge_method", RequestParameterType.Query)]
+            public string? CodeChallengeMethod { get; set; }
         }
 
         private class AuthenticatedClientFactory : IHttpClientFactory
