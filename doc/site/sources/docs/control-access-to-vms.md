@@ -39,7 +39,7 @@ Context-aware access distinguishes between policy definition and policy enforcem
     Each access level contains a list of conditions. If a user meets all conditions, they're said to
     _satisfy the access level_.
     
-    Basic access levels let you limit access by network or geo-location. As a BeyondCorp subscriber, you can also limit 
+    Basic access levels let you limit access by network or geo-location. As a Chrome Enterprise subscriber, you can also limit 
     access based on other attributes such as [credential strength :octicons-link-external-16:](https://cloud.google.com/access-context-manager/docs/create-credential-strength-policy), 
     [the configuration of the browser :octicons-link-external-16:](https://cloud.google.com/access-context-manager/docs/browser-attributes) 
     that’s used for authentication, or 

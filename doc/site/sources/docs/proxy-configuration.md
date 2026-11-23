@@ -63,9 +63,9 @@ use WebSockets. Make sure that your proxy server permits WebSocket communication
     connections to this domain.
 
 
-## BeyondCorp certificate-based access
+## Certificate-based access
 
-When you enable BeyondCorp certificate-based access, IAP Desktop uses mutual TLS (mTLS) for all
+When you enable certificate-based access, IAP Desktop uses mutual TLS (mTLS) for all
 Google APIs and for IAP TCP forwarding. 
 
 mTLS is not compatible with TLS inspection. If you're using a proxy server that terminates and
