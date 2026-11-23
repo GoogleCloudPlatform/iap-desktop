@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Profile.Settings
         ISetting<string?> PrivateServiceConnectEndpoint { get; }
 
         /// <summary>
-        /// Enable BeyondCorp certificate-based access.
+        /// Enable certificate-based access.
         /// </summary>
         ISetting<bool> IsDeviceCertificateAuthenticationEnabled { get; }
 

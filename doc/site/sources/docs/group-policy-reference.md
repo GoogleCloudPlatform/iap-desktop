@@ -10,7 +10,7 @@ IAP Desktop supports the following policies:
 |--------------------------------------------|---------|-----------------------------------------------------------------------------------|
 | Enable update checks                       | On      | Periodically check for updates on exit.                                           |
 | Enable data sharing                        | Off     | Share anonymous usage data to help Google improve and prioritize features.        |
-| Enable BeyondCorp certificate-based access | Off     | Secure connections to Google Cloud by using BeyondCorp certificate-based access.  |
+| Enable certificate-based access            | Off     | Secure connections to Google Cloud by using certificate-based access.             |
 | Enable Workforce Identity                  | -       | Set provider to use for workforce identity federation.                            |
 | Enable Private Service Connect             | Off     | Use custom Private Service Connect endpoint to connect to connect to Google APIs. |
 | Enable HTTPS proxy                         | -       | Set proxy server or autoconfiguration URL.                                        |

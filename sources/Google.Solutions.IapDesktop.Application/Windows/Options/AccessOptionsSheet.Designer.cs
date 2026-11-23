@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.dcaBox.Size = new System.Drawing.Size(336, 118);
             this.dcaBox.TabIndex = 1;
             this.dcaBox.TabStop = false;
-            this.dcaBox.Text = "BeyondCorp:";
+            this.dcaBox.Text = "Certificate-based access:";
             // 
             // dcaNote
             // 
@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.Options
             this.enableDcaCheckBox.Name = "enableDcaCheckBox";
             this.enableDcaCheckBox.Size = new System.Drawing.Size(238, 17);
             this.enableDcaCheckBox.TabIndex = 3;
-            this.enableDcaCheckBox.Text = "Enable BeyondCorp certificate-based access";
+            this.enableDcaCheckBox.Text = "Enable certificate-based access";
             this.enableDcaCheckBox.UseVisualStyleBackColor = true;
             // 
             // label1

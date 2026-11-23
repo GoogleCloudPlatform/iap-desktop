@@ -1,22 +1,22 @@
-# Set up BeyondCorp certificate-based access
+# Set up certificate-based access
 
 IAP Desktop supports 
-[BeyondCorp certificate-based access :octicons-link-external-16:](https://cloud.google.com/beyondcorp-enterprise/docs/securing-resources-with-certificate-based-access).
+[certificate-based access :octicons-link-external-16:](https://cloud.google.com/beyondcorp-enterprise/docs/securing-resources-with-certificate-based-access).
 When you enable certificate-based access, all connections to Google Cloud APIs are secured using mutual TLS and you can
 use [enterprise certificate conditions :octicons-link-external-16:](https://cloud.google.com/access-context-manager/docs)
 to control access to Google Cloud resources.
 
 !!!note
 
-    This feature requires a BeyondCorp subscription. For a comparison between the
-    features available to Google Cloud customers and what is available with BeyondCorp Enterprise,
-    see [BeyondCorp Enterprise pricing :octicons-link-external-16:](https://cloud.google.com/beyondcorp-enterprise/pricing).
+    This feature requires a Chrome Enterprise subscription. For a comparison between the
+    features available to Google Cloud customers and what is available with Chrome Enterprise,
+    see [Chrome Enterprise pricing :octicons-link-external-16:](https://cloud.google.com/beyondcorp-enterprise/pricing).
 
 
 This guide describes how to do the following:
 
 1.  Configure an existing Active Directory Certificate Services (AD CS) certificate authority 
-    to issue a certificate that's suitable for BeyondCorp.
+    to issue a certificate that's suitable for certificate-based access.
 1.  Configure Chrome to use the certificate for Endpoint Verification.
 1.  Enable certificate-based access in IAP Desktop.
 
@@ -24,9 +24,10 @@ This guide describes how to do the following:
 ## Configure Active Directory Certificate Services
 
 This section describes how to configure an existing AD CS certificate authority (CA) so
-that users are automatically issued a certificate that's suitable for BeyondCorp.
+that users are automatically issued a certificate that's suitable for 
+certificate-based access.
 
-To be suitable for BeyondCorp, a certificate must be valid and meet certain requirements, including:
+To be suitable for certificate-based access, a certificate must be valid and meet certain requirements, including:
 
 *   It must be issued by a CA that's trusted by your Cloud Identity or Google Workspace account.
 *   It must include an extended key usage (EKU) attribute that permits client authentication.
@@ -46,7 +47,7 @@ Create a new certificate template in AD CS by doing the following:
 
     !!!note
         Most standard certificate templates are only suitable for issuing computer certificates.
-        By using the _User_ template as basis, you ensure that BeyondCorp certificates are issued
+        By using the _User_ template as basis, you ensure that certificates are issued
         to Windows users' personal certificate store, not to their machine certificate store.
     
 1.  On the **Compatibility** tab, configure the following settings:
@@ -56,7 +57,7 @@ Create a new certificate template in AD CS by doing the following:
     
 1.  On the **General** tab, configure the following settings:
 
-    *   **Template display name**: Enter a name like `BeyondCorp User`
+    *   **Template display name**: Enter a name like `Chrome Enterprise User`
     *   **Validity period**: Select a validity period that suits your requirements
     *   **Publish certificate in Active Directory**: **disabled**
     
@@ -122,22 +123,22 @@ Create a new certificate template in AD CS by doing the following:
     
     !!!note
         By default, a template's access control list grants the **Domain Users** group 
-        **Enroll** permissions. Unless you want to allow all domain users to request a BeyondCorp 
+        **Enroll** permissions. Unless you want to allow all domain users to request a  
         certificate, remove this access control list entry.
 
 1.  Click **OK**.
 
-You now have a certificate template that's suitable for BeyondCorp, but you must still
+You now have a certificate template that's suitable for certificate-based access, but you must still
 configure AD CS to use the template for issuing certificates.
 
 ### Use the template to issue certificates
 
-Configure AD CS to issue certificates based on the new `BeyondCorp User` certificate template 
+Configure AD CS to issue certificates based on the new `Chrome Enterprise User` certificate template 
 by doing the following:
 
 1.  Open the **Certificate Authority** MMC snap-in.
 1.  Right-click the **Certificate Templates** folder and select **New > Certificate template to issue**.
-1.  Select the `BeyondCorp User` certificate template that you created in the previous step and click **OK**.
+1.  Select the `Chrome Enterprise User` certificate template that you created in the previous step and click **OK**.
 
 As an Active Directory domain user, you can now manually request certificates on 
 domain-joined workstations by doing the following:
@@ -146,7 +147,7 @@ domain-joined workstations by doing the following:
 1.  Right-click the **Personal** folder and select **All tasks > Request new certificate...**.
 1.  On the **Before you begin** page, click **Next**.
 1.  On the **Select certificate enrollment policy** page, select **Active Directory Enrollment policy** and  click **Next**.
-1.  On the **Request certificates** page, select the `BeyondCorp User` certificate template:
+1.  On the **Request certificates** page, select the `Chrome Enterprise User` certificate template:
 
     ![Request certificate](images/caa-adcs-request.png){ width="400" }
     
@@ -162,7 +163,7 @@ Optionally, you can automate the process of requesting certificates by configuri
 1.  Select the organizational unit that contains the user accounts for which you want to
     enable auto-enrollment.
 1.  Right-click the organizational unit and select **Create GPO in this domain and link it here**.
-1.  In the **New GPO** dialog, enter a name like `BeyondCorp certificate enrollment`  and click **OK**.
+1.  In the **New GPO** dialog, enter a name like `Chrome Enterprise certificate enrollment`  and click **OK**.
 1.  Right-click the GPO and select **Edit**.
 
 Configure the GPO as follows:
@@ -185,7 +186,7 @@ a group policy refresh, run `gpupdate /force`.
 
 ### Upload the CA certificate
 
-You're now ready to configure BeyondCorp to trust certificates issued by your 
+You're now ready to configure Chrome Enterprise to trust certificates issued by your 
 AD CS certificate authority.
 
 To configure your AD CS certificate authority as a trust anchor, do the following:
@@ -204,7 +205,7 @@ If your CA is a subordinate CA, repeat the steps above to upload the certificate
 ## Configure Chrome
 
 
-This section describes how to configure Chrome so that it uses the `BeyondCorp User` certificate
+This section describes how to configure Chrome so that it uses the `Chrome Enterprise User` certificate
 and enrolls Windows computers in Endpoint Verification.
 
 ### Deploy Endpoint Verification
@@ -222,7 +223,7 @@ Chrome and IAP Desktop both rely on
 the [Chrome `AutoSelectCertificateForUrls` :octicons-link-external-16:](https://cloud.google.com/beyondcorp-enterprise/docs/enable-cba-enterprise-certificates#configure_users_browser_to_use_your_enterprise_certificate)
 policy to determine which certificate to use for the purpose of certificate-based access.
 
-To let Chrome and IAP Desktop use the `BeyondCorp User` certificate, configure a 
+To let Chrome and IAP Desktop use the `Chrome Enterprise User` certificate, configure a 
 `AutoSelectCertificateForUrls` by doing the following:
 
 1.  Make sure you've [installed the Chrome policy templates](https://support.google.com/chrome/a/answer/187202?hl=en#zippy=%2Cwindows).

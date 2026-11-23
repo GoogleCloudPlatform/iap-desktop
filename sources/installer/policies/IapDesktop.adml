@@ -34,8 +34,8 @@
       <string id="IsTelemetryEnabled">Enable data sharing</string>
       <string id="IsTelemetryEnabled_Description">Share anonymous usage data to help Google improve and prioritize features</string>
 
-      <string id="IsDeviceCertificateAuthenticationEnabled">Enable BeyondCorp certificate-based access</string>
-      <string id="IsDeviceCertificateAuthenticationEnabled_Description">Secure connections to Google Cloud by using BeyondCorp certificate-based access.
+      <string id="IsDeviceCertificateAuthenticationEnabled">Enable certificate-based access</string>
+      <string id="IsDeviceCertificateAuthenticationEnabled_Description">Secure connections to Google Cloud by using certificate-based access.
       </string>
 
       <string id="WorkforcePoolProvider">Enable Workforce Identity</string>
