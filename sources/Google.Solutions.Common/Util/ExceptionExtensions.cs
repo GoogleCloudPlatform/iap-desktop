@@ -69,7 +69,7 @@ namespace Google.Solutions.Common.Util
         }
 
         /// <summary>
-        /// Create a compact, single-line stack trace.
+        /// Create a compact stack trace.
         /// </summary>
         private static string CreateCompactStackTrace(Exception e)
         {
