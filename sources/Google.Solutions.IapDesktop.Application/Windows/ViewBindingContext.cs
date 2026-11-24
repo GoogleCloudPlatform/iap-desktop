@@ -84,7 +84,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                     { "id", command.Id },
                     { "type", command.GetType().FullName() },
                     { "error", unwrappedException.GetType().Name },
-                    { "cause",  unwrappedException
+                    { "error_message", unwrappedException.FullMessage() },
+                    { "cause", unwrappedException
                         .InnerException?.GetType().Name ?? string.Empty },
                 });
 

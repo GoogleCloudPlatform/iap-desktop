@@ -74,7 +74,6 @@ namespace Google.Solutions.Common.Util
         private static string CreateCompactStackTrace(Exception e)
         {
             var buffer = new StringBuilder();
-            buffer.Append($"{e.GetType().Name}: {e.Message}");
 
             if (new StackTrace(e, false)
                 .GetFrames()
@@ -83,7 +82,7 @@ namespace Google.Solutions.Common.Util
                 .FirstOrDefault() is StackFrame frame)
             {
                 var method = frame.GetMethod();
-                buffer.Append($" at {method.ReflectedType.FullName}.{method.Name}");
+                buffer.Append($"{method.ReflectedType.Name}.{method.Name}");
             }
 
             return buffer.ToString();

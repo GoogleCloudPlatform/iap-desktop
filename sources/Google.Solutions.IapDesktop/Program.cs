@@ -822,6 +822,7 @@ namespace Google.Solutions.IapDesktop
                     // NB. GA crops values above a certain length.
                     //
                     { "error", e.GetType().Name },
+                    { "error_message", e.FullMessage() },
                     { "cause",  e.InnerException?.GetType().Name ?? string.Empty },
                     { "location", e.ToString(ExceptionFormatOptions.Compact) },
 
