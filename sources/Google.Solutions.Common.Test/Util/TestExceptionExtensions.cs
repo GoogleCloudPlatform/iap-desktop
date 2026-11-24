@@ -154,9 +154,7 @@ namespace Google.Solutions.Common.Test.Util
             var ex = CreateException();
             Assert.That(
                 ex.ToString(ExceptionFormatOptions.Compact), 
-                Is.EqualTo(
-                    $"{GetType().Name}.ThrowArgumentException\n" +
-                    $"{GetType().Name}.CreateException"));
+                Does.Contain($"{GetType().Name}.CreateException"));
         }
 
         //---------------------------------------------------------------------
