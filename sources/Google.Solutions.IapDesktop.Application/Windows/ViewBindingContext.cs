@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Windows.Dialog;
@@ -84,7 +83,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                     { "id", command.Id },
                     { "type", command.GetType().FullName() },
                     { "error", unwrappedException.GetType().Name },
-                    { "error_message", unwrappedException.FullMessage() },
                     { "cause", unwrappedException
                         .InnerException?.GetType().Name ?? string.Empty },
                 });

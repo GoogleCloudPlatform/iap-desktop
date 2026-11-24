@@ -82,7 +82,7 @@ namespace Google.Solutions.Common.Util
                     .Select(frame =>
                     {
                         var method = frame.GetMethod();
-                        return $"{method.ReflectedType.Name}.{method.Name}";
+                        return $"{method.ReflectedType?.Name}.{method.Name}";
                     }));
         }
 
