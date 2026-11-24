@@ -30,11 +30,17 @@ namespace Google.Solutions.Common.Test.Util
     [TestFixture]
     public class TestExceptionExtensions : CommonFixtureBase
     {
+        private static void ThrowArgumentException()
+        {
+            throw new ArgumentException("sample");
+        }
+
         private static ArgumentException CreateException()
         {
             try
             {
-                throw new ArgumentException("sample");
+                ThrowArgumentException();
+                return null!;
             }
             catch (ArgumentException e)
             {
@@ -147,7 +153,10 @@ namespace Google.Solutions.Common.Test.Util
         {
             var ex = CreateException();
             Assert.That(
-                ex.ToString(ExceptionFormatOptions.Compact), Is.EqualTo($"ArgumentException: sample at {GetType().FullName}.CreateException"));
+                ex.ToString(ExceptionFormatOptions.Compact), 
+                Is.EqualTo(
+                    $"{GetType().Name}.ThrowArgumentException\n" +
+                    $"{GetType().Name}.CreateException"));
         }
 
         //---------------------------------------------------------------------

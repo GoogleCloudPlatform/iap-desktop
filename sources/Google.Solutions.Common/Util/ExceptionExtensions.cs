@@ -73,19 +73,17 @@ namespace Google.Solutions.Common.Util
         /// </summary>
         private static string CreateCompactStackTrace(Exception e)
         {
-            var buffer = new StringBuilder();
-
-            if (new StackTrace(e, false)
-                .GetFrames()
-                .EnsureNotNull()
-                .Where(f => !f.GetMethod().ReflectedType.Namespace.StartsWith("System."))
-                .FirstOrDefault() is StackFrame frame)
-            {
-                var method = frame.GetMethod();
-                buffer.Append($"{method.ReflectedType.Name}.{method.Name}");
-            }
-
-            return buffer.ToString();
+            return string.Join(
+                "\n",
+                new StackTrace(e, false)
+                    .GetFrames()
+                    .EnsureNotNull()
+                    .Where(f => !f.GetMethod().ReflectedType.Namespace.StartsWith("System."))
+                    .Select(frame =>
+                    {
+                        var method = frame.GetMethod();
+                        return $"{method.ReflectedType.Name}.{method.Name}";
+                    }));
         }
 
         /// <summary>
