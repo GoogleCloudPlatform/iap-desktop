@@ -69,24 +69,21 @@ namespace Google.Solutions.Common.Util
         }
 
         /// <summary>
-        /// Create a compact, single-line stack trace.
+        /// Create a compact stack trace.
         /// </summary>
         private static string CreateCompactStackTrace(Exception e)
         {
-            var buffer = new StringBuilder();
-            buffer.Append($"{e.GetType().Name}: {e.Message}");
-
-            if (new StackTrace(e, false)
-                .GetFrames()
-                .EnsureNotNull()
-                .Where(f => !f.GetMethod().ReflectedType.Namespace.StartsWith("System."))
-                .FirstOrDefault() is StackFrame frame)
-            {
-                var method = frame.GetMethod();
-                buffer.Append($" at {method.ReflectedType.FullName}.{method.Name}");
-            }
-
-            return buffer.ToString();
+            return string.Join(
+                "\n",
+                new StackTrace(e, false)
+                    .GetFrames()
+                    .EnsureNotNull()
+                    .Where(f => !f.GetMethod().ReflectedType.Namespace.StartsWith("System."))
+                    .Select(frame =>
+                    {
+                        var method = frame.GetMethod();
+                        return $"{method.ReflectedType?.Name}.{method.Name}";
+                    }));
         }
 
         /// <summary>
